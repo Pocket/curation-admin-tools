@@ -3,7 +3,7 @@ name: Collections Admin UI CI
 on:
   push:
     branches:
-      - '**'
+      - main
   pull_request:
     branches:
       - main
