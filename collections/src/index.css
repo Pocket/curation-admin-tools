@@ -1,13 +1,77 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* Base styles and fonts: borrowed and served from getpocket.com */
+@font-face {
+    font-family: Graphik Web;
+    src: url(//assets.getpocket.com/web/fonts/Graphik-Regular-Web.eot);
+    src: url(//assets.getpocket.com/web/fonts/Graphik-Regular-Web.eot?#iefix) format("embedded-opentype"), url(//assets.getpocket.com/web/fonts/Graphik-Regular-Web.woff2) format("woff2"),
+    url(//assets.getpocket.com/web/fonts/Graphik-Regular-Web.woff) format("woff");
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: Graphik Web;
+    src: url(//assets.getpocket.com/web/fonts/Graphik-RegularItalic-Web.eot);
+    src: url(//assets.getpocket.com/web/fonts/Graphik-RegularItalic-Web.eot?#iefix) format("embedded-opentype"), url(//assets.getpocket.com/web/fonts/Graphik-RegularItalic-Web.woff2) format("woff2"),
+    url(//assets.getpocket.com/web/fonts/Graphik-RegularItalic-Web.woff) format("woff");
+    font-weight: 400;
+    font-style: italic;
+}
+@font-face {
+    font-family: Graphik Web;
+    src: url(//assets.getpocket.com/web/fonts/Graphik-Medium-Web.eot);
+    src: url(//assets.getpocket.com/web/fonts/Graphik-Medium-Web.eot?#iefix) format("embedded-opentype"), url(//assets.getpocket.com/web/fonts/Graphik-Medium-Web.woff2) format("woff2"),
+    url(//assets.getpocket.com/web/fonts/Graphik-Medium-Web.woff) format("woff");
+    font-weight: 500;
+    font-style: normal;
+}
+@font-face {
+    font-family: Graphik Web;
+    src: url(//assets.getpocket.com/web/fonts/Graphik-MediumItalic-Web.eot);
+    src: url(//assets.getpocket.com/web/fonts/Graphik-MediumItalic-Web.eot?#iefix) format("embedded-opentype"), url(//assets.getpocket.com/web/fonts/Graphik-MediumItalic-Web.woff2) format("woff2"),
+    url(//assets.getpocket.com/web/fonts/Graphik-MediumItalic-Web.woff) format("woff");
+    font-weight: 500;
+    font-style: italic;
+}
+@font-face {
+    font-family: Graphik Web;
+    src: url(//assets.getpocket.com/web/fonts/Graphik-Bold-Web.eot);
+    src: url(//assets.getpocket.com/web/fonts/Graphik-Bold-Web.eot?#iefix) format("embedded-opentype"), url(//assets.getpocket.com/web/fonts/Graphik-Bold-Web.woff2) format("woff2"),
+    url(//assets.getpocket.com/web/fonts/Graphik-Bold-Web.woff) format("woff");
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: Graphik Web;
+    src: url(//assets.getpocket.com/web/fonts/Graphik-BoldItalic-Web.eot);
+    src: url(//assets.getpocket.com/web/fonts/Graphik-BoldItalic-Web.eot?#iefix) format("embedded-opentype"), url(//assets.getpocket.com/web/fonts/Graphik-BoldItalic-Web.woff2) format("woff2"),
+    url(//assets.getpocket.com/web/fonts/Graphik-BoldItalic-Web.woff) format("woff");
+    font-weight: 700;
+    font-style: italic;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+body,
+html {
+    font-size: 100%;
+}
+body {
+    background: #ffffff;
+    color: #555555;
+    font-family: Graphik Web, proxima-nova, Helvetica Neue, Helvetica, Arial, sans-serif;
+    font-style: normal;
+    font-weight: 400;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #222222;
+    font-family: Graphik Web, proxima-nova, Helvetica Neue, Helvetica, helvetica, arial, sans-serif;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 1.2125em;
+    margin-bottom: 0.5em;
+    margin-top: 0.2em;
+    text-rendering: optimizeLegibility;
 }
