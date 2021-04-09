@@ -56,11 +56,11 @@ jobs:
         uses: docker://github/super-linter:v3
         env:
           DEFAULT_BRANCH: master
+          LINTER_RULES_PATH: /
           VALIDATE_ALL_CODEBASE: true
           TYPESCRIPT_ES_CONFIG_FILE: .eslintrc.js
           VALIDATE_TERRAFORM: true
           VALIDATE_JAVASCRIPT_ES: true
-          #VALIDATE_JSON: true  #We use some terraform json files that is not valid json....
           VALIDATE_MD: true
           VALIDATE_TYPESCRIPT_ES: true
           VALIDATE_YAML: true
