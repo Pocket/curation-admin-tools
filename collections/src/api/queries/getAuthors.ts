@@ -12,6 +12,8 @@ export const getAuthors = gql`
       bio
       imageUrl
       active
+      createdAt
+      updatedAt
     }
   }
 `;

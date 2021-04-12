@@ -3,13 +3,12 @@ const fs = require('fs');
 jsf.extend('faker', () => {
   const faker = require('faker');
 
-  const random = Math.round(Math.random() * 1000);
-
   faker.custom = {
     authorName: () => {
       return `${faker.name.firstName()} ${faker.name.lastName()}`;
     },
     authorPhoto: () => {
+      const random = Math.round(Math.random() * 1000);
       return `${faker.image.people()}?random=${random}`;
     },
     createdAt: () => {

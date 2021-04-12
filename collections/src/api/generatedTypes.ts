@@ -53,9 +53,9 @@ export type Collection = {
   intro: Scalars['String'];
   imageUrl: Scalars['String'];
   status: Scalars['String'];
-  createdAt: Scalars['String'];
   author_id: Scalars['ID'];
   updatedAt: Scalars['String'];
+  createdAt: Scalars['String'];
   Author?: Maybe<Author>;
 };
 
@@ -69,9 +69,9 @@ export type CollectionFilter = {
   intro?: Maybe<Scalars['String']>;
   imageUrl?: Maybe<Scalars['String']>;
   status?: Maybe<Scalars['String']>;
-  createdAt?: Maybe<Scalars['String']>;
   author_id?: Maybe<Scalars['ID']>;
   updatedAt?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
 };
 
 export type ListMetadata = {
@@ -123,9 +123,9 @@ export type MutationCreateCollectionArgs = {
   intro: Scalars['String'];
   imageUrl: Scalars['String'];
   status: Scalars['String'];
-  createdAt: Scalars['String'];
   author_id: Scalars['ID'];
   updatedAt: Scalars['String'];
+  createdAt: Scalars['String'];
 };
 
 export type MutationUpdateCollectionArgs = {
@@ -136,9 +136,9 @@ export type MutationUpdateCollectionArgs = {
   intro?: Maybe<Scalars['String']>;
   imageUrl?: Maybe<Scalars['String']>;
   status?: Maybe<Scalars['String']>;
-  createdAt?: Maybe<Scalars['String']>;
   author_id?: Maybe<Scalars['ID']>;
   updatedAt?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
 };
 
 export type MutationRemoveCollectionArgs = {
@@ -199,7 +199,14 @@ export type GetAuthorsQuery = { __typename?: 'Query' } & {
       Maybe<
         { __typename?: 'Author' } & Pick<
           Author,
-          'id' | 'name' | 'slug' | 'bio' | 'imageUrl' | 'active'
+          | 'id'
+          | 'name'
+          | 'slug'
+          | 'bio'
+          | 'imageUrl'
+          | 'active'
+          | 'createdAt'
+          | 'updatedAt'
         >
       >
     >
@@ -215,6 +222,8 @@ export const GetAuthorsDocument = gql`
       bio
       imageUrl
       active
+      createdAt
+      updatedAt
     }
   }
 `;

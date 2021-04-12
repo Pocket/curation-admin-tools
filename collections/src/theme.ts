@@ -62,7 +62,7 @@ theme.overrides = {
   /* Global styles for buttons. */
   MuiButton: {
     root: {
-      fontWeight: 700,
+      fontWeight: 500,
       textTransform: 'none',
     },
 

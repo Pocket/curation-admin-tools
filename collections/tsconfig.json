@@ -18,9 +18,16 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "removeComments": true,
+    "noEmitOnError": false,
+    "sourceMap": true,
+    "inlineSources": true,
+    "sourceRoot": "/",
+    "declaration": true,
+    "strictNullChecks": true
   },
   "include": [
-    "src"
+    "src/**/*.ts*"
   ]
 }
