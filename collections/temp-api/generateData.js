@@ -162,9 +162,11 @@ jsf.resolve(schema).then((data) => {
   // Delete the previous db.json file if it exists
   // Truncating it below when overwriting is not enough. Why?
   // But this is better than the blank screen of death
-  fs.unlink(path, (error) => {
-    if (error) throw error;
-  });
+  if (fs.existsSync(path)) {
+    fs.unlink(path, (error) => {
+      if (error) throw error;
+    });
+  }
 
   fs.writeFile(
     path,
