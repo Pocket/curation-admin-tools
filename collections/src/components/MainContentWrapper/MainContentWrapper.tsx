@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 const useStyles = makeStyles({
   mainContent: {
     maxWidth: 1000,
-    marginTop: '6rem',
+    marginTop: '5rem',
   },
 });
 
