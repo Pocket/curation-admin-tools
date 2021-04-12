@@ -1,2 +1,3 @@
 export { HomePage } from './HomePage/HomePage';
-export { AuthorsPage } from './AuthorsPage/AuthorsPage';
+export { AuthorListPage } from './AuthorListPage/AuthorListPage';
+export { AuthorPage } from './AuthorPage/AuthorPage';

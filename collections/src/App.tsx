@@ -5,7 +5,7 @@ import { ThemeProvider } from '@material-ui/core/styles';
 
 import { client } from './api';
 import theme from './theme';
-import { HomePage, AuthorsPage } from './pages';
+import { HomePage, AuthorListPage, AuthorPage } from './pages';
 import { Header, MainContentWrapper } from './components';
 
 function App(): JSX.Element {
@@ -21,7 +21,10 @@ function App(): JSX.Element {
                   <HomePage />
                 </Route>
                 <Route exact path="/authors/">
-                  <AuthorsPage />
+                  <AuthorListPage />
+                </Route>
+                <Route exact path="/authors/:slug/">
+                  <AuthorPage />
                 </Route>
               </Switch>
             </MainContentWrapper>

@@ -77,7 +77,7 @@ const schema = {
         },
         bio: {
           type: 'string',
-          faker: 'lorem.paragraph',
+          faker: 'lorem.paragraphs',
         },
         imageUrl: {
           type: 'string',

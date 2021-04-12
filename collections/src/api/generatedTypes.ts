@@ -207,7 +207,13 @@ export type GetAuthorsQuery = { __typename?: 'Query' } & {
           | 'active'
           | 'createdAt'
           | 'updatedAt'
-        >
+        > & {
+            Collections?: Maybe<
+              Array<
+                Maybe<{ __typename?: 'Collection' } & Pick<Collection, 'id'>>
+              >
+            >;
+          }
       >
     >
   >;
@@ -224,6 +230,9 @@ export const GetAuthorsDocument = gql`
       active
       createdAt
       updatedAt
+      Collections {
+        id
+      }
     }
   }
 `;

@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { AuthorCard, HandleApiResponse } from '../../components';
+import { AuthorListCard, HandleApiResponse } from '../../components';
 import { AuthorModel, useGetAuthors } from '../../api';
 
 /**
- * Authors Page
+ * Author List Page
  */
-export const AuthorsPage = (): JSX.Element => {
+export const AuthorListPage = (): JSX.Element => {
   // Load authors
   const { loading, error, data } = useGetAuthors();
 
@@ -16,8 +16,8 @@ export const AuthorsPage = (): JSX.Element => {
       {!data && <HandleApiResponse loading={loading} error={error} />}
 
       {data &&
-        data.map((author: AuthorModel) => {
-          return <AuthorCard key={author?.id} author={author} />;
+        data.map((author: AuthorModel | null) => {
+          return author && <AuthorListCard key={author.id} author={author} />;
         })}
     </>
   );

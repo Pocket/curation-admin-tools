@@ -14,6 +14,9 @@ export const getAuthors = gql`
       active
       createdAt
       updatedAt
+      Collections {
+        id
+      }
     }
   }
 `;
