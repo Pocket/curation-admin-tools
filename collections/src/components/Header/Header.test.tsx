@@ -7,7 +7,7 @@ describe('The Header component', () => {
   it('renders successfully', () => {
     render(
       <MemoryRouter>
-        <Header />
+        <Header productName="Collections" />
       </MemoryRouter>
     );
 
@@ -17,5 +17,8 @@ describe('The Header component', () => {
     logos.forEach((logo) => {
       expect(logo).toBeInTheDocument();
     });
+
+    const productName = screen.getByText('Collections');
+    expect(productName).toBeInTheDocument();
   });
 });

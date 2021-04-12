@@ -14,7 +14,7 @@ function App(): JSX.Element {
       <ThemeProvider theme={theme}>
         <BrowserRouter>
           <>
-            <Header />
+            <Header productName="Collections" />
             <MainContentWrapper>
               <Switch>
                 <Route exact path="/">

@@ -23,5 +23,5 @@ The app will open in your default browser at [http://localhost:3000](http://loca
 To run the tests, execute
 
 ```bash
-npm run tests
+npm run test
 ```

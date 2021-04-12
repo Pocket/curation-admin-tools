@@ -1,16 +1,43 @@
-import React from 'react';
-import { Grid, Container, AppBar, Hidden, IconButton } from '@material-ui/core';
+import React, { useState } from 'react';
+import {
+  AppBar,
+  Container,
+  Drawer,
+  Grid,
+  Hidden,
+  IconButton,
+} from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
+import CloseIcon from '@material-ui/icons/Close';
 import { Link } from 'react-router-dom';
 import pocketLogo from '../../assets/PKTLogoRounded_RGB.png';
 import pocketShield from '../../assets/pocket-shield.svg';
 import { useStyles } from './Header.styles';
 
+interface HeaderProps {
+  /**
+   * The name of the Admin UI, i.e. 'Collections'
+   */
+  productName: string;
+}
+
 /**
  * Page header for all pages that authorised users see.
  */
-export const Header: React.FC = (): JSX.Element => {
+export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
   const classes = useStyles();
+  const { productName } = props;
+
+  const [open, setOpen] = useState(false);
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
+
   return (
     <>
       <AppBar className={classes.appBar} position="absolute">
@@ -35,9 +62,25 @@ export const Header: React.FC = (): JSX.Element => {
 
             <Hidden mdUp implementation="css">
               <Grid item xs={1}>
-                <IconButton aria-label="menu">
+                <IconButton aria-label="menu" onClick={handleDrawerOpen}>
                   <MenuIcon fontSize="large" />
                 </IconButton>
+                <Drawer
+                  className={classes.drawer}
+                  anchor="left"
+                  open={open}
+                  variant="persistent"
+                  classes={{
+                    paper: classes.drawerPaper,
+                  }}
+                >
+                  <div className={classes.drawerHeader}>
+                    <IconButton onClick={handleDrawerClose}>
+                      <CloseIcon />
+                    </IconButton>
+                  </div>
+                  this is a test
+                </Drawer>
               </Grid>
             </Hidden>
             <Hidden mdUp implementation="css">
@@ -49,7 +92,9 @@ export const Header: React.FC = (): JSX.Element => {
                 />
               </Grid>
             </Hidden>
-            <Grid item xs={4} sm={3}></Grid>
+            <Grid item xs={4} sm={3}>
+              <h1 className={classes.product}>{productName}</h1>
+            </Grid>
           </Grid>
         </Container>
       </AppBar>
