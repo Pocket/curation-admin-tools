@@ -18,9 +18,47 @@ export const useStyles = makeStyles((theme: Theme) => ({
   },
   logo: {
     width: '100px',
+    paddingRight: '0.25rem',
   },
   logoMobile: {
     width: '20px',
     paddingTop: '4px',
+  },
+  product: {
+    fontSize: '1.25rem',
+    paddingLeft: '0.5rem',
+    borderLeft: `1px solid ${theme.palette.grey[400]}`,
+    [theme.breakpoints.down('sm')]: {
+      marginTop: '0.75rem',
+      borderLeft: 'none',
+    },
+  },
+  drawer: {
+    flexShrink: 0,
+  },
+  drawerPaper: {
+    width: 280,
+  },
+  drawerHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(0, 1),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+    justifyContent: 'flex-end',
+  },
+  menuList: {
+    padding: '0.5rem 1rem',
+  },
+  menuLink: {
+    borderBottom: `1px solid ${theme.palette.grey[400]}`,
+  },
+  appBarList: {
+    display: 'flex',
+    flexDirection: 'row',
+    padding: 0,
+  },
+  appBarLink: {
+    color: '#000',
   },
 }));

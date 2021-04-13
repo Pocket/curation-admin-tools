@@ -1,12 +1,27 @@
 import React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 import { ThemeProvider } from '@material-ui/core/styles';
 
 import { client } from './api';
 import theme from './theme';
 import { HomePage, AuthorListPage, AuthorPage } from './pages';
-import { Header, MainContentWrapper } from './components';
+import { Header, MainContentWrapper, MenuLink } from './components';
+
+const menuLinks: MenuLink[] = [
+  {
+    text: 'Collections',
+    url: '/collections/',
+  },
+  {
+    text: 'Authors',
+    url: '/authors/',
+  },
+  {
+    text: 'Search',
+    url: '/search/',
+  },
+];
 
 function App(): JSX.Element {
   return (
@@ -14,7 +29,7 @@ function App(): JSX.Element {
       <ThemeProvider theme={theme}>
         <BrowserRouter>
           <>
-            <Header />
+            <Header productName="Collections" menuLinks={menuLinks} />
             <MainContentWrapper>
               <Switch>
                 <Route exact path="/">

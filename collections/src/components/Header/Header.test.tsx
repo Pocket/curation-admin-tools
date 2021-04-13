@@ -1,13 +1,32 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { render, screen } from '@testing-library/react';
-import { Header } from './Header';
+import { Header, MenuLink } from './Header';
 
 describe('The Header component', () => {
+  let menuLinks: MenuLink[];
+
+  beforeEach(() => {
+    menuLinks = [
+      {
+        text: 'Collections',
+        url: '/collections/',
+      },
+      {
+        text: 'Authors',
+        url: '/authors/',
+      },
+      {
+        text: 'Search',
+        url: '/search/',
+      },
+    ];
+  });
+
   it('renders successfully', () => {
     render(
       <MemoryRouter>
-        <Header />
+        <Header productName="Collections" menuLinks={menuLinks} />
       </MemoryRouter>
     );
 
@@ -17,5 +36,21 @@ describe('The Header component', () => {
     logos.forEach((logo) => {
       expect(logo).toBeInTheDocument();
     });
+
+    const productName = screen.getByRole('heading');
+    expect(productName).toBeInTheDocument();
+    expect(productName).toHaveTextContent(/collections/i);
+  });
+
+  it('shows navigation links', () => {
+    render(
+      <MemoryRouter>
+        <Header productName="Collections" menuLinks={menuLinks} />
+      </MemoryRouter>
+    );
+    const links = screen.getAllByRole('button');
+
+    // the extra button is the menu button in the top left corner on mobile screens
+    expect(links.length).toEqual(menuLinks.length + 1);
   });
 });
