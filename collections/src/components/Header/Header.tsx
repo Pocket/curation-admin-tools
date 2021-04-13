@@ -6,6 +6,9 @@ import {
   Grid,
   Hidden,
   IconButton,
+  List,
+  ListItem,
+  ListItemText,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import CloseIcon from '@material-ui/icons/Close';
@@ -14,11 +17,21 @@ import pocketLogo from '../../assets/PKTLogoRounded_RGB.png';
 import pocketShield from '../../assets/pocket-shield.svg';
 import { useStyles } from './Header.styles';
 
+export interface MenuLink {
+  text: string;
+  url: string;
+}
+
 interface HeaderProps {
   /**
    * The name of the Admin UI, i.e. 'Collections'
    */
   productName: string;
+
+  /**
+   * A list of links that appear in the mobile Drawer menu
+   */
+  menuLinks: MenuLink[];
 }
 
 /**
@@ -26,7 +39,7 @@ interface HeaderProps {
  */
 export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
   const classes = useStyles();
-  const { productName } = props;
+  const { productName, menuLinks } = props;
 
   const [open, setOpen] = useState(false);
 
@@ -69,7 +82,7 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
                   className={classes.drawer}
                   anchor="left"
                   open={open}
-                  variant="persistent"
+                  variant="temporary"
                   classes={{
                     paper: classes.drawerPaper,
                   }}
@@ -79,7 +92,22 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
                       <CloseIcon />
                     </IconButton>
                   </div>
-                  this is a test
+                  <List className={classes.menuList}>
+                    {menuLinks.map((link: MenuLink) => {
+                      return (
+                        <ListItem
+                          className={classes.menuLink}
+                          button
+                          component={Link}
+                          to={link.url}
+                          key={link.url}
+                          onClick={handleDrawerClose}
+                        >
+                          <ListItemText primary={link.text} />
+                        </ListItem>
+                      );
+                    })}
+                  </List>
                 </Drawer>
               </Grid>
             </Hidden>
@@ -95,6 +123,26 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
             <Grid item xs={4} sm={3}>
               <h1 className={classes.product}>{productName}</h1>
             </Grid>
+
+            <Hidden smDown implementation="css">
+              <Grid item>
+                <List className={classes.appBarList}>
+                  {menuLinks.map((link: MenuLink) => {
+                    return (
+                      <ListItem
+                        className={classes.appBarLink}
+                        button
+                        component={Link}
+                        to={link.url}
+                        key={link.url}
+                      >
+                        <ListItemText primary={link.text} />
+                      </ListItem>
+                    );
+                  })}
+                </List>
+              </Grid>
+            </Hidden>
           </Grid>
         </Container>
       </AppBar>

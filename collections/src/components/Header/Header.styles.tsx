@@ -29,7 +29,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
     paddingLeft: '0.5rem',
     borderLeft: `1px solid ${theme.palette.grey[400]}`,
     [theme.breakpoints.down('sm')]: {
-      marginTop: '0.55rem',
+      marginTop: '0.75rem',
       borderLeft: 'none',
     },
   },
@@ -37,7 +37,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
     flexShrink: 0,
   },
   drawerPaper: {
-    width: 240,
+    width: 280,
   },
   drawerHeader: {
     display: 'flex',
@@ -46,5 +46,19 @@ export const useStyles = makeStyles((theme: Theme) => ({
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
     justifyContent: 'flex-end',
+  },
+  menuList: {
+    padding: '0.5rem 1rem',
+  },
+  menuLink: {
+    borderBottom: `1px solid ${theme.palette.grey[400]}`,
+  },
+  appBarList: {
+    display: 'flex',
+    flexDirection: 'row',
+    padding: 0,
+  },
+  appBarLink: {
+    color: '#000',
   },
 }));
