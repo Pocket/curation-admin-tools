@@ -5,7 +5,7 @@ import { Author, Collection, Maybe } from '../generatedTypes';
  */
 export type AuthorModel = { __typename?: 'Author' } & Pick<
   Author,
-  | 'id'
+  | 'externalId'
   | 'name'
   | 'slug'
   | 'bio'
@@ -15,6 +15,6 @@ export type AuthorModel = { __typename?: 'Author' } & Pick<
   | 'updatedAt'
 > & {
     Collections?: Maybe<
-      Array<Maybe<{ __typename?: 'Collection' } & Pick<Collection, 'id'>>>
+      Array<Maybe<{ __typename?: 'Collection' } & Pick<Collection, 'externalId'>>>
     >;
   };

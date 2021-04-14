@@ -1,11 +1,11 @@
 import { gql } from '@apollo/client';
 
 /**
- * Get a list of authors
+ * Get author information by their external id.
  */
-export const getAuthors = gql`
-  query getAuthors {
-    allAuthors(sortField: "createdAt", sortOrder: "DESC") {
+export const getAuthorById = gql`
+  query getAuthorById($id: String!) {
+    allAuthors(filter: { externalId: $id }) {
       externalId
       name
       slug

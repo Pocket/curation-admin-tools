@@ -1,3 +1,5 @@
+export { AuthorEditForm } from './AuthorEditForm/AuthorEditForm';
+export { AuthorInfo } from './AuthorInfo/AuthorInfo';
 export { AuthorListCard } from './AuthorListCard/AuthorListCard';
 export { Button } from './Button/Button';
 export { Chip } from './Chip/Chip';

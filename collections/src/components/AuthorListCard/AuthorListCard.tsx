@@ -19,7 +19,10 @@ export const AuthorListCard: React.FC<AuthorCardProps> = (props) => {
   const { author } = props;
 
   return (
-    <Link to={`/authors/${author.slug}/`} className={classes.link}>
+    <Link
+      to={{ pathname: `/authors/${author.externalId}/`, state: { author } }}
+      className={classes.link}
+    >
       <Card variant="outlined" square className={classes.root}>
         <Grid container spacing={2}>
           <Grid item xs={4} sm={2}>

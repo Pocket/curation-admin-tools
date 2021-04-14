@@ -21,8 +21,8 @@ export const useStyles = makeStyles((theme: Theme) => ({
     paddingRight: '0.25rem',
   },
   logoMobile: {
-    width: '20px',
-    paddingTop: '4px',
+    width: '1.25rem',
+    paddingTop: '0.375rem',
   },
   product: {
     fontSize: '1.25rem',

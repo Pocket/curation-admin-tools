@@ -9,7 +9,7 @@ describe('The AuthorListCard component', () => {
 
   beforeEach(() => {
     author = {
-      id: '124abc',
+      externalId: '124abc',
       name: 'Nigel Rutherford',
       slug: 'nigel-rutherford',
       imageUrl: 'http://placeimg.com/640/480/people?random=494',
@@ -22,7 +22,11 @@ describe('The AuthorListCard component', () => {
       active: true,
       createdAt: '2021-03-21T02:18:07.473Z',
       updatedAt: null,
-      Collections: [{ id: '123abc' }, { id: '234bcd' }, { id: '345cde' }],
+      Collections: [
+        { externalId: '123abc' },
+        { externalId: '234bcd' },
+        { externalId: '345cde' },
+      ],
     };
   });
 
@@ -42,7 +46,7 @@ describe('The AuthorListCard component', () => {
     expect(linkToAuthorPage).toBeInTheDocument();
     expect(linkToAuthorPage).toHaveAttribute(
       'href',
-      expect.stringContaining(author.slug)
+      expect.stringContaining(author.externalId)
     );
   });
 
