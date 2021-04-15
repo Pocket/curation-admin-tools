@@ -20,58 +20,58 @@ export type Scalars = {
 
 export type Author = {
   __typename?: 'Author';
-  id: Scalars['ID'];
+  externalId: Scalars['String'];
   name: Scalars['String'];
-  slug: Scalars['String'];
-  bio: Scalars['String'];
-  imageUrl: Scalars['String'];
   createdAt: Scalars['String'];
   active: Scalars['Boolean'];
+  imageUrl: Scalars['String'];
+  bio: Scalars['String'];
   updatedAt?: Maybe<Scalars['String']>;
+  slug: Scalars['String'];
   Collections?: Maybe<Array<Maybe<Collection>>>;
 };
 
 export type AuthorFilter = {
   q?: Maybe<Scalars['String']>;
   ids?: Maybe<Array<Maybe<Scalars['ID']>>>;
-  id?: Maybe<Scalars['ID']>;
+  externalId?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
-  slug?: Maybe<Scalars['String']>;
-  bio?: Maybe<Scalars['String']>;
-  imageUrl?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   active?: Maybe<Scalars['Boolean']>;
+  imageUrl?: Maybe<Scalars['String']>;
+  bio?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
+  slug?: Maybe<Scalars['String']>;
 };
 
 export type Collection = {
   __typename?: 'Collection';
-  id: Scalars['ID'];
+  externalId: Scalars['String'];
   slug: Scalars['String'];
   title: Scalars['String'];
   excerpt: Scalars['String'];
   intro: Scalars['String'];
   imageUrl: Scalars['String'];
   status: Scalars['String'];
-  author_id: Scalars['ID'];
   updatedAt: Scalars['String'];
   createdAt: Scalars['String'];
+  author_id: Scalars['ID'];
   Author?: Maybe<Author>;
 };
 
 export type CollectionFilter = {
   q?: Maybe<Scalars['String']>;
   ids?: Maybe<Array<Maybe<Scalars['ID']>>>;
-  id?: Maybe<Scalars['ID']>;
+  externalId?: Maybe<Scalars['String']>;
   slug?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   excerpt?: Maybe<Scalars['String']>;
   intro?: Maybe<Scalars['String']>;
   imageUrl?: Maybe<Scalars['String']>;
   status?: Maybe<Scalars['String']>;
-  author_id?: Maybe<Scalars['ID']>;
   updatedAt?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
+  author_id?: Maybe<Scalars['ID']>;
 };
 
 export type ListMetadata = {
@@ -90,25 +90,25 @@ export type Mutation = {
 };
 
 export type MutationCreateAuthorArgs = {
-  id: Scalars['ID'];
+  externalId: Scalars['String'];
   name: Scalars['String'];
-  slug: Scalars['String'];
-  bio: Scalars['String'];
-  imageUrl: Scalars['String'];
   createdAt: Scalars['String'];
   active: Scalars['Boolean'];
+  imageUrl: Scalars['String'];
+  bio: Scalars['String'];
   updatedAt?: Maybe<Scalars['String']>;
+  slug: Scalars['String'];
 };
 
 export type MutationUpdateAuthorArgs = {
-  id: Scalars['ID'];
+  externalId?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
-  slug?: Maybe<Scalars['String']>;
-  bio?: Maybe<Scalars['String']>;
-  imageUrl?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   active?: Maybe<Scalars['Boolean']>;
+  imageUrl?: Maybe<Scalars['String']>;
+  bio?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
+  slug?: Maybe<Scalars['String']>;
 };
 
 export type MutationRemoveAuthorArgs = {
@@ -116,29 +116,29 @@ export type MutationRemoveAuthorArgs = {
 };
 
 export type MutationCreateCollectionArgs = {
-  id: Scalars['ID'];
+  externalId: Scalars['String'];
   slug: Scalars['String'];
   title: Scalars['String'];
   excerpt: Scalars['String'];
   intro: Scalars['String'];
   imageUrl: Scalars['String'];
   status: Scalars['String'];
-  author_id: Scalars['ID'];
   updatedAt: Scalars['String'];
   createdAt: Scalars['String'];
+  author_id: Scalars['ID'];
 };
 
 export type MutationUpdateCollectionArgs = {
-  id: Scalars['ID'];
+  externalId?: Maybe<Scalars['String']>;
   slug?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   excerpt?: Maybe<Scalars['String']>;
   intro?: Maybe<Scalars['String']>;
   imageUrl?: Maybe<Scalars['String']>;
   status?: Maybe<Scalars['String']>;
-  author_id?: Maybe<Scalars['ID']>;
   updatedAt?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
+  author_id?: Maybe<Scalars['ID']>;
 };
 
 export type MutationRemoveCollectionArgs = {
@@ -191,15 +191,17 @@ export type Query_AllCollectionsMetaArgs = {
   filter?: Maybe<CollectionFilter>;
 };
 
-export type GetAuthorsQueryVariables = Exact<{ [key: string]: never }>;
+export type GetAuthorByIdQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
 
-export type GetAuthorsQuery = { __typename?: 'Query' } & {
+export type GetAuthorByIdQuery = { __typename?: 'Query' } & {
   allAuthors?: Maybe<
     Array<
       Maybe<
         { __typename?: 'Author' } & Pick<
           Author,
-          | 'id'
+          | 'externalId'
           | 'name'
           | 'slug'
           | 'bio'
@@ -210,7 +212,9 @@ export type GetAuthorsQuery = { __typename?: 'Query' } & {
         > & {
             Collections?: Maybe<
               Array<
-                Maybe<{ __typename?: 'Collection' } & Pick<Collection, 'id'>>
+                Maybe<
+                  { __typename?: 'Collection' } & Pick<Collection, 'externalId'>
+                >
               >
             >;
           }
@@ -219,10 +223,40 @@ export type GetAuthorsQuery = { __typename?: 'Query' } & {
   >;
 };
 
-export const GetAuthorsDocument = gql`
-  query getAuthors {
-    allAuthors(sortField: "createdAt", sortOrder: "DESC") {
-      id
+export type GetAuthorsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetAuthorsQuery = { __typename?: 'Query' } & {
+  allAuthors?: Maybe<
+    Array<
+      Maybe<
+        { __typename?: 'Author' } & Pick<
+          Author,
+          | 'externalId'
+          | 'name'
+          | 'slug'
+          | 'bio'
+          | 'imageUrl'
+          | 'active'
+          | 'createdAt'
+          | 'updatedAt'
+        > & {
+            Collections?: Maybe<
+              Array<
+                Maybe<
+                  { __typename?: 'Collection' } & Pick<Collection, 'externalId'>
+                >
+              >
+            >;
+          }
+      >
+    >
+  >;
+};
+
+export const GetAuthorByIdDocument = gql`
+  query getAuthorById($id: String!) {
+    allAuthors(filter: { externalId: $id }) {
+      externalId
       name
       slug
       bio
@@ -231,7 +265,75 @@ export const GetAuthorsDocument = gql`
       createdAt
       updatedAt
       Collections {
-        id
+        externalId
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetAuthorByIdQuery__
+ *
+ * To run a query within a React component, call `useGetAuthorByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAuthorByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAuthorByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetAuthorByIdQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetAuthorByIdQuery,
+    GetAuthorByIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetAuthorByIdQuery, GetAuthorByIdQueryVariables>(
+    GetAuthorByIdDocument,
+    options
+  );
+}
+export function useGetAuthorByIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetAuthorByIdQuery,
+    GetAuthorByIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetAuthorByIdQuery, GetAuthorByIdQueryVariables>(
+    GetAuthorByIdDocument,
+    options
+  );
+}
+export type GetAuthorByIdQueryHookResult = ReturnType<
+  typeof useGetAuthorByIdQuery
+>;
+export type GetAuthorByIdLazyQueryHookResult = ReturnType<
+  typeof useGetAuthorByIdLazyQuery
+>;
+export type GetAuthorByIdQueryResult = Apollo.QueryResult<
+  GetAuthorByIdQuery,
+  GetAuthorByIdQueryVariables
+>;
+export const GetAuthorsDocument = gql`
+  query getAuthors {
+    allAuthors(sortField: "createdAt", sortOrder: "DESC") {
+      externalId
+      name
+      slug
+      bio
+      imageUrl
+      active
+      createdAt
+      updatedAt
+      Collections {
+        externalId
       }
     }
   }

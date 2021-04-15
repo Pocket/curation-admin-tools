@@ -54,16 +54,11 @@ const schema = {
     authors: {
       type: 'object',
       required: [
-        'id',
+        'externalId',
         'name',
-        'slug',
-        'bio',
-        'imageUrl',
-        'createdAt',
-        'active',
       ],
       properties: {
-        id: {
+        externalId: {
           type: 'string',
           faker: 'datatype.uuid',
         },
@@ -101,7 +96,7 @@ const schema = {
     collections: {
       type: 'object',
       required: [
-        'id',
+        'externalId',
         'slug',
         'title',
         'excerpt',
@@ -110,13 +105,13 @@ const schema = {
         'status',
       ],
       properties: {
-        id: {
+        externalId: {
           type: 'string',
           faker: 'datatype.uuid',
         },
         author_id: {
           type: 'string',
-          jsonPath: '$..authors[*].id',
+          jsonPath: '$..authors[*].externalId',
         },
         slug: {
           type: 'string',

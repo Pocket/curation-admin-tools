@@ -28,3 +28,4 @@ export type { AuthorModel };
  * Custom Hooks
  */
 export { useGetAuthors } from './hooks/useGetAuthors';
+export { useGetAuthorById } from './hooks/useGetAuthorById';

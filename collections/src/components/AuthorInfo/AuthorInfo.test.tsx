@@ -1,10 +1,11 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { AuthorListCard } from './AuthorListCard';
+import { AuthorInfo } from './AuthorInfo';
 import { AuthorModel } from '../../api';
+import { AuthorListCard } from '../AuthorListCard/AuthorListCard';
 
-describe('The AuthorListCard component', () => {
+describe('The AuthorInfo component', () => {
   let author: AuthorModel;
 
   beforeEach(() => {
@@ -22,11 +23,7 @@ describe('The AuthorListCard component', () => {
       active: true,
       createdAt: '2021-03-21T02:18:07.473Z',
       updatedAt: null,
-      Collections: [
-        { externalId: '123abc' },
-        { externalId: '234bcd' },
-        { externalId: '345cde' },
-      ],
+      Collections: [{ externalId: '123abc' }],
     };
   });
 
@@ -41,14 +38,6 @@ describe('The AuthorListCard component', () => {
     const authorPhoto = screen.getByAltText(author.name);
     expect(authorPhoto).toBeInTheDocument();
 
-    // The link to the author page is present and is well-formed
-    const linkToAuthorPage = screen.getByRole('link');
-    expect(linkToAuthorPage).toBeInTheDocument();
-    expect(linkToAuthorPage).toHaveAttribute(
-      'href',
-      expect.stringContaining(author.externalId)
-    );
-
     // The author bio is also present
     const bio = screen.getByText(/voluptatem est aut/i);
     expect(bio).toBeInTheDocument();
@@ -57,7 +46,7 @@ describe('The AuthorListCard component', () => {
   it('shows "active" status correctly', () => {
     render(
       <MemoryRouter>
-        <AuthorListCard author={author} />
+        <AuthorInfo author={author} />
       </MemoryRouter>
     );
 
@@ -75,7 +64,7 @@ describe('The AuthorListCard component', () => {
 
     render(
       <MemoryRouter>
-        <AuthorListCard author={author} />
+        <AuthorInfo author={author} />
       </MemoryRouter>
     );
 
@@ -91,7 +80,7 @@ describe('The AuthorListCard component', () => {
   it('shows the number of collections for the author', () => {
     render(
       <MemoryRouter>
-        <AuthorListCard author={author} />
+        <AuthorInfo author={author} />
       </MemoryRouter>
     );
 
@@ -103,7 +92,7 @@ describe('The AuthorListCard component', () => {
     author.Collections = [];
     render(
       <MemoryRouter>
-        <AuthorListCard author={author} />
+        <AuthorInfo author={author} />
       </MemoryRouter>
     );
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 import { ThemeProvider } from '@material-ui/core/styles';
 
@@ -38,7 +38,7 @@ function App(): JSX.Element {
                 <Route exact path="/authors/">
                   <AuthorListPage />
                 </Route>
-                <Route exact path="/authors/:slug/">
+                <Route exact path="/authors/:id/">
                   <AuthorPage />
                 </Route>
               </Switch>

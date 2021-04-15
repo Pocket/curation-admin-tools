@@ -29,26 +29,9 @@ export const useStyles = makeStyles((theme: Theme) =>
     subtitle: {
       fontWeight: 400,
     },
-    bottomRightCell: {
-      display: 'flex',
-    },
     [theme.breakpoints.down('sm')]: {
-      bottomRightCell: {
-        justifyContent: 'flex-start',
-        '& > *': {
-          marginRight: '0.625rem',
-        },
-      },
       title: {
         fontSize: '1rem',
-      },
-    },
-    [theme.breakpoints.up('md')]: {
-      bottomRightCell: {
-        justifyContent: 'flex-end',
-        '& > *': {
-          marginLeft: '0.625rem',
-        },
       },
     },
   })
