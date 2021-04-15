@@ -1,4 +1,4 @@
-export { AuthorEditForm } from './AuthorEditForm/AuthorEditForm';
+export { AuthorForm } from './AuthorForm/AuthorForm';
 export { AuthorInfo } from './AuthorInfo/AuthorInfo';
 export { AuthorListCard } from './AuthorListCard/AuthorListCard';
 export { Button } from './Button/Button';

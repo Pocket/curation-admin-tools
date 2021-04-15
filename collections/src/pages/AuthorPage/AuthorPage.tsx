@@ -1,7 +1,12 @@
 import React from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { AuthorModel, useGetAuthorById } from '../../api';
-import { AuthorInfo, Button, HandleApiResponse } from '../../components';
+import {
+  AuthorInfo,
+  Button,
+  // AuthorForm,
+  HandleApiResponse,
+} from '../../components';
 import { Box } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 
@@ -53,6 +58,8 @@ export const AuthorPage = (): JSX.Element => {
             </Box>
           </Box>
           <AuthorInfo author={author} />
+
+          {/*<AuthorForm author={author} />*/}
         </>
       )}
       {/*<h2>Collections by this author</h2>*/}
