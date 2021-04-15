@@ -1,8 +1,7 @@
 import React from 'react';
 import { AuthorModel } from '../../api';
-import { Button } from '../';
-import { Box, CardMedia, Grid, Typography } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
+import { CardMedia, Grid, Typography } from '@material-ui/core';
+
 import { useStyles } from './AuthorInfo.styles';
 interface AuthorInfoProps {
   /**

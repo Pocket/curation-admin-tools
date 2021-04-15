@@ -1,12 +1,7 @@
 import React from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { AuthorModel, useGetAuthorById } from '../../api';
-import {
-  AuthorEditForm,
-  AuthorInfo,
-  Button,
-  HandleApiResponse,
-} from '../../components';
+import { AuthorInfo, Button, HandleApiResponse } from '../../components';
 import { Box } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 
@@ -52,8 +47,8 @@ export const AuthorPage = (): JSX.Element => {
               <h1>{author.name}</h1>
             </Box>
             <Box alignSelf="center">
-              <Button buttonType="hollow">
-                <EditIcon onClick={switchToEditForm} />
+              <Button buttonType="hollow" onClick={switchToEditForm}>
+                <EditIcon />
               </Button>
             </Box>
           </Box>

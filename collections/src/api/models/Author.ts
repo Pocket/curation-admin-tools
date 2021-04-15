@@ -15,6 +15,8 @@ export type AuthorModel = { __typename?: 'Author' } & Pick<
   | 'updatedAt'
 > & {
     Collections?: Maybe<
-      Array<Maybe<{ __typename?: 'Collection' } & Pick<Collection, 'externalId'>>>
+      Array<
+        Maybe<{ __typename?: 'Collection' } & Pick<Collection, 'externalId'>>
+      >
     >;
   };
