@@ -1,8 +1,8 @@
 import React from 'react';
-
+import { Link } from 'react-router-dom';
+import { Box } from '@material-ui/core';
 import { AuthorListCard, Button, HandleApiResponse } from '../../components';
 import { AuthorModel, useGetAuthors } from '../../api';
-import { Box } from '@material-ui/core';
 
 /**
  * Author List Page
@@ -18,7 +18,9 @@ export const AuthorListPage = (): JSX.Element => {
           <h1>Authors</h1>
         </Box>
         <Box alignSelf="center">
-          <Button buttonType="hollow">Add author</Button>
+          <Button component={Link} to="/authors/add/" buttonType="hollow">
+            Add an author
+          </Button>
         </Box>
       </Box>
 

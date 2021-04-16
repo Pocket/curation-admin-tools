@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import slugify from 'slugify';
 import { AuthorModel } from '../../api';
 import {
   Box,
@@ -14,12 +15,25 @@ interface EditAuthorFormProps {
    * An object with everything author-related in it.
    */
   author: AuthorModel;
+
+  /**
+   * Do we need to show the cancel button? Not on the 'Add Author' page
+   * True by default
+   */
+  showCancelButton?: boolean;
+
+  /**
+   * What to do if the user clicks on the Cancel button
+   */
+  handleCancel?: () => void;
 }
 
 export const AuthorForm: React.FC<EditAuthorFormProps> = (
   props
 ): JSX.Element => {
   const [author, setAuthor] = useState<AuthorModel>(props.author);
+
+  const { showCancelButton = true, handleCancel } = props;
 
   /**
    * Update form field values on change.
@@ -39,7 +53,15 @@ export const AuthorForm: React.FC<EditAuthorFormProps> = (
    * Update the switch on change
    */
   const handleSwitch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAuthor({ ...author, ['active']: event.target.checked });
+    setAuthor({ ...author, active: event.target.checked });
+  };
+
+  /**
+   * Suggest a slug for the author
+   */
+  const suggestSlug = () => {
+    const newSlug = slugify(author.name, { lower: true });
+    setAuthor({ ...author, slug: newSlug });
   };
 
   return (
@@ -79,7 +101,9 @@ export const AuthorForm: React.FC<EditAuthorFormProps> = (
               />
             </Box>
             <Box alignSelf="center" ml={1}>
-              <Button buttonType="hollow">Suggest&nbsp;slug</Button>
+              <Button buttonType="hollow" onClick={suggestSlug}>
+                Suggest&nbsp;slug
+              </Button>
             </Box>
           </Box>
         </Grid>
@@ -122,9 +146,13 @@ export const AuthorForm: React.FC<EditAuthorFormProps> = (
             <Box p={1}>
               <Button buttonType="positive">Save</Button>
             </Box>
-            <Box p={1}>
-              <Button buttonType="hollow-neutral">Cancel</Button>
-            </Box>
+            {showCancelButton && (
+              <Box p={1}>
+                <Button buttonType="hollow-neutral" onClick={handleCancel}>
+                  Cancel
+                </Button>
+              </Box>
+            )}
           </Box>
         </Grid>
       </Grid>
