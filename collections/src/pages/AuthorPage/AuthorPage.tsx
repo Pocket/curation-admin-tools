@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { AuthorModel, useGetAuthorById } from '../../api';
-import { AuthorInfo, Button, HandleApiResponse } from '../../components';
-import { Box } from '@material-ui/core';
+import {
+  AuthorForm,
+  AuthorInfo,
+  Button,
+  HandleApiResponse,
+} from '../../components';
+import { Box, Fade, Paper } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 
 interface AuthorPageProps {
@@ -34,9 +39,12 @@ export const AuthorPage = (): JSX.Element => {
     author = data[0];
   }
 
-  const switchToEditForm = () => {
-    console.log('The great transition happens here');
+  const [showEditForm, setShowEditForm] = useState<boolean>(false);
+
+  const toggleEditForm = (): void => {
+    setShowEditForm(!showEditForm);
   };
+
   return (
     <>
       {!data && <HandleApiResponse loading={loading} error={error} />}
@@ -47,12 +55,24 @@ export const AuthorPage = (): JSX.Element => {
               <h1>{author.name}</h1>
             </Box>
             <Box alignSelf="center">
-              <Button buttonType="hollow" onClick={switchToEditForm}>
+              <Button buttonType="hollow" onClick={toggleEditForm}>
                 <EditIcon />
               </Button>
             </Box>
           </Box>
           <AuthorInfo author={author} />
+
+          <Fade in={showEditForm}>
+            <Paper elevation={4}>
+              <Box p={2} mt={3}>
+                <AuthorForm
+                  author={author}
+                  showCancelButton={true}
+                  handleCancel={toggleEditForm}
+                />
+              </Box>
+            </Paper>
+          </Fade>
         </>
       )}
       {/*<h2>Collections by this author</h2>*/}

@@ -75,6 +75,20 @@ theme.overrides = {
       },
     },
 
+    containedPrimary: {
+      border: `1px solid ${theme.palette.primary.main}`,
+      '&:hover': {
+        border: `1px solid ${theme.palette.primary.dark}`,
+      },
+    },
+
+    containedSecondary: {
+      border: `1px solid ${theme.palette.secondary.main}`,
+      '&:hover': {
+        border: `1px solid ${theme.palette.secondary.dark}`,
+      },
+    },
+
     /* Global styles for outlined buttons. */
     outlined: {
       backgroundColor: curationPalette.white,
@@ -105,13 +119,6 @@ theme.overrides = {
   MuiDivider: {
     root: {
       backgroundColor: theme.palette.grey[400],
-    },
-  },
-
-  /* The shrunk labels on input fields are bolded for better readability. */
-  MuiInputLabel: {
-    shrink: {
-      fontWeight: 'bold',
     },
   },
 
