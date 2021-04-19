@@ -19,7 +19,7 @@ export const AuthorListPage = (): JSX.Element => {
         </Box>
         <Box alignSelf="center">
           <Button component={Link} to="/authors/add/" buttonType="hollow">
-            Add an author
+            Add author
           </Button>
         </Box>
       </Box>
