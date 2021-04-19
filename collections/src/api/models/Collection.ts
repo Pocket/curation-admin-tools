@@ -1,4 +1,4 @@
-import { Collection, Maybe } from '../generatedTypes';
+import { Collection } from '../generatedTypes';
 
 export type CollectionModel = { __typename?: 'Collection' } & Pick<
   Collection,
