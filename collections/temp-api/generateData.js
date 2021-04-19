@@ -39,24 +39,21 @@ const schema = {
   properties: {
     authors: {
       type: 'array',
-      minItems: 20,
-      maxItems: 20,
+      minItems: 15,
+      maxItems: 15,
       items: { $ref: '#/definitions/authors' },
     },
     collections: {
       type: 'array',
-      minItems: 200,
-      maxItems: 300,
+      minItems: 50,
+      maxItems: 60,
       items: { $ref: '#/definitions/collections' },
     },
   },
   definitions: {
     authors: {
       type: 'object',
-      required: [
-        'externalId',
-        'name',
-      ],
+      required: ['externalId', 'name'],
       properties: {
         externalId: {
           type: 'string',

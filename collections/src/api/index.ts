@@ -1,5 +1,6 @@
 import { ApolloError } from '@apollo/client';
 import { AuthorModel } from './models/Author';
+import { CollectionModel } from './models/Collection';
 
 /**
  * Client
@@ -15,17 +16,12 @@ export interface ApiCallStates {
 }
 
 export type { AuthorModel };
-
-// export interface AuthorListData {
-//   data:
-//     | undefined
-//     | {
-//         data: Author[] | null | undefined;
-//       };
-// }
+export type { CollectionModel };
 
 /**
  * Custom Hooks
  */
 export { useGetAuthors } from './hooks/useGetAuthors';
 export { useGetAuthorById } from './hooks/useGetAuthorById';
+export { useGetCollections } from './hooks/useGetCollections';
+export { useGetCollectionById } from './hooks/useGetCollectionById';

@@ -5,7 +5,14 @@ import { ThemeProvider } from '@material-ui/core/styles';
 
 import { client } from './api';
 import theme from './theme';
-import { HomePage, AuthorListPage, AuthorPage, AddAuthorPage } from './pages';
+import {
+  HomePage,
+  AuthorListPage,
+  AuthorPage,
+  AddAuthorPage,
+  CollectionListPage,
+  CollectionPage,
+} from './pages';
 import { Header, MainContentWrapper, MenuLink } from './components';
 
 const menuLinks: MenuLink[] = [
@@ -43,6 +50,12 @@ function App(): JSX.Element {
                 </Route>
                 <Route exact path="/authors/:id/">
                   <AuthorPage />
+                </Route>
+                <Route exact path="/collections/">
+                  <CollectionListPage />
+                </Route>
+                <Route exact path="/collections/:id/">
+                  <CollectionPage />
                 </Route>
               </Switch>
             </MainContentWrapper>

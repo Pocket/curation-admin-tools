@@ -2,25 +2,30 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardMedia, Grid, Typography } from '@material-ui/core';
 
-import { AuthorModel } from '../../api';
-import { useStyles } from './AuthorListCard.styles';
+import { CollectionModel } from '../../api';
+import { useStyles } from './CollectionListCard.styles';
 
-interface AuthorListCardProps {
-  author: AuthorModel;
+interface CollectionListCardProps {
+  collection: CollectionModel;
 }
 
 /**
- * A compact card that displays author information and links to the author page.
+ * A compact card that displays collection information and links to the collection page.
  *
  * @param props
  */
-export const AuthorListCard: React.FC<AuthorListCardProps> = (props) => {
+export const CollectionListCard: React.FC<CollectionListCardProps> = (
+  props
+) => {
   const classes = useStyles();
-  const { author } = props;
+  const { collection } = props;
 
   return (
     <Link
-      to={{ pathname: `/authors/${author.externalId}/`, state: { author } }}
+      to={{
+        pathname: `/collections/${collection.externalId}/`,
+        state: { collection },
+      }}
       className={classes.link}
     >
       <Card variant="outlined" square className={classes.root}>
@@ -28,8 +33,8 @@ export const AuthorListCard: React.FC<AuthorListCardProps> = (props) => {
           <Grid item xs={4} sm={2}>
             <CardMedia
               component="img"
-              src={author.imageUrl}
-              alt={author.name}
+              src={collection.imageUrl}
+              alt={collection.title}
               className={classes.image}
             />
           </Grid>
@@ -40,7 +45,7 @@ export const AuthorListCard: React.FC<AuthorListCardProps> = (props) => {
               align="left"
               gutterBottom
             >
-              {author.name}
+              {collection.title}
             </Typography>
             <Typography
               className={classes.subtitle}
@@ -49,14 +54,11 @@ export const AuthorListCard: React.FC<AuthorListCardProps> = (props) => {
               component="span"
               align="left"
             >
-              <span>
-                {author.Collections && author.Collections.length > 0
-                  ? `${author.Collections.length.toString()} collections`
-                  : 'No collections yet'}
-              </span>{' '}
-              &middot; <span>{author.active ? 'Active' : 'Inactive'}</span>
+              <span>{collection.status}</span>
+              {/*{' '}*/}
+              {/*&middot; <span>TODO: collection.authors</span>*/}
             </Typography>
-            <Typography noWrap>{author.bio}</Typography>
+            <Typography noWrap>{collection.excerpt}</Typography>
           </Grid>
         </Grid>
       </Card>

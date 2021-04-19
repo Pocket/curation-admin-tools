@@ -253,6 +253,50 @@ export type GetAuthorsQuery = { __typename?: 'Query' } & {
   >;
 };
 
+export type GetCollectionByIdQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+export type GetCollectionByIdQuery = { __typename?: 'Query' } & {
+  allCollections?: Maybe<
+    Array<
+      Maybe<
+        { __typename?: 'Collection' } & Pick<
+          Collection,
+          | 'externalId'
+          | 'title'
+          | 'slug'
+          | 'excerpt'
+          | 'intro'
+          | 'imageUrl'
+          | 'status'
+        >
+      >
+    >
+  >;
+};
+
+export type GetCollectionsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetCollectionsQuery = { __typename?: 'Query' } & {
+  allCollections?: Maybe<
+    Array<
+      Maybe<
+        { __typename?: 'Collection' } & Pick<
+          Collection,
+          | 'externalId'
+          | 'title'
+          | 'slug'
+          | 'excerpt'
+          | 'intro'
+          | 'imageUrl'
+          | 'status'
+        >
+      >
+    >
+  >;
+};
+
 export const GetAuthorByIdDocument = gql`
   query getAuthorById($id: String!) {
     allAuthors(filter: { externalId: $id }) {
@@ -385,4 +429,131 @@ export type GetAuthorsLazyQueryHookResult = ReturnType<
 export type GetAuthorsQueryResult = Apollo.QueryResult<
   GetAuthorsQuery,
   GetAuthorsQueryVariables
+>;
+export const GetCollectionByIdDocument = gql`
+  query getCollectionById($id: String!) {
+    allCollections(filter: { externalId: $id }) {
+      externalId
+      title
+      slug
+      excerpt
+      intro
+      imageUrl
+      status
+    }
+  }
+`;
+
+/**
+ * __useGetCollectionByIdQuery__
+ *
+ * To run a query within a React component, call `useGetCollectionByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCollectionByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCollectionByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetCollectionByIdQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetCollectionByIdQuery,
+    GetCollectionByIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetCollectionByIdQuery,
+    GetCollectionByIdQueryVariables
+  >(GetCollectionByIdDocument, options);
+}
+export function useGetCollectionByIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetCollectionByIdQuery,
+    GetCollectionByIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetCollectionByIdQuery,
+    GetCollectionByIdQueryVariables
+  >(GetCollectionByIdDocument, options);
+}
+export type GetCollectionByIdQueryHookResult = ReturnType<
+  typeof useGetCollectionByIdQuery
+>;
+export type GetCollectionByIdLazyQueryHookResult = ReturnType<
+  typeof useGetCollectionByIdLazyQuery
+>;
+export type GetCollectionByIdQueryResult = Apollo.QueryResult<
+  GetCollectionByIdQuery,
+  GetCollectionByIdQueryVariables
+>;
+export const GetCollectionsDocument = gql`
+  query getCollections {
+    allCollections(sortField: "updatedAt", sortOrder: "DESC") {
+      externalId
+      title
+      slug
+      excerpt
+      intro
+      imageUrl
+      status
+    }
+  }
+`;
+
+/**
+ * __useGetCollectionsQuery__
+ *
+ * To run a query within a React component, call `useGetCollectionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCollectionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCollectionsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetCollectionsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetCollectionsQuery,
+    GetCollectionsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetCollectionsQuery, GetCollectionsQueryVariables>(
+    GetCollectionsDocument,
+    options
+  );
+}
+export function useGetCollectionsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetCollectionsQuery,
+    GetCollectionsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetCollectionsQuery, GetCollectionsQueryVariables>(
+    GetCollectionsDocument,
+    options
+  );
+}
+export type GetCollectionsQueryHookResult = ReturnType<
+  typeof useGetCollectionsQuery
+>;
+export type GetCollectionsLazyQueryHookResult = ReturnType<
+  typeof useGetCollectionsLazyQuery
+>;
+export type GetCollectionsQueryResult = Apollo.QueryResult<
+  GetCollectionsQuery,
+  GetCollectionsQueryVariables
 >;
