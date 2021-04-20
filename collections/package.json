@@ -36,11 +36,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
-    "lint:fix": "tsc --noEmit && eslint src/**/*.ts{,x} --fix",
-    "api:generate-data": "node temp-api/generateData.js",
-    "api:start": "json-graphql-server temp-api/db.json --p 4000",
-    "api:generate-types": "graphql-codegen --config temp-api.codegen.yml"
+    "lint-check": "tsc --noEmit && eslint src/**/*.ts{,x}",
+    "lint-fix": "tsc --noEmit && eslint src/**/*.ts{,x} --fix",
+    "api:generate-types": "graphql-codegen --config collections-api.codegen.yml -r dotenv/config"
   },
   "eslintConfig": {
     "extends": [
