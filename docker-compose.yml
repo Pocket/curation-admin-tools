@@ -1,0 +1,13 @@
+version: '3.1'
+services:
+  app:
+    build: .
+    ports:
+      - '80:80'
+    volumes:
+      - ./:/usr/src/app
+      - ./.docker/nginx.conf:/etc/nginx/nginx.conf
+    environment:
+      - NODE_ENV=development
+      - AWS_XRAY_LOG_LEVEL=silent
+      - AWS_XRAY_CONTEXT_MISSING=LOG_ERROR
