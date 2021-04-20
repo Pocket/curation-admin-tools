@@ -6,14 +6,14 @@ import {
   CollectionListCard,
   HandleApiResponse,
 } from '../../components';
-import { CollectionModel, useGetCollections } from '../../api';
+import { CollectionModel, useGetDraftCollections } from '../../api';
 
 /**
  * Collection List Page
  */
 export const CollectionListPage = (): JSX.Element => {
   // Load collections
-  const { loading, error, data } = useGetCollections();
+  const { loading, error, data } = useGetDraftCollections();
 
   return (
     <>
@@ -31,16 +31,18 @@ export const CollectionListPage = (): JSX.Element => {
       {!data && <HandleApiResponse loading={loading} error={error} />}
 
       {data &&
-        data.map((collection: CollectionModel | null) => {
-          return (
-            collection && (
-              <CollectionListCard
-                key={collection.externalId}
-                collection={collection}
-              />
-            )
-          );
-        })}
+        data.searchCollections?.collections?.map(
+          (collection: CollectionModel | null) => {
+            return (
+              collection && (
+                <CollectionListCard
+                  key={collection.externalId}
+                  collection={collection}
+                />
+              )
+            );
+          }
+        )}
     </>
   );
 };

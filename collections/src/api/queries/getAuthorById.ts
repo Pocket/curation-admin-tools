@@ -5,18 +5,13 @@ import { gql } from '@apollo/client';
  */
 export const getAuthorById = gql`
   query getAuthorById($id: String!) {
-    allAuthors(filter: { externalId: $id }) {
+    getCollectionAuthor(externalId: $id) {
       externalId
       name
       slug
       bio
       imageUrl
       active
-      createdAt
-      updatedAt
-      Collections {
-        externalId
-      }
     }
   }
 `;

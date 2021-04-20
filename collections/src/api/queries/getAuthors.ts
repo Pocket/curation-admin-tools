@@ -5,17 +5,14 @@ import { gql } from '@apollo/client';
  */
 export const getAuthors = gql`
   query getAuthors {
-    allAuthors(sortField: "createdAt", sortOrder: "DESC") {
-      externalId
-      name
-      slug
-      bio
-      imageUrl
-      active
-      createdAt
-      updatedAt
-      Collections {
+    getCollectionAuthors {
+      authors {
         externalId
+        name
+        slug
+        bio
+        imageUrl
+        active
       }
     }
   }

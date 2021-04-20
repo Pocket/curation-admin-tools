@@ -37,12 +37,7 @@ export const AuthorInfo: React.FC<AuthorInfoProps> = (props): JSX.Element => {
             component="span"
             align="left"
           >
-            <span>
-              {author.Collections && author.Collections.length > 0
-                ? `${author.Collections.length.toString()} collections`
-                : 'No collections yet'}
-            </span>{' '}
-            &middot; <span>{author.active ? 'Active' : 'Inactive'}</span>
+            <span>{author.active ? 'Active' : 'Inactive'}</span>
           </Typography>
           <Typography>{author.bio}</Typography>
         </Grid>

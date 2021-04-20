@@ -5,7 +5,7 @@ import { gql } from '@apollo/client';
  */
 export const getCollectionById = gql`
   query getCollectionById($id: String!) {
-    allCollections(filter: { externalId: $id }) {
+    getCollection(externalId: $id) {
       externalId
       title
       slug

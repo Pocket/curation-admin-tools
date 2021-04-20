@@ -131,7 +131,12 @@ export const AuthorForm: React.FC<EditAuthorFormProps> = (
             control={
               <Switch
                 color="primary"
-                checked={author.active}
+                checked={
+                  /* GraphQL-Codegen types are sometimes not straightforward to use
+                  on the frontend. Here, we are converting Maybe<boolean> | null
+                  to just boolean | null so that Material-UI accepts the value */
+                  !!author.active
+                }
                 onChange={handleSwitch}
               />
             }
