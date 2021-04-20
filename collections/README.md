@@ -10,16 +10,13 @@ cd curation-admin-tools/collections
 npm install
 ```
 
-Add a file with an environment variable so that the app can connect to the API. Environment variables in React must start with the `REACT_APP_` prefix and are read from the following files:
+Add a file with an environment variable so that the app can connect to the API. Environment variables in React must start with the `REACT_APP_` prefix (read more [here](https://create-react-app.dev/docs/adding-custom-environment-variables/)).
 
-```bash
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+Create an `.env` file in the root of the project (the `/collections` directory) and add the following line to it:
+
+```dotenv
+REACT_APP_API_ENDPOINT="[YOUR_API_ADDRESS_HERE]"
 ```
-
-Place the API endpoint address in the `REACT_APP_API_ENDPOINT` variable in an `.env` file that corresponds to your environment. `env.local` and `env.development.local` work for a development environment. Read more [here](https://create-react-app.dev/docs/adding-custom-environment-variables/).
 
 Start the React app:
 
@@ -45,7 +42,7 @@ If the GraphQL schema of the API changes, or if you add new queries, mutations o
 npm run api:generate-types
 ```
 
-Note that the above script should be able to access the API to run successfully. The script expects an `.env` file to exist under the `/src` directory and contain
+Note that the above script should be able to access the API to run successfully. The script expects an `.env` file to exist in the `/collections` directory and contain
 
 ```dotenv
 SCHEMA_PATH="[YOUR_SCHEMA_PATH_HERE]"
