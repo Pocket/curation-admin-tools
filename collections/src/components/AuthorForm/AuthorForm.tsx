@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import slugify from 'slugify';
-import { AuthorModel } from '../../api';
+import * as yup from 'yup';
+import { useFormik } from 'formik';
+
 import {
   Box,
   FormControlLabel,
@@ -8,6 +10,7 @@ import {
   Switch,
   TextField,
 } from '@material-ui/core';
+import { AuthorModel } from '../../api';
 import { Button } from '../';
 
 interface EditAuthorFormProps {
@@ -31,9 +34,37 @@ interface EditAuthorFormProps {
 export const AuthorForm: React.FC<EditAuthorFormProps> = (
   props
 ): JSX.Element => {
+  const { showCancelButton = true, handleCancel } = props;
+
   const [author, setAuthor] = useState<AuthorModel>(props.author);
 
-  const { showCancelButton = true, handleCancel } = props;
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      slug: '',
+      bio: '',
+      active: true,
+    },
+    validateOnChange: false,
+    validateOnBlur: false,
+    validationSchema: yup.object({
+      name: yup
+        .string()
+        .required('Please enter the full name of the author')
+        .min(6),
+      slug: yup
+        .string()
+        .required(
+          'Please enter a slug or use the "Suggest slug" button to generate one from the name of the author'
+        )
+        .min(6),
+      bio: yup.string().required('Please enter the author bio').min(20),
+      active: yup.boolean().required(),
+    }),
+    onSubmit: (values) => {
+      alert(JSON.stringify(values, null, 2));
+    },
+  });
 
   /**
    * Update form field values on change.
@@ -65,12 +96,11 @@ export const AuthorForm: React.FC<EditAuthorFormProps> = (
   };
 
   return (
-    <form name="author-form">
+    <form name="author-form" onSubmit={formik.handleSubmit}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <TextField
             id="name"
-            name="name"
             label="Full name"
             fullWidth
             InputLabelProps={{
@@ -78,8 +108,9 @@ export const AuthorForm: React.FC<EditAuthorFormProps> = (
             }}
             size="small"
             variant="outlined"
-            value={author.name ?? ''}
-            onChange={handleChange}
+            {...formik.getFieldProps('name')}
+            error={!!(formik.touched.name && formik.errors.name)}
+            helperText={formik.errors.name ? formik.errors.name : null}
           />
         </Grid>
 
@@ -88,7 +119,6 @@ export const AuthorForm: React.FC<EditAuthorFormProps> = (
             <Box flexGrow={1} alignSelf="center" textOverflow="ellipsis">
               <TextField
                 id="slug"
-                name="slug"
                 label="Slug"
                 fullWidth
                 InputLabelProps={{
@@ -96,8 +126,9 @@ export const AuthorForm: React.FC<EditAuthorFormProps> = (
                 }}
                 size="small"
                 variant="outlined"
-                value={author.slug ?? ''}
-                onChange={handleChange}
+                {...formik.getFieldProps('slug')}
+                error={!!(formik.touched.slug && formik.errors.slug)}
+                helperText={formik.errors.slug ? formik.errors.slug : null}
               />
             </Box>
             <Box alignSelf="center" ml={1}>
@@ -149,7 +180,9 @@ export const AuthorForm: React.FC<EditAuthorFormProps> = (
         <Grid item xs={12}>
           <Box display="flex" justifyContent="center">
             <Box p={1}>
-              <Button buttonType="positive">Save</Button>
+              <Button buttonType="positive" type="submit">
+                Save
+              </Button>
             </Box>
             {showCancelButton && (
               <Box p={1}>
