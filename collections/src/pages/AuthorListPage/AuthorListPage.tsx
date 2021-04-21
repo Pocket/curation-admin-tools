@@ -2,14 +2,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Box } from '@material-ui/core';
 import { AuthorListCard, Button, HandleApiResponse } from '../../components';
-import { AuthorModel, useGetAuthors } from '../../api';
+import { AuthorModel } from '../../api';
+import { useGetAuthorsQuery } from '../../api/generatedTypes';
 
 /**
  * Author List Page
  */
 export const AuthorListPage = (): JSX.Element => {
   // Load authors
-  const { loading, error, data } = useGetAuthors();
+  const { loading, error, data } = useGetAuthorsQuery();
 
   return (
     <>
@@ -27,11 +28,15 @@ export const AuthorListPage = (): JSX.Element => {
       {!data && <HandleApiResponse loading={loading} error={error} />}
 
       {data &&
-        data.map((author: AuthorModel | null) => {
-          return (
-            author && <AuthorListCard key={author.externalId} author={author} />
-          );
-        })}
+        data.getCollectionAuthors?.authors?.map(
+          (author: AuthorModel | null) => {
+            return (
+              author && (
+                <AuthorListCard key={author.externalId} author={author} />
+              )
+            );
+          }
+        )}
     </>
   );
 };

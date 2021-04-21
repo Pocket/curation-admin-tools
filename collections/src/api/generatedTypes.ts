@@ -16,179 +16,227 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  DateString: any;
+  Markdown: any;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
+  Url: any;
 };
 
-export type Author = {
-  __typename?: 'Author';
-  externalId: Scalars['String'];
-  name: Scalars['String'];
-  createdAt: Scalars['String'];
-  active: Scalars['Boolean'];
-  imageUrl: Scalars['String'];
-  bio: Scalars['String'];
-  updatedAt?: Maybe<Scalars['String']>;
-  slug: Scalars['String'];
-  Collections?: Maybe<Array<Maybe<Collection>>>;
-};
-
-export type AuthorFilter = {
-  q?: Maybe<Scalars['String']>;
-  ids?: Maybe<Array<Maybe<Scalars['ID']>>>;
-  externalId?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-  createdAt?: Maybe<Scalars['String']>;
-  active?: Maybe<Scalars['Boolean']>;
-  imageUrl?: Maybe<Scalars['String']>;
-  bio?: Maybe<Scalars['String']>;
-  updatedAt?: Maybe<Scalars['String']>;
-  slug?: Maybe<Scalars['String']>;
-};
+export enum CacheControlScope {
+  Public = 'PUBLIC',
+  Private = 'PRIVATE',
+}
 
 export type Collection = {
   __typename?: 'Collection';
-  externalId: Scalars['String'];
+  externalId: Scalars['ID'];
   slug: Scalars['String'];
   title: Scalars['String'];
-  excerpt: Scalars['String'];
-  intro: Scalars['String'];
-  imageUrl: Scalars['String'];
-  status: Scalars['String'];
-  updatedAt: Scalars['String'];
-  createdAt: Scalars['String'];
-  author_id: Scalars['ID'];
-  Author?: Maybe<Author>;
+  excerpt: Scalars['Markdown'];
+  status: CollectionStatus;
+  intro?: Maybe<Scalars['Markdown']>;
+  imageUrl?: Maybe<Scalars['Url']>;
+  publishedAt?: Maybe<Scalars['DateString']>;
+  authors?: Maybe<Array<Maybe<CollectionAuthor>>>;
+  stories?: Maybe<Array<Maybe<CollectionStory>>>;
 };
 
-export type CollectionFilter = {
-  q?: Maybe<Scalars['String']>;
-  ids?: Maybe<Array<Maybe<Scalars['ID']>>>;
-  externalId?: Maybe<Scalars['String']>;
+export type CollectionAuthor = {
+  __typename?: 'CollectionAuthor';
+  externalId: Scalars['ID'];
+  name: Scalars['String'];
   slug?: Maybe<Scalars['String']>;
-  title?: Maybe<Scalars['String']>;
-  excerpt?: Maybe<Scalars['String']>;
-  intro?: Maybe<Scalars['String']>;
-  imageUrl?: Maybe<Scalars['String']>;
-  status?: Maybe<Scalars['String']>;
-  updatedAt?: Maybe<Scalars['String']>;
-  createdAt?: Maybe<Scalars['String']>;
-  author_id?: Maybe<Scalars['ID']>;
+  bio?: Maybe<Scalars['Markdown']>;
+  imageUrl?: Maybe<Scalars['Url']>;
+  active?: Maybe<Scalars['Boolean']>;
 };
 
-export type ListMetadata = {
-  __typename?: 'ListMetadata';
-  count?: Maybe<Scalars['Int']>;
+export type CollectionAuthorsResult = {
+  __typename?: 'CollectionAuthorsResult';
+  pagination?: Maybe<CollectionEntityPagination>;
+  authors?: Maybe<Array<Maybe<CollectionAuthor>>>;
+};
+
+export type CollectionEntityPagination = {
+  __typename?: 'CollectionEntityPagination';
+  currentPage: Scalars['Int'];
+  totalPages: Scalars['Int'];
+  totalResults: Scalars['Int'];
+  perPage: Scalars['Int'];
+};
+
+export type CollectionInput = {
+  title: Scalars['String'];
+  excerpt: Scalars['String'];
+};
+
+export enum CollectionStatus {
+  Draft = 'draft',
+  Published = 'published',
+  Archived = 'archived',
+}
+
+export type CollectionStory = {
+  __typename?: 'CollectionStory';
+  externalId: Scalars['ID'];
+  url: Scalars['Url'];
+  title: Scalars['String'];
+  excerpt: Scalars['Markdown'];
+  imageUrl?: Maybe<Scalars['Url']>;
+  authors?: Maybe<Array<Maybe<CollectionStoryAuthor>>>;
+  publisher?: Maybe<Scalars['String']>;
+  sortOrder?: Maybe<Scalars['Int']>;
+};
+
+export type CollectionStoryAuthor = {
+  __typename?: 'CollectionStoryAuthor';
+  name: Scalars['String'];
+};
+
+export type CollectionStoryAuthorInput = {
+  name: Scalars['String'];
+};
+
+export type CollectionsResult = {
+  __typename?: 'CollectionsResult';
+  pagination?: Maybe<CollectionEntityPagination>;
+  collections?: Maybe<Array<Maybe<Collection>>>;
+};
+
+export type CreateCollectionAuthorInput = {
+  name: Scalars['String'];
+  bio?: Maybe<Scalars['Markdown']>;
+  imageUrl?: Maybe<Scalars['Url']>;
+};
+
+export type CreateCollectionInput = {
+  slug: Scalars['String'];
+  title: Scalars['String'];
+  excerpt?: Maybe<Scalars['Markdown']>;
+  intro?: Maybe<Scalars['Markdown']>;
+  imageUrl?: Maybe<Scalars['String']>;
+  status?: Maybe<CollectionStatus>;
+  authorExternalId: Scalars['String'];
+};
+
+export type CreateCollectionStoryInput = {
+  collectionExternalId: Scalars['String'];
+  url: Scalars['Url'];
+  title: Scalars['String'];
+  excerpt: Scalars['Markdown'];
+  imageUrl: Scalars['Url'];
+  authors: Array<Maybe<CollectionStoryAuthorInput>>;
+  publisher: Scalars['String'];
+  sortOrder?: Maybe<Scalars['Int']>;
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createAuthor?: Maybe<Author>;
-  updateAuthor?: Maybe<Author>;
-  removeAuthor?: Maybe<Scalars['Boolean']>;
+  createCollectionAuthor?: Maybe<CollectionAuthor>;
+  updateCollectionAuthor?: Maybe<CollectionAuthor>;
   createCollection?: Maybe<Collection>;
   updateCollection?: Maybe<Collection>;
-  removeCollection?: Maybe<Scalars['Boolean']>;
+  createCollectionStory?: Maybe<CollectionStory>;
+  updateCollectionStory?: Maybe<CollectionStory>;
+  deleteCollectionStory?: Maybe<CollectionStory>;
 };
 
-export type MutationCreateAuthorArgs = {
-  externalId: Scalars['String'];
-  name: Scalars['String'];
-  createdAt: Scalars['String'];
-  active: Scalars['Boolean'];
-  imageUrl: Scalars['String'];
-  bio: Scalars['String'];
-  updatedAt?: Maybe<Scalars['String']>;
-  slug: Scalars['String'];
+export type MutationCreateCollectionAuthorArgs = {
+  data?: Maybe<CreateCollectionAuthorInput>;
 };
 
-export type MutationUpdateAuthorArgs = {
-  externalId?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-  createdAt?: Maybe<Scalars['String']>;
-  active?: Maybe<Scalars['Boolean']>;
-  imageUrl?: Maybe<Scalars['String']>;
-  bio?: Maybe<Scalars['String']>;
-  updatedAt?: Maybe<Scalars['String']>;
-  slug?: Maybe<Scalars['String']>;
-};
-
-export type MutationRemoveAuthorArgs = {
-  id: Scalars['ID'];
+export type MutationUpdateCollectionAuthorArgs = {
+  data?: Maybe<UpdateCollectionAuthorInput>;
 };
 
 export type MutationCreateCollectionArgs = {
-  externalId: Scalars['String'];
-  slug: Scalars['String'];
-  title: Scalars['String'];
-  excerpt: Scalars['String'];
-  intro: Scalars['String'];
-  imageUrl: Scalars['String'];
-  status: Scalars['String'];
-  updatedAt: Scalars['String'];
-  createdAt: Scalars['String'];
-  author_id: Scalars['ID'];
+  data?: Maybe<CreateCollectionInput>;
 };
 
 export type MutationUpdateCollectionArgs = {
-  externalId?: Maybe<Scalars['String']>;
-  slug?: Maybe<Scalars['String']>;
-  title?: Maybe<Scalars['String']>;
-  excerpt?: Maybe<Scalars['String']>;
-  intro?: Maybe<Scalars['String']>;
-  imageUrl?: Maybe<Scalars['String']>;
-  status?: Maybe<Scalars['String']>;
-  updatedAt?: Maybe<Scalars['String']>;
-  createdAt?: Maybe<Scalars['String']>;
-  author_id?: Maybe<Scalars['ID']>;
+  data?: Maybe<UpdateCollectionInput>;
 };
 
-export type MutationRemoveCollectionArgs = {
-  id: Scalars['ID'];
+export type MutationCreateCollectionStoryArgs = {
+  data?: Maybe<CreateCollectionStoryInput>;
+};
+
+export type MutationUpdateCollectionStoryArgs = {
+  data?: Maybe<UpdateCollectionStoryInput>;
+};
+
+export type MutationDeleteCollectionStoryArgs = {
+  externalId: Scalars['String'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  Author?: Maybe<Author>;
-  allAuthors?: Maybe<Array<Maybe<Author>>>;
-  _allAuthorsMeta?: Maybe<ListMetadata>;
-  Collection?: Maybe<Collection>;
-  allCollections?: Maybe<Array<Maybe<Collection>>>;
-  _allCollectionsMeta?: Maybe<ListMetadata>;
+  searchCollections?: Maybe<CollectionsResult>;
+  getCollection?: Maybe<Collection>;
+  getCollectionAuthor?: Maybe<CollectionAuthor>;
+  getCollectionAuthors?: Maybe<CollectionAuthorsResult>;
+  getCollectionStory?: Maybe<CollectionStory>;
 };
 
-export type QueryAuthorArgs = {
-  id: Scalars['ID'];
-};
-
-export type QueryAllAuthorsArgs = {
+export type QuerySearchCollectionsArgs = {
+  filters: SearchCollectionsFilters;
   page?: Maybe<Scalars['Int']>;
   perPage?: Maybe<Scalars['Int']>;
-  sortField?: Maybe<Scalars['String']>;
-  sortOrder?: Maybe<Scalars['String']>;
-  filter?: Maybe<AuthorFilter>;
 };
 
-export type Query_AllAuthorsMetaArgs = {
+export type QueryGetCollectionArgs = {
+  externalId: Scalars['String'];
+};
+
+export type QueryGetCollectionAuthorArgs = {
+  externalId: Scalars['String'];
+};
+
+export type QueryGetCollectionAuthorsArgs = {
   page?: Maybe<Scalars['Int']>;
   perPage?: Maybe<Scalars['Int']>;
-  filter?: Maybe<AuthorFilter>;
 };
 
-export type QueryCollectionArgs = {
-  id: Scalars['ID'];
+export type QueryGetCollectionStoryArgs = {
+  collectionId: Scalars['Int'];
+  url?: Maybe<Scalars['String']>;
 };
 
-export type QueryAllCollectionsArgs = {
-  page?: Maybe<Scalars['Int']>;
-  perPage?: Maybe<Scalars['Int']>;
-  sortField?: Maybe<Scalars['String']>;
-  sortOrder?: Maybe<Scalars['String']>;
-  filter?: Maybe<CollectionFilter>;
+export type SearchCollectionsFilters = {
+  author?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  status?: Maybe<CollectionStatus>;
 };
 
-export type Query_AllCollectionsMetaArgs = {
-  page?: Maybe<Scalars['Int']>;
-  perPage?: Maybe<Scalars['Int']>;
-  filter?: Maybe<CollectionFilter>;
+export type UpdateCollectionAuthorInput = {
+  externalId: Scalars['String'];
+  name: Scalars['String'];
+  bio?: Maybe<Scalars['Markdown']>;
+  imageUrl?: Maybe<Scalars['Url']>;
+  active?: Maybe<Scalars['Boolean']>;
+};
+
+export type UpdateCollectionInput = {
+  externalId?: Maybe<Scalars['String']>;
+  slug: Scalars['String'];
+  title: Scalars['String'];
+  excerpt: Scalars['Markdown'];
+  intro?: Maybe<Scalars['Markdown']>;
+  imageUrl?: Maybe<Scalars['String']>;
+  status: CollectionStatus;
+  authorExternalId: Scalars['String'];
+};
+
+export type UpdateCollectionStoryInput = {
+  externalId: Scalars['String'];
+  url: Scalars['Url'];
+  title: Scalars['String'];
+  excerpt: Scalars['Markdown'];
+  imageUrl: Scalars['Url'];
+  authors: Array<Maybe<CollectionStoryAuthorInput>>;
+  publisher: Scalars['String'];
+  sortOrder?: Maybe<Scalars['Int']>;
 };
 
 export type GetAuthorByIdQueryVariables = Exact<{
@@ -196,29 +244,10 @@ export type GetAuthorByIdQueryVariables = Exact<{
 }>;
 
 export type GetAuthorByIdQuery = { __typename?: 'Query' } & {
-  allAuthors?: Maybe<
-    Array<
-      Maybe<
-        { __typename?: 'Author' } & Pick<
-          Author,
-          | 'externalId'
-          | 'name'
-          | 'slug'
-          | 'bio'
-          | 'imageUrl'
-          | 'active'
-          | 'createdAt'
-          | 'updatedAt'
-        > & {
-            Collections?: Maybe<
-              Array<
-                Maybe<
-                  { __typename?: 'Collection' } & Pick<Collection, 'externalId'>
-                >
-              >
-            >;
-          }
-      >
+  getCollectionAuthor?: Maybe<
+    { __typename?: 'CollectionAuthor' } & Pick<
+      CollectionAuthor,
+      'externalId' | 'name' | 'slug' | 'bio' | 'imageUrl' | 'active'
     >
   >;
 };
@@ -226,30 +255,19 @@ export type GetAuthorByIdQuery = { __typename?: 'Query' } & {
 export type GetAuthorsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetAuthorsQuery = { __typename?: 'Query' } & {
-  allAuthors?: Maybe<
-    Array<
-      Maybe<
-        { __typename?: 'Author' } & Pick<
-          Author,
-          | 'externalId'
-          | 'name'
-          | 'slug'
-          | 'bio'
-          | 'imageUrl'
-          | 'active'
-          | 'createdAt'
-          | 'updatedAt'
-        > & {
-            Collections?: Maybe<
-              Array<
-                Maybe<
-                  { __typename?: 'Collection' } & Pick<Collection, 'externalId'>
-                >
-              >
-            >;
-          }
-      >
-    >
+  getCollectionAuthors?: Maybe<
+    { __typename?: 'CollectionAuthorsResult' } & {
+      authors?: Maybe<
+        Array<
+          Maybe<
+            { __typename?: 'CollectionAuthor' } & Pick<
+              CollectionAuthor,
+              'externalId' | 'name' | 'slug' | 'bio' | 'imageUrl' | 'active'
+            >
+          >
+        >
+      >;
+    }
   >;
 };
 
@@ -258,59 +276,54 @@ export type GetCollectionByIdQueryVariables = Exact<{
 }>;
 
 export type GetCollectionByIdQuery = { __typename?: 'Query' } & {
-  allCollections?: Maybe<
-    Array<
-      Maybe<
-        { __typename?: 'Collection' } & Pick<
-          Collection,
-          | 'externalId'
-          | 'title'
-          | 'slug'
-          | 'excerpt'
-          | 'intro'
-          | 'imageUrl'
-          | 'status'
-        >
-      >
+  getCollection?: Maybe<
+    { __typename?: 'Collection' } & Pick<
+      Collection,
+      | 'externalId'
+      | 'title'
+      | 'slug'
+      | 'excerpt'
+      | 'intro'
+      | 'imageUrl'
+      | 'status'
     >
   >;
 };
 
-export type GetCollectionsQueryVariables = Exact<{ [key: string]: never }>;
+export type GetDraftCollectionsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetCollectionsQuery = { __typename?: 'Query' } & {
-  allCollections?: Maybe<
-    Array<
-      Maybe<
-        { __typename?: 'Collection' } & Pick<
-          Collection,
-          | 'externalId'
-          | 'title'
-          | 'slug'
-          | 'excerpt'
-          | 'intro'
-          | 'imageUrl'
-          | 'status'
+export type GetDraftCollectionsQuery = { __typename?: 'Query' } & {
+  searchCollections?: Maybe<
+    { __typename?: 'CollectionsResult' } & {
+      collections?: Maybe<
+        Array<
+          Maybe<
+            { __typename?: 'Collection' } & Pick<
+              Collection,
+              | 'externalId'
+              | 'title'
+              | 'slug'
+              | 'excerpt'
+              | 'intro'
+              | 'imageUrl'
+              | 'status'
+            >
+          >
         >
-      >
-    >
+      >;
+    }
   >;
 };
 
 export const GetAuthorByIdDocument = gql`
   query getAuthorById($id: String!) {
-    allAuthors(filter: { externalId: $id }) {
+    getCollectionAuthor(externalId: $id) {
       externalId
       name
       slug
       bio
       imageUrl
       active
-      createdAt
-      updatedAt
-      Collections {
-        externalId
-      }
     }
   }
 `;
@@ -367,17 +380,14 @@ export type GetAuthorByIdQueryResult = Apollo.QueryResult<
 >;
 export const GetAuthorsDocument = gql`
   query getAuthors {
-    allAuthors(sortField: "createdAt", sortOrder: "DESC") {
-      externalId
-      name
-      slug
-      bio
-      imageUrl
-      active
-      createdAt
-      updatedAt
-      Collections {
+    getCollectionAuthors {
+      authors {
         externalId
+        name
+        slug
+        bio
+        imageUrl
+        active
       }
     }
   }
@@ -432,7 +442,7 @@ export type GetAuthorsQueryResult = Apollo.QueryResult<
 >;
 export const GetCollectionByIdDocument = gql`
   query getCollectionById($id: String!) {
-    allCollections(filter: { externalId: $id }) {
+    getCollection(externalId: $id) {
       externalId
       title
       slug
@@ -494,66 +504,68 @@ export type GetCollectionByIdQueryResult = Apollo.QueryResult<
   GetCollectionByIdQuery,
   GetCollectionByIdQueryVariables
 >;
-export const GetCollectionsDocument = gql`
-  query getCollections {
-    allCollections(sortField: "updatedAt", sortOrder: "DESC") {
-      externalId
-      title
-      slug
-      excerpt
-      intro
-      imageUrl
-      status
+export const GetDraftCollectionsDocument = gql`
+  query getDraftCollections {
+    searchCollections(filters: { status: draft }) {
+      collections {
+        externalId
+        title
+        slug
+        excerpt
+        intro
+        imageUrl
+        status
+      }
     }
   }
 `;
 
 /**
- * __useGetCollectionsQuery__
+ * __useGetDraftCollectionsQuery__
  *
- * To run a query within a React component, call `useGetCollectionsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCollectionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetDraftCollectionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDraftCollectionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetCollectionsQuery({
+ * const { data, loading, error } = useGetDraftCollectionsQuery({
  *   variables: {
  *   },
  * });
  */
-export function useGetCollectionsQuery(
+export function useGetDraftCollectionsQuery(
   baseOptions?: Apollo.QueryHookOptions<
-    GetCollectionsQuery,
-    GetCollectionsQueryVariables
+    GetDraftCollectionsQuery,
+    GetDraftCollectionsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<GetCollectionsQuery, GetCollectionsQueryVariables>(
-    GetCollectionsDocument,
-    options
-  );
+  return Apollo.useQuery<
+    GetDraftCollectionsQuery,
+    GetDraftCollectionsQueryVariables
+  >(GetDraftCollectionsDocument, options);
 }
-export function useGetCollectionsLazyQuery(
+export function useGetDraftCollectionsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    GetCollectionsQuery,
-    GetCollectionsQueryVariables
+    GetDraftCollectionsQuery,
+    GetDraftCollectionsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<GetCollectionsQuery, GetCollectionsQueryVariables>(
-    GetCollectionsDocument,
-    options
-  );
+  return Apollo.useLazyQuery<
+    GetDraftCollectionsQuery,
+    GetDraftCollectionsQueryVariables
+  >(GetDraftCollectionsDocument, options);
 }
-export type GetCollectionsQueryHookResult = ReturnType<
-  typeof useGetCollectionsQuery
+export type GetDraftCollectionsQueryHookResult = ReturnType<
+  typeof useGetDraftCollectionsQuery
 >;
-export type GetCollectionsLazyQueryHookResult = ReturnType<
-  typeof useGetCollectionsLazyQuery
+export type GetDraftCollectionsLazyQueryHookResult = ReturnType<
+  typeof useGetDraftCollectionsLazyQuery
 >;
-export type GetCollectionsQueryResult = Apollo.QueryResult<
-  GetCollectionsQuery,
-  GetCollectionsQueryVariables
+export type GetDraftCollectionsQueryResult = Apollo.QueryResult<
+  GetDraftCollectionsQuery,
+  GetDraftCollectionsQueryVariables
 >;

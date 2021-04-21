@@ -11,7 +11,6 @@ export const AddAuthorPage: React.FC = (): JSX.Element => {
     bio: '',
     imageUrl: '',
     active: true,
-    createdAt: '',
   };
   return (
     <>

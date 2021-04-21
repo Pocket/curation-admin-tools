@@ -23,5 +23,5 @@ export type { CollectionModel };
  */
 export { useGetAuthors } from './hooks/useGetAuthors';
 export { useGetAuthorById } from './hooks/useGetAuthorById';
-export { useGetCollections } from './hooks/useGetCollections';
+export { useGetDraftCollections } from './hooks/useGetDraftCollections';
 export { useGetCollectionById } from './hooks/useGetCollectionById';

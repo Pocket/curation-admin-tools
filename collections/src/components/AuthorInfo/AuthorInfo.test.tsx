@@ -20,9 +20,6 @@ describe('The AuthorInfo component', () => {
         'Ut dicta veritatis perspiciatis suscipit. ' +
         'Aspernatur reprehenderit laboriosam voluptates ut. Ut minus aut est.',
       active: true,
-      createdAt: '2021-03-21T02:18:07.473Z',
-      updatedAt: null,
-      Collections: [{ externalId: '123abc' }],
     };
   });
 
@@ -76,19 +73,21 @@ describe('The AuthorInfo component', () => {
     expect(activeSubtitle).not.toBeInTheDocument();
   });
 
-  it('shows the number of collections for the author', () => {
+  xit('shows the number of collections for the author', () => {
+    // TODO: I would like to reinstate this later if this data becomes available
     render(
       <MemoryRouter>
         <AuthorInfo author={author} />
       </MemoryRouter>
     );
 
-    const collectionsCopy = `${author.Collections?.length} collections`;
-    expect(screen.getByText(collectionsCopy)).toBeInTheDocument();
+    // const collectionsCopy = `${author.collectionCount} collections`;
+    // expect(screen.getByText(collectionsCopy)).toBeInTheDocument();
   });
 
-  it('shows custom copy for authors without collections', () => {
-    author.Collections = [];
+  xit('shows custom copy for authors without collections', () => {
+    // TODO: I would like to reinstate this later if this data becomes available
+    //  author.collectionCount = 0;
     render(
       <MemoryRouter>
         <AuthorInfo author={author} />

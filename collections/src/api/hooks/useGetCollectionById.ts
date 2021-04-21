@@ -7,12 +7,10 @@ export const useGetCollectionById = (
   variables: GetCollectionByIdQueryVariables,
   skip: boolean
 ) => {
-  const { loading, error, data: result } = useGetCollectionByIdQuery({
+  const { loading, error, data } = useGetCollectionByIdQuery({
     variables,
     skip,
   });
-
-  const data = result?.allCollections;
 
   return { loading, error, data };
 };

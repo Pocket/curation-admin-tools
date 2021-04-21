@@ -34,10 +34,10 @@ export const AuthorPage = (): JSX.Element => {
     // Skip query if author object was delivered via the routing
     typeof author === 'object'
   );
-
-  if (data && data[0]) {
-    author = data[0];
-  }
+  //
+  // if (data ) {
+  //   author = data;
+  // }
 
   const [showEditForm, setShowEditForm] = useState<boolean>(false);
 
