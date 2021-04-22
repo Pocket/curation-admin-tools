@@ -5,7 +5,7 @@ import { gql } from '@apollo/client';
  */
 export const getDraftCollections = gql`
   query getDraftCollections {
-    searchCollections(filters: { status: draft }) {
+    searchCollections(filters: { status: DRAFT }) {
       collections {
         externalId
         title
