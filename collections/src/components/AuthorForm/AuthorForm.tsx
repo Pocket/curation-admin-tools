@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import slugify from 'slugify';
 import * as yup from 'yup';
-import { useFormik } from 'formik';
+import { FormikValues, useFormik } from 'formik';
 
 import {
   Box,
@@ -20,6 +20,11 @@ interface EditAuthorFormProps {
   author: AuthorModel;
 
   /**
+   * What do we do with the submitted data?
+   */
+  onSubmit: (values: FormikValues) => void;
+
+  /**
    * Do we need to show the cancel button? Not on the 'Add Author' page
    * True by default
    */
@@ -34,16 +39,14 @@ interface EditAuthorFormProps {
 export const AuthorForm: React.FC<EditAuthorFormProps> = (
   props
 ): JSX.Element => {
-  const { showCancelButton = true, handleCancel } = props;
-
-  const [author, setAuthor] = useState<AuthorModel>(props.author);
+  const { author, showCancelButton = true, handleCancel, onSubmit } = props;
 
   const formik = useFormik({
     initialValues: {
-      name: '',
-      slug: '',
-      bio: '',
-      active: true,
+      name: author.name ?? '',
+      slug: author.slug ?? '',
+      bio: author.bio ?? '',
+      active: author.active ?? true,
     },
     validateOnChange: false,
     validateOnBlur: false,
@@ -62,37 +65,23 @@ export const AuthorForm: React.FC<EditAuthorFormProps> = (
       active: yup.boolean().required(),
     }),
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      onSubmit(values);
     },
   });
-
-  /**
-   * Update form field values on change.
-   */
-  const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ): void => {
-    const name = event.target.name as keyof typeof author;
-
-    setAuthor({
-      ...author,
-      [name]: event.target.value,
-    });
-  };
 
   /**
    * Update the switch on change
    */
   const handleSwitch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAuthor({ ...author, active: event.target.checked });
+    //setAuthor({ ...author, active: event.target.checked });
   };
 
   /**
    * Suggest a slug for the author
    */
   const suggestSlug = () => {
-    const newSlug = slugify(author.name, { lower: true });
-    setAuthor({ ...author, slug: newSlug });
+    const newSlug = slugify(formik.values.name, { lower: true });
+    formik.setFieldValue('slug', newSlug);
   };
 
   return (
@@ -142,7 +131,6 @@ export const AuthorForm: React.FC<EditAuthorFormProps> = (
         <Grid item xs={12}>
           <TextField
             id="bio"
-            name="bio"
             label="Bio"
             fullWidth
             InputLabelProps={{
@@ -152,8 +140,9 @@ export const AuthorForm: React.FC<EditAuthorFormProps> = (
             rows={12}
             size="small"
             variant="outlined"
-            value={author.bio ?? ''}
-            onChange={handleChange}
+            {...formik.getFieldProps('bio')}
+            error={!!(formik.touched.bio && formik.errors.bio)}
+            helperText={formik.errors.bio ? formik.errors.bio : null}
           />
         </Grid>
 
@@ -168,10 +157,10 @@ export const AuthorForm: React.FC<EditAuthorFormProps> = (
                   to just boolean | null so that Material-UI accepts the value */
                   !!author.active
                 }
+                {...formik.getFieldProps('active')}
                 onChange={handleSwitch}
               />
             }
-            name="isActive"
             label={author.active ? 'Active' : 'Inactive'}
             labelPlacement="end"
           />

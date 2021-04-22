@@ -9,6 +9,7 @@ import {
 } from '../../components';
 import { Box, Fade, Paper } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
+import { FormikValues } from 'formik';
 
 interface AuthorPageProps {
   author?: AuthorModel;
@@ -34,15 +35,19 @@ export const AuthorPage = (): JSX.Element => {
     // Skip query if author object was delivered via the routing
     typeof author === 'object'
   );
-  //
-  // if (data ) {
-  //   author = data;
-  // }
+
+  if (data && data.getCollectionAuthor) {
+    author = data.getCollectionAuthor;
+  }
 
   const [showEditForm, setShowEditForm] = useState<boolean>(false);
 
   const toggleEditForm = (): void => {
     setShowEditForm(!showEditForm);
+  };
+
+  const handleSubmit = (values: FormikValues): void => {
+    console.log(values);
   };
 
   return (
@@ -67,6 +72,7 @@ export const AuthorPage = (): JSX.Element => {
               <Box p={2} mt={3}>
                 <AuthorForm
                   author={author}
+                  onSubmit={handleSubmit}
                   showCancelButton={true}
                   handleCancel={toggleEditForm}
                 />
