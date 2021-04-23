@@ -61,7 +61,7 @@ export const AuthorForm: React.FC<EditAuthorFormProps> = (
           'Please enter a slug or use the "Suggest slug" button to generate one from the name of the author'
         )
         .min(6),
-      bio: yup.string().required('Please enter the author bio').min(20),
+      bio: yup.string(),
       active: yup.boolean().required(),
     }),
     onSubmit: (values) => {
