@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import slugify from 'slugify';
 import * as yup from 'yup';
 import { FormikValues, useFormik } from 'formik';
@@ -33,13 +33,13 @@ interface EditAuthorFormProps {
   /**
    * What to do if the user clicks on the Cancel button
    */
-  handleCancel?: () => void;
+  onCancel?: () => void;
 }
 
 export const AuthorForm: React.FC<EditAuthorFormProps> = (
   props
 ): JSX.Element => {
-  const { author, showCancelButton = true, handleCancel, onSubmit } = props;
+  const { author, showCancelButton = true, onCancel, onSubmit } = props;
 
   const formik = useFormik({
     initialValues: {
@@ -73,7 +73,7 @@ export const AuthorForm: React.FC<EditAuthorFormProps> = (
    * Update the switch on change
    */
   const handleSwitch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //setAuthor({ ...author, active: event.target.checked });
+    formik.setFieldValue('active', event.target.checked);
   };
 
   /**
@@ -175,7 +175,7 @@ export const AuthorForm: React.FC<EditAuthorFormProps> = (
             </Box>
             {showCancelButton && (
               <Box p={1}>
-                <Button buttonType="hollow-neutral" onClick={handleCancel}>
+                <Button buttonType="hollow-neutral" onClick={onCancel}>
                   Cancel
                 </Button>
               </Box>

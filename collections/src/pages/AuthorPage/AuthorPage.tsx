@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import { AuthorModel, useGetAuthorById } from '../../api';
+import { Box, Fade, Paper } from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit';
+import { FormikValues } from 'formik';
 import {
   AuthorForm,
   AuthorInfo,
   Button,
   HandleApiResponse,
 } from '../../components';
-import { Box, Fade, Paper } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
-import { FormikValues } from 'formik';
+import { AuthorModel, useGetAuthorByIdQuery } from '../../api';
 
 interface AuthorPageProps {
   author?: AuthorModel;
@@ -24,17 +24,19 @@ export const AuthorPage = (): JSX.Element => {
   let author: AuthorModel | undefined = location.state?.author;
 
   /**
-   * If this page is being accessed directly, fetch the author info
-   * from the the API.
+   * If the user came directly to this page (i.e., via a bookmarked page),
+   * fetch the author info from the the API.
    */
   const params = useParams<{ id: string }>();
-  const { loading, error, data } = useGetAuthorById(
-    {
+  const { loading, error, data } = useGetAuthorByIdQuery({
+    variables: {
       id: params.id,
     },
     // Skip query if author object was delivered via the routing
-    typeof author === 'object'
-  );
+    // This is needed because hooks can only be called at the top level
+    // of the component.
+    skip: typeof author === 'object',
+  });
 
   if (data && data.getCollectionAuthor) {
     author = data.getCollectionAuthor;
@@ -74,7 +76,7 @@ export const AuthorPage = (): JSX.Element => {
                   author={author}
                   onSubmit={handleSubmit}
                   showCancelButton={true}
-                  handleCancel={toggleEditForm}
+                  onCancel={toggleEditForm}
                 />
               </Box>
             </Paper>

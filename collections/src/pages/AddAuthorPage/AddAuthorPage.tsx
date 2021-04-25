@@ -3,7 +3,6 @@ import { Box, Paper } from '@material-ui/core';
 import { AuthorModel } from '../../api';
 import { AuthorForm } from '../../components';
 import { FormikValues } from 'formik';
-import { createCollectionAuthor } from '../../api/generatedTypes';
 
 export const AddAuthorPage: React.FC = (): JSX.Element => {
   const author: AuthorModel = {

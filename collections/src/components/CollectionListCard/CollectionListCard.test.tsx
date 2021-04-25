@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { CollectionListCard } from './CollectionListCard';
-import { CollectionModel } from '../../api';
+import { CollectionModel, CollectionStatus } from '../../api';
 
 describe('The CollectionListCard component', () => {
   let collection: CollectionModel;
@@ -12,12 +12,12 @@ describe('The CollectionListCard component', () => {
       externalId: '124abc',
       title: 'Hidden Histories of Presidential Medical Dramas',
       slug: 'collection-slug',
-      imageUrl: 'http://placeimg.com/640/480/people?random=494',
+      imageUrl: 'https://placeimg.com/640/480/people?random=494',
       excerpt:
         'There’s a long history of presidential ailments, including George Washington’s near-death encounter with the flu, Grover Cleveland’s secret tumor, and the clandestine suffering of John F. Kennedy. ',
       intro:
         'There’s a long history of presidential ailments, including George Washington’s near-death encounter with the flu, Grover Cleveland’s secret tumor, and the clandestine suffering of John F. Kennedy. ',
-      status: 'Published',
+      status: CollectionStatus.Published,
     };
   });
 
