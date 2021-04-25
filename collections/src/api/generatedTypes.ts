@@ -1,10 +1,14 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
-export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
-export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-const defaultOptions =  {}
+export type Exact<T extends { [key: string]: unknown }> = {
+  [K in keyof T]: T[K];
+};
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> &
+  { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> &
+  { [SubKey in K]: Maybe<T[SubKey]> };
+const defaultOptions = {};
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -19,15 +23,9 @@ export type Scalars = {
   _Any: any;
 };
 
-
-
-
-
-
-
 export enum CacheControlScope {
   Public = 'PUBLIC',
-  Private = 'PRIVATE'
+  Private = 'PRIVATE',
 }
 
 /**
@@ -72,7 +70,7 @@ export type CollectionInput = {
 export enum CollectionStatus {
   Draft = 'DRAFT',
   Published = 'PUBLISHED',
-  Archived = 'ARCHIVED'
+  Archived = 'ARCHIVED',
 }
 
 export type CollectionStory = {
@@ -105,6 +103,7 @@ export type CollectionsResult = {
 
 export type CreateCollectionAuthorInput = {
   name: Scalars['String'];
+  slug?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['Markdown']>;
   imageUrl?: Maybe<Scalars['Url']>;
 };
@@ -130,7 +129,6 @@ export type CreateCollectionStoryInput = {
   sortOrder?: Maybe<Scalars['Int']>;
 };
 
-
 export type Item = {
   __typename?: 'Item';
   /** key field to identify the Item entity in the Parser service */
@@ -138,7 +136,6 @@ export type Item = {
   /** If the item is a collection allow them to get the collection information */
   collection?: Maybe<Collection>;
 };
-
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -151,36 +148,29 @@ export type Mutation = {
   deleteCollectionStory?: Maybe<CollectionStory>;
 };
 
-
 export type MutationCreateCollectionAuthorArgs = {
   data?: Maybe<CreateCollectionAuthorInput>;
 };
-
 
 export type MutationUpdateCollectionAuthorArgs = {
   data?: Maybe<UpdateCollectionAuthorInput>;
 };
 
-
 export type MutationCreateCollectionArgs = {
   data?: Maybe<CreateCollectionInput>;
 };
-
 
 export type MutationUpdateCollectionArgs = {
   data?: Maybe<UpdateCollectionInput>;
 };
 
-
 export type MutationCreateCollectionStoryArgs = {
   data?: Maybe<CreateCollectionStoryInput>;
 };
 
-
 export type MutationUpdateCollectionStoryArgs = {
   data?: Maybe<UpdateCollectionStoryInput>;
 };
-
 
 export type MutationDeleteCollectionStoryArgs = {
   externalId: Scalars['String'];
@@ -209,11 +199,9 @@ export type Query = {
   getCollectionStory?: Maybe<CollectionStory>;
 };
 
-
 export type Query_EntitiesArgs = {
   representations: Array<Scalars['_Any']>;
 };
-
 
 export type QuerySearchCollectionsArgs = {
   filters: SearchCollectionsFilters;
@@ -221,22 +209,18 @@ export type QuerySearchCollectionsArgs = {
   perPage?: Maybe<Scalars['Int']>;
 };
 
-
 export type QueryGetCollectionArgs = {
   externalId: Scalars['String'];
 };
-
 
 export type QueryGetCollectionAuthorArgs = {
   externalId: Scalars['String'];
 };
 
-
 export type QueryGetCollectionAuthorsArgs = {
   page?: Maybe<Scalars['Int']>;
   perPage?: Maybe<Scalars['Int']>;
 };
-
 
 export type QueryGetCollectionStoryArgs = {
   collectionId: Scalars['Int'];
@@ -279,8 +263,6 @@ export type UpdateCollectionStoryInput = {
   sortOrder?: Maybe<Scalars['Int']>;
 };
 
-
-
 export type _Entity = CollectionStory | Item;
 
 export type _Service = {
@@ -289,73 +271,170 @@ export type _Service = {
   sdl?: Maybe<Scalars['String']>;
 };
 
+export type CreateCollectionAuthorMutationVariables = Exact<{
+  name: Scalars['String'];
+  slug?: Maybe<Scalars['String']>;
+  bio?: Maybe<Scalars['Markdown']>;
+  imageUrl?: Maybe<Scalars['Url']>;
+}>;
+
+export type CreateCollectionAuthorMutation = { __typename?: 'Mutation' } & {
+  createCollectionAuthor?: Maybe<
+    { __typename?: 'CollectionAuthor' } & Pick<
+      CollectionAuthor,
+      'externalId' | 'name'
+    >
+  >;
+};
+
 export type GetAuthorByIdQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
+export type GetAuthorByIdQuery = { __typename?: 'Query' } & {
+  getCollectionAuthor?: Maybe<
+    { __typename?: 'CollectionAuthor' } & Pick<
+      CollectionAuthor,
+      'externalId' | 'name' | 'slug' | 'bio' | 'imageUrl' | 'active'
+    >
+  >;
+};
 
-export type GetAuthorByIdQuery = (
-  { __typename?: 'Query' }
-  & { getCollectionAuthor?: Maybe<(
-    { __typename?: 'CollectionAuthor' }
-    & Pick<CollectionAuthor, 'externalId' | 'name' | 'slug' | 'bio' | 'imageUrl' | 'active'>
-  )> }
-);
+export type GetAuthorsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetAuthorsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetAuthorsQuery = (
-  { __typename?: 'Query' }
-  & { getCollectionAuthors?: Maybe<(
-    { __typename?: 'CollectionAuthorsResult' }
-    & { authors?: Maybe<Array<Maybe<(
-      { __typename?: 'CollectionAuthor' }
-      & Pick<CollectionAuthor, 'externalId' | 'name' | 'slug' | 'bio' | 'imageUrl' | 'active'>
-    )>>> }
-  )> }
-);
+export type GetAuthorsQuery = { __typename?: 'Query' } & {
+  getCollectionAuthors?: Maybe<
+    { __typename?: 'CollectionAuthorsResult' } & {
+      authors?: Maybe<
+        Array<
+          Maybe<
+            { __typename?: 'CollectionAuthor' } & Pick<
+              CollectionAuthor,
+              'externalId' | 'name' | 'slug' | 'bio' | 'imageUrl' | 'active'
+            >
+          >
+        >
+      >;
+    }
+  >;
+};
 
 export type GetCollectionByIdQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
+export type GetCollectionByIdQuery = { __typename?: 'Query' } & {
+  getCollection?: Maybe<
+    { __typename?: 'Collection' } & Pick<
+      Collection,
+      | 'externalId'
+      | 'title'
+      | 'slug'
+      | 'excerpt'
+      | 'intro'
+      | 'imageUrl'
+      | 'status'
+    >
+  >;
+};
 
-export type GetCollectionByIdQuery = (
-  { __typename?: 'Query' }
-  & { getCollection?: Maybe<(
-    { __typename?: 'Collection' }
-    & Pick<Collection, 'externalId' | 'title' | 'slug' | 'excerpt' | 'intro' | 'imageUrl' | 'status'>
-  )> }
-);
+export type GetDraftCollectionsQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetDraftCollectionsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetDraftCollectionsQuery = { __typename?: 'Query' } & {
+  searchCollections?: Maybe<
+    { __typename?: 'CollectionsResult' } & {
+      collections?: Maybe<
+        Array<
+          Maybe<
+            { __typename?: 'Collection' } & Pick<
+              Collection,
+              | 'externalId'
+              | 'title'
+              | 'slug'
+              | 'excerpt'
+              | 'intro'
+              | 'imageUrl'
+              | 'status'
+            >
+          >
+        >
+      >;
+    }
+  >;
+};
 
-
-export type GetDraftCollectionsQuery = (
-  { __typename?: 'Query' }
-  & { searchCollections?: Maybe<(
-    { __typename?: 'CollectionsResult' }
-    & { collections?: Maybe<Array<Maybe<(
-      { __typename?: 'Collection' }
-      & Pick<Collection, 'externalId' | 'title' | 'slug' | 'excerpt' | 'intro' | 'imageUrl' | 'status'>
-    )>>> }
-  )> }
-);
-
-
-export const GetAuthorByIdDocument = gql`
-    query getAuthorById($id: String!) {
-  getCollectionAuthor(externalId: $id) {
-    externalId
-    name
-    slug
-    bio
-    imageUrl
-    active
+export const CreateCollectionAuthorDocument = gql`
+  mutation createCollectionAuthor(
+    $name: String!
+    $slug: String
+    $bio: Markdown
+    $imageUrl: Url
+  ) {
+    createCollectionAuthor(
+      data: { name: $name, slug: $slug, bio: $bio, imageUrl: $imageUrl }
+    ) {
+      externalId
+      name
+    }
   }
+`;
+export type CreateCollectionAuthorMutationFn = Apollo.MutationFunction<
+  CreateCollectionAuthorMutation,
+  CreateCollectionAuthorMutationVariables
+>;
+
+/**
+ * __useCreateCollectionAuthorMutation__
+ *
+ * To run a mutation, you first call `useCreateCollectionAuthorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCollectionAuthorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCollectionAuthorMutation, { data, loading, error }] = useCreateCollectionAuthorMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      slug: // value for 'slug'
+ *      bio: // value for 'bio'
+ *      imageUrl: // value for 'imageUrl'
+ *   },
+ * });
+ */
+export function useCreateCollectionAuthorMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateCollectionAuthorMutation,
+    CreateCollectionAuthorMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateCollectionAuthorMutation,
+    CreateCollectionAuthorMutationVariables
+  >(CreateCollectionAuthorDocument, options);
 }
-    `;
+export type CreateCollectionAuthorMutationHookResult = ReturnType<
+  typeof useCreateCollectionAuthorMutation
+>;
+export type CreateCollectionAuthorMutationResult = Apollo.MutationResult<CreateCollectionAuthorMutation>;
+export type CreateCollectionAuthorMutationOptions = Apollo.BaseMutationOptions<
+  CreateCollectionAuthorMutation,
+  CreateCollectionAuthorMutationVariables
+>;
+export const GetAuthorByIdDocument = gql`
+  query getAuthorById($id: String!) {
+    getCollectionAuthor(externalId: $id) {
+      externalId
+      name
+      slug
+      bio
+      imageUrl
+      active
+    }
+  }
+`;
 
 /**
  * __useGetAuthorByIdQuery__
@@ -373,31 +452,54 @@ export const GetAuthorByIdDocument = gql`
  *   },
  * });
  */
-export function useGetAuthorByIdQuery(baseOptions: Apollo.QueryHookOptions<GetAuthorByIdQuery, GetAuthorByIdQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAuthorByIdQuery, GetAuthorByIdQueryVariables>(GetAuthorByIdDocument, options);
-      }
-export function useGetAuthorByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAuthorByIdQuery, GetAuthorByIdQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAuthorByIdQuery, GetAuthorByIdQueryVariables>(GetAuthorByIdDocument, options);
-        }
-export type GetAuthorByIdQueryHookResult = ReturnType<typeof useGetAuthorByIdQuery>;
-export type GetAuthorByIdLazyQueryHookResult = ReturnType<typeof useGetAuthorByIdLazyQuery>;
-export type GetAuthorByIdQueryResult = Apollo.QueryResult<GetAuthorByIdQuery, GetAuthorByIdQueryVariables>;
+export function useGetAuthorByIdQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetAuthorByIdQuery,
+    GetAuthorByIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetAuthorByIdQuery, GetAuthorByIdQueryVariables>(
+    GetAuthorByIdDocument,
+    options
+  );
+}
+export function useGetAuthorByIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetAuthorByIdQuery,
+    GetAuthorByIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetAuthorByIdQuery, GetAuthorByIdQueryVariables>(
+    GetAuthorByIdDocument,
+    options
+  );
+}
+export type GetAuthorByIdQueryHookResult = ReturnType<
+  typeof useGetAuthorByIdQuery
+>;
+export type GetAuthorByIdLazyQueryHookResult = ReturnType<
+  typeof useGetAuthorByIdLazyQuery
+>;
+export type GetAuthorByIdQueryResult = Apollo.QueryResult<
+  GetAuthorByIdQuery,
+  GetAuthorByIdQueryVariables
+>;
 export const GetAuthorsDocument = gql`
-    query getAuthors {
-  getCollectionAuthors {
-    authors {
-      externalId
-      name
-      slug
-      bio
-      imageUrl
-      active
+  query getAuthors {
+    getCollectionAuthors {
+      authors {
+        externalId
+        name
+        slug
+        bio
+        imageUrl
+        active
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useGetAuthorsQuery__
@@ -414,30 +516,51 @@ export const GetAuthorsDocument = gql`
  *   },
  * });
  */
-export function useGetAuthorsQuery(baseOptions?: Apollo.QueryHookOptions<GetAuthorsQuery, GetAuthorsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAuthorsQuery, GetAuthorsQueryVariables>(GetAuthorsDocument, options);
-      }
-export function useGetAuthorsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAuthorsQuery, GetAuthorsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAuthorsQuery, GetAuthorsQueryVariables>(GetAuthorsDocument, options);
-        }
-export type GetAuthorsQueryHookResult = ReturnType<typeof useGetAuthorsQuery>;
-export type GetAuthorsLazyQueryHookResult = ReturnType<typeof useGetAuthorsLazyQuery>;
-export type GetAuthorsQueryResult = Apollo.QueryResult<GetAuthorsQuery, GetAuthorsQueryVariables>;
-export const GetCollectionByIdDocument = gql`
-    query getCollectionById($id: String!) {
-  getCollection(externalId: $id) {
-    externalId
-    title
-    slug
-    excerpt
-    intro
-    imageUrl
-    status
-  }
+export function useGetAuthorsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetAuthorsQuery,
+    GetAuthorsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetAuthorsQuery, GetAuthorsQueryVariables>(
+    GetAuthorsDocument,
+    options
+  );
 }
-    `;
+export function useGetAuthorsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetAuthorsQuery,
+    GetAuthorsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetAuthorsQuery, GetAuthorsQueryVariables>(
+    GetAuthorsDocument,
+    options
+  );
+}
+export type GetAuthorsQueryHookResult = ReturnType<typeof useGetAuthorsQuery>;
+export type GetAuthorsLazyQueryHookResult = ReturnType<
+  typeof useGetAuthorsLazyQuery
+>;
+export type GetAuthorsQueryResult = Apollo.QueryResult<
+  GetAuthorsQuery,
+  GetAuthorsQueryVariables
+>;
+export const GetCollectionByIdDocument = gql`
+  query getCollectionById($id: String!) {
+    getCollection(externalId: $id) {
+      externalId
+      title
+      slug
+      excerpt
+      intro
+      imageUrl
+      status
+    }
+  }
+`;
 
 /**
  * __useGetCollectionByIdQuery__
@@ -455,32 +578,55 @@ export const GetCollectionByIdDocument = gql`
  *   },
  * });
  */
-export function useGetCollectionByIdQuery(baseOptions: Apollo.QueryHookOptions<GetCollectionByIdQuery, GetCollectionByIdQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetCollectionByIdQuery, GetCollectionByIdQueryVariables>(GetCollectionByIdDocument, options);
-      }
-export function useGetCollectionByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCollectionByIdQuery, GetCollectionByIdQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetCollectionByIdQuery, GetCollectionByIdQueryVariables>(GetCollectionByIdDocument, options);
-        }
-export type GetCollectionByIdQueryHookResult = ReturnType<typeof useGetCollectionByIdQuery>;
-export type GetCollectionByIdLazyQueryHookResult = ReturnType<typeof useGetCollectionByIdLazyQuery>;
-export type GetCollectionByIdQueryResult = Apollo.QueryResult<GetCollectionByIdQuery, GetCollectionByIdQueryVariables>;
+export function useGetCollectionByIdQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetCollectionByIdQuery,
+    GetCollectionByIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetCollectionByIdQuery,
+    GetCollectionByIdQueryVariables
+  >(GetCollectionByIdDocument, options);
+}
+export function useGetCollectionByIdLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetCollectionByIdQuery,
+    GetCollectionByIdQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetCollectionByIdQuery,
+    GetCollectionByIdQueryVariables
+  >(GetCollectionByIdDocument, options);
+}
+export type GetCollectionByIdQueryHookResult = ReturnType<
+  typeof useGetCollectionByIdQuery
+>;
+export type GetCollectionByIdLazyQueryHookResult = ReturnType<
+  typeof useGetCollectionByIdLazyQuery
+>;
+export type GetCollectionByIdQueryResult = Apollo.QueryResult<
+  GetCollectionByIdQuery,
+  GetCollectionByIdQueryVariables
+>;
 export const GetDraftCollectionsDocument = gql`
-    query getDraftCollections {
-  searchCollections(filters: {status: DRAFT}) {
-    collections {
-      externalId
-      title
-      slug
-      excerpt
-      intro
-      imageUrl
-      status
+  query getDraftCollections {
+    searchCollections(filters: { status: DRAFT }) {
+      collections {
+        externalId
+        title
+        slug
+        excerpt
+        intro
+        imageUrl
+        status
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useGetDraftCollectionsQuery__
@@ -497,14 +643,37 @@ export const GetDraftCollectionsDocument = gql`
  *   },
  * });
  */
-export function useGetDraftCollectionsQuery(baseOptions?: Apollo.QueryHookOptions<GetDraftCollectionsQuery, GetDraftCollectionsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetDraftCollectionsQuery, GetDraftCollectionsQueryVariables>(GetDraftCollectionsDocument, options);
-      }
-export function useGetDraftCollectionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDraftCollectionsQuery, GetDraftCollectionsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetDraftCollectionsQuery, GetDraftCollectionsQueryVariables>(GetDraftCollectionsDocument, options);
-        }
-export type GetDraftCollectionsQueryHookResult = ReturnType<typeof useGetDraftCollectionsQuery>;
-export type GetDraftCollectionsLazyQueryHookResult = ReturnType<typeof useGetDraftCollectionsLazyQuery>;
-export type GetDraftCollectionsQueryResult = Apollo.QueryResult<GetDraftCollectionsQuery, GetDraftCollectionsQueryVariables>;
+export function useGetDraftCollectionsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetDraftCollectionsQuery,
+    GetDraftCollectionsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetDraftCollectionsQuery,
+    GetDraftCollectionsQueryVariables
+  >(GetDraftCollectionsDocument, options);
+}
+export function useGetDraftCollectionsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetDraftCollectionsQuery,
+    GetDraftCollectionsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetDraftCollectionsQuery,
+    GetDraftCollectionsQueryVariables
+  >(GetDraftCollectionsDocument, options);
+}
+export type GetDraftCollectionsQueryHookResult = ReturnType<
+  typeof useGetDraftCollectionsQuery
+>;
+export type GetDraftCollectionsLazyQueryHookResult = ReturnType<
+  typeof useGetDraftCollectionsLazyQuery
+>;
+export type GetDraftCollectionsQueryResult = Apollo.QueryResult<
+  GetDraftCollectionsQuery,
+  GetDraftCollectionsQueryVariables
+>;

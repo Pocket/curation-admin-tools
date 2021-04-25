@@ -7,8 +7,8 @@ export const createCollectionAuthor = gql`
   mutation createCollectionAuthor(
     $name: String!
     $slug: String
-    $bio: String
-    $imageUrl: String
+    $bio: Markdown
+    $imageUrl: Url
   ) {
     createCollectionAuthor(
       data: { name: $name, slug: $slug, bio: $bio, imageUrl: $imageUrl }
