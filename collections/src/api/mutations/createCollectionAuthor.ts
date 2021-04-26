@@ -15,6 +15,10 @@ export const createCollectionAuthor = gql`
     ) {
       externalId
       name
+      slug
+      bio
+      imageUrl
+      active
     }
   }
 `;

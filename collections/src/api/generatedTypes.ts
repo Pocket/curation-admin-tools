@@ -282,7 +282,7 @@ export type CreateCollectionAuthorMutation = { __typename?: 'Mutation' } & {
   createCollectionAuthor?: Maybe<
     { __typename?: 'CollectionAuthor' } & Pick<
       CollectionAuthor,
-      'externalId' | 'name'
+      'externalId' | 'name' | 'slug' | 'bio' | 'imageUrl' | 'active'
     >
   >;
 };
@@ -375,6 +375,10 @@ export const CreateCollectionAuthorDocument = gql`
     ) {
       externalId
       name
+      slug
+      bio
+      imageUrl
+      active
     }
   }
 `;

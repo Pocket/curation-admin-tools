@@ -6,7 +6,7 @@
     "src/api/mutations/*.ts"
   ],
   "generates": {
-    "src/api/generated.d.ts": {
+    "src/api/generatedTypes.ts": {
       "plugins": [
         "typescript",
         "typescript-operations",
@@ -16,7 +16,7 @@
   },
   "hooks": {
     "afterAllFileWrite": [
-      "prettier -w src/api/generated.d.ts"
+      "prettier -w src/api/generatedTypes.ts"
     ]
   }
 }
