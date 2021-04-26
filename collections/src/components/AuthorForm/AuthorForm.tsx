@@ -13,7 +13,7 @@ import {
 import { AuthorModel } from '../../api';
 import { Button } from '../';
 
-interface EditAuthorFormProps {
+interface AuthorFormProps {
   /**
    * An object with everything author-related in it.
    */
@@ -36,11 +36,15 @@ interface EditAuthorFormProps {
   onCancel?: () => void;
 }
 
-export const AuthorForm: React.FC<EditAuthorFormProps> = (
-  props
-): JSX.Element => {
+/**
+ * A form for adding authors or editing information for existing authors
+ */
+export const AuthorForm: React.FC<AuthorFormProps> = (props): JSX.Element => {
   const { author, showCancelButton = true, onCancel, onSubmit } = props;
 
+  /**
+   * Set up form validation
+   */
   const formik = useFormik({
     initialValues: {
       name: author.name ?? '',
@@ -48,6 +52,8 @@ export const AuthorForm: React.FC<EditAuthorFormProps> = (
       bio: author.bio ?? '',
       active: author.active ?? true,
     },
+    // We don't want to irritate users by displaying validation errors
+    // before they actually submit the form
     validateOnChange: false,
     validateOnBlur: false,
     validationSchema: yup.object({
@@ -70,14 +76,7 @@ export const AuthorForm: React.FC<EditAuthorFormProps> = (
   });
 
   /**
-   * Update the switch on change
-   */
-  const handleSwitch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    formik.setFieldValue('active', event.target.checked);
-  };
-
-  /**
-   * Suggest a slug for the author
+   * Suggest a slug for the author - works off the "name" field
    */
   const suggestSlug = () => {
     const newSlug = slugify(formik.values.name, { lower: true });
@@ -151,17 +150,11 @@ export const AuthorForm: React.FC<EditAuthorFormProps> = (
             control={
               <Switch
                 color="primary"
-                checked={
-                  /* GraphQL-Codegen types are sometimes not straightforward to use
-                  on the frontend. Here, we are converting Maybe<boolean> | null
-                  to just boolean | null so that Material-UI accepts the value */
-                  !!author.active
-                }
+                checked={formik.values.active}
                 {...formik.getFieldProps('active')}
-                onChange={handleSwitch}
               />
             }
-            label={author.active ? 'Active' : 'Inactive'}
+            label={formik.values.active ? 'Active' : 'Inactive'}
             labelPlacement="end"
           />
         </Grid>

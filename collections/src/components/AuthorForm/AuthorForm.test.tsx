@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { AuthorForm } from './AuthorForm';
 import { AuthorModel } from '../../api';
@@ -113,15 +113,86 @@ describe('The AuthorForm component', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('validates the "slug" field', () => {
-    //
+  it('validates the "slug" field', async () => {
+    render(<AuthorForm author={author} onSubmit={handleSubmit} />);
+
+    const slugField = screen.getByLabelText(/slug/i);
+    const saveButton = screen.getByText(/save/i);
+
+    // Submit an empty field
+    userEvent.clear(slugField);
+    await waitFor(() => {
+      userEvent.click(saveButton);
+    });
+    expect(screen.queryByText(/please enter a slug/i)).toBeInTheDocument();
+    expect(
+      screen.queryByText(/slug must be at least 6 characters/i)
+    ).not.toBeInTheDocument();
+
+    // Submit a slug that is too short (under 6 characters)
+    userEvent.type(slugField, 'q-bee');
+    await waitFor(() => {
+      userEvent.click(saveButton);
+    });
+    expect(screen.queryByText(/please enter a slug/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/slug must be at least 6 characters/i)
+    ).toBeInTheDocument();
+
+    // Submit a slug that satisfies all the requirements
+    userEvent.type(slugField, 'queen-bee');
+    await waitFor(() => {
+      userEvent.click(saveButton);
+    });
+    expect(screen.queryByText(/please enter a slug/i)).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/slug must be at least 6 characters/i)
+    ).not.toBeInTheDocument();
   });
 
-  it('validates the "bio" field', () => {
-    //
+  it('suggests the slug correctly', async () => {
+    render(<AuthorForm author={author} onSubmit={handleSubmit} />);
+
+    // The "Suggest slug" button slugifies whatever is present in the "Full name" field
+    const slugField = screen.getByLabelText(/slug/i);
+    const nameField = screen.getByLabelText(/name/i);
+    const suggestSlugButton = screen.getByText(/suggest slug/i);
+
+    // Try with an empty field first
+    userEvent.clear(slugField);
+    userEvent.clear(nameField);
+
+    await waitFor(() => {
+      userEvent.click(suggestSlugButton);
+    });
+
+    // Slugify button returned an empty string
+    expect(slugField).toHaveTextContent('');
+
+    // Try with an actual name
+    userEvent.type(nameField, 'John Citizen');
+
+    await waitFor(() => {
+      userEvent.click(suggestSlugButton);
+    });
+
+    // Slugified version of the name appears in the slug input field
+    expect(screen.getByDisplayValue('john-citizen')).toBeInTheDocument();
   });
 
-  it('suggests the slug correctly', () => {
-    //
+  it('displays the "active" status correctly', async () => {
+    render(<AuthorForm author={author} onSubmit={handleSubmit} />);
+
+    // By default the mock author set up before each test is active
+    const checkbox = screen.getByLabelText(/active/i);
+    expect(checkbox).toBeInTheDocument();
+
+    // Let's uncheck it
+    await waitFor(() => {
+      userEvent.click(checkbox);
+    });
+
+    // Checkbox now displays "Inactive" as its label
+    expect(screen.queryByLabelText(/inactive/i)).toBeInTheDocument();
   });
 });
