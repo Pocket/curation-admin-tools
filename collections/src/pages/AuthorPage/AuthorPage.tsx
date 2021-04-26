@@ -8,14 +8,48 @@ import {
   AuthorInfo,
   Button,
   HandleApiResponse,
+  Notification,
 } from '../../components';
-import { AuthorModel, useGetAuthorByIdQuery } from '../../api';
+import {
+  AuthorModel,
+  useGetAuthorByIdQuery,
+  useUpdateCollectionAuthorMutation,
+} from '../../api';
 
 interface AuthorPageProps {
   author?: AuthorModel;
 }
 
 export const AuthorPage = (): JSX.Element => {
+  // prepare the "add new author" mutation
+  // has to be done at the top level of the component because it's a hook
+  const [updateAuthor] = useUpdateCollectionAuthorMutation();
+
+  // These are used to display or hide notifications with messages from the API
+  const [open, setOpen] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>('');
+  const [hasError, setHasError] = useState<boolean>(false);
+
+  /**
+   * Show a notification to the user whether the action (such as saving a record)
+   * has completed successfully.
+   */
+  const showNotification = (message: string, isError: boolean) => {
+    setHasError(isError);
+    setMessage(message);
+    setOpen(true);
+  };
+
+  /**
+   * Close the toast notification
+   */
+  const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setOpen(false);
+  };
+
   /**
    * If an Author object was passed to the page from one of the other app pages,
    * let's extract it from the routing.
@@ -48,8 +82,33 @@ export const AuthorPage = (): JSX.Element => {
     setShowEditForm(!showEditForm);
   };
 
+  // TODO: figure out how typescript wants us to do this
+  const externalId = author?.externalId || 'idk';
+
   const handleSubmit = (values: FormikValues): void => {
-    console.log(values);
+    updateAuthor({
+      variables: {
+        externalId: externalId,
+        name: values.name,
+        //slug: values.slug,
+        bio: values.bio,
+        // Note that we're not yet sending the 'active' value on creating
+        // a collection author, but we should!
+        active: values.active,
+      },
+    })
+      .then(({ data }) => {
+        showNotification('Author updated successfully!', false);
+
+        if (author && data) {
+          author.bio = data?.updateCollectionAuthor?.bio;
+          author.name = data?.updateCollectionAuthor?.name || 'fix this';
+          author.active = data?.updateCollectionAuthor?.active;
+        }
+      })
+      .catch((error: Error) => {
+        showNotification(error.message, true);
+      });
   };
 
   return (
@@ -81,6 +140,12 @@ export const AuthorPage = (): JSX.Element => {
               </Box>
             </Paper>
           </Fade>
+          <Notification
+            handleClose={handleClose}
+            isOpen={open}
+            message={message}
+            type={hasError ? 'error' : 'success'}
+          />
         </>
       )}
       {/*<h2>Collections by this author</h2>*/}
