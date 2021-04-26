@@ -7,6 +7,7 @@ import {
   Box,
   FormControlLabel,
   Grid,
+  LinearProgress,
   Switch,
   TextField,
 } from '@material-ui/core';
@@ -158,6 +159,12 @@ export const AuthorForm: React.FC<AuthorFormProps> = (props): JSX.Element => {
             labelPlacement="end"
           />
         </Grid>
+
+        {formik.isSubmitting && (
+          <Grid item xs={12}>
+            <LinearProgress />
+          </Grid>
+        )}
 
         <Grid item xs={12}>
           <Box display="flex" justifyContent="center">

@@ -17,11 +17,11 @@ import { Modal } from '../';
  */
 const useStyles = makeStyles(() => ({
   root: {
-    fontWeight: 'bold',
+    fontWeight: 400,
     fontSize: '0.875rem',
   },
   title: {
-    fontWeight: 'bold',
+    fontWeight: 400,
     fontSize: '1.125rem',
   },
 }));

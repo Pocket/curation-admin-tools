@@ -3,10 +3,11 @@
   "schema": "${SCHEMA_PATH}",
   "documents": [
     "src/api/queries/*.ts",
-    "src/api/mutations/*.ts"
+    "src/api/mutations/*.ts",
+    "src/api/fragments/*.ts"
   ],
   "generates": {
-    "src/api/generated.d.ts": {
+    "src/api/generatedTypes.ts": {
       "plugins": [
         "typescript",
         "typescript-operations",
@@ -16,7 +17,7 @@
   },
   "hooks": {
     "afterAllFileWrite": [
-      "prettier -w src/api/generated.d.ts"
+      "prettier -w src/api/generatedTypes.ts"
     ]
   }
 }

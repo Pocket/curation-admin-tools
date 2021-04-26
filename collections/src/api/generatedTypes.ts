@@ -271,6 +271,11 @@ export type _Service = {
   sdl?: Maybe<Scalars['String']>;
 };
 
+export type AuthorDataFragment = { __typename?: 'CollectionAuthor' } & Pick<
+  CollectionAuthor,
+  'externalId' | 'name' | 'slug' | 'bio' | 'imageUrl' | 'active'
+>;
+
 export type CreateCollectionAuthorMutationVariables = Exact<{
   name: Scalars['String'];
   slug?: Maybe<Scalars['String']>;
@@ -280,10 +285,7 @@ export type CreateCollectionAuthorMutationVariables = Exact<{
 
 export type CreateCollectionAuthorMutation = { __typename?: 'Mutation' } & {
   createCollectionAuthor?: Maybe<
-    { __typename?: 'CollectionAuthor' } & Pick<
-      CollectionAuthor,
-      'externalId' | 'name'
-    >
+    { __typename?: 'CollectionAuthor' } & AuthorDataFragment
   >;
 };
 
@@ -293,10 +295,7 @@ export type GetAuthorByIdQueryVariables = Exact<{
 
 export type GetAuthorByIdQuery = { __typename?: 'Query' } & {
   getCollectionAuthor?: Maybe<
-    { __typename?: 'CollectionAuthor' } & Pick<
-      CollectionAuthor,
-      'externalId' | 'name' | 'slug' | 'bio' | 'imageUrl' | 'active'
-    >
+    { __typename?: 'CollectionAuthor' } & AuthorDataFragment
   >;
 };
 
@@ -306,14 +305,7 @@ export type GetAuthorsQuery = { __typename?: 'Query' } & {
   getCollectionAuthors?: Maybe<
     { __typename?: 'CollectionAuthorsResult' } & {
       authors?: Maybe<
-        Array<
-          Maybe<
-            { __typename?: 'CollectionAuthor' } & Pick<
-              CollectionAuthor,
-              'externalId' | 'name' | 'slug' | 'bio' | 'imageUrl' | 'active'
-            >
-          >
-        >
+        Array<Maybe<{ __typename?: 'CollectionAuthor' } & AuthorDataFragment>>
       >;
     }
   >;
@@ -363,6 +355,16 @@ export type GetDraftCollectionsQuery = { __typename?: 'Query' } & {
   >;
 };
 
+export const AuthorDataFragmentDoc = gql`
+  fragment AuthorData on CollectionAuthor {
+    externalId
+    name
+    slug
+    bio
+    imageUrl
+    active
+  }
+`;
 export const CreateCollectionAuthorDocument = gql`
   mutation createCollectionAuthor(
     $name: String!
@@ -373,10 +375,10 @@ export const CreateCollectionAuthorDocument = gql`
     createCollectionAuthor(
       data: { name: $name, slug: $slug, bio: $bio, imageUrl: $imageUrl }
     ) {
-      externalId
-      name
+      ...AuthorData
     }
   }
+  ${AuthorDataFragmentDoc}
 `;
 export type CreateCollectionAuthorMutationFn = Apollo.MutationFunction<
   CreateCollectionAuthorMutation,
@@ -426,14 +428,10 @@ export type CreateCollectionAuthorMutationOptions = Apollo.BaseMutationOptions<
 export const GetAuthorByIdDocument = gql`
   query getAuthorById($id: String!) {
     getCollectionAuthor(externalId: $id) {
-      externalId
-      name
-      slug
-      bio
-      imageUrl
-      active
+      ...AuthorData
     }
   }
+  ${AuthorDataFragmentDoc}
 `;
 
 /**
@@ -490,15 +488,11 @@ export const GetAuthorsDocument = gql`
   query getAuthors {
     getCollectionAuthors {
       authors {
-        externalId
-        name
-        slug
-        bio
-        imageUrl
-        active
+        ...AuthorData
       }
     }
   }
+  ${AuthorDataFragmentDoc}
 `;
 
 /**
