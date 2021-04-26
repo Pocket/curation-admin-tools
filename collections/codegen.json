@@ -3,7 +3,8 @@
   "schema": "${SCHEMA_PATH}",
   "documents": [
     "src/api/queries/*.ts",
-    "src/api/mutations/*.ts"
+    "src/api/mutations/*.ts",
+    "src/api/fragments/*.ts"
   ],
   "generates": {
     "src/api/generatedTypes.ts": {

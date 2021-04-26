@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { AuthorData } from '../fragments/AuthorData';
 
 /**
  * Get author information by their external id.
@@ -6,12 +7,8 @@ import { gql } from '@apollo/client';
 export const getAuthorById = gql`
   query getAuthorById($id: String!) {
     getCollectionAuthor(externalId: $id) {
-      externalId
-      name
-      slug
-      bio
-      imageUrl
-      active
+      ...AuthorData
     }
   }
+  ${AuthorData}
 `;
