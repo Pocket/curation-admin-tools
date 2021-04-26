@@ -18,9 +18,9 @@ export type Scalars = {
   Float: number;
   DateString: any;
   Markdown: any;
-  /** The `Upload` scalar type represents a file upload. */
-  Upload: any;
+  /** These are all just renamed strings right now */
   Url: any;
+  _Any: any;
 };
 
 export enum CacheControlScope {
@@ -28,6 +28,10 @@ export enum CacheControlScope {
   Private = 'PRIVATE',
 }
 
+/**
+ * TODO: add comments to all the fields in here!
+ * there's a documentation ticket - do this in that ticket
+ */
 export type Collection = {
   __typename?: 'Collection';
   externalId: Scalars['ID'];
@@ -54,16 +58,8 @@ export type CollectionAuthor = {
 
 export type CollectionAuthorsResult = {
   __typename?: 'CollectionAuthorsResult';
-  pagination?: Maybe<CollectionEntityPagination>;
+  pagination?: Maybe<Pagination>;
   authors?: Maybe<Array<Maybe<CollectionAuthor>>>;
-};
-
-export type CollectionEntityPagination = {
-  __typename?: 'CollectionEntityPagination';
-  currentPage: Scalars['Int'];
-  totalPages: Scalars['Int'];
-  totalResults: Scalars['Int'];
-  perPage: Scalars['Int'];
 };
 
 export type CollectionInput = {
@@ -72,9 +68,9 @@ export type CollectionInput = {
 };
 
 export enum CollectionStatus {
-  Draft = 'draft',
-  Published = 'published',
-  Archived = 'archived',
+  Draft = 'DRAFT',
+  Published = 'PUBLISHED',
+  Archived = 'ARCHIVED',
 }
 
 export type CollectionStory = {
@@ -87,6 +83,7 @@ export type CollectionStory = {
   authors?: Maybe<Array<Maybe<CollectionStoryAuthor>>>;
   publisher?: Maybe<Scalars['String']>;
   sortOrder?: Maybe<Scalars['Int']>;
+  item?: Maybe<Item>;
 };
 
 export type CollectionStoryAuthor = {
@@ -100,12 +97,13 @@ export type CollectionStoryAuthorInput = {
 
 export type CollectionsResult = {
   __typename?: 'CollectionsResult';
-  pagination?: Maybe<CollectionEntityPagination>;
+  pagination?: Maybe<Pagination>;
   collections?: Maybe<Array<Maybe<Collection>>>;
 };
 
 export type CreateCollectionAuthorInput = {
   name: Scalars['String'];
+  slug?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['Markdown']>;
   imageUrl?: Maybe<Scalars['Url']>;
 };
@@ -129,6 +127,14 @@ export type CreateCollectionStoryInput = {
   authors: Array<Maybe<CollectionStoryAuthorInput>>;
   publisher: Scalars['String'];
   sortOrder?: Maybe<Scalars['Int']>;
+};
+
+export type Item = {
+  __typename?: 'Item';
+  /** key field to identify the Item entity in the Parser service */
+  givenUrl: Scalars['Url'];
+  /** If the item is a collection allow them to get the collection information */
+  collection?: Maybe<Collection>;
 };
 
 export type Mutation = {
@@ -170,13 +176,31 @@ export type MutationDeleteCollectionStoryArgs = {
   externalId: Scalars['String'];
 };
 
+export type Pagination = {
+  __typename?: 'Pagination';
+  currentPage: Scalars['Int'];
+  totalPages: Scalars['Int'];
+  totalResults: Scalars['Int'];
+  perPage: Scalars['Int'];
+};
+
 export type Query = {
   __typename?: 'Query';
+  _entities: Array<Maybe<_Entity>>;
+  _service: _Service;
   searchCollections?: Maybe<CollectionsResult>;
+  /** Retrieves a Collection by externalId. */
   getCollection?: Maybe<Collection>;
+  /** Retrieves a CollectionAuthor by externalId. */
   getCollectionAuthor?: Maybe<CollectionAuthor>;
+  /** Retrieves a paged list of CollectionAuthors. */
   getCollectionAuthors?: Maybe<CollectionAuthorsResult>;
+  /** Retrieves a CollectionStory by a combination of collectionId and url. */
   getCollectionStory?: Maybe<CollectionStory>;
+};
+
+export type Query_EntitiesArgs = {
+  representations: Array<Scalars['_Any']>;
 };
 
 export type QuerySearchCollectionsArgs = {
@@ -237,6 +261,30 @@ export type UpdateCollectionStoryInput = {
   authors: Array<Maybe<CollectionStoryAuthorInput>>;
   publisher: Scalars['String'];
   sortOrder?: Maybe<Scalars['Int']>;
+};
+
+export type _Entity = CollectionStory | Item;
+
+export type _Service = {
+  __typename?: '_Service';
+  /** The sdl representing the federated service capabilities. Includes federation directives, removes federation types, and includes rest of full schema after schema directives have been applied */
+  sdl?: Maybe<Scalars['String']>;
+};
+
+export type CreateCollectionAuthorMutationVariables = Exact<{
+  name: Scalars['String'];
+  slug?: Maybe<Scalars['String']>;
+  bio?: Maybe<Scalars['Markdown']>;
+  imageUrl?: Maybe<Scalars['Url']>;
+}>;
+
+export type CreateCollectionAuthorMutation = { __typename?: 'Mutation' } & {
+  createCollectionAuthor?: Maybe<
+    { __typename?: 'CollectionAuthor' } & Pick<
+      CollectionAuthor,
+      'externalId' | 'name'
+    >
+  >;
 };
 
 export type GetAuthorByIdQueryVariables = Exact<{
@@ -315,6 +363,66 @@ export type GetDraftCollectionsQuery = { __typename?: 'Query' } & {
   >;
 };
 
+export const CreateCollectionAuthorDocument = gql`
+  mutation createCollectionAuthor(
+    $name: String!
+    $slug: String
+    $bio: Markdown
+    $imageUrl: Url
+  ) {
+    createCollectionAuthor(
+      data: { name: $name, slug: $slug, bio: $bio, imageUrl: $imageUrl }
+    ) {
+      externalId
+      name
+    }
+  }
+`;
+export type CreateCollectionAuthorMutationFn = Apollo.MutationFunction<
+  CreateCollectionAuthorMutation,
+  CreateCollectionAuthorMutationVariables
+>;
+
+/**
+ * __useCreateCollectionAuthorMutation__
+ *
+ * To run a mutation, you first call `useCreateCollectionAuthorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCollectionAuthorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCollectionAuthorMutation, { data, loading, error }] = useCreateCollectionAuthorMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      slug: // value for 'slug'
+ *      bio: // value for 'bio'
+ *      imageUrl: // value for 'imageUrl'
+ *   },
+ * });
+ */
+export function useCreateCollectionAuthorMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateCollectionAuthorMutation,
+    CreateCollectionAuthorMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateCollectionAuthorMutation,
+    CreateCollectionAuthorMutationVariables
+  >(CreateCollectionAuthorDocument, options);
+}
+export type CreateCollectionAuthorMutationHookResult = ReturnType<
+  typeof useCreateCollectionAuthorMutation
+>;
+export type CreateCollectionAuthorMutationResult = Apollo.MutationResult<CreateCollectionAuthorMutation>;
+export type CreateCollectionAuthorMutationOptions = Apollo.BaseMutationOptions<
+  CreateCollectionAuthorMutation,
+  CreateCollectionAuthorMutationVariables
+>;
 export const GetAuthorByIdDocument = gql`
   query getAuthorById($id: String!) {
     getCollectionAuthor(externalId: $id) {
@@ -506,7 +614,7 @@ export type GetCollectionByIdQueryResult = Apollo.QueryResult<
 >;
 export const GetDraftCollectionsDocument = gql`
   query getDraftCollections {
-    searchCollections(filters: { status: draft }) {
+    searchCollections(filters: { status: DRAFT }) {
       collections {
         externalId
         title

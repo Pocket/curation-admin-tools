@@ -1,4 +1,3 @@
-import { ApolloError } from '@apollo/client';
 import { AuthorModel } from './models/Author';
 import { CollectionModel } from './models/Collection';
 
@@ -10,18 +9,17 @@ export { client } from './client';
 /**
  * Models
  */
-export interface ApiCallStates {
-  loading: boolean;
-  error: Error | ApolloError | undefined;
-}
-
 export type { AuthorModel };
 export type { CollectionModel };
+export { CollectionStatus } from './generatedTypes';
 
 /**
- * Custom Hooks
+ * Hooks
  */
-export { useGetAuthors } from './hooks/useGetAuthors';
-export { useGetAuthorById } from './hooks/useGetAuthorById';
-export { useGetDraftCollections } from './hooks/useGetDraftCollections';
-export { useGetCollectionById } from './hooks/useGetCollectionById';
+export {
+  useGetAuthorsQuery,
+  useGetAuthorByIdQuery,
+  useGetDraftCollectionsQuery,
+  useGetCollectionByIdQuery,
+  useCreateCollectionAuthorMutation,
+} from './generatedTypes';

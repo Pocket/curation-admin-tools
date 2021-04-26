@@ -1,0 +1,22 @@
+{
+  "overwrite": true,
+  "schema": "${SCHEMA_PATH}",
+  "documents": [
+    "src/api/queries/*.ts",
+    "src/api/mutations/*.ts"
+  ],
+  "generates": {
+    "src/api/generated.d.ts": {
+      "plugins": [
+        "typescript",
+        "typescript-operations",
+        "typescript-react-apollo"
+      ]
+    }
+  },
+  "hooks": {
+    "afterAllFileWrite": [
+      "prettier -w src/api/generated.d.ts"
+    ]
+  }
+}

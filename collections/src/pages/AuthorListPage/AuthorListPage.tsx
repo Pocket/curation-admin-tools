@@ -2,8 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Box } from '@material-ui/core';
 import { AuthorListCard, Button, HandleApiResponse } from '../../components';
-import { AuthorModel } from '../../api';
-import { useGetAuthorsQuery } from '../../api/generatedTypes';
+import { AuthorModel, useGetAuthorsQuery } from '../../api';
 
 /**
  * Author List Page

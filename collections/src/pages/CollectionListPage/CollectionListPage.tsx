@@ -6,14 +6,15 @@ import {
   CollectionListCard,
   HandleApiResponse,
 } from '../../components';
-import { CollectionModel, useGetDraftCollections } from '../../api';
+import { CollectionModel } from '../../api';
+import { useGetDraftCollectionsQuery } from '../../api';
 
 /**
  * Collection List Page
  */
 export const CollectionListPage = (): JSX.Element => {
   // Load collections
-  const { loading, error, data } = useGetDraftCollections();
+  const { loading, error, data } = useGetDraftCollectionsQuery();
 
   return (
     <>

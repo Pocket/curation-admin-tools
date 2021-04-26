@@ -1,9 +1,0 @@
-overwrite: true
-schema: ${SCHEMA_PATH}
-documents: ["src/api/queries/*.ts"]
-generates:
-  src/api/generatedTypes.ts:
-    plugins:
-      - "typescript"
-      - "typescript-operations"
-      - "typescript-react-apollo"
