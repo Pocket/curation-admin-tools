@@ -12,7 +12,7 @@ import {
   Select,
   TextField,
 } from '@material-ui/core';
-import { CollectionModel, CollectionStatus } from '../../api';
+import { AuthorModel, CollectionModel, CollectionStatus } from '../../api';
 import { Button } from '../';
 import { useStyles } from './CollectionForm.styles';
 
@@ -21,6 +21,11 @@ interface CollectionFormProps {
    * An object with everything collection-related in it.
    */
   collection: CollectionModel;
+
+  /**
+   * A list of CollectionAuthor objects
+   */
+  authors: AuthorModel[];
 
   /**
    * What do we do with the submitted data?
@@ -45,7 +50,13 @@ interface CollectionFormProps {
 export const CollectionForm: React.FC<CollectionFormProps> = (
   props
 ): JSX.Element => {
-  const { collection, showCancelButton = true, onCancel, onSubmit } = props;
+  const {
+    collection,
+    authors,
+    showCancelButton = true,
+    onCancel,
+    onSubmit,
+  } = props;
   const classes = useStyles();
   /**
    * Set up form validation
@@ -173,9 +184,9 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
               }}
               {...formik.getFieldProps('externalAuthorId')}
             >
-              <option value="111">Hardcoded Author #1</option>
-              <option value="222">Hardcoded Author #2</option>
-              <option value="333">Hardcoded Author #3</option>
+              {authors.map((author: AuthorModel) => {
+                return <option value={author.externalId}>{author.name}</option>;
+              })}
             </Select>
           </FormControl>
         </Grid>

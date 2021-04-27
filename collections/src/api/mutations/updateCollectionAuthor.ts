@@ -8,7 +8,7 @@ export const updateCollectionAuthor = gql`
   mutation updateCollectionAuthor(
     $externalId: String!
     $name: String!
-    #$slug: String
+    $slug: String!
     $bio: Markdown
     $imageUrl: Url
     $active: Boolean
@@ -17,7 +17,7 @@ export const updateCollectionAuthor = gql`
       data: {
         externalId: $externalId
         name: $name
-        #slug: $slug
+        slug: $slug
         bio: $bio
         imageUrl: $imageUrl
         active: $active

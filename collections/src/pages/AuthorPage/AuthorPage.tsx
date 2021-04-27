@@ -81,7 +81,7 @@ export const AuthorPage = (): JSX.Element => {
       variables: {
         externalId: author!.externalId,
         name: values.name,
-        //slug: values.slug,
+        slug: values.slug,
         bio: values.bio,
         active: values.active,
       },

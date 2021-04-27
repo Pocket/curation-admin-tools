@@ -18,6 +18,7 @@ export type Scalars = {
   Float: number;
   DateString: any;
   Markdown: any;
+  Upload: any;
   /** These are all just renamed strings right now */
   Url: any;
   _Any: any;
@@ -37,7 +38,7 @@ export type Collection = {
   externalId: Scalars['ID'];
   slug: Scalars['String'];
   title: Scalars['String'];
-  excerpt: Scalars['Markdown'];
+  excerpt?: Maybe<Scalars['Markdown']>;
   status: CollectionStatus;
   intro?: Maybe<Scalars['Markdown']>;
   imageUrl?: Maybe<Scalars['Url']>;
@@ -59,7 +60,19 @@ export type CollectionAuthor = {
 export type CollectionAuthorsResult = {
   __typename?: 'CollectionAuthorsResult';
   pagination?: Maybe<Pagination>;
-  authors?: Maybe<Array<Maybe<CollectionAuthor>>>;
+  authors: Array<CollectionAuthor>;
+};
+
+export type CollectionImageUploadInput = {
+  image: Scalars['Upload'];
+  width: Scalars['Int'];
+  height: Scalars['Int'];
+  fileSizeBytes: Scalars['Int'];
+};
+
+export type CollectionImageUrl = {
+  __typename?: 'CollectionImageUrl';
+  url: Scalars['String'];
 };
 
 export type CollectionInput = {
@@ -146,6 +159,7 @@ export type Mutation = {
   createCollectionStory?: Maybe<CollectionStory>;
   updateCollectionStory?: Maybe<CollectionStory>;
   deleteCollectionStory?: Maybe<CollectionStory>;
+  collectionImageUpload: CollectionImageUrl;
 };
 
 export type MutationCreateCollectionAuthorArgs = {
@@ -174,6 +188,10 @@ export type MutationUpdateCollectionStoryArgs = {
 
 export type MutationDeleteCollectionStoryArgs = {
   externalId: Scalars['String'];
+};
+
+export type MutationCollectionImageUploadArgs = {
+  data: CollectionImageUploadInput;
 };
 
 export type Pagination = {
@@ -223,8 +241,7 @@ export type QueryGetCollectionAuthorsArgs = {
 };
 
 export type QueryGetCollectionStoryArgs = {
-  collectionId: Scalars['Int'];
-  url?: Maybe<Scalars['String']>;
+  externalId?: Maybe<Scalars['String']>;
 };
 
 export type SearchCollectionsFilters = {
@@ -236,6 +253,7 @@ export type SearchCollectionsFilters = {
 export type UpdateCollectionAuthorInput = {
   externalId: Scalars['String'];
   name: Scalars['String'];
+  slug: Scalars['String'];
   bio?: Maybe<Scalars['Markdown']>;
   imageUrl?: Maybe<Scalars['Url']>;
   active?: Maybe<Scalars['Boolean']>;
@@ -292,6 +310,7 @@ export type CreateCollectionAuthorMutation = { __typename?: 'Mutation' } & {
 export type UpdateCollectionAuthorMutationVariables = Exact<{
   externalId: Scalars['String'];
   name: Scalars['String'];
+  slug: Scalars['String'];
   bio?: Maybe<Scalars['Markdown']>;
   imageUrl?: Maybe<Scalars['Url']>;
   active?: Maybe<Scalars['Boolean']>;
@@ -318,9 +337,7 @@ export type GetAuthorsQueryVariables = Exact<{ [key: string]: never }>;
 export type GetAuthorsQuery = { __typename?: 'Query' } & {
   getCollectionAuthors?: Maybe<
     { __typename?: 'CollectionAuthorsResult' } & {
-      authors?: Maybe<
-        Array<Maybe<{ __typename?: 'CollectionAuthor' } & AuthorDataFragment>>
-      >;
+      authors: Array<{ __typename?: 'CollectionAuthor' } & AuthorDataFragment>;
     }
   >;
 };
@@ -443,6 +460,7 @@ export const UpdateCollectionAuthorDocument = gql`
   mutation updateCollectionAuthor(
     $externalId: String!
     $name: String!
+    $slug: String!
     $bio: Markdown
     $imageUrl: Url
     $active: Boolean
@@ -451,6 +469,7 @@ export const UpdateCollectionAuthorDocument = gql`
       data: {
         externalId: $externalId
         name: $name
+        slug: $slug
         bio: $bio
         imageUrl: $imageUrl
         active: $active
@@ -481,6 +500,7 @@ export type UpdateCollectionAuthorMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      externalId: // value for 'externalId'
  *      name: // value for 'name'
+ *      slug: // value for 'slug'
  *      bio: // value for 'bio'
  *      imageUrl: // value for 'imageUrl'
  *      active: // value for 'active'
