@@ -4,7 +4,7 @@ interface useNotificationsReturnValues {
   open: boolean;
   message: string;
   hasError: boolean;
-  showNotification: (message: string, isError: boolean) => void;
+  showNotification: (message: string, isError?: boolean) => void;
   handleClose: (event?: React.SyntheticEvent, reason?: string) => void;
 }
 

@@ -40,7 +40,10 @@ export const AuthorPage = (): JSX.Element => {
    * let's extract it from the routing.
    */
   const location = useLocation<AuthorPageProps>();
-  let author: AuthorModel | undefined = location.state?.author;
+  let author: AuthorModel | undefined = location.state?.author
+    ? // Deep clone a read-only object that comes from the routing
+      JSON.parse(JSON.stringify(location.state?.author))
+    : undefined;
 
   /**
    * If the user came directly to this page (i.e., via a bookmarked page),
@@ -91,6 +94,7 @@ export const AuthorPage = (): JSX.Element => {
           author.name = data?.updateCollectionAuthor?.name!;
           author.active = data?.updateCollectionAuthor?.active;
         }
+        toggleEditForm();
       })
       .catch((error: Error) => {
         showNotification(error.message, true);
