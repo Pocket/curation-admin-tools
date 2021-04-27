@@ -3,11 +3,17 @@ import { useHistory } from 'react-router-dom';
 import { Box, Paper } from '@material-ui/core';
 import { FormikValues } from 'formik';
 import {
+  AuthorModel,
   CollectionModel,
   CollectionStatus,
   useCreateCollectionAuthorMutation,
+  useGetAuthorsQuery,
 } from '../../api';
-import { CollectionForm, Notification } from '../../components';
+import {
+  CollectionForm,
+  HandleApiResponse,
+  Notification,
+} from '../../components';
 import { useNotifications } from '../../hooks/useNotifications';
 
 export const AddCollectionPage: React.FC = (): JSX.Element => {
@@ -35,6 +41,9 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
     status: CollectionStatus.Draft,
   };
 
+  // Load authors
+  const { loading, error, data: authorsData } = useGetAuthorsQuery();
+
   // TODO: load a list of authors to use in the Authors select
 
   // prepare the "add new collection" mutation
@@ -58,11 +67,18 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
       </Box>
       <Paper elevation={4}>
         <Box p={2} mt={3}>
-          <CollectionForm
-            collection={collection}
-            onSubmit={handleSubmit}
-            showCancelButton={false}
-          />
+          {!authorsData && (
+            <HandleApiResponse loading={loading} error={error} />
+          )}
+
+          {authorsData && authorsData.getCollectionAuthors && (
+            <CollectionForm
+              authors={authorsData.getCollectionAuthors.authors}
+              collection={collection}
+              onSubmit={handleSubmit}
+              showCancelButton={false}
+            />
+          )}
         </Box>
       </Paper>
       <Notification

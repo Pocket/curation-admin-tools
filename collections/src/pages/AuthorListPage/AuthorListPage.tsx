@@ -27,15 +27,9 @@ export const AuthorListPage = (): JSX.Element => {
       {!data && <HandleApiResponse loading={loading} error={error} />}
 
       {data &&
-        data.getCollectionAuthors?.authors?.map(
-          (author: AuthorModel | null) => {
-            return (
-              author && (
-                <AuthorListCard key={author.externalId} author={author} />
-              )
-            );
-          }
-        )}
+        data.getCollectionAuthors?.authors.map((author: AuthorModel) => {
+          return <AuthorListCard key={author.externalId} author={author} />;
+        })}
     </>
   );
 };
