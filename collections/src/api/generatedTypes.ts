@@ -289,6 +289,20 @@ export type CreateCollectionAuthorMutation = { __typename?: 'Mutation' } & {
   >;
 };
 
+export type UpdateCollectionAuthorMutationVariables = Exact<{
+  externalId: Scalars['String'];
+  name: Scalars['String'];
+  bio?: Maybe<Scalars['Markdown']>;
+  imageUrl?: Maybe<Scalars['Url']>;
+  active?: Maybe<Scalars['Boolean']>;
+}>;
+
+export type UpdateCollectionAuthorMutation = { __typename?: 'Mutation' } & {
+  updateCollectionAuthor?: Maybe<
+    { __typename?: 'CollectionAuthor' } & AuthorDataFragment
+  >;
+};
+
 export type GetAuthorByIdQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -424,6 +438,74 @@ export type CreateCollectionAuthorMutationResult = Apollo.MutationResult<CreateC
 export type CreateCollectionAuthorMutationOptions = Apollo.BaseMutationOptions<
   CreateCollectionAuthorMutation,
   CreateCollectionAuthorMutationVariables
+>;
+export const UpdateCollectionAuthorDocument = gql`
+  mutation updateCollectionAuthor(
+    $externalId: String!
+    $name: String!
+    $bio: Markdown
+    $imageUrl: Url
+    $active: Boolean
+  ) {
+    updateCollectionAuthor(
+      data: {
+        externalId: $externalId
+        name: $name
+        bio: $bio
+        imageUrl: $imageUrl
+        active: $active
+      }
+    ) {
+      ...AuthorData
+    }
+  }
+  ${AuthorDataFragmentDoc}
+`;
+export type UpdateCollectionAuthorMutationFn = Apollo.MutationFunction<
+  UpdateCollectionAuthorMutation,
+  UpdateCollectionAuthorMutationVariables
+>;
+
+/**
+ * __useUpdateCollectionAuthorMutation__
+ *
+ * To run a mutation, you first call `useUpdateCollectionAuthorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCollectionAuthorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCollectionAuthorMutation, { data, loading, error }] = useUpdateCollectionAuthorMutation({
+ *   variables: {
+ *      externalId: // value for 'externalId'
+ *      name: // value for 'name'
+ *      bio: // value for 'bio'
+ *      imageUrl: // value for 'imageUrl'
+ *      active: // value for 'active'
+ *   },
+ * });
+ */
+export function useUpdateCollectionAuthorMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateCollectionAuthorMutation,
+    UpdateCollectionAuthorMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateCollectionAuthorMutation,
+    UpdateCollectionAuthorMutationVariables
+  >(UpdateCollectionAuthorDocument, options);
+}
+export type UpdateCollectionAuthorMutationHookResult = ReturnType<
+  typeof useUpdateCollectionAuthorMutation
+>;
+export type UpdateCollectionAuthorMutationResult = Apollo.MutationResult<UpdateCollectionAuthorMutation>;
+export type UpdateCollectionAuthorMutationOptions = Apollo.BaseMutationOptions<
+  UpdateCollectionAuthorMutation,
+  UpdateCollectionAuthorMutationVariables
 >;
 export const GetAuthorByIdDocument = gql`
   query getAuthorById($id: String!) {

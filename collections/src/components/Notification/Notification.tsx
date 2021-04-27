@@ -37,7 +37,7 @@ export const Notification: React.FC<NotificationProps> = (
   return (
     <Snackbar
       open={isOpen}
-      autoHideDuration={type === 'error' ? undefined : 2000}
+      autoHideDuration={type === 'error' ? undefined : 3000}
       onClose={handleClose}
     >
       <Alert

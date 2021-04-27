@@ -1,15 +1,20 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Box, Paper } from '@material-ui/core';
 import { FormikValues } from 'formik';
 import { AuthorModel, useCreateCollectionAuthorMutation } from '../../api';
 import { AuthorForm, Notification } from '../../components';
+import { useNotifications } from '../../hooks/useNotifications';
 
 export const AddAuthorPage: React.FC = (): JSX.Element => {
-  // These are used to display or hide notifications with messages from the API
-  const [open, setOpen] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>('');
-  const [hasError, setHasError] = useState<boolean>(false);
+  // Prepare state vars and helper methods for API notifications
+  const {
+    open,
+    message,
+    hasError,
+    showNotification,
+    handleClose,
+  } = useNotifications();
 
   // This is used to redirect the user to the full author page once
   // the record is added successfully
@@ -30,26 +35,6 @@ export const AddAuthorPage: React.FC = (): JSX.Element => {
   const [addAuthor] = useCreateCollectionAuthorMutation();
 
   /**
-   * Show a notification to the user whether the action (such as saving a record)
-   * has completed successfully.
-   */
-  const showNotification = (message: string, isError: boolean) => {
-    setHasError(isError);
-    setMessage(message);
-    setOpen(true);
-  };
-
-  /**
-   * Close the toast notification
-   */
-  const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpen(false);
-  };
-
-  /**
    * Collect form data and send it to the API
    */
   const handleSubmit = (values: FormikValues): void => {
@@ -58,6 +43,7 @@ export const AddAuthorPage: React.FC = (): JSX.Element => {
         name: values.name,
         slug: values.slug,
         bio: values.bio,
+        imageUrl: '',
         // Note that we're not yet sending the 'active' value on creating
         // a collection author, but we should!
         //active: values.active
