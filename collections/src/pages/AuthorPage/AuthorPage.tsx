@@ -15,40 +15,25 @@ import {
   useGetAuthorByIdQuery,
   useUpdateCollectionAuthorMutation,
 } from '../../api';
+import { useNotifications } from '../../hooks/useNotifications';
 
 interface AuthorPageProps {
   author?: AuthorModel;
 }
 
 export const AuthorPage = (): JSX.Element => {
+  // Prepare state vars and helper methods for API notifications
+  const {
+    open,
+    message,
+    hasError,
+    showNotification,
+    handleClose,
+  } = useNotifications();
+
   // prepare the "add new author" mutation
   // has to be done at the top level of the component because it's a hook
   const [updateAuthor] = useUpdateCollectionAuthorMutation();
-
-  // These are used to display or hide notifications with messages from the API
-  const [open, setOpen] = useState<boolean>(false);
-  const [message, setMessage] = useState<string>('');
-  const [hasError, setHasError] = useState<boolean>(false);
-
-  /**
-   * Show a notification to the user whether the action (such as saving a record)
-   * has completed successfully.
-   */
-  const showNotification = (message: string, isError: boolean) => {
-    setHasError(isError);
-    setMessage(message);
-    setOpen(true);
-  };
-
-  /**
-   * Close the toast notification
-   */
-  const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setOpen(false);
-  };
 
   /**
    * If an Author object was passed to the page from one of the other app pages,
@@ -72,8 +57,10 @@ export const AuthorPage = (): JSX.Element => {
     skip: typeof author === 'object',
   });
 
-  if (data && data.getCollectionAuthor) {
-    author = data.getCollectionAuthor;
+  if (data) {
+    //Author is a read only object when returned from Apollo, if we want to
+    // update it we have to stringify and then parse it
+    author = JSON.parse(JSON.stringify(data.getCollectionAuthor));
   }
 
   const [showEditForm, setShowEditForm] = useState<boolean>(false);
@@ -82,27 +69,26 @@ export const AuthorPage = (): JSX.Element => {
     setShowEditForm(!showEditForm);
   };
 
-  // TODO: figure out how typescript wants us to do this
-  const externalId = author?.externalId || 'idk';
-
+  /**
+   * Collect form data and send it to the API.
+   * Update components on page if updates have been saved successfully
+   */
   const handleSubmit = (values: FormikValues): void => {
     updateAuthor({
       variables: {
-        externalId: externalId,
+        externalId: author!.externalId,
         name: values.name,
         //slug: values.slug,
         bio: values.bio,
-        // Note that we're not yet sending the 'active' value on creating
-        // a collection author, but we should!
         active: values.active,
       },
     })
       .then(({ data }) => {
-        showNotification('Author updated successfully!', false);
+        showNotification('Author updated successfully!');
 
-        if (author && data) {
+        if (author) {
           author.bio = data?.updateCollectionAuthor?.bio;
-          author.name = data?.updateCollectionAuthor?.name || 'fix this';
+          author.name = data?.updateCollectionAuthor?.name!;
           author.active = data?.updateCollectionAuthor?.active;
         }
       })

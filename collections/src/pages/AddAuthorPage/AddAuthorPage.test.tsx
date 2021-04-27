@@ -19,6 +19,7 @@ describe('The AddAuthor page', () => {
       bio:
         "I'm baby tousled tbh 8-bit poke farm-to-table poutine occupy " +
         "you probably haven't heard of them lomo chillwave. ",
+      imageUrl: '',
     };
   });
 
