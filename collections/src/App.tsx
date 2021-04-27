@@ -12,6 +12,7 @@ import {
   AddAuthorPage,
   CollectionListPage,
   CollectionPage,
+  AddCollectionPage,
 } from './pages';
 import { Header, MainContentWrapper, MenuLink } from './components';
 
@@ -50,6 +51,9 @@ function App(): JSX.Element {
                 </Route>
                 <Route exact path="/authors/:id/">
                   <AuthorPage />
+                </Route>
+                <Route exact path="/collections/add/">
+                  <AddCollectionPage />
                 </Route>
                 <Route exact path="/collections/">
                   <CollectionListPage />
