@@ -84,6 +84,10 @@ export function createPocketAlbApplication(
           {
             name: 'REACT_APP_COLLECTION_API_ENDPOINT',
             value: config.envVars.collectionApiEndpoint
+          },
+          {
+            name: 'REACT_APP_CLIENT_API_ENDPOINT',
+            value: config.envVars.clientApiEndpoint
           }
         ],
         secretEnvVars: [
