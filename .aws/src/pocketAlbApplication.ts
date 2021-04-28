@@ -82,8 +82,12 @@ export function createPocketAlbApplication(
             value: process.env.NODE_ENV // this gives us a nice lowercase production and development
           },
           {
-            name: 'COLLECTION_API_ENDPOINT',
+            name: 'REACT_APP_COLLECTION_API_ENDPOINT',
             value: config.envVars.collectionApiEndpoint
+          },
+          {
+            name: 'REACT_APP_CLIENT_API_ENDPOINT',
+            value: config.envVars.clientApiEndpoint
           }
         ],
         secretEnvVars: [

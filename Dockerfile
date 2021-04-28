@@ -4,10 +4,10 @@ WORKDIR /usr/src/app
 ARG GIT_SHA
 COPY . .
 ENV NODE_ENV=production
+ENV REACT_APP_GIT_SHA=${GIT_SHA}
 RUN cd collections \
     && npm install --silent \
     && npm run build
-ENV GIT_SHA=${GIT_SHA}
 
 # production environment
 FROM nginx:1.19.10

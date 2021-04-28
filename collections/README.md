@@ -15,8 +15,9 @@ Add a file with an environment variable so that the app can connect to the API. 
 Create an `.env` file in the root of the project (the `/collections` directory) and add the following lines to it:
 
 ```dotenv
-REACT_APP_API_ENDPOINT="[YOUR_API_ADDRESS_HERE]"
-SCHEMA_PATH="[YOUR_API_ADDRESS_HERE]"
+REACT_APP_CLIENT_API_ENDPOINT="[YOUR_CLIENT_API_ADDRESS_HERE]"
+REACT_APP_COLLECTION_API_ENDPOINT="[YOUR_COLLECTION_API_ADDRESS_HERE]"
+SCHEMA_PATH="[YOUR_COLLECTION_API_ADDRESS_HERE]"
 ```
 
 (Yes, those are two different variables for the same value. One is for React, one is for Apollo. Play nice, kids.)
