@@ -294,6 +294,30 @@ export type AuthorDataFragment = { __typename?: 'CollectionAuthor' } & Pick<
   'externalId' | 'name' | 'slug' | 'bio' | 'imageUrl' | 'active'
 >;
 
+export type CreateCollectionMutationVariables = Exact<{
+  title: Scalars['String'];
+  slug: Scalars['String'];
+  excerpt?: Maybe<Scalars['Markdown']>;
+  intro?: Maybe<Scalars['Markdown']>;
+  status: CollectionStatus;
+  authorExternalId: Scalars['String'];
+}>;
+
+export type CreateCollectionMutation = { __typename?: 'Mutation' } & {
+  createCollection?: Maybe<
+    { __typename?: 'Collection' } & Pick<
+      Collection,
+      | 'externalId'
+      | 'title'
+      | 'slug'
+      | 'excerpt'
+      | 'intro'
+      | 'imageUrl'
+      | 'status'
+    >
+  >;
+};
+
 export type CreateCollectionAuthorMutationVariables = Exact<{
   name: Scalars['String'];
   slug?: Maybe<Scalars['String']>;
@@ -396,6 +420,82 @@ export const AuthorDataFragmentDoc = gql`
     active
   }
 `;
+export const CreateCollectionDocument = gql`
+  mutation createCollection(
+    $title: String!
+    $slug: String!
+    $excerpt: Markdown
+    $intro: Markdown
+    $status: CollectionStatus!
+    $authorExternalId: String!
+  ) {
+    createCollection(
+      data: {
+        title: $title
+        slug: $slug
+        excerpt: $excerpt
+        intro: $intro
+        status: $status
+        authorExternalId: $authorExternalId
+      }
+    ) {
+      externalId
+      title
+      slug
+      excerpt
+      intro
+      imageUrl
+      status
+    }
+  }
+`;
+export type CreateCollectionMutationFn = Apollo.MutationFunction<
+  CreateCollectionMutation,
+  CreateCollectionMutationVariables
+>;
+
+/**
+ * __useCreateCollectionMutation__
+ *
+ * To run a mutation, you first call `useCreateCollectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCollectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCollectionMutation, { data, loading, error }] = useCreateCollectionMutation({
+ *   variables: {
+ *      title: // value for 'title'
+ *      slug: // value for 'slug'
+ *      excerpt: // value for 'excerpt'
+ *      intro: // value for 'intro'
+ *      status: // value for 'status'
+ *      authorExternalId: // value for 'authorExternalId'
+ *   },
+ * });
+ */
+export function useCreateCollectionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateCollectionMutation,
+    CreateCollectionMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateCollectionMutation,
+    CreateCollectionMutationVariables
+  >(CreateCollectionDocument, options);
+}
+export type CreateCollectionMutationHookResult = ReturnType<
+  typeof useCreateCollectionMutation
+>;
+export type CreateCollectionMutationResult = Apollo.MutationResult<CreateCollectionMutation>;
+export type CreateCollectionMutationOptions = Apollo.BaseMutationOptions<
+  CreateCollectionMutation,
+  CreateCollectionMutationVariables
+>;
 export const CreateCollectionAuthorDocument = gql`
   mutation createCollectionAuthor(
     $name: String!

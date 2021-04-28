@@ -3,10 +3,9 @@ import { useHistory } from 'react-router-dom';
 import { Box, Paper } from '@material-ui/core';
 import { FormikValues } from 'formik';
 import {
-  AuthorModel,
   CollectionModel,
   CollectionStatus,
-  useCreateCollectionAuthorMutation,
+  useCreateCollectionMutation,
   useGetAuthorsQuery,
 } from '../../api';
 import {
@@ -44,19 +43,33 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
   // Load authors
   const { loading, error, data: authorsData } = useGetAuthorsQuery();
 
-  // TODO: load a list of authors to use in the Authors select
-
   // prepare the "add new collection" mutation
   // has to be done at the top level of the component because it's a hook
-  // TODO: add a `createCollection` mutation to src/api/mutations and generate types
-  //const [addCollection] = useCreateCollectionMutation();
+  const [addCollection] = useCreateCollectionMutation();
 
   /**
    * Collect form data and send it to the API
    */
   const handleSubmit = (values: FormikValues): void => {
-    // TODO: use addCollection function to execute the mutation
-    console.log(values);
+    addCollection({
+      variables: {
+        title: values.title,
+        slug: values.slug,
+        excerpt: values.excerpt,
+        intro: values.intro,
+        status: values.status,
+        authorExternalId: values.authorExternalId,
+      },
+    })
+      .then(({ data }) => {
+        // Success! Move on to the author page to be able to upload a photo, etc.
+        history.push(`/collections/${data?.createCollection?.externalId}/`, {
+          collection: data?.createCollection,
+        });
+      })
+      .catch((error: Error) => {
+        showNotification(error.message, true);
+      });
   };
 
   return (

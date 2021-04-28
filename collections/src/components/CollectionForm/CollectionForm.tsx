@@ -58,6 +58,13 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
     onSubmit,
   } = props;
   const classes = useStyles();
+
+  // get a list of author ids for the validation schema
+  const authorIds: string[] = [];
+  authors.forEach((author: AuthorModel) => {
+    authorIds.push(author.externalId);
+  });
+
   /**
    * Set up form validation
    */
@@ -90,8 +97,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
         .mixed<CollectionStatus>()
         .oneOf(Object.values(CollectionStatus))
         .required(),
-      // TODO: validate against list of known authors
-      externalAuthorId: yup.string().required(),
+      authorExternalId: yup.string().oneOf(authorIds).required(),
     }),
     onSubmit: (values) => {
       onSubmit(values);
@@ -172,17 +178,17 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel htmlFor="status" shrink={true}>
+            <InputLabel htmlFor="authorExternalId" shrink={true}>
               Author
             </InputLabel>
             <Select
               native
               label="Author"
               inputProps={{
-                name: 'externalAuthorId',
-                id: 'externalAuthorId',
+                name: 'authorExternalId',
+                id: 'authorExternalId',
               }}
-              {...formik.getFieldProps('externalAuthorId')}
+              {...formik.getFieldProps('authorExternalId')}
             >
               {authors.map((author: AuthorModel) => {
                 return <option value={author.externalId}>{author.name}</option>;
