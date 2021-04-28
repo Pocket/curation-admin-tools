@@ -5,7 +5,7 @@ const prodDomain = 'readitlater.com';
 const isDev = process.env.NODE_ENV === 'development';
 const environment = isDev ? 'Dev' : 'Prod';
 const domain = `${domainPrefix}.` + (isDev ? devDomain : prodDomain);
-const collectionApiEndpoint = 'https://collection-api.' + (isDev ? devDomain : prodDomain);
+const collectionApiEndpoint = 'https://collection-api.' + (isDev ? devDomain : prodDomain) + '/admin';
 
 export const config = {
   name,
