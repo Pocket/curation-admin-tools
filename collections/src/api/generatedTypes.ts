@@ -43,8 +43,8 @@ export type Collection = {
   intro?: Maybe<Scalars['Markdown']>;
   imageUrl?: Maybe<Scalars['Url']>;
   publishedAt?: Maybe<Scalars['DateString']>;
-  authors?: Maybe<Array<Maybe<CollectionAuthor>>>;
-  stories?: Maybe<Array<Maybe<CollectionStory>>>;
+  authors: Array<CollectionAuthor>;
+  stories: Array<CollectionStory>;
 };
 
 export type CollectionAuthor = {
@@ -93,7 +93,7 @@ export type CollectionStory = {
   title: Scalars['String'];
   excerpt: Scalars['Markdown'];
   imageUrl?: Maybe<Scalars['Url']>;
-  authors?: Maybe<Array<Maybe<CollectionStoryAuthor>>>;
+  authors: Array<CollectionStoryAuthor>;
   publisher?: Maybe<Scalars['String']>;
   sortOrder?: Maybe<Scalars['Int']>;
   item?: Maybe<Item>;
@@ -111,7 +111,7 @@ export type CollectionStoryAuthorInput = {
 export type CollectionsResult = {
   __typename?: 'CollectionsResult';
   pagination?: Maybe<Pagination>;
-  collections?: Maybe<Array<Maybe<Collection>>>;
+  collections: Array<Collection>;
 };
 
 export type CreateCollectionAuthorInput = {
@@ -127,7 +127,7 @@ export type CreateCollectionInput = {
   title: Scalars['String'];
   excerpt?: Maybe<Scalars['Markdown']>;
   intro?: Maybe<Scalars['Markdown']>;
-  imageUrl?: Maybe<Scalars['String']>;
+  imageUrl?: Maybe<Scalars['Url']>;
   status?: Maybe<CollectionStatus>;
   authorExternalId: Scalars['String'];
 };
@@ -138,7 +138,7 @@ export type CreateCollectionStoryInput = {
   title: Scalars['String'];
   excerpt: Scalars['Markdown'];
   imageUrl: Scalars['Url'];
-  authors: Array<Maybe<CollectionStoryAuthorInput>>;
+  authors: Array<CollectionStoryAuthorInput>;
   publisher: Scalars['String'];
   sortOrder?: Maybe<Scalars['Int']>;
 };
@@ -266,7 +266,7 @@ export type UpdateCollectionInput = {
   title: Scalars['String'];
   excerpt: Scalars['Markdown'];
   intro?: Maybe<Scalars['Markdown']>;
-  imageUrl?: Maybe<Scalars['String']>;
+  imageUrl?: Maybe<Scalars['Url']>;
   status: CollectionStatus;
   authorExternalId: Scalars['String'];
 };
@@ -277,7 +277,7 @@ export type UpdateCollectionStoryInput = {
   title: Scalars['String'];
   excerpt: Scalars['Markdown'];
   imageUrl: Scalars['Url'];
-  authors: Array<Maybe<CollectionStoryAuthorInput>>;
+  authors: Array<CollectionStoryAuthorInput>;
   publisher: Scalars['String'];
   sortOrder?: Maybe<Scalars['Int']>;
 };
@@ -383,7 +383,14 @@ export type GetCollectionByIdQuery = { __typename?: 'Query' } & {
       | 'intro'
       | 'imageUrl'
       | 'status'
-    >
+    > & {
+        authors: Array<
+          { __typename?: 'CollectionAuthor' } & Pick<
+            CollectionAuthor,
+            'externalId' | 'name' | 'slug' | 'bio' | 'imageUrl' | 'active'
+          >
+        >;
+      }
   >;
 };
 
@@ -392,21 +399,30 @@ export type GetDraftCollectionsQueryVariables = Exact<{ [key: string]: never }>;
 export type GetDraftCollectionsQuery = { __typename?: 'Query' } & {
   searchCollections?: Maybe<
     { __typename?: 'CollectionsResult' } & {
-      collections?: Maybe<
-        Array<
-          Maybe<
-            { __typename?: 'Collection' } & Pick<
-              Collection,
-              | 'externalId'
-              | 'title'
-              | 'slug'
-              | 'excerpt'
-              | 'intro'
-              | 'imageUrl'
-              | 'status'
-            >
-          >
-        >
+      collections: Array<
+        { __typename?: 'Collection' } & Pick<
+          Collection,
+          | 'externalId'
+          | 'title'
+          | 'slug'
+          | 'excerpt'
+          | 'intro'
+          | 'imageUrl'
+          | 'status'
+        > & {
+            authors: Array<
+              { __typename?: 'CollectionAuthor' } & Pick<
+                CollectionAuthor,
+                'externalId' | 'name' | 'slug' | 'bio' | 'imageUrl' | 'active'
+              >
+            >;
+            stories: Array<
+              { __typename?: 'CollectionStory' } & Pick<
+                CollectionStory,
+                'title'
+              >
+            >;
+          }
       >;
     }
   >;
@@ -764,6 +780,14 @@ export const GetCollectionByIdDocument = gql`
       intro
       imageUrl
       status
+      authors {
+        externalId
+        name
+        slug
+        bio
+        imageUrl
+        active
+      }
     }
   }
 `;
@@ -829,6 +853,17 @@ export const GetDraftCollectionsDocument = gql`
         intro
         imageUrl
         status
+        authors {
+          externalId
+          name
+          slug
+          bio
+          imageUrl
+          active
+        }
+        stories {
+          title
+        }
       }
     }
   }

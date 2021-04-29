@@ -38,6 +38,7 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
     intro: '',
     imageUrl: '',
     status: CollectionStatus.Draft,
+    authors: [],
   };
 
   // Load authors
