@@ -80,16 +80,4 @@ describe('The AuthorListCard component', () => {
     const activeSubtitle = screen.queryByText(/^active/i);
     expect(activeSubtitle).not.toBeInTheDocument();
   });
-
-  xit('shows the number of collections for the author', () => {
-    // TODO: I would like to reinstate this later if this data becomes available
-    render(
-      <MemoryRouter>
-        <AuthorListCard author={author} />
-      </MemoryRouter>
-    );
-
-    // const collectionsCopy = `${author.collectionCount} collections`;
-    // expect(screen.getByText(collectionsCopy)).toBeInTheDocument();
-  });
 });

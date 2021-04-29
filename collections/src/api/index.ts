@@ -23,4 +23,5 @@ export {
   useGetCollectionByIdQuery,
   useCreateCollectionAuthorMutation,
   useUpdateCollectionAuthorMutation,
+  useCreateCollectionMutation,
 } from './generatedTypes';

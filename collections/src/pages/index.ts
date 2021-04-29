@@ -6,3 +6,4 @@ export { AddAuthorPage } from './AddAuthorPage/AddAuthorPage';
 
 export { CollectionListPage } from './CollectionListPage/CollectionListPage';
 export { CollectionPage } from './CollectionPage/CollectionPage';
+export { AddCollectionPage } from './AddCollectionPage/AddCollectionPage';

@@ -10,9 +10,16 @@ export const createCollectionAuthor = gql`
     $slug: String
     $bio: Markdown
     $imageUrl: Url
+    $active: Boolean
   ) {
     createCollectionAuthor(
-      data: { name: $name, slug: $slug, bio: $bio, imageUrl: $imageUrl }
+      data: {
+        name: $name
+        slug: $slug
+        bio: $bio
+        imageUrl: $imageUrl
+        active: $active
+      }
     ) {
       ...AuthorData
     }

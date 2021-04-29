@@ -72,29 +72,4 @@ describe('The AuthorInfo component', () => {
     const activeSubtitle = screen.queryByText(/^active/i);
     expect(activeSubtitle).not.toBeInTheDocument();
   });
-
-  xit('shows the number of collections for the author', () => {
-    // TODO: I would like to reinstate this later if this data becomes available
-    render(
-      <MemoryRouter>
-        <AuthorInfo author={author} />
-      </MemoryRouter>
-    );
-
-    // const collectionsCopy = `${author.collectionCount} collections`;
-    // expect(screen.getByText(collectionsCopy)).toBeInTheDocument();
-  });
-
-  xit('shows custom copy for authors without collections', () => {
-    // TODO: I would like to reinstate this later if this data becomes available
-    //  author.collectionCount = 0;
-    render(
-      <MemoryRouter>
-        <AuthorInfo author={author} />
-      </MemoryRouter>
-    );
-
-    const collectionsCopy = 'No collections yet';
-    expect(screen.getByText(collectionsCopy)).toBeInTheDocument();
-  });
 });
