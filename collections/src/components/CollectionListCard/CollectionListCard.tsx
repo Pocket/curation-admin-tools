@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardMedia, Grid, Typography } from '@material-ui/core';
-
+import ReactMarkdown from 'react-markdown';
 import { CollectionModel } from '../../api';
 import { useStyles } from './CollectionListCard.styles';
 
@@ -58,7 +58,9 @@ export const CollectionListCard: React.FC<CollectionListCardProps> = (
               {/*{' '}*/}
               {/*&middot; <span>TODO: collection.authors</span>*/}
             </Typography>
-            <Typography noWrap>{collection.excerpt}</Typography>
+            <Typography noWrap component="div">
+              <ReactMarkdown>{collection.excerpt}</ReactMarkdown>
+            </Typography>
           </Grid>
         </Grid>
       </Card>

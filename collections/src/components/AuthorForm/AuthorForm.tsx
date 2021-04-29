@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import slugify from 'slugify';
 import * as yup from 'yup';
 import { FormikValues, useFormik } from 'formik';
-
+import ReactMarkdown from 'react-markdown';
 import {
   Box,
   FormControlLabel,
@@ -12,7 +12,7 @@ import {
   TextField,
 } from '@material-ui/core';
 import { AuthorModel } from '../../api';
-import { Button } from '../';
+import { Button, CustomTabType, TabSet, TabPanel } from '../';
 
 interface AuthorFormProps {
   /**
@@ -84,6 +84,31 @@ export const AuthorForm: React.FC<AuthorFormProps> = (props): JSX.Element => {
     formik.setFieldValue('slug', newSlug);
   };
 
+  // set the default tab
+  const [value, setValue] = useState<string>('write');
+
+  // switch to active tab when user clicks on tab heading
+  const handleChange = (
+    event: React.ChangeEvent<unknown>,
+    newValue: string
+  ): void => {
+    setValue(newValue);
+  };
+
+  // Define the set of tabs that we're going to show on this page
+  const tabs: CustomTabType[] = [
+    {
+      label: 'Write',
+      pathname: 'write',
+      hasLink: false,
+    },
+    {
+      label: 'Preview',
+      pathname: 'preview',
+      hasLink: false,
+    },
+  ];
+
   return (
     <form name="author-form" onSubmit={formik.handleSubmit}>
       <Grid container spacing={3}>
@@ -129,21 +154,31 @@ export const AuthorForm: React.FC<AuthorFormProps> = (props): JSX.Element => {
         </Grid>
 
         <Grid item xs={12}>
-          <TextField
-            id="bio"
-            label="Bio"
-            fullWidth
-            InputLabelProps={{
-              shrink: true,
-            }}
-            multiline
-            rows={12}
-            size="small"
-            variant="outlined"
-            {...formik.getFieldProps('bio')}
-            error={!!(formik.touched.bio && formik.errors.bio)}
-            helperText={formik.errors.bio ? formik.errors.bio : null}
-          />
+          <TabSet currentTab={value} handleChange={handleChange} tabs={tabs} />
+          <TabPanel value={value} index="write">
+            <TextField
+              id="bio"
+              label="Bio"
+              fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
+              multiline
+              rows={12}
+              size="small"
+              variant="outlined"
+              {...formik.getFieldProps('bio')}
+              error={!!(formik.touched.bio && formik.errors.bio)}
+              helperText={formik.errors.bio ? formik.errors.bio : null}
+            />
+          </TabPanel>
+          <TabPanel value={value} index="preview">
+            <Box style={{ minHeight: '14rem' }}>
+              <ReactMarkdown>
+                {formik.values.bio ? formik.values.bio : 'Nothing to preview'}
+              </ReactMarkdown>
+            </Box>
+          </TabPanel>
         </Grid>
 
         <Grid item xs={12}>

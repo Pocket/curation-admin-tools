@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 import { Card, CardMedia, Grid, Typography } from '@material-ui/core';
-
 import { AuthorModel } from '../../api';
 import { useStyles } from './AuthorListCard.styles';
 
@@ -51,7 +51,11 @@ export const AuthorListCard: React.FC<AuthorListCardProps> = (props) => {
             >
               <span>{author.active ? 'Active' : 'Inactive'}</span>
             </Typography>
-            <Typography noWrap>{author.bio}</Typography>
+            <Typography noWrap component="div">
+              <ReactMarkdown>
+                {author.bio ? author.bio.substring(0, 100) : ''}
+              </ReactMarkdown>
+            </Typography>
           </Grid>
         </Grid>
       </Card>
