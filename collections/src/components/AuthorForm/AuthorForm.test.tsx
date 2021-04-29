@@ -195,4 +195,11 @@ describe('The AuthorForm component', () => {
     // Checkbox now displays "Inactive" as its label
     expect(screen.queryByLabelText(/inactive/i)).toBeInTheDocument();
   });
+
+  it('has markdown preview tabs', () => {
+    render(<AuthorForm author={author} onSubmit={handleSubmit} />);
+
+    expect(screen.getByText(/write/i)).toBeInTheDocument();
+    expect(screen.getByText(/preview/i)).toBeInTheDocument();
+  });
 });

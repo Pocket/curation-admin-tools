@@ -2,7 +2,6 @@ import React from 'react';
 import slugify from 'slugify';
 import * as yup from 'yup';
 import { FormikValues, useFormik } from 'formik';
-
 import {
   Box,
   FormControlLabel,
@@ -12,7 +11,7 @@ import {
   TextField,
 } from '@material-ui/core';
 import { AuthorModel } from '../../api';
-import { Button } from '../';
+import { Button, MarkdownPreview } from '../';
 
 interface AuthorFormProps {
   /**
@@ -129,21 +128,23 @@ export const AuthorForm: React.FC<AuthorFormProps> = (props): JSX.Element => {
         </Grid>
 
         <Grid item xs={12}>
-          <TextField
-            id="bio"
-            label="Bio"
-            fullWidth
-            InputLabelProps={{
-              shrink: true,
-            }}
-            multiline
-            rows={12}
-            size="small"
-            variant="outlined"
-            {...formik.getFieldProps('bio')}
-            error={!!(formik.touched.bio && formik.errors.bio)}
-            helperText={formik.errors.bio ? formik.errors.bio : null}
-          />
+          <MarkdownPreview minHeight={15.5} source={formik.values.bio}>
+            <TextField
+              id="bio"
+              label="Bio"
+              fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
+              multiline
+              rows={12}
+              size="small"
+              variant="outlined"
+              {...formik.getFieldProps('bio')}
+              error={!!(formik.touched.bio && formik.errors.bio)}
+              helperText={formik.errors.bio ? formik.errors.bio : null}
+            />
+          </MarkdownPreview>
         </Grid>
 
         <Grid item xs={12}>

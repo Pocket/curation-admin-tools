@@ -252,4 +252,20 @@ describe('The CollectionForm component', () => {
       screen.getByDisplayValue('a-very-long-and-elaborate-collection-name')
     ).toBeInTheDocument();
   });
+
+  it('has markdown preview tabs on two fields', () => {
+    render(
+      <CollectionForm
+        collection={collection}
+        authors={authors}
+        onSubmit={handleSubmit}
+      />
+    );
+
+    const writeTabs = screen.getAllByText(/write/i);
+    expect(writeTabs.length).toEqual(2);
+
+    const previewTabs = screen.getAllByText(/preview/i);
+    expect(previewTabs.length).toEqual(2);
+  });
 });

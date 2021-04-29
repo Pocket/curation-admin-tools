@@ -1,9 +1,10 @@
 import React from 'react';
-import { AuthorModel } from '../../api';
 import { Box, CardMedia, Grid, Typography } from '@material-ui/core';
-
+import ReactMarkdown from 'react-markdown';
+import { Button } from '../';
+import { AuthorModel } from '../../api';
 import { useStyles } from './AuthorInfo.styles';
-import { Button } from '../Button/Button';
+
 interface AuthorInfoProps {
   /**
    * An object with everything author-related in it.
@@ -15,13 +16,15 @@ export const AuthorInfo: React.FC<AuthorInfoProps> = (props): JSX.Element => {
   const { author } = props;
   const classes = useStyles();
 
+  const hasImage = author.imageUrl && author.imageUrl.length > 0;
+
   return (
     <>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={4}>
           <CardMedia
             component="img"
-            src={author.imageUrl}
+            src={hasImage ? author.imageUrl : '/placeholders/author.svg'}
             alt={author.name}
             className={classes.image}
           />
@@ -39,7 +42,7 @@ export const AuthorInfo: React.FC<AuthorInfoProps> = (props): JSX.Element => {
           >
             <span>{author.active ? 'Active' : 'Inactive'}</span>
           </Typography>
-          <Typography>{author.bio}</Typography>
+          <ReactMarkdown>{author.bio}</ReactMarkdown>
         </Grid>
       </Grid>
     </>
