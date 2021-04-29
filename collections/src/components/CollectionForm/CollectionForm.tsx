@@ -13,7 +13,7 @@ import {
   TextField,
 } from '@material-ui/core';
 import { AuthorModel, CollectionModel, CollectionStatus } from '../../api';
-import { Button } from '../';
+import { Button, MarkdownPreview } from '../';
 import { useStyles } from './CollectionForm.styles';
 
 interface CollectionFormProps {
@@ -201,39 +201,43 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
           </FormControl>
         </Grid>
         <Grid item xs={12}>
-          <TextField
-            id="excerpt"
-            label="Excerpt"
-            fullWidth
-            InputLabelProps={{
-              shrink: true,
-            }}
-            multiline
-            rows={4}
-            size="small"
-            variant="outlined"
-            {...formik.getFieldProps('excerpt')}
-            error={!!(formik.touched.excerpt && formik.errors.excerpt)}
-            helperText={formik.errors.excerpt ? formik.errors.excerpt : null}
-          />
+          <MarkdownPreview minHeight={6.5} source={formik.values.excerpt}>
+            <TextField
+              id="excerpt"
+              label="Excerpt"
+              fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
+              multiline
+              rows={4}
+              size="small"
+              variant="outlined"
+              {...formik.getFieldProps('excerpt')}
+              error={!!(formik.touched.excerpt && formik.errors.excerpt)}
+              helperText={formik.errors.excerpt ? formik.errors.excerpt : null}
+            />
+          </MarkdownPreview>
         </Grid>
 
         <Grid item xs={12}>
-          <TextField
-            id="intro"
-            label="Intro"
-            fullWidth
-            InputLabelProps={{
-              shrink: true,
-            }}
-            multiline
-            rows={12}
-            size="small"
-            variant="outlined"
-            {...formik.getFieldProps('intro')}
-            error={!!(formik.touched.intro && formik.errors.intro)}
-            helperText={formik.errors.intro ? formik.errors.intro : null}
-          />
+          <MarkdownPreview minHeight={15.5} source={formik.values.intro}>
+            <TextField
+              id="intro"
+              label="Intro"
+              fullWidth
+              InputLabelProps={{
+                shrink: true,
+              }}
+              multiline
+              rows={12}
+              size="small"
+              variant="outlined"
+              {...formik.getFieldProps('intro')}
+              error={!!(formik.touched.intro && formik.errors.intro)}
+              helperText={formik.errors.intro ? formik.errors.intro : null}
+            />
+          </MarkdownPreview>
         </Grid>
 
         {formik.isSubmitting && (

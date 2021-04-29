@@ -16,13 +16,15 @@ export const AuthorInfo: React.FC<AuthorInfoProps> = (props): JSX.Element => {
   const { author } = props;
   const classes = useStyles();
 
+  const hasImage = author.imageUrl && author.imageUrl.length > 0;
+
   return (
     <>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={4}>
           <CardMedia
             component="img"
-            src={author.imageUrl}
+            src={hasImage ? author.imageUrl : '/placeholders/author.svg'}
             alt={author.name}
             className={classes.image}
           />

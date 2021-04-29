@@ -15,7 +15,7 @@ export const ScrollToTop: React.FC = (): null => {
     return () => {
       unlisten();
     };
-  }, []);
+  }, [history]);
 
   return null;
 };

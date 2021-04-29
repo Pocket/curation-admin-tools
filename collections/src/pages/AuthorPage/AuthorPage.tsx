@@ -9,6 +9,7 @@ import {
   Button,
   HandleApiResponse,
   Notification,
+  ScrollToTop,
 } from '../../components';
 import {
   AuthorModel,
@@ -103,6 +104,7 @@ export const AuthorPage = (): JSX.Element => {
 
   return (
     <>
+      <ScrollToTop />
       {!data && <HandleApiResponse loading={loading} error={error} />}
       {author && (
         <>

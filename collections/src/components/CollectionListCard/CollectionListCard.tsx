@@ -33,7 +33,11 @@ export const CollectionListCard: React.FC<CollectionListCardProps> = (
           <Grid item xs={4} sm={2}>
             <CardMedia
               component="img"
-              src={collection.imageUrl}
+              src={
+                collection.imageUrl && collection.imageUrl.length > 0
+                  ? collection.imageUrl
+                  : '/placeholders/collectionSmall.svg'
+              }
               alt={collection.title}
               className={classes.image}
             />
@@ -59,7 +63,9 @@ export const CollectionListCard: React.FC<CollectionListCardProps> = (
               {/*&middot; <span>TODO: collection.authors</span>*/}
             </Typography>
             <Typography noWrap component="div">
-              <ReactMarkdown>{collection.excerpt}</ReactMarkdown>
+              <ReactMarkdown>
+                {collection.excerpt ? collection.excerpt.substring(0, 100) : ''}
+              </ReactMarkdown>
             </Typography>
           </Grid>
         </Grid>

@@ -28,7 +28,11 @@ export const AuthorListCard: React.FC<AuthorListCardProps> = (props) => {
           <Grid item xs={4} sm={2}>
             <CardMedia
               component="img"
-              src={author.imageUrl}
+              src={
+                author.imageUrl && author.imageUrl.length > 0
+                  ? author.imageUrl
+                  : '/placeholders/authorSmall.svg'
+              }
               alt={author.name}
               className={classes.image}
             />
