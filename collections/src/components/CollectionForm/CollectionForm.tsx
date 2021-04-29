@@ -191,7 +191,11 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
               {...formik.getFieldProps('authorExternalId')}
             >
               {authors.map((author: AuthorModel) => {
-                return <option value={author.externalId}>{author.name}</option>;
+                return (
+                  <option value={author.externalId} key={author.externalId}>
+                    {author.name}
+                  </option>
+                );
               })}
             </Select>
           </FormControl>

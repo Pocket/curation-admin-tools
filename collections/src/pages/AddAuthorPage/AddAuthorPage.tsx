@@ -44,9 +44,7 @@ export const AddAuthorPage: React.FC = (): JSX.Element => {
         slug: values.slug,
         bio: values.bio,
         imageUrl: '',
-        // Note that we're not yet sending the 'active' value on creating
-        // a collection author, but we should!
-        //active: values.active
+        active: values.active,
       },
     })
       .then(({ data }) => {

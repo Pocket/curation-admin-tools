@@ -119,6 +119,7 @@ export type CreateCollectionAuthorInput = {
   slug?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['Markdown']>;
   imageUrl?: Maybe<Scalars['Url']>;
+  active?: Maybe<Scalars['Boolean']>;
 };
 
 export type CreateCollectionInput = {
@@ -323,6 +324,7 @@ export type CreateCollectionAuthorMutationVariables = Exact<{
   slug?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['Markdown']>;
   imageUrl?: Maybe<Scalars['Url']>;
+  active?: Maybe<Scalars['Boolean']>;
 }>;
 
 export type CreateCollectionAuthorMutation = { __typename?: 'Mutation' } & {
@@ -502,9 +504,16 @@ export const CreateCollectionAuthorDocument = gql`
     $slug: String
     $bio: Markdown
     $imageUrl: Url
+    $active: Boolean
   ) {
     createCollectionAuthor(
-      data: { name: $name, slug: $slug, bio: $bio, imageUrl: $imageUrl }
+      data: {
+        name: $name
+        slug: $slug
+        bio: $bio
+        imageUrl: $imageUrl
+        active: $active
+      }
     ) {
       ...AuthorData
     }
@@ -533,6 +542,7 @@ export type CreateCollectionAuthorMutationFn = Apollo.MutationFunction<
  *      slug: // value for 'slug'
  *      bio: // value for 'bio'
  *      imageUrl: // value for 'imageUrl'
+ *      active: // value for 'active'
  *   },
  * });
  */
