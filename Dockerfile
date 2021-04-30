@@ -2,8 +2,10 @@
 FROM node:15 as builder
 WORKDIR /usr/src/app
 ARG GIT_SHA
+ARG NODE_ENV
+
 COPY . .
-ENV NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
 ENV REACT_APP_GIT_SHA=${GIT_SHA}
 RUN cd collections \
     && npm install --silent \

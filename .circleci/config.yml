@@ -54,6 +54,9 @@ jobs:
       environment:
         description: 'The environment name'
         type: string
+      node_environment:
+        description: 'The node environment name'
+        type: string
       ecr_url:
         description: 'The ecr url'
         type: string
@@ -88,7 +91,7 @@ jobs:
                 aws-access-key-id: << parameters.environment >>_AWS_ACCESS_KEY
                 aws-secret-access-key: << parameters.environment >>_AWS_SECRET_ACCESS_KEY
                 tag: << parameters.tag >>
-                extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1}
+                extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg NODE_ENV=<< parameters.node_environment >>
       - unless:
           condition: <<parameters.push>>
           steps:
@@ -97,7 +100,7 @@ jobs:
             - aws-ecr/build-image:
                 repo: << parameters.repo_name >>
                 tag: << parameters.tag >>
-                extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1}
+                extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg NODE_ENV=<< parameters.node_environment >>
 
 workflows:
   all:
@@ -112,6 +115,7 @@ workflows:
           repo_name: curationadmintools-dev-app
           ecr_url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
           push: false
+          node_environment: 'development'
 
       # Build & Deploy the Dev Docker Image
       - docker_build:
@@ -123,6 +127,7 @@ workflows:
           repo_name: curationadmintools-dev-app
           ecr_url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
           push: true
+          node_environment: 'development'
 
       - queue/block_workflow:
           <<: *only_dev_main
@@ -160,6 +165,7 @@ workflows:
           repo_name: curationadmintools-prod-app
           ecr_url: 996905175585.dkr.ecr.us-east-1.amazonaws.com
           push: true
+          node_environment: 'production'
 
       - aws-ecs/deploy-service-update:
           <<: *only_main

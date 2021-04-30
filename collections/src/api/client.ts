@@ -1,17 +1,18 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { config } from '../config';
 
 const apolloOptions = {
   cache: new InMemoryCache(),
-  name: `CurationAdminToolsCollections`,
-  version: `${process.env.REACT_APP_GIT_SHA ?? 'local'}`,
+  name: config.apolloClientName,
+  version: config.version,
 };
 
 export const client = new ApolloClient({
-  uri: `${process.env.REACT_APP_COLLECTION_API_ENDPOINT}`,
+  uri: config.collectionApiEndpoint,
   ...apolloOptions,
 });
 
 export const clientAPIClient = new ApolloClient({
-  uri: `${process.env.REACT_APP_CLIENT_API_ENDPOINT}`,
+  uri: config.clientApiEndpoint,
   ...apolloOptions,
 });
