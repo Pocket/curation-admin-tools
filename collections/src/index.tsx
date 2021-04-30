@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import * as Sentry from "@sentry/react";
-import { Integrations } from "@sentry/tracing";
+import * as Sentry from '@sentry/react';
+import { Integrations } from '@sentry/tracing';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -12,7 +12,7 @@ Sentry.init({
   release: config.version,
   environment: config.environment,
   integrations: [new Integrations.BrowserTracing()],
-  tracesSampleRate: .01,
+  tracesSampleRate: 0.01,
 });
 
 ReactDOM.render(
