@@ -54,7 +54,7 @@ export type CollectionAuthor = {
   slug?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['Markdown']>;
   imageUrl?: Maybe<Scalars['Url']>;
-  active?: Maybe<Scalars['Boolean']>;
+  active: Scalars['Boolean'];
 };
 
 export type CollectionAuthorsResult = {
@@ -153,38 +153,38 @@ export type Item = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createCollectionAuthor?: Maybe<CollectionAuthor>;
-  updateCollectionAuthor?: Maybe<CollectionAuthor>;
-  createCollection?: Maybe<Collection>;
-  updateCollection?: Maybe<Collection>;
-  createCollectionStory?: Maybe<CollectionStory>;
-  updateCollectionStory?: Maybe<CollectionStory>;
-  deleteCollectionStory?: Maybe<CollectionStory>;
+  createCollectionAuthor: CollectionAuthor;
+  updateCollectionAuthor: CollectionAuthor;
+  createCollection: Collection;
+  updateCollection: Collection;
+  createCollectionStory: CollectionStory;
+  updateCollectionStory: CollectionStory;
+  deleteCollectionStory: CollectionStory;
   collectionImageUpload: CollectionImageUrl;
 };
 
 export type MutationCreateCollectionAuthorArgs = {
-  data?: Maybe<CreateCollectionAuthorInput>;
+  data: CreateCollectionAuthorInput;
 };
 
 export type MutationUpdateCollectionAuthorArgs = {
-  data?: Maybe<UpdateCollectionAuthorInput>;
+  data: UpdateCollectionAuthorInput;
 };
 
 export type MutationCreateCollectionArgs = {
-  data?: Maybe<CreateCollectionInput>;
+  data: CreateCollectionInput;
 };
 
 export type MutationUpdateCollectionArgs = {
-  data?: Maybe<UpdateCollectionInput>;
+  data: UpdateCollectionInput;
 };
 
 export type MutationCreateCollectionStoryArgs = {
-  data?: Maybe<CreateCollectionStoryInput>;
+  data: CreateCollectionStoryInput;
 };
 
 export type MutationUpdateCollectionStoryArgs = {
-  data?: Maybe<UpdateCollectionStoryInput>;
+  data: UpdateCollectionStoryInput;
 };
 
 export type MutationDeleteCollectionStoryArgs = {
@@ -213,7 +213,7 @@ export type Query = {
   /** Retrieves a CollectionAuthor by externalId. */
   getCollectionAuthor?: Maybe<CollectionAuthor>;
   /** Retrieves a paged list of CollectionAuthors. */
-  getCollectionAuthors?: Maybe<CollectionAuthorsResult>;
+  getCollectionAuthors: CollectionAuthorsResult;
   /** Retrieves a CollectionStory by a combination of collectionId and url. */
   getCollectionStory?: Maybe<CollectionStory>;
 };
@@ -242,7 +242,7 @@ export type QueryGetCollectionAuthorsArgs = {
 };
 
 export type QueryGetCollectionStoryArgs = {
-  externalId?: Maybe<Scalars['String']>;
+  externalId: Scalars['String'];
 };
 
 export type SearchCollectionsFilters = {
@@ -314,19 +314,17 @@ export type CreateCollectionMutationVariables = Exact<{
 }>;
 
 export type CreateCollectionMutation = { __typename?: 'Mutation' } & {
-  createCollection?: Maybe<
-    { __typename?: 'Collection' } & Pick<
-      Collection,
-      | 'externalId'
-      | 'title'
-      | 'slug'
-      | 'excerpt'
-      | 'intro'
-      | 'imageUrl'
-      | 'status'
-    > &
-      CollectionAuthorsFragment
-  >;
+  createCollection: { __typename?: 'Collection' } & Pick<
+    Collection,
+    | 'externalId'
+    | 'title'
+    | 'slug'
+    | 'excerpt'
+    | 'intro'
+    | 'imageUrl'
+    | 'status'
+  > &
+    CollectionAuthorsFragment;
 };
 
 export type CreateCollectionAuthorMutationVariables = Exact<{
@@ -338,9 +336,9 @@ export type CreateCollectionAuthorMutationVariables = Exact<{
 }>;
 
 export type CreateCollectionAuthorMutation = { __typename?: 'Mutation' } & {
-  createCollectionAuthor?: Maybe<
-    { __typename?: 'CollectionAuthor' } & AuthorDataFragment
-  >;
+  createCollectionAuthor: {
+    __typename?: 'CollectionAuthor';
+  } & AuthorDataFragment;
 };
 
 export type UpdateCollectionMutationVariables = Exact<{
@@ -354,19 +352,17 @@ export type UpdateCollectionMutationVariables = Exact<{
 }>;
 
 export type UpdateCollectionMutation = { __typename?: 'Mutation' } & {
-  updateCollection?: Maybe<
-    { __typename?: 'Collection' } & Pick<
-      Collection,
-      | 'externalId'
-      | 'title'
-      | 'slug'
-      | 'excerpt'
-      | 'intro'
-      | 'imageUrl'
-      | 'status'
-    > &
-      CollectionAuthorsFragment
-  >;
+  updateCollection: { __typename?: 'Collection' } & Pick<
+    Collection,
+    | 'externalId'
+    | 'title'
+    | 'slug'
+    | 'excerpt'
+    | 'intro'
+    | 'imageUrl'
+    | 'status'
+  > &
+    CollectionAuthorsFragment;
 };
 
 export type UpdateCollectionAuthorMutationVariables = Exact<{
@@ -379,9 +375,9 @@ export type UpdateCollectionAuthorMutationVariables = Exact<{
 }>;
 
 export type UpdateCollectionAuthorMutation = { __typename?: 'Mutation' } & {
-  updateCollectionAuthor?: Maybe<
-    { __typename?: 'CollectionAuthor' } & AuthorDataFragment
-  >;
+  updateCollectionAuthor: {
+    __typename?: 'CollectionAuthor';
+  } & AuthorDataFragment;
 };
 
 export type GetAuthorByIdQueryVariables = Exact<{
@@ -397,11 +393,9 @@ export type GetAuthorByIdQuery = { __typename?: 'Query' } & {
 export type GetAuthorsQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetAuthorsQuery = { __typename?: 'Query' } & {
-  getCollectionAuthors?: Maybe<
-    { __typename?: 'CollectionAuthorsResult' } & {
-      authors: Array<{ __typename?: 'CollectionAuthor' } & AuthorDataFragment>;
-    }
-  >;
+  getCollectionAuthors: { __typename?: 'CollectionAuthorsResult' } & {
+    authors: Array<{ __typename?: 'CollectionAuthor' } & AuthorDataFragment>;
+  };
 };
 
 export type GetCollectionByIdQueryVariables = Exact<{
