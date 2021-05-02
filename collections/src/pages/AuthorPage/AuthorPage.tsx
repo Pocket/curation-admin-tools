@@ -32,7 +32,7 @@ export const AuthorPage = (): JSX.Element => {
     handleClose,
   } = useNotifications();
 
-  // prepare the "add new author" mutation
+  // prepare the "upate author" mutation
   // has to be done at the top level of the component because it's a hook
   const [updateAuthor] = useUpdateCollectionAuthorMutation();
 

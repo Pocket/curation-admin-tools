@@ -23,7 +23,7 @@ describe('The MarkdownPreview component', () => {
   it('renders the default tab successfully', () => {
     render(
       <MarkdownPreview minHeight={10} source={markdownSource}>
-        <textarea>{markdownSource}</textarea>
+        <textarea value={markdownSource} onChange={jest.fn()} />
       </MarkdownPreview>
     );
 
@@ -38,7 +38,7 @@ describe('The MarkdownPreview component', () => {
   it('renders markdown on the "Preview" tab', () => {
     render(
       <MarkdownPreview minHeight={10} source={markdownSource}>
-        <textarea>{markdownSource}</textarea>
+        <textarea value={markdownSource} onChange={jest.fn()} />
       </MarkdownPreview>
     );
 

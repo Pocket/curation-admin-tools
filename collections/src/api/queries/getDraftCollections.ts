@@ -14,6 +14,17 @@ export const getDraftCollections = gql`
         intro
         imageUrl
         status
+        authors {
+          externalId
+          name
+          slug
+          bio
+          imageUrl
+          active
+        }
+        stories {
+          title
+        }
       }
     }
   }

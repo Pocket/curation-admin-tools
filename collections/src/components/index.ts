@@ -4,6 +4,7 @@ export { AuthorListCard } from './AuthorListCard/AuthorListCard';
 export { Button } from './Button/Button';
 export { Chip } from './Chip/Chip';
 export { CollectionForm } from './CollectionForm/CollectionForm';
+export { CollectionInfo } from './CollectionInfo/CollectionInfo';
 export { CollectionListCard } from './CollectionListCard/CollectionListCard';
 export { HandleApiResponse } from './HandleApiResponse/HandleApiResponse';
 export { Header } from './Header/Header';

@@ -2,19 +2,21 @@ import { gql } from '@apollo/client';
 import { CollectionAuthors } from '../fragments/CollectionAuthors';
 
 /**
- * Create a collection
+ * Update a collection
  */
-export const createCollection = gql`
-  mutation createCollection(
+export const updateCollection = gql`
+  mutation updateCollection(
+    $id: String
     $title: String!
     $slug: String!
-    $excerpt: Markdown
+    $excerpt: Markdown!
     $intro: Markdown
     $status: CollectionStatus!
     $authorExternalId: String!
   ) {
-    createCollection(
+    updateCollection(
       data: {
+        externalId: $id
         title: $title
         slug: $slug
         excerpt: $excerpt

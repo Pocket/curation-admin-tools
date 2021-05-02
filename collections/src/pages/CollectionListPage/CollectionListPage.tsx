@@ -32,15 +32,13 @@ export const CollectionListPage = (): JSX.Element => {
       {!data && <HandleApiResponse loading={loading} error={error} />}
 
       {data &&
-        data.searchCollections?.collections?.map(
-          (collection: CollectionModel | null) => {
+        data.searchCollections?.collections.map(
+          (collection: CollectionModel) => {
             return (
-              collection && (
-                <CollectionListCard
-                  key={collection.externalId}
-                  collection={collection}
-                />
-              )
+              <CollectionListCard
+                key={collection.externalId}
+                collection={collection}
+              />
             );
           }
         )}

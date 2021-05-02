@@ -35,6 +35,7 @@ describe('The CollectionForm component', () => {
         'suscipit. Nunc a lorem a metus venenatis euismod. Praesent id lectus' +
         ' lobortis, ullamcorper ipsum in, eleifend sapien.',
       status: CollectionStatus.Draft,
+      authors: [],
     };
 
     authors = [

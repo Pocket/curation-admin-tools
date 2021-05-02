@@ -13,6 +13,14 @@ export const getCollectionById = gql`
       intro
       imageUrl
       status
+      authors {
+        externalId
+        name
+        slug
+        bio
+        imageUrl
+        active
+      }
     }
   }
 `;
