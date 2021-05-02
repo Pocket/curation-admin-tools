@@ -93,7 +93,7 @@ export const AuthorPage = (): JSX.Element => {
         if (author) {
           author.bio = data?.updateCollectionAuthor?.bio;
           author.name = data?.updateCollectionAuthor?.name!;
-          author.active = data?.updateCollectionAuthor?.active;
+          author.active = data?.updateCollectionAuthor.active!;
         }
         toggleEditForm();
       })
