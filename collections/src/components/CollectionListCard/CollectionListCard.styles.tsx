@@ -23,7 +23,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       padding: '1.25 rem 0',
     },
     title: {
-      fontSize: '1.5rem',
+      fontSize: '1.25rem',
       fontWeight: 500,
     },
     subtitle: {

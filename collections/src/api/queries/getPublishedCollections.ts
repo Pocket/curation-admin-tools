@@ -2,12 +2,12 @@ import { gql } from '@apollo/client';
 import { AuthorData } from '../fragments/AuthorData';
 
 /**
- * Get a list of draft collections
+ * Get a list of published collections
  */
-export const getDraftCollections = gql`
-  query getDraftCollections($page: Int, $perPage: Int) {
+export const getPublishedCollections = gql`
+  query getPublishedCollections($page: Int, $perPage: Int) {
     searchCollections(
-      filters: { status: DRAFT }
+      filters: { status: PUBLISHED }
       page: $page
       perPage: $perPage
     ) {
@@ -28,6 +28,5 @@ export const getDraftCollections = gql`
       }
     }
   }
-  ${AuthorData}
   ${AuthorData}
 `;

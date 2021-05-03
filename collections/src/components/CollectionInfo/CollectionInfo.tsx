@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import { Button } from '..';
 import { CollectionModel } from '../../api';
 import { useStyles } from './CollectionInfo.styles';
+import { CollectionAuthor } from '../../api/generatedTypes';
 
 interface CollectionInfoProps {
   /**
@@ -37,10 +38,22 @@ export const CollectionInfo: React.FC<CollectionInfoProps> = (
           </Box>
         </Grid>
         <Grid item xs={12} sm={8}>
-          <h3>Author</h3>
-          <span>{collection.authors[0].name}</span>
-          <h3>Status</h3>
-          <span>{collection.status}</span>
+          <Typography
+            className={classes.subtitle}
+            variant="subtitle2"
+            color="textSecondary"
+            component="span"
+            align="left"
+          >
+            <span>{collection.status}</span> &middot;{' '}
+            <span>
+              {collection.authors
+                .map((author: CollectionAuthor) => {
+                  return author.name;
+                })
+                .join(', ')}
+            </span>
+          </Typography>
           <h3>Excerpt</h3>
           <Typography
             className={classes.excerpt}

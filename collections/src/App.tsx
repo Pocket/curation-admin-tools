@@ -19,7 +19,7 @@ import { Header, MainContentWrapper, MenuLink } from './components';
 const menuLinks: MenuLink[] = [
   {
     text: 'Collections',
-    url: '/collections/',
+    url: '/collections/drafts/',
   },
   {
     text: 'Authors',
@@ -55,7 +55,7 @@ function App(): JSX.Element {
                 <Route exact path="/collections/add/">
                   <AddCollectionPage />
                 </Route>
-                <Route exact path="/collections/">
+                <Route path="/collections/:status(drafts|published|archived)/">
                   <CollectionListPage />
                 </Route>
                 <Route exact path="/collections/:id/">

@@ -11,5 +11,9 @@ export const useStyles = makeStyles((theme: Theme) =>
     excerpt: {
       fontWeight: 400,
     },
+    subtitle: {
+      fontWeight: 400,
+      textTransform: 'capitalize',
+    },
   })
 );

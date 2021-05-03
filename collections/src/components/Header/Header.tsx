@@ -121,7 +121,11 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
               </Grid>
             </Hidden>
             <Grid item xs={4} sm={3}>
-              <h1 className={classes.product}>{productName}</h1>
+              <h1 className={classes.product}>
+                <Link to="/" className={classes.productLink}>
+                  {productName}
+                </Link>
+              </h1>
             </Grid>
 
             <Hidden smDown implementation="css">

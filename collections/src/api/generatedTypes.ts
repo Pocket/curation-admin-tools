@@ -295,15 +295,6 @@ export type AuthorDataFragment = { __typename?: 'CollectionAuthor' } & Pick<
   'externalId' | 'name' | 'slug' | 'bio' | 'imageUrl' | 'active'
 >;
 
-export type CollectionAuthorsFragment = { __typename?: 'Collection' } & {
-  authors: Array<
-    { __typename?: 'CollectionAuthor' } & Pick<
-      CollectionAuthor,
-      'externalId' | 'name' | 'slug' | 'bio' | 'imageUrl' | 'active'
-    >
-  >;
-};
-
 export type CreateCollectionMutationVariables = Exact<{
   title: Scalars['String'];
   slug: Scalars['String'];
@@ -323,8 +314,9 @@ export type CreateCollectionMutation = { __typename?: 'Mutation' } & {
     | 'intro'
     | 'imageUrl'
     | 'status'
-  > &
-    CollectionAuthorsFragment;
+  > & {
+      authors: Array<{ __typename?: 'CollectionAuthor' } & AuthorDataFragment>;
+    };
 };
 
 export type CreateCollectionAuthorMutationVariables = Exact<{
@@ -361,8 +353,9 @@ export type UpdateCollectionMutation = { __typename?: 'Mutation' } & {
     | 'intro'
     | 'imageUrl'
     | 'status'
-  > &
-    CollectionAuthorsFragment;
+  > & {
+      authors: Array<{ __typename?: 'CollectionAuthor' } & AuthorDataFragment>;
+    };
 };
 
 export type UpdateCollectionAuthorMutationVariables = Exact<{
@@ -378,6 +371,36 @@ export type UpdateCollectionAuthorMutation = { __typename?: 'Mutation' } & {
   updateCollectionAuthor: {
     __typename?: 'CollectionAuthor';
   } & AuthorDataFragment;
+};
+
+export type GetArchivedCollectionsQueryVariables = Exact<{
+  page?: Maybe<Scalars['Int']>;
+  perPage?: Maybe<Scalars['Int']>;
+}>;
+
+export type GetArchivedCollectionsQuery = { __typename?: 'Query' } & {
+  searchCollections: { __typename?: 'CollectionsResult' } & {
+    collections: Array<
+      { __typename?: 'Collection' } & Pick<
+        Collection,
+        | 'externalId'
+        | 'title'
+        | 'slug'
+        | 'excerpt'
+        | 'intro'
+        | 'imageUrl'
+        | 'status'
+      > & {
+          authors: Array<
+            { __typename?: 'CollectionAuthor' } & AuthorDataFragment
+          >;
+        }
+    >;
+    pagination: { __typename?: 'Pagination' } & Pick<
+      Pagination,
+      'totalResults'
+    >;
+  };
 };
 
 export type GetAuthorByIdQueryVariables = Exact<{
@@ -415,16 +438,19 @@ export type GetCollectionByIdQuery = { __typename?: 'Query' } & {
       | 'status'
     > & {
         authors: Array<
-          { __typename?: 'CollectionAuthor' } & Pick<
-            CollectionAuthor,
-            'externalId' | 'name' | 'slug' | 'bio' | 'imageUrl' | 'active'
-          >
+          { __typename?: 'CollectionAuthor' } & AuthorDataFragment
+        >;
+        stories: Array<
+          { __typename?: 'CollectionStory' } & Pick<CollectionStory, 'title'>
         >;
       }
   >;
 };
 
-export type GetDraftCollectionsQueryVariables = Exact<{ [key: string]: never }>;
+export type GetDraftCollectionsQueryVariables = Exact<{
+  page?: Maybe<Scalars['Int']>;
+  perPage?: Maybe<Scalars['Int']>;
+}>;
 
 export type GetDraftCollectionsQuery = { __typename?: 'Query' } & {
   searchCollections: { __typename?: 'CollectionsResult' } & {
@@ -440,15 +466,43 @@ export type GetDraftCollectionsQuery = { __typename?: 'Query' } & {
         | 'status'
       > & {
           authors: Array<
-            { __typename?: 'CollectionAuthor' } & Pick<
-              CollectionAuthor,
-              'externalId' | 'name' | 'slug' | 'bio' | 'imageUrl' | 'active'
-            >
-          >;
-          stories: Array<
-            { __typename?: 'CollectionStory' } & Pick<CollectionStory, 'title'>
+            { __typename?: 'CollectionAuthor' } & AuthorDataFragment
           >;
         }
+    >;
+    pagination: { __typename?: 'Pagination' } & Pick<
+      Pagination,
+      'totalResults'
+    >;
+  };
+};
+
+export type GetPublishedCollectionsQueryVariables = Exact<{
+  page?: Maybe<Scalars['Int']>;
+  perPage?: Maybe<Scalars['Int']>;
+}>;
+
+export type GetPublishedCollectionsQuery = { __typename?: 'Query' } & {
+  searchCollections: { __typename?: 'CollectionsResult' } & {
+    collections: Array<
+      { __typename?: 'Collection' } & Pick<
+        Collection,
+        | 'externalId'
+        | 'title'
+        | 'slug'
+        | 'excerpt'
+        | 'intro'
+        | 'imageUrl'
+        | 'status'
+      > & {
+          authors: Array<
+            { __typename?: 'CollectionAuthor' } & AuthorDataFragment
+          >;
+        }
+    >;
+    pagination: { __typename?: 'Pagination' } & Pick<
+      Pagination,
+      'totalResults'
     >;
   };
 };
@@ -461,18 +515,6 @@ export const AuthorDataFragmentDoc = gql`
     bio
     imageUrl
     active
-  }
-`;
-export const CollectionAuthorsFragmentDoc = gql`
-  fragment CollectionAuthors on Collection {
-    authors {
-      externalId
-      name
-      slug
-      bio
-      imageUrl
-      active
-    }
   }
 `;
 export const CreateCollectionDocument = gql`
@@ -501,10 +543,12 @@ export const CreateCollectionDocument = gql`
       intro
       imageUrl
       status
-      ...CollectionAuthors
+      authors {
+        ...AuthorData
+      }
     }
   }
-  ${CollectionAuthorsFragmentDoc}
+  ${AuthorDataFragmentDoc}
 `;
 export type CreateCollectionMutationFn = Apollo.MutationFunction<
   CreateCollectionMutation,
@@ -649,10 +693,12 @@ export const UpdateCollectionDocument = gql`
       intro
       imageUrl
       status
-      ...CollectionAuthors
+      authors {
+        ...AuthorData
+      }
     }
   }
-  ${CollectionAuthorsFragmentDoc}
+  ${AuthorDataFragmentDoc}
 `;
 export type UpdateCollectionMutationFn = Apollo.MutationFunction<
   UpdateCollectionMutation,
@@ -772,6 +818,84 @@ export type UpdateCollectionAuthorMutationResult = Apollo.MutationResult<UpdateC
 export type UpdateCollectionAuthorMutationOptions = Apollo.BaseMutationOptions<
   UpdateCollectionAuthorMutation,
   UpdateCollectionAuthorMutationVariables
+>;
+export const GetArchivedCollectionsDocument = gql`
+  query getArchivedCollections($page: Int, $perPage: Int) {
+    searchCollections(
+      filters: { status: ARCHIVED }
+      page: $page
+      perPage: $perPage
+    ) {
+      collections {
+        externalId
+        title
+        slug
+        excerpt
+        intro
+        imageUrl
+        status
+        authors {
+          ...AuthorData
+        }
+      }
+      pagination {
+        totalResults
+      }
+    }
+  }
+  ${AuthorDataFragmentDoc}
+`;
+
+/**
+ * __useGetArchivedCollectionsQuery__
+ *
+ * To run a query within a React component, call `useGetArchivedCollectionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetArchivedCollectionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetArchivedCollectionsQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
+ *   },
+ * });
+ */
+export function useGetArchivedCollectionsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetArchivedCollectionsQuery,
+    GetArchivedCollectionsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetArchivedCollectionsQuery,
+    GetArchivedCollectionsQueryVariables
+  >(GetArchivedCollectionsDocument, options);
+}
+export function useGetArchivedCollectionsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetArchivedCollectionsQuery,
+    GetArchivedCollectionsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetArchivedCollectionsQuery,
+    GetArchivedCollectionsQueryVariables
+  >(GetArchivedCollectionsDocument, options);
+}
+export type GetArchivedCollectionsQueryHookResult = ReturnType<
+  typeof useGetArchivedCollectionsQuery
+>;
+export type GetArchivedCollectionsLazyQueryHookResult = ReturnType<
+  typeof useGetArchivedCollectionsLazyQuery
+>;
+export type GetArchivedCollectionsQueryResult = Apollo.QueryResult<
+  GetArchivedCollectionsQuery,
+  GetArchivedCollectionsQueryVariables
 >;
 export const GetAuthorByIdDocument = gql`
   query getAuthorById($id: String!) {
@@ -901,15 +1025,14 @@ export const GetCollectionByIdDocument = gql`
       imageUrl
       status
       authors {
-        externalId
-        name
-        slug
-        bio
-        imageUrl
-        active
+        ...AuthorData
+      }
+      stories {
+        title
       }
     }
   }
+  ${AuthorDataFragmentDoc}
 `;
 
 /**
@@ -963,8 +1086,12 @@ export type GetCollectionByIdQueryResult = Apollo.QueryResult<
   GetCollectionByIdQueryVariables
 >;
 export const GetDraftCollectionsDocument = gql`
-  query getDraftCollections {
-    searchCollections(filters: { status: DRAFT }) {
+  query getDraftCollections($page: Int, $perPage: Int) {
+    searchCollections(
+      filters: { status: DRAFT }
+      page: $page
+      perPage: $perPage
+    ) {
       collections {
         externalId
         title
@@ -974,19 +1101,15 @@ export const GetDraftCollectionsDocument = gql`
         imageUrl
         status
         authors {
-          externalId
-          name
-          slug
-          bio
-          imageUrl
-          active
+          ...AuthorData
         }
-        stories {
-          title
-        }
+      }
+      pagination {
+        totalResults
       }
     }
   }
+  ${AuthorDataFragmentDoc}
 `;
 
 /**
@@ -1001,6 +1124,8 @@ export const GetDraftCollectionsDocument = gql`
  * @example
  * const { data, loading, error } = useGetDraftCollectionsQuery({
  *   variables: {
+ *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
  *   },
  * });
  */
@@ -1037,4 +1162,82 @@ export type GetDraftCollectionsLazyQueryHookResult = ReturnType<
 export type GetDraftCollectionsQueryResult = Apollo.QueryResult<
   GetDraftCollectionsQuery,
   GetDraftCollectionsQueryVariables
+>;
+export const GetPublishedCollectionsDocument = gql`
+  query getPublishedCollections($page: Int, $perPage: Int) {
+    searchCollections(
+      filters: { status: PUBLISHED }
+      page: $page
+      perPage: $perPage
+    ) {
+      collections {
+        externalId
+        title
+        slug
+        excerpt
+        intro
+        imageUrl
+        status
+        authors {
+          ...AuthorData
+        }
+      }
+      pagination {
+        totalResults
+      }
+    }
+  }
+  ${AuthorDataFragmentDoc}
+`;
+
+/**
+ * __useGetPublishedCollectionsQuery__
+ *
+ * To run a query within a React component, call `useGetPublishedCollectionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPublishedCollectionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPublishedCollectionsQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
+ *   },
+ * });
+ */
+export function useGetPublishedCollectionsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetPublishedCollectionsQuery,
+    GetPublishedCollectionsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetPublishedCollectionsQuery,
+    GetPublishedCollectionsQueryVariables
+  >(GetPublishedCollectionsDocument, options);
+}
+export function useGetPublishedCollectionsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetPublishedCollectionsQuery,
+    GetPublishedCollectionsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetPublishedCollectionsQuery,
+    GetPublishedCollectionsQueryVariables
+  >(GetPublishedCollectionsDocument, options);
+}
+export type GetPublishedCollectionsQueryHookResult = ReturnType<
+  typeof useGetPublishedCollectionsQuery
+>;
+export type GetPublishedCollectionsLazyQueryHookResult = ReturnType<
+  typeof useGetPublishedCollectionsLazyQuery
+>;
+export type GetPublishedCollectionsQueryResult = Apollo.QueryResult<
+  GetPublishedCollectionsQuery,
+  GetPublishedCollectionsQueryVariables
 >;

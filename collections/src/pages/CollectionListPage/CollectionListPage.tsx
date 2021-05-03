@@ -1,20 +1,74 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Box } from '@material-ui/core';
 import {
   Button,
   CollectionListCard,
+  CustomTabType,
   HandleApiResponse,
+  TabPanel,
+  TabSet,
 } from '../../components';
-import { CollectionModel } from '../../api';
-import { useGetDraftCollectionsQuery } from '../../api';
+import {
+  CollectionModel,
+  useGetDraftCollectionsQuery,
+  useGetPublishedCollectionsQuery,
+  useGetArchivedCollectionsQuery,
+} from '../../api';
 
 /**
  * Collection List Page
  */
 export const CollectionListPage = (): JSX.Element => {
-  // Load collections
+  // set the default tab - here it's the draft collections
+  const [value, setValue] = useState<string>('/collections/drafts/');
+
+  // switch to active tab when user clicks on tab heading
+  const handleChange = (
+    event: React.ChangeEvent<unknown>,
+    newValue: string
+  ): void => {
+    setValue(newValue);
+  };
+
+  // Load draft collections
   const { loading, error, data } = useGetDraftCollectionsQuery();
+
+  // Load published collections
+  const {
+    loading: loadingPublished,
+    error: errorPublished,
+    data: dataPublished,
+  } = useGetPublishedCollectionsQuery();
+
+  // Load archived collections
+  const {
+    loading: loadingArchived,
+    error: errorArchived,
+    data: dataArchived,
+  } = useGetArchivedCollectionsQuery();
+
+  // Define the set of tabs that we're going to show on this page
+  const tabs: CustomTabType[] = [
+    {
+      label: 'Drafts',
+      pathname: '/collections/drafts/',
+      count: data?.searchCollections.pagination.totalResults,
+      hasLink: true,
+    },
+    {
+      label: 'Published',
+      pathname: '/collections/published/',
+      count: dataPublished?.searchCollections.pagination.totalResults,
+      hasLink: true,
+    },
+    {
+      label: 'Archived',
+      pathname: '/collections/archived/',
+      count: dataArchived?.searchCollections.pagination.totalResults,
+      hasLink: true,
+    },
+  ];
 
   return (
     <>
@@ -29,19 +83,64 @@ export const CollectionListPage = (): JSX.Element => {
         </Box>
       </Box>
 
-      {!data && <HandleApiResponse loading={loading} error={error} />}
+      <Box paddingTop={3}>
+        <TabSet currentTab={value} handleChange={handleChange} tabs={tabs} />
+      </Box>
 
-      {data &&
-        data.searchCollections?.collections.map(
-          (collection: CollectionModel) => {
-            return (
-              <CollectionListCard
-                key={collection.externalId}
-                collection={collection}
-              />
-            );
-          }
+      <TabPanel value={value} index="/collections/drafts/">
+        {!data && <HandleApiResponse loading={loading} error={error} />}
+
+        {data &&
+          data.searchCollections.collections.map(
+            (collection: CollectionModel) => {
+              return (
+                <CollectionListCard
+                  key={collection.externalId}
+                  collection={collection}
+                />
+              );
+            }
+          )}
+      </TabPanel>
+
+      <TabPanel value={value} index="/collections/published/">
+        {!dataPublished && (
+          <HandleApiResponse
+            loading={loadingPublished}
+            error={errorPublished}
+          />
         )}
+
+        {dataPublished &&
+          dataPublished.searchCollections.collections.map(
+            (collection: CollectionModel) => {
+              return (
+                <CollectionListCard
+                  key={collection.externalId}
+                  collection={collection}
+                />
+              );
+            }
+          )}
+      </TabPanel>
+
+      <TabPanel value={value} index="/collections/archived/">
+        {!dataArchived && (
+          <HandleApiResponse loading={loadingArchived} error={errorArchived} />
+        )}
+
+        {dataArchived &&
+          dataArchived.searchCollections.collections.map(
+            (collection: CollectionModel) => {
+              return (
+                <CollectionListCard
+                  key={collection.externalId}
+                  collection={collection}
+                />
+              );
+            }
+          )}
+      </TabPanel>
     </>
   );
 };

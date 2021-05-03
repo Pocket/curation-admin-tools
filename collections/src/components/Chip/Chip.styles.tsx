@@ -14,14 +14,14 @@ export const useStyles = makeStyles((theme: Theme) => ({
     color: curationPalette.white,
     cursor: 'pointer',
     fontSize: '1rem',
-    fontWeight: 'bold',
+    fontWeight: 400,
     marginLeft: '0.5rem',
   },
   /**
-   * Chip on the active tab: bright blue just like the tab label.
+   * Chip on the active tab: curation green
    */
   colorPrimary: {
-    backgroundColor: curationPalette.blue,
+    backgroundColor: curationPalette.primary,
   },
   colorSecondary: {
     backgroundColor: curationPalette.primary,
