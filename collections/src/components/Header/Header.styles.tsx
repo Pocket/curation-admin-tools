@@ -33,6 +33,10 @@ export const useStyles = makeStyles((theme: Theme) => ({
       borderLeft: 'none',
     },
   },
+  productLink: {
+    color: '#222222',
+    textDecoration: 'none',
+  },
   drawer: {
     flexShrink: 0,
   },

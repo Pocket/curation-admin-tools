@@ -4,6 +4,7 @@ import { Card, CardMedia, Grid, Typography } from '@material-ui/core';
 import ReactMarkdown from 'react-markdown';
 import { CollectionModel } from '../../api';
 import { useStyles } from './CollectionListCard.styles';
+import { CollectionAuthor } from '../../api/generatedTypes';
 
 interface CollectionListCardProps {
   collection: CollectionModel;
@@ -58,9 +59,14 @@ export const CollectionListCard: React.FC<CollectionListCardProps> = (
               component="span"
               align="left"
             >
-              <span>{collection.status}</span>
-              {/*{' '}*/}
-              {/*&middot; <span>TODO: collection.authors</span>*/}
+              <span>{collection.status}</span> &middot;{' '}
+              <span>
+                {collection.authors
+                  .map((author: CollectionAuthor) => {
+                    return author.name;
+                  })
+                  .join(', ')}
+              </span>
             </Typography>
             <Typography noWrap component="div">
               <ReactMarkdown>

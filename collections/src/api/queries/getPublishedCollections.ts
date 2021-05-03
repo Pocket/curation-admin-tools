@@ -2,11 +2,11 @@ import { gql } from '@apollo/client';
 import { CollectionAuthors } from '../fragments/CollectionAuthors';
 
 /**
- * Get a list of draft collections
+ * Get a list of published collections
  */
-export const getDraftCollections = gql`
-  query getDraftCollections {
-    searchCollections(filters: { status: DRAFT }) {
+export const getPublishedCollections = gql`
+  query getPublishedCollections {
+    searchCollections(filters: { status: PUBLISHED }) {
       collections {
         externalId
         title
