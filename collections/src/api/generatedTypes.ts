@@ -507,6 +507,39 @@ export type GetPublishedCollectionsQuery = { __typename?: 'Query' } & {
   };
 };
 
+export type GetSearchCollectionsQueryVariables = Exact<{
+  page?: Maybe<Scalars['Int']>;
+  perPage?: Maybe<Scalars['Int']>;
+  status?: Maybe<CollectionStatus>;
+  author?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+}>;
+
+export type GetSearchCollectionsQuery = { __typename?: 'Query' } & {
+  searchCollections: { __typename?: 'CollectionsResult' } & {
+    collections: Array<
+      { __typename?: 'Collection' } & Pick<
+        Collection,
+        | 'externalId'
+        | 'title'
+        | 'slug'
+        | 'excerpt'
+        | 'intro'
+        | 'imageUrl'
+        | 'status'
+      > & {
+          authors: Array<
+            { __typename?: 'CollectionAuthor' } & AuthorDataFragment
+          >;
+        }
+    >;
+    pagination: { __typename?: 'Pagination' } & Pick<
+      Pagination,
+      'totalResults'
+    >;
+  };
+};
+
 export const AuthorDataFragmentDoc = gql`
   fragment AuthorData on CollectionAuthor {
     externalId
@@ -1240,4 +1273,91 @@ export type GetPublishedCollectionsLazyQueryHookResult = ReturnType<
 export type GetPublishedCollectionsQueryResult = Apollo.QueryResult<
   GetPublishedCollectionsQuery,
   GetPublishedCollectionsQueryVariables
+>;
+export const GetSearchCollectionsDocument = gql`
+  query getSearchCollections(
+    $page: Int
+    $perPage: Int
+    $status: CollectionStatus
+    $author: String
+    $title: String
+  ) {
+    searchCollections(
+      filters: { status: $status, author: $author, title: $title }
+      page: $page
+      perPage: $perPage
+    ) {
+      collections {
+        externalId
+        title
+        slug
+        excerpt
+        intro
+        imageUrl
+        status
+        authors {
+          ...AuthorData
+        }
+      }
+      pagination {
+        totalResults
+      }
+    }
+  }
+  ${AuthorDataFragmentDoc}
+`;
+
+/**
+ * __useGetSearchCollectionsQuery__
+ *
+ * To run a query within a React component, call `useGetSearchCollectionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSearchCollectionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSearchCollectionsQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
+ *      status: // value for 'status'
+ *      author: // value for 'author'
+ *      title: // value for 'title'
+ *   },
+ * });
+ */
+export function useGetSearchCollectionsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetSearchCollectionsQuery,
+    GetSearchCollectionsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetSearchCollectionsQuery,
+    GetSearchCollectionsQueryVariables
+  >(GetSearchCollectionsDocument, options);
+}
+export function useGetSearchCollectionsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetSearchCollectionsQuery,
+    GetSearchCollectionsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetSearchCollectionsQuery,
+    GetSearchCollectionsQueryVariables
+  >(GetSearchCollectionsDocument, options);
+}
+export type GetSearchCollectionsQueryHookResult = ReturnType<
+  typeof useGetSearchCollectionsQuery
+>;
+export type GetSearchCollectionsLazyQueryHookResult = ReturnType<
+  typeof useGetSearchCollectionsLazyQuery
+>;
+export type GetSearchCollectionsQueryResult = Apollo.QueryResult<
+  GetSearchCollectionsQuery,
+  GetSearchCollectionsQueryVariables
 >;

@@ -11,6 +11,7 @@ import {
   AuthorPage,
   AddAuthorPage,
   CollectionListPage,
+  CollectionSearchPage,
   CollectionPage,
   AddCollectionPage,
 } from './pages';
@@ -60,6 +61,9 @@ function App(): JSX.Element {
                 </Route>
                 <Route exact path="/collections/:id/">
                   <CollectionPage />
+                </Route>
+                <Route exact path="/search/">
+                  <CollectionSearchPage />
                 </Route>
               </Switch>
             </MainContentWrapper>

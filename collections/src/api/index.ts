@@ -27,4 +27,5 @@ export {
   useUpdateCollectionAuthorMutation,
   useCreateCollectionMutation,
   useUpdateCollectionMutation,
+  useGetSearchCollectionsQuery,
 } from './generatedTypes';
