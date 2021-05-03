@@ -1,12 +1,16 @@
 import { gql } from '@apollo/client';
-import { CollectionAuthors } from '../fragments/CollectionAuthors';
+import { AuthorData } from '../fragments/AuthorData';
 
 /**
  * Get a list of published collections
  */
 export const getPublishedCollections = gql`
-  query getPublishedCollections {
-    searchCollections(filters: { status: PUBLISHED }) {
+  query getPublishedCollections($page: Int, $perPage: Int) {
+    searchCollections(
+      filters: { status: PUBLISHED }
+      page: $page
+      perPage: $perPage
+    ) {
       collections {
         externalId
         title
@@ -15,12 +19,14 @@ export const getPublishedCollections = gql`
         intro
         imageUrl
         status
-        ...CollectionAuthors
-        stories {
-          title
+        authors {
+          ...AuthorData
         }
+      }
+      pagination {
+        totalResults
       }
     }
   }
-  ${CollectionAuthors}
+  ${AuthorData}
 `;

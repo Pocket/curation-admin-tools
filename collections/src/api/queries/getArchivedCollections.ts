@@ -1,12 +1,16 @@
 import { gql } from '@apollo/client';
-import { CollectionAuthors } from '../fragments/CollectionAuthors';
+import { AuthorData } from '../fragments/AuthorData';
 
 /**
  * Get a list of archived collections
  */
 export const getArchivedCollections = gql`
-  query getArchivedCollections {
-    searchCollections(filters: { status: ARCHIVED }) {
+  query getArchivedCollections($page: Int, $perPage: Int) {
+    searchCollections(
+      filters: { status: ARCHIVED }
+      page: $page
+      perPage: $perPage
+    ) {
       collections {
         externalId
         title
@@ -15,12 +19,14 @@ export const getArchivedCollections = gql`
         intro
         imageUrl
         status
-        ...CollectionAuthors
-        stories {
-          title
+        authors {
+          ...AuthorData
         }
+      }
+      pagination {
+        totalResults
       }
     }
   }
-  ${CollectionAuthors}
+  ${AuthorData}
 `;

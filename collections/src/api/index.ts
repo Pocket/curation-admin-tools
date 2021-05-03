@@ -20,6 +20,8 @@ export {
   useGetAuthorsQuery,
   useGetAuthorByIdQuery,
   useGetDraftCollectionsQuery,
+  useGetPublishedCollectionsQuery,
+  useGetArchivedCollectionsQuery,
   useGetCollectionByIdQuery,
   useCreateCollectionAuthorMutation,
   useUpdateCollectionAuthorMutation,

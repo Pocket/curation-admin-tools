@@ -295,15 +295,6 @@ export type AuthorDataFragment = { __typename?: 'CollectionAuthor' } & Pick<
   'externalId' | 'name' | 'slug' | 'bio' | 'imageUrl' | 'active'
 >;
 
-export type CollectionAuthorsFragment = { __typename?: 'Collection' } & {
-  authors: Array<
-    { __typename?: 'CollectionAuthor' } & Pick<
-      CollectionAuthor,
-      'externalId' | 'name' | 'slug' | 'bio' | 'imageUrl' | 'active'
-    >
-  >;
-};
-
 export type CreateCollectionMutationVariables = Exact<{
   title: Scalars['String'];
   slug: Scalars['String'];
@@ -323,8 +314,9 @@ export type CreateCollectionMutation = { __typename?: 'Mutation' } & {
     | 'intro'
     | 'imageUrl'
     | 'status'
-  > &
-    CollectionAuthorsFragment;
+  > & {
+      authors: Array<{ __typename?: 'CollectionAuthor' } & AuthorDataFragment>;
+    };
 };
 
 export type CreateCollectionAuthorMutationVariables = Exact<{
@@ -361,8 +353,9 @@ export type UpdateCollectionMutation = { __typename?: 'Mutation' } & {
     | 'intro'
     | 'imageUrl'
     | 'status'
-  > &
-    CollectionAuthorsFragment;
+  > & {
+      authors: Array<{ __typename?: 'CollectionAuthor' } & AuthorDataFragment>;
+    };
 };
 
 export type UpdateCollectionAuthorMutationVariables = Exact<{
@@ -381,7 +374,8 @@ export type UpdateCollectionAuthorMutation = { __typename?: 'Mutation' } & {
 };
 
 export type GetArchivedCollectionsQueryVariables = Exact<{
-  [key: string]: never;
+  page?: Maybe<Scalars['Int']>;
+  perPage?: Maybe<Scalars['Int']>;
 }>;
 
 export type GetArchivedCollectionsQuery = { __typename?: 'Query' } & {
@@ -397,10 +391,14 @@ export type GetArchivedCollectionsQuery = { __typename?: 'Query' } & {
         | 'imageUrl'
         | 'status'
       > & {
-          stories: Array<
-            { __typename?: 'CollectionStory' } & Pick<CollectionStory, 'title'>
+          authors: Array<
+            { __typename?: 'CollectionAuthor' } & AuthorDataFragment
           >;
-        } & CollectionAuthorsFragment
+        }
+    >;
+    pagination: { __typename?: 'Pagination' } & Pick<
+      Pagination,
+      'totalResults'
     >;
   };
 };
@@ -438,12 +436,21 @@ export type GetCollectionByIdQuery = { __typename?: 'Query' } & {
       | 'intro'
       | 'imageUrl'
       | 'status'
-    > &
-      CollectionAuthorsFragment
+    > & {
+        authors: Array<
+          { __typename?: 'CollectionAuthor' } & AuthorDataFragment
+        >;
+        stories: Array<
+          { __typename?: 'CollectionStory' } & Pick<CollectionStory, 'title'>
+        >;
+      }
   >;
 };
 
-export type GetDraftCollectionsQueryVariables = Exact<{ [key: string]: never }>;
+export type GetDraftCollectionsQueryVariables = Exact<{
+  page?: Maybe<Scalars['Int']>;
+  perPage?: Maybe<Scalars['Int']>;
+}>;
 
 export type GetDraftCollectionsQuery = { __typename?: 'Query' } & {
   searchCollections: { __typename?: 'CollectionsResult' } & {
@@ -458,16 +465,21 @@ export type GetDraftCollectionsQuery = { __typename?: 'Query' } & {
         | 'imageUrl'
         | 'status'
       > & {
-          stories: Array<
-            { __typename?: 'CollectionStory' } & Pick<CollectionStory, 'title'>
+          authors: Array<
+            { __typename?: 'CollectionAuthor' } & AuthorDataFragment
           >;
-        } & CollectionAuthorsFragment
+        }
+    >;
+    pagination: { __typename?: 'Pagination' } & Pick<
+      Pagination,
+      'totalResults'
     >;
   };
 };
 
 export type GetPublishedCollectionsQueryVariables = Exact<{
-  [key: string]: never;
+  page?: Maybe<Scalars['Int']>;
+  perPage?: Maybe<Scalars['Int']>;
 }>;
 
 export type GetPublishedCollectionsQuery = { __typename?: 'Query' } & {
@@ -483,10 +495,14 @@ export type GetPublishedCollectionsQuery = { __typename?: 'Query' } & {
         | 'imageUrl'
         | 'status'
       > & {
-          stories: Array<
-            { __typename?: 'CollectionStory' } & Pick<CollectionStory, 'title'>
+          authors: Array<
+            { __typename?: 'CollectionAuthor' } & AuthorDataFragment
           >;
-        } & CollectionAuthorsFragment
+        }
+    >;
+    pagination: { __typename?: 'Pagination' } & Pick<
+      Pagination,
+      'totalResults'
     >;
   };
 };
@@ -499,18 +515,6 @@ export const AuthorDataFragmentDoc = gql`
     bio
     imageUrl
     active
-  }
-`;
-export const CollectionAuthorsFragmentDoc = gql`
-  fragment CollectionAuthors on Collection {
-    authors {
-      externalId
-      name
-      slug
-      bio
-      imageUrl
-      active
-    }
   }
 `;
 export const CreateCollectionDocument = gql`
@@ -539,10 +543,12 @@ export const CreateCollectionDocument = gql`
       intro
       imageUrl
       status
-      ...CollectionAuthors
+      authors {
+        ...AuthorData
+      }
     }
   }
-  ${CollectionAuthorsFragmentDoc}
+  ${AuthorDataFragmentDoc}
 `;
 export type CreateCollectionMutationFn = Apollo.MutationFunction<
   CreateCollectionMutation,
@@ -687,10 +693,12 @@ export const UpdateCollectionDocument = gql`
       intro
       imageUrl
       status
-      ...CollectionAuthors
+      authors {
+        ...AuthorData
+      }
     }
   }
-  ${CollectionAuthorsFragmentDoc}
+  ${AuthorDataFragmentDoc}
 `;
 export type UpdateCollectionMutationFn = Apollo.MutationFunction<
   UpdateCollectionMutation,
@@ -812,8 +820,12 @@ export type UpdateCollectionAuthorMutationOptions = Apollo.BaseMutationOptions<
   UpdateCollectionAuthorMutationVariables
 >;
 export const GetArchivedCollectionsDocument = gql`
-  query getArchivedCollections {
-    searchCollections(filters: { status: ARCHIVED }) {
+  query getArchivedCollections($page: Int, $perPage: Int) {
+    searchCollections(
+      filters: { status: ARCHIVED }
+      page: $page
+      perPage: $perPage
+    ) {
       collections {
         externalId
         title
@@ -822,14 +834,16 @@ export const GetArchivedCollectionsDocument = gql`
         intro
         imageUrl
         status
-        ...CollectionAuthors
-        stories {
-          title
+        authors {
+          ...AuthorData
         }
+      }
+      pagination {
+        totalResults
       }
     }
   }
-  ${CollectionAuthorsFragmentDoc}
+  ${AuthorDataFragmentDoc}
 `;
 
 /**
@@ -844,6 +858,8 @@ export const GetArchivedCollectionsDocument = gql`
  * @example
  * const { data, loading, error } = useGetArchivedCollectionsQuery({
  *   variables: {
+ *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
  *   },
  * });
  */
@@ -1008,10 +1024,15 @@ export const GetCollectionByIdDocument = gql`
       intro
       imageUrl
       status
-      ...CollectionAuthors
+      authors {
+        ...AuthorData
+      }
+      stories {
+        title
+      }
     }
   }
-  ${CollectionAuthorsFragmentDoc}
+  ${AuthorDataFragmentDoc}
 `;
 
 /**
@@ -1065,8 +1086,12 @@ export type GetCollectionByIdQueryResult = Apollo.QueryResult<
   GetCollectionByIdQueryVariables
 >;
 export const GetDraftCollectionsDocument = gql`
-  query getDraftCollections {
-    searchCollections(filters: { status: DRAFT }) {
+  query getDraftCollections($page: Int, $perPage: Int) {
+    searchCollections(
+      filters: { status: DRAFT }
+      page: $page
+      perPage: $perPage
+    ) {
       collections {
         externalId
         title
@@ -1075,14 +1100,16 @@ export const GetDraftCollectionsDocument = gql`
         intro
         imageUrl
         status
-        ...CollectionAuthors
-        stories {
-          title
+        authors {
+          ...AuthorData
         }
+      }
+      pagination {
+        totalResults
       }
     }
   }
-  ${CollectionAuthorsFragmentDoc}
+  ${AuthorDataFragmentDoc}
 `;
 
 /**
@@ -1097,6 +1124,8 @@ export const GetDraftCollectionsDocument = gql`
  * @example
  * const { data, loading, error } = useGetDraftCollectionsQuery({
  *   variables: {
+ *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
  *   },
  * });
  */
@@ -1135,8 +1164,12 @@ export type GetDraftCollectionsQueryResult = Apollo.QueryResult<
   GetDraftCollectionsQueryVariables
 >;
 export const GetPublishedCollectionsDocument = gql`
-  query getPublishedCollections {
-    searchCollections(filters: { status: PUBLISHED }) {
+  query getPublishedCollections($page: Int, $perPage: Int) {
+    searchCollections(
+      filters: { status: PUBLISHED }
+      page: $page
+      perPage: $perPage
+    ) {
       collections {
         externalId
         title
@@ -1145,14 +1178,16 @@ export const GetPublishedCollectionsDocument = gql`
         intro
         imageUrl
         status
-        ...CollectionAuthors
-        stories {
-          title
+        authors {
+          ...AuthorData
         }
+      }
+      pagination {
+        totalResults
       }
     }
   }
-  ${CollectionAuthorsFragmentDoc}
+  ${AuthorDataFragmentDoc}
 `;
 
 /**
@@ -1167,6 +1202,8 @@ export const GetPublishedCollectionsDocument = gql`
  * @example
  * const { data, loading, error } = useGetPublishedCollectionsQuery({
  *   variables: {
+ *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
  *   },
  * });
  */

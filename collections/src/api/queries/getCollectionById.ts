@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { CollectionAuthors } from '../fragments/CollectionAuthors';
+import { AuthorData } from '../fragments/AuthorData';
 
 /**
  * Get collection by its external id.
@@ -14,8 +14,13 @@ export const getCollectionById = gql`
       intro
       imageUrl
       status
-      ...CollectionAuthors
+      authors {
+        ...AuthorData
+      }
+      stories {
+        title
+      }
     }
   }
-  ${CollectionAuthors}
+  ${AuthorData}
 `;
