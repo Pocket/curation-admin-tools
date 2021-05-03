@@ -65,6 +65,10 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
     authorIds.push(author.externalId);
   });
 
+  // if we're editing, grab the currently assigned author's external id
+  const authorExternalId =
+    collection.authors.length > 0 ? collection.authors[0].externalId : '';
+
   /**
    * Set up form validation
    */
@@ -75,6 +79,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
       excerpt: collection.excerpt ?? '',
       intro: collection.intro ?? '',
       status: collection.status ?? CollectionStatus.Draft,
+      authorExternalId,
     },
     // We don't want to irritate users by displaying validation errors
     // before they actually submit the form

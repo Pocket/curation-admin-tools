@@ -6,6 +6,7 @@ export { Chip } from './Chip/Chip';
 export { CollectionForm } from './CollectionForm/CollectionForm';
 export { CollectionInfo } from './CollectionInfo/CollectionInfo';
 export { CollectionListCard } from './CollectionListCard/CollectionListCard';
+export { CollectionSearchForm } from './CollectionSearchForm/CollectionSearchForm';
 export { HandleApiResponse } from './HandleApiResponse/HandleApiResponse';
 export { Header } from './Header/Header';
 export type { MenuLink } from './Header/Header';
