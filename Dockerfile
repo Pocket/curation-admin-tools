@@ -2,12 +2,14 @@
 FROM node:15 as builder
 WORKDIR /usr/src/app
 ARG GIT_SHA
+ARG APP_ENV
+
 COPY . .
 ENV NODE_ENV=production
 ENV REACT_APP_GIT_SHA=${GIT_SHA}
 RUN cd collections \
     && npm install --silent \
-    && npm run build
+    && REACT_APP_ENV=${APP_ENV} npm run build
 
 # production environment
 FROM nginx:1.19.10
