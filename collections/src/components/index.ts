@@ -14,6 +14,7 @@ export { MainContentWrapper } from './MainContentWrapper/MainContentWrapper';
 export { MarkdownPreview } from './MarkdownPreview/MarkdownPreview';
 export { Modal } from './Modal/Modal';
 export { Notification } from './Notification/Notification';
+export { ParseUrlForm } from './ParseUrlForm/ParseUrlForm';
 export { ScrollToTop } from './ScrollToTop/ScrollToTop';
 export { Tab } from './Tab/Tab';
 export { TabLink } from './TabLink/TabLink';

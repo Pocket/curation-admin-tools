@@ -7,6 +7,7 @@ import {
   CollectionInfo,
   HandleApiResponse,
   Notification,
+  ParseUrlForm,
   ScrollToTop,
 } from '../../components';
 import {
@@ -155,6 +156,10 @@ export const CollectionPage = (): JSX.Element => {
               </Box>
             </Paper>
           </Fade>
+
+          <h2>Stories</h2>
+
+          <ParseUrlForm />
           <Notification
             handleClose={handleClose}
             isOpen={open}
