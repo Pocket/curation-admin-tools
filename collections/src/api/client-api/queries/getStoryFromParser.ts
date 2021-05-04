@@ -4,8 +4,8 @@ import { gql } from '@apollo/client';
  * Get author information by their external id.
  */
 export const getStoryFromParser = gql`
-  query getStoryFromParser($getItemByUrlUrl: String!) {
-    getItemByUrl(url: $getItemByUrlUrl) {
+  query getStoryFromParser($url: String!) {
+    getItemByUrl(url: $url) {
       resolvedUrl
       title
       excerpt

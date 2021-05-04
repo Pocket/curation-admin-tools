@@ -5,6 +5,9 @@ import { Box, Grid, LinearProgress, TextField } from '@material-ui/core';
 import { Button } from '../Button/Button';
 import { StoryModel } from '../../api';
 import { MarkdownPreview } from '../MarkdownPreview/MarkdownPreview';
+import { useGetStoryFromParserLazyQuery } from '../../api/client-api/generatedTypes';
+import { clientAPIClient } from '../../api/client';
+import { CollectionAuthor } from '../../api/generatedTypes';
 
 interface StoryFormProps {
   /**
@@ -50,13 +53,35 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
     },
   });
 
-  const fetchStoryData = () => {
-    console.log('Making a request to the parser...');
+  const [getStory, { loading, error, data }] = useGetStoryFromParserLazyQuery({
+    client: clientAPIClient,
+  });
 
-    // the idea is to show the remainder of the form as the info
-    // from the parser comes back, not straight away. So this should
-    // be lifted up to the parent component (CollectionPage) and updated
-    // from there
+  const fetchStoryData = () => {
+    getStory({ variables: { url: formik.values.url } });
+
+    if (data) {
+      console.log(data);
+
+      const commaSeparatedAuthors = data.getItemByUrl?.authors
+        ?.map((author) => {
+          return author?.name;
+        })
+        .join(', ');
+      formik.setFieldValue('authors', commaSeparatedAuthors);
+
+      formik.setFieldValue('title', data.getItemByUrl?.title);
+      formik.setFieldValue(
+        'publisher',
+        data.getItemByUrl?.domainMetadata?.name
+      );
+      formik.setFieldValue('excerpt', data.getItemByUrl?.excerpt);
+    }
+
+    // the idea is, when adding a new story, is to show the remainder of
+    // the form as the data from the parser comes back, not straight away.
+    // So this should be lifted up to the parent component (CollectionPage)
+    // and updated from there
     setShowOtherFields(true);
   };
 

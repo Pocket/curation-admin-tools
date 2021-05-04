@@ -1,6 +1,5 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
-
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K];
@@ -607,7 +606,7 @@ export enum Videoness {
 }
 
 export type GetStoryFromParserQueryVariables = Exact<{
-  getItemByUrlUrl: Scalars['String'];
+  url: Scalars['String'];
 }>;
 
 export type GetStoryFromParserQuery = { __typename?: 'Query' } & {
@@ -627,8 +626,8 @@ export type GetStoryFromParserQuery = { __typename?: 'Query' } & {
 };
 
 export const GetStoryFromParserDocument = gql`
-  query getStoryFromParser($getItemByUrlUrl: String!) {
-    getItemByUrl(url: $getItemByUrlUrl) {
+  query getStoryFromParser($url: String!) {
+    getItemByUrl(url: $url) {
       resolvedUrl
       title
       excerpt
@@ -655,7 +654,7 @@ export const GetStoryFromParserDocument = gql`
  * @example
  * const { data, loading, error } = useGetStoryFromParserQuery({
  *   variables: {
- *      getItemByUrlUrl: // value for 'getItemByUrlUrl'
+ *      url: // value for 'url'
  *   },
  * });
  */
@@ -671,7 +670,6 @@ export function useGetStoryFromParserQuery(
     GetStoryFromParserQueryVariables
   >(GetStoryFromParserDocument, options);
 }
-
 export function useGetStoryFromParserLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     GetStoryFromParserQuery,
@@ -684,7 +682,6 @@ export function useGetStoryFromParserLazyQuery(
     GetStoryFromParserQueryVariables
   >(GetStoryFromParserDocument, options);
 }
-
 export type GetStoryFromParserQueryHookResult = ReturnType<
   typeof useGetStoryFromParserQuery
 >;
