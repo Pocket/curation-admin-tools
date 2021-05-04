@@ -40,7 +40,8 @@
     "eject": "react-scripts eject",
     "lint-check": "tsc --noEmit && eslint src/**/*.ts{,x}",
     "lint-fix": "tsc --noEmit && eslint src/**/*.ts{,x} --fix",
-    "api:generate-types": "graphql-codegen --config codegen.json -r dotenv/config"
+    "api:generate-types": "graphql-codegen --config codegen.json -r dotenv/config",
+    "api:generate-clientapi-types": "graphql-codegen --config client-api-codegen.json -r dotenv/config"
   },
   "eslintConfig": {
     "extends": [
