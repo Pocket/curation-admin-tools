@@ -31,6 +31,4 @@ export {
   useGetSearchCollectionsQuery,
 } from './generatedTypes';
 
-export {
-  useGetStoryFromParserQuery
-} from './client-api/generatedTypes'
+export { useGetStoryFromParserQuery } from './client-api/generatedTypes';
