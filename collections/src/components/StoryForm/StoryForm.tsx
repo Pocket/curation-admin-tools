@@ -7,7 +7,6 @@ import { StoryModel } from '../../api';
 import { MarkdownPreview } from '../MarkdownPreview/MarkdownPreview';
 import { useGetStoryFromParserLazyQuery } from '../../api/client-api/generatedTypes';
 import { clientAPIClient } from '../../api/client';
-import { CollectionAuthor } from '../../api/generatedTypes';
 
 interface StoryFormProps {
   /**
@@ -53,7 +52,7 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
     },
   });
 
-  const [getStory, { loading, error, data }] = useGetStoryFromParserLazyQuery({
+  const [getStory, { data }] = useGetStoryFromParserLazyQuery({
     client: clientAPIClient,
   });
 
