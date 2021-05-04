@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import { Box, Fade, Paper } from '@material-ui/core';
+import { Box, Collapse, Paper } from '@material-ui/core';
 import {
   Button,
   CollectionForm,
   CollectionInfo,
   HandleApiResponse,
   Notification,
-  ParseUrlForm,
   ScrollToTop,
+  StoryForm,
 } from '../../components';
 import {
   CollectionModel,
+  StoryModel,
   useGetAuthorsQuery,
   useGetCollectionByIdQuery,
   useUpdateCollectionMutation,
@@ -116,6 +117,20 @@ export const CollectionPage = (): JSX.Element => {
       });
   };
 
+  const emptyStory: StoryModel = {
+    externalId: '',
+    url: '',
+    title: '',
+    excerpt: null,
+    authors: [
+      {
+        name: '',
+      },
+    ],
+    publisher: null,
+    imageUrl: null,
+  };
+
   return (
     <>
       <ScrollToTop />
@@ -135,7 +150,7 @@ export const CollectionPage = (): JSX.Element => {
 
           <CollectionInfo collection={collection} />
 
-          <Fade in={showEditForm}>
+          <Collapse in={showEditForm}>
             <Paper elevation={4}>
               <Box p={2} mt={3}>
                 {!authorsData && (
@@ -150,16 +165,31 @@ export const CollectionPage = (): JSX.Element => {
                     authors={authorsData.getCollectionAuthors.authors}
                     collection={collection}
                     onSubmit={handleSubmit}
-                    showCancelButton={false}
+                    showCancelButton={true}
                   />
                 )}
               </Box>
             </Paper>
-          </Fade>
+          </Collapse>
 
-          <h2>Stories</h2>
+          <Box mt={3}>
+            <h2>Stories</h2>
+            ...list of stories here
+          </Box>
 
-          <ParseUrlForm />
+          <Box mt={3}>
+            <h4>Add A Story</h4>
+          </Box>
+          <Paper elevation={4}>
+            <Box p={2} mt={3}>
+              <StoryForm
+                onSubmit={() => {
+                  console.log('Submitting the story...');
+                }}
+                story={emptyStory}
+              />
+            </Box>
+          </Paper>
           <Notification
             handleClose={handleClose}
             isOpen={open}

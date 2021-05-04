@@ -1,5 +1,6 @@
 import { AuthorModel } from './models/Author';
 import { CollectionModel } from './models/Collection';
+import { StoryModel } from './models/Story';
 
 /**
  * Client
@@ -13,6 +14,7 @@ export type { AuthorModel };
 export type { CollectionModel };
 export { CollectionStatus } from './generatedTypes';
 export type { Item, Author } from './client-api/generatedTypes';
+export type { StoryModel };
 
 /**
  * Hooks
