@@ -13,6 +13,7 @@ export { client } from './client';
 export type { AuthorModel };
 export type { CollectionModel };
 export { CollectionStatus } from './generatedTypes';
+export type { Item, Author } from './client-api/generatedTypes';
 export type { StoryModel };
 
 /**
@@ -31,3 +32,5 @@ export {
   useUpdateCollectionMutation,
   useGetSearchCollectionsQuery,
 } from './generatedTypes';
+
+export { useGetStoryFromParserQuery } from './client-api/generatedTypes';
