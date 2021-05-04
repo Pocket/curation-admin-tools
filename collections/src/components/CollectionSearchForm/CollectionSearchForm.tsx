@@ -36,6 +36,7 @@ export const CollectionSearchForm: React.FC<CollectionSearchFormProps> = (
       title: '',
       author: '',
       status: '',
+      filterRequired: '',
     },
     // We don't want to irritate users by displaying validation errors
     // before they actually submit the form
@@ -49,6 +50,12 @@ export const CollectionSearchForm: React.FC<CollectionSearchFormProps> = (
       status: yup
         .mixed<CollectionStatus>()
         .oneOf(Object.values(CollectionStatus)),
+      filterRequired: yup.bool().when(['title', 'author', 'status'], {
+        is: (title: any, author: any, status: any) =>
+          !title && !author && !status,
+        then: yup.bool().required('at least one filter is required'),
+        otherwise: yup.bool(),
+      }),
     }),
     onSubmit: (values) => {
       onSubmit(values);
@@ -70,8 +77,14 @@ export const CollectionSearchForm: React.FC<CollectionSearchFormProps> = (
             size="small"
             variant="outlined"
             {...formik.getFieldProps('title')}
-            error={!!(formik.touched.title && formik.errors.title)}
-            helperText={formik.errors.title ? formik.errors.title : null}
+            error={
+              !!(formik.touched.title && formik.errors.title) ||
+              !!(formik.errors && formik.errors.filterRequired)
+            }
+            helperText={
+              (formik.errors.title && formik.errors.title) ||
+              (formik.errors && formik.errors.filterRequired)
+            }
           />
         </Grid>
 
@@ -86,8 +99,14 @@ export const CollectionSearchForm: React.FC<CollectionSearchFormProps> = (
             size="small"
             variant="outlined"
             {...formik.getFieldProps('author')}
-            error={!!(formik.touched.author && formik.errors.author)}
-            helperText={formik.errors.author ? formik.errors.author : null}
+            error={
+              !!(formik.touched.author && formik.errors.author) ||
+              !!(formik.errors && formik.errors.filterRequired)
+            }
+            helperText={
+              (formik.errors.author && formik.errors.author) ||
+              (formik.errors && formik.errors.filterRequired)
+            }
           />
         </Grid>
 
@@ -104,12 +123,18 @@ export const CollectionSearchForm: React.FC<CollectionSearchFormProps> = (
               id: 'status',
             }}
             {...formik.getFieldProps('status')}
+            error={!!(formik.errors && formik.errors.filterRequired)}
           >
             <option value=""></option>
             <option value="DRAFT">Draft</option>
             <option value="PUBLISHED">Published</option>
             <option value="ARCHIVED">Archived</option>
           </Select>
+          {formik.errors && formik.errors.filterRequired && (
+            <div className="MuiFormHelperText-root MuiFormHelperText-contained Mui-error MuiFormHelperText-marginDense">
+              {formik.errors.filterRequired}
+            </div>
+          )}
         </Grid>
 
         {formik.isSubmitting && (
