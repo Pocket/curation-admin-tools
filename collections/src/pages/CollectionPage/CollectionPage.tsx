@@ -117,6 +117,7 @@ export const CollectionPage = (): JSX.Element => {
       });
   };
 
+  // provide an empty story object for the 'Add story' form
   const emptyStory: StoryModel = {
     externalId: '',
     url: '',

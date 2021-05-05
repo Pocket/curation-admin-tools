@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
 import * as yup from 'yup';
 import { FormikValues, useFormik } from 'formik';
-import { Box, Grid, LinearProgress, TextField } from '@material-ui/core';
-import { Button } from '../Button/Button';
+import {
+  Box,
+  CardMedia,
+  CircularProgress,
+  Grid,
+  LinearProgress,
+  TextField,
+} from '@material-ui/core';
+import { Button, MarkdownPreview } from '../';
 import { StoryModel } from '../../api';
-import { MarkdownPreview } from '../MarkdownPreview/MarkdownPreview';
-import { useGetStoryFromParserLazyQuery } from '../../api/client-api/generatedTypes';
 import { clientAPIClient } from '../../api/client';
+import { useGetStoryFromParserLazyQuery } from '../../api/client-api/generatedTypes';
+import { useStyles } from './StoryForm.styles';
 
 interface StoryFormProps {
   /**
@@ -22,6 +29,7 @@ interface StoryFormProps {
 
 export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
   const { story, onSubmit } = props;
+  const classes = useStyles();
 
   const [showOtherFields, setShowOtherFields] = useState<boolean>(false);
 
@@ -52,21 +60,18 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
     },
   });
 
-  const [getStory, { data }] = useGetStoryFromParserLazyQuery({
+  const [getStory, { loading, data }] = useGetStoryFromParserLazyQuery({
     client: clientAPIClient,
-  });
-
-  const fetchStoryData = () => {
-    getStory({ variables: { url: formik.values.url } });
-
-    if (data) {
-      console.log(data);
-
+    onCompleted: (data) => {
+      // If the parser returns multiple authors for the story,
+      // combine them in one comma-separated string
       const commaSeparatedAuthors = data.getItemByUrl?.authors
         ?.map((author) => {
           return author?.name;
         })
         .join(', ');
+
+      // set field values with data returned by the parser
       formik.setFieldValue('authors', commaSeparatedAuthors);
 
       formik.setFieldValue('title', data.getItemByUrl?.title);
@@ -75,13 +80,24 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
         data.getItemByUrl?.domainMetadata?.name
       );
       formik.setFieldValue('excerpt', data.getItemByUrl?.excerpt);
-    }
 
-    // the idea is, when adding a new story, is to show the remainder of
-    // the form as the data from the parser comes back, not straight away.
-    // So this should be lifted up to the parent component (CollectionPage)
-    // and updated from there
-    setShowOtherFields(true);
+      // if this is used to add a story and only the URL is visible,
+      // show the other fields now that they contain something
+      setShowOtherFields(true);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  const fetchStoryData = () => {
+    // Get story data from the parser. 'onComplete' callback specified
+    // in the prepared query above will fill in the form with the returned data
+    getStory({
+      variables: {
+        url: formik.values.url,
+      },
+    });
   };
 
   return (
@@ -107,6 +123,12 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
             <Box alignSelf="center" ml={1}>
               <Button buttonType="hollow" onClick={fetchStoryData}>
                 Populate
+                {loading && (
+                  <>
+                    &nbsp;
+                    <CircularProgress size={14} />
+                  </>
+                )}
               </Button>
             </Box>
           </Box>
@@ -129,24 +151,37 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
                 helperText={formik.errors.title ? formik.errors.title : null}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                id="authors"
-                label="Authors"
-                fullWidth
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                size="small"
-                variant="outlined"
-                {...formik.getFieldProps('authors')}
-                error={!!(formik.touched.authors && formik.errors.authors)}
-                helperText={
-                  formik.errors.authors ? formik.errors.authors : null
+            <Grid item xs={12} sm={3}>
+              <CardMedia
+                component="img"
+                src={
+                  data?.getItemByUrl?.topImageUrl
+                    ? data?.getItemByUrl?.topImageUrl
+                    : '/placeholders/collection.svg'
                 }
+                alt={formik.values.title}
+                className={classes.image}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={9}>
+              <Box mb={3}>
+                <TextField
+                  id="authors"
+                  label="Authors"
+                  fullWidth
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  size="small"
+                  variant="outlined"
+                  {...formik.getFieldProps('authors')}
+                  error={!!(formik.touched.authors && formik.errors.authors)}
+                  helperText={
+                    formik.errors.authors ? formik.errors.authors : null
+                  }
+                />
+              </Box>
+
               <TextField
                 id="publisher"
                 label="Publisher"
