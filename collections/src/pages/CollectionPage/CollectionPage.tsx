@@ -84,7 +84,7 @@ export const CollectionPage = (): JSX.Element => {
   };
 
   /**
-   * Collect form data and send it to the API.
+   * Collect "edit collection" form data and send it to the API.
    * Update components on page if updates have been saved successfully
    */
   const handleSubmit = (values: FormikValues): void => {
@@ -109,8 +109,8 @@ export const CollectionPage = (): JSX.Element => {
           collection.intro = data?.updateCollection?.intro;
           collection.status = data?.updateCollection?.status!;
           collection.authors = data?.updateCollection?.authors!;
+          toggleEditForm();
         }
-        toggleEditForm();
       })
       .catch((error: Error) => {
         showNotification(error.message, true);
@@ -154,6 +154,9 @@ export const CollectionPage = (): JSX.Element => {
           <Collapse in={showEditForm}>
             <Paper elevation={4}>
               <Box p={2} mt={3}>
+                <Box mb={2}>
+                  <h3>Edit Collection</h3>
+                </Box>
                 {!authorsData && (
                   <HandleApiResponse
                     loading={authorsLoading}
@@ -178,11 +181,11 @@ export const CollectionPage = (): JSX.Element => {
             ...list of stories here
           </Box>
 
-          <Box mt={3}>
-            <h4>Add A Story</h4>
-          </Box>
           <Paper elevation={4}>
             <Box p={2} mt={3}>
+              <Box mb={2}>
+                <h3>Add Story</h3>
+              </Box>
               <StoryForm
                 onSubmit={() => {
                   console.log('Submitting the story...');

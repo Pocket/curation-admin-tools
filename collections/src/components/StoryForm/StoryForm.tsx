@@ -9,11 +9,14 @@ import {
   LinearProgress,
   TextField,
 } from '@material-ui/core';
-import { Button, MarkdownPreview } from '../';
+import { Button, MarkdownPreview, Notification } from '../';
 import { StoryModel } from '../../api';
 import { clientAPIClient } from '../../api/client';
 import { useGetStoryFromParserLazyQuery } from '../../api/client-api/generatedTypes';
 import { useStyles } from './StoryForm.styles';
+import { CollectionStoryAuthor } from '../../api/generatedTypes';
+import { useNotifications } from '../../hooks/useNotifications';
+import { ApolloError } from '@apollo/client';
 
 interface StoryFormProps {
   /**
@@ -31,6 +34,16 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
   const { story, onSubmit } = props;
   const classes = useStyles();
 
+  // Prepare state vars and helper methods for API notifications
+  const {
+    open,
+    message,
+    hasError,
+    showNotification,
+    handleClose,
+  } = useNotifications();
+
+  // Whether to show the full form or just the URL field with the "Populate" button
   const [showOtherFields, setShowOtherFields] = useState<boolean>(false);
 
   /**
@@ -41,7 +54,12 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
       url: story.url ?? '',
       title: story.title ?? '',
       excerpt: story.excerpt ?? '',
-      authors: story.authors[0].name ?? '',
+      authors:
+        story.authors
+          .map((author: CollectionStoryAuthor) => {
+            return author?.name;
+          })
+          .join(', ') ?? '',
       publisher: story.publisher ?? '',
     },
     // We don't want to irritate users by displaying validation errors
@@ -63,40 +81,59 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
   const [getStory, { loading, data }] = useGetStoryFromParserLazyQuery({
     client: clientAPIClient,
     onCompleted: (data) => {
-      // If the parser returns multiple authors for the story,
-      // combine them in one comma-separated string
-      const commaSeparatedAuthors = data.getItemByUrl?.authors
-        ?.map((author) => {
-          return author?.name;
-        })
-        .join(', ');
+      // Rather than return errors if it can't parse a URL, the parser
+      // returns a null object instead
+      if (data.getItemByUrl) {
+        // This is the success path
 
-      // set field values with data returned by the parser
-      formik.setFieldValue('authors', commaSeparatedAuthors);
+        // If the parser returns multiple authors for the story,
+        // combine them in one comma-separated string
+        const commaSeparatedAuthors = data.getItemByUrl?.authors
+          ?.map((author) => {
+            return author?.name;
+          })
+          .join(', ');
 
-      formik.setFieldValue('title', data.getItemByUrl?.title);
-      formik.setFieldValue(
-        'publisher',
-        data.getItemByUrl?.domainMetadata?.name
-      );
-      formik.setFieldValue('excerpt', data.getItemByUrl?.excerpt);
+        // set field values with data returned by the parser
+        formik.setFieldValue('authors', commaSeparatedAuthors);
 
-      // if this is used to add a story and only the URL is visible,
-      // show the other fields now that they contain something
-      setShowOtherFields(true);
+        // make sure to use the 'resolvedUrl returned from the parser instead of the URL
+        // submitted by the user
+        formik.setFieldValue('url', data.getItemByUrl?.resolvedUrl);
+        formik.setFieldValue('title', data.getItemByUrl?.title);
+        formik.setFieldValue(
+          'publisher',
+          data.getItemByUrl?.domainMetadata?.name
+        );
+        formik.setFieldValue('excerpt', data.getItemByUrl?.excerpt);
+
+        // if this is used to add a story and only the URL is visible,
+        // show the other fields now that they contain something
+        setShowOtherFields(true);
+      } else {
+        // This is the error path
+        showNotification(`The parser couldn't process this URL`, true);
+      }
     },
-    onError: (error) => {
-      console.log(error);
+    onError: (error: ApolloError) => {
+      // Show any other errors, i.e. cannot reach the API, etc.
+      showNotification(error.message, true);
     },
   });
 
-  const fetchStoryData = () => {
-    // Get story data from the parser. 'onComplete' callback specified
-    // in the prepared query above will fill in the form with the returned data
-    getStory({
-      variables: {
-        url: formik.values.url,
-      },
+  const fetchStoryData = async () => {
+    // Make sure we don't send an empty string to the parser
+    formik.setFieldTouched('url');
+    await formik.validateField('url').then(() => {
+      if (!formik.errors.url) {
+        // Get story data from the parser. 'onComplete' callback specified
+        // in the prepared query above will fill in the form with the returned data
+        getStory({
+          variables: {
+            url: formik.values.url,
+          },
+        });
+      }
     });
   };
 
@@ -120,7 +157,7 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
                 helperText={formik.errors.url ? formik.errors.url : null}
               />
             </Box>
-            <Box alignSelf="center" ml={1}>
+            <Box alignSelf="baseline" ml={1}>
               <Button buttonType="hollow" onClick={fetchStoryData}>
                 Populate
                 {loading && (
@@ -236,6 +273,12 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
           </>
         )}
       </Grid>
+      <Notification
+        handleClose={handleClose}
+        isOpen={open}
+        message={message}
+        type={hasError ? 'error' : 'success'}
+      />
     </form>
   );
 };

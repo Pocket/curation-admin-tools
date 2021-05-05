@@ -153,7 +153,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
                 helperText={formik.errors.slug ? formik.errors.slug : null}
               />
             </Box>
-            <Box alignSelf="center" ml={1}>
+            <Box alignSelf="baseline" ml={1}>
               <Button buttonType="hollow" onClick={suggestSlug}>
                 Suggest&nbsp;slug
               </Button>

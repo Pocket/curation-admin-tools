@@ -123,6 +123,9 @@ export const AuthorPage = (): JSX.Element => {
           <Collapse in={showEditForm}>
             <Paper elevation={4}>
               <Box p={2} mt={3}>
+                <Box mb={2}>
+                  <h3>Edit Author</h3>
+                </Box>
                 <AuthorForm
                   author={author}
                   onSubmit={handleSubmit}
