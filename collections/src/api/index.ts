@@ -30,7 +30,7 @@ export {
   useUpdateCollectionAuthorMutation,
   useCreateCollectionMutation,
   useUpdateCollectionMutation,
-  useGetSearchCollectionsQuery,
+  useGetSearchCollectionsLazyQuery,
 } from './generatedTypes';
 
 export { useGetStoryFromParserQuery } from './client-api/generatedTypes';
