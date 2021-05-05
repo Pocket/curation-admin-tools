@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import { Box, Fade, Paper } from '@material-ui/core';
+import { Box, Collapse, Paper } from '@material-ui/core';
 import {
   Button,
   CollectionForm,
@@ -8,9 +8,11 @@ import {
   HandleApiResponse,
   Notification,
   ScrollToTop,
+  StoryForm,
 } from '../../components';
 import {
   CollectionModel,
+  StoryModel,
   useGetAuthorsQuery,
   useGetCollectionByIdQuery,
   useUpdateCollectionMutation,
@@ -82,7 +84,7 @@ export const CollectionPage = (): JSX.Element => {
   };
 
   /**
-   * Collect form data and send it to the API.
+   * Collect "edit collection" form data and send it to the API.
    * Update components on page if updates have been saved successfully
    */
   const handleSubmit = (values: FormikValues): void => {
@@ -107,12 +109,27 @@ export const CollectionPage = (): JSX.Element => {
           collection.intro = data?.updateCollection?.intro;
           collection.status = data?.updateCollection?.status!;
           collection.authors = data?.updateCollection?.authors!;
+          toggleEditForm();
         }
-        toggleEditForm();
       })
       .catch((error: Error) => {
         showNotification(error.message, true);
       });
+  };
+
+  // provide an empty story object for the 'Add story' form
+  const emptyStory: StoryModel = {
+    externalId: '',
+    url: '',
+    title: '',
+    excerpt: null,
+    authors: [
+      {
+        name: '',
+      },
+    ],
+    publisher: null,
+    imageUrl: null,
   };
 
   return (
@@ -134,9 +151,12 @@ export const CollectionPage = (): JSX.Element => {
 
           <CollectionInfo collection={collection} />
 
-          <Fade in={showEditForm}>
+          <Collapse in={showEditForm}>
             <Paper elevation={4}>
               <Box p={2} mt={3}>
+                <Box mb={2}>
+                  <h3>Edit Collection</h3>
+                </Box>
                 {!authorsData && (
                   <HandleApiResponse
                     loading={authorsLoading}
@@ -149,12 +169,31 @@ export const CollectionPage = (): JSX.Element => {
                     authors={authorsData.getCollectionAuthors.authors}
                     collection={collection}
                     onSubmit={handleSubmit}
-                    showCancelButton={false}
+                    showCancelButton={true}
                   />
                 )}
               </Box>
             </Paper>
-          </Fade>
+          </Collapse>
+
+          <Box mt={3}>
+            <h2>Stories</h2>
+            ...list of stories here
+          </Box>
+
+          <Paper elevation={4}>
+            <Box p={2} mt={3}>
+              <Box mb={2}>
+                <h3>Add Story</h3>
+              </Box>
+              <StoryForm
+                onSubmit={() => {
+                  console.log('Submitting the story...');
+                }}
+                story={emptyStory}
+              />
+            </Box>
+          </Paper>
           <Notification
             handleClose={handleClose}
             isOpen={open}

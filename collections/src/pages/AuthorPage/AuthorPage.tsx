@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import { Box, Fade, Paper } from '@material-ui/core';
+import { Box, Collapse, Paper } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { FormikValues } from 'formik';
 import {
@@ -120,9 +120,12 @@ export const AuthorPage = (): JSX.Element => {
           </Box>
           <AuthorInfo author={author} />
 
-          <Fade in={showEditForm}>
+          <Collapse in={showEditForm}>
             <Paper elevation={4}>
               <Box p={2} mt={3}>
+                <Box mb={2}>
+                  <h3>Edit Author</h3>
+                </Box>
                 <AuthorForm
                   author={author}
                   onSubmit={handleSubmit}
@@ -131,7 +134,7 @@ export const AuthorPage = (): JSX.Element => {
                 />
               </Box>
             </Paper>
-          </Fade>
+          </Collapse>
           <Notification
             handleClose={handleClose}
             isOpen={open}

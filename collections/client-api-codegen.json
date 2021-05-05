@@ -1,0 +1,21 @@
+{
+  "overwrite": true,
+  "schema": ["${REACT_APP_CLIENT_API_ENDPOINT}"],
+  "documents": [
+    "src/api/client-api/queries/*.ts"
+  ],
+  "generates": {
+    "src/api/client-api/generatedTypes.ts": {
+      "plugins": [
+        "typescript",
+        "typescript-operations",
+        "typescript-react-apollo"
+      ]
+    }
+  },
+  "hooks": {
+    "afterAllFileWrite": [
+      "prettier -w src/api/client-api/generatedTypes.ts"
+    ]
+  }
+}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Box } from '@material-ui/core';
 import {
   Button,
@@ -20,8 +20,14 @@ import {
  * Collection List Page
  */
 export const CollectionListPage = (): JSX.Element => {
-  // set the default tab - here it's the draft collections
-  const [value, setValue] = useState<string>('/collections/drafts/');
+  const { pathname } = useLocation();
+
+  /**
+   * Set the value of the active tab to path name - drafts tab by default
+   */
+  const [value, setValue] = useState<string>(
+    pathname ?? '/collections/drafts/'
+  );
 
   // switch to active tab when user clicks on tab heading
   const handleChange = (

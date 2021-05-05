@@ -1,6 +1,6 @@
 {
   "overwrite": true,
-  "schema": "${SCHEMA_PATH}",
+  "schema": [ "${REACT_APP_COLLECTION_API_ENDPOINT}"],
   "documents": [
     "src/api/queries/*.ts",
     "src/api/mutations/*.ts",
@@ -12,7 +12,10 @@
         "typescript",
         "typescript-operations",
         "typescript-react-apollo"
-      ]
+      ],
+      "config": {
+        "federation": true
+      }
     }
   },
   "hooks": {
