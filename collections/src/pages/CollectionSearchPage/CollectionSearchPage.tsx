@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Box, Paper } from '@material-ui/core';
 import {
   CollectionListCard,
@@ -6,48 +5,37 @@ import {
   CollectionSearchForm,
   ScrollToTop,
 } from '../../components';
-import { useGetSearchCollectionsQuery } from '../../api';
-import { CollectionStatus } from '../../api/generatedTypes';
+import { useGetSearchCollectionsLazyQuery } from '../../api';
 import { FormikValues } from 'formik';
 
 export const CollectionSearchPage = (): JSX.Element => {
-  const [hasSearch, setHasSearch] = useState<boolean>(false);
-  const [searchAuthor, setSearchAuthor] = useState<string | undefined>(
-    undefined
-  );
-  const [searchStatus, setSearchStatus] = useState<
-    CollectionStatus | undefined
-  >(undefined);
-  const [searchTitle, setSearchTitle] = useState<string | undefined>(undefined);
-
-  const { loading, error, data } = useGetSearchCollectionsQuery({
-    variables: {
-      status: searchStatus,
-      author: searchAuthor,
-      title: searchTitle,
-    },
-    skip: !hasSearch, // these negative names - ugh
-  });
-
-  const triggerSearchQuery = (): void => {
-    setHasSearch(true);
-  };
+  // prepare the query for executing in the handleSubmit callback below
+  const [
+    searchCollections,
+    { loading, error, data },
+  ] = useGetSearchCollectionsLazyQuery();
 
   /**
    * Collect form data and send it to the API.
    * Update components on page if updates have been saved successfully
    */
   const handleSubmit = (values: FormikValues): void => {
-    triggerSearchQuery();
+    // prepare the search filters
+    const searchVars: any = {
+      author: values.author,
+      title: values.title,
+    };
 
-    setSearchAuthor(values.author);
-    setSearchTitle(values.title);
-
-    // while author and title can be empty and not impact search, status *must*
-    // be a valid CollectionStatus, so we need to check before setting
+    // author and title are strings and can be blank, but status must be a
+    // CollectionStatus enum
     if (values.status !== '') {
-      setSearchStatus(values.status);
+      searchVars['status'] = values.status;
     }
+
+    // execute the search
+    searchCollections({
+      variables: searchVars,
+    });
   };
 
   return (
