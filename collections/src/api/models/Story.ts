@@ -1,10 +1,4 @@
-import {
-  CollectionStory,
-  CollectionStoryAuthor,
-  Item,
-  Maybe,
-  Scalars,
-} from '../generatedTypes';
+import { CollectionStory, CollectionStoryAuthor } from '../generatedTypes';
 
 export type StoryModel = { __typename?: 'CollectionStory' } & Pick<
   CollectionStory,
