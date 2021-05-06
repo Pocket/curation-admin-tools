@@ -9,13 +9,16 @@ import {
   Notification,
   ScrollToTop,
   StoryForm,
+  StoryListCard,
 } from '../../components';
 import {
   CollectionModel,
   StoryModel,
   useGetAuthorsQuery,
   useGetCollectionByIdQuery,
+  useGetCollectionStoriesQuery,
   useUpdateCollectionMutation,
+  useCreateCollectionStoryMutation,
 } from '../../api';
 import { useNotifications } from '../../hooks/useNotifications';
 import { FormikValues } from 'formik';
@@ -35,9 +38,12 @@ export const CollectionPage = (): JSX.Element => {
     handleClose,
   } = useNotifications();
 
-  // prepare the "upate collection" mutation
+  // prepare the "update collection" mutation
   // has to be done at the top level of the component because it's a hook
   const [updateCollection] = useUpdateCollectionMutation();
+
+  // prepare the "create story" mutation
+  const [createStory] = useCreateCollectionStoryMutation();
 
   /**
    * If a Collection object was passed to the page from one of the other app pages,
@@ -76,6 +82,17 @@ export const CollectionPage = (): JSX.Element => {
     error: authorsError,
     data: authorsData,
   } = useGetAuthorsQuery();
+
+  // Load collection authors - deliberately in a separate query
+  const {
+    loading: storiesLoading,
+    error: storiesError,
+    data: storiesData,
+  } = useGetCollectionStoriesQuery({
+    variables: {
+      id: params.id,
+    },
+  });
 
   const [showEditForm, setShowEditForm] = useState<boolean>(false);
 
@@ -117,6 +134,31 @@ export const CollectionPage = (): JSX.Element => {
       });
   };
 
+  const handleCreateStorySubmit = (values: FormikValues): void => {
+    // prepare authors! They need to be an array of objects again
+    const authors = values.authors.split(', ').map((name: string) => {
+      return { name };
+    });
+
+    createStory({
+      variables: {
+        collectionExternalId: collection!.externalId,
+        url: values.url,
+        title: values.title,
+        excerpt: values.excerpt,
+        publisher: values.publisher,
+        imageUrl: '', // TODO: upload an image!
+        authors,
+      },
+    })
+      .then((data) => {
+        showNotification('Added a story successfully!');
+      })
+      .catch((error: Error) => {
+        showNotification(error.message, true);
+      });
+  };
+
   // provide an empty story object for the 'Add story' form
   const emptyStory: StoryModel = {
     externalId: '',
@@ -130,6 +172,7 @@ export const CollectionPage = (): JSX.Element => {
     ],
     publisher: null,
     imageUrl: null,
+    sortOrder: null,
   };
 
   return (
@@ -178,7 +221,17 @@ export const CollectionPage = (): JSX.Element => {
 
           <Box mt={3}>
             <h2>Stories</h2>
-            ...list of stories here
+            {!storiesData && (
+              <HandleApiResponse
+                loading={storiesLoading}
+                error={storiesError}
+              />
+            )}
+            {storiesData &&
+              storiesData.getCollection &&
+              storiesData.getCollection.stories.map((story: StoryModel) => {
+                return <StoryListCard key={story.externalId} story={story} />;
+              })}
           </Box>
 
           <Paper elevation={4}>
@@ -187,9 +240,7 @@ export const CollectionPage = (): JSX.Element => {
                 <h3>Add Story</h3>
               </Box>
               <StoryForm
-                onSubmit={() => {
-                  console.log('Submitting the story...');
-                }}
+                onSubmit={handleCreateStorySubmit}
                 story={emptyStory}
               />
             </Box>
