@@ -2,7 +2,19 @@ import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { config } from '../config';
 
 const apolloOptions = {
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      CollectionAuthor: {
+        keyFields: ['externalId'],
+      },
+      // CollectionStory: {
+      //   keyFields: ['externalId'],
+      // },
+      // Collection: {
+      //   keyFields: ['externalId'],
+      // },
+    },
+  }),
   name: config.apolloClientName,
   version: config.version,
 };

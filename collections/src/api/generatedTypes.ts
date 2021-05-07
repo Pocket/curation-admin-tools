@@ -295,6 +295,26 @@ export type AuthorDataFragment = { __typename?: 'CollectionAuthor' } & Pick<
   'externalId' | 'name' | 'slug' | 'bio' | 'imageUrl' | 'active'
 >;
 
+export type CollectionStoryDataFragment = {
+  __typename?: 'CollectionStory';
+} & Pick<
+  CollectionStory,
+  | 'externalId'
+  | 'url'
+  | 'title'
+  | 'excerpt'
+  | 'imageUrl'
+  | 'publisher'
+  | 'sortOrder'
+> & {
+    authors: Array<
+      { __typename?: 'CollectionStoryAuthor' } & Pick<
+        CollectionStoryAuthor,
+        'name'
+      >
+    >;
+  };
+
 export type CreateCollectionMutationVariables = Exact<{
   title: Scalars['String'];
   slug: Scalars['String'];
@@ -345,23 +365,9 @@ export type CreateCollectionStoryMutationVariables = Exact<{
 }>;
 
 export type CreateCollectionStoryMutation = { __typename?: 'Mutation' } & {
-  createCollectionStory: { __typename?: 'CollectionStory' } & Pick<
-    CollectionStory,
-    | 'externalId'
-    | 'url'
-    | 'title'
-    | 'excerpt'
-    | 'imageUrl'
-    | 'publisher'
-    | 'sortOrder'
-  > & {
-      authors: Array<
-        { __typename?: 'CollectionStoryAuthor' } & Pick<
-          CollectionStoryAuthor,
-          'name'
-        >
-      >;
-    };
+  createCollectionStory: {
+    __typename?: 'CollectionStory';
+  } & CollectionStoryDataFragment;
 };
 
 export type UpdateCollectionMutationVariables = Exact<{
@@ -471,10 +477,21 @@ export type GetCollectionByIdQuery = { __typename?: 'Query' } & {
         authors: Array<
           { __typename?: 'CollectionAuthor' } & AuthorDataFragment
         >;
-        stories: Array<
-          { __typename?: 'CollectionStory' } & Pick<CollectionStory, 'title'>
-        >;
       }
+  >;
+};
+
+export type GetCollectionStoriesQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+export type GetCollectionStoriesQuery = { __typename?: 'Query' } & {
+  getCollection?: Maybe<
+    { __typename?: 'Collection' } & {
+      stories: Array<
+        { __typename?: 'CollectionStory' } & CollectionStoryDataFragment
+      >;
+    }
   >;
 };
 
@@ -579,6 +596,20 @@ export const AuthorDataFragmentDoc = gql`
     bio
     imageUrl
     active
+  }
+`;
+export const CollectionStoryDataFragmentDoc = gql`
+  fragment CollectionStoryData on CollectionStory {
+    externalId
+    url
+    title
+    excerpt
+    imageUrl
+    authors {
+      name
+    }
+    publisher
+    sortOrder
   }
 `;
 export const CreateCollectionDocument = gql`
@@ -752,18 +783,10 @@ export const CreateCollectionStoryDocument = gql`
         sortOrder: $sortOrder
       }
     ) {
-      externalId
-      url
-      title
-      excerpt
-      imageUrl
-      authors {
-        name
-      }
-      publisher
-      sortOrder
+      ...CollectionStoryData
     }
   }
+  ${CollectionStoryDataFragmentDoc}
 `;
 export type CreateCollectionStoryMutationFn = Apollo.MutationFunction<
   CreateCollectionStoryMutation,
@@ -1176,9 +1199,6 @@ export const GetCollectionByIdDocument = gql`
       authors {
         ...AuthorData
       }
-      stories {
-        title
-      }
     }
   }
   ${AuthorDataFragmentDoc}
@@ -1233,6 +1253,67 @@ export type GetCollectionByIdLazyQueryHookResult = ReturnType<
 export type GetCollectionByIdQueryResult = Apollo.QueryResult<
   GetCollectionByIdQuery,
   GetCollectionByIdQueryVariables
+>;
+export const GetCollectionStoriesDocument = gql`
+  query getCollectionStories($id: String!) {
+    getCollection(externalId: $id) {
+      stories {
+        ...CollectionStoryData
+      }
+    }
+  }
+  ${CollectionStoryDataFragmentDoc}
+`;
+
+/**
+ * __useGetCollectionStoriesQuery__
+ *
+ * To run a query within a React component, call `useGetCollectionStoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCollectionStoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCollectionStoriesQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetCollectionStoriesQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetCollectionStoriesQuery,
+    GetCollectionStoriesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetCollectionStoriesQuery,
+    GetCollectionStoriesQueryVariables
+  >(GetCollectionStoriesDocument, options);
+}
+export function useGetCollectionStoriesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetCollectionStoriesQuery,
+    GetCollectionStoriesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetCollectionStoriesQuery,
+    GetCollectionStoriesQueryVariables
+  >(GetCollectionStoriesDocument, options);
+}
+export type GetCollectionStoriesQueryHookResult = ReturnType<
+  typeof useGetCollectionStoriesQuery
+>;
+export type GetCollectionStoriesLazyQueryHookResult = ReturnType<
+  typeof useGetCollectionStoriesLazyQuery
+>;
+export type GetCollectionStoriesQueryResult = Apollo.QueryResult<
+  GetCollectionStoriesQuery,
+  GetCollectionStoriesQueryVariables
 >;
 export const GetDraftCollectionsDocument = gql`
   query getDraftCollections($page: Int, $perPage: Int) {

@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { CollectionStoryData } from '../fragments/CollectionStoryData';
 
 /**
  * Create a collection story
@@ -26,16 +27,8 @@ export const createCollectionStory = gql`
         sortOrder: $sortOrder
       }
     ) {
-      externalId
-      url
-      title
-      excerpt
-      imageUrl
-      authors {
-        name
-      }
-      publisher
-      sortOrder
+      ...CollectionStoryData
     }
   }
+  ${CollectionStoryData}
 `;
