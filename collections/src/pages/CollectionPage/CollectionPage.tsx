@@ -15,7 +15,7 @@ import {
   CollectionModel,
   StoryModel,
   useGetAuthorsQuery,
-  useGetCollectionByIdQuery,
+  useGetCollectionByExternalIdQuery,
   useGetCollectionStoriesQuery,
   useUpdateCollectionMutation,
   useCreateCollectionStoryMutation,
@@ -24,7 +24,7 @@ import { useNotifications } from '../../hooks/useNotifications';
 import { FormikValues } from 'formik';
 import EditIcon from '@material-ui/icons/Edit';
 import {
-  GetCollectionByIdDocument,
+  GetCollectionByExternalIdDocument,
   GetCollectionStoriesDocument,
 } from '../../api/generatedTypes';
 
@@ -64,9 +64,9 @@ export const CollectionPage = (): JSX.Element => {
    * fetch the Collection info from the the API.
    */
   const params = useParams<{ id: string }>();
-  const { loading, error, data } = useGetCollectionByIdQuery({
+  const { loading, error, data } = useGetCollectionByExternalIdQuery({
     variables: {
-      id: params.id,
+      externalId: params.id,
     },
     // Skip query if collection object was delivered via the routing
     // This is needed because hooks can only be called at the top level
@@ -111,7 +111,7 @@ export const CollectionPage = (): JSX.Element => {
   const handleSubmit = (values: FormikValues): void => {
     updateCollection({
       variables: {
-        id: params.id,
+        externalId: collection!.externalId,
         title: values.title,
         slug: values.slug,
         excerpt: values.excerpt,
@@ -121,9 +121,9 @@ export const CollectionPage = (): JSX.Element => {
       },
       refetchQueries: [
         {
-          query: GetCollectionByIdDocument,
+          query: GetCollectionByExternalIdDocument,
           variables: {
-            id: params.id,
+            externalId: collection!.externalId,
           },
         },
       ],

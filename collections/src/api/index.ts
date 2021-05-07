@@ -25,7 +25,7 @@ export {
   useGetDraftCollectionsQuery,
   useGetPublishedCollectionsQuery,
   useGetArchivedCollectionsQuery,
-  useGetCollectionByIdQuery,
+  useGetCollectionByExternalIdQuery,
   useCreateCollectionAuthorMutation,
   useUpdateCollectionAuthorMutation,
   useCreateCollectionMutation,

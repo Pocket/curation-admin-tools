@@ -9,6 +9,7 @@ import { CollectionStoryData } from '../fragments/CollectionStoryData';
 export const getCollectionStories = gql`
   query getCollectionStories($id: String!) {
     getCollection(externalId: $id) {
+      externalId
       stories {
         ...CollectionStoryData
       }

@@ -6,7 +6,7 @@ import { AuthorData } from '../fragments/AuthorData';
  */
 export const updateCollection = gql`
   mutation updateCollection(
-    $id: String
+    $externalId: String
     $title: String!
     $slug: String!
     $excerpt: Markdown!
@@ -16,7 +16,7 @@ export const updateCollection = gql`
   ) {
     updateCollection(
       data: {
-        externalId: $id
+        externalId: $externalId
         title: $title
         slug: $slug
         excerpt: $excerpt
