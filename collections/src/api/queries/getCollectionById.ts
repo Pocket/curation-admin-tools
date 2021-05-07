@@ -17,9 +17,6 @@ export const getCollectionById = gql`
       authors {
         ...AuthorData
       }
-      stories {
-        title
-      }
     }
   }
   ${AuthorData}

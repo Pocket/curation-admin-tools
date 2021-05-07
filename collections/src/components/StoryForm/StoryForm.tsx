@@ -106,6 +106,7 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
           data.getItemByUrl?.domainMetadata?.name
         );
         formik.setFieldValue('excerpt', data.getItemByUrl?.excerpt);
+        formik.setFieldValue('imageUrl', data.getItemByUrl?.topImageUrl);
 
         // if this is used to add a story and only the URL is visible,
         // show the other fields now that they contain something
@@ -273,6 +274,15 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
           </>
         )}
       </Grid>
+      <Box display="none">
+        <TextField
+          type="hidden"
+          id="imageUrl"
+          label="imageUrl"
+          {...formik.getFieldProps('imageUrl')}
+        />
+      </Box>
+
       <Notification
         handleClose={handleClose}
         isOpen={open}

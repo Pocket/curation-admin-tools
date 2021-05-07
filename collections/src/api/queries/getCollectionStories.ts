@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { CollectionStoryData } from '../fragments/CollectionStoryData';
 
 /**
  * Get collection stories for a given collection external id.
@@ -9,17 +10,9 @@ export const getCollectionStories = gql`
   query getCollectionStories($id: String!) {
     getCollection(externalId: $id) {
       stories {
-        externalId
-        url
-        title
-        excerpt
-        imageUrl
-        authors {
-          name
-        }
-        publisher
-        sortOrder
+        ...CollectionStoryData
       }
     }
   }
+  ${CollectionStoryData}
 `;

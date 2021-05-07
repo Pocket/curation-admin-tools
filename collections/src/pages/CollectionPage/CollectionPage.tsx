@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { Box, Collapse, Paper } from '@material-ui/core';
 import {
@@ -23,6 +23,10 @@ import {
 import { useNotifications } from '../../hooks/useNotifications';
 import { FormikValues } from 'formik';
 import EditIcon from '@material-ui/icons/Edit';
+import {
+  GetCollectionByIdDocument,
+  GetCollectionStoriesDocument,
+} from '../../api/generatedTypes';
 
 interface CollectionPageProps {
   collection?: CollectionModel;
@@ -107,7 +111,7 @@ export const CollectionPage = (): JSX.Element => {
   const handleSubmit = (values: FormikValues): void => {
     updateCollection({
       variables: {
-        id: collection!.externalId,
+        id: params.id,
         title: values.title,
         slug: values.slug,
         excerpt: values.excerpt,
@@ -115,6 +119,14 @@ export const CollectionPage = (): JSX.Element => {
         status: values.status,
         authorExternalId: values.authorExternalId,
       },
+      refetchQueries: [
+        {
+          query: GetCollectionByIdDocument,
+          variables: {
+            id: params.id,
+          },
+        },
+      ],
     })
       .then(({ data }) => {
         showNotification('Collection updated successfully!');
@@ -134,6 +146,10 @@ export const CollectionPage = (): JSX.Element => {
       });
   };
 
+  // make sure we regenerate the 'Add Story' form each time a new story
+  // has been added
+  const [addStoryFormKey, setAddStoryFormKey] = useState(1);
+
   const handleCreateStorySubmit = (values: FormikValues): void => {
     // prepare authors! They need to be an array of objects again
     const authors = values.authors.split(', ').map((name: string) => {
@@ -142,7 +158,7 @@ export const CollectionPage = (): JSX.Element => {
 
     createStory({
       variables: {
-        collectionExternalId: collection!.externalId,
+        collectionExternalId: params.id,
         url: values.url,
         title: values.title,
         excerpt: values.excerpt,
@@ -150,9 +166,18 @@ export const CollectionPage = (): JSX.Element => {
         imageUrl: '', // TODO: upload an image!
         authors,
       },
+      refetchQueries: [
+        {
+          query: GetCollectionStoriesDocument,
+          variables: {
+            id: params.id,
+          },
+        },
+      ],
     })
       .then((data) => {
         showNotification('Added a story successfully!');
+        setAddStoryFormKey(addStoryFormKey + 1);
       })
       .catch((error: Error) => {
         showNotification(error.message, true);
@@ -240,6 +265,7 @@ export const CollectionPage = (): JSX.Element => {
                 <h3>Add Story</h3>
               </Box>
               <StoryForm
+                key={addStoryFormKey}
                 onSubmit={handleCreateStorySubmit}
                 story={emptyStory}
               />

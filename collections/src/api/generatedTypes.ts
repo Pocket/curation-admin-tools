@@ -295,6 +295,26 @@ export type AuthorDataFragment = { __typename?: 'CollectionAuthor' } & Pick<
   'externalId' | 'name' | 'slug' | 'bio' | 'imageUrl' | 'active'
 >;
 
+export type CollectionStoryDataFragment = {
+  __typename?: 'CollectionStory';
+} & Pick<
+  CollectionStory,
+  | 'externalId'
+  | 'url'
+  | 'title'
+  | 'excerpt'
+  | 'imageUrl'
+  | 'publisher'
+  | 'sortOrder'
+> & {
+    authors: Array<
+      { __typename?: 'CollectionStoryAuthor' } & Pick<
+        CollectionStoryAuthor,
+        'name'
+      >
+    >;
+  };
+
 export type CreateCollectionMutationVariables = Exact<{
   title: Scalars['String'];
   slug: Scalars['String'];
@@ -345,23 +365,9 @@ export type CreateCollectionStoryMutationVariables = Exact<{
 }>;
 
 export type CreateCollectionStoryMutation = { __typename?: 'Mutation' } & {
-  createCollectionStory: { __typename?: 'CollectionStory' } & Pick<
-    CollectionStory,
-    | 'externalId'
-    | 'url'
-    | 'title'
-    | 'excerpt'
-    | 'imageUrl'
-    | 'publisher'
-    | 'sortOrder'
-  > & {
-      authors: Array<
-        { __typename?: 'CollectionStoryAuthor' } & Pick<
-          CollectionStoryAuthor,
-          'name'
-        >
-      >;
-    };
+  createCollectionStory: {
+    __typename?: 'CollectionStory';
+  } & CollectionStoryDataFragment;
 };
 
 export type UpdateCollectionMutationVariables = Exact<{
@@ -471,9 +477,6 @@ export type GetCollectionByIdQuery = { __typename?: 'Query' } & {
         authors: Array<
           { __typename?: 'CollectionAuthor' } & AuthorDataFragment
         >;
-        stories: Array<
-          { __typename?: 'CollectionStory' } & Pick<CollectionStory, 'title'>
-        >;
       }
   >;
 };
@@ -486,23 +489,7 @@ export type GetCollectionStoriesQuery = { __typename?: 'Query' } & {
   getCollection?: Maybe<
     { __typename?: 'Collection' } & {
       stories: Array<
-        { __typename?: 'CollectionStory' } & Pick<
-          CollectionStory,
-          | 'externalId'
-          | 'url'
-          | 'title'
-          | 'excerpt'
-          | 'imageUrl'
-          | 'publisher'
-          | 'sortOrder'
-        > & {
-            authors: Array<
-              { __typename?: 'CollectionStoryAuthor' } & Pick<
-                CollectionStoryAuthor,
-                'name'
-              >
-            >;
-          }
+        { __typename?: 'CollectionStory' } & CollectionStoryDataFragment
       >;
     }
   >;
@@ -609,6 +596,20 @@ export const AuthorDataFragmentDoc = gql`
     bio
     imageUrl
     active
+  }
+`;
+export const CollectionStoryDataFragmentDoc = gql`
+  fragment CollectionStoryData on CollectionStory {
+    externalId
+    url
+    title
+    excerpt
+    imageUrl
+    authors {
+      name
+    }
+    publisher
+    sortOrder
   }
 `;
 export const CreateCollectionDocument = gql`
@@ -782,18 +783,10 @@ export const CreateCollectionStoryDocument = gql`
         sortOrder: $sortOrder
       }
     ) {
-      externalId
-      url
-      title
-      excerpt
-      imageUrl
-      authors {
-        name
-      }
-      publisher
-      sortOrder
+      ...CollectionStoryData
     }
   }
+  ${CollectionStoryDataFragmentDoc}
 `;
 export type CreateCollectionStoryMutationFn = Apollo.MutationFunction<
   CreateCollectionStoryMutation,
@@ -1206,9 +1199,6 @@ export const GetCollectionByIdDocument = gql`
       authors {
         ...AuthorData
       }
-      stories {
-        title
-      }
     }
   }
   ${AuthorDataFragmentDoc}
@@ -1268,19 +1258,11 @@ export const GetCollectionStoriesDocument = gql`
   query getCollectionStories($id: String!) {
     getCollection(externalId: $id) {
       stories {
-        externalId
-        url
-        title
-        excerpt
-        imageUrl
-        authors {
-          name
-        }
-        publisher
-        sortOrder
+        ...CollectionStoryData
       }
     }
   }
+  ${CollectionStoryDataFragmentDoc}
 `;
 
 /**

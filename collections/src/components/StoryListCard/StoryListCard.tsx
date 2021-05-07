@@ -54,7 +54,7 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
                   return author.name;
                 })
                 .join(', ')}
-            </span>
+            </span>{' '}
             &middot; <span>{story.publisher}</span>
           </Typography>
           <Typography noWrap component="div">
