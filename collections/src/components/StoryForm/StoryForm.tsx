@@ -28,10 +28,27 @@ interface StoryFormProps {
    * What do we do with the submitted data?
    */
   onSubmit: (values: FormikValues) => void;
+
+  /**
+   * Whether to show the full form or just the URL+Populate button
+   * one-line version.
+   */
+  showAllFields?: boolean;
+
+  /**
+   * Whether to show the 'Populate' button. It's not needed if you edit
+   * an existing story.
+   */
+  showPopulateButton?: boolean;
 }
 
 export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
-  const { story, onSubmit } = props;
+  const {
+    story,
+    onSubmit,
+    showAllFields = false,
+    showPopulateButton = true,
+  } = props;
   const classes = useStyles();
 
   // Prepare state vars and helper methods for API notifications
@@ -44,7 +61,9 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
   } = useNotifications();
 
   // Whether to show the full form or just the URL field with the "Populate" button
-  const [showOtherFields, setShowOtherFields] = useState<boolean>(false);
+  const [showOtherFields, setShowOtherFields] = useState<boolean>(
+    showAllFields
+  );
 
   /**
    * Set up form validation
@@ -124,7 +143,7 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
 
   const fetchStoryData = async () => {
     // Make sure we don't send an empty string to the parser
-    formik.setFieldTouched('url');
+    await formik.setFieldTouched('url');
     await formik.validateField('url').then(() => {
       if (!formik.errors.url) {
         // Get story data from the parser. 'onComplete' callback specified
@@ -158,17 +177,19 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
                 helperText={formik.errors.url ? formik.errors.url : null}
               />
             </Box>
-            <Box alignSelf="baseline" ml={1}>
-              <Button buttonType="hollow" onClick={fetchStoryData}>
-                Populate
-                {loading && (
-                  <>
-                    &nbsp;
-                    <CircularProgress size={14} />
-                  </>
-                )}
-              </Button>
-            </Box>
+            {showPopulateButton && (
+              <Box alignSelf="baseline" ml={1}>
+                <Button buttonType="hollow" onClick={fetchStoryData}>
+                  Populate
+                  {loading && (
+                    <>
+                      &nbsp;
+                      <CircularProgress size={14} />
+                    </>
+                  )}
+                </Button>
+              </Box>
+            )}
           </Box>
         </Grid>
 

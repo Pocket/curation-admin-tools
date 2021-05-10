@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import { Box, Collapse, Paper } from '@material-ui/core';
+import { Box, Button, Collapse, Paper, Typography } from '@material-ui/core';
 import {
-  Button,
   CollectionForm,
   CollectionInfo,
   HandleApiResponse,
@@ -176,7 +175,12 @@ export const CollectionPage = (): JSX.Element => {
       ],
     })
       .then((data) => {
-        showNotification('Added a story successfully!');
+        showNotification(
+          `Added "${data.data?.createCollectionStory?.title.substring(
+            0,
+            50
+          )}..."`
+        );
         setAddStoryFormKey(addStoryFormKey + 1);
       })
       .catch((error: Error) => {
@@ -208,10 +212,15 @@ export const CollectionPage = (): JSX.Element => {
         <>
           <Box display="flex">
             <Box flexGrow={1} alignSelf="center" textOverflow="ellipsis">
-              <h1>{collection.title}</h1>
+              <h1>
+                {collection.title}
+                <Typography variant="subtitle2" component="div">
+                  Collection
+                </Typography>
+              </h1>
             </Box>
             <Box alignSelf="center">
-              <Button buttonType="hollow" onClick={toggleEditForm}>
+              <Button color="primary" onClick={toggleEditForm}>
                 <EditIcon />
               </Button>
             </Box>
@@ -255,7 +264,14 @@ export const CollectionPage = (): JSX.Element => {
             {storiesData &&
               storiesData.getCollection &&
               storiesData.getCollection.stories.map((story: StoryModel) => {
-                return <StoryListCard key={story.externalId} story={story} />;
+                return (
+                  <StoryListCard
+                    key={story.externalId}
+                    story={story}
+                    collectionExternalId={collection!.externalId}
+                    showNotification={showNotification}
+                  />
+                );
               })}
           </Box>
 

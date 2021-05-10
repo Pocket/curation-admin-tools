@@ -370,6 +370,17 @@ export type CreateCollectionStoryMutation = { __typename?: 'Mutation' } & {
   } & CollectionStoryDataFragment;
 };
 
+export type DeleteCollectionStoryMutationVariables = Exact<{
+  externalId: Scalars['String'];
+}>;
+
+export type DeleteCollectionStoryMutation = { __typename?: 'Mutation' } & {
+  deleteCollectionStory: { __typename?: 'CollectionStory' } & Pick<
+    CollectionStory,
+    'externalId'
+  >;
+};
+
 export type UpdateCollectionMutationVariables = Exact<{
   externalId?: Maybe<Scalars['String']>;
   title: Scalars['String'];
@@ -408,6 +419,23 @@ export type UpdateCollectionAuthorMutation = { __typename?: 'Mutation' } & {
   updateCollectionAuthor: {
     __typename?: 'CollectionAuthor';
   } & AuthorDataFragment;
+};
+
+export type UpdateCollectionStoryMutationVariables = Exact<{
+  externalId: Scalars['String'];
+  url: Scalars['Url'];
+  title: Scalars['String'];
+  excerpt: Scalars['Markdown'];
+  imageUrl: Scalars['Url'];
+  authors: Array<CollectionStoryAuthorInput> | CollectionStoryAuthorInput;
+  publisher: Scalars['String'];
+  sortOrder?: Maybe<Scalars['Int']>;
+}>;
+
+export type UpdateCollectionStoryMutation = { __typename?: 'Mutation' } & {
+  updateCollectionStory: {
+    __typename?: 'CollectionStory';
+  } & CollectionStoryDataFragment;
 };
 
 export type GetArchivedCollectionsQueryVariables = Exact<{
@@ -837,6 +865,55 @@ export type CreateCollectionStoryMutationOptions = Apollo.BaseMutationOptions<
   CreateCollectionStoryMutation,
   CreateCollectionStoryMutationVariables
 >;
+export const DeleteCollectionStoryDocument = gql`
+  mutation deleteCollectionStory($externalId: String!) {
+    deleteCollectionStory(externalId: $externalId) {
+      externalId
+    }
+  }
+`;
+export type DeleteCollectionStoryMutationFn = Apollo.MutationFunction<
+  DeleteCollectionStoryMutation,
+  DeleteCollectionStoryMutationVariables
+>;
+
+/**
+ * __useDeleteCollectionStoryMutation__
+ *
+ * To run a mutation, you first call `useDeleteCollectionStoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCollectionStoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCollectionStoryMutation, { data, loading, error }] = useDeleteCollectionStoryMutation({
+ *   variables: {
+ *      externalId: // value for 'externalId'
+ *   },
+ * });
+ */
+export function useDeleteCollectionStoryMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteCollectionStoryMutation,
+    DeleteCollectionStoryMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    DeleteCollectionStoryMutation,
+    DeleteCollectionStoryMutationVariables
+  >(DeleteCollectionStoryDocument, options);
+}
+export type DeleteCollectionStoryMutationHookResult = ReturnType<
+  typeof useDeleteCollectionStoryMutation
+>;
+export type DeleteCollectionStoryMutationResult = Apollo.MutationResult<DeleteCollectionStoryMutation>;
+export type DeleteCollectionStoryMutationOptions = Apollo.BaseMutationOptions<
+  DeleteCollectionStoryMutation,
+  DeleteCollectionStoryMutationVariables
+>;
 export const UpdateCollectionDocument = gql`
   mutation updateCollection(
     $externalId: String
@@ -990,6 +1067,83 @@ export type UpdateCollectionAuthorMutationResult = Apollo.MutationResult<UpdateC
 export type UpdateCollectionAuthorMutationOptions = Apollo.BaseMutationOptions<
   UpdateCollectionAuthorMutation,
   UpdateCollectionAuthorMutationVariables
+>;
+export const UpdateCollectionStoryDocument = gql`
+  mutation updateCollectionStory(
+    $externalId: String!
+    $url: Url!
+    $title: String!
+    $excerpt: Markdown!
+    $imageUrl: Url!
+    $authors: [CollectionStoryAuthorInput!]!
+    $publisher: String!
+    $sortOrder: Int
+  ) {
+    updateCollectionStory(
+      data: {
+        externalId: $externalId
+        url: $url
+        title: $title
+        excerpt: $excerpt
+        imageUrl: $imageUrl
+        authors: $authors
+        publisher: $publisher
+        sortOrder: $sortOrder
+      }
+    ) {
+      ...CollectionStoryData
+    }
+  }
+  ${CollectionStoryDataFragmentDoc}
+`;
+export type UpdateCollectionStoryMutationFn = Apollo.MutationFunction<
+  UpdateCollectionStoryMutation,
+  UpdateCollectionStoryMutationVariables
+>;
+
+/**
+ * __useUpdateCollectionStoryMutation__
+ *
+ * To run a mutation, you first call `useUpdateCollectionStoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCollectionStoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCollectionStoryMutation, { data, loading, error }] = useUpdateCollectionStoryMutation({
+ *   variables: {
+ *      externalId: // value for 'externalId'
+ *      url: // value for 'url'
+ *      title: // value for 'title'
+ *      excerpt: // value for 'excerpt'
+ *      imageUrl: // value for 'imageUrl'
+ *      authors: // value for 'authors'
+ *      publisher: // value for 'publisher'
+ *      sortOrder: // value for 'sortOrder'
+ *   },
+ * });
+ */
+export function useUpdateCollectionStoryMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateCollectionStoryMutation,
+    UpdateCollectionStoryMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateCollectionStoryMutation,
+    UpdateCollectionStoryMutationVariables
+  >(UpdateCollectionStoryDocument, options);
+}
+export type UpdateCollectionStoryMutationHookResult = ReturnType<
+  typeof useUpdateCollectionStoryMutation
+>;
+export type UpdateCollectionStoryMutationResult = Apollo.MutationResult<UpdateCollectionStoryMutation>;
+export type UpdateCollectionStoryMutationOptions = Apollo.BaseMutationOptions<
+  UpdateCollectionStoryMutation,
+  UpdateCollectionStoryMutationVariables
 >;
 export const GetArchivedCollectionsDocument = gql`
   query getArchivedCollections($page: Int, $perPage: Int) {

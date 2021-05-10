@@ -7,13 +7,9 @@ export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       margin: 'auto',
-      padding: '1.25rem 0.25rem',
+      padding: '0.5rem 0.25rem',
       border: 0,
       borderBottom: `1px solid ${theme.palette.grey[300]}`,
-      cursor: 'pointer',
-      '&:active': {
-        backgroundColor: theme.palette.grey[300],
-      },
     },
     image: {
       borderRadius: 4,
@@ -25,6 +21,10 @@ export const useStyles = makeStyles((theme: Theme) =>
     title: {
       fontSize: '1.125rem',
       fontWeight: 500,
+      '& a': {
+        textDecoration: 'none',
+        color: '#222222',
+      },
     },
     subtitle: {
       fontWeight: 400,

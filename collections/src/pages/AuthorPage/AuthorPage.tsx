@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import { Box, Collapse, Paper } from '@material-ui/core';
+import { Box, Button, Collapse, Paper, Typography } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { FormikValues } from 'formik';
 import {
   AuthorForm,
   AuthorInfo,
-  Button,
   HandleApiResponse,
   Notification,
   ScrollToTop,
@@ -110,10 +109,15 @@ export const AuthorPage = (): JSX.Element => {
         <>
           <Box display="flex">
             <Box flexGrow={1} alignSelf="center" textOverflow="ellipsis">
-              <h1>{author.name}</h1>
+              <h1>
+                {author.name}
+                <Typography variant="subtitle2" component="div">
+                  Author
+                </Typography>
+              </h1>
             </Box>
             <Box alignSelf="center">
-              <Button buttonType="hollow" onClick={toggleEditForm}>
+              <Button color="primary" onClick={toggleEditForm}>
                 <EditIcon />
               </Button>
             </Box>
