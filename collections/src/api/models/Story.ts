@@ -13,7 +13,7 @@ export type StoryModel = { __typename?: 'CollectionStory' } & Pick<
     authors: Array<
       { __typename?: 'CollectionStoryAuthor' } & Pick<
         CollectionStoryAuthor,
-        'name'
+        'name' | 'sortOrder'
       >
     >;
   };

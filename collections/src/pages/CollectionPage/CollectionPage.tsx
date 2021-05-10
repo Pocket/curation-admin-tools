@@ -151,9 +151,12 @@ export const CollectionPage = (): JSX.Element => {
 
   const handleCreateStorySubmit = (values: FormikValues): void => {
     // prepare authors! They need to be an array of objects again
-    const authors = values.authors.split(', ').map((name: string) => {
-      return { name };
-    });
+    // TODO: extract into helper method
+    const authors = values.authors
+      .split(', ')
+      .map((name: string, sortOrder: number) => {
+        return { name, sortOrder };
+      });
 
     createStory({
       variables: {
@@ -197,6 +200,7 @@ export const CollectionPage = (): JSX.Element => {
     authors: [
       {
         name: '',
+        sortOrder: 0,
       },
     ],
     publisher: null,

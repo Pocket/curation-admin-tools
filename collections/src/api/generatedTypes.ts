@@ -102,10 +102,12 @@ export type CollectionStory = {
 export type CollectionStoryAuthor = {
   __typename?: 'CollectionStoryAuthor';
   name: Scalars['String'];
+  sortOrder: Scalars['Int'];
 };
 
 export type CollectionStoryAuthorInput = {
   name: Scalars['String'];
+  sortOrder: Scalars['Int'];
 };
 
 export type CollectionsResult = {
@@ -310,7 +312,7 @@ export type CollectionStoryDataFragment = {
     authors: Array<
       { __typename?: 'CollectionStoryAuthor' } & Pick<
         CollectionStoryAuthor,
-        'name'
+        'name' | 'sortOrder'
       >
     >;
   };
@@ -635,6 +637,7 @@ export const CollectionStoryDataFragmentDoc = gql`
     imageUrl
     authors {
       name
+      sortOrder
     }
     publisher
     sortOrder
