@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardMedia, Grid, Typography } from '@material-ui/core';
+import { Card, CardMedia, Grid, Hidden, Typography } from '@material-ui/core';
 import { StoryModel } from '../../api';
 import { useStyles } from './StoryListCard.styles';
 import ReactMarkdown from 'react-markdown';
@@ -20,13 +20,13 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
   return (
     <Card variant="outlined" square className={classes.root}>
       <Grid container spacing={2}>
-        <Grid item xs={4} sm={2}>
+        <Grid item xs={3} sm={2}>
           <CardMedia
             component="img"
             src={
               story.imageUrl && story.imageUrl.length > 0
                 ? story.imageUrl
-                : '/placeholders/collectionSmall.svg'
+                : '/placeholders/story.svg'
             }
             alt={story.title}
             className={classes.image}
@@ -57,11 +57,13 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
             </span>{' '}
             &middot; <span>{story.publisher}</span>
           </Typography>
-          <Typography noWrap component="div">
-            <ReactMarkdown>
-              {story.excerpt ? story.excerpt.substring(0, 100) : ''}
-            </ReactMarkdown>
-          </Typography>
+          <Hidden smDown implementation="css">
+            <Typography noWrap component="div">
+              <ReactMarkdown className="compact-markdown">
+                {story.excerpt ? story.excerpt.substring(0, 100) : ''}
+              </ReactMarkdown>
+            </Typography>
+          </Hidden>
         </Grid>
       </Grid>
     </Card>
