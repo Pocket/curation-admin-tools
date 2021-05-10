@@ -1,11 +1,25 @@
 import React from 'react';
-import { Card, CardMedia, Grid, Hidden, Typography } from '@material-ui/core';
-import { StoryModel } from '../../api';
+import {
+  Button,
+  Card,
+  CardMedia,
+  Grid,
+  Hidden,
+  Typography,
+} from '@material-ui/core';
+import { StoryModel, useDeleteCollectionStoryMutation } from '../../api';
 import { useStyles } from './StoryListCard.styles';
 import ReactMarkdown from 'react-markdown';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import EditIcon from '@material-ui/icons/Edit';
+import { useNotifications } from '../../hooks/useNotifications';
+import { Notification } from '../Notification/Notification';
+import { GetCollectionStoriesDocument } from '../../api/generatedTypes';
 
 interface StoryListCardProps {
   story: StoryModel;
+
+  collectionExternalId: string;
 }
 
 /**
@@ -14,58 +28,110 @@ interface StoryListCardProps {
  * @param props
  */
 export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
+  // Prepare state vars and helper methods for API notifications
+  const {
+    open,
+    message,
+    hasError,
+    showNotification,
+    handleClose,
+  } = useNotifications();
+
   const classes = useStyles();
-  const { story } = props;
+  const { story, collectionExternalId } = props;
+
+  // prepare the "delete story" mutation
+  const [deleteStory] = useDeleteCollectionStoryMutation();
+
+  const onDelete = (): void => {
+    deleteStory({
+      variables: {
+        externalId: story.externalId,
+      },
+      refetchQueries: [
+        {
+          query: GetCollectionStoriesDocument,
+          variables: {
+            id: collectionExternalId,
+          },
+        },
+      ],
+    })
+      .then(() => {
+        showNotification(`Deleted "${story.title}"`);
+      })
+      .catch((error: Error) => {
+        showNotification(error.message, true);
+      });
+  };
 
   return (
-    <Card variant="outlined" square className={classes.root}>
-      <Grid container spacing={2}>
-        <Grid item xs={3} sm={2}>
-          <CardMedia
-            component="img"
-            src={
-              story.imageUrl && story.imageUrl.length > 0
-                ? story.imageUrl
-                : '/placeholders/story.svg'
-            }
-            alt={story.title}
-            className={classes.image}
-          />
-        </Grid>
-        <Grid item xs={8} sm={10}>
-          <Typography
-            className={classes.title}
-            variant="h3"
-            align="left"
-            gutterBottom
-          >
-            {story.title}
-          </Typography>
-          <Typography
-            className={classes.subtitle}
-            variant="subtitle2"
-            color="textSecondary"
-            component="span"
-            align="left"
-          >
-            <span>
-              {story.authors
-                .map((author: { name: string }) => {
-                  return author.name;
-                })
-                .join(', ')}
-            </span>{' '}
-            &middot; <span>{story.publisher}</span>
-          </Typography>
-          <Hidden smDown implementation="css">
-            <Typography noWrap component="div">
-              <ReactMarkdown className="compact-markdown">
-                {story.excerpt ? story.excerpt.substring(0, 100) : ''}
-              </ReactMarkdown>
+    <>
+      <Card variant="outlined" square className={classes.root}>
+        <Grid container spacing={2}>
+          <Grid item xs={2} sm={2}>
+            <CardMedia
+              component="img"
+              src={
+                story.imageUrl && story.imageUrl.length > 0
+                  ? story.imageUrl
+                  : '/placeholders/story.svg'
+              }
+              alt={story.title}
+              className={classes.image}
+            />
+          </Grid>
+          <Grid item xs={7} sm={8}>
+            <Typography
+              className={classes.title}
+              variant="h3"
+              align="left"
+              gutterBottom
+            >
+              {story.title}
             </Typography>
-          </Hidden>
+            <Typography
+              className={classes.subtitle}
+              variant="subtitle2"
+              color="textSecondary"
+              component="span"
+              align="left"
+            >
+              <span>
+                {story.authors
+                  .map((author: { name: string }) => {
+                    return author.name;
+                  })
+                  .join(', ')}
+              </span>{' '}
+              &middot; <span>{story.publisher}</span>
+            </Typography>
+            <Hidden smDown implementation="css">
+              <Typography noWrap component="div">
+                <ReactMarkdown className="compact-markdown">
+                  {story.excerpt ? story.excerpt.substring(0, 100) : ''}
+                </ReactMarkdown>
+              </Typography>
+            </Hidden>
+          </Grid>
+          <Grid item xs={1} sm={1}>
+            <Button color="primary">
+              <EditIcon />
+            </Button>
+          </Grid>
+          <Grid item xs={1} sm={1}>
+            <Button color="primary" onClick={onDelete}>
+              <DeleteOutlineIcon />
+            </Button>
+          </Grid>
         </Grid>
-      </Grid>
-    </Card>
+      </Card>
+      <Notification
+        handleClose={handleClose}
+        isOpen={open}
+        message={message}
+        type={hasError ? 'error' : 'success'}
+      />
+    </>
   );
 };

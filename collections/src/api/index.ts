@@ -31,6 +31,7 @@ export {
   useCreateCollectionMutation,
   useUpdateCollectionMutation,
   useCreateCollectionStoryMutation,
+  useDeleteCollectionStoryMutation,
   useGetSearchCollectionsLazyQuery,
   useGetCollectionStoriesQuery,
 } from './generatedTypes';

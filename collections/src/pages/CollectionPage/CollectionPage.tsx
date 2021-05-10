@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import { Box, Collapse, Paper } from '@material-ui/core';
+import { Box, Button, Collapse, Paper } from '@material-ui/core';
 import {
-  Button,
   CollectionForm,
   CollectionInfo,
   HandleApiResponse,
@@ -211,7 +210,7 @@ export const CollectionPage = (): JSX.Element => {
               <h1>{collection.title}</h1>
             </Box>
             <Box alignSelf="center">
-              <Button buttonType="hollow" onClick={toggleEditForm}>
+              <Button color="primary" onClick={toggleEditForm}>
                 <EditIcon />
               </Button>
             </Box>
@@ -255,7 +254,13 @@ export const CollectionPage = (): JSX.Element => {
             {storiesData &&
               storiesData.getCollection &&
               storiesData.getCollection.stories.map((story: StoryModel) => {
-                return <StoryListCard key={story.externalId} story={story} />;
+                return (
+                  <StoryListCard
+                    key={story.externalId}
+                    story={story}
+                    collectionExternalId={collection!.externalId}
+                  />
+                );
               })}
           </Box>
 

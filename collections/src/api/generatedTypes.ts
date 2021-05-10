@@ -370,6 +370,17 @@ export type CreateCollectionStoryMutation = { __typename?: 'Mutation' } & {
   } & CollectionStoryDataFragment;
 };
 
+export type DeleteCollectionStoryMutationVariables = Exact<{
+  externalId: Scalars['String'];
+}>;
+
+export type DeleteCollectionStoryMutation = { __typename?: 'Mutation' } & {
+  deleteCollectionStory: { __typename?: 'CollectionStory' } & Pick<
+    CollectionStory,
+    'externalId'
+  >;
+};
+
 export type UpdateCollectionMutationVariables = Exact<{
   externalId?: Maybe<Scalars['String']>;
   title: Scalars['String'];
@@ -836,6 +847,55 @@ export type CreateCollectionStoryMutationResult = Apollo.MutationResult<CreateCo
 export type CreateCollectionStoryMutationOptions = Apollo.BaseMutationOptions<
   CreateCollectionStoryMutation,
   CreateCollectionStoryMutationVariables
+>;
+export const DeleteCollectionStoryDocument = gql`
+  mutation deleteCollectionStory($externalId: String!) {
+    deleteCollectionStory(externalId: $externalId) {
+      externalId
+    }
+  }
+`;
+export type DeleteCollectionStoryMutationFn = Apollo.MutationFunction<
+  DeleteCollectionStoryMutation,
+  DeleteCollectionStoryMutationVariables
+>;
+
+/**
+ * __useDeleteCollectionStoryMutation__
+ *
+ * To run a mutation, you first call `useDeleteCollectionStoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCollectionStoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCollectionStoryMutation, { data, loading, error }] = useDeleteCollectionStoryMutation({
+ *   variables: {
+ *      externalId: // value for 'externalId'
+ *   },
+ * });
+ */
+export function useDeleteCollectionStoryMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteCollectionStoryMutation,
+    DeleteCollectionStoryMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    DeleteCollectionStoryMutation,
+    DeleteCollectionStoryMutationVariables
+  >(DeleteCollectionStoryDocument, options);
+}
+export type DeleteCollectionStoryMutationHookResult = ReturnType<
+  typeof useDeleteCollectionStoryMutation
+>;
+export type DeleteCollectionStoryMutationResult = Apollo.MutationResult<DeleteCollectionStoryMutation>;
+export type DeleteCollectionStoryMutationOptions = Apollo.BaseMutationOptions<
+  DeleteCollectionStoryMutation,
+  DeleteCollectionStoryMutationVariables
 >;
 export const UpdateCollectionDocument = gql`
   mutation updateCollection(

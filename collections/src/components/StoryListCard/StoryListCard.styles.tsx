@@ -10,10 +10,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       padding: '0.5rem 0.25rem',
       border: 0,
       borderBottom: `1px solid ${theme.palette.grey[300]}`,
-      cursor: 'pointer',
-      '&:active': {
-        backgroundColor: theme.palette.grey[300],
-      },
     },
     image: {
       borderRadius: 4,
