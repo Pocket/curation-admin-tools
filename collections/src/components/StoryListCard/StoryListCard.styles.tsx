@@ -21,6 +21,10 @@ export const useStyles = makeStyles((theme: Theme) =>
     title: {
       fontSize: '1.125rem',
       fontWeight: 500,
+      '& a': {
+        textDecoration: 'none',
+        color: '#222222',
+      },
     },
     subtitle: {
       fontWeight: 400,
