@@ -7,12 +7,12 @@ const apolloOptions = {
       CollectionAuthor: {
         keyFields: ['externalId'],
       },
-      // CollectionStory: {
-      //   keyFields: ['externalId'],
-      // },
-      // Collection: {
-      //   keyFields: ['externalId'],
-      // },
+      CollectionStory: {
+        keyFields: ['externalId'],
+      },
+      Collection: {
+        keyFields: ['externalId'],
+      },
     },
   }),
   name: config.apolloClientName,

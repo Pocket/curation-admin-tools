@@ -371,7 +371,7 @@ export type CreateCollectionStoryMutation = { __typename?: 'Mutation' } & {
 };
 
 export type UpdateCollectionMutationVariables = Exact<{
-  id?: Maybe<Scalars['String']>;
+  externalId?: Maybe<Scalars['String']>;
   title: Scalars['String'];
   slug: Scalars['String'];
   excerpt: Scalars['Markdown'];
@@ -458,11 +458,11 @@ export type GetAuthorsQuery = { __typename?: 'Query' } & {
   };
 };
 
-export type GetCollectionByIdQueryVariables = Exact<{
-  id: Scalars['String'];
+export type GetCollectionByExternalIdQueryVariables = Exact<{
+  externalId: Scalars['String'];
 }>;
 
-export type GetCollectionByIdQuery = { __typename?: 'Query' } & {
+export type GetCollectionByExternalIdQuery = { __typename?: 'Query' } & {
   getCollection?: Maybe<
     { __typename?: 'Collection' } & Pick<
       Collection,
@@ -487,11 +487,11 @@ export type GetCollectionStoriesQueryVariables = Exact<{
 
 export type GetCollectionStoriesQuery = { __typename?: 'Query' } & {
   getCollection?: Maybe<
-    { __typename?: 'Collection' } & {
-      stories: Array<
-        { __typename?: 'CollectionStory' } & CollectionStoryDataFragment
-      >;
-    }
+    { __typename?: 'Collection' } & Pick<Collection, 'externalId'> & {
+        stories: Array<
+          { __typename?: 'CollectionStory' } & CollectionStoryDataFragment
+        >;
+      }
   >;
 };
 
@@ -839,7 +839,7 @@ export type CreateCollectionStoryMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const UpdateCollectionDocument = gql`
   mutation updateCollection(
-    $id: String
+    $externalId: String
     $title: String!
     $slug: String!
     $excerpt: Markdown!
@@ -849,7 +849,7 @@ export const UpdateCollectionDocument = gql`
   ) {
     updateCollection(
       data: {
-        externalId: $id
+        externalId: $externalId
         title: $title
         slug: $slug
         excerpt: $excerpt
@@ -890,7 +890,7 @@ export type UpdateCollectionMutationFn = Apollo.MutationFunction<
  * @example
  * const [updateCollectionMutation, { data, loading, error }] = useUpdateCollectionMutation({
  *   variables: {
- *      id: // value for 'id'
+ *      externalId: // value for 'externalId'
  *      title: // value for 'title'
  *      slug: // value for 'slug'
  *      excerpt: // value for 'excerpt'
@@ -1186,9 +1186,9 @@ export type GetAuthorsQueryResult = Apollo.QueryResult<
   GetAuthorsQuery,
   GetAuthorsQueryVariables
 >;
-export const GetCollectionByIdDocument = gql`
-  query getCollectionById($id: String!) {
-    getCollection(externalId: $id) {
+export const GetCollectionByExternalIdDocument = gql`
+  query getCollectionByExternalId($externalId: String!) {
+    getCollection(externalId: $externalId) {
       externalId
       title
       slug
@@ -1205,58 +1205,59 @@ export const GetCollectionByIdDocument = gql`
 `;
 
 /**
- * __useGetCollectionByIdQuery__
+ * __useGetCollectionByExternalIdQuery__
  *
- * To run a query within a React component, call `useGetCollectionByIdQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCollectionByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetCollectionByExternalIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCollectionByExternalIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetCollectionByIdQuery({
+ * const { data, loading, error } = useGetCollectionByExternalIdQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      externalId: // value for 'externalId'
  *   },
  * });
  */
-export function useGetCollectionByIdQuery(
+export function useGetCollectionByExternalIdQuery(
   baseOptions: Apollo.QueryHookOptions<
-    GetCollectionByIdQuery,
-    GetCollectionByIdQueryVariables
+    GetCollectionByExternalIdQuery,
+    GetCollectionByExternalIdQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
-    GetCollectionByIdQuery,
-    GetCollectionByIdQueryVariables
-  >(GetCollectionByIdDocument, options);
+    GetCollectionByExternalIdQuery,
+    GetCollectionByExternalIdQueryVariables
+  >(GetCollectionByExternalIdDocument, options);
 }
-export function useGetCollectionByIdLazyQuery(
+export function useGetCollectionByExternalIdLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    GetCollectionByIdQuery,
-    GetCollectionByIdQueryVariables
+    GetCollectionByExternalIdQuery,
+    GetCollectionByExternalIdQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    GetCollectionByIdQuery,
-    GetCollectionByIdQueryVariables
-  >(GetCollectionByIdDocument, options);
+    GetCollectionByExternalIdQuery,
+    GetCollectionByExternalIdQueryVariables
+  >(GetCollectionByExternalIdDocument, options);
 }
-export type GetCollectionByIdQueryHookResult = ReturnType<
-  typeof useGetCollectionByIdQuery
+export type GetCollectionByExternalIdQueryHookResult = ReturnType<
+  typeof useGetCollectionByExternalIdQuery
 >;
-export type GetCollectionByIdLazyQueryHookResult = ReturnType<
-  typeof useGetCollectionByIdLazyQuery
+export type GetCollectionByExternalIdLazyQueryHookResult = ReturnType<
+  typeof useGetCollectionByExternalIdLazyQuery
 >;
-export type GetCollectionByIdQueryResult = Apollo.QueryResult<
-  GetCollectionByIdQuery,
-  GetCollectionByIdQueryVariables
+export type GetCollectionByExternalIdQueryResult = Apollo.QueryResult<
+  GetCollectionByExternalIdQuery,
+  GetCollectionByExternalIdQueryVariables
 >;
 export const GetCollectionStoriesDocument = gql`
   query getCollectionStories($id: String!) {
     getCollection(externalId: $id) {
+      externalId
       stories {
         ...CollectionStoryData
       }
