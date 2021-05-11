@@ -5,6 +5,7 @@ import { FormikValues } from 'formik';
 import { AuthorModel, useCreateCollectionAuthorMutation } from '../../api';
 import { AuthorForm, Notification } from '../../components';
 import { useNotifications } from '../../hooks/useNotifications';
+import { GetAuthorsDocument } from '../../api/generatedTypes';
 
 export const AddAuthorPage: React.FC = (): JSX.Element => {
   // Prepare state vars and helper methods for API notifications
@@ -46,6 +47,12 @@ export const AddAuthorPage: React.FC = (): JSX.Element => {
         imageUrl: '',
         active: values.active,
       },
+      // make sure the Authors page is updated when we add a new author
+      refetchQueries: [
+        {
+          query: GetAuthorsDocument,
+        },
+      ],
     })
       .then(({ data }) => {
         // Success! Move on to the author page to be able to upload a photo, etc.
@@ -69,7 +76,7 @@ export const AddAuthorPage: React.FC = (): JSX.Element => {
           <AuthorForm
             author={author}
             onSubmit={handleSubmit}
-            showCancelButton={false}
+            editMode={false}
           />
         </Box>
       </Paper>

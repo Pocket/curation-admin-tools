@@ -249,7 +249,7 @@ export const CollectionPage = (): JSX.Element => {
                     authors={authorsData.getCollectionAuthors.authors}
                     collection={collection}
                     onSubmit={handleSubmit}
-                    showCancelButton={true}
+                    editMode={true}
                   />
                 )}
               </Box>

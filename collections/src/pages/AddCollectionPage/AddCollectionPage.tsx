@@ -14,6 +14,7 @@ import {
   Notification,
 } from '../../components';
 import { useNotifications } from '../../hooks/useNotifications';
+import { GetDraftCollectionsDocument } from '../../api/generatedTypes';
 
 export const AddCollectionPage: React.FC = (): JSX.Element => {
   // Prepare state vars and helper methods for API notifications
@@ -61,6 +62,13 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
         status: values.status,
         authorExternalId: values.authorExternalId,
       },
+      // make sure the relevant Collections tab is updated
+      // when we add a new collection
+      refetchQueries: [
+        {
+          query: GetDraftCollectionsDocument,
+        },
+      ],
     })
       .then(({ data }) => {
         // Success! Move on to the author page to be able to upload a photo, etc.
@@ -90,7 +98,7 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
               authors={authorsData.getCollectionAuthors.authors}
               collection={collection}
               onSubmit={handleSubmit}
-              showCancelButton={false}
+              editMode={false}
             />
           )}
         </Box>

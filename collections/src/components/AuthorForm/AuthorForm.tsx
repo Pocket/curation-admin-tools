@@ -28,7 +28,7 @@ interface AuthorFormProps {
    * Do we need to show the cancel button? Not on the 'Add Author' page
    * True by default
    */
-  showCancelButton?: boolean;
+  editMode?: boolean;
 
   /**
    * What to do if the user clicks on the Cancel button
@@ -40,7 +40,7 @@ interface AuthorFormProps {
  * A form for adding authors or editing information for existing authors
  */
 export const AuthorForm: React.FC<AuthorFormProps> = (props): JSX.Element => {
-  const { author, showCancelButton = true, onCancel, onSubmit } = props;
+  const { author, editMode = true, onCancel, onSubmit } = props;
 
   /**
    * Set up form validation
@@ -174,7 +174,7 @@ export const AuthorForm: React.FC<AuthorFormProps> = (props): JSX.Element => {
                 Save
               </Button>
             </Box>
-            {showCancelButton && (
+            {editMode && (
               <Box p={1}>
                 <Button buttonType="hollow-neutral" onClick={onCancel}>
                   Cancel

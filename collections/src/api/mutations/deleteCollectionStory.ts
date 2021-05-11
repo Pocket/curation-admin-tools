@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-//import { CollectionStoryData } from '../fragments/CollectionStoryData';
+import { CollectionStoryData } from '../fragments/CollectionStoryData';
 
 /**
  * Delete a collection story
@@ -7,7 +7,8 @@ import { gql } from '@apollo/client';
 export const deleteCollectionStory = gql`
   mutation deleteCollectionStory($externalId: String!) {
     deleteCollectionStory(externalId: $externalId) {
-      externalId
+      ...CollectionStoryData
     }
   }
+  ${CollectionStoryData}
 `;

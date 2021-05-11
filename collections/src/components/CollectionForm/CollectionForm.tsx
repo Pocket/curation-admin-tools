@@ -33,10 +33,11 @@ interface CollectionFormProps {
   onSubmit: (values: FormikValues) => void;
 
   /**
-   * Do we need to show the cancel button? Not on the 'Add Collection' page
+   * Show "Cancel" button if the form is used to edit a new collection
+   * rather than add a new one. Also make "Status" field read-only
    * True by default
    */
-  showCancelButton?: boolean;
+  editMode?: boolean;
 
   /**
    * What to do if the user clicks on the Cancel button
@@ -50,13 +51,7 @@ interface CollectionFormProps {
 export const CollectionForm: React.FC<CollectionFormProps> = (
   props
 ): JSX.Element => {
-  const {
-    collection,
-    authors,
-    showCancelButton = true,
-    onCancel,
-    onSubmit,
-  } = props;
+  const { collection, authors, editMode = true, onCancel, onSubmit } = props;
   const classes = useStyles();
 
   // get a list of author ids for the validation schema
@@ -93,7 +88,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
       slug: yup
         .string()
         .required(
-          'Please enter a slug or use the "Suggest slug" button to generate one from the name of the author'
+          'Please enter a slug or use the "Suggest slug" button to generate one from the collection title'
         )
         .min(6),
       excerpt: yup.string(),
@@ -168,6 +163,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
             </InputLabel>
             <Select
               native
+              disabled={!editMode}
               label="Status"
               inputProps={{
                 name: 'status',
@@ -258,7 +254,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
                 Save
               </Button>
             </Box>
-            {showCancelButton && (
+            {editMode && (
               <Box p={1}>
                 <Button buttonType="hollow-neutral" onClick={onCancel}>
                   Cancel

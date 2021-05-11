@@ -377,10 +377,9 @@ export type DeleteCollectionStoryMutationVariables = Exact<{
 }>;
 
 export type DeleteCollectionStoryMutation = { __typename?: 'Mutation' } & {
-  deleteCollectionStory: { __typename?: 'CollectionStory' } & Pick<
-    CollectionStory,
-    'externalId'
-  >;
+  deleteCollectionStory: {
+    __typename?: 'CollectionStory';
+  } & CollectionStoryDataFragment;
 };
 
 export type UpdateCollectionMutationVariables = Exact<{
@@ -871,9 +870,10 @@ export type CreateCollectionStoryMutationOptions = Apollo.BaseMutationOptions<
 export const DeleteCollectionStoryDocument = gql`
   mutation deleteCollectionStory($externalId: String!) {
     deleteCollectionStory(externalId: $externalId) {
-      externalId
+      ...CollectionStoryData
     }
   }
+  ${CollectionStoryDataFragmentDoc}
 `;
 export type DeleteCollectionStoryMutationFn = Apollo.MutationFunction<
   DeleteCollectionStoryMutation,

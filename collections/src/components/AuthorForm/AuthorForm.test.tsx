@@ -41,11 +41,7 @@ describe('The AuthorForm component', () => {
 
   it('only shows two buttons if cancel button is not requested', () => {
     render(
-      <AuthorForm
-        author={author}
-        showCancelButton={false}
-        onSubmit={handleSubmit}
-      />
+      <AuthorForm author={author} editMode={false} onSubmit={handleSubmit} />
     );
 
     const buttons = screen.getAllByRole('button');

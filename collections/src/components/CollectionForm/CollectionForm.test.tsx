@@ -82,13 +82,13 @@ describe('The CollectionForm component', () => {
     expect(buttons.length).toEqual(3);
   });
 
-  it('only shows two buttons if cancel button is not requested', () => {
+  it('only shows two buttons if not in edit mode', () => {
     render(
       <CollectionForm
         collection={collection}
         authors={authors}
         onSubmit={handleSubmit}
-        showCancelButton={false}
+        editMode={false}
       />
     );
 

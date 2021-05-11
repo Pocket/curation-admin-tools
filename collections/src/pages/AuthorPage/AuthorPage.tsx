@@ -136,7 +136,7 @@ export const AuthorPage = (): JSX.Element => {
                 <AuthorForm
                   author={author}
                   onSubmit={handleSubmit}
-                  showCancelButton={true}
+                  editMode={true}
                   onCancel={toggleEditForm}
                 />
               </Box>
