@@ -53,10 +53,13 @@ export const CollectionPage = (): JSX.Element => {
    * let's extract it from the routing.
    */
   const location = useLocation<CollectionPageProps>();
-  let collection: CollectionModel | undefined = location.state?.collection
-    ? // Deep clone a read-only object that comes from the routing
-      JSON.parse(JSON.stringify(location.state?.collection))
-    : undefined;
+
+  const [collection, setCollection] = useState<CollectionModel | undefined>(
+    location.state?.collection
+      ? // Deep clone a read-only object that comes from the routing
+        JSON.parse(JSON.stringify(location.state?.collection))
+      : undefined
+  );
 
   /**
    * If the user came directly to this page (i.e., via a bookmarked page),
@@ -76,7 +79,7 @@ export const CollectionPage = (): JSX.Element => {
   if (data) {
     //Collection is a read only object when returned from Apollo, if we want to
     // update it we have to stringify and then parse it
-    collection = JSON.parse(JSON.stringify(data.getCollection));
+    setCollection(JSON.parse(JSON.stringify(data.getCollection)));
   }
 
   // Load authors for the dropdown in the edit form

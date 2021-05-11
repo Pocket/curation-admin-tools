@@ -40,10 +40,13 @@ export const AuthorPage = (): JSX.Element => {
    * let's extract it from the routing.
    */
   const location = useLocation<AuthorPageProps>();
-  let author: AuthorModel | undefined = location.state?.author
-    ? // Deep clone a read-only object that comes from the routing
-      JSON.parse(JSON.stringify(location.state?.author))
-    : undefined;
+
+  const [author, setAuthor] = useState<AuthorModel | undefined>(
+    location.state?.author
+      ? // Deep clone a read-only object that comes from the routing
+        JSON.parse(JSON.stringify(location.state?.author))
+      : undefined
+  );
 
   /**
    * If the user came directly to this page (i.e., via a bookmarked page),
@@ -63,7 +66,7 @@ export const AuthorPage = (): JSX.Element => {
   if (data) {
     //Author is a read only object when returned from Apollo, if we want to
     // update it we have to stringify and then parse it
-    author = JSON.parse(JSON.stringify(data.getCollectionAuthor));
+    setAuthor(JSON.parse(JSON.stringify(data.getCollectionAuthor)));
   }
 
   const [showEditForm, setShowEditForm] = useState<boolean>(false);
