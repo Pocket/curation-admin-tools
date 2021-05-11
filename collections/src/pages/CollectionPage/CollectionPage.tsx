@@ -26,6 +26,7 @@ import {
   GetCollectionByExternalIdDocument,
   GetCollectionStoriesDocument,
 } from '../../api/generatedTypes';
+import { transformAuthors } from '../../utils/transformAuthors';
 
 interface CollectionPageProps {
   collection?: CollectionModel;
@@ -154,9 +155,7 @@ export const CollectionPage = (): JSX.Element => {
 
   const handleCreateStorySubmit = (values: FormikValues): void => {
     // prepare authors! They need to be an array of objects again
-    const authors = values.authors.split(', ').map((name: string) => {
-      return { name };
-    });
+    const authors = transformAuthors(values.authors);
 
     createStory({
       variables: {
@@ -200,6 +199,7 @@ export const CollectionPage = (): JSX.Element => {
     authors: [
       {
         name: '',
+        sortOrder: 0,
       },
     ],
     publisher: null,

@@ -22,6 +22,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import { GetCollectionStoriesDocument } from '../../api/generatedTypes';
 import { StoryForm } from '../StoryForm/StoryForm';
 import { FormikValues } from 'formik';
+import { transformAuthors } from '../../utils/transformAuthors';
 
 interface StoryListCardProps {
   story: StoryModel;
@@ -76,9 +77,7 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
 
   const onUpdate = (values: FormikValues): void => {
     // prepare authors! They need to be an array of objects again
-    const authors = values.authors.split(', ').map((name: string) => {
-      return { name };
-    });
+    const authors = transformAuthors(values.authors);
 
     updateStory({
       variables: {

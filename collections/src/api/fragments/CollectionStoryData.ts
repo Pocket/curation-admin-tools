@@ -13,6 +13,7 @@ export const CollectionStoryData = gql`
     imageUrl
     authors {
       name
+      sortOrder
     }
     publisher
     sortOrder
