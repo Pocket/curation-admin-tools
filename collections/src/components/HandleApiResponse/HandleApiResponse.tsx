@@ -10,7 +10,6 @@ import {
 } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import CloseIcon from '@material-ui/icons/Close';
-import { Modal } from '../';
 
 /**
  * Styles for the error message alert.
@@ -44,11 +43,6 @@ interface HandleApiResponseProps {
   errorIsDismissible?: boolean;
 
   /**
-   * Whether to show the loading component in a modal or inline
-   */
-  useModal?: boolean;
-
-  /**
    * A message to show to the waiting user alongside the loading icon
    */
   loadingText?: string;
@@ -67,18 +61,10 @@ export const HandleApiResponse: React.FC<HandleApiResponseProps> = (
 
   const [isErrorVisible, setIsErrorVisible] = useState(true);
 
-  const {
-    loading,
-    error,
-    errorIsDismissible = true,
-    useModal = false,
-    loadingText = '',
-  } = props;
+  const { loading, error, errorIsDismissible = true, loadingText = '' } = props;
 
   if (loading) {
-    return useModal ? (
-      <Modal content={loadingText} open={true} />
-    ) : (
+    return (
       <Grow in={loading} timeout={1000}>
         <Box
           flex="1"

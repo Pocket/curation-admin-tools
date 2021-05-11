@@ -1,20 +1,14 @@
 import React from 'react';
 import {
   Box,
-  CircularProgress,
   Dialog,
   DialogProps,
-  Typography,
   useMediaQuery,
   useTheme,
 } from '@material-ui/core';
 
 interface ModalProps {
-  /**
-   * A message that is shown alongside the swirly loading icon,
-   * i.e. "Loading data..."
-   */
-  content: string;
+  handleClose: () => void;
 }
 
 /**
@@ -22,27 +16,23 @@ interface ModalProps {
  *
  * @returns JSX.Element Modal overlay over the entire screen
  */
-export const Modal: React.FC<DialogProps & ModalProps> = ({
-  content,
-  open,
-}): JSX.Element => {
+export const Modal: React.FC<ModalProps & DialogProps> = (
+  props
+): JSX.Element => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const { open, children, handleClose } = props;
 
   return (
-    <Dialog open={open} onBackdropClick={() => true} fullScreen={fullScreen}>
+    <Dialog open={open} onClose={handleClose} fullScreen={fullScreen}>
       <Box
         flex="1"
         display="flex"
         justifyContent="center"
         alignItems="center"
-        py={3}
-        px={9}
+        p={2}
       >
-        <CircularProgress />
-        <Box p={2}>
-          <Typography>{content}</Typography>
-        </Box>
+        {children}
       </Box>
     </Dialog>
   );

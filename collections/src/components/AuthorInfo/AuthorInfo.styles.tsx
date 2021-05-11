@@ -7,6 +7,7 @@ export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     image: {
       borderRadius: '0.25rem',
+      cursor: 'pointer',
     },
     subtitle: {
       fontWeight: 400,
