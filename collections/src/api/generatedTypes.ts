@@ -382,6 +382,20 @@ export type DeleteCollectionStoryMutation = { __typename?: 'Mutation' } & {
   } & CollectionStoryDataFragment;
 };
 
+export type ImageUploadMutationVariables = Exact<{
+  image: Scalars['Upload'];
+  width: Scalars['Int'];
+  height: Scalars['Int'];
+  fileSizeBytes: Scalars['Int'];
+}>;
+
+export type ImageUploadMutation = { __typename?: 'Mutation' } & {
+  collectionImageUpload: { __typename?: 'CollectionImageUrl' } & Pick<
+    CollectionImageUrl,
+    'url'
+  >;
+};
+
 export type UpdateCollectionMutationVariables = Exact<{
   externalId?: Maybe<Scalars['String']>;
   title: Scalars['String'];
@@ -916,6 +930,70 @@ export type DeleteCollectionStoryMutationResult = Apollo.MutationResult<DeleteCo
 export type DeleteCollectionStoryMutationOptions = Apollo.BaseMutationOptions<
   DeleteCollectionStoryMutation,
   DeleteCollectionStoryMutationVariables
+>;
+export const ImageUploadDocument = gql`
+  mutation imageUpload(
+    $image: Upload!
+    $width: Int!
+    $height: Int!
+    $fileSizeBytes: Int!
+  ) {
+    collectionImageUpload(
+      data: {
+        image: $image
+        width: $width
+        height: $height
+        fileSizeBytes: $fileSizeBytes
+      }
+    ) {
+      url
+    }
+  }
+`;
+export type ImageUploadMutationFn = Apollo.MutationFunction<
+  ImageUploadMutation,
+  ImageUploadMutationVariables
+>;
+
+/**
+ * __useImageUploadMutation__
+ *
+ * To run a mutation, you first call `useImageUploadMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useImageUploadMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [imageUploadMutation, { data, loading, error }] = useImageUploadMutation({
+ *   variables: {
+ *      image: // value for 'image'
+ *      width: // value for 'width'
+ *      height: // value for 'height'
+ *      fileSizeBytes: // value for 'fileSizeBytes'
+ *   },
+ * });
+ */
+export function useImageUploadMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    ImageUploadMutation,
+    ImageUploadMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<ImageUploadMutation, ImageUploadMutationVariables>(
+    ImageUploadDocument,
+    options
+  );
+}
+export type ImageUploadMutationHookResult = ReturnType<
+  typeof useImageUploadMutation
+>;
+export type ImageUploadMutationResult = Apollo.MutationResult<ImageUploadMutation>;
+export type ImageUploadMutationOptions = Apollo.BaseMutationOptions<
+  ImageUploadMutation,
+  ImageUploadMutationVariables
 >;
 export const UpdateCollectionDocument = gql`
   mutation updateCollection(
