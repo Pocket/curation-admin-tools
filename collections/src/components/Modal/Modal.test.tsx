@@ -4,7 +4,11 @@ import { Modal } from './Modal';
 
 describe('The Modal component', () => {
   it('renders successfully', () => {
-    render(<Modal open={true}>Loading...</Modal>);
+    render(
+      <Modal open={true} handleClose={jest.fn()}>
+        Loading...
+      </Modal>
+    );
     const modal = screen.getByText(/^Loading...$/i);
 
     expect(modal).toBeInTheDocument();

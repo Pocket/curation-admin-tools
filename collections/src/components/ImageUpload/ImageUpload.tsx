@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { Box, CardMedia, Grid, Typography } from '@material-ui/core';
+import {
+  Box,
+  CardMedia,
+  Grid,
+  LinearProgress,
+  Typography,
+} from '@material-ui/core';
 import Dropzone, { FileWithPath } from 'react-dropzone';
 import {
   AuthorModel,
@@ -23,6 +29,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
 
   const [imageUploadOpen, setImageUploadOpen] = useState<boolean>(false);
   const [uploadInfo, setUploadInfo] = useState<JSX.Element[] | null>(null);
+  const [uploadInProgress, setUploadInProgress] = useState<boolean>(false);
   const [imageData, setImageData] = useState<{
     contents: string;
     size: number;
@@ -80,6 +87,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
   };
 
   const onSave = () => {
+    setUploadInProgress(true);
     // Let's upload this thing to S3!
     uploadImage({
       variables: {
@@ -91,19 +99,21 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
     })
       .then((data) => {
         console.log(data);
+        setUploadInProgress(false);
         // TODO: add a notification, set image to new src
       })
       .catch((error) => {
+        setUploadInProgress(false);
         // TODO: send some errors up the chain
       });
   };
 
   return (
-    <>
+    <Box marginRight={1}>
       <CardMedia
         component="img"
         src={hasImage ? entity.imageUrl : placeholder}
-        className={classes.image}
+        className={hasImage ? classes.image : classes.placeholder}
         onClick={() => {
           setImageUploadOpen(true);
         }}
@@ -111,14 +121,11 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
       <Modal open={imageUploadOpen} handleClose={handleClose}>
         <Grid container>
           <Grid item xs={12}>
-            <Dropzone onDrop={onDrop}>
+            <Dropzone onDrop={onDrop} maxFiles={1} accept="image/*">
               {({ getRootProps, getInputProps }) => (
                 <Box
                   {...getRootProps({
                     className: classes.dropzone,
-                    accept: 'image/*',
-                    maxFiles: 1,
-                    multiple: false,
                   })}
                   pt={2}
                 >
@@ -133,6 +140,11 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
                       </Typography>
                     ) : null}
                     {uploadInfo}
+                    {uploadInProgress && (
+                      <Box pt={3} mx={2}>
+                        <LinearProgress />
+                      </Box>
+                    )}
                   </Box>
                 </Box>
               )}
@@ -154,6 +166,6 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
           </Grid>
         </Grid>
       </Modal>
-    </>
+    </Box>
   );
 };

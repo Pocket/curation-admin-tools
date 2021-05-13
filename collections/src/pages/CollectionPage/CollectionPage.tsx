@@ -112,6 +112,8 @@ export const CollectionPage = (): JSX.Element => {
    * Update components on page if updates have been saved successfully
    */
   const handleSubmit = (values: FormikValues): void => {
+    // work out which queries to nuke when a collection status gets updated
+
     updateCollection({
       variables: {
         externalId: collection!.externalId,

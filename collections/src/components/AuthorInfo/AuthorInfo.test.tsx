@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { AuthorInfo } from './AuthorInfo';
 import { AuthorModel } from '../../api';
+import { MockedProvider } from '@apollo/client/testing';
 
 describe('The AuthorInfo component', () => {
   let author: AuthorModel;
@@ -25,13 +26,15 @@ describe('The AuthorInfo component', () => {
 
   it('shows basic author information', () => {
     render(
-      <MemoryRouter>
-        <AuthorInfo author={author} />
-      </MemoryRouter>
+      <MockedProvider>
+        <MemoryRouter>
+          <AuthorInfo author={author} />
+        </MemoryRouter>
+      </MockedProvider>
     );
 
-    // The author photo is present and the alt text is the author's name
-    const authorPhoto = screen.getByAltText(author.name);
+    // The author photo is present
+    const authorPhoto = screen.getByRole('img');
     expect(authorPhoto).toBeInTheDocument();
 
     // The author bio is also present
@@ -41,9 +44,11 @@ describe('The AuthorInfo component', () => {
 
   it('shows "active" status correctly', () => {
     render(
-      <MemoryRouter>
-        <AuthorInfo author={author} />
-      </MemoryRouter>
+      <MockedProvider>
+        <MemoryRouter>
+          <AuthorInfo author={author} />
+        </MemoryRouter>
+      </MockedProvider>
     );
 
     // Shows 'Active' subtitle for an active author
@@ -59,9 +64,11 @@ describe('The AuthorInfo component', () => {
     author.active = false;
 
     render(
-      <MemoryRouter>
-        <AuthorInfo author={author} />
-      </MemoryRouter>
+      <MockedProvider>
+        <MemoryRouter>
+          <AuthorInfo author={author} />
+        </MemoryRouter>
+      </MockedProvider>
     );
 
     // Shows 'Inactive' subtitle for an inactive author
