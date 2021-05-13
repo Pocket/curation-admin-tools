@@ -30,6 +30,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
   const [imageUploadOpen, setImageUploadOpen] = useState<boolean>(false);
   const [uploadInfo, setUploadInfo] = useState<JSX.Element[] | null>(null);
   const [uploadInProgress, setUploadInProgress] = useState<boolean>(false);
+  const [file, setFile] = useState<any>(null);
   const [imageData, setImageData] = useState<{
     contents: string;
     size: number;
@@ -48,6 +49,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
   const onDrop = (acceptedFiles: FileWithPath[]) => {
     // Show information about the uploaded file
     const uploads = acceptedFiles.map((file: FileWithPath) => {
+      setFile(file);
       // Get the actual file
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -91,7 +93,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
     // Let's upload this thing to S3!
     uploadImage({
       variables: {
-        image: imageData.contents,
+        image: file,
         height: imageData.height,
         width: imageData.width,
         fileSizeBytes: imageData.size,
