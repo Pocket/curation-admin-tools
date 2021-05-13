@@ -1,6 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { Box, Button, Collapse, Paper, Typography } from '@material-ui/core';
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  DropResult,
+} from 'react-beautiful-dnd';
 import {
   CollectionForm,
   CollectionInfo,
@@ -90,7 +96,7 @@ export const CollectionPage = (): JSX.Element => {
     data: authorsData,
   } = useGetAuthorsQuery();
 
-  // Load collection authors - deliberately in a separate query
+  // Load collection stories - deliberately in a separate query
   const {
     loading: storiesLoading,
     error: storiesError,
@@ -100,6 +106,14 @@ export const CollectionPage = (): JSX.Element => {
       id: params.id,
     },
   });
+
+  // Let's keep stories in state to be able to reorder them with drag'n'drop
+  const [stories, setStories] = useState<StoryModel[] | undefined>(undefined);
+
+  // And update the state variable when data is loaded
+  useEffect(() => {
+    setStories(storiesData?.getCollection?.stories);
+  }, [storiesData]);
 
   const [showEditForm, setShowEditForm] = useState<boolean>(false);
 
@@ -207,6 +221,20 @@ export const CollectionPage = (): JSX.Element => {
     sortOrder: null,
   };
 
+  const onDragEnd = (result: DropResult) => {
+    // if a story was dragged out of the list, let it snap back to where it was
+    // without an error in the console
+    if (!result.destination) return;
+
+    // save the new order of stories to state
+    const reorderedStories = Array.from(stories!);
+    const [story] = reorderedStories.splice(result.source.index, 1);
+    reorderedStories.splice(result.destination.index, 0, story);
+    setStories(reorderedStories);
+
+    // TODO: save the new order of stories to the database
+  };
+
   return (
     <>
       <ScrollToTop />
@@ -264,18 +292,50 @@ export const CollectionPage = (): JSX.Element => {
                 error={storiesError}
               />
             )}
-            {storiesData &&
-              storiesData.getCollection &&
-              storiesData.getCollection.stories.map((story: StoryModel) => {
-                return (
-                  <StoryListCard
-                    key={story.externalId}
-                    story={story}
-                    collectionExternalId={collection!.externalId}
-                    showNotification={showNotification}
-                  />
-                );
-              })}
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="characters">
+                {(provided, snapshot) => (
+                  <Typography
+                    component="div"
+                    className="characters"
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                  >
+                    {stories &&
+                      stories.map((story: StoryModel, index: number) => {
+                        return (
+                          <Draggable
+                            key={story.externalId}
+                            draggableId={story.externalId}
+                            index={index}
+                          >
+                            {(provided, snapshot) => {
+                              return (
+                                <Typography
+                                  component="div"
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  {...provided.dragHandleProps}
+                                >
+                                  <StoryListCard
+                                    key={story.externalId}
+                                    story={story}
+                                    collectionExternalId={
+                                      collection!.externalId
+                                    }
+                                    showNotification={showNotification}
+                                  />
+                                </Typography>
+                              );
+                            }}
+                          </Draggable>
+                        );
+                      })}
+                    {provided.placeholder}
+                  </Typography>
+                )}
+              </Droppable>
+            </DragDropContext>
           </Box>
 
           <Paper elevation={4}>
