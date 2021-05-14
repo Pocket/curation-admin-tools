@@ -31,11 +31,11 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
   const [uploadInfo, setUploadInfo] = useState<JSX.Element[] | null>(null);
   const [uploadInProgress, setUploadInProgress] = useState<boolean>(false);
   const [imageData, setImageData] = useState<{
-    contents: string;
+    file?: FileWithPath;
     size: number;
     height: number;
     width: number;
-  }>({ contents: '', size: 0, height: 0, width: 0 });
+  }>({ file: undefined, size: 0, height: 0, width: 0 });
 
   const hasImage = entity.imageUrl && entity.imageUrl.length > 0;
 
@@ -62,7 +62,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
             // Yes, even declaring the image as HTMLImageElement is not enough
             // to convince TypeScript. Bringing out the big guns
             setImageData({
-              contents,
+              file,
               size: file.size,
               // @ts-ignore
               height: this.naturalHeight,
@@ -91,7 +91,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
     // Let's upload this thing to S3!
     uploadImage({
       variables: {
-        image: imageData.contents,
+        image: imageData.file,
         height: imageData.height,
         width: imageData.width,
         fileSizeBytes: imageData.size,
