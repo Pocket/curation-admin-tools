@@ -65,6 +65,8 @@ export type CollectionAuthorsResult = {
 
 export type CollectionImageUploadInput = {
   image: Scalars['Upload'];
+  mimeType: Scalars['String'];
+  name: Scalars['String'];
   width: Scalars['Int'];
   height: Scalars['Int'];
   fileSizeBytes: Scalars['Int'];
@@ -387,6 +389,8 @@ export type ImageUploadMutationVariables = Exact<{
   width: Scalars['Int'];
   height: Scalars['Int'];
   fileSizeBytes: Scalars['Int'];
+  mimeType: Scalars['String'];
+  name: Scalars['String'];
 }>;
 
 export type ImageUploadMutation = { __typename?: 'Mutation' } & {
@@ -937,6 +941,8 @@ export const ImageUploadDocument = gql`
     $width: Int!
     $height: Int!
     $fileSizeBytes: Int!
+    $mimeType: String!
+    $name: String!
   ) {
     collectionImageUpload(
       data: {
@@ -944,6 +950,8 @@ export const ImageUploadDocument = gql`
         width: $width
         height: $height
         fileSizeBytes: $fileSizeBytes
+        mimeType: $mimeType
+        name: $name
       }
     ) {
       url
@@ -972,6 +980,8 @@ export type ImageUploadMutationFn = Apollo.MutationFunction<
  *      width: // value for 'width'
  *      height: // value for 'height'
  *      fileSizeBytes: // value for 'fileSizeBytes'
+ *      mimeType: // value for 'mimeType'
+ *      name: // value for 'name'
  *   },
  * });
  */
