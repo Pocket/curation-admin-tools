@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { Box, CardMedia, Grid, Typography } from '@material-ui/core';
+import {
+  Box,
+  CardMedia,
+  Grid,
+  LinearProgress,
+  Typography,
+} from '@material-ui/core';
 import Dropzone, { FileWithPath } from 'react-dropzone';
 import {
   AuthorModel,
@@ -23,6 +29,8 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
 
   const [imageUploadOpen, setImageUploadOpen] = useState<boolean>(false);
   const [uploadInfo, setUploadInfo] = useState<JSX.Element[] | null>(null);
+  const [uploadInProgress, setUploadInProgress] = useState<boolean>(false);
+  const [file, setFile] = useState<any>(null);
   const [imageData, setImageData] = useState<{
     contents: string;
     size: number;
@@ -43,6 +51,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
   const onDrop = (acceptedFiles: FileWithPath[]) => {
     // Show information about the uploaded file
     const uploads = acceptedFiles.map((file: FileWithPath) => {
+      setFile(file);
       // Get the actual file
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -56,7 +65,6 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
           image.onload = function () {
             // Yes, even declaring the image as HTMLImageElement is not enough
             // to convince TypeScript. Bringing out the big guns
-
             setImageData({
               contents,
               size: file.size,
@@ -85,10 +93,11 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
   };
 
   const onSave = () => {
+    setUploadInProgress(true);
     // Let's upload this thing to S3!
     uploadImage({
       variables: {
-        image: imageData.contents,
+        image: file,
         height: imageData.height,
         width: imageData.width,
         fileSizeBytes: imageData.size,
@@ -98,19 +107,21 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
     })
       .then((data) => {
         console.log(data);
+        setUploadInProgress(false);
         // TODO: add a notification, set image to new src
       })
       .catch((error) => {
+        setUploadInProgress(false);
         // TODO: send some errors up the chain
       });
   };
 
   return (
-    <>
+    <Box marginRight={1}>
       <CardMedia
         component="img"
         src={hasImage ? entity.imageUrl : placeholder}
-        className={classes.image}
+        className={hasImage ? classes.image : classes.placeholder}
         onClick={() => {
           setImageUploadOpen(true);
         }}
@@ -118,14 +129,11 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
       <Modal open={imageUploadOpen} handleClose={handleClose}>
         <Grid container>
           <Grid item xs={12}>
-            <Dropzone onDrop={onDrop}>
+            <Dropzone onDrop={onDrop} maxFiles={1} accept="image/*">
               {({ getRootProps, getInputProps }) => (
                 <Box
                   {...getRootProps({
                     className: classes.dropzone,
-                    accept: 'image/*',
-                    maxFiles: 1,
-                    multiple: false,
                   })}
                   pt={2}
                 >
@@ -140,6 +148,11 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
                       </Typography>
                     ) : null}
                     {uploadInfo}
+                    {uploadInProgress && (
+                      <Box pt={3} mx={2}>
+                        <LinearProgress />
+                      </Box>
+                    )}
                   </Box>
                 </Box>
               )}
@@ -161,6 +174,6 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
           </Grid>
         </Grid>
       </Modal>
-    </>
+    </Box>
   );
 };

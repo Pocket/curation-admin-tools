@@ -6,8 +6,11 @@ import { curationPalette } from '../../theme';
  */
 export const useStyles = makeStyles((theme: Theme) => ({
   image: {
-    borderRadius: '0.25rem',
     cursor: 'pointer',
+  },
+  placeholder: {
+    cursor: 'pointer',
+    border: 'dashed',
   },
   dropzone: {
     position: 'relative',
