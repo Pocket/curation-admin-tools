@@ -35,6 +35,7 @@ export {
   useDeleteCollectionStoryMutation,
   useGetSearchCollectionsLazyQuery,
   useGetCollectionStoriesQuery,
+  useImageUploadMutation,
 } from './generatedTypes';
 
 export { useGetStoryFromParserQuery } from './client-api/generatedTypes';

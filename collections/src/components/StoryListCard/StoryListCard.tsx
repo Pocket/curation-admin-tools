@@ -3,7 +3,6 @@ import {
   Box,
   Button,
   Card,
-  CardMedia,
   Collapse,
   Grid,
   Hidden,
@@ -23,6 +22,7 @@ import { GetCollectionStoriesDocument } from '../../api/generatedTypes';
 import { StoryForm } from '../StoryForm/StoryForm';
 import { FormikValues } from 'formik';
 import { transformAuthors } from '../../utils/transformAuthors';
+import { ImageUpload } from '../ImageUpload/ImageUpload';
 
 interface StoryListCardProps {
   story: StoryModel;
@@ -106,16 +106,7 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
       <Card variant="outlined" square className={classes.root}>
         <Grid container spacing={2}>
           <Grid item xs={2} sm={2}>
-            <CardMedia
-              component="img"
-              src={
-                story.imageUrl && story.imageUrl.length > 0
-                  ? story.imageUrl
-                  : '/placeholders/story.svg'
-              }
-              alt={story.title}
-              className={classes.image}
-            />
+            <ImageUpload entity={story} placeholder="/placeholders/story.svg" />
           </Grid>
           <Grid item xs={7} sm={8}>
             <Typography
