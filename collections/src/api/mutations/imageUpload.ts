@@ -9,8 +9,6 @@ export const imageUpload = gql`
     $width: Int!
     $height: Int!
     $fileSizeBytes: Int!
-    $mimeType: String!
-    $name: String!
   ) {
     collectionImageUpload(
       data: {
@@ -18,8 +16,6 @@ export const imageUpload = gql`
         width: $width
         height: $height
         fileSizeBytes: $fileSizeBytes
-        mimeType: $mimeType
-        name: $name
       }
     ) {
       url

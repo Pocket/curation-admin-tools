@@ -36,9 +36,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
     size: number;
     height: number;
     width: number;
-    mimeType: string;
-    name: string;
-  }>({ contents: '', size: 0, height: 0, width: 0, mimeType: '', name: '' });
+  }>({ contents: '', size: 0, height: 0, width: 0 });
 
   const hasImage = entity.imageUrl && entity.imageUrl.length > 0;
 
@@ -72,8 +70,6 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
               height: this.naturalHeight,
               // @ts-ignore
               width: this.naturalWidth,
-              mimeType: file.type,
-              name: file.name,
             });
           };
         }
@@ -101,8 +97,6 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
         height: imageData.height,
         width: imageData.width,
         fileSizeBytes: imageData.size,
-        mimeType: imageData.mimeType,
-        name: imageData.name,
       },
     })
       .then((data) => {
