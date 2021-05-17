@@ -5,6 +5,10 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
   ],
+  ignorePatterns: [
+    'collections/src/generatedTypes.ts',
+    'collections/src/client-api/generatedTypes.ts',
+  ],
   plugins: [],
   rules: {
     'prettier/prettier': [
