@@ -21,15 +21,22 @@ interface ImageUploadProps {
   entity: AuthorModel | CollectionModel | StoryModel;
 
   placeholder: string;
+
+  showNotification: (message: string, isError?: boolean) => void;
+
+  onImageSave: (url: string) => void;
 }
 
 export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
   const classes = useStyles();
-  const { entity, placeholder } = props;
+  const { entity, placeholder, showNotification, onImageSave } = props;
 
+  // These state vars are used to show/hide the file upload modal and progress bar
   const [imageUploadOpen, setImageUploadOpen] = useState<boolean>(false);
   const [uploadInfo, setUploadInfo] = useState<JSX.Element[] | null>(null);
   const [uploadInProgress, setUploadInProgress] = useState<boolean>(false);
+
+  // These are for the uploaded file itself
   const [file, setFile] = useState<any>(null);
   const [imageData, setImageData] = useState<{
     contents: string;
@@ -38,12 +45,19 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
     width: number;
   }>({ contents: '', size: 0, height: 0, width: 0 });
 
-  const hasImage = entity.imageUrl && entity.imageUrl.length > 0;
+  // And these ones are for figuring out whether to show the uploaded image
+  // or a placeholder
+  const [imageSrc, setImageSrc] = useState<string>(entity.imageUrl);
+  const [hasImage, setHasImage] = useState<boolean>(
+    !!(imageSrc && imageSrc.length > 0)
+  );
 
+  // Close the image upload modal when user clicks away or presses the "Cancel" button
   const handleClose = () => {
     setImageUploadOpen(false);
   };
 
+  // prepare the upload to S3 mutation
   const [uploadImage] = useImageUploadMutation();
 
   const onDrop = (acceptedFiles: FileWithPath[]) => {
@@ -90,6 +104,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
 
   const onSave = () => {
     setUploadInProgress(true);
+
     // Let's upload this thing to S3!
     uploadImage({
       variables: {
@@ -100,13 +115,21 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
       },
     })
       .then((data) => {
-        console.log(data);
         setUploadInProgress(false);
-        // TODO: add a notification, set image to new src
+
+        if (data.data && data.data.collectionImageUpload) {
+          setImageSrc(data.data.collectionImageUpload.url);
+          setImageUploadOpen(false);
+          setHasImage(true);
+          showNotification('Image successfully uploaded to S3');
+
+          // Pass the URL to the parent component function
+          onImageSave(data.data.collectionImageUpload.url);
+        }
       })
       .catch((error) => {
         setUploadInProgress(false);
-        // TODO: send some errors up the chain
+        showNotification(error.message, true);
       });
   };
 
@@ -114,7 +137,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
     <Box marginRight={1}>
       <CardMedia
         component="img"
-        src={hasImage ? entity.imageUrl : placeholder}
+        src={hasImage ? imageSrc : placeholder}
         className={hasImage ? classes.image : classes.placeholder}
         onClick={() => {
           setImageUploadOpen(true);

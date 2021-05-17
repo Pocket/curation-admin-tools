@@ -13,6 +13,7 @@ export const updateCollection = gql`
     $intro: Markdown
     $status: CollectionStatus!
     $authorExternalId: String!
+    $imageUrl: Url
   ) {
     updateCollection(
       data: {
@@ -23,6 +24,7 @@ export const updateCollection = gql`
         intro: $intro
         status: $status
         authorExternalId: $authorExternalId
+        imageUrl: $imageUrl
       }
     ) {
       externalId

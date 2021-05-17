@@ -11,6 +11,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
   placeholder: {
     cursor: 'pointer',
     border: 'dashed',
+    borderColor: theme.palette.grey[400],
   },
   dropzone: {
     position: 'relative',

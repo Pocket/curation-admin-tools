@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import { Box, Button, Collapse, Paper, Typography } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  Collapse,
+  Grid,
+  Paper,
+  Typography,
+} from '@material-ui/core';
 import {
   DragDropContext,
   Draggable,
@@ -11,6 +18,7 @@ import {
   CollectionForm,
   CollectionInfo,
   HandleApiResponse,
+  ImageUpload,
   Notification,
   ScrollToTop,
   StoryForm,
@@ -126,8 +134,6 @@ export const CollectionPage = (): JSX.Element => {
    * Update components on page if updates have been saved successfully
    */
   const handleSubmit = (values: FormikValues): void => {
-    // work out which queries to nuke when a collection status gets updated
-
     updateCollection({
       variables: {
         externalId: collection!.externalId,
@@ -158,6 +164,46 @@ export const CollectionPage = (): JSX.Element => {
           collection.status = data?.updateCollection?.status!;
           collection.authors = data?.updateCollection?.authors!;
           toggleEditForm();
+        }
+      })
+      .catch((error: Error) => {
+        showNotification(error.message, true);
+      });
+  };
+
+  /**
+   * Save the S3 URL we get back from the API to the collection record
+   */
+  const handleImageUploadSave = (url: string): void => {
+    updateCollection({
+      variables: {
+        // We keep most things as they are
+        externalId: collection!.externalId,
+        title: collection!.title,
+        slug: collection!.slug,
+        excerpt: collection!.excerpt,
+        status: collection!.status,
+        // This is the only (?) piece of the backend part of the frontend code
+        // that is not ready for multiple authors
+        authorExternalId: collection!.authors[0].externalId,
+
+        // This is the only field that needs updating
+        imageUrl: url,
+      },
+      refetchQueries: [
+        {
+          query: GetCollectionByExternalIdDocument,
+          variables: {
+            externalId: collection!.externalId,
+          },
+        },
+      ],
+    })
+      .then(({ data }) => {
+        showNotification('Image saved for collection');
+
+        if (collection) {
+          collection.imageUrl = data?.updateCollection?.imageUrl!;
         }
       })
       .catch((error: Error) => {
@@ -259,7 +305,19 @@ export const CollectionPage = (): JSX.Element => {
             </Box>
           </Box>
 
-          <CollectionInfo collection={collection} />
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={4}>
+              <ImageUpload
+                entity={collection}
+                placeholder="/placeholders/collection.svg"
+                showNotification={showNotification}
+                onImageSave={handleImageUploadSave}
+              />
+            </Grid>
+            <Grid item xs={12} sm={8}>
+              <CollectionInfo collection={collection} />
+            </Grid>
+          </Grid>
 
           <Collapse in={showEditForm}>
             <Paper elevation={4}>

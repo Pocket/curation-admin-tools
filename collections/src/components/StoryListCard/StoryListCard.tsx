@@ -19,10 +19,9 @@ import ReactMarkdown from 'react-markdown';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import EditIcon from '@material-ui/icons/Edit';
 import { GetCollectionStoriesDocument } from '../../api/generatedTypes';
-import { StoryForm } from '../StoryForm/StoryForm';
 import { FormikValues } from 'formik';
 import { transformAuthors } from '../../utils/transformAuthors';
-import { ImageUpload } from '../ImageUpload/ImageUpload';
+import { ImageUpload, StoryForm } from '../';
 
 interface StoryListCardProps {
   story: StoryModel;
@@ -86,8 +85,7 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
         title: values.title,
         excerpt: values.excerpt,
         publisher: values.publisher,
-        // NB: not updating the image here. Uploads will be handled on clicking
-        // the image itself (or placeholder)
+        // NB: not updating the image here. Uploads are handled separately
         imageUrl: story.imageUrl,
         authors,
       },
@@ -101,12 +99,50 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
       });
   };
 
+  /**
+   * Save the S3 URL we get back from the API to the collection record
+   */
+  const handleImageUploadSave = (url: string): void => {
+    // get rid of the __typename property as the mutation variable
+    // doesn't expect to receive it
+    const authors = story.authors.map((author) => {
+      return { name: author.name, sortOrder: author.sortOrder };
+    });
+
+    updateStory({
+      variables: {
+        // We send these because we have to
+        externalId: story.externalId,
+        url: story.url,
+        title: story.title,
+        excerpt: story.excerpt,
+        publisher: story.publisher ?? '',
+        authors: authors,
+        // This is the only field that needs updating
+        imageUrl: url,
+      },
+    })
+      .then(() => {
+        showNotification(
+          `Saved image for "${story.title.substring(0, 50)}..."`
+        );
+      })
+      .catch((error: Error) => {
+        showNotification(error.message, true);
+      });
+  };
+
   return (
     <>
       <Card variant="outlined" square className={classes.root}>
         <Grid container spacing={2}>
           <Grid item xs={2} sm={2}>
-            <ImageUpload entity={story} placeholder="/placeholders/story.svg" />
+            <ImageUpload
+              entity={story}
+              placeholder="/placeholders/story.svg"
+              showNotification={showNotification}
+              onImageSave={handleImageUploadSave}
+            />
           </Grid>
           <Grid item xs={7} sm={8}>
             <Typography

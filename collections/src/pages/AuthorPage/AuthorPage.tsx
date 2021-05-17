@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import { Box, Button, Collapse, Paper, Typography } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  Collapse,
+  Grid,
+  Paper,
+  Typography,
+} from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { FormikValues } from 'formik';
 import {
   AuthorForm,
   AuthorInfo,
   HandleApiResponse,
+  ImageUpload,
   Notification,
   ScrollToTop,
 } from '../../components';
@@ -31,7 +39,7 @@ export const AuthorPage = (): JSX.Element => {
     handleClose,
   } = useNotifications();
 
-  // prepare the "upate author" mutation
+  // prepare the "update author" mutation
   // has to be done at the top level of the component because it's a hook
   const [updateAuthor] = useUpdateCollectionAuthorMutation();
 
@@ -104,6 +112,33 @@ export const AuthorPage = (): JSX.Element => {
       });
   };
 
+  /**
+   * Save the S3 URL we get back from the API to the author record
+   */
+  const handleImageUploadSave = (url: string): void => {
+    updateAuthor({
+      variables: {
+        // We keep most things as they are
+        externalId: author!.externalId,
+        name: author!.name,
+        slug: author!.slug!,
+
+        // This is the only field that needs updating
+        imageUrl: url,
+      },
+    })
+      .then(({ data }) => {
+        showNotification('Image saved for author');
+
+        if (author) {
+          author.imageUrl = data?.updateCollectionAuthor?.imageUrl;
+        }
+      })
+      .catch((error: Error) => {
+        showNotification(error.message, true);
+      });
+  };
+
   return (
     <>
       <ScrollToTop />
@@ -125,7 +160,19 @@ export const AuthorPage = (): JSX.Element => {
               </Button>
             </Box>
           </Box>
-          <AuthorInfo author={author} />
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={4}>
+              <ImageUpload
+                entity={author}
+                placeholder="/placeholders/author.svg"
+                showNotification={showNotification}
+                onImageSave={handleImageUploadSave}
+              />
+            </Grid>
+            <Grid item xs={12} sm={8}>
+              <AuthorInfo author={author} />
+            </Grid>
+          </Grid>
 
           <Collapse in={showEditForm}>
             <Paper elevation={4}>

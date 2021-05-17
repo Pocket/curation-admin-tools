@@ -404,6 +404,7 @@ export type UpdateCollectionMutationVariables = Exact<{
   intro?: Maybe<Scalars['Markdown']>;
   status: CollectionStatus;
   authorExternalId: Scalars['String'];
+  imageUrl?: Maybe<Scalars['Url']>;
 }>;
 
 export type UpdateCollectionMutation = { __typename?: 'Mutation' } & {
@@ -1004,6 +1005,7 @@ export const UpdateCollectionDocument = gql`
     $intro: Markdown
     $status: CollectionStatus!
     $authorExternalId: String!
+    $imageUrl: Url
   ) {
     updateCollection(
       data: {
@@ -1014,6 +1016,7 @@ export const UpdateCollectionDocument = gql`
         intro: $intro
         status: $status
         authorExternalId: $authorExternalId
+        imageUrl: $imageUrl
       }
     ) {
       externalId
@@ -1055,6 +1058,7 @@ export type UpdateCollectionMutationFn = Apollo.MutationFunction<
  *      intro: // value for 'intro'
  *      status: // value for 'status'
  *      authorExternalId: // value for 'authorExternalId'
+ *      imageUrl: // value for 'imageUrl'
  *   },
  * });
  */
