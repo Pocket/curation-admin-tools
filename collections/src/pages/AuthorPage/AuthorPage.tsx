@@ -122,16 +122,14 @@ export const AuthorPage = (): JSX.Element => {
         externalId: author!.externalId,
         name: author!.name,
         slug: author!.slug!,
-
         // This is the only field that needs updating
         imageUrl: url,
       },
     })
       .then(({ data }) => {
-        showNotification('Image saved for author');
-
         if (author) {
           author.imageUrl = data?.updateCollectionAuthor?.imageUrl;
+          showNotification(`Image saved to "${author!.name}"`);
         }
       })
       .catch((error: Error) => {

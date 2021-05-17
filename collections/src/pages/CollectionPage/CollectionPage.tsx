@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
+import loadImage from 'blueimp-load-image';
 import {
   Box,
   Button,
@@ -200,10 +201,11 @@ export const CollectionPage = (): JSX.Element => {
       ],
     })
       .then(({ data }) => {
-        showNotification('Image saved for collection');
-
         if (collection) {
           collection.imageUrl = data?.updateCollection?.imageUrl!;
+          showNotification(
+            `Image saved to "${collection.title.substring(0, 50)}..."`
+          );
         }
       })
       .catch((error: Error) => {
@@ -216,7 +218,65 @@ export const CollectionPage = (): JSX.Element => {
   const [addStoryFormKey, setAddStoryFormKey] = useState(1);
 
   const handleCreateStorySubmit = (values: FormikValues): void => {
-    // prepare authors! They need to be an array of objects again
+    // If the parser returned an image, let's upload it to S3
+
+    const toDataURL = (url: string) =>
+      fetch(url)
+        .then((response) => response.blob())
+        .then(
+          (blob) =>
+            new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onloadend = () => resolve(reader.result);
+              reader.onerror = reject;
+              reader.readAsDataURL(blob);
+            })
+        )
+        .catch((error) => {
+          showNotification(error.message, true);
+        });
+
+    toDataURL(values.imageUrl).then((dataUrl) => {
+      console.log('RESULT:', dataUrl);
+    });
+
+    // loadImage(
+    //   values.imageUrl,
+    //   (image: Event | HTMLImageElement | HTMLCanvasElement) => {
+    //     // If an error is returned, let's display it and run
+    //     if (image instanceof Error) {
+    //       showNotification(image.message, true);
+    //       return;
+    //     }
+    //
+    //     // Do things with an image. It's definitely an image
+    //     // unless you set { canvas: true } in the options
+    //     // to get a HTMLCanvasElement instead
+    //     if (image instanceof HTMLImageElement) {
+    //
+    //
+    //       // enable CORS
+    //       // image.crossOrigin = 'anonymous';
+    //       //
+    //       // const canvas = document.createElement('canvas');
+    //       // const context = canvas.getContext('2d');
+    //       //
+    //       // canvas.width = image.naturalWidth;
+    //       // canvas.height = image.naturalHeight;
+    //       //
+    //       // context?.drawImage(image, 0, 0);
+    //       //
+    //       // // Dies with a CORS error
+    //       // const file = canvas.toDataURL('image/jpeg');
+    //       // console.log(file);
+    //
+    //       console.log(image);
+    //     }
+    //   },
+    //   {}
+    // );
+
+    // Prepare authors. They need to be an array of objects again
     const authors = transformAuthors(values.authors);
 
     createStory({

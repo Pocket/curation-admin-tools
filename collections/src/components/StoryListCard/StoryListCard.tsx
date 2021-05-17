@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
+import { FormikValues } from 'formik';
 import {
   Box,
   Button,
@@ -9,19 +11,17 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import EditIcon from '@material-ui/icons/Edit';
 import {
   StoryModel,
   useDeleteCollectionStoryMutation,
   useUpdateCollectionStoryMutation,
 } from '../../api';
-import { useStyles } from './StoryListCard.styles';
-import ReactMarkdown from 'react-markdown';
-import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
-import EditIcon from '@material-ui/icons/Edit';
 import { GetCollectionStoriesDocument } from '../../api/generatedTypes';
-import { FormikValues } from 'formik';
 import { transformAuthors } from '../../utils/transformAuthors';
 import { ImageUpload, StoryForm } from '../';
+import { useStyles } from './StoryListCard.styles';
 
 interface StoryListCardProps {
   story: StoryModel;
