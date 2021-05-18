@@ -15,7 +15,6 @@ import {
   AuthorInfo,
   HandleApiResponse,
   ImageUpload,
-  Notification,
   ScrollToTop,
 } from '../../components';
 import {
@@ -31,13 +30,7 @@ interface AuthorPageProps {
 
 export const AuthorPage = (): JSX.Element => {
   // Prepare state vars and helper methods for API notifications
-  const {
-    open,
-    message,
-    hasError,
-    showNotification,
-    handleClose,
-  } = useNotifications();
+  const { showNotification } = useNotifications();
 
   // prepare the "update author" mutation
   // has to be done at the top level of the component because it's a hook
@@ -98,7 +91,7 @@ export const AuthorPage = (): JSX.Element => {
       },
     })
       .then(({ data }) => {
-        showNotification('Author updated successfully!');
+        showNotification('Author updated successfully!', 'success');
 
         if (author) {
           author.bio = data?.updateCollectionAuthor?.bio;
@@ -108,7 +101,7 @@ export const AuthorPage = (): JSX.Element => {
         toggleEditForm();
       })
       .catch((error: Error) => {
-        showNotification(error.message, true);
+        showNotification(error.message, 'error');
       });
   };
 
@@ -129,11 +122,11 @@ export const AuthorPage = (): JSX.Element => {
       .then(({ data }) => {
         if (author) {
           author.imageUrl = data?.updateCollectionAuthor?.imageUrl;
-          showNotification(`Image saved to "${author!.name}"`);
+          showNotification(`Image saved to "${author!.name}"`, 'success');
         }
       })
       .catch((error: Error) => {
-        showNotification(error.message, true);
+        showNotification(error.message, 'error');
       });
   };
 
@@ -163,7 +156,6 @@ export const AuthorPage = (): JSX.Element => {
               <ImageUpload
                 entity={author}
                 placeholder="/placeholders/author.svg"
-                showNotification={showNotification}
                 onImageSave={handleImageUploadSave}
               />
             </Grid>
@@ -187,12 +179,6 @@ export const AuthorPage = (): JSX.Element => {
               </Box>
             </Paper>
           </Collapse>
-          <Notification
-            handleClose={handleClose}
-            isOpen={open}
-            message={message}
-            type={hasError ? 'error' : 'success'}
-          />
         </>
       )}
       {/*<h2>Collections by this author</h2>*/}

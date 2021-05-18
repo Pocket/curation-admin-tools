@@ -16,20 +16,20 @@ import {
 import { Button, Modal } from '../';
 import { useStyles } from './ImageUpload.styles';
 import { formatFileSize } from '../../utils/formatFileSize';
+import { useNotifications } from '../../hooks/useNotifications';
 
 interface ImageUploadProps {
   entity: AuthorModel | CollectionModel | StoryModel;
 
   placeholder: string;
 
-  showNotification: (message: string, isError?: boolean) => void;
-
   onImageSave: (url: string) => void;
 }
 
 export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
   const classes = useStyles();
-  const { entity, placeholder, showNotification, onImageSave } = props;
+  const { entity, placeholder, onImageSave } = props;
+  const { showNotification } = useNotifications();
 
   // These state vars are used to show/hide the file upload modal and progress bar
   const [imageUploadOpen, setImageUploadOpen] = useState<boolean>(false);
@@ -121,7 +121,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
           setImageSrc(data.data.collectionImageUpload.url);
           setImageUploadOpen(false);
           setHasImage(true);
-          showNotification('Image successfully uploaded to S3');
+          showNotification('Image successfully uploaded to S3', 'success');
 
           // Pass the URL to the parent component function
           onImageSave(data.data.collectionImageUpload.url);
@@ -129,7 +129,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
       })
       .catch((error) => {
         setUploadInProgress(false);
-        showNotification(error.message, true);
+        showNotification(error.message, 'error');
       });
   };
 

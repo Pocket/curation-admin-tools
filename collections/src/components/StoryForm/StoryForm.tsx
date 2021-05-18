@@ -9,7 +9,7 @@ import {
   LinearProgress,
   TextField,
 } from '@material-ui/core';
-import { Button, MarkdownPreview, Notification } from '../';
+import { Button, MarkdownPreview } from '../';
 import { StoryModel } from '../../api';
 import { clientAPIClient } from '../../api/client';
 import { useGetStoryFromParserLazyQuery } from '../../api/client-api/generatedTypes';
@@ -52,13 +52,7 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
   const classes = useStyles();
 
   // Prepare state vars and helper methods for API notifications
-  const {
-    open,
-    message,
-    hasError,
-    showNotification,
-    handleClose,
-  } = useNotifications();
+  const { showNotification } = useNotifications();
 
   // Whether to show the full form or just the URL field with the "Populate" button
   const [showOtherFields, setShowOtherFields] = useState<boolean>(
@@ -132,12 +126,12 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
         setShowOtherFields(true);
       } else {
         // This is the error path
-        showNotification(`The parser couldn't process this URL`, true);
+        showNotification(`The parser couldn't process this URL`, 'error');
       }
     },
     onError: (error: ApolloError) => {
       // Show any other errors, i.e. cannot reach the API, etc.
-      showNotification(error.message, true);
+      showNotification(error.message, 'error');
     },
   });
 
@@ -303,13 +297,6 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
           {...formik.getFieldProps('imageUrl')}
         />
       </Box>
-
-      <Notification
-        handleClose={handleClose}
-        isOpen={open}
-        message={message}
-        type={hasError ? 'error' : 'success'}
-      />
     </form>
   );
 };

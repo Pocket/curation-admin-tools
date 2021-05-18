@@ -8,23 +8,13 @@ import {
   useCreateCollectionMutation,
   useGetAuthorsQuery,
 } from '../../api';
-import {
-  CollectionForm,
-  HandleApiResponse,
-  Notification,
-} from '../../components';
+import { CollectionForm, HandleApiResponse } from '../../components';
 import { useNotifications } from '../../hooks/useNotifications';
 import { GetDraftCollectionsDocument } from '../../api/generatedTypes';
 
 export const AddCollectionPage: React.FC = (): JSX.Element => {
   // Prepare state vars and helper methods for API notifications
-  const {
-    open,
-    message,
-    hasError,
-    showNotification,
-    handleClose,
-  } = useNotifications();
+  const { showNotification } = useNotifications();
 
   // This is used to redirect the user to the full collection page once
   // the record is added successfully
@@ -77,7 +67,7 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
         });
       })
       .catch((error: Error) => {
-        showNotification(error.message, true);
+        showNotification(error.message, 'error');
       });
   };
 
@@ -103,12 +93,6 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
           )}
         </Box>
       </Paper>
-      <Notification
-        handleClose={handleClose}
-        isOpen={open}
-        message={message}
-        type={hasError ? 'error' : 'success'}
-      />
     </>
   );
 };
