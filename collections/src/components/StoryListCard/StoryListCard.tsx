@@ -22,13 +22,12 @@ import { GetCollectionStoriesDocument } from '../../api/generatedTypes';
 import { transformAuthors } from '../../utils/transformAuthors';
 import { ImageUpload, StoryForm } from '../';
 import { useStyles } from './StoryListCard.styles';
+import { useNotifications } from '../../hooks/useNotifications';
 
 interface StoryListCardProps {
   story: StoryModel;
 
   collectionExternalId: string;
-
-  showNotification: (message: string, isError?: boolean) => void;
 }
 
 /**
@@ -38,7 +37,8 @@ interface StoryListCardProps {
  */
 export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
   const classes = useStyles();
-  const { story, collectionExternalId, showNotification } = props;
+  const { showNotification } = useNotifications();
+  const { story, collectionExternalId } = props;
 
   const [showEditForm, setShowEditForm] = useState<boolean>(false);
 
@@ -67,10 +67,13 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
       ],
     })
       .then(() => {
-        showNotification(`Deleted "${story.title.substring(0, 50)}..."`);
+        showNotification(
+          `Deleted "${story.title.substring(0, 50)}..."`,
+          'success'
+        );
       })
       .catch((error: Error) => {
-        showNotification(error.message, true);
+        showNotification(error.message, 'error');
       });
   };
 
@@ -91,11 +94,14 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
       },
     })
       .then(() => {
-        showNotification(`Updated "${story.title.substring(0, 50)}..."`);
+        showNotification(
+          `Updated "${story.title.substring(0, 50)}..."`,
+          'success'
+        );
         setShowEditForm(false);
       })
       .catch((error: Error) => {
-        showNotification(error.message, true);
+        showNotification(error.message, 'error');
       });
   };
 
@@ -124,11 +130,12 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
     })
       .then(() => {
         showNotification(
-          `Saved image for "${story.title.substring(0, 50)}..."`
+          `Saved image for "${story.title.substring(0, 50)}..."`,
+          'success'
         );
       })
       .catch((error: Error) => {
-        showNotification(error.message, true);
+        showNotification(error.message, 'error');
       });
   };
 
@@ -140,7 +147,6 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
             <ImageUpload
               entity={story}
               placeholder="/placeholders/story.svg"
-              showNotification={showNotification}
               onImageSave={handleImageUploadSave}
             />
           </Grid>

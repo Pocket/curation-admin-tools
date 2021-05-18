@@ -3,19 +3,13 @@ import { useHistory } from 'react-router-dom';
 import { Box, Paper } from '@material-ui/core';
 import { FormikValues } from 'formik';
 import { AuthorModel, useCreateCollectionAuthorMutation } from '../../api';
-import { AuthorForm, Notification } from '../../components';
+import { AuthorForm } from '../../components';
 import { useNotifications } from '../../hooks/useNotifications';
 import { GetAuthorsDocument } from '../../api/generatedTypes';
 
 export const AddAuthorPage: React.FC = (): JSX.Element => {
   // Prepare state vars and helper methods for API notifications
-  const {
-    open,
-    message,
-    hasError,
-    showNotification,
-    handleClose,
-  } = useNotifications();
+  const { showNotification } = useNotifications();
 
   // This is used to redirect the user to the full author page once
   // the record is added successfully
@@ -61,7 +55,7 @@ export const AddAuthorPage: React.FC = (): JSX.Element => {
         });
       })
       .catch((error: Error) => {
-        showNotification(error.message, true);
+        showNotification(error.message, 'error');
       });
   };
 
@@ -80,12 +74,6 @@ export const AddAuthorPage: React.FC = (): JSX.Element => {
           />
         </Box>
       </Paper>
-      <Notification
-        handleClose={handleClose}
-        isOpen={open}
-        message={message}
-        type={hasError ? 'error' : 'success'}
-      />
     </>
   );
 };

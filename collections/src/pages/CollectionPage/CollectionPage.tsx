@@ -19,7 +19,6 @@ import {
   CollectionInfo,
   HandleApiResponse,
   ImageUpload,
-  Notification,
   ScrollToTop,
   StoryForm,
   StoryListCard,
@@ -33,6 +32,7 @@ import {
   useUpdateCollectionMutation,
   useCreateCollectionStoryMutation,
   useImageUploadMutation,
+  useUpdateCollectionStoryMutation,
 } from '../../api';
 import { useNotifications } from '../../hooks/useNotifications';
 import { FormikValues } from 'formik';
@@ -49,13 +49,7 @@ interface CollectionPageProps {
 
 export const CollectionPage = (): JSX.Element => {
   // Prepare state vars and helper methods for API notifications
-  const {
-    open,
-    message,
-    hasError,
-    showNotification,
-    handleClose,
-  } = useNotifications();
+  const { showNotification } = useNotifications();
 
   // prepare the "update collection" mutation
   // has to be done at the top level of the component because it's a hook
@@ -63,6 +57,9 @@ export const CollectionPage = (): JSX.Element => {
 
   // prepare the "create story" mutation
   const [createStory] = useCreateCollectionStoryMutation();
+
+  // prepare the "update story" mutation
+  const [updateStory] = useUpdateCollectionStoryMutation();
 
   // prepare the upload to S3 mutation
   const [uploadImage] = useImageUploadMutation();
@@ -122,9 +119,19 @@ export const CollectionPage = (): JSX.Element => {
   // Let's keep stories in state to be able to reorder them with drag'n'drop
   const [stories, setStories] = useState<StoryModel[] | undefined>(undefined);
 
+  // for adding new stories, keep track of what the next story order value should be
+  const [storySortOrder, setStorySortOrder] = useState<number>(1);
+
   // And update the state variable when data is loaded
   useEffect(() => {
-    setStories(storiesData?.getCollection?.stories);
+    const loadedStories = storiesData?.getCollection?.stories;
+    setStories(loadedStories);
+
+    if (loadedStories && loadedStories.length > 0) {
+      const lastStorySortOrder =
+        loadedStories[loadedStories.length - 1].sortOrder ?? 0;
+      setStorySortOrder(lastStorySortOrder + 1);
+    }
   }, [storiesData]);
 
   const [showEditForm, setShowEditForm] = useState<boolean>(false);
@@ -158,7 +165,7 @@ export const CollectionPage = (): JSX.Element => {
       ],
     })
       .then(({ data }) => {
-        showNotification('Collection updated successfully!');
+        showNotification('Collection updated successfully!', 'success');
 
         if (collection) {
           collection.title = data?.updateCollection?.title!;
@@ -171,7 +178,7 @@ export const CollectionPage = (): JSX.Element => {
         }
       })
       .catch((error: Error) => {
-        showNotification(error.message, true);
+        showNotification(error.message, 'error');
       });
   };
 
@@ -207,12 +214,13 @@ export const CollectionPage = (): JSX.Element => {
         if (collection) {
           collection.imageUrl = data?.updateCollection?.imageUrl!;
           showNotification(
-            `Image saved to "${collection.title.substring(0, 50)}..."`
+            `Image saved to "${collection.title.substring(0, 50)}..."`,
+            'success'
           );
         }
       })
       .catch((error: Error) => {
-        showNotification(error.message, true);
+        showNotification(error.message, 'error');
       });
   };
 
@@ -220,6 +228,10 @@ export const CollectionPage = (): JSX.Element => {
   // has been added
   const [addStoryFormKey, setAddStoryFormKey] = useState(1);
 
+  /**
+   * Save a new story - a multi-step process
+   * @param values
+   */
   const handleCreateStorySubmit = (values: FormikValues): void => {
     // If the parser returned an image, let's upload it to S3
     // First, side-step CORS issues that prevent us from downloading
@@ -243,7 +255,7 @@ export const CollectionPage = (): JSX.Element => {
         })
           .then((data) => {
             if (data.data && data.data.collectionImageUpload) {
-              showNotification('Image successfully uploaded to S3');
+              showNotification('Image successfully uploaded to S3', 'success');
 
               // Prepare authors. They need to be an array of objects again
               const authors = transformAuthors(values.authors);
@@ -258,6 +270,7 @@ export const CollectionPage = (): JSX.Element => {
                   publisher: values.publisher,
                   imageUrl: data.data.collectionImageUpload.url,
                   authors,
+                  sortOrder: storySortOrder,
                 },
                 refetchQueries: [
                   {
@@ -273,17 +286,18 @@ export const CollectionPage = (): JSX.Element => {
                     `Added "${data.data?.createCollectionStory?.title.substring(
                       0,
                       50
-                    )}..."`
+                    )}..."`,
+                    'success'
                   );
                   setAddStoryFormKey(addStoryFormKey + 1);
                 })
                 .catch((error: Error) => {
-                  showNotification(error.message, true);
+                  showNotification(error.message, 'error');
                 });
             }
           })
           .catch((error) => {
-            showNotification(error.message, true);
+            showNotification(error.message, 'error');
           });
       });
   };
@@ -305,6 +319,10 @@ export const CollectionPage = (): JSX.Element => {
     sortOrder: null,
   };
 
+  /**
+   * Save the new sort order of stories
+   * @param result
+   */
   const onDragEnd = (result: DropResult) => {
     // if a story was dragged out of the list, let it snap back to where it was
     // without an error in the console
@@ -316,7 +334,43 @@ export const CollectionPage = (): JSX.Element => {
     reorderedStories.splice(result.destination.index, 0, story);
     setStories(reorderedStories);
 
-    // TODO: save the new order of stories to the database
+    // save the new order of stories to the database
+    reorderedStories.forEach((story: StoryModel, index: number) => {
+      // get rid of the __typename property as the mutation variable
+      // doesn't expect to receive it
+      const authors = story.authors.map((author) => {
+        return { name: author.name, sortOrder: author.sortOrder };
+      });
+
+      const newSortOrder = index + 1;
+
+      // update each affected story with the new sort order
+      if (story.sortOrder !== newSortOrder) {
+        updateStory({
+          variables: {
+            // We send these because we have to
+            externalId: story.externalId,
+            url: story.url,
+            title: story.title,
+            excerpt: story.excerpt,
+            publisher: story.publisher ?? '',
+            authors: authors,
+            imageUrl: story.imageUrl,
+            // This is the only field that needs updating
+            sortOrder: newSortOrder,
+          },
+        })
+          .then(() => {
+            showNotification(
+              `Order updated for "${story.title.substring(0, 50)}..."`,
+              'success'
+            );
+          })
+          .catch((error: Error) => {
+            showNotification(error.message, 'error');
+          });
+      }
+    });
   };
 
   return (
@@ -346,7 +400,6 @@ export const CollectionPage = (): JSX.Element => {
               <ImageUpload
                 entity={collection}
                 placeholder="/placeholders/collection.svg"
-                showNotification={showNotification}
                 onImageSave={handleImageUploadSave}
               />
             </Grid>
@@ -419,7 +472,6 @@ export const CollectionPage = (): JSX.Element => {
                                     collectionExternalId={
                                       collection!.externalId
                                     }
-                                    showNotification={showNotification}
                                   />
                                 </Typography>
                               );
@@ -446,12 +498,6 @@ export const CollectionPage = (): JSX.Element => {
               />
             </Box>
           </Paper>
-          <Notification
-            handleClose={handleClose}
-            isOpen={open}
-            message={message}
-            type={hasError ? 'error' : 'success'}
-          />
         </>
       )}
     </>

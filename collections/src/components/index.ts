@@ -14,7 +14,6 @@ export { ImageUpload } from './ImageUpload/ImageUpload';
 export { MainContentWrapper } from './MainContentWrapper/MainContentWrapper';
 export { MarkdownPreview } from './MarkdownPreview/MarkdownPreview';
 export { Modal } from './Modal/Modal';
-export { Notification } from './Notification/Notification';
 export { StoryForm } from './StoryForm/StoryForm';
 export { StoryListCard } from './StoryListCard/StoryListCard';
 export { ScrollToTop } from './ScrollToTop/ScrollToTop';

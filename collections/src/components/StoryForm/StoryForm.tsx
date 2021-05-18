@@ -9,7 +9,7 @@ import {
   LinearProgress,
   TextField,
 } from '@material-ui/core';
-import { Button, MarkdownPreview, Notification } from '../';
+import { Button, MarkdownPreview } from '../';
 import { StoryModel } from '../../api';
 import { clientAPIClient } from '../../api/client';
 import { useGetStoryFromParserLazyQuery } from '../../api/client-api/generatedTypes';
@@ -52,17 +52,16 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
   const classes = useStyles();
 
   // Prepare state vars and helper methods for API notifications
-  const {
-    open,
-    message,
-    hasError,
-    showNotification,
-    handleClose,
-  } = useNotifications();
+  const { showNotification } = useNotifications();
 
   // Whether to show the full form or just the URL field with the "Populate" button
   const [showOtherFields, setShowOtherFields] = useState<boolean>(
     showAllFields
+  );
+
+  // Which image do we show?
+  const [imageSrc, setImageSrc] = useState<string>(
+    story.imageUrl ? story.imageUrl : '/placeholders/story.svg'
   );
 
   /**
@@ -97,7 +96,7 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
     },
   });
 
-  const [getStory, { loading, data }] = useGetStoryFromParserLazyQuery({
+  const [getStory, { loading }] = useGetStoryFromParserLazyQuery({
     client: clientAPIClient,
     onCompleted: (data) => {
       // Rather than return errors if it can't parse a URL, the parser
@@ -107,7 +106,7 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
 
         // If the parser returns multiple authors for the story,
         // combine them in one comma-separated string
-        const commaSeparatedAuthors = data.getItemByUrl?.authors
+        const commaSeparatedAuthors = data.getItemByUrl.authors
           ?.map((author) => {
             return author?.name;
           })
@@ -118,26 +117,27 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
 
         // make sure to use the 'resolvedUrl returned from the parser instead of the URL
         // submitted by the user
-        formik.setFieldValue('url', data.getItemByUrl?.resolvedUrl);
-        formik.setFieldValue('title', data.getItemByUrl?.title);
+        formik.setFieldValue('url', data.getItemByUrl.resolvedUrl);
+        formik.setFieldValue('title', data.getItemByUrl.title);
         formik.setFieldValue(
           'publisher',
-          data.getItemByUrl?.domainMetadata?.name
+          data.getItemByUrl.domainMetadata?.name
         );
-        formik.setFieldValue('excerpt', data.getItemByUrl?.excerpt);
-        formik.setFieldValue('imageUrl', data.getItemByUrl?.topImageUrl);
+        formik.setFieldValue('excerpt', data.getItemByUrl.excerpt);
+        formik.setFieldValue('imageUrl', data.getItemByUrl.topImageUrl);
+        setImageSrc(data.getItemByUrl.topImageUrl);
 
         // if this is used to add a story and only the URL is visible,
         // show the other fields now that they contain something
         setShowOtherFields(true);
       } else {
         // This is the error path
-        showNotification(`The parser couldn't process this URL`, true);
+        showNotification(`The parser couldn't process this URL`, 'error');
       }
     },
     onError: (error: ApolloError) => {
       // Show any other errors, i.e. cannot reach the API, etc.
-      showNotification(error.message, true);
+      showNotification(error.message, 'error');
     },
   });
 
@@ -213,11 +213,7 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
             <Grid item xs={12} sm={3}>
               <CardMedia
                 component="img"
-                src={
-                  data?.getItemByUrl?.topImageUrl
-                    ? data?.getItemByUrl?.topImageUrl
-                    : '/placeholders/collection.svg'
-                }
+                src={imageSrc}
                 alt={formik.values.title}
                 className={classes.image}
               />
@@ -303,13 +299,6 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
           {...formik.getFieldProps('imageUrl')}
         />
       </Box>
-
-      <Notification
-        handleClose={handleClose}
-        isOpen={open}
-        message={message}
-        type={hasError ? 'error' : 'success'}
-      />
     </form>
   );
 };
