@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import loadImage from 'blueimp-load-image';
 import {
   Box,
   Button,
@@ -33,6 +32,7 @@ import {
   useGetCollectionStoriesQuery,
   useUpdateCollectionMutation,
   useCreateCollectionStoryMutation,
+  useImageUploadMutation,
 } from '../../api';
 import { useNotifications } from '../../hooks/useNotifications';
 import { FormikValues } from 'formik';
@@ -63,6 +63,9 @@ export const CollectionPage = (): JSX.Element => {
 
   // prepare the "create story" mutation
   const [createStory] = useCreateCollectionStoryMutation();
+
+  // prepare the upload to S3 mutation
+  const [uploadImage] = useImageUploadMutation();
 
   /**
    * If a Collection object was passed to the page from one of the other app pages,
@@ -219,96 +222,69 @@ export const CollectionPage = (): JSX.Element => {
 
   const handleCreateStorySubmit = (values: FormikValues): void => {
     // If the parser returned an image, let's upload it to S3
+    // First, side-step CORS issues that prevent us from downloading
+    // the image directly from the publisher
+    const parserImageUrl =
+      'https://pocket-image-cache.com/x/filters:no_upscale():format(jpg)/' +
+      encodeURIComponent(values.imageUrl);
 
-    const toDataURL = (url: string) =>
-      fetch(url)
-        .then((response) => response.blob())
-        .then(
-          (blob) =>
-            new Promise((resolve, reject) => {
-              const reader = new FileReader();
-              reader.onloadend = () => resolve(reader.result);
-              reader.onerror = reject;
-              reader.readAsDataURL(blob);
-            })
-        )
-        .catch((error) => {
-          showNotification(error.message, true);
-        });
-
-    toDataURL(values.imageUrl).then((dataUrl) => {
-      console.log('RESULT:', dataUrl);
-    });
-
-    // loadImage(
-    //   values.imageUrl,
-    //   (image: Event | HTMLImageElement | HTMLCanvasElement) => {
-    //     // If an error is returned, let's display it and run
-    //     if (image instanceof Error) {
-    //       showNotification(image.message, true);
-    //       return;
-    //     }
-    //
-    //     // Do things with an image. It's definitely an image
-    //     // unless you set { canvas: true } in the options
-    //     // to get a HTMLCanvasElement instead
-    //     if (image instanceof HTMLImageElement) {
-    //
-    //
-    //       // enable CORS
-    //       // image.crossOrigin = 'anonymous';
-    //       //
-    //       // const canvas = document.createElement('canvas');
-    //       // const context = canvas.getContext('2d');
-    //       //
-    //       // canvas.width = image.naturalWidth;
-    //       // canvas.height = image.naturalHeight;
-    //       //
-    //       // context?.drawImage(image, 0, 0);
-    //       //
-    //       // // Dies with a CORS error
-    //       // const file = canvas.toDataURL('image/jpeg');
-    //       // console.log(file);
-    //
-    //       console.log(image);
-    //     }
-    //   },
-    //   {}
-    // );
-
-    // Prepare authors. They need to be an array of objects again
-    const authors = transformAuthors(values.authors);
-
-    createStory({
-      variables: {
-        collectionExternalId: params.id,
-        url: values.url,
-        title: values.title,
-        excerpt: values.excerpt,
-        publisher: values.publisher,
-        imageUrl: '', // TODO: upload an image!
-        authors,
-      },
-      refetchQueries: [
-        {
-          query: GetCollectionStoriesDocument,
+    // Get the file
+    fetch(parserImageUrl)
+      .then((res) => res.blob())
+      .then((blob) => {
+        // Upload the file to S3
+        uploadImage({
           variables: {
-            id: params.id,
+            image: blob,
+            height: 0,
+            width: 0,
+            fileSizeBytes: blob.size,
           },
-        },
-      ],
-    })
-      .then((data) => {
-        showNotification(
-          `Added "${data.data?.createCollectionStory?.title.substring(
-            0,
-            50
-          )}..."`
-        );
-        setAddStoryFormKey(addStoryFormKey + 1);
-      })
-      .catch((error: Error) => {
-        showNotification(error.message, true);
+        })
+          .then((data) => {
+            if (data.data && data.data.collectionImageUpload) {
+              showNotification('Image successfully uploaded to S3');
+
+              // Prepare authors. They need to be an array of objects again
+              const authors = transformAuthors(values.authors);
+
+              // Save the new story with the S3 URL
+              createStory({
+                variables: {
+                  collectionExternalId: params.id,
+                  url: values.url,
+                  title: values.title,
+                  excerpt: values.excerpt,
+                  publisher: values.publisher,
+                  imageUrl: data.data.collectionImageUpload.url,
+                  authors,
+                },
+                refetchQueries: [
+                  {
+                    query: GetCollectionStoriesDocument,
+                    variables: {
+                      id: params.id,
+                    },
+                  },
+                ],
+              })
+                .then((data) => {
+                  showNotification(
+                    `Added "${data.data?.createCollectionStory?.title.substring(
+                      0,
+                      50
+                    )}..."`
+                  );
+                  setAddStoryFormKey(addStoryFormKey + 1);
+                })
+                .catch((error: Error) => {
+                  showNotification(error.message, true);
+                });
+            }
+          })
+          .catch((error) => {
+            showNotification(error.message, true);
+          });
       });
   };
 
