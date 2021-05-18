@@ -119,9 +119,19 @@ export const CollectionPage = (): JSX.Element => {
   // Let's keep stories in state to be able to reorder them with drag'n'drop
   const [stories, setStories] = useState<StoryModel[] | undefined>(undefined);
 
+  // for adding new stories, keep track of what the next story order value should be
+  const [storySortOrder, setStorySortOrder] = useState<number>(1);
+
   // And update the state variable when data is loaded
   useEffect(() => {
-    setStories(storiesData?.getCollection?.stories);
+    const loadedStories = storiesData?.getCollection?.stories;
+    setStories(loadedStories);
+
+    if (loadedStories && loadedStories.length > 0) {
+      const lastStorySortOrder =
+        loadedStories[loadedStories.length - 1].sortOrder ?? 0;
+      setStorySortOrder(lastStorySortOrder + 1);
+    }
   }, [storiesData]);
 
   const [showEditForm, setShowEditForm] = useState<boolean>(false);
@@ -260,6 +270,7 @@ export const CollectionPage = (): JSX.Element => {
                   publisher: values.publisher,
                   imageUrl: data.data.collectionImageUpload.url,
                   authors,
+                  sortOrder: storySortOrder,
                 },
                 refetchQueries: [
                   {

@@ -59,6 +59,11 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
     showAllFields
   );
 
+  // Which image do we show?
+  const [imageSrc, setImageSrc] = useState<string>(
+    story.imageUrl ? story.imageUrl : '/placeholders/story.svg'
+  );
+
   /**
    * Set up form validation
    */
@@ -91,7 +96,7 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
     },
   });
 
-  const [getStory, { loading, data }] = useGetStoryFromParserLazyQuery({
+  const [getStory, { loading }] = useGetStoryFromParserLazyQuery({
     client: clientAPIClient,
     onCompleted: (data) => {
       // Rather than return errors if it can't parse a URL, the parser
@@ -101,7 +106,7 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
 
         // If the parser returns multiple authors for the story,
         // combine them in one comma-separated string
-        const commaSeparatedAuthors = data.getItemByUrl?.authors
+        const commaSeparatedAuthors = data.getItemByUrl.authors
           ?.map((author) => {
             return author?.name;
           })
@@ -112,14 +117,15 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
 
         // make sure to use the 'resolvedUrl returned from the parser instead of the URL
         // submitted by the user
-        formik.setFieldValue('url', data.getItemByUrl?.resolvedUrl);
-        formik.setFieldValue('title', data.getItemByUrl?.title);
+        formik.setFieldValue('url', data.getItemByUrl.resolvedUrl);
+        formik.setFieldValue('title', data.getItemByUrl.title);
         formik.setFieldValue(
           'publisher',
-          data.getItemByUrl?.domainMetadata?.name
+          data.getItemByUrl.domainMetadata?.name
         );
-        formik.setFieldValue('excerpt', data.getItemByUrl?.excerpt);
-        formik.setFieldValue('imageUrl', data.getItemByUrl?.topImageUrl);
+        formik.setFieldValue('excerpt', data.getItemByUrl.excerpt);
+        formik.setFieldValue('imageUrl', data.getItemByUrl.topImageUrl);
+        setImageSrc(data.getItemByUrl.topImageUrl);
 
         // if this is used to add a story and only the URL is visible,
         // show the other fields now that they contain something
@@ -207,11 +213,7 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
             <Grid item xs={12} sm={3}>
               <CardMedia
                 component="img"
-                src={
-                  data?.getItemByUrl?.topImageUrl
-                    ? data?.getItemByUrl?.topImageUrl
-                    : '/placeholders/collection.svg'
-                }
+                src={imageSrc}
                 alt={formik.values.title}
                 className={classes.image}
               />
