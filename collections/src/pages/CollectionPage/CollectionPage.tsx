@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import { Box, Button, Collapse, Paper, Typography } from '@material-ui/core';
+import {
+  Box,
+  Button,
+  Collapse,
+  Grid,
+  Paper,
+  Typography,
+} from '@material-ui/core';
 import {
   DragDropContext,
   Draggable,
@@ -11,6 +18,7 @@ import {
   CollectionForm,
   CollectionInfo,
   HandleApiResponse,
+  ImageUpload,
   Notification,
   ScrollToTop,
   StoryForm,
@@ -24,6 +32,7 @@ import {
   useGetCollectionStoriesQuery,
   useUpdateCollectionMutation,
   useCreateCollectionStoryMutation,
+  useImageUploadMutation,
 } from '../../api';
 import { useNotifications } from '../../hooks/useNotifications';
 import { FormikValues } from 'formik';
@@ -54,6 +63,9 @@ export const CollectionPage = (): JSX.Element => {
 
   // prepare the "create story" mutation
   const [createStory] = useCreateCollectionStoryMutation();
+
+  // prepare the upload to S3 mutation
+  const [uploadImage] = useImageUploadMutation();
 
   /**
    * If a Collection object was passed to the page from one of the other app pages,
@@ -126,8 +138,6 @@ export const CollectionPage = (): JSX.Element => {
    * Update components on page if updates have been saved successfully
    */
   const handleSubmit = (values: FormikValues): void => {
-    // work out which queries to nuke when a collection status gets updated
-
     updateCollection({
       variables: {
         externalId: collection!.externalId,
@@ -165,44 +175,116 @@ export const CollectionPage = (): JSX.Element => {
       });
   };
 
+  /**
+   * Save the S3 URL we get back from the API to the collection record
+   */
+  const handleImageUploadSave = (url: string): void => {
+    updateCollection({
+      variables: {
+        // We keep most things as they are
+        externalId: collection!.externalId,
+        title: collection!.title,
+        slug: collection!.slug,
+        excerpt: collection!.excerpt,
+        status: collection!.status,
+        // This is the only (?) piece of the backend part of the frontend code
+        // that is not ready for multiple authors
+        authorExternalId: collection!.authors[0].externalId,
+
+        // This is the only field that needs updating
+        imageUrl: url,
+      },
+      refetchQueries: [
+        {
+          query: GetCollectionByExternalIdDocument,
+          variables: {
+            externalId: collection!.externalId,
+          },
+        },
+      ],
+    })
+      .then(({ data }) => {
+        if (collection) {
+          collection.imageUrl = data?.updateCollection?.imageUrl!;
+          showNotification(
+            `Image saved to "${collection.title.substring(0, 50)}..."`
+          );
+        }
+      })
+      .catch((error: Error) => {
+        showNotification(error.message, true);
+      });
+  };
+
   // make sure we regenerate the 'Add Story' form each time a new story
   // has been added
   const [addStoryFormKey, setAddStoryFormKey] = useState(1);
 
   const handleCreateStorySubmit = (values: FormikValues): void => {
-    // prepare authors! They need to be an array of objects again
-    const authors = transformAuthors(values.authors);
+    // If the parser returned an image, let's upload it to S3
+    // First, side-step CORS issues that prevent us from downloading
+    // the image directly from the publisher
+    const parserImageUrl =
+      'https://pocket-image-cache.com/x/filters:no_upscale():format(jpg)/' +
+      encodeURIComponent(values.imageUrl);
 
-    createStory({
-      variables: {
-        collectionExternalId: params.id,
-        url: values.url,
-        title: values.title,
-        excerpt: values.excerpt,
-        publisher: values.publisher,
-        imageUrl: '', // TODO: upload an image!
-        authors,
-      },
-      refetchQueries: [
-        {
-          query: GetCollectionStoriesDocument,
+    // Get the file
+    fetch(parserImageUrl)
+      .then((res) => res.blob())
+      .then((blob) => {
+        // Upload the file to S3
+        uploadImage({
           variables: {
-            id: params.id,
+            image: blob,
+            height: 0,
+            width: 0,
+            fileSizeBytes: blob.size,
           },
-        },
-      ],
-    })
-      .then((data) => {
-        showNotification(
-          `Added "${data.data?.createCollectionStory?.title.substring(
-            0,
-            50
-          )}..."`
-        );
-        setAddStoryFormKey(addStoryFormKey + 1);
-      })
-      .catch((error: Error) => {
-        showNotification(error.message, true);
+        })
+          .then((data) => {
+            if (data.data && data.data.collectionImageUpload) {
+              showNotification('Image successfully uploaded to S3');
+
+              // Prepare authors. They need to be an array of objects again
+              const authors = transformAuthors(values.authors);
+
+              // Save the new story with the S3 URL
+              createStory({
+                variables: {
+                  collectionExternalId: params.id,
+                  url: values.url,
+                  title: values.title,
+                  excerpt: values.excerpt,
+                  publisher: values.publisher,
+                  imageUrl: data.data.collectionImageUpload.url,
+                  authors,
+                },
+                refetchQueries: [
+                  {
+                    query: GetCollectionStoriesDocument,
+                    variables: {
+                      id: params.id,
+                    },
+                  },
+                ],
+              })
+                .then((data) => {
+                  showNotification(
+                    `Added "${data.data?.createCollectionStory?.title.substring(
+                      0,
+                      50
+                    )}..."`
+                  );
+                  setAddStoryFormKey(addStoryFormKey + 1);
+                })
+                .catch((error: Error) => {
+                  showNotification(error.message, true);
+                });
+            }
+          })
+          .catch((error) => {
+            showNotification(error.message, true);
+          });
       });
   };
 
@@ -259,7 +341,19 @@ export const CollectionPage = (): JSX.Element => {
             </Box>
           </Box>
 
-          <CollectionInfo collection={collection} />
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={4}>
+              <ImageUpload
+                entity={collection}
+                placeholder="/placeholders/collection.svg"
+                showNotification={showNotification}
+                onImageSave={handleImageUploadSave}
+              />
+            </Grid>
+            <Grid item xs={12} sm={8}>
+              <CollectionInfo collection={collection} />
+            </Grid>
+          </Grid>
 
           <Collapse in={showEditForm}>
             <Paper elevation={4}>

@@ -33,11 +33,7 @@ describe('The AuthorInfo component', () => {
       </MockedProvider>
     );
 
-    // The author photo is present
-    const authorPhoto = screen.getByRole('img');
-    expect(authorPhoto).toBeInTheDocument();
-
-    // The author bio is also present
+    // The author bio is present
     const bio = screen.getByText(/voluptatem est aut/i);
     expect(bio).toBeInTheDocument();
   });
