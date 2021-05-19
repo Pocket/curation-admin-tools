@@ -33,6 +33,7 @@ export {
   useCreateCollectionStoryMutation,
   useUpdateCollectionStoryMutation,
   useDeleteCollectionStoryMutation,
+  useUpdateCollectionStorySortOrderMutation,
   useGetSearchCollectionsLazyQuery,
   useGetCollectionStoriesQuery,
   useImageUploadMutation,
