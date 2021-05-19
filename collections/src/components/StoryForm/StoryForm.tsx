@@ -126,14 +126,14 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
         formik.setFieldValue('excerpt', data.getItemByUrl.excerpt);
         formik.setFieldValue('imageUrl', data.getItemByUrl.topImageUrl);
         setImageSrc(data.getItemByUrl.topImageUrl);
-
-        // if this is used to add a story and only the URL is visible,
-        // show the other fields now that they contain something
-        setShowOtherFields(true);
       } else {
         // This is the error path
         showNotification(`The parser couldn't process this URL`, 'error');
       }
+      // if this is used to add a story and only the URL is visible,
+      // show the other fields now that they contain something
+      // even if the parser can't process the URL at all.
+      setShowOtherFields(true);
     },
     onError: (error: ApolloError) => {
       // Show any other errors, i.e. cannot reach the API, etc.
