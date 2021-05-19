@@ -33,6 +33,7 @@ import {
   useCreateCollectionStoryMutation,
   useImageUploadMutation,
   useUpdateCollectionStoryMutation,
+  useUpdateCollectionStorySortOrderMutation,
 } from '../../api';
 import { useNotifications } from '../../hooks/useNotifications';
 import { FormikValues } from 'formik';
@@ -60,6 +61,9 @@ export const CollectionPage = (): JSX.Element => {
 
   // prepare the "update story" mutation
   const [updateStory] = useUpdateCollectionStoryMutation();
+
+  // prepare the "update story sort order" mutation
+  const [updateStorySortOrder] = useUpdateCollectionStorySortOrderMutation();
 
   // prepare the upload to S3 mutation
   const [uploadImage] = useImageUploadMutation();
@@ -118,21 +122,19 @@ export const CollectionPage = (): JSX.Element => {
 
   // Let's keep stories in state to be able to reorder them with drag'n'drop
   const [stories, setStories] = useState<StoryModel[] | undefined>(undefined);
+  // And update the state variable when data is loaded
+  useEffect(() => {
+    setStories(storiesData?.getCollection?.stories);
+  }, [storiesData]);
 
   // for adding new stories, keep track of what the next story order value should be
   const [storySortOrder, setStorySortOrder] = useState<number>(1);
-
-  // And update the state variable when data is loaded
   useEffect(() => {
-    const loadedStories = storiesData?.getCollection?.stories;
-    setStories(loadedStories);
-
-    if (loadedStories && loadedStories.length > 0) {
-      const lastStorySortOrder =
-        loadedStories[loadedStories.length - 1].sortOrder ?? 0;
+    if (stories && stories.length > 0) {
+      const lastStorySortOrder = stories[stories.length - 1].sortOrder ?? 0;
       setStorySortOrder(lastStorySortOrder + 1);
     }
-  }, [storiesData]);
+  }, [stories]);
 
   const [showEditForm, setShowEditForm] = useState<boolean>(false);
 
@@ -346,17 +348,9 @@ export const CollectionPage = (): JSX.Element => {
 
       // update each affected story with the new sort order
       if (story.sortOrder !== newSortOrder) {
-        updateStory({
+        updateStorySortOrder({
           variables: {
-            // We send these because we have to
             externalId: story.externalId,
-            url: story.url,
-            title: story.title,
-            excerpt: story.excerpt,
-            publisher: story.publisher ?? '',
-            authors: authors,
-            imageUrl: story.imageUrl,
-            // This is the only field that needs updating
             sortOrder: newSortOrder,
           },
         })

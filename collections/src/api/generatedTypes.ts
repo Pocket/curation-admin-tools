@@ -155,13 +155,23 @@ export type Item = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** Creates a CollectionAuthor. */
   createCollectionAuthor: CollectionAuthor;
+  /** Updates a CollectionAuthor. */
   updateCollectionAuthor: CollectionAuthor;
+  /** Creates a Collection. */
   createCollection: Collection;
+  /** Updates a Collection. */
   updateCollection: Collection;
+  /** Creates a CollectionStory. */
   createCollectionStory: CollectionStory;
+  /** Updates a CollectionStory. */
   updateCollectionStory: CollectionStory;
+  /** Updates only the `sortOrder` property of a CollectionStory. Dedicated to ordering stories within the UI. */
+  updateCollectionStorySortOrder: CollectionStory;
+  /** Deletes a CollectionStory. Also deletes all the related CollectionStoryAuthor records. */
   deleteCollectionStory: CollectionStory;
+  /** Uploads an image to S3. Does *not* save the image to any entity (CollectionAuthor/Collection/CollectionStory). */
   collectionImageUpload: CollectionImageUrl;
 };
 
@@ -187,6 +197,10 @@ export type MutationCreateCollectionStoryArgs = {
 
 export type MutationUpdateCollectionStoryArgs = {
   data: UpdateCollectionStoryInput;
+};
+
+export type MutationUpdateCollectionStorySortOrderArgs = {
+  data: UpdateCollectionStorySortOrderInput;
 };
 
 export type MutationDeleteCollectionStoryArgs = {
@@ -282,6 +296,11 @@ export type UpdateCollectionStoryInput = {
   authors: Array<CollectionStoryAuthorInput>;
   publisher: Scalars['String'];
   sortOrder?: Maybe<Scalars['Int']>;
+};
+
+export type UpdateCollectionStorySortOrderInput = {
+  externalId: Scalars['String'];
+  sortOrder: Scalars['Int'];
 };
 
 export type _Entity = CollectionStory | Item;
@@ -450,6 +469,19 @@ export type UpdateCollectionStoryMutationVariables = Exact<{
 
 export type UpdateCollectionStoryMutation = { __typename?: 'Mutation' } & {
   updateCollectionStory: {
+    __typename?: 'CollectionStory';
+  } & CollectionStoryDataFragment;
+};
+
+export type UpdateCollectionStorySortOrderMutationVariables = Exact<{
+  externalId: Scalars['String'];
+  sortOrder: Scalars['Int'];
+}>;
+
+export type UpdateCollectionStorySortOrderMutation = {
+  __typename?: 'Mutation';
+} & {
+  updateCollectionStorySortOrder: {
     __typename?: 'CollectionStory';
   } & CollectionStoryDataFragment;
 };
@@ -1229,6 +1261,62 @@ export type UpdateCollectionStoryMutationResult = Apollo.MutationResult<UpdateCo
 export type UpdateCollectionStoryMutationOptions = Apollo.BaseMutationOptions<
   UpdateCollectionStoryMutation,
   UpdateCollectionStoryMutationVariables
+>;
+export const UpdateCollectionStorySortOrderDocument = gql`
+  mutation updateCollectionStorySortOrder(
+    $externalId: String!
+    $sortOrder: Int!
+  ) {
+    updateCollectionStorySortOrder(
+      data: { externalId: $externalId, sortOrder: $sortOrder }
+    ) {
+      ...CollectionStoryData
+    }
+  }
+  ${CollectionStoryDataFragmentDoc}
+`;
+export type UpdateCollectionStorySortOrderMutationFn = Apollo.MutationFunction<
+  UpdateCollectionStorySortOrderMutation,
+  UpdateCollectionStorySortOrderMutationVariables
+>;
+
+/**
+ * __useUpdateCollectionStorySortOrderMutation__
+ *
+ * To run a mutation, you first call `useUpdateCollectionStorySortOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCollectionStorySortOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCollectionStorySortOrderMutation, { data, loading, error }] = useUpdateCollectionStorySortOrderMutation({
+ *   variables: {
+ *      externalId: // value for 'externalId'
+ *      sortOrder: // value for 'sortOrder'
+ *   },
+ * });
+ */
+export function useUpdateCollectionStorySortOrderMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateCollectionStorySortOrderMutation,
+    UpdateCollectionStorySortOrderMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateCollectionStorySortOrderMutation,
+    UpdateCollectionStorySortOrderMutationVariables
+  >(UpdateCollectionStorySortOrderDocument, options);
+}
+export type UpdateCollectionStorySortOrderMutationHookResult = ReturnType<
+  typeof useUpdateCollectionStorySortOrderMutation
+>;
+export type UpdateCollectionStorySortOrderMutationResult = Apollo.MutationResult<UpdateCollectionStorySortOrderMutation>;
+export type UpdateCollectionStorySortOrderMutationOptions = Apollo.BaseMutationOptions<
+  UpdateCollectionStorySortOrderMutation,
+  UpdateCollectionStorySortOrderMutationVariables
 >;
 export const GetArchivedCollectionsDocument = gql`
   query getArchivedCollections($page: Int, $perPage: Int) {
