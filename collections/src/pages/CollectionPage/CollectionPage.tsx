@@ -38,10 +38,7 @@ import {
 import { useNotifications } from '../../hooks/useNotifications';
 import { FormikValues } from 'formik';
 import EditIcon from '@material-ui/icons/Edit';
-import {
-  GetCollectionByExternalIdDocument,
-  GetCollectionStoriesDocument,
-} from '../../api/generatedTypes';
+import { GetCollectionByExternalIdDocument } from '../../api/generatedTypes';
 import { transformAuthors } from '../../utils/transformAuthors';
 
 interface CollectionPageProps {
@@ -114,11 +111,22 @@ export const CollectionPage = (): JSX.Element => {
     loading: storiesLoading,
     error: storiesError,
     data: storiesData,
+    refetch: refetchStories,
   } = useGetCollectionStoriesQuery({
     variables: {
       id: params.id,
     },
+    // This setting lets us switch this query to manual cache updates only
+    // so that on reordering stories they (stories) don't snap back
+    // after the first mutation has run
+    fetchPolicy: 'standby',
   });
+
+  if (!storiesData) {
+    // We need to fetch these stories if they're absent from the cache
+    // as the query won't run even once with the 'standby' fetch policy
+    refetchStories();
+  }
 
   // Let's keep stories in state to be able to reorder them with drag'n'drop
   const [stories, setStories] = useState<StoryModel[] | undefined>(undefined);
@@ -274,16 +282,11 @@ export const CollectionPage = (): JSX.Element => {
                   authors,
                   sortOrder: storySortOrder,
                 },
-                refetchQueries: [
-                  {
-                    query: GetCollectionStoriesDocument,
-                    variables: {
-                      id: params.id,
-                    },
-                  },
-                ],
               })
                 .then((data) => {
+                  // manually refresh the cache
+                  refetchStories();
+
                   showNotification(
                     `Added "${data.data?.createCollectionStory?.title.substring(
                       0,
@@ -466,6 +469,7 @@ export const CollectionPage = (): JSX.Element => {
                                     collectionExternalId={
                                       collection!.externalId
                                     }
+                                    refetch={refetchStories}
                                   />
                                 </Typography>
                               );
