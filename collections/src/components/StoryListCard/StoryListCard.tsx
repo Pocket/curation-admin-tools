@@ -28,6 +28,8 @@ interface StoryListCardProps {
   story: StoryModel;
 
   collectionExternalId: string;
+
+  refetch: () => void;
 }
 
 /**
@@ -38,7 +40,7 @@ interface StoryListCardProps {
 export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
   const classes = useStyles();
   const { showNotification } = useNotifications();
-  const { story, collectionExternalId } = props;
+  const { story, collectionExternalId, refetch } = props;
 
   const [showEditForm, setShowEditForm] = useState<boolean>(false);
 
@@ -57,16 +59,11 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
       variables: {
         externalId: story.externalId,
       },
-      refetchQueries: [
-        {
-          query: GetCollectionStoriesDocument,
-          variables: {
-            id: collectionExternalId,
-          },
-        },
-      ],
     })
       .then(() => {
+        // manually refresh the cache
+        refetch();
+
         showNotification(
           `Deleted "${story.title.substring(0, 50)}..."`,
           'success'
@@ -94,6 +91,9 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
       },
     })
       .then(() => {
+        // manually refresh the cache
+        refetch();
+
         showNotification(
           `Updated "${story.title.substring(0, 50)}..."`,
           'success'
