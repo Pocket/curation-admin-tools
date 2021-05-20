@@ -190,7 +190,14 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
                 id: 'authorExternalId',
               }}
               {...formik.getFieldProps('authorExternalId')}
+              error={
+                !!(
+                  formik.touched.authorExternalId &&
+                  formik.errors.authorExternalId
+                )
+              }
             >
+              <option value=""></option>
               {authors.map((author: AuthorModel) => {
                 return (
                   <option value={author.externalId} key={author.externalId}>
