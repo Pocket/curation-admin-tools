@@ -526,7 +526,10 @@ export type GetAuthorByIdQuery = { __typename?: 'Query' } & {
   >;
 };
 
-export type GetAuthorsQueryVariables = Exact<{ [key: string]: never }>;
+export type GetAuthorsQueryVariables = Exact<{
+  page?: Maybe<Scalars['Int']>;
+  perPage?: Maybe<Scalars['Int']>;
+}>;
 
 export type GetAuthorsQuery = { __typename?: 'Query' } & {
   getCollectionAuthors: { __typename?: 'CollectionAuthorsResult' } & {
@@ -1456,8 +1459,8 @@ export type GetAuthorByIdQueryResult = Apollo.QueryResult<
   GetAuthorByIdQueryVariables
 >;
 export const GetAuthorsDocument = gql`
-  query getAuthors {
-    getCollectionAuthors {
+  query getAuthors($page: Int, $perPage: Int) {
+    getCollectionAuthors(page: $page, perPage: $perPage) {
       authors {
         ...AuthorData
       }
@@ -1478,6 +1481,8 @@ export const GetAuthorsDocument = gql`
  * @example
  * const { data, loading, error } = useGetAuthorsQuery({
  *   variables: {
+ *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
  *   },
  * });
  */

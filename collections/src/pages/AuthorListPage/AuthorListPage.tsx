@@ -9,7 +9,9 @@ import { AuthorModel, useGetAuthorsQuery } from '../../api';
  */
 export const AuthorListPage = (): JSX.Element => {
   // Load authors
-  const { loading, error, data } = useGetAuthorsQuery();
+  const { loading, error, data } = useGetAuthorsQuery({
+    variables: { perPage: 50 },
+  });
 
   return (
     <>
