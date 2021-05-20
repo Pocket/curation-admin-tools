@@ -38,21 +38,27 @@ export const CollectionListPage = (): JSX.Element => {
   };
 
   // Load draft collections
-  const { loading, error, data } = useGetDraftCollectionsQuery();
+  const { loading, error, data } = useGetDraftCollectionsQuery({
+    variables: { perPage: 50 },
+  });
 
   // Load published collections
   const {
     loading: loadingPublished,
     error: errorPublished,
     data: dataPublished,
-  } = useGetPublishedCollectionsQuery();
+  } = useGetPublishedCollectionsQuery({
+    variables: { perPage: 50 },
+  });
 
   // Load archived collections
   const {
     loading: loadingArchived,
     error: errorArchived,
     data: dataArchived,
-  } = useGetArchivedCollectionsQuery();
+  } = useGetArchivedCollectionsQuery({
+    variables: { perPage: 50 },
+  });
 
   // Define the set of tabs that we're going to show on this page
   const tabs: CustomTabType[] = [

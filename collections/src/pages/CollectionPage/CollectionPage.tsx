@@ -32,7 +32,6 @@ import {
   useUpdateCollectionMutation,
   useCreateCollectionStoryMutation,
   useImageUploadMutation,
-  useUpdateCollectionStoryMutation,
   useUpdateCollectionStorySortOrderMutation,
 } from '../../api';
 import { useNotifications } from '../../hooks/useNotifications';
@@ -55,9 +54,6 @@ export const CollectionPage = (): JSX.Element => {
 
   // prepare the "create story" mutation
   const [createStory] = useCreateCollectionStoryMutation();
-
-  // prepare the "update story" mutation
-  const [updateStory] = useUpdateCollectionStoryMutation();
 
   // prepare the "update story sort order" mutation
   const [updateStorySortOrder] = useUpdateCollectionStorySortOrderMutation();
@@ -341,12 +337,6 @@ export const CollectionPage = (): JSX.Element => {
 
     // save the new order of stories to the database
     reorderedStories.forEach((story: StoryModel, index: number) => {
-      // get rid of the __typename property as the mutation variable
-      // doesn't expect to receive it
-      const authors = story.authors.map((author) => {
-        return { name: author.name, sortOrder: author.sortOrder };
-      });
-
       const newSortOrder = index + 1;
 
       // update each affected story with the new sort order
