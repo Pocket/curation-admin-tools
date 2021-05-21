@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CustomTabType, TabSet, TabPanel } from '../';
-import { Box } from '@material-ui/core';
+import { Box, Link } from '@material-ui/core';
 import ReactMarkdown from 'react-markdown';
 
 interface MarkdownPreviewProps {
@@ -64,6 +64,13 @@ export const MarkdownPreview: React.FC<MarkdownPreviewProps> = (
           </ReactMarkdown>
         </Box>
       </TabPanel>
+      <Link
+        href="https://getpocket.atlassian.net/wiki/spaces/PE/pages/2105606280/Pocket+Markdown"
+        target="_blank"
+        rel="noreferrer"
+      >
+        👉 Pocket Markdown reference
+      </Link>
     </>
   );
 };

@@ -18,7 +18,6 @@ import {
   useDeleteCollectionStoryMutation,
   useUpdateCollectionStoryMutation,
 } from '../../api';
-import { GetCollectionStoriesDocument } from '../../api/generatedTypes';
 import { transformAuthors } from '../../utils/transformAuthors';
 import { ImageUpload, StoryForm } from '../';
 import { useStyles } from './StoryListCard.styles';
