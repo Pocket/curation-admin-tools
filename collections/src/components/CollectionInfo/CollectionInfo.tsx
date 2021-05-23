@@ -35,6 +35,18 @@ export const CollectionInfo: React.FC<CollectionInfoProps> = (
             .join(', ')}
         </span>
       </Typography>
+      <h3>Slug</h3>
+      <Typography
+        variant="subtitle2"
+        color="textSecondary"
+        component="span"
+        align="left"
+      >
+        https://getpocket.com/collections/
+        <Typography component="span">
+          <strong>{collection.slug}</strong>
+        </Typography>
+      </Typography>
       <h3>Excerpt</h3>
       <Typography
         className={classes.excerpt}

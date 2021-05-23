@@ -8,6 +8,7 @@ import {
   Grid,
   LinearProgress,
   TextField,
+  Typography,
 } from '@material-ui/core';
 import { Button, MarkdownPreview } from '../';
 import { StoryModel } from '../../api';
@@ -86,9 +87,12 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
     validateOnBlur: false,
     validationSchema: yup.object({
       url: yup.string().required('Please enter a URL').min(12),
-      title: yup.string().required('Please enter a title').min(12),
+      title: yup.string().required('Please enter a title').min(3),
       excerpt: yup.string().required('Please enter an excerpt').min(12),
-      authors: yup.string().required('Please enter one or more authors').min(6),
+      authors: yup
+        .string()
+        .required('Please enter one or more authors, separated by commas')
+        .min(6),
       publisher: yup.string(),
     }),
     onSubmit: (values) => {
@@ -217,12 +221,16 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
                 alt={formik.values.title}
                 className={classes.image}
               />
+              <br />
+              <Typography variant="caption">
+                You can change this image in the list view.
+              </Typography>
             </Grid>
             <Grid item xs={12} sm={9}>
               <Box mb={3}>
                 <TextField
                   id="authors"
-                  label="Authors"
+                  label="Authors (separated by commas)"
                   fullWidth
                   InputLabelProps={{
                     shrink: true,

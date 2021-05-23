@@ -143,6 +143,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
           setImageUploadOpen(true);
         }}
       />
+      <Typography variant="caption">Click above to set/change image</Typography>
       <Modal open={imageUploadOpen} handleClose={handleClose}>
         <Grid container>
           <Grid item xs={12}>
