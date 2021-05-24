@@ -23,6 +23,7 @@ import {
   useUpdateCollectionAuthorMutation,
 } from '../../api';
 import { useNotifications } from '../../hooks/useNotifications';
+import { FormikHelpers } from 'formik/dist/types';
 
 interface AuthorPageProps {
   author?: AuthorModel;
@@ -80,7 +81,10 @@ export const AuthorPage = (): JSX.Element => {
    * Collect form data and send it to the API.
    * Update components on page if updates have been saved successfully
    */
-  const handleSubmit = (values: FormikValues): void => {
+  const handleSubmit = (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ): void => {
     updateAuthor({
       variables: {
         externalId: author!.externalId,
@@ -99,9 +103,11 @@ export const AuthorPage = (): JSX.Element => {
           author.active = data?.updateCollectionAuthor.active!;
         }
         toggleEditForm();
+        formikHelpers.setSubmitting(false);
       })
       .catch((error: Error) => {
         showNotification(error.message, 'error');
+        formikHelpers.setSubmitting(false);
       });
   };
 

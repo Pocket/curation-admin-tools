@@ -18,6 +18,7 @@ import { useStyles } from './StoryForm.styles';
 import { CollectionStoryAuthor } from '../../api/generatedTypes';
 import { useNotifications } from '../../hooks/useNotifications';
 import { ApolloError } from '@apollo/client';
+import { FormikHelpers } from 'formik/dist/types';
 
 interface StoryFormProps {
   /**
@@ -28,7 +29,10 @@ interface StoryFormProps {
   /**
    * What do we do with the submitted data?
    */
-  onSubmit: (values: FormikValues) => void;
+  onSubmit: (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ) => void | Promise<any>;
 
   /**
    * Whether to show the full form or just the URL+Populate button
@@ -95,8 +99,8 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
         .min(6),
       publisher: yup.string(),
     }),
-    onSubmit: (values) => {
-      onSubmit(values);
+    onSubmit: (values: FormikValues, formikHelpers: FormikHelpers<any>) => {
+      onSubmit(values, formikHelpers);
     },
   });
 
@@ -130,11 +134,16 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
         formik.setFieldValue('excerpt', data.getItemByUrl.excerpt);
         formik.setFieldValue('imageUrl', data.getItemByUrl.topImageUrl);
         setImageSrc(data.getItemByUrl.topImageUrl);
+
+        showNotification(
+          `The parser finished processing this story`,
+          'success'
+        );
       } else {
         // This is the error path
         showNotification(`The parser couldn't process this URL`, 'error');
       }
-      // if this is used to add a story and only the URL is visible,
+      // If this is used to add a story and only the URL is visible,
       // show the other fields now that they contain something
       // even if the parser can't process the URL at all.
       setShowOtherFields(true);

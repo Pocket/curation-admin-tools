@@ -22,11 +22,10 @@ import { transformAuthors } from '../../utils/transformAuthors';
 import { ImageUpload, StoryForm } from '../';
 import { useStyles } from './StoryListCard.styles';
 import { useNotifications } from '../../hooks/useNotifications';
+import { FormikHelpers } from 'formik/dist/types';
 
 interface StoryListCardProps {
   story: StoryModel;
-
-  collectionExternalId: string;
 
   refetch: () => void;
 }
@@ -39,7 +38,7 @@ interface StoryListCardProps {
 export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
   const classes = useStyles();
   const { showNotification } = useNotifications();
-  const { story, collectionExternalId, refetch } = props;
+  const { story, refetch } = props;
 
   const [showEditForm, setShowEditForm] = useState<boolean>(false);
 
@@ -73,7 +72,10 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
       });
   };
 
-  const onUpdate = (values: FormikValues): void => {
+  const onUpdate = (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ): void => {
     // prepare authors! They need to be an array of objects again
     const authors = transformAuthors(values.authors);
 
@@ -98,9 +100,11 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
           'success'
         );
         setShowEditForm(false);
+        formikHelpers.setSubmitting(false);
       })
       .catch((error: Error) => {
         showNotification(error.message, 'error');
+        formikHelpers.setSubmitting(false);
       });
   };
 

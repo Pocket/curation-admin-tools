@@ -6,6 +6,7 @@ import { AuthorModel, useCreateCollectionAuthorMutation } from '../../api';
 import { AuthorForm } from '../../components';
 import { useNotifications } from '../../hooks/useNotifications';
 import { GetAuthorsDocument } from '../../api/generatedTypes';
+import { FormikHelpers } from 'formik/dist/types';
 
 export const AddAuthorPage: React.FC = (): JSX.Element => {
   // Prepare state vars and helper methods for API notifications
@@ -32,7 +33,10 @@ export const AddAuthorPage: React.FC = (): JSX.Element => {
   /**
    * Collect form data and send it to the API
    */
-  const handleSubmit = (values: FormikValues): void => {
+  const handleSubmit = (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ): void => {
     addAuthor({
       variables: {
         name: values.name,
@@ -56,6 +60,7 @@ export const AddAuthorPage: React.FC = (): JSX.Element => {
       })
       .catch((error: Error) => {
         showNotification(error.message, 'error');
+        formikHelpers.setSubmitting(false);
       });
   };
 

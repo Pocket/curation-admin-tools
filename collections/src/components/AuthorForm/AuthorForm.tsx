@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core';
 import { AuthorModel } from '../../api';
 import { Button, MarkdownPreview } from '../';
+import { FormikHelpers } from 'formik/dist/types';
 
 interface AuthorFormProps {
   /**
@@ -22,7 +23,7 @@ interface AuthorFormProps {
   /**
    * What do we do with the submitted data?
    */
-  onSubmit: (values: FormikValues) => void;
+  onSubmit: (values: FormikValues, formikHelpers: FormikHelpers<any>) => void;
 
   /**
    * Do we need to show the cancel button? Not on the 'Add Author' page
@@ -70,8 +71,8 @@ export const AuthorForm: React.FC<AuthorFormProps> = (props): JSX.Element => {
       bio: yup.string(),
       active: yup.boolean().required(),
     }),
-    onSubmit: (values) => {
-      onSubmit(values);
+    onSubmit: (values, formikHelpers) => {
+      onSubmit(values, formikHelpers);
     },
   });
 
