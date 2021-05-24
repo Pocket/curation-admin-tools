@@ -2,6 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Box, Paper } from '@material-ui/core';
 import { FormikValues } from 'formik';
+import { FormikHelpers } from 'formik/dist/types';
 import {
   CollectionModel,
   CollectionStatus,
@@ -42,7 +43,10 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
   /**
    * Collect form data and send it to the API
    */
-  const handleSubmit = (values: FormikValues): void => {
+  const handleSubmit = (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ): void => {
     addCollection({
       variables: {
         title: values.title,
@@ -68,6 +72,7 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
       })
       .catch((error: Error) => {
         showNotification(error.message, 'error');
+        formikHelpers.setSubmitting(false);
       });
   };
 

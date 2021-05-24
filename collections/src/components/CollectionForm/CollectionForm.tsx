@@ -15,6 +15,7 @@ import {
 import { AuthorModel, CollectionModel, CollectionStatus } from '../../api';
 import { Button, MarkdownPreview } from '../';
 import { useStyles } from './CollectionForm.styles';
+import { FormikHelpers } from 'formik/dist/types';
 
 interface CollectionFormProps {
   /**
@@ -30,7 +31,10 @@ interface CollectionFormProps {
   /**
    * What do we do with the submitted data?
    */
-  onSubmit: (values: FormikValues) => void;
+  onSubmit: (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ) => void | Promise<any>;
 
   /**
    * Show "Cancel" button if the form is used to edit a new collection
@@ -99,8 +103,8 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
         .required(),
       authorExternalId: yup.string().oneOf(authorIds).required(),
     }),
-    onSubmit: (values) => {
-      onSubmit(values);
+    onSubmit: (values, formikHelpers) => {
+      onSubmit(values, formikHelpers);
     },
   });
 

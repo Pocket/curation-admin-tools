@@ -39,6 +39,7 @@ import { FormikValues } from 'formik';
 import EditIcon from '@material-ui/icons/Edit';
 import { GetCollectionByExternalIdDocument } from '../../api/generatedTypes';
 import { transformAuthors } from '../../utils/transformAuthors';
+import { FormikHelpers } from 'formik/dist/types';
 
 interface CollectionPageProps {
   collection?: CollectionModel;
@@ -150,7 +151,10 @@ export const CollectionPage = (): JSX.Element => {
    * Collect "edit collection" form data and send it to the API.
    * Update components on page if updates have been saved successfully
    */
-  const handleSubmit = (values: FormikValues): void => {
+  const handleSubmit = (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ): void => {
     updateCollection({
       variables: {
         externalId: collection!.externalId,
@@ -181,10 +185,12 @@ export const CollectionPage = (): JSX.Element => {
           collection.status = data?.updateCollection?.status!;
           collection.authors = data?.updateCollection?.authors!;
           toggleEditForm();
+          formikHelpers.setSubmitting(false);
         }
       })
       .catch((error: Error) => {
         showNotification(error.message, 'error');
+        formikHelpers.setSubmitting(false);
       });
   };
 
@@ -237,8 +243,12 @@ export const CollectionPage = (): JSX.Element => {
   /**
    * Save a new story - a multi-step process
    * @param values
+   * @param formikHelpers
    */
-  const handleCreateStorySubmit = (values: FormikValues): void => {
+  const handleCreateStorySubmit = (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ): void => {
     // If the parser returned an image, let's upload it to S3
     // First, side-step CORS issues that prevent us from downloading
     // the image directly from the publisher
@@ -291,9 +301,11 @@ export const CollectionPage = (): JSX.Element => {
                     'success'
                   );
                   setAddStoryFormKey(addStoryFormKey + 1);
+                  formikHelpers.setSubmitting(false);
                 })
                 .catch((error: Error) => {
                   showNotification(error.message, 'error');
+                  formikHelpers.setSubmitting(false);
                 });
             }
           })
@@ -414,6 +426,7 @@ export const CollectionPage = (): JSX.Element => {
                     collection={collection}
                     onSubmit={handleSubmit}
                     editMode={true}
+                    onCancel={toggleEditForm}
                   />
                 )}
               </Box>
@@ -456,9 +469,6 @@ export const CollectionPage = (): JSX.Element => {
                                   <StoryListCard
                                     key={story.externalId}
                                     story={story}
-                                    collectionExternalId={
-                                      collection!.externalId
-                                    }
                                     refetch={refetchStories}
                                   />
                                 </Typography>
