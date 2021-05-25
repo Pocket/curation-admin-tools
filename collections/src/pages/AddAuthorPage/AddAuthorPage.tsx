@@ -49,6 +49,7 @@ export const AddAuthorPage: React.FC = (): JSX.Element => {
       refetchQueries: [
         {
           query: GetAuthorsDocument,
+          variables: { perPage: 50 },
         },
       ],
     })

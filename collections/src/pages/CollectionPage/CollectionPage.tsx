@@ -37,7 +37,12 @@ import {
 import { useNotifications } from '../../hooks/useNotifications';
 import { FormikValues } from 'formik';
 import EditIcon from '@material-ui/icons/Edit';
-import { GetCollectionByExternalIdDocument } from '../../api/generatedTypes';
+import {
+  GetArchivedCollectionsDocument,
+  GetCollectionByExternalIdDocument,
+  GetDraftCollectionsDocument,
+  GetPublishedCollectionsDocument,
+} from '../../api/generatedTypes';
 import { transformAuthors } from '../../utils/transformAuthors';
 import { FormikHelpers } from 'formik/dist/types';
 
@@ -171,6 +176,18 @@ export const CollectionPage = (): JSX.Element => {
           variables: {
             externalId: collection!.externalId,
           },
+        },
+        {
+          query: GetDraftCollectionsDocument,
+          variables: { perPage: 50 },
+        },
+        {
+          query: GetPublishedCollectionsDocument,
+          variables: { perPage: 50 },
+        },
+        {
+          query: GetArchivedCollectionsDocument,
+          variables: { perPage: 50 },
         },
       ],
     })
