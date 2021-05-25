@@ -61,6 +61,9 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
       refetchQueries: [
         {
           query: GetDraftCollectionsDocument,
+          variables: {
+            perPage: 50,
+          },
         },
       ],
     })
