@@ -1,4 +1,8 @@
-import { CollectionStory, CollectionStoryAuthor } from '../generatedTypes';
+import {
+  CollectionStory,
+  CollectionStoryAuthor,
+  Maybe,
+} from '../generatedTypes';
 
 export type StoryModel = { __typename?: 'CollectionStory' } & Pick<
   CollectionStory,
@@ -10,10 +14,10 @@ export type StoryModel = { __typename?: 'CollectionStory' } & Pick<
   | 'publisher'
   | 'sortOrder'
 > & {
-    authors: Array<
-      { __typename?: 'CollectionStoryAuthor' } & Pick<
-        CollectionStoryAuthor,
-        'name' | 'sortOrder'
-      >
-    >;
+    authors: Array<Maybe<StoryAuthorModel>>;
   };
+
+export type StoryAuthorModel = { __typename?: 'CollectionStoryAuthor' } & Pick<
+  CollectionStoryAuthor,
+  'name' | 'sortOrder'
+>;

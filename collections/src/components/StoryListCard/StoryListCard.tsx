@@ -14,6 +14,7 @@ import {
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import EditIcon from '@material-ui/icons/Edit';
 import {
+  StoryAuthorModel,
   StoryModel,
   useDeleteCollectionStoryMutation,
   useUpdateCollectionStoryMutation,
@@ -23,6 +24,7 @@ import { ImageUpload, StoryForm } from '../';
 import { useStyles } from './StoryListCard.styles';
 import { useNotifications } from '../../hooks/useNotifications';
 import { FormikHelpers } from 'formik/dist/types';
+import { Maybe } from '../../api/generatedTypes';
 
 interface StoryListCardProps {
   story: StoryModel;
@@ -114,8 +116,8 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
   const handleImageUploadSave = (url: string): void => {
     // get rid of the __typename property as the mutation variable
     // doesn't expect to receive it
-    const authors = story.authors.map((author) => {
-      return { name: author.name, sortOrder: author.sortOrder };
+    const authors = story.authors.map((author: Maybe<StoryAuthorModel>) => {
+      return { name: author?.name, sortOrder: author?.sortOrder };
     });
 
     updateStory({
@@ -126,7 +128,8 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
         title: story.title,
         excerpt: story.excerpt,
         publisher: story.publisher ?? '',
-        authors: authors,
+        // aggrh but this is going as soon as custom imageUrl mutation is in
+        authors: authors as { name: string; sortOrder: number }[],
         // This is the only field that needs updating
         imageUrl: url,
       },
@@ -141,6 +144,19 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
         showNotification(error.message, 'error');
       });
   };
+
+  // Work out a comma-separated list of authors if there are any for this story
+  const displayAuthors = story.authors
+    ?.map((author: Maybe<StoryAuthorModel>) => {
+      return author?.name;
+    })
+    .join(', ');
+
+  // The &middot; character is only needed if the story has authors as it separates
+  // the list of authors and the name of the publisher.
+  // There appears to be no way to display an HTML special character conditionally
+  // (well, except for setting innerHTML directly) other than assigning it to a variable
+  const middot = '\u00b7';
 
   return (
     <>
@@ -169,14 +185,9 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
               component="span"
               align="left"
             >
-              <span>
-                {story.authors
-                  .map((author: { name: string }) => {
-                    return author.name;
-                  })
-                  .join(', ')}
-              </span>{' '}
-              &middot; <span>{story.publisher}</span>
+              <span>{displayAuthors}</span>
+              {displayAuthors.length > 0 && ` ${middot} `}
+              <span>{story.publisher}</span>
             </Typography>
             <Hidden smDown implementation="css">
               <Typography component="div">

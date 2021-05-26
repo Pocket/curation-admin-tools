@@ -15,7 +15,6 @@ import { StoryModel } from '../../api';
 import { clientAPIClient } from '../../api/client';
 import { useGetStoryFromParserLazyQuery } from '../../api/client-api/generatedTypes';
 import { useStyles } from './StoryForm.styles';
-import { CollectionStoryAuthor } from '../../api/generatedTypes';
 import { useNotifications } from '../../hooks/useNotifications';
 import { ApolloError } from '@apollo/client';
 import { FormikHelpers } from 'formik/dist/types';
@@ -69,6 +68,15 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
     story.imageUrl ? story.imageUrl : '/placeholders/story.svg'
   );
 
+  // Work out what the authors should display as
+  let authors = '';
+  if (story.authors) {
+    authors = story.authors
+      ?.map((author) => {
+        return author?.name;
+      })
+      .join(', ');
+  }
   /**
    * Set up form validation
    */
@@ -77,12 +85,7 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
       url: story.url ?? '',
       title: story.title ?? '',
       excerpt: story.excerpt ?? '',
-      authors:
-        story.authors
-          .map((author: CollectionStoryAuthor) => {
-            return author?.name;
-          })
-          .join(', ') ?? '',
+      authors,
       publisher: story.publisher ?? '',
     },
     // We don't want to irritate users by displaying validation errors
@@ -90,13 +93,18 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
     validateOnChange: false,
     validateOnBlur: false,
     validationSchema: yup.object({
-      url: yup.string().required('Please enter a URL').min(12),
-      title: yup.string().required('Please enter a title').min(3),
-      excerpt: yup.string().required('Please enter an excerpt').min(12),
+      url: yup.string().trim().required('Please enter a URL').min(12),
+      title: yup.string().trim().required('Please enter a title').min(3),
+      excerpt: yup.string().trim().required('Please enter an excerpt').min(12),
       authors: yup
         .string()
-        .required('Please enter one or more authors, separated by commas')
-        .min(6),
+        .trim()
+        .min(
+          6,
+          'Please enter one or more authors, separated by commas.' +
+            ' Please supply at least 6 characters or leave this field empty' +
+            ' if this story has no authors.'
+        ),
       publisher: yup.string(),
     }),
     onSubmit: (values: FormikValues, formikHelpers: FormikHelpers<any>) => {
