@@ -112,7 +112,10 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
    * Suggest a slug for the collection - works off the "title" field
    */
   const suggestSlug = () => {
-    const newSlug = slugify(formik.values.title, { lower: true });
+    const newSlug = slugify(formik.values.title, {
+      lower: true,
+      remove: /[*+~.()'"!:@]/g,
+    });
     formik.setFieldValue('slug', newSlug);
   };
 
