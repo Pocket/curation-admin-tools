@@ -23,6 +23,7 @@ import { ImageUpload, StoryForm } from '../';
 import { useStyles } from './StoryListCard.styles';
 import { useNotifications } from '../../hooks/useNotifications';
 import { FormikHelpers } from 'formik/dist/types';
+import { CollectionStoryAuthor } from '../../api/generatedTypes';
 
 interface StoryListCardProps {
   story: StoryModel;
@@ -142,6 +143,19 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
       });
   };
 
+  // Work out a comma-separated list of authors if there are any for this story
+  const displayAuthors = story.authors
+    ?.map((author: CollectionStoryAuthor) => {
+      return author.name;
+    })
+    .join(', ');
+
+  // The &middot; character is only needed if the story has authors as it separates
+  // the list of authors and the name of the publisher.
+  // There appears to be no way to display an HTML special character conditionally
+  // (well, except for setting innerHTML directly) other than assigning it to a variable
+  const middot = '\u00b7';
+
   return (
     <>
       <Card variant="outlined" square className={classes.root}>
@@ -169,14 +183,9 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
               component="span"
               align="left"
             >
-              <span>
-                {story.authors
-                  .map((author: { name: string }) => {
-                    return author.name;
-                  })
-                  .join(', ')}
-              </span>{' '}
-              &middot; <span>{story.publisher}</span>
+              <span>{displayAuthors}</span>
+              {displayAuthors.length > 0 && ` ${middot} `}
+              <span>{story.publisher}</span>
             </Typography>
             <Hidden smDown implementation="css">
               <Typography component="div">
