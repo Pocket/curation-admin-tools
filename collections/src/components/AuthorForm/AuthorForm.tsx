@@ -80,7 +80,10 @@ export const AuthorForm: React.FC<AuthorFormProps> = (props): JSX.Element => {
    * Suggest a slug for the author - works off the "name" field
    */
   const suggestSlug = () => {
-    const newSlug = slugify(formik.values.name, { lower: true });
+    const newSlug = slugify(formik.values.name, {
+      lower: true,
+      remove: /[*+~.()'"!:@]/g,
+    });
     formik.setFieldValue('slug', newSlug);
   };
 
