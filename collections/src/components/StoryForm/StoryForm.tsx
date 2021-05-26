@@ -15,6 +15,7 @@ import { StoryModel } from '../../api';
 import { clientAPIClient } from '../../api/client';
 import { useGetStoryFromParserLazyQuery } from '../../api/client-api/generatedTypes';
 import { useStyles } from './StoryForm.styles';
+import { CollectionStoryAuthor } from '../../api/generatedTypes';
 import { useNotifications } from '../../hooks/useNotifications';
 import { ApolloError } from '@apollo/client';
 import { FormikHelpers } from 'formik/dist/types';
@@ -68,15 +69,6 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
     story.imageUrl ? story.imageUrl : '/placeholders/story.svg'
   );
 
-  // Work out what the authors should display as
-  let authors = '';
-  if (story.authors) {
-    authors = story.authors
-      ?.map((author) => {
-        return author?.name;
-      })
-      .join(', ');
-  }
   /**
    * Set up form validation
    */
@@ -85,7 +77,12 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
       url: story.url ?? '',
       title: story.title ?? '',
       excerpt: story.excerpt ?? '',
-      authors,
+      authors:
+        story.authors
+          .map((author: CollectionStoryAuthor) => {
+            return author?.name;
+          })
+          .join(', ') ?? '',
       publisher: story.publisher ?? '',
     },
     // We don't want to irritate users by displaying validation errors
@@ -100,7 +97,7 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
         .string()
         .trim()
         .min(
-          6,
+          2, // minimum could be "AP"
           'Please enter one or more authors, separated by commas.' +
             ' Please supply at least 6 characters or leave this field empty' +
             ' if this story has no authors.'

@@ -93,7 +93,7 @@ export type CollectionStory = {
   title: Scalars['String'];
   excerpt: Scalars['Markdown'];
   imageUrl?: Maybe<Scalars['Url']>;
-  authors: Array<Maybe<CollectionStoryAuthor>>;
+  authors: Array<CollectionStoryAuthor>;
   publisher?: Maybe<Scalars['String']>;
   sortOrder?: Maybe<Scalars['Int']>;
   item?: Maybe<Item>;
@@ -140,7 +140,7 @@ export type CreateCollectionStoryInput = {
   title: Scalars['String'];
   excerpt: Scalars['Markdown'];
   imageUrl: Scalars['Url'];
-  authors: Array<Maybe<CollectionStoryAuthorInput>>;
+  authors: Array<CollectionStoryAuthorInput>;
   publisher: Scalars['String'];
   sortOrder?: Maybe<Scalars['Int']>;
 };
@@ -293,7 +293,7 @@ export type UpdateCollectionStoryInput = {
   title: Scalars['String'];
   excerpt: Scalars['Markdown'];
   imageUrl: Scalars['Url'];
-  authors: Array<Maybe<CollectionStoryAuthorInput>>;
+  authors: Array<CollectionStoryAuthorInput>;
   publisher: Scalars['String'];
   sortOrder?: Maybe<Scalars['Int']>;
 };
@@ -329,11 +329,9 @@ export type CollectionStoryDataFragment = {
   | 'sortOrder'
 > & {
     authors: Array<
-      Maybe<
-        { __typename?: 'CollectionStoryAuthor' } & Pick<
-          CollectionStoryAuthor,
-          'name' | 'sortOrder'
-        >
+      { __typename?: 'CollectionStoryAuthor' } & Pick<
+        CollectionStoryAuthor,
+        'name' | 'sortOrder'
       >
     >;
   };
