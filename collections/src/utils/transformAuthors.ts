@@ -4,7 +4,16 @@ interface StoryAuthor {
 }
 
 export const transformAuthors = (authors: string): StoryAuthor[] => {
-  return authors.split(', ').map((name: string, sortOrder: number) => {
-    return { name, sortOrder };
-  });
+  // get rid of any whitespace on the sides
+  authors = authors.trim();
+
+  // ensure authors isn't an empty string
+  if (authors) {
+    return authors.split(',').map((name: string, sortOrder: number) => {
+      return { name: name.trim(), sortOrder };
+    });
+  } else {
+    // if authors *is* an empty string, just return an empty array
+    return [];
+  }
 };
