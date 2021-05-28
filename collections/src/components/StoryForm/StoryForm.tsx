@@ -45,11 +45,17 @@ interface StoryFormProps {
    * an existing story.
    */
   showPopulateButton?: boolean;
+
+  /**
+   * What to do if the user clicks on the Cancel button
+   */
+  onCancel?: () => void;
 }
 
 export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
   const {
     story,
+    onCancel,
     onSubmit,
     showAllFields = false,
     showPopulateButton = true,
@@ -137,9 +143,35 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
           data.getItemByUrl.domainMetadata?.name
         );
         formik.setFieldValue('excerpt', data.getItemByUrl.excerpt);
-        formik.setFieldValue('imageUrl', data.getItemByUrl.topImageUrl);
-        setImageSrc(data.getItemByUrl.topImageUrl);
 
+        // Work out the image URL, if any
+        let imageUrl = '';
+
+        if (
+          data.getItemByUrl.topImageUrl &&
+          data.getItemByUrl.topImageUrl.length > 0
+        ) {
+          // Use the publisher's preferred thumbnail image if it exists
+          imageUrl = data.getItemByUrl.topImageUrl;
+          setImageSrc(imageUrl);
+        } else {
+          // Try the images array - for YouTube, for example, this returns
+          // the correct thumbnail
+          if (data.getItemByUrl.images && data.getItemByUrl.images[0]) {
+            imageUrl = data.getItemByUrl.images[0].src!;
+            setImageSrc(imageUrl);
+          } else {
+            // Use the placeholder to display something on the frontend
+            // while the imageUrl field remains empty as set initially
+            setImageSrc('/placeholders/story.svg');
+          }
+        }
+
+        // Save the normalised imageUrl value in a hidden input field
+        // to upload to S3 later
+        formik.setFieldValue('imageUrl', imageUrl);
+
+        // And we're done!
         showNotification(
           `The parser finished processing this story`,
           'success'
@@ -306,6 +338,11 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
                 <Box p={1}>
                   <Button buttonType="positive" type="submit">
                     Save
+                  </Button>
+                </Box>
+                <Box p={1}>
+                  <Button buttonType="hollow-neutral" onClick={onCancel}>
+                    Cancel
                   </Button>
                 </Box>
               </Box>

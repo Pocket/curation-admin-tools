@@ -10,8 +10,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
   },
   placeholder: {
     cursor: 'pointer',
-    border: 'dashed',
-    borderColor: theme.palette.grey[400],
+    borderBottom: `1px solid ${theme.palette.grey[300]}`,
   },
   dropzone: {
     position: 'relative',
@@ -23,5 +22,14 @@ export const useStyles = makeStyles((theme: Theme) => ({
     boxSizing: 'border-box',
     cursor: 'pointer',
     overflow: 'hidden',
+  },
+  uploadIcon: {
+    paddingRight: '0.5rem',
+    [theme.breakpoints.down('sm')]: {
+      paddingRight: 0,
+    },
+  },
+  cardActions: {
+    justifyContent: 'center',
   },
 }));

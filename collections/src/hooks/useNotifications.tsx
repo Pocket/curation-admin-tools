@@ -39,14 +39,16 @@ export const useNotifications = (): useNotificationsReturnValues => {
     type: VariantType | undefined
   ): void => {
     enqueueSnackbar(message, {
-      variant: type,
+      action,
       anchorOrigin: {
         vertical: 'bottom',
         horizontal: 'center',
       },
-      action,
       // keep error messages on the page until the user dismisses them
       autoHideDuration: type === 'error' ? undefined : 3000,
+      // enable multi-line messages (use \n)
+      style: { whiteSpace: 'pre-line' },
+      variant: type,
     });
   };
 

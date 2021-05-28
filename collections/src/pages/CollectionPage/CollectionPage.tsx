@@ -33,6 +33,7 @@ import {
   useCreateCollectionStoryMutation,
   useImageUploadMutation,
   useUpdateCollectionStorySortOrderMutation,
+  useUpdateCollectionStoryMutation,
 } from '../../api';
 import { useNotifications } from '../../hooks/useNotifications';
 import { FormikValues } from 'formik';
@@ -60,6 +61,10 @@ export const CollectionPage = (): JSX.Element => {
 
   // prepare the "create story" mutation
   const [createStory] = useCreateCollectionStoryMutation();
+
+  // prepare the "update story" mutation - soon to be replaced with
+  // just the "update story image url" one
+  const [updateStoryImageUrl] = useUpdateCollectionStoryMutation();
 
   // prepare the "update story sort order" mutation
   const [updateStorySortOrder] = useUpdateCollectionStorySortOrderMutation();
@@ -266,69 +271,114 @@ export const CollectionPage = (): JSX.Element => {
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ): void => {
-    // If the parser returned an image, let's upload it to S3
-    // First, side-step CORS issues that prevent us from downloading
-    // the image directly from the publisher
-    const parserImageUrl =
-      'https://pocket-image-cache.com/x/filters:no_upscale():format(jpg)/' +
-      encodeURIComponent(values.imageUrl);
+    // First, let's save the new story
+    // Prepare authors. They need to be an array of objects again
+    const authors = transformAuthors(values.authors);
 
-    // Get the file
-    fetch(parserImageUrl)
-      .then((res) => res.blob())
-      .then((blob) => {
-        // Upload the file to S3
-        uploadImage({
-          variables: {
-            image: blob,
-            height: 0,
-            width: 0,
-            fileSizeBytes: blob.size,
-          },
-        })
-          .then((data) => {
-            if (data.data && data.data.collectionImageUpload) {
-              showNotification('Image successfully uploaded to S3', 'success');
+    // Save the new story with the S3 URL
+    createStory({
+      variables: {
+        collectionExternalId: params.id,
+        url: values.url,
+        title: values.title,
+        excerpt: values.excerpt,
+        publisher: values.publisher,
+        imageUrl: '',
+        authors,
+        sortOrder: storySortOrder,
+      },
+    })
+      .then((data) => {
+        showNotification(
+          `Added "${data.data?.createCollectionStory?.title.substring(
+            0,
+            50
+          )}..."`,
+          'success'
+        );
 
-              // Prepare authors. They need to be an array of objects again
-              const authors = transformAuthors(values.authors);
+        // If the parser returned an image, let's upload it to S3
+        // First, side-step CORS issues that prevent us from downloading
+        // the image directly from the publisher
+        const parserImageUrl =
+          'https://pocket-image-cache.com/x/filters:no_upscale():format(jpg)/' +
+          encodeURIComponent(values.imageUrl);
 
-              // Save the new story with the S3 URL
-              createStory({
-                variables: {
-                  collectionExternalId: params.id,
-                  url: values.url,
-                  title: values.title,
-                  excerpt: values.excerpt,
-                  publisher: values.publisher,
-                  imageUrl: data.data.collectionImageUpload.url,
-                  authors,
-                  sortOrder: storySortOrder,
-                },
+        // Get the file
+        fetch(parserImageUrl)
+          .then((res) => res.blob())
+          .then((blob) => {
+            // Upload the file to S3
+            uploadImage({
+              variables: {
+                image: blob,
+                height: 0,
+                width: 0,
+                fileSizeBytes: blob.size,
+              },
+            })
+              .then((imgUploadData) => {
+                if (
+                  imgUploadData.data &&
+                  imgUploadData.data.collectionImageUpload
+                ) {
+                  // Don't show a notification about a successful S3 upload just yet -
+                  // that's just too many. Wait until we save the url to show another
+                  // success message
+                  updateStoryImageUrl({
+                    variables: {
+                      externalId: data.data?.createCollectionStory?.externalId!,
+                      imageUrl: imgUploadData.data.collectionImageUpload.url,
+
+                      // TODO: drop these when a custom mutation is available
+                      url: values.url,
+                      title: values.title,
+                      excerpt: values.excerpt,
+                      publisher: values.publisher,
+                      authors,
+                      sortOrder: storySortOrder,
+                    },
+                  })
+                    .then((data) => {
+                      showNotification(
+                        'Image uploaded to S3 and linked to story',
+                        'success'
+                      );
+                      // manually refresh the cache
+                      refetchStories();
+                      formikHelpers.setSubmitting(false);
+                    })
+                    .catch((error) => {
+                      // manually refresh the cache
+                      refetchStories();
+                      showNotification(error.message, 'error');
+                      formikHelpers.setSubmitting(false);
+                    });
+                }
               })
-                .then((data) => {
-                  // manually refresh the cache
-                  refetchStories();
-
-                  showNotification(
-                    `Added "${data.data?.createCollectionStory?.title.substring(
-                      0,
-                      50
-                    )}..."`,
-                    'success'
-                  );
-                  setAddStoryFormKey(addStoryFormKey + 1);
-                  formikHelpers.setSubmitting(false);
-                })
-                .catch((error: Error) => {
-                  showNotification(error.message, 'error');
-                  formikHelpers.setSubmitting(false);
-                });
-            }
+              .catch((error) => {
+                // manually refresh the cache
+                refetchStories();
+                showNotification(error.message, 'error');
+              });
           })
-          .catch((error) => {
-            showNotification(error.message, 'error');
+          .catch((error: Error) => {
+            showNotification(
+              'Could not process image - file may be too large.\n' +
+                `(Original error: ${error.message})`,
+              'error'
+            );
+            // manually refresh the cache
+            refetchStories();
+            formikHelpers.setSubmitting(false);
           });
+
+        setAddStoryFormKey(addStoryFormKey + 1);
+        formikHelpers.setSubmitting(false);
+      })
+      .catch((error: Error) => {
+        showNotification(error.message, 'error');
+        formikHelpers.setSubmitting(false);
       });
   };
 
@@ -508,6 +558,9 @@ export const CollectionPage = (): JSX.Element => {
               </Box>
               <StoryForm
                 key={addStoryFormKey}
+                onCancel={() => {
+                  setAddStoryFormKey(addStoryFormKey + 1);
+                }}
                 onSubmit={handleCreateStorySubmit}
                 story={emptyStory}
               />
