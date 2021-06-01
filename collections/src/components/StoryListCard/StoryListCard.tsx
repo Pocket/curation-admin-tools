@@ -4,6 +4,7 @@ import { FormikValues } from 'formik';
 import {
   Box,
   Button,
+  ButtonGroup,
   Card,
   Collapse,
   Grid,
@@ -160,7 +161,7 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
     <>
       <Card variant="outlined" square className={classes.root}>
         <Grid container spacing={2}>
-          <Grid item xs={2} sm={2}>
+          <Grid item xs={3}>
             <ImageUpload
               entity={story}
               placeholder="/placeholders/story.svg"
@@ -196,14 +197,14 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
             </Hidden>
           </Grid>
           <Grid item xs={1} sm={1}>
-            <Button color="primary" onClick={toggleEditForm}>
-              <EditIcon />
-            </Button>
-          </Grid>
-          <Grid item xs={1} sm={1}>
-            <Button color="primary" onClick={onDelete}>
-              <DeleteOutlineIcon />
-            </Button>
+            <ButtonGroup orientation="vertical" variant="text" color="primary">
+              <Button color="primary" onClick={toggleEditForm}>
+                <EditIcon />
+              </Button>
+              <Button color="primary" onClick={onDelete}>
+                <DeleteOutlineIcon />
+              </Button>
+            </ButtonGroup>
           </Grid>
         </Grid>
 
@@ -218,6 +219,7 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
                 story={story}
                 showAllFields={true}
                 showPopulateButton={false}
+                onCancel={toggleEditForm}
                 onSubmit={onUpdate}
               />
             </Box>

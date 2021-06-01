@@ -10,6 +10,11 @@ export const getStoryFromParser = gql`
       title
       excerpt
       topImageUrl
+      images {
+        src
+        width
+        height
+      }
       authors {
         name
       }

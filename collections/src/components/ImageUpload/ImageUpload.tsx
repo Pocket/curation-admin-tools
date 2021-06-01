@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import {
   Box,
+  Button as MuiButton,
+  Card,
+  CardActions,
   CardMedia,
   Grid,
+  Hidden,
   LinearProgress,
   Typography,
 } from '@material-ui/core';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Dropzone, { FileWithPath } from 'react-dropzone';
 import {
   AuthorModel,
@@ -134,16 +139,32 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
   };
 
   return (
-    <Box marginRight={1}>
-      <CardMedia
-        component="img"
-        src={hasImage ? imageSrc : placeholder}
-        className={hasImage ? classes.image : classes.placeholder}
-        onClick={() => {
-          setImageUploadOpen(true);
-        }}
-      />
-      <Typography variant="caption">Click above to set/change image</Typography>
+    <>
+      <Card>
+        <CardMedia
+          component="img"
+          src={hasImage ? imageSrc : placeholder}
+          className={hasImage ? classes.image : classes.placeholder}
+          onClick={() => {
+            setImageUploadOpen(true);
+          }}
+        />
+        <CardActions disableSpacing={true} className={classes.cardActions}>
+          <MuiButton
+            size="small"
+            color="primary"
+            onClick={() => {
+              setImageUploadOpen(true);
+            }}
+          >
+            <CloudUploadIcon className={classes.uploadIcon} />
+            <Hidden smDown implementation="css">
+              Update image
+            </Hidden>
+          </MuiButton>
+        </CardActions>
+      </Card>
+
       <Modal open={imageUploadOpen} handleClose={handleClose}>
         <Grid container>
           <Grid item xs={12}>
@@ -192,6 +213,6 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
           </Grid>
         </Grid>
       </Modal>
-    </Box>
+    </>
   );
 };
