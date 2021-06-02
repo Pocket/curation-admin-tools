@@ -159,16 +159,22 @@ export type Mutation = {
   createCollectionAuthor: CollectionAuthor;
   /** Updates a CollectionAuthor. */
   updateCollectionAuthor: CollectionAuthor;
+  /** Updates only the `imageUrl` property of a CollectionAuthor. Dedicated to uploading images within the UI. */
+  updateCollectionAuthorImageUrl: CollectionAuthor;
   /** Creates a Collection. */
   createCollection: Collection;
   /** Updates a Collection. */
   updateCollection: Collection;
+  /** Updates only the `imageUrl` property of a Collection. Dedicated to uploading images within the UI. */
+  updateCollectionImageUrl: Collection;
   /** Creates a CollectionStory. */
   createCollectionStory: CollectionStory;
   /** Updates a CollectionStory. */
   updateCollectionStory: CollectionStory;
   /** Updates only the `sortOrder` property of a CollectionStory. Dedicated to ordering stories within the UI. */
   updateCollectionStorySortOrder: CollectionStory;
+  /** Updates only the `imageUrl` property of a CollectionStory. Dedicated to uploading images within the UI. */
+  updateCollectionStoryImageUrl: CollectionStory;
   /** Deletes a CollectionStory. Also deletes all the related CollectionStoryAuthor records. */
   deleteCollectionStory: CollectionStory;
   /** Uploads an image to S3. Does *not* save the image to any entity (CollectionAuthor/Collection/CollectionStory). */
@@ -183,12 +189,20 @@ export type MutationUpdateCollectionAuthorArgs = {
   data: UpdateCollectionAuthorInput;
 };
 
+export type MutationUpdateCollectionAuthorImageUrlArgs = {
+  data: UpdateCollectionAuthorImageUrlInput;
+};
+
 export type MutationCreateCollectionArgs = {
   data: CreateCollectionInput;
 };
 
 export type MutationUpdateCollectionArgs = {
   data: UpdateCollectionInput;
+};
+
+export type MutationUpdateCollectionImageUrlArgs = {
+  data: UpdateCollectionImageUrlInput;
 };
 
 export type MutationCreateCollectionStoryArgs = {
@@ -201,6 +215,10 @@ export type MutationUpdateCollectionStoryArgs = {
 
 export type MutationUpdateCollectionStorySortOrderArgs = {
   data: UpdateCollectionStorySortOrderInput;
+};
+
+export type MutationUpdateCollectionStoryImageUrlArgs = {
+  data: UpdateCollectionStoryImageUrlInput;
 };
 
 export type MutationDeleteCollectionStoryArgs = {
@@ -267,6 +285,11 @@ export type SearchCollectionsFilters = {
   status?: Maybe<CollectionStatus>;
 };
 
+export type UpdateCollectionAuthorImageUrlInput = {
+  externalId: Scalars['String'];
+  imageUrl: Scalars['Url'];
+};
+
 export type UpdateCollectionAuthorInput = {
   externalId: Scalars['String'];
   name: Scalars['String'];
@@ -274,6 +297,11 @@ export type UpdateCollectionAuthorInput = {
   bio?: Maybe<Scalars['Markdown']>;
   imageUrl?: Maybe<Scalars['Url']>;
   active?: Maybe<Scalars['Boolean']>;
+};
+
+export type UpdateCollectionImageUrlInput = {
+  externalId: Scalars['String'];
+  imageUrl: Scalars['Url'];
 };
 
 export type UpdateCollectionInput = {
@@ -285,6 +313,11 @@ export type UpdateCollectionInput = {
   imageUrl?: Maybe<Scalars['Url']>;
   status: CollectionStatus;
   authorExternalId: Scalars['String'];
+};
+
+export type UpdateCollectionStoryImageUrlInput = {
+  externalId: Scalars['String'];
+  imageUrl: Scalars['Url'];
 };
 
 export type UpdateCollectionStoryInput = {
@@ -311,10 +344,21 @@ export type _Service = {
   sdl?: Maybe<Scalars['String']>;
 };
 
-export type AuthorDataFragment = { __typename?: 'CollectionAuthor' } & Pick<
+export type CollectionAuthorDataFragment = {
+  __typename?: 'CollectionAuthor';
+} & Pick<
   CollectionAuthor,
   'externalId' | 'name' | 'slug' | 'bio' | 'imageUrl' | 'active'
 >;
+
+export type CollectionDataFragment = { __typename?: 'Collection' } & Pick<
+  Collection,
+  'externalId' | 'title' | 'slug' | 'excerpt' | 'intro' | 'imageUrl' | 'status'
+> & {
+    authors: Array<
+      { __typename?: 'CollectionAuthor' } & CollectionAuthorDataFragment
+    >;
+  };
 
 export type CollectionStoryDataFragment = {
   __typename?: 'CollectionStory';
@@ -346,18 +390,7 @@ export type CreateCollectionMutationVariables = Exact<{
 }>;
 
 export type CreateCollectionMutation = { __typename?: 'Mutation' } & {
-  createCollection: { __typename?: 'Collection' } & Pick<
-    Collection,
-    | 'externalId'
-    | 'title'
-    | 'slug'
-    | 'excerpt'
-    | 'intro'
-    | 'imageUrl'
-    | 'status'
-  > & {
-      authors: Array<{ __typename?: 'CollectionAuthor' } & AuthorDataFragment>;
-    };
+  createCollection: { __typename?: 'Collection' } & CollectionDataFragment;
 };
 
 export type CreateCollectionAuthorMutationVariables = Exact<{
@@ -371,7 +404,7 @@ export type CreateCollectionAuthorMutationVariables = Exact<{
 export type CreateCollectionAuthorMutation = { __typename?: 'Mutation' } & {
   createCollectionAuthor: {
     __typename?: 'CollectionAuthor';
-  } & AuthorDataFragment;
+  } & CollectionAuthorDataFragment;
 };
 
 export type CreateCollectionStoryMutationVariables = Exact<{
@@ -427,18 +460,7 @@ export type UpdateCollectionMutationVariables = Exact<{
 }>;
 
 export type UpdateCollectionMutation = { __typename?: 'Mutation' } & {
-  updateCollection: { __typename?: 'Collection' } & Pick<
-    Collection,
-    | 'externalId'
-    | 'title'
-    | 'slug'
-    | 'excerpt'
-    | 'intro'
-    | 'imageUrl'
-    | 'status'
-  > & {
-      authors: Array<{ __typename?: 'CollectionAuthor' } & AuthorDataFragment>;
-    };
+  updateCollection: { __typename?: 'Collection' } & CollectionDataFragment;
 };
 
 export type UpdateCollectionAuthorMutationVariables = Exact<{
@@ -453,7 +475,31 @@ export type UpdateCollectionAuthorMutationVariables = Exact<{
 export type UpdateCollectionAuthorMutation = { __typename?: 'Mutation' } & {
   updateCollectionAuthor: {
     __typename?: 'CollectionAuthor';
-  } & AuthorDataFragment;
+  } & CollectionAuthorDataFragment;
+};
+
+export type UpdateCollectionAuthorImageUrlMutationVariables = Exact<{
+  externalId: Scalars['String'];
+  imageUrl: Scalars['Url'];
+}>;
+
+export type UpdateCollectionAuthorImageUrlMutation = {
+  __typename?: 'Mutation';
+} & {
+  updateCollectionAuthorImageUrl: {
+    __typename?: 'CollectionAuthor';
+  } & CollectionAuthorDataFragment;
+};
+
+export type UpdateCollectionImageUrlMutationVariables = Exact<{
+  externalId: Scalars['String'];
+  imageUrl: Scalars['Url'];
+}>;
+
+export type UpdateCollectionImageUrlMutation = { __typename?: 'Mutation' } & {
+  updateCollectionImageUrl: {
+    __typename?: 'Collection';
+  } & CollectionDataFragment;
 };
 
 export type UpdateCollectionStoryMutationVariables = Exact<{
@@ -469,6 +515,19 @@ export type UpdateCollectionStoryMutationVariables = Exact<{
 
 export type UpdateCollectionStoryMutation = { __typename?: 'Mutation' } & {
   updateCollectionStory: {
+    __typename?: 'CollectionStory';
+  } & CollectionStoryDataFragment;
+};
+
+export type UpdateCollectionStoryImageUrlMutationVariables = Exact<{
+  externalId: Scalars['String'];
+  imageUrl: Scalars['Url'];
+}>;
+
+export type UpdateCollectionStoryImageUrlMutation = {
+  __typename?: 'Mutation';
+} & {
+  updateCollectionStoryImageUrl: {
     __typename?: 'CollectionStory';
   } & CollectionStoryDataFragment;
 };
@@ -493,22 +552,7 @@ export type GetArchivedCollectionsQueryVariables = Exact<{
 
 export type GetArchivedCollectionsQuery = { __typename?: 'Query' } & {
   searchCollections: { __typename?: 'CollectionsResult' } & {
-    collections: Array<
-      { __typename?: 'Collection' } & Pick<
-        Collection,
-        | 'externalId'
-        | 'title'
-        | 'slug'
-        | 'excerpt'
-        | 'intro'
-        | 'imageUrl'
-        | 'status'
-      > & {
-          authors: Array<
-            { __typename?: 'CollectionAuthor' } & AuthorDataFragment
-          >;
-        }
-    >;
+    collections: Array<{ __typename?: 'Collection' } & CollectionDataFragment>;
     pagination: { __typename?: 'Pagination' } & Pick<
       Pagination,
       'totalResults'
@@ -522,7 +566,7 @@ export type GetAuthorByIdQueryVariables = Exact<{
 
 export type GetAuthorByIdQuery = { __typename?: 'Query' } & {
   getCollectionAuthor?: Maybe<
-    { __typename?: 'CollectionAuthor' } & AuthorDataFragment
+    { __typename?: 'CollectionAuthor' } & CollectionAuthorDataFragment
   >;
 };
 
@@ -533,7 +577,9 @@ export type GetAuthorsQueryVariables = Exact<{
 
 export type GetAuthorsQuery = { __typename?: 'Query' } & {
   getCollectionAuthors: { __typename?: 'CollectionAuthorsResult' } & {
-    authors: Array<{ __typename?: 'CollectionAuthor' } & AuthorDataFragment>;
+    authors: Array<
+      { __typename?: 'CollectionAuthor' } & CollectionAuthorDataFragment
+    >;
   };
 };
 
@@ -542,22 +588,7 @@ export type GetCollectionByExternalIdQueryVariables = Exact<{
 }>;
 
 export type GetCollectionByExternalIdQuery = { __typename?: 'Query' } & {
-  getCollection?: Maybe<
-    { __typename?: 'Collection' } & Pick<
-      Collection,
-      | 'externalId'
-      | 'title'
-      | 'slug'
-      | 'excerpt'
-      | 'intro'
-      | 'imageUrl'
-      | 'status'
-    > & {
-        authors: Array<
-          { __typename?: 'CollectionAuthor' } & AuthorDataFragment
-        >;
-      }
-  >;
+  getCollection?: Maybe<{ __typename?: 'Collection' } & CollectionDataFragment>;
 };
 
 export type GetCollectionStoriesQueryVariables = Exact<{
@@ -581,22 +612,7 @@ export type GetDraftCollectionsQueryVariables = Exact<{
 
 export type GetDraftCollectionsQuery = { __typename?: 'Query' } & {
   searchCollections: { __typename?: 'CollectionsResult' } & {
-    collections: Array<
-      { __typename?: 'Collection' } & Pick<
-        Collection,
-        | 'externalId'
-        | 'title'
-        | 'slug'
-        | 'excerpt'
-        | 'intro'
-        | 'imageUrl'
-        | 'status'
-      > & {
-          authors: Array<
-            { __typename?: 'CollectionAuthor' } & AuthorDataFragment
-          >;
-        }
-    >;
+    collections: Array<{ __typename?: 'Collection' } & CollectionDataFragment>;
     pagination: { __typename?: 'Pagination' } & Pick<
       Pagination,
       'totalResults'
@@ -611,22 +627,7 @@ export type GetPublishedCollectionsQueryVariables = Exact<{
 
 export type GetPublishedCollectionsQuery = { __typename?: 'Query' } & {
   searchCollections: { __typename?: 'CollectionsResult' } & {
-    collections: Array<
-      { __typename?: 'Collection' } & Pick<
-        Collection,
-        | 'externalId'
-        | 'title'
-        | 'slug'
-        | 'excerpt'
-        | 'intro'
-        | 'imageUrl'
-        | 'status'
-      > & {
-          authors: Array<
-            { __typename?: 'CollectionAuthor' } & AuthorDataFragment
-          >;
-        }
-    >;
+    collections: Array<{ __typename?: 'Collection' } & CollectionDataFragment>;
     pagination: { __typename?: 'Pagination' } & Pick<
       Pagination,
       'totalResults'
@@ -644,22 +645,7 @@ export type GetSearchCollectionsQueryVariables = Exact<{
 
 export type GetSearchCollectionsQuery = { __typename?: 'Query' } & {
   searchCollections: { __typename?: 'CollectionsResult' } & {
-    collections: Array<
-      { __typename?: 'Collection' } & Pick<
-        Collection,
-        | 'externalId'
-        | 'title'
-        | 'slug'
-        | 'excerpt'
-        | 'intro'
-        | 'imageUrl'
-        | 'status'
-      > & {
-          authors: Array<
-            { __typename?: 'CollectionAuthor' } & AuthorDataFragment
-          >;
-        }
-    >;
+    collections: Array<{ __typename?: 'Collection' } & CollectionDataFragment>;
     pagination: { __typename?: 'Pagination' } & Pick<
       Pagination,
       'totalResults'
@@ -667,8 +653,8 @@ export type GetSearchCollectionsQuery = { __typename?: 'Query' } & {
   };
 };
 
-export const AuthorDataFragmentDoc = gql`
-  fragment AuthorData on CollectionAuthor {
+export const CollectionAuthorDataFragmentDoc = gql`
+  fragment CollectionAuthorData on CollectionAuthor {
     externalId
     name
     slug
@@ -676,6 +662,21 @@ export const AuthorDataFragmentDoc = gql`
     imageUrl
     active
   }
+`;
+export const CollectionDataFragmentDoc = gql`
+  fragment CollectionData on Collection {
+    externalId
+    title
+    slug
+    excerpt
+    intro
+    imageUrl
+    status
+    authors {
+      ...CollectionAuthorData
+    }
+  }
+  ${CollectionAuthorDataFragmentDoc}
 `;
 export const CollectionStoryDataFragmentDoc = gql`
   fragment CollectionStoryData on CollectionStory {
@@ -711,19 +712,10 @@ export const CreateCollectionDocument = gql`
         authorExternalId: $authorExternalId
       }
     ) {
-      externalId
-      title
-      slug
-      excerpt
-      intro
-      imageUrl
-      status
-      authors {
-        ...AuthorData
-      }
+      ...CollectionData
     }
   }
-  ${AuthorDataFragmentDoc}
+  ${CollectionDataFragmentDoc}
 `;
 export type CreateCollectionMutationFn = Apollo.MutationFunction<
   CreateCollectionMutation,
@@ -789,10 +781,10 @@ export const CreateCollectionAuthorDocument = gql`
         active: $active
       }
     ) {
-      ...AuthorData
+      ...CollectionAuthorData
     }
   }
-  ${AuthorDataFragmentDoc}
+  ${CollectionAuthorDataFragmentDoc}
 `;
 export type CreateCollectionAuthorMutationFn = Apollo.MutationFunction<
   CreateCollectionAuthorMutation,
@@ -1054,19 +1046,10 @@ export const UpdateCollectionDocument = gql`
         imageUrl: $imageUrl
       }
     ) {
-      externalId
-      title
-      slug
-      excerpt
-      intro
-      imageUrl
-      status
-      authors {
-        ...AuthorData
-      }
+      ...CollectionData
     }
   }
-  ${AuthorDataFragmentDoc}
+  ${CollectionDataFragmentDoc}
 `;
 export type UpdateCollectionMutationFn = Apollo.MutationFunction<
   UpdateCollectionMutation,
@@ -1136,10 +1119,10 @@ export const UpdateCollectionAuthorDocument = gql`
         active: $active
       }
     ) {
-      ...AuthorData
+      ...CollectionAuthorData
     }
   }
-  ${AuthorDataFragmentDoc}
+  ${CollectionAuthorDataFragmentDoc}
 `;
 export type UpdateCollectionAuthorMutationFn = Apollo.MutationFunction<
   UpdateCollectionAuthorMutation,
@@ -1187,6 +1170,115 @@ export type UpdateCollectionAuthorMutationResult = Apollo.MutationResult<UpdateC
 export type UpdateCollectionAuthorMutationOptions = Apollo.BaseMutationOptions<
   UpdateCollectionAuthorMutation,
   UpdateCollectionAuthorMutationVariables
+>;
+export const UpdateCollectionAuthorImageUrlDocument = gql`
+  mutation updateCollectionAuthorImageUrl(
+    $externalId: String!
+    $imageUrl: Url!
+  ) {
+    updateCollectionAuthorImageUrl(
+      data: { externalId: $externalId, imageUrl: $imageUrl }
+    ) {
+      ...CollectionAuthorData
+    }
+  }
+  ${CollectionAuthorDataFragmentDoc}
+`;
+export type UpdateCollectionAuthorImageUrlMutationFn = Apollo.MutationFunction<
+  UpdateCollectionAuthorImageUrlMutation,
+  UpdateCollectionAuthorImageUrlMutationVariables
+>;
+
+/**
+ * __useUpdateCollectionAuthorImageUrlMutation__
+ *
+ * To run a mutation, you first call `useUpdateCollectionAuthorImageUrlMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCollectionAuthorImageUrlMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCollectionAuthorImageUrlMutation, { data, loading, error }] = useUpdateCollectionAuthorImageUrlMutation({
+ *   variables: {
+ *      externalId: // value for 'externalId'
+ *      imageUrl: // value for 'imageUrl'
+ *   },
+ * });
+ */
+export function useUpdateCollectionAuthorImageUrlMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateCollectionAuthorImageUrlMutation,
+    UpdateCollectionAuthorImageUrlMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateCollectionAuthorImageUrlMutation,
+    UpdateCollectionAuthorImageUrlMutationVariables
+  >(UpdateCollectionAuthorImageUrlDocument, options);
+}
+export type UpdateCollectionAuthorImageUrlMutationHookResult = ReturnType<
+  typeof useUpdateCollectionAuthorImageUrlMutation
+>;
+export type UpdateCollectionAuthorImageUrlMutationResult = Apollo.MutationResult<UpdateCollectionAuthorImageUrlMutation>;
+export type UpdateCollectionAuthorImageUrlMutationOptions = Apollo.BaseMutationOptions<
+  UpdateCollectionAuthorImageUrlMutation,
+  UpdateCollectionAuthorImageUrlMutationVariables
+>;
+export const UpdateCollectionImageUrlDocument = gql`
+  mutation updateCollectionImageUrl($externalId: String!, $imageUrl: Url!) {
+    updateCollectionImageUrl(
+      data: { externalId: $externalId, imageUrl: $imageUrl }
+    ) {
+      ...CollectionData
+    }
+  }
+  ${CollectionDataFragmentDoc}
+`;
+export type UpdateCollectionImageUrlMutationFn = Apollo.MutationFunction<
+  UpdateCollectionImageUrlMutation,
+  UpdateCollectionImageUrlMutationVariables
+>;
+
+/**
+ * __useUpdateCollectionImageUrlMutation__
+ *
+ * To run a mutation, you first call `useUpdateCollectionImageUrlMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCollectionImageUrlMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCollectionImageUrlMutation, { data, loading, error }] = useUpdateCollectionImageUrlMutation({
+ *   variables: {
+ *      externalId: // value for 'externalId'
+ *      imageUrl: // value for 'imageUrl'
+ *   },
+ * });
+ */
+export function useUpdateCollectionImageUrlMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateCollectionImageUrlMutation,
+    UpdateCollectionImageUrlMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateCollectionImageUrlMutation,
+    UpdateCollectionImageUrlMutationVariables
+  >(UpdateCollectionImageUrlDocument, options);
+}
+export type UpdateCollectionImageUrlMutationHookResult = ReturnType<
+  typeof useUpdateCollectionImageUrlMutation
+>;
+export type UpdateCollectionImageUrlMutationResult = Apollo.MutationResult<UpdateCollectionImageUrlMutation>;
+export type UpdateCollectionImageUrlMutationOptions = Apollo.BaseMutationOptions<
+  UpdateCollectionImageUrlMutation,
+  UpdateCollectionImageUrlMutationVariables
 >;
 export const UpdateCollectionStoryDocument = gql`
   mutation updateCollectionStory(
@@ -1265,6 +1357,62 @@ export type UpdateCollectionStoryMutationOptions = Apollo.BaseMutationOptions<
   UpdateCollectionStoryMutation,
   UpdateCollectionStoryMutationVariables
 >;
+export const UpdateCollectionStoryImageUrlDocument = gql`
+  mutation updateCollectionStoryImageUrl(
+    $externalId: String!
+    $imageUrl: Url!
+  ) {
+    updateCollectionStoryImageUrl(
+      data: { externalId: $externalId, imageUrl: $imageUrl }
+    ) {
+      ...CollectionStoryData
+    }
+  }
+  ${CollectionStoryDataFragmentDoc}
+`;
+export type UpdateCollectionStoryImageUrlMutationFn = Apollo.MutationFunction<
+  UpdateCollectionStoryImageUrlMutation,
+  UpdateCollectionStoryImageUrlMutationVariables
+>;
+
+/**
+ * __useUpdateCollectionStoryImageUrlMutation__
+ *
+ * To run a mutation, you first call `useUpdateCollectionStoryImageUrlMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCollectionStoryImageUrlMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCollectionStoryImageUrlMutation, { data, loading, error }] = useUpdateCollectionStoryImageUrlMutation({
+ *   variables: {
+ *      externalId: // value for 'externalId'
+ *      imageUrl: // value for 'imageUrl'
+ *   },
+ * });
+ */
+export function useUpdateCollectionStoryImageUrlMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateCollectionStoryImageUrlMutation,
+    UpdateCollectionStoryImageUrlMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateCollectionStoryImageUrlMutation,
+    UpdateCollectionStoryImageUrlMutationVariables
+  >(UpdateCollectionStoryImageUrlDocument, options);
+}
+export type UpdateCollectionStoryImageUrlMutationHookResult = ReturnType<
+  typeof useUpdateCollectionStoryImageUrlMutation
+>;
+export type UpdateCollectionStoryImageUrlMutationResult = Apollo.MutationResult<UpdateCollectionStoryImageUrlMutation>;
+export type UpdateCollectionStoryImageUrlMutationOptions = Apollo.BaseMutationOptions<
+  UpdateCollectionStoryImageUrlMutation,
+  UpdateCollectionStoryImageUrlMutationVariables
+>;
 export const UpdateCollectionStorySortOrderDocument = gql`
   mutation updateCollectionStorySortOrder(
     $externalId: String!
@@ -1329,23 +1477,14 @@ export const GetArchivedCollectionsDocument = gql`
       perPage: $perPage
     ) {
       collections {
-        externalId
-        title
-        slug
-        excerpt
-        intro
-        imageUrl
-        status
-        authors {
-          ...AuthorData
-        }
+        ...CollectionData
       }
       pagination {
         totalResults
       }
     }
   }
-  ${AuthorDataFragmentDoc}
+  ${CollectionDataFragmentDoc}
 `;
 
 /**
@@ -1402,10 +1541,10 @@ export type GetArchivedCollectionsQueryResult = Apollo.QueryResult<
 export const GetAuthorByIdDocument = gql`
   query getAuthorById($id: String!) {
     getCollectionAuthor(externalId: $id) {
-      ...AuthorData
+      ...CollectionAuthorData
     }
   }
-  ${AuthorDataFragmentDoc}
+  ${CollectionAuthorDataFragmentDoc}
 `;
 
 /**
@@ -1462,11 +1601,11 @@ export const GetAuthorsDocument = gql`
   query getAuthors($page: Int, $perPage: Int) {
     getCollectionAuthors(page: $page, perPage: $perPage) {
       authors {
-        ...AuthorData
+        ...CollectionAuthorData
       }
     }
   }
-  ${AuthorDataFragmentDoc}
+  ${CollectionAuthorDataFragmentDoc}
 `;
 
 /**
@@ -1521,19 +1660,10 @@ export type GetAuthorsQueryResult = Apollo.QueryResult<
 export const GetCollectionByExternalIdDocument = gql`
   query getCollectionByExternalId($externalId: String!) {
     getCollection(externalId: $externalId) {
-      externalId
-      title
-      slug
-      excerpt
-      intro
-      imageUrl
-      status
-      authors {
-        ...AuthorData
-      }
+      ...CollectionData
     }
   }
-  ${AuthorDataFragmentDoc}
+  ${CollectionDataFragmentDoc}
 `;
 
 /**
@@ -1656,23 +1786,14 @@ export const GetDraftCollectionsDocument = gql`
       perPage: $perPage
     ) {
       collections {
-        externalId
-        title
-        slug
-        excerpt
-        intro
-        imageUrl
-        status
-        authors {
-          ...AuthorData
-        }
+        ...CollectionData
       }
       pagination {
         totalResults
       }
     }
   }
-  ${AuthorDataFragmentDoc}
+  ${CollectionDataFragmentDoc}
 `;
 
 /**
@@ -1734,23 +1855,14 @@ export const GetPublishedCollectionsDocument = gql`
       perPage: $perPage
     ) {
       collections {
-        externalId
-        title
-        slug
-        excerpt
-        intro
-        imageUrl
-        status
-        authors {
-          ...AuthorData
-        }
+        ...CollectionData
       }
       pagination {
         totalResults
       }
     }
   }
-  ${AuthorDataFragmentDoc}
+  ${CollectionDataFragmentDoc}
 `;
 
 /**
@@ -1818,23 +1930,14 @@ export const GetSearchCollectionsDocument = gql`
       perPage: $perPage
     ) {
       collections {
-        externalId
-        title
-        slug
-        excerpt
-        intro
-        imageUrl
-        status
-        authors {
-          ...AuthorData
-        }
+        ...CollectionData
       }
       pagination {
         totalResults
       }
     }
   }
-  ${AuthorDataFragmentDoc}
+  ${CollectionDataFragmentDoc}
 `;
 
 /**

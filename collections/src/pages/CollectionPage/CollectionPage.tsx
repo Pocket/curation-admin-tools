@@ -30,10 +30,11 @@ import {
   useGetCollectionByExternalIdQuery,
   useGetCollectionStoriesQuery,
   useUpdateCollectionMutation,
+  useUpdateCollectionImageUrlMutation,
   useCreateCollectionStoryMutation,
   useImageUploadMutation,
   useUpdateCollectionStorySortOrderMutation,
-  useUpdateCollectionStoryMutation,
+  useUpdateCollectionStoryImageUrlMutation,
 } from '../../api';
 import { useNotifications } from '../../hooks/useNotifications';
 import { FormikValues } from 'formik';
@@ -59,12 +60,14 @@ export const CollectionPage = (): JSX.Element => {
   // has to be done at the top level of the component because it's a hook
   const [updateCollection] = useUpdateCollectionMutation();
 
+  // And this one is only used to set the image url once the we know the S3 link
+  const [updateCollectionImageUrl] = useUpdateCollectionImageUrlMutation();
+
   // prepare the "create story" mutation
   const [createStory] = useCreateCollectionStoryMutation();
 
-  // prepare the "update story" mutation - soon to be replaced with
-  // just the "update story image url" one
-  const [updateStoryImageUrl] = useUpdateCollectionStoryMutation();
+  // prepare the "update story image url" mutation
+  const [updateStoryImageUrl] = useUpdateCollectionStoryImageUrlMutation();
 
   // prepare the "update story sort order" mutation
   const [updateStorySortOrder] = useUpdateCollectionStorySortOrderMutation();
@@ -220,19 +223,9 @@ export const CollectionPage = (): JSX.Element => {
    * Save the S3 URL we get back from the API to the collection record
    */
   const handleImageUploadSave = (url: string): void => {
-    updateCollection({
+    updateCollectionImageUrl({
       variables: {
-        // We keep most things as they are
         externalId: collection!.externalId,
-        title: collection!.title,
-        slug: collection!.slug,
-        excerpt: collection!.excerpt,
-        status: collection!.status,
-        // This is the only (?) piece of the backend part of the frontend code
-        // that is not ready for multiple authors
-        authorExternalId: collection!.authors[0].externalId,
-
-        // This is the only field that needs updating
         imageUrl: url,
       },
       refetchQueries: [
@@ -246,7 +239,7 @@ export const CollectionPage = (): JSX.Element => {
     })
       .then(({ data }) => {
         if (collection) {
-          collection.imageUrl = data?.updateCollection?.imageUrl!;
+          collection.imageUrl = data?.updateCollectionImageUrl?.imageUrl!;
           showNotification(
             `Image saved to "${collection.title.substring(0, 50)}..."`,
             'success'
@@ -329,17 +322,9 @@ export const CollectionPage = (): JSX.Element => {
                     variables: {
                       externalId: data.data?.createCollectionStory?.externalId!,
                       imageUrl: imgUploadData.data.collectionImageUpload.url,
-
-                      // TODO: drop these when a custom mutation is available
-                      url: values.url,
-                      title: values.title,
-                      excerpt: values.excerpt,
-                      publisher: values.publisher,
-                      authors,
-                      sortOrder: storySortOrder,
                     },
                   })
-                    .then((data) => {
+                    .then(() => {
                       showNotification(
                         'Image uploaded to S3 and linked to story',
                         'success'
@@ -510,7 +495,7 @@ export const CollectionPage = (): JSX.Element => {
             )}
             <DragDropContext onDragEnd={onDragEnd}>
               <Droppable droppableId="characters">
-                {(provided, snapshot) => (
+                {(provided) => (
                   <Typography
                     component="div"
                     className="characters"
@@ -525,7 +510,7 @@ export const CollectionPage = (): JSX.Element => {
                             draggableId={story.externalId}
                             index={index}
                           >
-                            {(provided, snapshot) => {
+                            {(provided) => {
                               return (
                                 <Typography
                                   component="div"

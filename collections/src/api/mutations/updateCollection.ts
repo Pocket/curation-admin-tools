@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { AuthorData } from '../fragments/AuthorData';
+import { CollectionData } from '../fragments/CollectionData';
 
 /**
  * Update a collection
@@ -27,17 +27,8 @@ export const updateCollection = gql`
         imageUrl: $imageUrl
       }
     ) {
-      externalId
-      title
-      slug
-      excerpt
-      intro
-      imageUrl
-      status
-      authors {
-        ...AuthorData
-      }
+      ...CollectionData
     }
   }
-  ${AuthorData}
+  ${CollectionData}
 `;
