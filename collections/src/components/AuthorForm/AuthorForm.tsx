@@ -13,6 +13,7 @@ import {
 import { AuthorModel } from '../../api';
 import { Button, MarkdownPreview } from '../';
 import { FormikHelpers } from 'formik/dist/types';
+import { config } from '../../config';
 
 interface AuthorFormProps {
   /**
@@ -64,8 +65,13 @@ export const AuthorForm: React.FC<AuthorFormProps> = (props): JSX.Element => {
         .min(6),
       slug: yup
         .string()
+        .trim()
         .required(
           'Please enter a slug or use the "Suggest slug" button to generate one from the name of the author'
+        )
+        .matches(
+          /^[a-z0-9-]+$/,
+          'Slug can only contain lowercase alphanumeric characters and hyphens'
         )
         .min(6),
       bio: yup.string(),
@@ -80,10 +86,7 @@ export const AuthorForm: React.FC<AuthorFormProps> = (props): JSX.Element => {
    * Suggest a slug for the author - works off the "name" field
    */
   const suggestSlug = () => {
-    const newSlug = slugify(formik.values.name, {
-      lower: true,
-      remove: /[*+~.()'"!:@]/g,
-    });
+    const newSlug = slugify(formik.values.name, config.slugify);
     formik.setFieldValue('slug', newSlug);
   };
 
