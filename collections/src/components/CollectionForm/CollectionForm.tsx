@@ -16,6 +16,7 @@ import { AuthorModel, CollectionModel, CollectionStatus } from '../../api';
 import { Button, MarkdownPreview } from '../';
 import { useStyles } from './CollectionForm.styles';
 import { FormikHelpers } from 'formik/dist/types';
+import { config } from '../../config';
 
 interface CollectionFormProps {
   /**
@@ -112,10 +113,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
    * Suggest a slug for the collection - works off the "title" field
    */
   const suggestSlug = () => {
-    const newSlug = slugify(formik.values.title, {
-      lower: true,
-      remove: /[*+~.()'"!:@]/g,
-    });
+    const newSlug = slugify(formik.values.title, config.slugify);
     formik.setFieldValue('slug', newSlug);
   };
 
