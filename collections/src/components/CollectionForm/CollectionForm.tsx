@@ -92,8 +92,13 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
         .min(6),
       slug: yup
         .string()
+        .trim()
         .required(
           'Please enter a slug or use the "Suggest slug" button to generate one from the collection title'
+        )
+        .matches(
+          /^[a-z0-9-]+$/,
+          'Slug can only contain lowercase alphanumeric characters and hyphens'
         )
         .min(6),
       excerpt: yup.string(),

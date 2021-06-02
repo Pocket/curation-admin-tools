@@ -65,8 +65,13 @@ export const AuthorForm: React.FC<AuthorFormProps> = (props): JSX.Element => {
         .min(6),
       slug: yup
         .string()
+        .trim()
         .required(
           'Please enter a slug or use the "Suggest slug" button to generate one from the name of the author'
+        )
+        .matches(
+          /^[a-z0-9-]+$/,
+          'Slug can only contain lowercase alphanumeric characters and hyphens'
         )
         .min(6),
       bio: yup.string(),
