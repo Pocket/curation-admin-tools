@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { AuthorData } from '../fragments/AuthorData';
+import { CollectionAuthorData } from '../fragments/CollectionAuthorData';
 
 /**
  * Create an author
@@ -21,8 +21,8 @@ export const createCollectionAuthor = gql`
         active: $active
       }
     ) {
-      ...AuthorData
+      ...CollectionAuthorData
     }
   }
-  ${AuthorData}
+  ${CollectionAuthorData}
 `;
