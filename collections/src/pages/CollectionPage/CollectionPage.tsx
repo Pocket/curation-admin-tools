@@ -114,7 +114,7 @@ export const CollectionPage = (): JSX.Element => {
     loading: authorsLoading,
     error: authorsError,
     data: authorsData,
-  } = useGetAuthorsQuery();
+  } = useGetAuthorsQuery({ variables: { page: 1, perPage: 1000 } });
 
   // Load collection stories - deliberately in a separate query
   const {

@@ -34,7 +34,9 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
   };
 
   // Load authors
-  const { loading, error, data: authorsData } = useGetAuthorsQuery();
+  const { loading, error, data: authorsData } = useGetAuthorsQuery({
+    variables: { page: 1, perPage: 1000 },
+  });
 
   // prepare the "add new collection" mutation
   // has to be done at the top level of the component because it's a hook
