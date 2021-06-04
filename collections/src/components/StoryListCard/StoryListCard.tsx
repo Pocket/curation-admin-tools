@@ -18,13 +18,13 @@ import {
   StoryModel,
   useDeleteCollectionStoryMutation,
   useUpdateCollectionStoryMutation,
-} from '../../api';
+} from '../../api/collection-api';
 import { transformAuthors } from '../../utils/transformAuthors';
 import { ImageUpload, StoryForm } from '../';
 import { useStyles } from './StoryListCard.styles';
 import { useNotifications } from '../../hooks/useNotifications';
 import { FormikHelpers } from 'formik/dist/types';
-import { CollectionStoryAuthor } from '../../api/generatedTypes';
+import { CollectionStoryAuthor } from '../../api/collection-api/generatedTypes';
 
 interface StoryListCardProps {
   story: StoryModel;

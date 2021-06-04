@@ -17,7 +17,7 @@ import {
   CollectionModel,
   StoryModel,
   useImageUploadMutation,
-} from '../../api';
+} from '../../api/collection-api';
 import { Button, Modal } from '../';
 import { useStyles } from './ImageUpload.styles';
 import { formatFileSize } from '../../utils/formatFileSize';

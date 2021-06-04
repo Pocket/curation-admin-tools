@@ -5,7 +5,7 @@ import {
   CollectionModel,
   useGetDraftCollectionsQuery,
   useGetPublishedCollectionsQuery,
-} from '../../api';
+} from '../../api/collection-api';
 import { CollectionListCard, HandleApiResponse } from '../../components';
 
 /**

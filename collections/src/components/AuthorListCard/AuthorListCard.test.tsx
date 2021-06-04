@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { AuthorListCard } from './AuthorListCard';
-import { AuthorModel } from '../../api';
+import { AuthorModel } from '../../api/collection-api';
 
 describe('The AuthorListCard component', () => {
   let author: AuthorModel;

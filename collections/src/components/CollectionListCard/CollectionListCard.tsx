@@ -2,9 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardMedia, Grid, Typography } from '@material-ui/core';
 import ReactMarkdown from 'react-markdown';
-import { CollectionModel } from '../../api';
+import { CollectionModel } from '../../api/collection-api';
 import { useStyles } from './CollectionListCard.styles';
-import { CollectionAuthor } from '../../api/generatedTypes';
+import { CollectionAuthor } from '../../api/collection-api/generatedTypes';
 
 interface CollectionListCardProps {
   collection: CollectionModel;

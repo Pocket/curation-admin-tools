@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import ReactMarkdown from 'react-markdown';
-import { AuthorModel, CollectionModel } from '../../api';
+import { AuthorModel, CollectionModel } from '../../api/collection-api';
 import { useStyles } from './CollectionInfo.styles';
 
 interface CollectionInfoProps {

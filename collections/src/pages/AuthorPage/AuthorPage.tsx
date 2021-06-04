@@ -22,7 +22,7 @@ import {
   useGetAuthorByIdQuery,
   useUpdateCollectionAuthorMutation,
   useUpdateCollectionAuthorImageUrlMutation,
-} from '../../api';
+} from '../../api/collection-api';
 import { useNotifications } from '../../hooks/useNotifications';
 import { FormikHelpers } from 'formik/dist/types';
 

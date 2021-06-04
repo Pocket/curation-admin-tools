@@ -12,7 +12,11 @@ import {
   Select,
   TextField,
 } from '@material-ui/core';
-import { AuthorModel, CollectionModel, CollectionStatus } from '../../api';
+import {
+  AuthorModel,
+  CollectionModel,
+  CollectionStatus,
+} from '../../api/collection-api';
 import { Button, MarkdownPreview } from '../';
 import { useStyles } from './CollectionForm.styles';
 import { FormikHelpers } from 'formik/dist/types';

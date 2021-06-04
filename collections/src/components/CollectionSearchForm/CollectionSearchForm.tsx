@@ -10,7 +10,7 @@ import {
   Select,
   TextField,
 } from '@material-ui/core';
-import { CollectionStatus } from '../../api';
+import { CollectionStatus } from '../../api/collection-api';
 import { Button } from '../';
 
 interface CollectionSearchFormProps {

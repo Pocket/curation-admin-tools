@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { CollectionListCard } from './CollectionListCard';
-import { CollectionModel, CollectionStatus } from '../../api';
+import { CollectionModel, CollectionStatus } from '../../api/collection-api';
 
 describe('The CollectionListCard component', () => {
   let collection: CollectionModel;

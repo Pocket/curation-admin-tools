@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { AuthorForm } from './AuthorForm';
-import { AuthorModel } from '../../api';
+import { AuthorModel } from '../../api/collection-api';
 
 describe('The AuthorForm component', () => {
   let author: AuthorModel;

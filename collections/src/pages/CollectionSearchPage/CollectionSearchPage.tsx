@@ -5,7 +5,7 @@ import {
   CollectionSearchForm,
   ScrollToTop,
 } from '../../components';
-import { useGetSearchCollectionsLazyQuery } from '../../api';
+import { useGetSearchCollectionsLazyQuery } from '../../api/collection-api';
 import { FormikValues } from 'formik';
 
 export const CollectionSearchPage = (): JSX.Element => {

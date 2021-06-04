@@ -1,6 +1,6 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client';
-import { config } from '../config';
+import { config } from '../../config';
 
 const apolloOptions = {
   cache: new InMemoryCache({
@@ -22,10 +22,5 @@ const apolloOptions = {
 
 export const client = new ApolloClient({
   link: createUploadLink({ uri: config.collectionApiEndpoint }),
-  ...apolloOptions,
-});
-
-export const clientAPIClient = new ApolloClient({
-  uri: config.clientApiEndpoint,
   ...apolloOptions,
 });

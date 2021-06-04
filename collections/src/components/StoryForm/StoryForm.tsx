@@ -11,11 +11,10 @@ import {
   Typography,
 } from '@material-ui/core';
 import { Button, MarkdownPreview } from '../';
-import { StoryModel } from '../../api';
-import { clientAPIClient } from '../../api/client';
-import { useGetStoryFromParserLazyQuery } from '../../api/client-api/generatedTypes';
+import { StoryModel } from '../../api/collection-api';
+import { client, useGetStoryFromParserLazyQuery } from '../../api/client-api';
 import { useStyles } from './StoryForm.styles';
-import { CollectionStoryAuthor } from '../../api/generatedTypes';
+import { CollectionStoryAuthor } from '../../api/collection-api/generatedTypes';
 import { useNotifications } from '../../hooks/useNotifications';
 import { ApolloError } from '@apollo/client';
 import { FormikHelpers } from 'formik/dist/types';
@@ -116,7 +115,7 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
   });
 
   const [getStory, { loading }] = useGetStoryFromParserLazyQuery({
-    client: clientAPIClient,
+    client,
     onCompleted: (data) => {
       // Rather than return errors if it can't parse a URL, the parser
       // returns a null object instead
