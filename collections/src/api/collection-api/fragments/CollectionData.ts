@@ -15,6 +15,11 @@ export const CollectionData = gql`
     authors {
       ...CollectionAuthorData
     }
+    curationCategory {
+      externalId
+      name
+      slug
+    }
   }
   ${CollectionAuthorData}
 `;

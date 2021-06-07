@@ -7,10 +7,12 @@ import {
   CollectionStatus,
 } from '../../api/collection-api';
 import { CollectionForm } from './CollectionForm';
+import { CurationCategory } from '../../api/collection-api/generatedTypes';
 
 describe('The CollectionForm component', () => {
   let collection: CollectionModel;
   let authors: AuthorModel[];
+  let curationCategories: CurationCategory[];
   let handleSubmit = jest.fn();
 
   beforeEach(() => {
@@ -40,6 +42,7 @@ describe('The CollectionForm component', () => {
         ' lobortis, ullamcorper ipsum in, eleifend sapien.',
       status: CollectionStatus.Draft,
       authors: [],
+      curationCategory: { externalId: 'cde-234', name: 'Food', slug: 'food' },
     };
 
     authors = [
@@ -57,13 +60,23 @@ describe('The CollectionForm component', () => {
         active: true,
       },
     ];
+
+    curationCategories = [
+      {
+        externalId: 'abc-123',
+        name: 'Business',
+        slug: 'business',
+      },
+      { externalId: 'cde-234', name: 'Food', slug: 'food' },
+    ];
   });
 
   it('renders successfully', () => {
     render(
       <CollectionForm
-        collection={collection}
         authors={authors}
+        collection={collection}
+        curationCategories={curationCategories}
         onSubmit={handleSubmit}
       />
     );
@@ -76,8 +89,9 @@ describe('The CollectionForm component', () => {
   it('shows three action buttons by default', () => {
     render(
       <CollectionForm
-        collection={collection}
         authors={authors}
+        collection={collection}
+        curationCategories={curationCategories}
         onSubmit={handleSubmit}
       />
     );
@@ -89,10 +103,11 @@ describe('The CollectionForm component', () => {
   it('only shows two buttons if not in edit mode', () => {
     render(
       <CollectionForm
-        collection={collection}
         authors={authors}
-        onSubmit={handleSubmit}
+        collection={collection}
+        curationCategories={curationCategories}
         editMode={false}
+        onSubmit={handleSubmit}
       />
     );
 
@@ -103,8 +118,9 @@ describe('The CollectionForm component', () => {
   it('displays collection information', () => {
     render(
       <CollectionForm
-        collection={collection}
         authors={authors}
+        collection={collection}
+        curationCategories={curationCategories}
         onSubmit={handleSubmit}
       />
     );
@@ -131,8 +147,9 @@ describe('The CollectionForm component', () => {
   it('validates the "title" field', async () => {
     render(
       <CollectionForm
-        collection={collection}
         authors={authors}
+        collection={collection}
+        curationCategories={curationCategories}
         onSubmit={handleSubmit}
       />
     );
@@ -180,8 +197,9 @@ describe('The CollectionForm component', () => {
   it('validates the "slug" field', async () => {
     render(
       <CollectionForm
-        collection={collection}
         authors={authors}
+        collection={collection}
+        curationCategories={curationCategories}
         onSubmit={handleSubmit}
       />
     );
@@ -223,8 +241,9 @@ describe('The CollectionForm component', () => {
   it('suggests the slug correctly', async () => {
     render(
       <CollectionForm
-        collection={collection}
         authors={authors}
+        collection={collection}
+        curationCategories={curationCategories}
         onSubmit={handleSubmit}
       />
     );
@@ -258,11 +277,46 @@ describe('The CollectionForm component', () => {
     ).toBeInTheDocument();
   });
 
+  it('suggests a slug free of punctuation and other special characters', async () => {
+    render(
+      <CollectionForm
+        authors={authors}
+        collection={collection}
+        curationCategories={curationCategories}
+        onSubmit={handleSubmit}
+      />
+    );
+
+    const slugField = screen.getByLabelText(/slug/i);
+    const titleField = screen.getByLabelText(/title/i);
+    const suggestSlugButton = screen.getByText(/suggest slug/i);
+
+    // Clear the fields or the user event further on will add to the input
+    // rather than overwrite it
+    userEvent.clear(slugField);
+    userEvent.clear(titleField);
+
+    userEvent.type(
+      titleField,
+      'A !!!title ??? full ### of ```special~~~ chars!#@*^*#^.,;*_/'
+    );
+
+    await waitFor(() => {
+      userEvent.click(suggestSlugButton);
+    });
+
+    // Get a slug that is free
+    expect(
+      screen.getByDisplayValue('a-title-full-of-special-chars')
+    ).toBeInTheDocument();
+  });
+
   it('has markdown preview tabs on two fields', () => {
     render(
       <CollectionForm
-        collection={collection}
         authors={authors}
+        collection={collection}
+        curationCategories={curationCategories}
         onSubmit={handleSubmit}
       />
     );

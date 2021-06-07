@@ -21,6 +21,7 @@ import { Button, MarkdownPreview } from '../';
 import { useStyles } from './CollectionForm.styles';
 import { FormikHelpers } from 'formik/dist/types';
 import { config } from '../../config';
+import { CurationCategory } from '../../api/collection-api/generatedTypes';
 
 interface CollectionFormProps {
   /**
@@ -32,6 +33,11 @@ interface CollectionFormProps {
    * A list of CollectionAuthor objects
    */
   authors: AuthorModel[];
+
+  /**
+   * A list of curation categories
+   */
+  curationCategories: CurationCategory[];
 
   /**
    * What do we do with the submitted data?
@@ -60,7 +66,14 @@ interface CollectionFormProps {
 export const CollectionForm: React.FC<CollectionFormProps> = (
   props
 ): JSX.Element => {
-  const { collection, authors, editMode = true, onCancel, onSubmit } = props;
+  const {
+    authors,
+    collection,
+    curationCategories,
+    editMode = true,
+    onSubmit,
+    onCancel,
+  } = props;
   const classes = useStyles();
 
   // get a list of author ids for the validation schema
@@ -84,6 +97,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
       intro: collection.intro ?? '',
       status: collection.status ?? CollectionStatus.Draft,
       authorExternalId,
+      curationCategoryExternalId: collection.curationCategory?.externalId ?? '',
     },
     // We don't want to irritate users by displaying validation errors
     // before they actually submit the form
@@ -112,6 +126,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
         .oneOf(Object.values(CollectionStatus))
         .required(),
       authorExternalId: yup.string().oneOf(authorIds).required(),
+      curationCategoryExternalId: yup.string(),
     }),
     onSubmit: (values, formikHelpers) => {
       onSubmit(values, formikHelpers);
@@ -193,9 +208,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel htmlFor="authorExternalId" shrink={true}>
-              Author
-            </InputLabel>
+            <InputLabel htmlFor="authorExternalId">Author</InputLabel>
             <Select
               native
               label="Author"
@@ -211,7 +224,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
                 )
               }
             >
-              <option value=""></option>
+              <option aria-label="None" value="" />
               {authors.map((author: AuthorModel) => {
                 return (
                   <option value={author.externalId} key={author.externalId}>
@@ -221,6 +234,41 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
               })}
             </Select>
           </FormControl>
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel htmlFor="curationCategoryExternalId">
+              Curation Category
+            </InputLabel>
+            <Select
+              native
+              label="CurationCategory"
+              inputProps={{
+                name: 'curationCategoryExternalId',
+                id: 'curationCategoryExternalId',
+              }}
+              {...formik.getFieldProps('curationCategoryExternalId')}
+              error={
+                !!(
+                  formik.touched.curationCategoryExternalId &&
+                  formik.errors.curationCategoryExternalId
+                )
+              }
+            >
+              <option aria-label="None" value="" />
+              {curationCategories.map((category: CurationCategory) => {
+                return (
+                  <option value={category.externalId} key={category.externalId}>
+                    {category.name}
+                  </option>
+                );
+              })}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <i>Space for IAB Categories</i>
         </Grid>
         <Grid item xs={12}>
           <MarkdownPreview minHeight={6.5} source={formik.values.excerpt}>

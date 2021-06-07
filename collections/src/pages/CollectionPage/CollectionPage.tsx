@@ -44,6 +44,7 @@ import {
   GetCollectionByExternalIdDocument,
   GetDraftCollectionsDocument,
   GetPublishedCollectionsDocument,
+  useGetCurationCategoriesQuery,
 } from '../../api/collection-api/generatedTypes';
 import { transformAuthors } from '../../utils/transformAuthors';
 import { FormikHelpers } from 'formik/dist/types';
@@ -116,6 +117,13 @@ export const CollectionPage = (): JSX.Element => {
     data: authorsData,
   } = useGetAuthorsQuery({ variables: { page: 1, perPage: 1000 } });
 
+  // load curation categories
+  const {
+    loading: curationCategoriesLoading,
+    error: curationCategoriesError,
+    data: curationCategoriesData,
+  } = useGetCurationCategoriesQuery();
+
   // Load collection stories - deliberately in a separate query
   const {
     loading: storiesLoading,
@@ -177,6 +185,7 @@ export const CollectionPage = (): JSX.Element => {
         intro: values.intro,
         status: values.status,
         authorExternalId: values.authorExternalId,
+        curationCategoryExternalId: values.curationCategoryExternalId,
       },
       refetchQueries: [
         {
@@ -209,6 +218,7 @@ export const CollectionPage = (): JSX.Element => {
           collection.intro = data?.updateCollection?.intro;
           collection.status = data?.updateCollection?.status!;
           collection.authors = data?.updateCollection?.authors!;
+          collection.curationCategory = data?.updateCollection?.curationCategory!;
           toggleEditForm();
           formikHelpers.setSubmitting(false);
         }
@@ -472,15 +482,28 @@ export const CollectionPage = (): JSX.Element => {
                   />
                 )}
 
-                {authorsData && authorsData.getCollectionAuthors && (
-                  <CollectionForm
-                    authors={authorsData.getCollectionAuthors.authors}
-                    collection={collection}
-                    onSubmit={handleSubmit}
-                    editMode={true}
-                    onCancel={toggleEditForm}
+                {!curationCategoriesData && (
+                  <HandleApiResponse
+                    loading={curationCategoriesLoading}
+                    error={curationCategoriesError}
                   />
                 )}
+
+                {authorsData &&
+                  authorsData.getCollectionAuthors &&
+                  curationCategoriesData &&
+                  curationCategoriesData.getCurationCategories && (
+                    <CollectionForm
+                      authors={authorsData.getCollectionAuthors.authors}
+                      collection={collection}
+                      curationCategories={
+                        curationCategoriesData.getCurationCategories
+                      }
+                      editMode={true}
+                      onCancel={toggleEditForm}
+                      onSubmit={handleSubmit}
+                    />
+                  )}
               </Box>
             </Paper>
           </Collapse>

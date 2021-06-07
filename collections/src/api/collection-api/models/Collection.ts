@@ -10,4 +10,5 @@ export type CollectionModel = { __typename?: 'Collection' } & Pick<
   | 'imageUrl'
   | 'status'
   | 'authors'
+  | 'curationCategory'
 >;
