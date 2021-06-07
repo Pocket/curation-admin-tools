@@ -12,6 +12,7 @@ export const createCollection = gql`
     $intro: Markdown
     $status: CollectionStatus!
     $authorExternalId: String!
+    $curationCategoryExternalId: String
   ) {
     createCollection(
       data: {
@@ -21,6 +22,7 @@ export const createCollection = gql`
         intro: $intro
         status: $status
         authorExternalId: $authorExternalId
+        curationCategoryExternalId: $curationCategoryExternalId
       }
     ) {
       ...CollectionData

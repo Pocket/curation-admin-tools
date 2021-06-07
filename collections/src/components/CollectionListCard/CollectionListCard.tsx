@@ -1,10 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardMedia, Grid, Typography } from '@material-ui/core';
+import {
+  Box,
+  Card,
+  CardMedia,
+  Chip,
+  Grid,
+  Typography,
+} from '@material-ui/core';
 import ReactMarkdown from 'react-markdown';
 import { CollectionModel } from '../../api/collection-api';
 import { useStyles } from './CollectionListCard.styles';
 import { CollectionAuthor } from '../../api/collection-api/generatedTypes';
+import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 
 interface CollectionListCardProps {
   collection: CollectionModel;
@@ -68,6 +76,16 @@ export const CollectionListCard: React.FC<CollectionListCardProps> = (
                   .join(', ')}
               </span>
             </Typography>
+            {collection.curationCategory && (
+              <Box py={1}>
+                <Chip
+                  variant="outlined"
+                  color="primary"
+                  label={collection.curationCategory.name}
+                  icon={<LabelOutlinedIcon />}
+                />
+              </Box>
+            )}
             <Typography noWrap component="div">
               <ReactMarkdown>
                 {collection.excerpt ? collection.excerpt.substring(0, 100) : ''}

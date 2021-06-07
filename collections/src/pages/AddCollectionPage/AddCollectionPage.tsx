@@ -11,7 +11,10 @@ import {
 } from '../../api/collection-api';
 import { CollectionForm, HandleApiResponse } from '../../components';
 import { useNotifications } from '../../hooks/useNotifications';
-import { GetDraftCollectionsDocument } from '../../api/collection-api/generatedTypes';
+import {
+  GetDraftCollectionsDocument,
+  useGetCurationCategoriesQuery,
+} from '../../api/collection-api/generatedTypes';
 
 export const AddCollectionPage: React.FC = (): JSX.Element => {
   // Prepare state vars and helper methods for API notifications
@@ -38,6 +41,13 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
     variables: { page: 1, perPage: 1000 },
   });
 
+  // load curation categories
+  const {
+    loading: curationCategoriesLoading,
+    error: curationCategoriesError,
+    data: curationCategoriesData,
+  } = useGetCurationCategoriesQuery();
+
   // prepare the "add new collection" mutation
   // has to be done at the top level of the component because it's a hook
   const [addCollection] = useCreateCollectionMutation();
@@ -57,6 +67,7 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
         intro: values.intro,
         status: values.status,
         authorExternalId: values.authorExternalId,
+        curationCategoryExternalId: values.curationCategoryExternalId,
       },
       // make sure the relevant Collections tab is updated
       // when we add a new collection
@@ -93,14 +104,27 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
             <HandleApiResponse loading={loading} error={error} />
           )}
 
-          {authorsData && authorsData.getCollectionAuthors && (
-            <CollectionForm
-              authors={authorsData.getCollectionAuthors.authors}
-              collection={collection}
-              onSubmit={handleSubmit}
-              editMode={false}
+          {!curationCategoriesData && (
+            <HandleApiResponse
+              loading={curationCategoriesLoading}
+              error={curationCategoriesError}
             />
           )}
+
+          {authorsData &&
+            authorsData.getCollectionAuthors &&
+            curationCategoriesData &&
+            curationCategoriesData.getCurationCategories && (
+              <CollectionForm
+                authors={authorsData.getCollectionAuthors.authors}
+                curationCategories={
+                  curationCategoriesData.getCurationCategories
+                }
+                collection={collection}
+                onSubmit={handleSubmit}
+                editMode={false}
+              />
+            )}
         </Box>
       </Paper>
     </>

@@ -370,6 +370,12 @@ export type CollectionDataFragment = { __typename?: 'Collection' } & Pick<
     authors: Array<
       { __typename?: 'CollectionAuthor' } & CollectionAuthorDataFragment
     >;
+    curationCategory?: Maybe<
+      { __typename?: 'CurationCategory' } & Pick<
+        CurationCategory,
+        'externalId' | 'name' | 'slug'
+      >
+    >;
   };
 
 export type CollectionStoryDataFragment = {
@@ -399,6 +405,7 @@ export type CreateCollectionMutationVariables = Exact<{
   intro?: Maybe<Scalars['Markdown']>;
   status: CollectionStatus;
   authorExternalId: Scalars['String'];
+  curationCategoryExternalId?: Maybe<Scalars['String']>;
 }>;
 
 export type CreateCollectionMutation = { __typename?: 'Mutation' } & {
@@ -468,6 +475,7 @@ export type UpdateCollectionMutationVariables = Exact<{
   intro?: Maybe<Scalars['Markdown']>;
   status: CollectionStatus;
   authorExternalId: Scalars['String'];
+  curationCategoryExternalId?: Maybe<Scalars['String']>;
   imageUrl?: Maybe<Scalars['Url']>;
 }>;
 
@@ -617,6 +625,19 @@ export type GetCollectionStoriesQuery = { __typename?: 'Query' } & {
   >;
 };
 
+export type GetCurationCategoriesQueryVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type GetCurationCategoriesQuery = { __typename?: 'Query' } & {
+  getCurationCategories: Array<
+    { __typename?: 'CurationCategory' } & Pick<
+      CurationCategory,
+      'externalId' | 'name' | 'slug'
+    >
+  >;
+};
+
 export type GetDraftCollectionsQueryVariables = Exact<{
   page?: Maybe<Scalars['Int']>;
   perPage?: Maybe<Scalars['Int']>;
@@ -687,6 +708,11 @@ export const CollectionDataFragmentDoc = gql`
     authors {
       ...CollectionAuthorData
     }
+    curationCategory {
+      externalId
+      name
+      slug
+    }
   }
   ${CollectionAuthorDataFragmentDoc}
 `;
@@ -713,6 +739,7 @@ export const CreateCollectionDocument = gql`
     $intro: Markdown
     $status: CollectionStatus!
     $authorExternalId: String!
+    $curationCategoryExternalId: String
   ) {
     createCollection(
       data: {
@@ -722,6 +749,7 @@ export const CreateCollectionDocument = gql`
         intro: $intro
         status: $status
         authorExternalId: $authorExternalId
+        curationCategoryExternalId: $curationCategoryExternalId
       }
     ) {
       ...CollectionData
@@ -753,6 +781,7 @@ export type CreateCollectionMutationFn = Apollo.MutationFunction<
  *      intro: // value for 'intro'
  *      status: // value for 'status'
  *      authorExternalId: // value for 'authorExternalId'
+ *      curationCategoryExternalId: // value for 'curationCategoryExternalId'
  *   },
  * });
  */
@@ -1044,6 +1073,7 @@ export const UpdateCollectionDocument = gql`
     $intro: Markdown
     $status: CollectionStatus!
     $authorExternalId: String!
+    $curationCategoryExternalId: String
     $imageUrl: Url
   ) {
     updateCollection(
@@ -1055,6 +1085,7 @@ export const UpdateCollectionDocument = gql`
         intro: $intro
         status: $status
         authorExternalId: $authorExternalId
+        curationCategoryExternalId: $curationCategoryExternalId
         imageUrl: $imageUrl
       }
     ) {
@@ -1088,6 +1119,7 @@ export type UpdateCollectionMutationFn = Apollo.MutationFunction<
  *      intro: // value for 'intro'
  *      status: // value for 'status'
  *      authorExternalId: // value for 'authorExternalId'
+ *      curationCategoryExternalId: // value for 'curationCategoryExternalId'
  *      imageUrl: // value for 'imageUrl'
  *   },
  * });
@@ -1789,6 +1821,65 @@ export type GetCollectionStoriesLazyQueryHookResult = ReturnType<
 export type GetCollectionStoriesQueryResult = Apollo.QueryResult<
   GetCollectionStoriesQuery,
   GetCollectionStoriesQueryVariables
+>;
+export const GetCurationCategoriesDocument = gql`
+  query getCurationCategories {
+    getCurationCategories {
+      externalId
+      name
+      slug
+    }
+  }
+`;
+
+/**
+ * __useGetCurationCategoriesQuery__
+ *
+ * To run a query within a React component, call `useGetCurationCategoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCurationCategoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCurationCategoriesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetCurationCategoriesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetCurationCategoriesQuery,
+    GetCurationCategoriesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetCurationCategoriesQuery,
+    GetCurationCategoriesQueryVariables
+  >(GetCurationCategoriesDocument, options);
+}
+export function useGetCurationCategoriesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetCurationCategoriesQuery,
+    GetCurationCategoriesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetCurationCategoriesQuery,
+    GetCurationCategoriesQueryVariables
+  >(GetCurationCategoriesDocument, options);
+}
+export type GetCurationCategoriesQueryHookResult = ReturnType<
+  typeof useGetCurationCategoriesQuery
+>;
+export type GetCurationCategoriesLazyQueryHookResult = ReturnType<
+  typeof useGetCurationCategoriesLazyQuery
+>;
+export type GetCurationCategoriesQueryResult = Apollo.QueryResult<
+  GetCurationCategoriesQuery,
+  GetCurationCategoriesQueryVariables
 >;
 export const GetDraftCollectionsDocument = gql`
   query getDraftCollections($page: Int, $perPage: Int) {

@@ -1,10 +1,10 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { CollectionListCard } from './CollectionListCard';
+import { CollectionInfo } from './CollectionInfo';
 import { CollectionModel, CollectionStatus } from '../../api/collection-api';
 
-describe('The CollectionListCard component', () => {
+describe('The CollectionInfo component', () => {
   let collection: CollectionModel;
 
   beforeEach(() => {
@@ -15,8 +15,7 @@ describe('The CollectionListCard component', () => {
       imageUrl: 'https://placeimg.com/640/480/people?random=494',
       excerpt:
         'There’s a long history of presidential ailments, including George Washington’s near-death encounter with the flu, Grover Cleveland’s secret tumor, and the clandestine suffering of John F. Kennedy. ',
-      intro:
-        'There’s a long history of presidential ailments, including George Washington’s near-death encounter with the flu, Grover Cleveland’s secret tumor, and the clandestine suffering of John F. Kennedy. ',
+      intro: 'Intro text is generally longer than the excerpt.',
       status: CollectionStatus.Published,
       authors: [],
     };
@@ -25,23 +24,15 @@ describe('The CollectionListCard component', () => {
   it('shows basic collection information', () => {
     render(
       <MemoryRouter>
-        <CollectionListCard collection={collection} />
+        <CollectionInfo collection={collection} />
       </MemoryRouter>
     );
 
-    // The photo is present and the alt text is the collection title
-    const photo = screen.getByAltText(collection.title);
-    expect(photo).toBeInTheDocument();
+    // The slug is present
+    const slug = screen.getByText(collection.slug);
+    expect(slug).toBeInTheDocument();
 
-    // The link to the collection page is present and is well-formed
-    const linkToCollectionPage = screen.getByRole('link');
-    expect(linkToCollectionPage).toBeInTheDocument();
-    expect(linkToCollectionPage).toHaveAttribute(
-      'href',
-      expect.stringContaining(collection.externalId)
-    );
-
-    // The excerpt is also present
+    // The excerpt is present
     const excerpt = screen.getByText(/presidential ailments/i);
     expect(excerpt).toBeInTheDocument();
   });
@@ -49,7 +40,7 @@ describe('The CollectionListCard component', () => {
   it('shows "Published" status correctly', () => {
     render(
       <MemoryRouter>
-        <CollectionListCard collection={collection} />
+        <CollectionInfo collection={collection} />
       </MemoryRouter>
     );
 
@@ -73,7 +64,7 @@ describe('The CollectionListCard component', () => {
 
     render(
       <MemoryRouter>
-        <CollectionListCard collection={collection} />
+        <CollectionInfo collection={collection} />
       </MemoryRouter>
     );
 
@@ -83,7 +74,7 @@ describe('The CollectionListCard component', () => {
   it('omits label if curation category is not set', () => {
     render(
       <MemoryRouter>
-        <CollectionListCard collection={collection} />
+        <CollectionInfo collection={collection} />
       </MemoryRouter>
     );
 

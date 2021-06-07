@@ -1,5 +1,6 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import { Box, Chip, Typography } from '@material-ui/core';
+import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import ReactMarkdown from 'react-markdown';
 import { AuthorModel, CollectionModel } from '../../api/collection-api';
 import { useStyles } from './CollectionInfo.styles';
@@ -35,6 +36,16 @@ export const CollectionInfo: React.FC<CollectionInfoProps> = (
             .join(', ')}
         </span>
       </Typography>
+      {collection.curationCategory && (
+        <Box py={1}>
+          <Chip
+            variant="outlined"
+            color="primary"
+            label={collection.curationCategory.name}
+            icon={<LabelOutlinedIcon />}
+          />
+        </Box>
+      )}
       <h3>Slug</h3>
       <Typography
         variant="subtitle2"
