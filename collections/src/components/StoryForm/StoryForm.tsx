@@ -105,7 +105,7 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
         .min(
           2, // minimum could be "AP"
           'Please enter one or more authors, separated by commas.' +
-            ' Please supply at least 6 characters or leave this field empty' +
+            ' Please supply at least two characters or leave this field empty' +
             ' if this story has no authors.'
         ),
       publisher: yup.string(),
@@ -117,6 +117,7 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
 
   const [getStory, { loading }] = useGetStoryFromParserLazyQuery({
     client: clientAPIClient,
+    fetchPolicy: 'no-cache',
     onCompleted: (data) => {
       // Rather than return errors if it can't parse a URL, the parser
       // returns a null object instead
@@ -194,17 +195,23 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
   const fetchStoryData = async () => {
     // Make sure we don't send an empty string to the parser
     await formik.setFieldTouched('url');
-    await formik.validateField('url').then(() => {
-      if (!formik.errors.url) {
-        // Get story data from the parser. 'onComplete' callback specified
-        // in the prepared query above will fill in the form with the returned data
-        getStory({
-          variables: {
-            url: formik.values.url,
-          },
-        });
-      }
-    });
+    await formik.validateField('url');
+
+    // NB: this check doesn't work on initial page load because
+    // formik.errors remains an empty object after validating
+    // this field for the first time and the request is still sent
+    // even though the field is empty and we see a validation error
+    // in the UI. Subsequent user interactions with the form work as expected.
+    // Marking this with a TODO to return to at some point in the future
+    if (!formik.errors.url) {
+      // Get story data from the parser. 'onComplete' callback specified
+      // in the prepared query above will fill in the form with the returned data
+      getStory({
+        variables: {
+          url: formik.values.url,
+        },
+      });
+    }
   };
 
   return (
@@ -229,7 +236,11 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
             </Box>
             {showPopulateButton && (
               <Box alignSelf="baseline" ml={1}>
-                <Button buttonType="hollow" onClick={fetchStoryData}>
+                <Button
+                  buttonType="hollow"
+                  onClick={fetchStoryData}
+                  disabled={loading}
+                >
                   Populate
                   {loading && (
                     <>
