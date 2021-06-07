@@ -40,6 +40,7 @@ export type Collection = {
   title: Scalars['String'];
   excerpt?: Maybe<Scalars['Markdown']>;
   status: CollectionStatus;
+  curationCategory?: Maybe<CurationCategory>;
   intro?: Maybe<Scalars['Markdown']>;
   imageUrl?: Maybe<Scalars['Url']>;
   publishedAt?: Maybe<Scalars['DateString']>;
@@ -132,6 +133,7 @@ export type CreateCollectionInput = {
   imageUrl?: Maybe<Scalars['Url']>;
   status?: Maybe<CollectionStatus>;
   authorExternalId: Scalars['String'];
+  curationCategoryExternalId?: Maybe<Scalars['String']>;
 };
 
 export type CreateCollectionStoryInput = {
@@ -143,6 +145,13 @@ export type CreateCollectionStoryInput = {
   authors: Array<CollectionStoryAuthorInput>;
   publisher: Scalars['String'];
   sortOrder?: Maybe<Scalars['Int']>;
+};
+
+export type CurationCategory = {
+  __typename?: 'CurationCategory';
+  externalId: Scalars['ID'];
+  name: Scalars['String'];
+  slug: Scalars['String'];
 };
 
 export type Item = {
@@ -250,6 +259,8 @@ export type Query = {
   getCollectionAuthors: CollectionAuthorsResult;
   /** Retrieves a CollectionStory by a combination of collectionId and url. */
   getCollectionStory?: Maybe<CollectionStory>;
+  /** Retrieves a list of CurationCategories, sorted alphabetically */
+  getCurationCategories: Array<CurationCategory>;
 };
 
 export type Query_EntitiesArgs = {
@@ -313,6 +324,7 @@ export type UpdateCollectionInput = {
   imageUrl?: Maybe<Scalars['Url']>;
   status: CollectionStatus;
   authorExternalId: Scalars['String'];
+  curationCategoryExternalId?: Maybe<Scalars['String']>;
 };
 
 export type UpdateCollectionStoryImageUrlInput = {

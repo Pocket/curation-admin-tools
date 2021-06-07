@@ -2,10 +2,13 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Box, Paper } from '@material-ui/core';
 import { FormikValues } from 'formik';
-import { AuthorModel, useCreateCollectionAuthorMutation } from '../../api';
+import {
+  AuthorModel,
+  useCreateCollectionAuthorMutation,
+} from '../../api/collection-api';
 import { AuthorForm } from '../../components';
 import { useNotifications } from '../../hooks/useNotifications';
-import { GetAuthorsDocument } from '../../api/generatedTypes';
+import { GetAuthorsDocument } from '../../api/collection-api/generatedTypes';
 import { FormikHelpers } from 'formik/dist/types';
 
 export const AddAuthorPage: React.FC = (): JSX.Element => {

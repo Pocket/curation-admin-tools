@@ -7,7 +7,7 @@ import { AddAuthorPage } from './AddAuthorPage';
 import {
   CreateCollectionAuthorDocument,
   CreateCollectionAuthorInput,
-} from '../../api/generatedTypes';
+} from '../../api/collection-api/generatedTypes';
 
 describe('The AddAuthor page', () => {
   let addAuthorVariables: CreateCollectionAuthorInput;

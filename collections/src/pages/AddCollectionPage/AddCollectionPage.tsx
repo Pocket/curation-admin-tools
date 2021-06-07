@@ -8,10 +8,10 @@ import {
   CollectionStatus,
   useCreateCollectionMutation,
   useGetAuthorsQuery,
-} from '../../api';
+} from '../../api/collection-api';
 import { CollectionForm, HandleApiResponse } from '../../components';
 import { useNotifications } from '../../hooks/useNotifications';
-import { GetDraftCollectionsDocument } from '../../api/generatedTypes';
+import { GetDraftCollectionsDocument } from '../../api/collection-api/generatedTypes';
 
 export const AddCollectionPage: React.FC = (): JSX.Element => {
   // Prepare state vars and helper methods for API notifications

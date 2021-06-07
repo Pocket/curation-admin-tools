@@ -35,7 +35,7 @@ import {
   useImageUploadMutation,
   useUpdateCollectionStorySortOrderMutation,
   useUpdateCollectionStoryImageUrlMutation,
-} from '../../api';
+} from '../../api/collection-api';
 import { useNotifications } from '../../hooks/useNotifications';
 import { FormikValues } from 'formik';
 import EditIcon from '@material-ui/icons/Edit';
@@ -44,7 +44,7 @@ import {
   GetCollectionByExternalIdDocument,
   GetDraftCollectionsDocument,
   GetPublishedCollectionsDocument,
-} from '../../api/generatedTypes';
+} from '../../api/collection-api/generatedTypes';
 import { transformAuthors } from '../../utils/transformAuthors';
 import { FormikHelpers } from 'formik/dist/types';
 

@@ -10,7 +10,7 @@ import {
   Switch,
   TextField,
 } from '@material-ui/core';
-import { AuthorModel } from '../../api';
+import { AuthorModel } from '../../api/collection-api';
 import { Button, MarkdownPreview } from '../';
 import { FormikHelpers } from 'formik/dist/types';
 import { config } from '../../config';

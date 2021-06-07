@@ -25,18 +25,6 @@ export type Scalars = {
   Url: any;
 };
 
-export type AsyncItem = {
-  __typename?: 'AsyncItem';
-  url?: Maybe<Scalars['Url']>;
-  item?: Maybe<Item>;
-  status?: Maybe<AsyncItemStatus>;
-};
-
-export enum AsyncItemStatus {
-  Resolved = 'RESOLVED',
-  Unresolved = 'UNRESOLVED',
-}
-
 /** Information about an Author of an article or some content */
 export type Author = {
   __typename?: 'Author';
@@ -64,6 +52,7 @@ export type Collection = {
   title: Scalars['String'];
   excerpt?: Maybe<Scalars['Markdown']>;
   status: CollectionStatus;
+  curationCategory?: Maybe<CurationCategory>;
   intro?: Maybe<Scalars['Markdown']>;
   imageUrl?: Maybe<Scalars['Url']>;
   publishedAt?: Maybe<Scalars['DateString']>;
@@ -118,6 +107,13 @@ export type CuratedInfo = {
   title?: Maybe<Scalars['String']>;
   excerpt?: Maybe<Scalars['String']>;
   imageSrc?: Maybe<Scalars['Url']>;
+};
+
+export type CurationCategory = {
+  __typename?: 'CurationCategory';
+  externalId: Scalars['ID'];
+  name: Scalars['String'];
+  slug: Scalars['String'];
 };
 
 /** Metadata from a domain, originally populated from ClearBit */
@@ -271,11 +267,117 @@ export type Item = {
    */
   resolvedNormalUrl?: Maybe<Scalars['Url']>;
   /** Helper property to identify if the given item is in the user's list */
-  userItem?: Maybe<UserItem>;
+  savedItem?: Maybe<SavedItem>;
   /** If the item is a collection allow them to get the collection information */
   collection?: Maybe<Collection>;
   /** If the item has a syndicated counterpart the syndication information */
   syndicatedArticle?: Maybe<SyndicatedArticle>;
+};
+
+/** Union type for items that may or may not be processed */
+export type ItemResult = PendingItem | Item;
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  /** Creates a user item (saves an item to a users list) */
+  createSavedItem: SavedItem;
+  /** Adds a user item to a users list, and if it was previously in the users list will put the back to the top of the list */
+  reAddSavedItem: SavedItem;
+  /** Update mutation to change the state of the user item */
+  updateSavedItem: SavedItem;
+  /** Archives a user item (same thing if archive state is passed to updateSavedItem) */
+  updateSavedItemArchive: SavedItem;
+  /** Unarchives a user item (same thing if archive state is passed to updateSavedItem) */
+  updateSavedItemUnArchive: SavedItem;
+  /** Undo the delete operation for an user item */
+  updateSavedItemUnDelete: SavedItem;
+  /** Favorites a user item (same thing if favorite state is passed to updateSavedItem) */
+  updateSavedItemFavorite: SavedItem;
+  /** Unfavorites a user item (same thing if favorite state is passed to updateSavedItem) */
+  updateSavedItemUnFavorite: SavedItem;
+  /** Modifies the User tags that are associated with the User Item */
+  updateSavedItemTag: SavedItem;
+  /** Deletes a user item from the users list */
+  deleteSavedItem: SavedItem;
+  /** Creates user tags that a user can use to classify user items */
+  createTags: Array<Tag>;
+  /** Updates a user tag (renames the tag) */
+  updateTag: Tag;
+  /**
+   * Deletes a user tag. This is essentially deletes the tag and also deletes it from all asoociated items.
+   * Will also update the _updatedAt time of all associated SavedItemTags
+   */
+  deleteTag: Tag;
+  /**
+   * Deletes specified user tags from a user item. Deletes all tags with the given ids.
+   * Will also update the _updatedAt time of all associated SavedItemTags
+   */
+  deleteSavedItemTags?: Maybe<Array<Tag>>;
+  /**
+   * Deletes all tags for a user item.
+   * Will also update the _updatedAt time of all associated SavedItemTags
+   */
+  deleteTagsBySavedItem?: Maybe<Array<Tag>>;
+};
+
+export type MutationCreateSavedItemArgs = {
+  input: SavedItemCreateInput;
+};
+
+export type MutationReAddSavedItemArgs = {
+  url?: Maybe<Scalars['String']>;
+};
+
+export type MutationUpdateSavedItemArgs = {
+  input: SavedItemUpdateInput;
+};
+
+export type MutationUpdateSavedItemArchiveArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationUpdateSavedItemUnArchiveArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationUpdateSavedItemUnDeleteArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationUpdateSavedItemFavoriteArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationUpdateSavedItemUnFavoriteArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationUpdateSavedItemTagArgs = {
+  input: SavedItemTagUpdateInput;
+};
+
+export type MutationDeleteSavedItemArgs = {
+  id: Scalars['ID'];
+};
+
+export type MutationCreateTagsArgs = {
+  input: Array<TagCreateInput>;
+};
+
+export type MutationUpdateTagArgs = {
+  input?: Maybe<TagUpdateInput>;
+};
+
+export type MutationDeleteTagArgs = {
+  tagName: Scalars['String'];
+};
+
+export type MutationDeleteSavedItemTagsArgs = {
+  ids: Array<Scalars['ID']>;
+};
+
+export type MutationDeleteTagsBySavedItemArgs = {
+  savedItemId: Scalars['ID'];
 };
 
 /** Information about pagination in a connection. */
@@ -308,16 +410,50 @@ export type Pagination = {
   perPage: Scalars['Int'];
 };
 
+/**
+ * Pagination request. To determine which edges to return, the connection
+ * evaluates the `before` and `after` cursors (if given) to filter the
+ * edges, then evaluates `first`/`last` to slice the edges (only include a
+ * value for either `first` or `last`, not both). If all fields are null,
+ * by default will return a page with the first 30 elements.
+ */
 export type PaginationInput = {
-  /** Returns the elements in the list that come after the specified cursor. */
-  after?: Maybe<Scalars['ID']>;
-  /** Returns the elements in the list that come before the specified cursor. */
-  before?: Maybe<Scalars['ID']>;
-  /** Returns the first _n_ elements from the list. */
+  /**
+   * Returns the elements in the list that come after the specified cursor.
+   * The specified cursor is not included in the result.
+   */
+  after?: Maybe<Scalars['String']>;
+  /**
+   * Returns the elements in the list that come before the specified cursor.
+   * The specified cursor is not included in the result.
+   */
+  before?: Maybe<Scalars['String']>;
+  /**
+   * Returns the first _n_ elements from the list. Must be a non-negative integer.
+   * If `first` contains a value, `last` should be null/omitted in the input.
+   */
   first?: Maybe<Scalars['Int']>;
-  /** Returns the last _n_ elements from the list. */
+  /**
+   * Returns the last _n_ elements from the list. Must be a non-negative integer.
+   * If `last` contains a value, `first` should be null/omitted in the input.
+   */
   last?: Maybe<Scalars['Int']>;
 };
+
+export type PendingItem = {
+  __typename?: 'PendingItem';
+  /**
+   * URL of the item that the user gave for the SavedItem
+   * that is pending processing by parser
+   */
+  url: Scalars['Url'];
+  status?: Maybe<PendingItemStatus>;
+};
+
+export enum PendingItemStatus {
+  Resolved = 'RESOLVED',
+  Unresolved = 'UNRESOLVED',
+}
 
 /** The publisher that the curation team set for the syndicated article */
 export type Publisher = {
@@ -457,17 +593,166 @@ export type Recommendation = {
 
 /** Interface that all state based entities must implement */
 export type RemoteEntity = {
-  /** Surragte primary key. This is usually generated by clients, but will be generated by the server if not passed through creation */
+  /** Surrogate primary key. This is usually generated by clients, but will be generated by the server if not passed through creation */
   id: Scalars['ID'];
   /** Unix timestamp of when the entity was created */
   _createdAt: Scalars['Timestamp'];
   /** Unix timestamp of when the entity was last updated, if any property on the entity is modified this timestamp is set to the modified time */
   _updatedAt: Scalars['Timestamp'];
   /** Version of the entity, this will increment with each modification of the entity's field */
-  _version: Scalars['Int'];
+  _version?: Maybe<Scalars['Int']>;
   /** Unix timestamp of when the entity was deleted, 30 days after this date this entity will be HARD deleted from the database and no longer exist */
-  _deletedAt: Scalars['Timestamp'];
+  _deletedAt?: Maybe<Scalars['Timestamp']>;
 };
+
+/**
+ * Represents a Pocket Item that a user has saved to their list.
+ * (Said otherways, indicates a saved url to a users list and associated user specific information.)
+ */
+export type SavedItem = RemoteEntity & {
+  __typename?: 'SavedItem';
+  /** The url the user saved to their list */
+  url: Scalars['String'];
+  /** Helper property to indicate if the user item is favorited */
+  isFavorite: Scalars['Boolean'];
+  /** Timestamp that the user item became favorited, null if not favorited */
+  favoritedAt?: Maybe<Scalars['Timestamp']>;
+  /** Helper property to indicate if the user item is archived */
+  isArchived: Scalars['Boolean'];
+  /** Timestamp that the user item became archied, null if not archived */
+  archivedAt?: Maybe<Scalars['Timestamp']>;
+  /** Link to the underlying Pocket Item for the URL */
+  item: Item;
+  /** The user tag's that the user has assigned to this user item */
+  tags?: Maybe<Array<Tag>>;
+  /** The user tag's that the user has assigned to this user item */
+  status?: Maybe<SavedItemStatus>;
+  /** Surrogate primary key. This is usually generated by clients, but will be generated by the server if not passed through creation */
+  id: Scalars['ID'];
+  /** Unix timestamp of when the entity was created */
+  _createdAt: Scalars['Timestamp'];
+  /** Unix timestamp of when the entity was last updated, if any property on the entity is modified this timestamp is set to the modified time */
+  _updatedAt: Scalars['Timestamp'];
+  /** Version of the entity, this will increment with each modification of the entity's field */
+  _version?: Maybe<Scalars['Int']>;
+  /** Unix timestamp of when the entity was deleted, 30 days after this date this entity will be HARD deleted from the database and no longer exist */
+  _deletedAt?: Maybe<Scalars['Timestamp']>;
+};
+
+/** The connection type for SavedItem. */
+export type SavedItemConnection = {
+  __typename?: 'SavedItemConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<SavedItemEdge>>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** Identifies the total count of items in the connection. */
+  totalCount: Scalars['Int'];
+};
+
+/** Input field for creating a SavedItem */
+export type SavedItemCreateInput = {
+  /** The url to create the User Item with. (the url to save to the list) */
+  url: Scalars['String'];
+  /** Optional, create the user item as a favorited item */
+  isFavorite?: Maybe<Scalars['Boolean']>;
+  /** Optional, time that request was submitted by client epoch/unix time */
+  timestamp?: Maybe<Scalars['Timestamp']>;
+};
+
+/** An edge in a connection. */
+export type SavedItemEdge = {
+  __typename?: 'SavedItemEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge. */
+  node?: Maybe<SavedItem>;
+};
+
+export enum SavedItemStatus {
+  Archived = 'ARCHIVED',
+  Deleted = 'DELETED',
+  Hidden = 'HIDDEN',
+  Unread = 'UNREAD',
+}
+
+/** Input field for updating a User Item to have or not have tags */
+export type SavedItemTagUpdateInput = {
+  /** The user item id to modify the tags on */
+  savedItemId: Scalars['ID'];
+  /**
+   * Will replace all user tag associations for the user item with the user tags provided.
+   * If sent with an empty array, will remove all tags from the SavedItem
+   */
+  tagIds: Array<Maybe<Scalars['ID']>>;
+};
+
+/** Input field for updating a SavedItem */
+export type SavedItemUpdateInput = {
+  /** The UUID representing the user item */
+  id: Scalars['ID'];
+  /** Optional, will update the favorite state to this value if provided */
+  isFavorite?: Maybe<Scalars['Boolean']>;
+  /** Optional, will update the archive state to this value if provided */
+  isArchived?: Maybe<Scalars['Boolean']>;
+  /**
+   * Optional, if provided will replace all user tag associations for this user item with the user tags provided.
+   * If sent with an empty array, will remove all tags from this SavedItem
+   */
+  tagIds?: Maybe<Array<Scalars['ID']>>;
+  /**
+   * Optional, if provided will replace all user tag associations for this user item with the user tags provided.
+   * If sent with an empty array, will remove all tags from this SavedItem
+   */
+  tagNames?: Maybe<Array<Scalars['String']>>;
+  /** Optional, time that request was submitted by client epoch/unix time */
+  timestamp?: Maybe<Scalars['Timestamp']>;
+};
+
+export enum SavedItemsContentType {
+  Video = 'VIDEO',
+  Article = 'ARTICLE',
+}
+
+/** Input field for filtering a user's list */
+export type SavedItemsFilter = {
+  /** Optional, filter to get user items updated since a date */
+  updatedSince?: Maybe<Scalars['Timestamp']>;
+  /** Optional, filter to get user items that have been favorited */
+  isFavorite?: Maybe<Scalars['Boolean']>;
+  /** Optional, filter to get user items that have been archived */
+  isArchived?: Maybe<Scalars['Boolean']>;
+  /** Optional, filter to get user items with the specific tag by ID */
+  tagIds?: Maybe<Array<Scalars['ID']>>;
+  /** Optional, filter to get user items with the specific tag */
+  tagNames?: Maybe<Array<Scalars['String']>>;
+  /** Optional, filter to get user items with highlights */
+  isHighlighted?: Maybe<Scalars['Boolean']>;
+  /** Optional, filter to get user items based on content type */
+  contentType?: Maybe<SavedItemsContentType>;
+};
+
+/** Input to sort fetched user items */
+export type SavedItemsSort = {
+  /** The field by which to sort user items */
+  sortBy: SavedItemsSortBy;
+  /** The order in which to sort user items */
+  sortOrder: SavedItemsSortOrder;
+};
+
+/** Enum to specify the sort by field (these are the current options, we could add more in the future) */
+export enum SavedItemsSortBy {
+  CreatedAt = 'CREATED_AT',
+  UpdatedAt = 'UPDATED_AT',
+  FavoritedAt = 'FAVORITED_AT',
+  ArchivedAt = 'ARCHIVED_AT',
+}
+
+/** Enum to specify the sort order of user items fetched */
+export enum SavedItemsSortOrder {
+  Asc = 'ASC',
+  Desc = 'DESC',
+}
 
 /** A grouping of item recomendations that relate to each other under a specific name and description */
 export type Slate = {
@@ -516,6 +801,61 @@ export type SyndicatedArticle = {
   slug?: Maybe<Scalars['String']>;
   /** The manually set publisher information for this article */
   publisher?: Maybe<Publisher>;
+};
+
+/** Represents a Tag that a User has created for their list */
+export type Tag = RemoteEntity & {
+  __typename?: 'Tag';
+  /** The actual tag the user created for their list */
+  name: Scalars['String'];
+  /** The user item's that the user has assigned to this user tag */
+  savedItems?: Maybe<Array<Maybe<SavedItem>>>;
+  /** Surrogate primary key. This is usually generated by clients, but will be generated by the server if not passed through creation */
+  id: Scalars['ID'];
+  /** Unix timestamp of when the entity was created */
+  _createdAt: Scalars['Timestamp'];
+  /** Unix timestamp of when the entity was last updated, if any property on the entity is modified this timestamp is set to the modified time */
+  _updatedAt: Scalars['Timestamp'];
+  /** Version of the entity, this will increment with each modification of the entity's field */
+  _version?: Maybe<Scalars['Int']>;
+  /** Unix timestamp of when the entity was deleted, 30 days after this date this entity will be HARD deleted from the database and no longer exist */
+  _deletedAt?: Maybe<Scalars['Timestamp']>;
+};
+
+/** The connection type for Tag. */
+export type TagConnection = {
+  __typename?: 'TagConnection';
+  /** A list of edges. */
+  edges?: Maybe<Array<Maybe<TagEdge>>>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** Identifies the total count of items in the connection. */
+  totalCount: Scalars['Int'];
+};
+
+/** Input field for creating a Tag */
+export type TagCreateInput = {
+  /** The user provided tag */
+  name: Scalars['String'];
+  /** ID of the user item to be tagged */
+  savedItemId: Scalars['ID'];
+};
+
+/** An edge in a connection. */
+export type TagEdge = {
+  __typename?: 'TagEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The item at the end of the edge. */
+  node?: Maybe<Tag>;
+};
+
+/** Input field for updating a Tag */
+export type TagUpdateInput = {
+  /** Tag ID */
+  id: Scalars['ID'];
+  /** The user provided tag */
+  name: Scalars['String'];
 };
 
 /**
@@ -630,176 +970,25 @@ export type User = {
   /** User id, provided by the user service. */
   id: Scalars['ID'];
   /** Get a general paginated listing of all user items for the user */
-  userItems?: Maybe<UserItemConnection>;
-  /** Get a last updated at filtered paginated listing of all user items for the user */
-  userItemsByUpdatedSince?: Maybe<UserItemConnection>;
-  /** Get a tag filtered paginated listing of all user items for the user */
-  userItemsByTags?: Maybe<UserItemConnection>;
+  savedItems?: Maybe<SavedItemConnection>;
   /** Get a paginated listing of all user tags */
-  userTags?: Maybe<UserTagConnection>;
+  tags?: Maybe<TagConnection>;
   /** Get a user item by its id */
-  userItemById?: Maybe<UserItem>;
+  savedItemById?: Maybe<SavedItem>;
 };
 
-export type UserUserItemsArgs = {
+export type UserSavedItemsArgs = {
+  filter?: Maybe<SavedItemsFilter>;
+  sort?: Maybe<SavedItemsSort>;
   pagination?: Maybe<PaginationInput>;
 };
 
-export type UserUserItemsByUpdatedSinceArgs = {
-  updatedSince: Scalars['Timestamp'];
+export type UserTagsArgs = {
   pagination?: Maybe<PaginationInput>;
 };
 
-export type UserUserItemsByTagsArgs = {
-  tags: Array<Scalars['ID']>;
-  pagination?: Maybe<PaginationInput>;
-};
-
-export type UserUserTagsArgs = {
-  pagination?: Maybe<PaginationInput>;
-};
-
-export type UserUserItemByIdArgs = {
+export type UserSavedItemByIdArgs = {
   id: Scalars['ID'];
-};
-
-/**
- * Represents a Pocket Item that a user has saved to their list.
- * (Said otherways, indicates a saved url to a users list and associated user specific information.)
- */
-export type UserItem = RemoteEntity & {
-  __typename?: 'UserItem';
-  /** The url the user saved to their list */
-  url: Scalars['String'];
-  /** Helper property to indicate if the user item is favorited */
-  isFavorite: Scalars['Boolean'];
-  /** Timestamp that the user item became favorited, null if not favorited */
-  favoritedAt?: Maybe<Scalars['Timestamp']>;
-  /** Helper property to indicate if the user item is archived */
-  isArchived: Scalars['Boolean'];
-  /** Timestamp that the user item became archied, null if not archived */
-  archivedAt?: Maybe<Scalars['Timestamp']>;
-  /** Link to the underlying Pocket Item for the URL */
-  asyncItem: AsyncItem;
-  /** The user tag's that the user has assigned to this user item */
-  tags?: Maybe<Array<UserTag>>;
-  /** Surragte primary key. This is usually generated by clients, but will be generated by the server if not passed through creation */
-  id: Scalars['ID'];
-  /** Unix timestamp of when the entity was created */
-  _createdAt: Scalars['Timestamp'];
-  /** Unix timestamp of when the entity was last updated, if any property on the entity is modified this timestamp is set to the modified time */
-  _updatedAt: Scalars['Timestamp'];
-  /** Version of the entity, this will increment with each modification of the entity's field */
-  _version: Scalars['Int'];
-  /** Unix timestamp of when the entity was deleted, 30 days after this date this entity will be HARD deleted from the database and no longer exist */
-  _deletedAt: Scalars['Timestamp'];
-};
-
-/** The connection type for UserItem. */
-export type UserItemConnection = {
-  __typename?: 'UserItemConnection';
-  /** A list of edges. */
-  edges?: Maybe<Array<Maybe<UserItemEdge>>>;
-  /** A list of nodes. */
-  nodes?: Maybe<Array<Maybe<UserItem>>>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-  /** Identifies the total count of items in the connection. */
-  totalCount: Scalars['Int'];
-};
-
-/** Input field for creating a UserItem */
-export type UserItemCreateInput = {
-  /** Optional, client generated UUID. If not provided the server will create one. */
-  id?: Maybe<Scalars['ID']>;
-  /** The url to create the User Item with. (the url to save to the list) */
-  url: Scalars['String'];
-  /** Optional, create the user item as a favorited item */
-  isFavorite?: Maybe<Scalars['Boolean']>;
-};
-
-/** An edge in a connection. */
-export type UserItemEdge = {
-  __typename?: 'UserItemEdge';
-  /** A cursor for use in pagination. */
-  cursor: Scalars['String'];
-  /** The item at the end of the edge. */
-  node?: Maybe<UserItem>;
-};
-
-/** Input field for updating a User Item to have or not have tags */
-export type UserItemTagUpdateInput = {
-  /** The user item id to modify the tags on */
-  userItemId: Scalars['ID'];
-  /**
-   * Will replace all user tag associations for the user item with the user tags provided.
-   * If sent with an empty array, will remove all tags from the UserItem
-   */
-  userTagIds: Array<Maybe<Scalars['ID']>>;
-};
-
-/** Input field for updating a UserItem */
-export type UserItemUpdateInput = {
-  /** The UUID representing the user item */
-  id: Scalars['ID'];
-  /** Optional, will update the favorite state to this value if provided */
-  isFavorite?: Maybe<Scalars['Boolean']>;
-  /** Optional, will update the archive state to this value if provided */
-  isArchived?: Maybe<Scalars['Boolean']>;
-  /**
-   * Optional, if provided will replace all user tag associations for this user item with the user tags provided.
-   * If sent with an empty array, will remove all tags from this UserItem
-   */
-  tags?: Maybe<Array<Scalars['ID']>>;
-};
-
-/** Represents a Tag that a User has created for their list */
-export type UserTag = RemoteEntity & {
-  __typename?: 'UserTag';
-  /** The actual tag the user created for their list */
-  tag: Scalars['String'];
-  /** The user item's that the user has assigned to this user tag */
-  userItems?: Maybe<Array<Maybe<UserItem>>>;
-  /** Surragte primary key. This is usually generated by clients, but will be generated by the server if not passed through creation */
-  id: Scalars['ID'];
-  /** Unix timestamp of when the entity was created */
-  _createdAt: Scalars['Timestamp'];
-  /** Unix timestamp of when the entity was last updated, if any property on the entity is modified this timestamp is set to the modified time */
-  _updatedAt: Scalars['Timestamp'];
-  /** Version of the entity, this will increment with each modification of the entity's field */
-  _version: Scalars['Int'];
-  /** Unix timestamp of when the entity was deleted, 30 days after this date this entity will be HARD deleted from the database and no longer exist */
-  _deletedAt: Scalars['Timestamp'];
-};
-
-/** The connection type for UserTag. */
-export type UserTagConnection = {
-  __typename?: 'UserTagConnection';
-  /** A list of edges. */
-  edges?: Maybe<Array<Maybe<UserTagEdge>>>;
-  /** A list of nodes. */
-  nodes?: Maybe<Array<Maybe<UserTag>>>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-  /** Identifies the total count of items in the connection. */
-  totalCount: Scalars['Int'];
-};
-
-/** Input field for creating a UserTag */
-export type UserTagCreateInput = {
-  /** Optional, client generated UUID. If not provided the server will create one. */
-  id?: Maybe<Scalars['ID']>;
-  /** The user provided tag */
-  tag: Scalars['String'];
-};
-
-/** An edge in a connection. */
-export type UserTagEdge = {
-  __typename?: 'UserTagEdge';
-  /** A cursor for use in pagination. */
-  cursor: Scalars['String'];
-  /** The item at the end of the edge. */
-  node?: Maybe<UserTag>;
 };
 
 /** A Video, typically within an Article View of an {Item} or if the Item is a video itself." */

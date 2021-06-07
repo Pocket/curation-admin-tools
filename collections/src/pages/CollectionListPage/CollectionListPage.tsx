@@ -14,7 +14,7 @@ import {
   useGetDraftCollectionsQuery,
   useGetPublishedCollectionsQuery,
   useGetArchivedCollectionsQuery,
-} from '../../api';
+} from '../../api/collection-api';
 
 /**
  * Collection List Page
