@@ -3,6 +3,7 @@ import { useLocation, useParams } from 'react-router-dom';
 import {
   Box,
   Button,
+  ButtonGroup,
   Collapse,
   Grid,
   Paper,
@@ -17,8 +18,10 @@ import {
 import {
   CollectionForm,
   CollectionInfo,
+  CollectionPreview,
   HandleApiResponse,
   ImageUpload,
+  Modal,
   ScrollToTop,
   StoryForm,
   StoryListCard,
@@ -39,6 +42,7 @@ import {
 import { useNotifications } from '../../hooks/useNotifications';
 import { FormikValues } from 'formik';
 import EditIcon from '@material-ui/icons/Edit';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import {
   GetArchivedCollectionsDocument,
   GetCollectionByExternalIdDocument,
@@ -434,6 +438,17 @@ export const CollectionPage = (): JSX.Element => {
     });
   };
 
+  const [previewCollectionOpen, setPreviewCollectionOpen] = useState<boolean>(
+    false
+  );
+  /**
+   * Preview the entire collection in a modal
+   */
+  const previewCollection = () => {
+    //
+    setPreviewCollectionOpen(true);
+  };
+
   return (
     <>
       <ScrollToTop />
@@ -450,12 +465,20 @@ export const CollectionPage = (): JSX.Element => {
               </h1>
             </Box>
             <Box alignSelf="center">
-              <Button color="primary" onClick={toggleEditForm}>
-                <EditIcon />
-              </Button>
+              <ButtonGroup
+                orientation="vertical"
+                color="primary"
+                variant="text"
+              >
+                <Button color="primary" onClick={toggleEditForm}>
+                  <EditIcon />
+                </Button>
+                <Button color="primary" onClick={previewCollection}>
+                  <VisibilityIcon />
+                </Button>
+              </ButtonGroup>
             </Box>
           </Box>
-
           <Grid container spacing={2}>
             <Grid item xs={12} sm={4}>
               <ImageUpload
@@ -468,7 +491,6 @@ export const CollectionPage = (): JSX.Element => {
               <CollectionInfo collection={collection} />
             </Grid>
           </Grid>
-
           <Collapse in={showEditForm}>
             <Paper elevation={4}>
               <Box p={2} mt={3}>
@@ -558,7 +580,6 @@ export const CollectionPage = (): JSX.Element => {
               </Droppable>
             </DragDropContext>
           </Box>
-
           <Paper elevation={4}>
             <Box p={2} mt={3}>
               <Box mb={2}>
@@ -574,6 +595,14 @@ export const CollectionPage = (): JSX.Element => {
               />
             </Box>
           </Paper>
+          <Modal
+            open={previewCollectionOpen}
+            handleClose={() => {
+              setPreviewCollectionOpen(false);
+            }}
+          >
+            <CollectionPreview collection={collection} stories={stories} />
+          </Modal>
         </>
       )}
     </>

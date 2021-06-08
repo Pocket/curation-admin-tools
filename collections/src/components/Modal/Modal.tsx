@@ -24,7 +24,12 @@ export const Modal: React.FC<ModalProps & DialogProps> = (
   const { open, children, handleClose } = props;
 
   return (
-    <Dialog open={open} onClose={handleClose} fullScreen={fullScreen}>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      fullScreen={fullScreen}
+      maxWidth="md"
+    >
       <Box
         flex="1"
         display="flex"
