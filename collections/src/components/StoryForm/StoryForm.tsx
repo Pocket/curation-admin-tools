@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { FormikValues, useFormik } from 'formik';
 import {
@@ -68,6 +68,16 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
   const [showOtherFields, setShowOtherFields] = useState<boolean>(
     showAllFields
   );
+
+  // Listen for when the "Add Story" form opens up to show the rest of the fields
+  // and scroll to the bottom to bring the entire form into view.
+  useEffect(() => {
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      left: 0,
+      behavior: 'smooth',
+    });
+  }, [showOtherFields]);
 
   // Which image do we show?
   const [imageSrc, setImageSrc] = useState<string>(
