@@ -13,6 +13,8 @@ export const createCollection = gql`
     $status: CollectionStatus!
     $authorExternalId: String!
     $curationCategoryExternalId: String
+    $IABParentCategoryExternalId: String
+    $IABChildCategoryExternalId: String
   ) {
     createCollection(
       data: {
@@ -23,6 +25,8 @@ export const createCollection = gql`
         status: $status
         authorExternalId: $authorExternalId
         curationCategoryExternalId: $curationCategoryExternalId
+        IABParentCategoryExternalId: $IABParentCategoryExternalId
+        IABChildCategoryExternalId: $IABChildCategoryExternalId
       }
     ) {
       ...CollectionData

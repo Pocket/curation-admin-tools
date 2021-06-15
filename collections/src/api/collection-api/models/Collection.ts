@@ -11,4 +11,6 @@ export type CollectionModel = { __typename?: 'Collection' } & Pick<
   | 'status'
   | 'authors'
   | 'curationCategory'
+  | 'IABParentCategory'
+  | 'IABChildCategory'
 >;

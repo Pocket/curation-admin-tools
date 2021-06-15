@@ -14,6 +14,7 @@ import { useNotifications } from '../../hooks/useNotifications';
 import {
   GetDraftCollectionsDocument,
   useGetCurationCategoriesQuery,
+  useGetIabCategoriesQuery,
 } from '../../api/collection-api/generatedTypes';
 
 export const AddCollectionPage: React.FC = (): JSX.Element => {
@@ -48,6 +49,13 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
     data: curationCategoriesData,
   } = useGetCurationCategoriesQuery();
 
+  // load IAB categories
+  const {
+    loading: iabCategoriesLoading,
+    error: iabCategoriesError,
+    data: iabCategoriesData,
+  } = useGetIabCategoriesQuery();
+
   // prepare the "add new collection" mutation
   // has to be done at the top level of the component because it's a hook
   const [addCollection] = useCreateCollectionMutation();
@@ -68,6 +76,8 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
         status: values.status,
         authorExternalId: values.authorExternalId,
         curationCategoryExternalId: values.curationCategoryExternalId,
+        IABParentCategoryExternalId: values.IABParentCategoryExternalId,
+        IABChildCategoryExternalId: values.IABChildCategoryExternalId,
       },
       // make sure the relevant Collections tab is updated
       // when we add a new collection
@@ -111,15 +121,25 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
             />
           )}
 
+          {!iabCategoriesData && (
+            <HandleApiResponse
+              loading={iabCategoriesLoading}
+              error={iabCategoriesError}
+            />
+          )}
+
           {authorsData &&
             authorsData.getCollectionAuthors &&
             curationCategoriesData &&
-            curationCategoriesData.getCurationCategories && (
+            curationCategoriesData.getCurationCategories &&
+            iabCategoriesData &&
+            iabCategoriesData.getIABCategories && (
               <CollectionForm
                 authors={authorsData.getCollectionAuthors.authors}
                 curationCategories={
                   curationCategoriesData.getCurationCategories
                 }
+                iabCategories={iabCategoriesData.getIABCategories}
                 collection={collection}
                 onSubmit={handleSubmit}
                 editMode={false}
