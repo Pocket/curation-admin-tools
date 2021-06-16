@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
+  Avatar,
   Box,
   Card,
   CardMedia,
@@ -75,17 +76,25 @@ export const CollectionListCard: React.FC<CollectionListCardProps> = (
                   })
                   .join(', ')}
               </span>
-            </Typography>
-            {collection.curationCategory && (
-              <Box py={1}>
+            </Typography>{' '}
+            <Box py={1}>
+              {collection.curationCategory && (
                 <Chip
                   variant="outlined"
                   color="primary"
                   label={collection.curationCategory.name}
                   icon={<LabelOutlinedIcon />}
                 />
-              </Box>
-            )}
+              )}{' '}
+              {collection.IABParentCategory && collection.IABChildCategory && (
+                <Chip
+                  variant="outlined"
+                  color="primary"
+                  label={`${collection.IABParentCategory.name} → ${collection.IABChildCategory.name}`}
+                  icon={<Avatar className={classes.iabAvatar}>IAB</Avatar>}
+                />
+              )}
+            </Box>
             <Typography noWrap component="div">
               <ReactMarkdown>
                 {collection.excerpt ? collection.excerpt.substring(0, 100) : ''}

@@ -89,4 +89,36 @@ describe('The CollectionListCard component', () => {
 
     expect(screen.queryByText('Food')).not.toBeInTheDocument();
   });
+
+  it('shows IAB label if IAB categories are set is set', () => {
+    collection.IABParentCategory = {
+      externalId: 'cde-234',
+      name: 'Careers',
+      slug: 'careers',
+    };
+
+    collection.IABChildCategory = {
+      externalId: 'cde-234',
+      name: 'Job Fairs',
+      slug: 'job-fairs',
+    };
+
+    render(
+      <MemoryRouter>
+        <CollectionListCard collection={collection} />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('Careers → Job Fairs')).toBeInTheDocument();
+  });
+
+  it('omits IAB label if IAB categories are not set', () => {
+    render(
+      <MemoryRouter>
+        <CollectionListCard collection={collection} />
+      </MemoryRouter>
+    );
+
+    expect(screen.queryByText('Careers → Job Fairs')).not.toBeInTheDocument();
+  });
 });

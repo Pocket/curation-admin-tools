@@ -145,6 +145,8 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
         .required('Please choose an author'),
       curationCategoryExternalId: yup.string(),
       IABParentCategoryExternalId: yup.string(),
+      // If an IAB parent category is chosen, require the IAB child category
+      // to be filled in as well.
       IABChildCategoryExternalId: yup
         .string()
         .when('IABParentCategoryExternalId', {
@@ -171,18 +173,24 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
   };
 
   /**
-   * Work out which child category to show on change
+   * Work out which IAB child category to show when an IAB parent category is chosen
    */
   const [iabChildrenCategories, setIabChildrenCategories] = useState<
     IabCategory[]
   >([]);
   React.useEffect(() => {
+    // Determine which IAB parent category has been chosen
     const currentIabParentCategory = iabCategories.find((category) => {
       return category.externalId === formik.values.IABParentCategoryExternalId;
     });
 
     if (currentIabParentCategory) {
+      // Use its children as the dependent "IAB Child Category"
+      // dropdown options.
       setIabChildrenCategories(currentIabParentCategory.children);
+    } else {
+      // No parent IAB category has been chosen - unset child categories
+      setIabChildrenCategories([]);
     }
   }, [
     formik.touched.IABParentCategoryExternalId,
