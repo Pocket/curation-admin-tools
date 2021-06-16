@@ -49,6 +49,7 @@ import {
   GetDraftCollectionsDocument,
   GetPublishedCollectionsDocument,
   useGetCurationCategoriesQuery,
+  useGetIabCategoriesQuery,
 } from '../../api/collection-api/generatedTypes';
 import { transformAuthors } from '../../utils/transformAuthors';
 import { FormikHelpers } from 'formik/dist/types';
@@ -128,6 +129,13 @@ export const CollectionPage = (): JSX.Element => {
     data: curationCategoriesData,
   } = useGetCurationCategoriesQuery();
 
+  // load IAB categories
+  const {
+    loading: iabCategoriesLoading,
+    error: iabCategoriesError,
+    data: iabCategoriesData,
+  } = useGetIabCategoriesQuery();
+
   // Load collection stories - deliberately in a separate query
   const {
     loading: storiesLoading,
@@ -190,6 +198,8 @@ export const CollectionPage = (): JSX.Element => {
         status: values.status,
         authorExternalId: values.authorExternalId,
         curationCategoryExternalId: values.curationCategoryExternalId,
+        IABParentCategoryExternalId: values.IABParentCategoryExternalId,
+        IABChildCategoryExternalId: values.IABChildCategoryExternalId,
       },
       refetchQueries: [
         {
@@ -223,6 +233,10 @@ export const CollectionPage = (): JSX.Element => {
           collection.status = data?.updateCollection?.status!;
           collection.authors = data?.updateCollection?.authors!;
           collection.curationCategory = data?.updateCollection?.curationCategory!;
+          collection.IABParentCategory =
+            data?.updateCollection?.IABParentCategory;
+          collection.IABChildCategory =
+            data?.updateCollection?.IABChildCategory;
           toggleEditForm();
           formikHelpers.setSubmitting(false);
         }
@@ -511,16 +525,26 @@ export const CollectionPage = (): JSX.Element => {
                   />
                 )}
 
+                {!iabCategoriesData && (
+                  <HandleApiResponse
+                    loading={iabCategoriesLoading}
+                    error={iabCategoriesError}
+                  />
+                )}
+
                 {authorsData &&
                   authorsData.getCollectionAuthors &&
                   curationCategoriesData &&
-                  curationCategoriesData.getCurationCategories && (
+                  curationCategoriesData.getCurationCategories &&
+                  iabCategoriesData &&
+                  iabCategoriesData.getIABCategories && (
                     <CollectionForm
                       authors={authorsData.getCollectionAuthors.authors}
                       collection={collection}
                       curationCategories={
                         curationCategoriesData.getCurationCategories
                       }
+                      iabCategories={iabCategoriesData.getIABCategories}
                       editMode={true}
                       onCancel={toggleEditForm}
                       onSubmit={handleSubmit}

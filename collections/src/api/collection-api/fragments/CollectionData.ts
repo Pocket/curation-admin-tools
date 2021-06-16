@@ -20,6 +20,16 @@ export const CollectionData = gql`
       name
       slug
     }
+    IABParentCategory {
+      externalId
+      name
+      slug
+    }
+    IABChildCategory {
+      externalId
+      name
+      slug
+    }
   }
   ${CollectionAuthorData}
 `;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Chip, Typography } from '@material-ui/core';
+import { Avatar, Box, Chip, Typography } from '@material-ui/core';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import ReactMarkdown from 'react-markdown';
 import { AuthorModel, CollectionModel } from '../../api/collection-api';
@@ -36,16 +36,25 @@ export const CollectionInfo: React.FC<CollectionInfoProps> = (
             .join(', ')}
         </span>
       </Typography>
-      {collection.curationCategory && (
-        <Box py={1}>
+      <Box py={1}>
+        {collection.curationCategory && (
           <Chip
             variant="outlined"
             color="primary"
             label={collection.curationCategory.name}
             icon={<LabelOutlinedIcon />}
           />
-        </Box>
-      )}
+        )}{' '}
+        {collection.IABParentCategory && collection.IABChildCategory && (
+          <Chip
+            variant="outlined"
+            color="primary"
+            label={`${collection.IABParentCategory.name} → ${collection.IABChildCategory.name}`}
+            icon={<Avatar className={classes.iabAvatar}>IAB</Avatar>}
+          />
+        )}{' '}
+      </Box>
+
       <h3>Slug</h3>
       <Typography
         variant="subtitle2"

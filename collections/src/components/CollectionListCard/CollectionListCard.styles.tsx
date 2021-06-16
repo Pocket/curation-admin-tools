@@ -22,6 +22,13 @@ export const useStyles = makeStyles((theme: Theme) =>
       textDecoration: 'none',
       padding: '1.25 rem 0',
     },
+    iabAvatar: {
+      height: theme.spacing(3),
+      width: theme.spacing(3),
+      fontSize: '0.875rem',
+      backgroundColor: '#ffffff',
+      border: `1px solid ${theme.palette.primary.light}`,
+    },
     title: {
       fontSize: '1.25rem',
       fontWeight: 500,

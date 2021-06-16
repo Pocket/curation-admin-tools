@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import slugify from 'slugify';
 import * as yup from 'yup';
 import { FormikValues, useFormik } from 'formik';
@@ -6,6 +6,7 @@ import { FormikValues, useFormik } from 'formik';
 import {
   Box,
   FormControl,
+  FormHelperText,
   Grid,
   InputLabel,
   LinearProgress,
@@ -21,7 +22,11 @@ import { Button, MarkdownPreview } from '../';
 import { useStyles } from './CollectionForm.styles';
 import { FormikHelpers } from 'formik/dist/types';
 import { config } from '../../config';
-import { CurationCategory } from '../../api/collection-api/generatedTypes';
+import {
+  CurationCategory,
+  IabCategory,
+  IabParentCategory,
+} from '../../api/collection-api/generatedTypes';
 
 interface CollectionFormProps {
   /**
@@ -38,6 +43,11 @@ interface CollectionFormProps {
    * A list of curation categories
    */
   curationCategories: CurationCategory[];
+
+  /**
+   * A list of IAB categories
+   */
+  iabCategories: IabParentCategory[];
 
   /**
    * What do we do with the submitted data?
@@ -70,6 +80,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
     authors,
     collection,
     curationCategories,
+    iabCategories,
     editMode = true,
     onSubmit,
     onCancel,
@@ -98,6 +109,9 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
       status: collection.status ?? CollectionStatus.Draft,
       authorExternalId,
       curationCategoryExternalId: collection.curationCategory?.externalId ?? '',
+      IABParentCategoryExternalId:
+        collection.IABParentCategory?.externalId ?? '',
+      IABChildCategoryExternalId: collection.IABChildCategory?.externalId ?? '',
     },
     // We don't want to irritate users by displaying validation errors
     // before they actually submit the form
@@ -125,8 +139,25 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
         .mixed<CollectionStatus>()
         .oneOf(Object.values(CollectionStatus))
         .required(),
-      authorExternalId: yup.string().oneOf(authorIds).required(),
+      authorExternalId: yup
+        .string()
+        .oneOf(authorIds)
+        .required('Please choose an author'),
       curationCategoryExternalId: yup.string(),
+      IABParentCategoryExternalId: yup.string(),
+      // If an IAB parent category is chosen, require the IAB child category
+      // to be filled in as well.
+      IABChildCategoryExternalId: yup
+        .string()
+        .when('IABParentCategoryExternalId', {
+          is: (value: string) => value && value.length > 0,
+          then: yup
+            .string()
+            .required(
+              'Please choose a child IAB category or leave both IAB categories blank'
+            ),
+          otherwise: yup.string(),
+        }),
     }),
     onSubmit: (values, formikHelpers) => {
       onSubmit(values, formikHelpers);
@@ -140,6 +171,32 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
     const newSlug = slugify(formik.values.title, config.slugify);
     formik.setFieldValue('slug', newSlug);
   };
+
+  /**
+   * Work out which IAB child category to show when an IAB parent category is chosen
+   */
+  const [iabChildrenCategories, setIabChildrenCategories] = useState<
+    IabCategory[]
+  >([]);
+  React.useEffect(() => {
+    // Determine which IAB parent category has been chosen
+    const currentIabParentCategory = iabCategories.find((category) => {
+      return category.externalId === formik.values.IABParentCategoryExternalId;
+    });
+
+    if (currentIabParentCategory) {
+      // Use its children as the dependent "IAB Child Category"
+      // dropdown options.
+      setIabChildrenCategories(currentIabParentCategory.children);
+    } else {
+      // No parent IAB category has been chosen - unset child categories
+      setIabChildrenCategories([]);
+    }
+  }, [
+    formik.touched.IABParentCategoryExternalId,
+    formik.values.IABParentCategoryExternalId,
+    iabCategories,
+  ]);
 
   return (
     <form name="collection-form" onSubmit={formik.handleSubmit}>
@@ -233,6 +290,11 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
                 );
               })}
             </Select>
+            <FormHelperText error>
+              {formik.errors.authorExternalId
+                ? formik.errors.authorExternalId
+                : null}
+            </FormHelperText>
           </FormControl>
         </Grid>
 
@@ -268,7 +330,73 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
           </FormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <i>Space for IAB Categories</i>
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel htmlFor="IABParentCategoryExternalId">
+              IAB Parent Category
+            </InputLabel>
+            <Select
+              native
+              label="IABParentCategory"
+              inputProps={{
+                name: 'IABParentCategoryExternalId',
+                id: 'IABParentCategoryExternalId',
+              }}
+              {...formik.getFieldProps('IABParentCategoryExternalId')}
+              error={
+                !!(
+                  formik.touched.IABParentCategoryExternalId &&
+                  formik.errors.IABParentCategoryExternalId
+                )
+              }
+            >
+              <option aria-label="None" value="" />
+
+              {iabCategories.map((category: IabParentCategory) => {
+                return (
+                  <option value={category.externalId} key={category.externalId}>
+                    {category.name}
+                  </option>
+                );
+              })}
+            </Select>
+          </FormControl>
+          <br />
+          <br />
+          <FormControl variant="outlined" className={classes.formControl}>
+            <InputLabel htmlFor="IABChildCategoryExternalId">
+              IAB Child Category
+            </InputLabel>
+            <Select
+              native
+              label="IABChildCategory"
+              inputProps={{
+                name: 'IABChildCategoryExternalId',
+                id: 'IABChildCategoryExternalId',
+              }}
+              {...formik.getFieldProps('IABChildCategoryExternalId')}
+              error={
+                !!(
+                  formik.touched.IABChildCategoryExternalId &&
+                  formik.errors.IABChildCategoryExternalId
+                )
+              }
+            >
+              <option aria-label="None" value="" />
+
+              {iabChildrenCategories.map((category: IabCategory) => {
+                return (
+                  <option value={category.externalId} key={category.externalId}>
+                    {category.name}
+                  </option>
+                );
+              })}
+            </Select>
+            <FormHelperText error>
+              {formik.errors.IABChildCategoryExternalId
+                ? formik.errors.IABChildCategoryExternalId
+                : null}
+            </FormHelperText>
+          </FormControl>
         </Grid>
         <Grid item xs={12}>
           <MarkdownPreview minHeight={6.5} source={formik.values.excerpt}>

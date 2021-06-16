@@ -14,6 +14,8 @@ export const updateCollection = gql`
     $status: CollectionStatus!
     $authorExternalId: String!
     $curationCategoryExternalId: String
+    $IABParentCategoryExternalId: String
+    $IABChildCategoryExternalId: String
     $imageUrl: Url
   ) {
     updateCollection(
@@ -26,6 +28,8 @@ export const updateCollection = gql`
         status: $status
         authorExternalId: $authorExternalId
         curationCategoryExternalId: $curationCategoryExternalId
+        IABParentCategoryExternalId: $IABParentCategoryExternalId
+        IABChildCategoryExternalId: $IABChildCategoryExternalId
         imageUrl: $imageUrl
       }
     ) {

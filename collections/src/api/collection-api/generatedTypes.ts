@@ -29,10 +29,6 @@ export enum CacheControlScope {
   Private = 'PRIVATE',
 }
 
-/**
- * TODO: add comments to all the fields in here!
- * there's a documentation ticket - do this in that ticket
- */
 export type Collection = {
   __typename?: 'Collection';
   externalId: Scalars['ID'];
@@ -46,6 +42,12 @@ export type Collection = {
   publishedAt?: Maybe<Scalars['DateString']>;
   authors: Array<CollectionAuthor>;
   stories: Array<CollectionStory>;
+  /**
+   * We will never return child categories in this type, so there's no need to
+   * specify `IABParentCategory` here. The basic `IABCategory` is sufficient.
+   */
+  IABParentCategory?: Maybe<IabCategory>;
+  IABChildCategory?: Maybe<IabCategory>;
 };
 
 export type CollectionAuthor = {
@@ -134,6 +136,8 @@ export type CreateCollectionInput = {
   status?: Maybe<CollectionStatus>;
   authorExternalId: Scalars['String'];
   curationCategoryExternalId?: Maybe<Scalars['String']>;
+  IABParentCategoryExternalId?: Maybe<Scalars['String']>;
+  IABChildCategoryExternalId?: Maybe<Scalars['String']>;
 };
 
 export type CreateCollectionStoryInput = {
@@ -152,6 +156,25 @@ export type CurationCategory = {
   externalId: Scalars['ID'];
   name: Scalars['String'];
   slug: Scalars['String'];
+};
+
+/**
+ * TODO: add comments to all the fields in here!
+ * there's a documentation ticket - do this in that ticket
+ */
+export type IabCategory = {
+  __typename?: 'IABCategory';
+  externalId: Scalars['String'];
+  name: Scalars['String'];
+  slug: Scalars['String'];
+};
+
+export type IabParentCategory = {
+  __typename?: 'IABParentCategory';
+  externalId: Scalars['String'];
+  name: Scalars['String'];
+  slug: Scalars['String'];
+  children: Array<IabCategory>;
 };
 
 export type Item = {
@@ -261,6 +284,8 @@ export type Query = {
   getCollectionStory?: Maybe<CollectionStory>;
   /** Retrieves a list of CurationCategories, sorted alphabetically */
   getCurationCategories: Array<CurationCategory>;
+  /** Retrieves the nested list of IAB top/sub categories. */
+  getIABCategories: Array<IabParentCategory>;
 };
 
 export type Query_EntitiesArgs = {
@@ -325,6 +350,8 @@ export type UpdateCollectionInput = {
   status: CollectionStatus;
   authorExternalId: Scalars['String'];
   curationCategoryExternalId?: Maybe<Scalars['String']>;
+  IABParentCategoryExternalId?: Maybe<Scalars['String']>;
+  IABChildCategoryExternalId?: Maybe<Scalars['String']>;
 };
 
 export type UpdateCollectionStoryImageUrlInput = {
@@ -376,6 +403,18 @@ export type CollectionDataFragment = { __typename?: 'Collection' } & Pick<
         'externalId' | 'name' | 'slug'
       >
     >;
+    IABParentCategory?: Maybe<
+      { __typename?: 'IABCategory' } & Pick<
+        IabCategory,
+        'externalId' | 'name' | 'slug'
+      >
+    >;
+    IABChildCategory?: Maybe<
+      { __typename?: 'IABCategory' } & Pick<
+        IabCategory,
+        'externalId' | 'name' | 'slug'
+      >
+    >;
   };
 
 export type CollectionStoryDataFragment = {
@@ -406,6 +445,8 @@ export type CreateCollectionMutationVariables = Exact<{
   status: CollectionStatus;
   authorExternalId: Scalars['String'];
   curationCategoryExternalId?: Maybe<Scalars['String']>;
+  IABParentCategoryExternalId?: Maybe<Scalars['String']>;
+  IABChildCategoryExternalId?: Maybe<Scalars['String']>;
 }>;
 
 export type CreateCollectionMutation = { __typename?: 'Mutation' } & {
@@ -476,6 +517,8 @@ export type UpdateCollectionMutationVariables = Exact<{
   status: CollectionStatus;
   authorExternalId: Scalars['String'];
   curationCategoryExternalId?: Maybe<Scalars['String']>;
+  IABParentCategoryExternalId?: Maybe<Scalars['String']>;
+  IABChildCategoryExternalId?: Maybe<Scalars['String']>;
   imageUrl?: Maybe<Scalars['Url']>;
 }>;
 
@@ -653,6 +696,24 @@ export type GetDraftCollectionsQuery = { __typename?: 'Query' } & {
   };
 };
 
+export type GetIabCategoriesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetIabCategoriesQuery = { __typename?: 'Query' } & {
+  getIABCategories: Array<
+    { __typename?: 'IABParentCategory' } & Pick<
+      IabParentCategory,
+      'externalId' | 'name' | 'slug'
+    > & {
+        children: Array<
+          { __typename?: 'IABCategory' } & Pick<
+            IabCategory,
+            'externalId' | 'name' | 'slug'
+          >
+        >;
+      }
+  >;
+};
+
 export type GetPublishedCollectionsQueryVariables = Exact<{
   page?: Maybe<Scalars['Int']>;
   perPage?: Maybe<Scalars['Int']>;
@@ -713,6 +774,16 @@ export const CollectionDataFragmentDoc = gql`
       name
       slug
     }
+    IABParentCategory {
+      externalId
+      name
+      slug
+    }
+    IABChildCategory {
+      externalId
+      name
+      slug
+    }
   }
   ${CollectionAuthorDataFragmentDoc}
 `;
@@ -740,6 +811,8 @@ export const CreateCollectionDocument = gql`
     $status: CollectionStatus!
     $authorExternalId: String!
     $curationCategoryExternalId: String
+    $IABParentCategoryExternalId: String
+    $IABChildCategoryExternalId: String
   ) {
     createCollection(
       data: {
@@ -750,6 +823,8 @@ export const CreateCollectionDocument = gql`
         status: $status
         authorExternalId: $authorExternalId
         curationCategoryExternalId: $curationCategoryExternalId
+        IABParentCategoryExternalId: $IABParentCategoryExternalId
+        IABChildCategoryExternalId: $IABChildCategoryExternalId
       }
     ) {
       ...CollectionData
@@ -782,6 +857,8 @@ export type CreateCollectionMutationFn = Apollo.MutationFunction<
  *      status: // value for 'status'
  *      authorExternalId: // value for 'authorExternalId'
  *      curationCategoryExternalId: // value for 'curationCategoryExternalId'
+ *      IABParentCategoryExternalId: // value for 'IABParentCategoryExternalId'
+ *      IABChildCategoryExternalId: // value for 'IABChildCategoryExternalId'
  *   },
  * });
  */
@@ -1074,6 +1151,8 @@ export const UpdateCollectionDocument = gql`
     $status: CollectionStatus!
     $authorExternalId: String!
     $curationCategoryExternalId: String
+    $IABParentCategoryExternalId: String
+    $IABChildCategoryExternalId: String
     $imageUrl: Url
   ) {
     updateCollection(
@@ -1086,6 +1165,8 @@ export const UpdateCollectionDocument = gql`
         status: $status
         authorExternalId: $authorExternalId
         curationCategoryExternalId: $curationCategoryExternalId
+        IABParentCategoryExternalId: $IABParentCategoryExternalId
+        IABChildCategoryExternalId: $IABChildCategoryExternalId
         imageUrl: $imageUrl
       }
     ) {
@@ -1120,6 +1201,8 @@ export type UpdateCollectionMutationFn = Apollo.MutationFunction<
  *      status: // value for 'status'
  *      authorExternalId: // value for 'authorExternalId'
  *      curationCategoryExternalId: // value for 'curationCategoryExternalId'
+ *      IABParentCategoryExternalId: // value for 'IABParentCategoryExternalId'
+ *      IABChildCategoryExternalId: // value for 'IABChildCategoryExternalId'
  *      imageUrl: // value for 'imageUrl'
  *   },
  * });
@@ -1949,6 +2032,70 @@ export type GetDraftCollectionsLazyQueryHookResult = ReturnType<
 export type GetDraftCollectionsQueryResult = Apollo.QueryResult<
   GetDraftCollectionsQuery,
   GetDraftCollectionsQueryVariables
+>;
+export const GetIabCategoriesDocument = gql`
+  query getIABCategories {
+    getIABCategories {
+      externalId
+      name
+      slug
+      children {
+        externalId
+        name
+        slug
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetIabCategoriesQuery__
+ *
+ * To run a query within a React component, call `useGetIabCategoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetIabCategoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetIabCategoriesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetIabCategoriesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetIabCategoriesQuery,
+    GetIabCategoriesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetIabCategoriesQuery, GetIabCategoriesQueryVariables>(
+    GetIabCategoriesDocument,
+    options
+  );
+}
+export function useGetIabCategoriesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetIabCategoriesQuery,
+    GetIabCategoriesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetIabCategoriesQuery,
+    GetIabCategoriesQueryVariables
+  >(GetIabCategoriesDocument, options);
+}
+export type GetIabCategoriesQueryHookResult = ReturnType<
+  typeof useGetIabCategoriesQuery
+>;
+export type GetIabCategoriesLazyQueryHookResult = ReturnType<
+  typeof useGetIabCategoriesLazyQuery
+>;
+export type GetIabCategoriesQueryResult = Apollo.QueryResult<
+  GetIabCategoriesQuery,
+  GetIabCategoriesQueryVariables
 >;
 export const GetPublishedCollectionsDocument = gql`
   query getPublishedCollections($page: Int, $perPage: Int) {

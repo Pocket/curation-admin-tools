@@ -7,12 +7,16 @@ import {
   CollectionStatus,
 } from '../../api/collection-api';
 import { CollectionForm } from './CollectionForm';
-import { CurationCategory } from '../../api/collection-api/generatedTypes';
+import {
+  CurationCategory,
+  IabParentCategory,
+} from '../../api/collection-api/generatedTypes';
 
 describe('The CollectionForm component', () => {
   let collection: CollectionModel;
   let authors: AuthorModel[];
   let curationCategories: CurationCategory[];
+  let iabCategories: IabParentCategory[];
   let handleSubmit = jest.fn();
 
   beforeEach(() => {
@@ -69,6 +73,21 @@ describe('The CollectionForm component', () => {
       },
       { externalId: 'cde-234', name: 'Food', slug: 'food' },
     ];
+
+    iabCategories = [
+      {
+        externalId: 'abc-345',
+        name: 'Education',
+        slug: 'education',
+        children: [
+          {
+            externalId: '123-abc',
+            name: 'Language Learning',
+            slug: 'language-learning',
+          },
+        ],
+      },
+    ];
   });
 
   it('renders successfully', () => {
@@ -77,6 +96,7 @@ describe('The CollectionForm component', () => {
         authors={authors}
         collection={collection}
         curationCategories={curationCategories}
+        iabCategories={iabCategories}
         onSubmit={handleSubmit}
       />
     );
@@ -92,6 +112,7 @@ describe('The CollectionForm component', () => {
         authors={authors}
         collection={collection}
         curationCategories={curationCategories}
+        iabCategories={iabCategories}
         onSubmit={handleSubmit}
       />
     );
@@ -106,6 +127,7 @@ describe('The CollectionForm component', () => {
         authors={authors}
         collection={collection}
         curationCategories={curationCategories}
+        iabCategories={iabCategories}
         editMode={false}
         onSubmit={handleSubmit}
       />
@@ -121,6 +143,7 @@ describe('The CollectionForm component', () => {
         authors={authors}
         collection={collection}
         curationCategories={curationCategories}
+        iabCategories={iabCategories}
         onSubmit={handleSubmit}
       />
     );
@@ -150,6 +173,7 @@ describe('The CollectionForm component', () => {
         authors={authors}
         collection={collection}
         curationCategories={curationCategories}
+        iabCategories={iabCategories}
         onSubmit={handleSubmit}
       />
     );
@@ -200,6 +224,7 @@ describe('The CollectionForm component', () => {
         authors={authors}
         collection={collection}
         curationCategories={curationCategories}
+        iabCategories={iabCategories}
         onSubmit={handleSubmit}
       />
     );
@@ -244,6 +269,7 @@ describe('The CollectionForm component', () => {
         authors={authors}
         collection={collection}
         curationCategories={curationCategories}
+        iabCategories={iabCategories}
         onSubmit={handleSubmit}
       />
     );
@@ -283,6 +309,7 @@ describe('The CollectionForm component', () => {
         authors={authors}
         collection={collection}
         curationCategories={curationCategories}
+        iabCategories={iabCategories}
         onSubmit={handleSubmit}
       />
     );
@@ -317,6 +344,7 @@ describe('The CollectionForm component', () => {
         authors={authors}
         collection={collection}
         curationCategories={curationCategories}
+        iabCategories={iabCategories}
         onSubmit={handleSubmit}
       />
     );
