@@ -4,8 +4,6 @@ import { useNotifications } from './useNotifications';
 import { SnackbarProvider } from 'notistack';
 
 describe('The useNotification hook', () => {
-  // The notistack package we use to deliver notifications
-  // needs a context wrapper
   const wrapper: React.FC = (props): JSX.Element => (
     <SnackbarProvider maxSnack={3}>{props.children}</SnackbarProvider>
   );
