@@ -4,7 +4,6 @@ import {
   FormHelperText,
   InputLabel,
   Select,
-  TextField,
 } from '@material-ui/core';
 import { FieldInputProps, FieldMetaProps } from 'formik/dist/types';
 import { SelectProps } from '@material-ui/core/Select/Select';
