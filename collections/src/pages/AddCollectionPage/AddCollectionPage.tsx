@@ -7,14 +7,12 @@ import {
   CollectionModel,
   CollectionStatus,
   useCreateCollectionMutation,
-  useGetAuthorsQuery,
 } from '../../api/collection-api';
 import { CollectionForm, HandleApiResponse } from '../../components';
 import { useNotifications } from '../../hooks/useNotifications';
 import {
   GetDraftCollectionsDocument,
-  useGetCurationCategoriesQuery,
-  useGetIabCategoriesQuery,
+  useGetInitialCollectionFormDataQuery,
 } from '../../api/collection-api/generatedTypes';
 
 export const AddCollectionPage: React.FC = (): JSX.Element => {
@@ -37,24 +35,10 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
     authors: [],
   };
 
-  // Load authors
-  const { loading, error, data: authorsData } = useGetAuthorsQuery({
+  // Load data for all the dropdowns in the add collection form
+  const { loading, error, data } = useGetInitialCollectionFormDataQuery({
     variables: { page: 1, perPage: 1000 },
   });
-
-  // load curation categories
-  const {
-    loading: curationCategoriesLoading,
-    error: curationCategoriesError,
-    data: curationCategoriesData,
-  } = useGetCurationCategoriesQuery();
-
-  // load IAB categories
-  const {
-    loading: iabCategoriesLoading,
-    error: iabCategoriesError,
-    data: iabCategoriesData,
-  } = useGetIabCategoriesQuery();
 
   // prepare the "add new collection" mutation
   // has to be done at the top level of the component because it's a hook
@@ -110,36 +94,16 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
       </Box>
       <Paper elevation={4}>
         <Box p={2} mt={3}>
-          {!authorsData && (
-            <HandleApiResponse loading={loading} error={error} />
-          )}
+          {!data && <HandleApiResponse loading={loading} error={error} />}
 
-          {!curationCategoriesData && (
-            <HandleApiResponse
-              loading={curationCategoriesLoading}
-              error={curationCategoriesError}
-            />
-          )}
-
-          {!iabCategoriesData && (
-            <HandleApiResponse
-              loading={iabCategoriesLoading}
-              error={iabCategoriesError}
-            />
-          )}
-
-          {authorsData &&
-            authorsData.getCollectionAuthors &&
-            curationCategoriesData &&
-            curationCategoriesData.getCurationCategories &&
-            iabCategoriesData &&
-            iabCategoriesData.getIABCategories && (
+          {data &&
+            data.getCollectionAuthors &&
+            data.getCurationCategories &&
+            data.getIABCategories && (
               <CollectionForm
-                authors={authorsData.getCollectionAuthors.authors}
-                curationCategories={
-                  curationCategoriesData.getCurationCategories
-                }
-                iabCategories={iabCategoriesData.getIABCategories}
+                authors={data.getCollectionAuthors.authors}
+                curationCategories={data.getCurationCategories}
+                iabCategories={data.getIABCategories}
                 collection={collection}
                 onSubmit={handleSubmit}
                 editMode={false}
