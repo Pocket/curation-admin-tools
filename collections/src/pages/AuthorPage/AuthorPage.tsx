@@ -25,6 +25,10 @@ import {
 } from '../../api/collection-api';
 import { useNotifications } from '../../hooks/useNotifications';
 import { FormikHelpers } from 'formik/dist/types';
+import {
+  GetAuthorsDocument,
+  GetInitialCollectionFormDataDocument,
+} from '../../api/collection-api/generatedTypes';
 
 interface AuthorPageProps {
   author?: AuthorModel;
@@ -97,6 +101,18 @@ export const AuthorPage = (): JSX.Element => {
         bio: values.bio,
         active: values.active,
       },
+      refetchQueries: [
+        // make sure the Authors page is updated when we add a new author
+        {
+          query: GetAuthorsDocument,
+          variables: { perPage: 50 },
+        },
+        // The lookup query for collection form dropdowns also needs a refresh
+        {
+          query: GetInitialCollectionFormDataDocument,
+          variables: { page: 1, perPage: 1000 },
+        },
+      ],
     })
       .then(({ data }) => {
         showNotification('Author updated successfully!', 'success');
