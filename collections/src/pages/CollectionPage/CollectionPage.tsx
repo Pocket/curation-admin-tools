@@ -49,10 +49,13 @@ import {
 } from '../../api/collection-api/generatedTypes';
 import { useNotifications } from '../../hooks/useNotifications';
 import { transformAuthors } from '../../utils/transformAuthors';
+import { buildSnowplowEvent, buildSnowplowEntity } from '../../utils/snowplow';
 
 interface CollectionPageProps {
   collection?: Omit<Collection, 'stories'>;
 }
+
+const SNOWPLOW = (window as any).snowplow;
 
 export const CollectionPage = (): JSX.Element => {
   // Prepare state vars and helper methods for API notifications
@@ -214,6 +217,19 @@ export const CollectionPage = (): JSX.Element => {
         showNotification('Collection updated successfully!', 'success');
 
         if (collection) {
+          // send snowplow event prior to updating the UI/collection object
+          SNOWPLOW(
+            'trackSelfDescribingEvent',
+            buildSnowplowEvent('collection edit'),
+            [
+              // old collection
+              buildSnowplowEntity('old', collection),
+              // new collection
+              // data.updateCollection doesn't seem to contain publishedAt - why?
+              buildSnowplowEntity('new', data?.updateCollection),
+            ]
+          );
+
           collection.title = data?.updateCollection?.title!;
           collection.slug = data?.updateCollection?.slug!;
           collection.excerpt = data?.updateCollection?.excerpt;

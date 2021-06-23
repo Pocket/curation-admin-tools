@@ -28,4 +28,10 @@ export const config = {
     // (we use the default dash: -)
     strict: true,
   },
+  snowplow: {
+    schemas: {
+      objectUpdate: 'iglu:com.pocket/object_update/jsonschema/1-0-4',
+      collection: 'iglu:com.pocket/collection/jsonschema/1-0-0',
+    },
+  },
 };
