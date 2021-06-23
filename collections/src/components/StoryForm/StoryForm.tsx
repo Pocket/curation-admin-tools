@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import * as yup from 'yup';
-import { FormikValues, useFormik } from 'formik';
+import { ApolloError } from '@apollo/client';
 import {
   Box,
   CardMedia,
@@ -10,14 +9,21 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import { Button, MarkdownPreview } from '../';
+import { FormikValues, useFormik } from 'formik';
+import { FormikHelpers } from 'formik/dist/types';
+import {
+  Button,
+  FormikTextField,
+  MarkdownPreview,
+  SharedFormButtons,
+  SharedFormButtonsProps,
+} from '../';
+import { useNotifications } from '../../hooks/useNotifications';
+import { useStyles } from './StoryForm.styles';
+import { validationSchema } from './StoryForm.validation';
 import { StoryModel } from '../../api/collection-api';
 import { client, useGetStoryFromParserLazyQuery } from '../../api/client-api';
-import { useStyles } from './StoryForm.styles';
 import { CollectionStoryAuthor } from '../../api/collection-api/generatedTypes';
-import { useNotifications } from '../../hooks/useNotifications';
-import { ApolloError } from '@apollo/client';
-import { FormikHelpers } from 'formik/dist/types';
 
 interface StoryFormProps {
   /**
@@ -44,14 +50,11 @@ interface StoryFormProps {
    * an existing story.
    */
   showPopulateButton?: boolean;
-
-  /**
-   * What to do if the user clicks on the Cancel button
-   */
-  onCancel?: () => void;
 }
 
-export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
+export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
+  props
+): JSX.Element => {
   const {
     story,
     onCancel,
@@ -104,21 +107,7 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
     // before they actually submit the form
     validateOnChange: false,
     validateOnBlur: false,
-    validationSchema: yup.object({
-      url: yup.string().trim().required('Please enter a URL').min(12),
-      title: yup.string().trim().required('Please enter a title').min(3),
-      excerpt: yup.string().trim().required('Please enter an excerpt').min(12),
-      authors: yup
-        .string()
-        .trim()
-        .min(
-          2, // minimum could be "AP"
-          'Please enter one or more authors, separated by commas.' +
-            ' Please supply at least two characters or leave this field empty' +
-            ' if this story has no authors.'
-        ),
-      publisher: yup.string(),
-    }),
+    validationSchema,
     onSubmit: (values: FormikValues, formikHelpers: FormikHelpers<any>) => {
       onSubmit(values, formikHelpers);
     },
@@ -229,18 +218,11 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
         <Grid item xs={12}>
           <Box display="flex">
             <Box flexGrow={1} alignSelf="center" textOverflow="ellipsis">
-              <TextField
+              <FormikTextField
                 id="url"
                 label="Story URL"
-                fullWidth
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                size="small"
-                variant="outlined"
-                {...formik.getFieldProps('url')}
-                error={!!(formik.touched.url && formik.errors.url)}
-                helperText={formik.errors.url ? formik.errors.url : null}
+                fieldProps={formik.getFieldProps('url')}
+                fieldMeta={formik.getFieldMeta('url')}
               />
             </Box>
             {showPopulateButton && (
@@ -266,18 +248,11 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
         {showOtherFields && (
           <>
             <Grid item xs={12}>
-              <TextField
+              <FormikTextField
                 id="title"
                 label="Title"
-                fullWidth
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                size="small"
-                variant="outlined"
-                {...formik.getFieldProps('title')}
-                error={!!(formik.touched.title && formik.errors.title)}
-                helperText={formik.errors.title ? formik.errors.title : null}
+                fieldProps={formik.getFieldProps('title')}
+                fieldMeta={formik.getFieldMeta('title')}
               />
             </Grid>
             <Grid item xs={12} sm={3}>
@@ -294,57 +269,30 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
             </Grid>
             <Grid item xs={12} sm={9}>
               <Box mb={3}>
-                <TextField
+                <FormikTextField
                   id="authors"
-                  label="Authors (separated by commas)"
-                  fullWidth
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  size="small"
-                  variant="outlined"
-                  {...formik.getFieldProps('authors')}
-                  error={!!(formik.touched.authors && formik.errors.authors)}
-                  helperText={
-                    formik.errors.authors ? formik.errors.authors : null
-                  }
+                  label="Authors (separated by commas"
+                  fieldProps={formik.getFieldProps('authors')}
+                  fieldMeta={formik.getFieldMeta('authors')}
                 />
               </Box>
 
-              <TextField
+              <FormikTextField
                 id="publisher"
                 label="Publisher"
-                fullWidth
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                size="small"
-                variant="outlined"
-                {...formik.getFieldProps('publisher')}
-                error={!!(formik.touched.publisher && formik.errors.publisher)}
-                helperText={
-                  formik.errors.publisher ? formik.errors.publisher : null
-                }
+                fieldProps={formik.getFieldProps('publisher')}
+                fieldMeta={formik.getFieldMeta('publisher')}
               />
             </Grid>
             <Grid item xs={12}>
               <MarkdownPreview minHeight={6.5} source={formik.values.excerpt}>
-                <TextField
+                <FormikTextField
                   id="excerpt"
                   label="Excerpt"
-                  fullWidth
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
+                  fieldProps={formik.getFieldProps('excerpt')}
+                  fieldMeta={formik.getFieldMeta('excerpt')}
                   multiline
                   rows={4}
-                  size="small"
-                  variant="outlined"
-                  {...formik.getFieldProps('excerpt')}
-                  error={!!(formik.touched.excerpt && formik.errors.excerpt)}
-                  helperText={
-                    formik.errors.excerpt ? formik.errors.excerpt : null
-                  }
                 />
               </MarkdownPreview>
             </Grid>
@@ -354,18 +302,7 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
               </Grid>
             )}
             <Grid item xs={12}>
-              <Box display="flex" justifyContent="center">
-                <Box p={1}>
-                  <Button buttonType="positive" type="submit">
-                    Save
-                  </Button>
-                </Box>
-                <Box p={1}>
-                  <Button buttonType="hollow-neutral" onClick={onCancel}>
-                    Cancel
-                  </Button>
-                </Box>
-              </Box>
+              <SharedFormButtons onCancel={onCancel} />
             </Grid>
           </>
         )}

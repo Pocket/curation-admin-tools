@@ -3,6 +3,12 @@ interface StoryAuthor {
   sortOrder: number;
 }
 
+/**
+ * A helper function that transforms a comma-separated string of names
+ * into an array of StoryAuthor objects.
+ *
+ * @param authors
+ */
 export const transformAuthors = (authors: string): StoryAuthor[] => {
   // get rid of any whitespace on the sides
   authors = authors.trim();

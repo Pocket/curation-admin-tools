@@ -1,27 +1,23 @@
 import React, { useState } from 'react';
+import { Box, Grid, LinearProgress } from '@material-ui/core';
 import slugify from 'slugify';
-import * as yup from 'yup';
 import { FormikValues, useFormik } from 'formik';
-
+import { FormikHelpers } from 'formik/dist/types';
 import {
-  Box,
-  FormControl,
-  FormHelperText,
-  Grid,
-  InputLabel,
-  LinearProgress,
-  Select,
-  TextField,
-} from '@material-ui/core';
+  Button,
+  FormikSelectField,
+  FormikTextField,
+  MarkdownPreview,
+  SharedFormButtons,
+  SharedFormButtonsProps,
+} from '../';
+import { getValidationSchema } from './CollectionForm.validation';
+import { config } from '../../config';
 import {
   AuthorModel,
   CollectionModel,
   CollectionStatus,
 } from '../../api/collection-api';
-import { Button, MarkdownPreview } from '../';
-import { useStyles } from './CollectionForm.styles';
-import { FormikHelpers } from 'formik/dist/types';
-import { config } from '../../config';
 import {
   CurationCategory,
   IabCategory,
@@ -56,26 +52,14 @@ interface CollectionFormProps {
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ) => void | Promise<any>;
-
-  /**
-   * Show "Cancel" button if the form is used to edit a new collection
-   * rather than add a new one. Also make "Status" field read-only
-   * True by default
-   */
-  editMode?: boolean;
-
-  /**
-   * What to do if the user clicks on the Cancel button
-   */
-  onCancel?: () => void;
 }
 
 /**
  * A form for adding authors or editing information for existing authors
  */
-export const CollectionForm: React.FC<CollectionFormProps> = (
-  props
-): JSX.Element => {
+export const CollectionForm: React.FC<
+  CollectionFormProps & SharedFormButtonsProps
+> = (props): JSX.Element => {
   const {
     authors,
     collection,
@@ -85,7 +69,6 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
     onSubmit,
     onCancel,
   } = props;
-  const classes = useStyles();
 
   // get a list of author ids for the validation schema
   const authorIds: string[] = [];
@@ -117,48 +100,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
     // before they actually submit the form
     validateOnBlur: false,
     validateOnChange: false,
-    validationSchema: yup.object({
-      title: yup
-        .string()
-        .required('Please enter a title for this collection')
-        .min(6),
-      slug: yup
-        .string()
-        .trim()
-        .required(
-          'Please enter a slug or use the "Suggest slug" button to generate one from the collection title'
-        )
-        .matches(
-          /^[a-z0-9-]+$/,
-          'Slug can only contain lowercase alphanumeric characters and hyphens'
-        )
-        .min(6),
-      excerpt: yup.string(),
-      intro: yup.string(),
-      status: yup
-        .mixed<CollectionStatus>()
-        .oneOf(Object.values(CollectionStatus))
-        .required(),
-      authorExternalId: yup
-        .string()
-        .oneOf(authorIds)
-        .required('Please choose an author'),
-      curationCategoryExternalId: yup.string(),
-      IABParentCategoryExternalId: yup.string(),
-      // If an IAB parent category is chosen, require the IAB child category
-      // to be filled in as well.
-      IABChildCategoryExternalId: yup
-        .string()
-        .when('IABParentCategoryExternalId', {
-          is: (value: string) => value && value.length > 0,
-          then: yup
-            .string()
-            .required(
-              'Please choose a child IAB category or leave both IAB categories blank'
-            ),
-          otherwise: yup.string(),
-        }),
-    }),
+    validationSchema: getValidationSchema(authorIds),
     onSubmit: (values, formikHelpers) => {
       onSubmit(values, formikHelpers);
     },
@@ -202,36 +144,22 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
     <form name="collection-form" onSubmit={formik.handleSubmit}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <TextField
+          <FormikTextField
             id="title"
             label="Title"
-            fullWidth
-            InputLabelProps={{
-              shrink: true,
-            }}
-            size="small"
-            variant="outlined"
-            {...formik.getFieldProps('title')}
-            error={!!(formik.touched.title && formik.errors.title)}
-            helperText={formik.errors.title ? formik.errors.title : null}
+            fieldProps={formik.getFieldProps('title')}
+            fieldMeta={formik.getFieldMeta('title')}
           />
         </Grid>
 
         <Grid item xs={12}>
           <Box display="flex">
             <Box flexGrow={1} alignSelf="center" textOverflow="ellipsis">
-              <TextField
+              <FormikTextField
                 id="slug"
                 label="Slug"
-                fullWidth
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                size="small"
-                variant="outlined"
-                {...formik.getFieldProps('slug')}
-                error={!!(formik.touched.slug && formik.errors.slug)}
-                helperText={formik.errors.slug ? formik.errors.slug : null}
+                fieldProps={formik.getFieldProps('slug')}
+                fieldMeta={formik.getFieldMeta('slug')}
               />
             </Box>
             <Box alignSelf="baseline" ml={1}>
@@ -243,197 +171,109 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
         </Grid>
 
         <Grid item xs={12} sm={6}>
-          <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel htmlFor="status" shrink={true}>
-              Status
-            </InputLabel>
-            <Select
-              native
-              disabled={!editMode}
-              label="Status"
-              inputProps={{
-                name: 'status',
-                id: 'status',
-              }}
-              {...formik.getFieldProps('status')}
-            >
-              <option value="DRAFT">Draft</option>
-              <option value="PUBLISHED">Published</option>
-              <option value="ARCHIVED">Archived</option>
-            </Select>
-          </FormControl>
+          <FormikSelectField
+            id="status"
+            label="Status"
+            fieldProps={formik.getFieldProps('status')}
+            fieldMeta={formik.getFieldMeta('status')}
+            disabled={!editMode}
+          >
+            <option value="DRAFT">Draft</option>
+            <option value="PUBLISHED">Published</option>
+            <option value="ARCHIVED">Archived</option>
+          </FormikSelectField>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel htmlFor="authorExternalId">Author</InputLabel>
-            <Select
-              native
-              label="Author"
-              inputProps={{
-                name: 'authorExternalId',
-                id: 'authorExternalId',
-              }}
-              {...formik.getFieldProps('authorExternalId')}
-              error={
-                !!(
-                  formik.touched.authorExternalId &&
-                  formik.errors.authorExternalId
-                )
-              }
-            >
-              <option aria-label="None" value="" />
-              {authors.map((author: AuthorModel) => {
-                return (
-                  <option value={author.externalId} key={author.externalId}>
-                    {author.name}
-                  </option>
-                );
-              })}
-            </Select>
-            <FormHelperText error>
-              {formik.errors.authorExternalId
-                ? formik.errors.authorExternalId
-                : null}
-            </FormHelperText>
-          </FormControl>
+          <FormikSelectField
+            id="authorExternalId"
+            label="Author"
+            fieldProps={formik.getFieldProps('authorExternalId')}
+            fieldMeta={formik.getFieldMeta('authorExternalId')}
+          >
+            <option aria-label="None" value="" />
+            {authors.map((author: AuthorModel) => {
+              return (
+                <option value={author.externalId} key={author.externalId}>
+                  {author.name}
+                </option>
+              );
+            })}
+          </FormikSelectField>
         </Grid>
 
         <Grid item xs={12} sm={6}>
-          <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel htmlFor="curationCategoryExternalId">
-              Curation Category
-            </InputLabel>
-            <Select
-              native
-              label="CurationCategory"
-              inputProps={{
-                name: 'curationCategoryExternalId',
-                id: 'curationCategoryExternalId',
-              }}
-              {...formik.getFieldProps('curationCategoryExternalId')}
-              error={
-                !!(
-                  formik.touched.curationCategoryExternalId &&
-                  formik.errors.curationCategoryExternalId
-                )
-              }
-            >
-              <option aria-label="None" value="" />
-              {curationCategories.map((category: CurationCategory) => {
-                return (
-                  <option value={category.externalId} key={category.externalId}>
-                    {category.name}
-                  </option>
-                );
-              })}
-            </Select>
-          </FormControl>
+          <FormikSelectField
+            id="curationCategoryExternalId"
+            label="Curation Category"
+            fieldProps={formik.getFieldProps('curationCategoryExternalId')}
+            fieldMeta={formik.getFieldMeta('curationCategoryExternalId')}
+          >
+            <option aria-label="None" value="" />
+            {curationCategories.map((category: CurationCategory) => {
+              return (
+                <option value={category.externalId} key={category.externalId}>
+                  {category.name}
+                </option>
+              );
+            })}
+          </FormikSelectField>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel htmlFor="IABParentCategoryExternalId">
-              IAB Parent Category
-            </InputLabel>
-            <Select
-              native
-              label="IABParentCategory"
-              inputProps={{
-                name: 'IABParentCategoryExternalId',
-                id: 'IABParentCategoryExternalId',
-              }}
-              {...formik.getFieldProps('IABParentCategoryExternalId')}
-              error={
-                !!(
-                  formik.touched.IABParentCategoryExternalId &&
-                  formik.errors.IABParentCategoryExternalId
-                )
-              }
-            >
-              <option aria-label="None" value="" />
-
-              {iabCategories.map((category: IabParentCategory) => {
-                return (
-                  <option value={category.externalId} key={category.externalId}>
-                    {category.name}
-                  </option>
-                );
-              })}
-            </Select>
-          </FormControl>
+          <FormikSelectField
+            id="IABParentCategoryExternalId"
+            label="IAB Parent Category"
+            fieldProps={formik.getFieldProps('IABParentCategoryExternalId')}
+            fieldMeta={formik.getFieldMeta('IABParentCategoryExternalId')}
+          >
+            <option aria-label="None" value="" />
+            {iabCategories.map((category: IabParentCategory) => {
+              return (
+                <option value={category.externalId} key={category.externalId}>
+                  {category.name}
+                </option>
+              );
+            })}
+          </FormikSelectField>
           <br />
           <br />
-          <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel htmlFor="IABChildCategoryExternalId">
-              IAB Child Category
-            </InputLabel>
-            <Select
-              native
-              label="IABChildCategory"
-              inputProps={{
-                name: 'IABChildCategoryExternalId',
-                id: 'IABChildCategoryExternalId',
-              }}
-              {...formik.getFieldProps('IABChildCategoryExternalId')}
-              error={
-                !!(
-                  formik.touched.IABChildCategoryExternalId &&
-                  formik.errors.IABChildCategoryExternalId
-                )
-              }
-            >
-              <option aria-label="None" value="" />
-
-              {iabChildrenCategories.map((category: IabCategory) => {
-                return (
-                  <option value={category.externalId} key={category.externalId}>
-                    {category.name}
-                  </option>
-                );
-              })}
-            </Select>
-            <FormHelperText error>
-              {formik.errors.IABChildCategoryExternalId
-                ? formik.errors.IABChildCategoryExternalId
-                : null}
-            </FormHelperText>
-          </FormControl>
+          <FormikSelectField
+            id="IABChildCategoryExternalId"
+            label="IAB Child Category"
+            fieldProps={formik.getFieldProps('IABChildCategoryExternalId')}
+            fieldMeta={formik.getFieldMeta('IABChildCategoryExternalId')}
+          >
+            <option aria-label="None" value="" />
+            {iabChildrenCategories.map((category: IabCategory) => {
+              return (
+                <option value={category.externalId} key={category.externalId}>
+                  {category.name}
+                </option>
+              );
+            })}
+          </FormikSelectField>
         </Grid>
         <Grid item xs={12}>
           <MarkdownPreview minHeight={6.5} source={formik.values.excerpt}>
-            <TextField
+            <FormikTextField
               id="excerpt"
               label="Excerpt"
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
+              fieldProps={formik.getFieldProps('excerpt')}
+              fieldMeta={formik.getFieldMeta('excerpt')}
               multiline
               rows={4}
-              size="small"
-              variant="outlined"
-              {...formik.getFieldProps('excerpt')}
-              error={!!(formik.touched.excerpt && formik.errors.excerpt)}
-              helperText={formik.errors.excerpt ? formik.errors.excerpt : null}
             />
           </MarkdownPreview>
         </Grid>
 
         <Grid item xs={12}>
           <MarkdownPreview minHeight={15.5} source={formik.values.intro}>
-            <TextField
+            <FormikTextField
               id="intro"
               label="Intro"
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
+              fieldProps={formik.getFieldProps('intro')}
+              fieldMeta={formik.getFieldMeta('intro')}
               multiline
               rows={12}
-              size="small"
-              variant="outlined"
-              {...formik.getFieldProps('intro')}
-              error={!!(formik.touched.intro && formik.errors.intro)}
-              helperText={formik.errors.intro ? formik.errors.intro : null}
             />
           </MarkdownPreview>
         </Grid>
@@ -445,20 +285,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
         )}
 
         <Grid item xs={12}>
-          <Box display="flex" justifyContent="center">
-            <Box p={1}>
-              <Button buttonType="positive" type="submit">
-                Save
-              </Button>
-            </Box>
-            {editMode && (
-              <Box p={1}>
-                <Button buttonType="hollow-neutral" onClick={onCancel}>
-                  Cancel
-                </Button>
-              </Box>
-            )}
-          </Box>
+          <SharedFormButtons editMode={editMode} onCancel={onCancel} />
         </Grid>
       </Grid>
     </form>

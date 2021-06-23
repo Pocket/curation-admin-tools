@@ -1,18 +1,24 @@
 import React from 'react';
-import slugify from 'slugify';
-import * as yup from 'yup';
-import { FormikValues, useFormik } from 'formik';
+
 import {
   Box,
   FormControlLabel,
   Grid,
   LinearProgress,
   Switch,
-  TextField,
 } from '@material-ui/core';
-import { AuthorModel } from '../../api/collection-api';
-import { Button, MarkdownPreview } from '../';
+import slugify from 'slugify';
+import { FormikValues, useFormik } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
+import {
+  Button,
+  FormikTextField,
+  MarkdownPreview,
+  SharedFormButtons,
+  SharedFormButtonsProps,
+} from '../';
+import { AuthorModel } from '../../api/collection-api';
+import { validationSchema } from './AuthorForm.validation';
 import { config } from '../../config';
 
 interface AuthorFormProps {
@@ -25,24 +31,15 @@ interface AuthorFormProps {
    * What do we do with the submitted data?
    */
   onSubmit: (values: FormikValues, formikHelpers: FormikHelpers<any>) => void;
-
-  /**
-   * Do we need to show the cancel button? Not on the 'Add Author' page
-   * True by default
-   */
-  editMode?: boolean;
-
-  /**
-   * What to do if the user clicks on the Cancel button
-   */
-  onCancel?: () => void;
 }
 
 /**
  * A form for adding authors or editing information for existing authors
  */
-export const AuthorForm: React.FC<AuthorFormProps> = (props): JSX.Element => {
-  const { author, editMode = true, onCancel, onSubmit } = props;
+export const AuthorForm: React.FC<AuthorFormProps & SharedFormButtonsProps> = (
+  props
+): JSX.Element => {
+  const { author, onSubmit, editMode, onCancel } = props;
 
   /**
    * Set up form validation
@@ -58,25 +55,7 @@ export const AuthorForm: React.FC<AuthorFormProps> = (props): JSX.Element => {
     // before they actually submit the form
     validateOnChange: false,
     validateOnBlur: false,
-    validationSchema: yup.object({
-      name: yup
-        .string()
-        .required('Please enter the full name of the author')
-        .min(6),
-      slug: yup
-        .string()
-        .trim()
-        .required(
-          'Please enter a slug or use the "Suggest slug" button to generate one from the name of the author'
-        )
-        .matches(
-          /^[a-z0-9-]+$/,
-          'Slug can only contain lowercase alphanumeric characters and hyphens'
-        )
-        .min(6),
-      bio: yup.string(),
-      active: yup.boolean().required(),
-    }),
+    validationSchema,
     onSubmit: (values, formikHelpers) => {
       onSubmit(values, formikHelpers);
     },
@@ -94,36 +73,22 @@ export const AuthorForm: React.FC<AuthorFormProps> = (props): JSX.Element => {
     <form name="author-form" onSubmit={formik.handleSubmit}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <TextField
+          <FormikTextField
             id="name"
             label="Full name"
-            fullWidth
-            InputLabelProps={{
-              shrink: true,
-            }}
-            size="small"
-            variant="outlined"
-            {...formik.getFieldProps('name')}
-            error={!!(formik.touched.name && formik.errors.name)}
-            helperText={formik.errors.name ? formik.errors.name : null}
+            fieldProps={formik.getFieldProps('name')}
+            fieldMeta={formik.getFieldMeta('name')}
           />
         </Grid>
 
         <Grid item xs={12}>
           <Box display="flex">
             <Box flexGrow={1} alignSelf="center" textOverflow="ellipsis">
-              <TextField
+              <FormikTextField
                 id="slug"
                 label="Slug"
-                fullWidth
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                size="small"
-                variant="outlined"
-                {...formik.getFieldProps('slug')}
-                error={!!(formik.touched.slug && formik.errors.slug)}
-                helperText={formik.errors.slug ? formik.errors.slug : null}
+                fieldProps={formik.getFieldProps('slug')}
+                fieldMeta={formik.getFieldMeta('slug')}
               />
             </Box>
             <Box alignSelf="baseline" ml={1}>
@@ -136,20 +101,13 @@ export const AuthorForm: React.FC<AuthorFormProps> = (props): JSX.Element => {
 
         <Grid item xs={12}>
           <MarkdownPreview minHeight={15.5} source={formik.values.bio}>
-            <TextField
+            <FormikTextField
               id="bio"
               label="Bio"
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
+              fieldProps={formik.getFieldProps('bio')}
+              fieldMeta={formik.getFieldMeta('bio')}
               multiline
               rows={12}
-              size="small"
-              variant="outlined"
-              {...formik.getFieldProps('bio')}
-              error={!!(formik.touched.bio && formik.errors.bio)}
-              helperText={formik.errors.bio ? formik.errors.bio : null}
             />
           </MarkdownPreview>
         </Grid>
@@ -175,20 +133,7 @@ export const AuthorForm: React.FC<AuthorFormProps> = (props): JSX.Element => {
         )}
 
         <Grid item xs={12}>
-          <Box display="flex" justifyContent="center">
-            <Box p={1}>
-              <Button buttonType="positive" type="submit">
-                Save
-              </Button>
-            </Box>
-            {editMode && (
-              <Box p={1}>
-                <Button buttonType="hollow-neutral" onClick={onCancel}>
-                  Cancel
-                </Button>
-              </Box>
-            )}
-          </Box>
+          <SharedFormButtons editMode={editMode} onCancel={onCancel} />
         </Grid>
       </Grid>
     </form>

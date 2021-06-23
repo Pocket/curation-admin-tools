@@ -29,7 +29,6 @@ import {
 import {
   CollectionModel,
   StoryModel,
-  useGetAuthorsQuery,
   useGetCollectionByExternalIdQuery,
   useGetCollectionStoriesQuery,
   useUpdateCollectionMutation,
@@ -48,8 +47,7 @@ import {
   GetCollectionByExternalIdDocument,
   GetDraftCollectionsDocument,
   GetPublishedCollectionsDocument,
-  useGetCurationCategoriesQuery,
-  useGetIabCategoriesQuery,
+  useGetInitialCollectionFormDataQuery,
 } from '../../api/collection-api/generatedTypes';
 import { transformAuthors } from '../../utils/transformAuthors';
 import { FormikHelpers } from 'formik/dist/types';
@@ -115,26 +113,14 @@ export const CollectionPage = (): JSX.Element => {
     setCollection(JSON.parse(JSON.stringify(data.getCollection)));
   }
 
-  // Load authors for the dropdown in the edit form
+  // Load data for all the dropdowns in the edit collection form
   const {
-    loading: authorsLoading,
-    error: authorsError,
-    data: authorsData,
-  } = useGetAuthorsQuery({ variables: { page: 1, perPage: 1000 } });
-
-  // load curation categories
-  const {
-    loading: curationCategoriesLoading,
-    error: curationCategoriesError,
-    data: curationCategoriesData,
-  } = useGetCurationCategoriesQuery();
-
-  // load IAB categories
-  const {
-    loading: iabCategoriesLoading,
-    error: iabCategoriesError,
-    data: iabCategoriesData,
-  } = useGetIabCategoriesQuery();
+    loading: initialCollectionFormLoading,
+    error: initialCollectionFormError,
+    data: initialCollectionFormData,
+  } = useGetInitialCollectionFormDataQuery({
+    variables: { page: 1, perPage: 1000 },
+  });
 
   // Load collection stories - deliberately in a separate query
   const {
@@ -511,40 +497,26 @@ export const CollectionPage = (): JSX.Element => {
                 <Box mb={2}>
                   <h3>Edit Collection</h3>
                 </Box>
-                {!authorsData && (
+                {!initialCollectionFormData && (
                   <HandleApiResponse
-                    loading={authorsLoading}
-                    error={authorsError}
+                    loading={initialCollectionFormLoading}
+                    error={initialCollectionFormError}
                   />
                 )}
 
-                {!curationCategoriesData && (
-                  <HandleApiResponse
-                    loading={curationCategoriesLoading}
-                    error={curationCategoriesError}
-                  />
-                )}
-
-                {!iabCategoriesData && (
-                  <HandleApiResponse
-                    loading={iabCategoriesLoading}
-                    error={iabCategoriesError}
-                  />
-                )}
-
-                {authorsData &&
-                  authorsData.getCollectionAuthors &&
-                  curationCategoriesData &&
-                  curationCategoriesData.getCurationCategories &&
-                  iabCategoriesData &&
-                  iabCategoriesData.getIABCategories && (
+                {initialCollectionFormData &&
+                  initialCollectionFormData.getCollectionAuthors &&
+                  initialCollectionFormData.getCurationCategories &&
+                  initialCollectionFormData.getIABCategories && (
                     <CollectionForm
-                      authors={authorsData.getCollectionAuthors.authors}
+                      authors={
+                        initialCollectionFormData.getCollectionAuthors.authors
+                      }
                       collection={collection}
                       curationCategories={
-                        curationCategoriesData.getCurationCategories
+                        initialCollectionFormData.getCurationCategories
                       }
-                      iabCategories={iabCategoriesData.getIABCategories}
+                      iabCategories={initialCollectionFormData.getIABCategories}
                       editMode={true}
                       onCancel={toggleEditForm}
                       onSubmit={handleSubmit}

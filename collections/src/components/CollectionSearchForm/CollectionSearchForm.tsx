@@ -1,6 +1,4 @@
 import React from 'react';
-import * as yup from 'yup';
-import { FormikValues, useFormik } from 'formik';
 
 import {
   Box,
@@ -10,8 +8,9 @@ import {
   Select,
   TextField,
 } from '@material-ui/core';
-import { CollectionStatus } from '../../api/collection-api';
 import { Button } from '../';
+import { FormikValues, useFormik } from 'formik';
+import { validationSchema } from './CollectionSearchForm.validation';
 
 interface CollectionSearchFormProps {
   /**
@@ -44,19 +43,7 @@ export const CollectionSearchForm: React.FC<CollectionSearchFormProps> = (
     validateOnChange: false,
     // TODO: we should write a custom validator that makes sure at least one of the
     // fields is filled out
-    validationSchema: yup.object({
-      title: yup.string().min(3),
-      author: yup.string().min(3),
-      status: yup
-        .mixed<CollectionStatus>()
-        .oneOf(Object.values(CollectionStatus)),
-      filterRequired: yup.bool().when(['title', 'author', 'status'], {
-        is: (title: any, author: any, status: any) =>
-          !title && !author && !status,
-        then: yup.bool().required('at least one filter is required'),
-        otherwise: yup.bool(),
-      }),
-    }),
+    validationSchema,
     onSubmit: (values) => {
       onSubmit(values);
       formik.setSubmitting(false);

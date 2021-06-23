@@ -8,7 +8,10 @@ import {
 } from '../../api/collection-api';
 import { AuthorForm } from '../../components';
 import { useNotifications } from '../../hooks/useNotifications';
-import { GetAuthorsDocument } from '../../api/collection-api/generatedTypes';
+import {
+  GetAuthorsDocument,
+  GetInitialCollectionFormDataDocument,
+} from '../../api/collection-api/generatedTypes';
 import { FormikHelpers } from 'formik/dist/types';
 
 export const AddAuthorPage: React.FC = (): JSX.Element => {
@@ -48,11 +51,16 @@ export const AddAuthorPage: React.FC = (): JSX.Element => {
         imageUrl: '',
         active: values.active,
       },
-      // make sure the Authors page is updated when we add a new author
       refetchQueries: [
+        // make sure the Authors page is updated when we add a new author
         {
           query: GetAuthorsDocument,
           variables: { perPage: 50 },
+        },
+        // The lookup query for collection form dropdowns also needs a refresh
+        {
+          query: GetInitialCollectionFormDataDocument,
+          variables: { page: 1, perPage: 1000 },
         },
       ],
     })
