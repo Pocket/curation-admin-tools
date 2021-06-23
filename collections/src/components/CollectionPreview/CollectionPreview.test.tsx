@@ -3,14 +3,14 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { CollectionPreview } from './CollectionPreview';
 import {
-  CollectionModel,
+  Collection,
   CollectionStatus,
-  StoryModel,
-} from '../../api/collection-api';
+  CollectionStory,
+} from '../../api/collection-api/generatedTypes';
 
 describe('The CollectionPreview component', () => {
-  let collection: CollectionModel;
-  let stories: StoryModel[];
+  let collection: Omit<Collection, 'stories'>;
+  let stories: CollectionStory[];
 
   beforeEach(() => {
     collection = {

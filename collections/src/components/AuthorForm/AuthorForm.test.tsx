@@ -2,10 +2,10 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { AuthorForm } from './AuthorForm';
-import { AuthorModel } from '../../api/collection-api';
+import { CollectionAuthor } from '../../api/collection-api/generatedTypes';
 
 describe('The AuthorForm component', () => {
-  let author: AuthorModel;
+  let author: CollectionAuthor;
   let handleSubmit = jest.fn();
 
   beforeEach(() => {

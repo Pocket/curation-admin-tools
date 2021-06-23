@@ -2,17 +2,15 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Box, Paper } from '@material-ui/core';
 import { FormikValues } from 'formik';
-import {
-  AuthorModel,
-  useCreateCollectionAuthorMutation,
-} from '../../api/collection-api';
+import { FormikHelpers } from 'formik/dist/types';
 import { AuthorForm } from '../../components';
 import { useNotifications } from '../../hooks/useNotifications';
 import {
+  CollectionAuthor,
   GetAuthorsDocument,
   GetInitialCollectionFormDataDocument,
+  useCreateCollectionAuthorMutation,
 } from '../../api/collection-api/generatedTypes';
-import { FormikHelpers } from 'formik/dist/types';
 
 export const AddAuthorPage: React.FC = (): JSX.Element => {
   // Prepare state vars and helper methods for API notifications
@@ -23,7 +21,7 @@ export const AddAuthorPage: React.FC = (): JSX.Element => {
   const history = useHistory();
 
   // Provide a default author object for the form
-  const author: AuthorModel = {
+  const author: CollectionAuthor = {
     externalId: '',
     name: '',
     slug: '',

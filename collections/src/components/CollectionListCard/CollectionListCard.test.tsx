@@ -2,10 +2,13 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { CollectionListCard } from './CollectionListCard';
-import { CollectionModel, CollectionStatus } from '../../api/collection-api';
+import {
+  Collection,
+  CollectionStatus,
+} from '../../api/collection-api/generatedTypes';
 
 describe('The CollectionListCard component', () => {
-  let collection: CollectionModel;
+  let collection: Omit<Collection, 'stories'>;
 
   beforeEach(() => {
     collection = {

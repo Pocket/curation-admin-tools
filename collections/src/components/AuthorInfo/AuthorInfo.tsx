@@ -1,14 +1,14 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import ReactMarkdown from 'react-markdown';
-import { AuthorModel } from '../../api/collection-api';
 import { useStyles } from './AuthorInfo.styles';
+import { CollectionAuthor } from '../../api/collection-api/generatedTypes';
 
 interface AuthorInfoProps {
   /**
    * An object with everything author-related in it.
    */
-  author: AuthorModel;
+  author: CollectionAuthor;
 }
 
 export const AuthorInfo: React.FC<AuthorInfoProps> = (props): JSX.Element => {

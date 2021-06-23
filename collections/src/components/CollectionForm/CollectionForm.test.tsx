@@ -1,20 +1,18 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import {
-  AuthorModel,
-  CollectionModel,
-  CollectionStatus,
-} from '../../api/collection-api';
 import { CollectionForm } from './CollectionForm';
 import {
+  Collection,
+  CollectionAuthor,
+  CollectionStatus,
   CurationCategory,
   IabParentCategory,
 } from '../../api/collection-api/generatedTypes';
 
 describe('The CollectionForm component', () => {
-  let collection: CollectionModel;
-  let authors: AuthorModel[];
+  let collection: Omit<Collection, 'stories'>;
+  let authors: CollectionAuthor[];
   let curationCategories: CurationCategory[];
   let iabCategories: IabParentCategory[];
   let handleSubmit = jest.fn();

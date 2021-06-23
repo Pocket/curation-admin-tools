@@ -16,12 +16,11 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  /** A String representing a date in the format of `yyyy-MM-dd HH:mm:ss` */
   DateString: any;
   Markdown: any;
   /** Integer based represention of a unix timestamp */
   Timestamp: any;
-  /** A String in the format of a url. */
+  /** These are all just renamed strings right now */
   Url: any;
 };
 
@@ -41,10 +40,6 @@ export enum CacheControlScope {
   Private = 'PRIVATE',
 }
 
-/**
- * TODO: add comments to all the fields in here!
- * there's a documentation ticket - do this in that ticket
- */
 export type Collection = {
   __typename?: 'Collection';
   externalId: Scalars['ID'];
@@ -58,6 +53,12 @@ export type Collection = {
   publishedAt?: Maybe<Scalars['DateString']>;
   authors: Array<CollectionAuthor>;
   stories: Array<CollectionStory>;
+  /**
+   * We will never return child categories in this type, so there's no need to
+   * specify `IABParentCategory` here. The basic `IABCategory` is sufficient.
+   */
+  IABParentCategory?: Maybe<IabCategory>;
+  IABChildCategory?: Maybe<IabCategory>;
 };
 
 export type CollectionAuthor = {
@@ -125,6 +126,25 @@ export type DomainMetadata = {
   logo?: Maybe<Scalars['Url']>;
   /** Url for the greyscale logo image */
   logoGreyscale?: Maybe<Scalars['Url']>;
+};
+
+/**
+ * TODO: add comments to all the fields in here!
+ * there's a documentation ticket - do this in that ticket
+ */
+export type IabCategory = {
+  __typename?: 'IABCategory';
+  externalId: Scalars['String'];
+  name: Scalars['String'];
+  slug: Scalars['String'];
+};
+
+export type IabParentCategory = {
+  __typename?: 'IABParentCategory';
+  externalId: Scalars['String'];
+  name: Scalars['String'];
+  slug: Scalars['String'];
+  children: Array<IabCategory>;
 };
 
 /** An image, typically a thumbnail or article view image for an {Item} */
@@ -266,12 +286,20 @@ export type Item = {
    * @deprecated Use the resolved url instead
    */
   resolvedNormalUrl?: Maybe<Scalars['Url']>;
+  /** The pocket HTML string of the article */
+  article?: Maybe<Scalars['String']>;
+  /**
+   * The pocket particle format of the article. Json encoded string.
+   * Reserving the particle field for when we decide to define the
+   * particle format/schema in the graph
+   */
+  particleJson?: Maybe<Scalars['String']>;
+  /** If the item has a syndicated counterpart the syndication information */
+  syndicatedArticle?: Maybe<SyndicatedArticle>;
   /** Helper property to identify if the given item is in the user's list */
   savedItem?: Maybe<SavedItem>;
   /** If the item is a collection allow them to get the collection information */
   collection?: Maybe<Collection>;
-  /** If the item has a syndicated counterpart the syndication information */
-  syndicatedArticle?: Maybe<SyndicatedArticle>;
 };
 
 /** Union type for items that may or may not be processed */
@@ -472,10 +500,6 @@ export type Query = {
   userByToken?: Maybe<User>;
   /** Gets a user for a given ID, only admin/internal service credentials will be allowed to do this for IDs other then their own. */
   userById?: Maybe<User>;
-  /** Retrievs a paged set of published Collections. */
-  getCollections: CollectionsResult;
-  /** Retrieves a Collection by the given slug. The Collection must be published. */
-  getCollectionBySlug?: Maybe<Collection>;
   /**
    * Get the recomendations for a specific topic
    * @deprecated Use `getSlateLineup` with a specific SlateLineup instead.
@@ -493,6 +517,16 @@ export type Query = {
   /** Request a specific `SlateLineup` by id */
   getSlateLineup?: Maybe<SlateLineup>;
   /**
+   * Gets an item by a url
+   * This could return null if the legacy parser service hasn't seen the item yet
+   */
+  getItemByUrl?: Maybe<Item>;
+  /**
+   * Gets an item by an item ID
+   * This could return null if the legacy parser service hasn't seen the item yet
+   */
+  getItemByItemId?: Maybe<Item>;
+  /**
    * Returns a list of unleash toggles that are enabled for a given context.
    *
    * For more details on this check out https://docs.google.com/document/d/1dYS81h-DbQEWNLtK-ajLTylw454S32llPXUyBmDd5mU/edit# and https://getpocket.atlassian.net/wiki/spaces/PE/pages/1191444582/Feature+Flags+-+Unleash
@@ -503,16 +537,10 @@ export type Query = {
    * ~ If no toggles are found, return an empty list
    */
   getUnleashAssignments?: Maybe<UnleashAssignmentList>;
-  /**
-   * Gets an item by a url
-   * This could return null if the legacy parser service hasn't seen the item yet
-   */
-  getItemByUrl?: Maybe<Item>;
-  /**
-   * Gets an item by an item ID
-   * This could return null if the legacy parser service hasn't seen the item yet
-   */
-  getItemByItemId?: Maybe<Item>;
+  /** Retrievs a paged set of published Collections. */
+  getCollections: CollectionsResult;
+  /** Retrieves a Collection by the given slug. The Collection must be published. */
+  getCollectionBySlug?: Maybe<Collection>;
 };
 
 export type QueryUserByTokenArgs = {
@@ -521,15 +549,6 @@ export type QueryUserByTokenArgs = {
 
 export type QueryUserByIdArgs = {
   id: Scalars['ID'];
-};
-
-export type QueryGetCollectionsArgs = {
-  page?: Maybe<Scalars['Int']>;
-  perPage?: Maybe<Scalars['Int']>;
-};
-
-export type QueryGetCollectionBySlugArgs = {
-  slug: Scalars['String'];
 };
 
 export type QueryGetTopicRecommendationsArgs = {
@@ -553,16 +572,29 @@ export type QueryGetSlateLineupArgs = {
   recommendationCount?: Maybe<Scalars['Int']>;
 };
 
-export type QueryGetUnleashAssignmentsArgs = {
-  context: UnleashContext;
-};
-
 export type QueryGetItemByUrlArgs = {
   url: Scalars['String'];
 };
 
 export type QueryGetItemByItemIdArgs = {
   id: Scalars['ID'];
+};
+
+export type QueryGetUnleashAssignmentsArgs = {
+  context: UnleashContext;
+};
+
+export type QueryGetCollectionsArgs = {
+  page?: Maybe<Scalars['Int']>;
+  perPage?: Maybe<Scalars['Int']>;
+};
+
+export type QueryGetCollectionBySlugArgs = {
+  slug: Scalars['String'];
+};
+
+export type RecItUserProfile = {
+  userModels: Array<Scalars['String']>;
 };
 
 /** Represents a Recomendation from Pocket */
@@ -596,9 +628,9 @@ export type RemoteEntity = {
   /** Surrogate primary key. This is usually generated by clients, but will be generated by the server if not passed through creation */
   id: Scalars['ID'];
   /** Unix timestamp of when the entity was created */
-  _createdAt: Scalars['Timestamp'];
+  _createdAt?: Maybe<Scalars['Timestamp']>;
   /** Unix timestamp of when the entity was last updated, if any property on the entity is modified this timestamp is set to the modified time */
-  _updatedAt: Scalars['Timestamp'];
+  _updatedAt?: Maybe<Scalars['Timestamp']>;
   /** Version of the entity, this will increment with each modification of the entity's field */
   _version?: Maybe<Scalars['Int']>;
   /** Unix timestamp of when the entity was deleted, 30 days after this date this entity will be HARD deleted from the database and no longer exist */
@@ -813,9 +845,9 @@ export type Tag = RemoteEntity & {
   /** Surrogate primary key. This is usually generated by clients, but will be generated by the server if not passed through creation */
   id: Scalars['ID'];
   /** Unix timestamp of when the entity was created */
-  _createdAt: Scalars['Timestamp'];
+  _createdAt?: Maybe<Scalars['Timestamp']>;
   /** Unix timestamp of when the entity was last updated, if any property on the entity is modified this timestamp is set to the modified time */
-  _updatedAt: Scalars['Timestamp'];
+  _updatedAt?: Maybe<Scalars['Timestamp']>;
   /** Version of the entity, this will increment with each modification of the entity's field */
   _version?: Maybe<Scalars['Int']>;
   /** Unix timestamp of when the entity was deleted, 30 days after this date this entity will be HARD deleted from the database and no longer exist */
@@ -963,12 +995,22 @@ export type UnleashProperties = {
   locale?: Maybe<Scalars['String']>;
   /** Only required on activation strategies that are based on account age */
   accountCreatedAt?: Maybe<Scalars['String']>;
+  /** Only required on activation strategies that are based whether a user model exists */
+  recItUserProfile?: Maybe<RecItUserProfile>;
 };
 
 export type User = {
   __typename?: 'User';
   /** User id, provided by the user service. */
   id: Scalars['ID'];
+  /** The public avatar url for the user */
+  avatarUrl?: Maybe<Scalars['String']>;
+  /** The public username for the user */
+  username?: Maybe<Scalars['String']>;
+  /** The users first name and last name combined */
+  name?: Maybe<Scalars['String']>;
+  /** A users bio for their profile */
+  description?: Maybe<Scalars['String']>;
   /** Get a general paginated listing of all user items for the user */
   savedItems?: Maybe<SavedItemConnection>;
   /** Get a paginated listing of all user tags */

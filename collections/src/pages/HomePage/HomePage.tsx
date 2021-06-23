@@ -2,10 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Button } from '@material-ui/core';
 import {
-  CollectionModel,
+  Collection,
   useGetDraftCollectionsQuery,
   useGetPublishedCollectionsQuery,
-} from '../../api/collection-api';
+} from '../../api/collection-api/generatedTypes';
 import { CollectionListCard, HandleApiResponse } from '../../components';
 
 /**
@@ -44,7 +44,7 @@ export const HomePage = (): JSX.Element => {
       {!data && <HandleApiResponse loading={loading} error={error} />}
       {data &&
         data.searchCollections.collections.map(
-          (collection: CollectionModel) => {
+          (collection: Omit<Collection, 'stories'>) => {
             return (
               <CollectionListCard
                 key={collection.externalId}
@@ -71,7 +71,7 @@ export const HomePage = (): JSX.Element => {
       )}
       {dataPublished &&
         dataPublished.searchCollections.collections.map(
-          (collection: CollectionModel) => {
+          (collection: Omit<Collection, 'stories'>) => {
             return (
               <CollectionListCard
                 key={collection.externalId}

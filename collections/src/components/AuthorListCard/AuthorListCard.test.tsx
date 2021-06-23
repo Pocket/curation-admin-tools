@@ -2,10 +2,10 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { AuthorListCard } from './AuthorListCard';
-import { AuthorModel } from '../../api/collection-api';
+import { CollectionAuthor } from '../../api/collection-api/generatedTypes';
 
 describe('The AuthorListCard component', () => {
-  let author: AuthorModel;
+  let author: CollectionAuthor;
 
   beforeEach(() => {
     author = {

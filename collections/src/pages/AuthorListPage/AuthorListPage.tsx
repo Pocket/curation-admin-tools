@@ -2,7 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Box } from '@material-ui/core';
 import { AuthorListCard, Button, HandleApiResponse } from '../../components';
-import { AuthorModel, useGetAuthorsQuery } from '../../api/collection-api';
+import {
+  CollectionAuthor,
+  useGetAuthorsQuery,
+} from '../../api/collection-api/generatedTypes';
 
 /**
  * Author List Page
@@ -29,7 +32,7 @@ export const AuthorListPage = (): JSX.Element => {
       {!data && <HandleApiResponse loading={loading} error={error} />}
 
       {data &&
-        data.getCollectionAuthors?.authors.map((author: AuthorModel) => {
+        data.getCollectionAuthors?.authors.map((author: CollectionAuthor) => {
           return <AuthorListCard key={author.externalId} author={author} />;
         })}
     </>

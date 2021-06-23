@@ -3,15 +3,13 @@ import { useHistory } from 'react-router-dom';
 import { Box, Paper } from '@material-ui/core';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
-import {
-  CollectionModel,
-  CollectionStatus,
-  useCreateCollectionMutation,
-} from '../../api/collection-api';
 import { CollectionForm, HandleApiResponse } from '../../components';
 import { useNotifications } from '../../hooks/useNotifications';
 import {
+  Collection,
+  CollectionStatus,
   GetDraftCollectionsDocument,
+  useCreateCollectionMutation,
   useGetInitialCollectionFormDataQuery,
 } from '../../api/collection-api/generatedTypes';
 
@@ -24,7 +22,7 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
   const history = useHistory();
 
   // Provide a default collection object for the form
-  const collection: CollectionModel = {
+  const collection: Collection = {
     externalId: '',
     title: '',
     slug: '',
@@ -33,6 +31,7 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
     imageUrl: '',
     status: CollectionStatus.Draft,
     authors: [],
+    stories: [],
   };
 
   // Load data for all the dropdowns in the add collection form

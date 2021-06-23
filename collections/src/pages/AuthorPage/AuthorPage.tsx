@@ -10,6 +10,7 @@ import {
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { FormikValues } from 'formik';
+import { FormikHelpers } from 'formik/dist/types';
 import {
   AuthorForm,
   AuthorInfo,
@@ -17,21 +18,18 @@ import {
   ImageUpload,
   ScrollToTop,
 } from '../../components';
+import { useNotifications } from '../../hooks/useNotifications';
 import {
-  AuthorModel,
+  CollectionAuthor,
+  GetAuthorsDocument,
+  GetInitialCollectionFormDataDocument,
   useGetAuthorByIdQuery,
   useUpdateCollectionAuthorMutation,
   useUpdateCollectionAuthorImageUrlMutation,
-} from '../../api/collection-api';
-import { useNotifications } from '../../hooks/useNotifications';
-import { FormikHelpers } from 'formik/dist/types';
-import {
-  GetAuthorsDocument,
-  GetInitialCollectionFormDataDocument,
 } from '../../api/collection-api/generatedTypes';
 
 interface AuthorPageProps {
-  author?: AuthorModel;
+  author?: CollectionAuthor;
 }
 
 export const AuthorPage = (): JSX.Element => {
@@ -51,7 +49,7 @@ export const AuthorPage = (): JSX.Element => {
    */
   const location = useLocation<AuthorPageProps>();
 
-  const [author, setAuthor] = useState<AuthorModel | undefined>(
+  const [author, setAuthor] = useState<CollectionAuthor | undefined>(
     location.state?.author
       ? // Deep clone a read-only object that comes from the routing
         JSON.parse(JSON.stringify(location.state?.author))

@@ -10,13 +10,19 @@ import {
   Typography,
 } from '@material-ui/core';
 import ReactMarkdown from 'react-markdown';
-import { CollectionModel } from '../../api/collection-api';
 import { useStyles } from './CollectionListCard.styles';
-import { CollectionAuthor } from '../../api/collection-api/generatedTypes';
+import {
+  Collection,
+  CollectionAuthor,
+} from '../../api/collection-api/generatedTypes';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 
 interface CollectionListCardProps {
-  collection: CollectionModel;
+  /**
+   * An object with everything collection-related in it.
+   * Except for stories. We don't need them in the card.
+   */
+  collection: Omit<Collection, 'stories'>;
 }
 
 /**

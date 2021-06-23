@@ -14,11 +14,9 @@ import {
 import { getValidationSchema } from './CollectionForm.validation';
 import { config } from '../../config';
 import {
-  AuthorModel,
-  CollectionModel,
+  Collection,
+  CollectionAuthor,
   CollectionStatus,
-} from '../../api/collection-api';
-import {
   CurationCategory,
   IabCategory,
   IabParentCategory,
@@ -26,14 +24,14 @@ import {
 
 interface CollectionFormProps {
   /**
-   * An object with everything collection-related in it.
+   * An object with everything collection-related in it bar stories
    */
-  collection: CollectionModel;
+  collection: Omit<Collection, 'stories'>;
 
   /**
-   * A list of CollectionAuthor objects
+   * A list of all collection authors - for the dropdown
    */
-  authors: AuthorModel[];
+  authors: CollectionAuthor[];
 
   /**
    * A list of curation categories
@@ -72,7 +70,7 @@ export const CollectionForm: React.FC<
 
   // get a list of author ids for the validation schema
   const authorIds: string[] = [];
-  authors.forEach((author: AuthorModel) => {
+  authors.forEach((author: CollectionAuthor) => {
     authorIds.push(author.externalId);
   });
 
@@ -191,7 +189,7 @@ export const CollectionForm: React.FC<
             fieldMeta={formik.getFieldMeta('authorExternalId')}
           >
             <option aria-label="None" value="" />
-            {authors.map((author: AuthorModel) => {
+            {authors.map((author: CollectionAuthor) => {
               return (
                 <option value={author.externalId} key={author.externalId}>
                   {author.name}

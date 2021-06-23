@@ -12,25 +12,47 @@ import {
 } from '@material-ui/core';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Dropzone, { FileWithPath } from 'react-dropzone';
-import {
-  AuthorModel,
-  CollectionModel,
-  StoryModel,
-  useImageUploadMutation,
-} from '../../api/collection-api';
 import { Button, Modal } from '../';
 import { useStyles } from './ImageUpload.styles';
 import { formatFileSize } from '../../utils/formatFileSize';
 import { useNotifications } from '../../hooks/useNotifications';
+import {
+  Collection,
+  CollectionAuthor,
+  CollectionStory,
+  useImageUploadMutation,
+} from '../../api/collection-api/generatedTypes';
 
 interface ImageUploadProps {
-  entity: AuthorModel | CollectionModel | StoryModel;
+  /**
+   * Any entity with a customizable image
+   */
+  entity: Omit<Collection, 'stories'> | CollectionAuthor | CollectionStory;
 
+  /**
+   * A path to a placeholder image to show if no image is available
+   */
   placeholder: string;
 
+  /**
+   * A method to call once the image is uploaded to S3 - this typically executes
+   * another mutation linking the freshly uploaded image to the entity
+   *
+   * @param url
+   */
   onImageSave: (url: string) => void;
 }
 
+/**
+ * A component that displays an image for an entity such as a Collection or
+ * CollectionAuthor, or a placeholder if no image is available.
+ *
+ * On click, this component opens up a modal with a drag'n'droppable area
+ * where the user can upload a new image.
+ *
+ * @param props
+ * @constructor
+ */
 export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
   const classes = useStyles();
   const { entity, placeholder, onImageSave } = props;
