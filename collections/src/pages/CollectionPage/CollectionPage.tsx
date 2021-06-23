@@ -9,12 +9,16 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import {
   DragDropContext,
   Draggable,
   Droppable,
   DropResult,
 } from 'react-beautiful-dnd';
+import { FormikValues } from 'formik';
+import { FormikHelpers } from 'formik/dist/types';
 import {
   CollectionForm,
   CollectionInfo,
@@ -27,33 +31,27 @@ import {
   StoryListCard,
 } from '../../components';
 import {
-  CollectionModel,
-  StoryModel,
+  CollectionStory,
+  GetArchivedCollectionsDocument,
+  GetCollectionByExternalIdDocument,
+  GetDraftCollectionsDocument,
+  GetPublishedCollectionsDocument,
   useGetCollectionByExternalIdQuery,
   useGetCollectionStoriesQuery,
+  useGetInitialCollectionFormDataQuery,
   useUpdateCollectionMutation,
   useUpdateCollectionImageUrlMutation,
   useCreateCollectionStoryMutation,
   useImageUploadMutation,
   useUpdateCollectionStorySortOrderMutation,
   useUpdateCollectionStoryImageUrlMutation,
-} from '../../api/collection-api';
-import { useNotifications } from '../../hooks/useNotifications';
-import { FormikValues } from 'formik';
-import EditIcon from '@material-ui/icons/Edit';
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import {
-  GetArchivedCollectionsDocument,
-  GetCollectionByExternalIdDocument,
-  GetDraftCollectionsDocument,
-  GetPublishedCollectionsDocument,
-  useGetInitialCollectionFormDataQuery,
+  Collection,
 } from '../../api/collection-api/generatedTypes';
+import { useNotifications } from '../../hooks/useNotifications';
 import { transformAuthors } from '../../utils/transformAuthors';
-import { FormikHelpers } from 'formik/dist/types';
 
 interface CollectionPageProps {
-  collection?: CollectionModel;
+  collection?: Omit<Collection, 'stories'>;
 }
 
 export const CollectionPage = (): JSX.Element => {
@@ -85,7 +83,9 @@ export const CollectionPage = (): JSX.Element => {
    */
   const location = useLocation<CollectionPageProps>();
 
-  const [collection, setCollection] = useState<CollectionModel | undefined>(
+  const [collection, setCollection] = useState<
+    Omit<Collection, 'stories'> | undefined
+  >(
     location.state?.collection
       ? // Deep clone a read-only object that comes from the routing
         JSON.parse(JSON.stringify(location.state?.collection))
@@ -145,7 +145,9 @@ export const CollectionPage = (): JSX.Element => {
   }
 
   // Let's keep stories in state to be able to reorder them with drag'n'drop
-  const [stories, setStories] = useState<StoryModel[] | undefined>(undefined);
+  const [stories, setStories] = useState<CollectionStory[] | undefined>(
+    undefined
+  );
   // And update the state variable when data is loaded
   useEffect(() => {
     setStories(storiesData?.getCollection?.stories);
@@ -382,7 +384,7 @@ export const CollectionPage = (): JSX.Element => {
   };
 
   // provide an empty story object for the 'Add story' form
-  const emptyStory: StoryModel = {
+  const emptyStory: CollectionStory = {
     externalId: '',
     url: '',
     title: '',
@@ -414,7 +416,7 @@ export const CollectionPage = (): JSX.Element => {
     setStories(reorderedStories);
 
     // save the new order of stories to the database
-    reorderedStories.forEach((story: StoryModel, index: number) => {
+    reorderedStories.forEach((story: CollectionStory, index: number) => {
       const newSortOrder = index + 1;
 
       // update each affected story with the new sort order
@@ -544,7 +546,7 @@ export const CollectionPage = (): JSX.Element => {
                     ref={provided.innerRef}
                   >
                     {stories &&
-                      stories.map((story: StoryModel, index: number) => {
+                      stories.map((story: CollectionStory, index: number) => {
                         return (
                           <Draggable
                             key={story.externalId}

@@ -2,14 +2,18 @@ import React from 'react';
 import { Avatar, Box, Chip, Typography } from '@material-ui/core';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import ReactMarkdown from 'react-markdown';
-import { AuthorModel, CollectionModel } from '../../api/collection-api';
 import { useStyles } from './CollectionInfo.styles';
+import {
+  Collection,
+  CollectionAuthor,
+} from '../../api/collection-api/generatedTypes';
 
 interface CollectionInfoProps {
   /**
    * An object with everything collection-related in it.
+   * Except for stories. We load them separately.
    */
-  collection: CollectionModel;
+  collection: Omit<Collection, 'stories'>;
 }
 
 export const CollectionInfo: React.FC<CollectionInfoProps> = (
@@ -30,7 +34,7 @@ export const CollectionInfo: React.FC<CollectionInfoProps> = (
         <span>{collection.status}</span> &middot;{' '}
         <span>
           {collection.authors
-            .map((author: AuthorModel) => {
+            .map((author: CollectionAuthor) => {
               return author.name;
             })
             .join(', ')}

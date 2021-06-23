@@ -1,24 +1,25 @@
 import React from 'react';
 import { Card, Grid, Hidden, Typography } from '@material-ui/core';
 import ReactMarkdown from 'react-markdown';
-import {
-  StoryModel,
-  CollectionModel,
-  AuthorModel,
-} from '../../api/collection-api';
 import { useStyles } from './CollectionPreview.styles';
-import { CollectionStoryAuthor } from '../../api/collection-api/generatedTypes';
+import {
+  Collection,
+  CollectionAuthor,
+  CollectionStory,
+  CollectionStoryAuthor,
+} from '../../api/collection-api/generatedTypes';
 
 interface CollectionPreviewProps {
   /**
-   * An object with everything collection-related in it.
+   * An object with everything collection-related in it bar stories - we load them
+   * separately.
    */
-  collection: CollectionModel;
+  collection: Omit<Collection, 'stories'>;
 
   /**
    * Collection stories, separately
    */
-  stories: StoryModel[] | undefined;
+  stories: CollectionStory[] | undefined;
 }
 
 export const CollectionPreview: React.FC<CollectionPreviewProps> = (
@@ -59,7 +60,7 @@ export const CollectionPreview: React.FC<CollectionPreviewProps> = (
             align="left"
           >
             {collection.authors
-              .map((author: AuthorModel) => {
+              .map((author: CollectionAuthor) => {
                 return author.name;
               })
               .join(', ')}
@@ -74,7 +75,7 @@ export const CollectionPreview: React.FC<CollectionPreviewProps> = (
           </ReactMarkdown>
         </Grid>
         {stories &&
-          stories.map((story: StoryModel) => {
+          stories.map((story: CollectionStory) => {
             // TODO: decouple StoryListCard from the form so that
             // it can be used here, too
 

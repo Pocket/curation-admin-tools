@@ -10,11 +10,11 @@ import {
   TabSet,
 } from '../../components';
 import {
-  CollectionModel,
   useGetDraftCollectionsQuery,
   useGetPublishedCollectionsQuery,
   useGetArchivedCollectionsQuery,
-} from '../../api/collection-api';
+  Collection,
+} from '../../api/collection-api/generatedTypes';
 
 /**
  * Collection List Page
@@ -104,7 +104,7 @@ export const CollectionListPage = (): JSX.Element => {
 
         {data &&
           data.searchCollections.collections.map(
-            (collection: CollectionModel) => {
+            (collection: Omit<Collection, 'stories'>) => {
               return (
                 <CollectionListCard
                   key={collection.externalId}
@@ -125,7 +125,7 @@ export const CollectionListPage = (): JSX.Element => {
 
         {dataPublished &&
           dataPublished.searchCollections.collections.map(
-            (collection: CollectionModel) => {
+            (collection: Omit<Collection, 'stories'>) => {
               return (
                 <CollectionListCard
                   key={collection.externalId}
@@ -143,7 +143,7 @@ export const CollectionListPage = (): JSX.Element => {
 
         {dataArchived &&
           dataArchived.searchCollections.collections.map(
-            (collection: CollectionModel) => {
+            (collection: Omit<Collection, 'stories'>) => {
               return (
                 <CollectionListCard
                   key={collection.externalId}

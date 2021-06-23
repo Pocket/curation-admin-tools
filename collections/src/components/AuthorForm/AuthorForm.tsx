@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {
   Box,
   FormControlLabel,
@@ -17,15 +16,15 @@ import {
   SharedFormButtons,
   SharedFormButtonsProps,
 } from '../';
-import { AuthorModel } from '../../api/collection-api';
 import { validationSchema } from './AuthorForm.validation';
 import { config } from '../../config';
+import { CollectionAuthor } from '../../api/collection-api/generatedTypes';
 
 interface AuthorFormProps {
   /**
    * An object with everything author-related in it.
    */
-  author: AuthorModel;
+  author: CollectionAuthor;
 
   /**
    * What do we do with the submitted data?

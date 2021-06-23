@@ -4,7 +4,7 @@ import { ApolloProvider } from '@apollo/client';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { SnackbarProvider } from 'notistack';
 
-import { client } from './api/collection-api';
+import { client } from './api/collection-api/client';
 import theme from './theme';
 import {
   HomePage,

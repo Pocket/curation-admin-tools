@@ -21,15 +21,18 @@ import {
 import { useNotifications } from '../../hooks/useNotifications';
 import { useStyles } from './StoryForm.styles';
 import { validationSchema } from './StoryForm.validation';
-import { StoryModel } from '../../api/collection-api';
-import { client, useGetStoryFromParserLazyQuery } from '../../api/client-api';
-import { CollectionStoryAuthor } from '../../api/collection-api/generatedTypes';
+import { client } from '../../api/client-api/client';
+import { useGetStoryFromParserLazyQuery } from '../../api/client-api/generatedTypes';
+import {
+  CollectionStory,
+  CollectionStoryAuthor,
+} from '../../api/collection-api/generatedTypes';
 
 interface StoryFormProps {
   /**
    * An object with everything story-related in it.
    */
-  story: StoryModel;
+  story: CollectionStory;
 
   /**
    * What do we do with the submitted data?

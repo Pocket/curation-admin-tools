@@ -10,7 +10,10 @@
         "typescript",
         "typescript-operations",
         "typescript-react-apollo"
-      ]
+      ],
+      "config": {
+        "federation": true
+      }
     }
   },
   "hooks": {
