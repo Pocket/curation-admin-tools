@@ -1,11 +1,15 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Router } from 'react-router-dom';
 import { CollectionListCard } from './CollectionListCard';
 import {
   Collection,
   CollectionStatus,
 } from '../../api/collection-api/generatedTypes';
+import { createMemoryHistory } from 'history';
+import { MockedProvider } from '@apollo/client/testing';
+import { AuthorListCard } from '../AuthorListCard/AuthorListCard';
+import userEvent from '@testing-library/user-event';
 
 describe('The CollectionListCard component', () => {
   let collection: Omit<Collection, 'stories'>;
@@ -123,5 +127,36 @@ describe('The CollectionListCard component', () => {
     );
 
     expect(screen.queryByText('Careers → Job Fairs')).not.toBeInTheDocument();
+  });
+
+  it("links to an individual collection's page", () => {
+    const history = createMemoryHistory({
+      initialEntries: ['/collections/'],
+    });
+
+    render(
+      <MockedProvider>
+        <Router history={history}>
+          <CollectionListCard collection={collection} />
+        </Router>
+      </MockedProvider>
+    );
+
+    // While the entire card is a giant link, we can click on
+    // anything we like within that link - i.e., the title of the collection
+    userEvent.click(screen.getByText(collection.title));
+    expect(history.location.pathname).toEqual(
+      `/collections/${collection.externalId}/`
+    );
+
+    // Let's go back to the Collections page
+    history.goBack();
+    expect(history.location.pathname).toEqual('/collections/');
+
+    // And click on the image this time
+    userEvent.click(screen.getByRole('img'));
+    expect(history.location.pathname).toEqual(
+      `/collections/${collection.externalId}/`
+    );
   });
 });

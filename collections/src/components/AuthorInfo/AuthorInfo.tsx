@@ -11,6 +11,13 @@ interface AuthorInfoProps {
   author: CollectionAuthor;
 }
 
+/**
+ * A simple component that shows author information. The name of the author
+ * and their photo are rendered by other components.
+ *
+ * @param props
+ * @constructor
+ */
 export const AuthorInfo: React.FC<AuthorInfoProps> = (props): JSX.Element => {
   const { author } = props;
   const classes = useStyles();
