@@ -49,10 +49,10 @@ interface StoryFormProps {
   showAllFields?: boolean;
 
   /**
-   * Whether to show the 'Populate' button. It's not needed if you edit
-   * an existing story.
+   * Whether to show the form in edit mode, that is, without the "Populate" button
+   * and without scrolling the form into view on rendering all the fields.
    */
-  showPopulateButton?: boolean;
+  editMode?: boolean;
 }
 
 export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
@@ -63,7 +63,7 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
     onCancel,
     onSubmit,
     showAllFields = false,
-    showPopulateButton = true,
+    editMode = true,
   } = props;
   const classes = useStyles();
 
@@ -78,12 +78,14 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
   // Listen for when the "Add Story" form opens up to show the rest of the fields
   // and scroll to the bottom to bring the entire form into view.
   useEffect(() => {
-    window.scrollTo({
-      top: document.body.scrollHeight,
-      left: 0,
-      behavior: 'smooth',
-    });
-  }, [showOtherFields]);
+    if (!editMode) {
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        left: 0,
+        behavior: 'smooth',
+      });
+    }
+  }, [showOtherFields, editMode]);
 
   // Which image do we show?
   const [imageSrc, setImageSrc] = useState<string>(
@@ -228,7 +230,7 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
                 fieldMeta={formik.getFieldMeta('url')}
               />
             </Box>
-            {showPopulateButton && (
+            {!editMode && (
               <Box alignSelf="baseline" ml={1}>
                 <Button
                   buttonType="hollow"
