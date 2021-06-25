@@ -46,25 +46,19 @@ interface StoryFormProps {
    * Whether to show the full form or just the URL+Populate button
    * one-line version.
    */
-  showAllFields?: boolean;
+  showAllFields: boolean;
 
   /**
    * Whether to show the form in edit mode, that is, without the "Populate" button
    * and without scrolling the form into view on rendering all the fields.
    */
-  editMode?: boolean;
+  editMode: boolean;
 }
 
 export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
   props
 ): JSX.Element => {
-  const {
-    story,
-    onCancel,
-    onSubmit,
-    showAllFields = false,
-    editMode = true,
-  } = props;
+  const { story, onCancel, onSubmit, showAllFields, editMode } = props;
   const classes = useStyles();
 
   // Prepare state vars and helper methods for API notifications
@@ -78,7 +72,7 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
   // Listen for when the "Add Story" form opens up to show the rest of the fields
   // and scroll to the bottom to bring the entire form into view.
   useEffect(() => {
-    if (!editMode) {
+    if (!editMode && showOtherFields) {
       window.scrollTo({
         top: document.body.scrollHeight,
         left: 0,

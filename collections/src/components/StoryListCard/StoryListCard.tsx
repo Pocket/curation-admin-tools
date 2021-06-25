@@ -226,7 +226,7 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
                 key={story.externalId}
                 story={story}
                 showAllFields={true}
-                editMode={false}
+                editMode={true}
                 onCancel={toggleEditForm}
                 onSubmit={onUpdate}
               />

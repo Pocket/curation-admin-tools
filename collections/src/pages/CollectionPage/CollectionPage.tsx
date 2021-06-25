@@ -590,6 +590,8 @@ export const CollectionPage = (): JSX.Element => {
                 }}
                 onSubmit={handleCreateStorySubmit}
                 story={emptyStory}
+                editMode={false}
+                showAllFields={false}
               />
             </Box>
           </Paper>
