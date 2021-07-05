@@ -1,13 +1,13 @@
 import React from 'react';
-import { Card, Grid, Hidden, Typography } from '@material-ui/core';
+import { Card, Grid, Typography } from '@material-ui/core';
 import ReactMarkdown from 'react-markdown';
 import { useStyles } from './CollectionPreview.styles';
 import {
   Collection,
-  CollectionAuthor,
   CollectionStory,
-  CollectionStoryAuthor,
 } from '../../api/collection-api/generatedTypes';
+import { flattenAuthors } from '../../utils/flattenAuthors';
+import { StoryCard } from '../StoryCard/StoryCard';
 
 interface CollectionPreviewProps {
   /**
@@ -27,12 +27,6 @@ export const CollectionPreview: React.FC<CollectionPreviewProps> = (
 ): JSX.Element => {
   const { collection, stories } = props;
   const classes = useStyles();
-
-  // The &middot; character is only needed if the story has authors as it separates
-  // the list of authors and the name of the publisher.
-  // There appears to be no way to display an HTML special character conditionally
-  // (well, except for setting innerHTML directly) other than assigning it to a variable
-  const middot = '\u00b7';
 
   return (
     <>
@@ -59,11 +53,7 @@ export const CollectionPreview: React.FC<CollectionPreviewProps> = (
             component="span"
             align="left"
           >
-            {collection.authors
-              .map((author: CollectionAuthor) => {
-                return author.name;
-              })
-              .join(', ')}
+            {flattenAuthors(collection.authors)}
           </Typography>
         </Grid>
         <Grid item xs={12}>
@@ -76,16 +66,6 @@ export const CollectionPreview: React.FC<CollectionPreviewProps> = (
         </Grid>
         {stories &&
           stories.map((story: CollectionStory) => {
-            // TODO: decouple StoryListCard from the form so that
-            // it can be used here, too
-
-            // Work out a comma-separated list of authors if there are any for this story
-            const displayAuthors = story.authors
-              ?.map((author: CollectionStoryAuthor) => {
-                return author.name;
-              })
-              .join(', ');
-
             return (
               <Card
                 variant="outlined"
@@ -103,31 +83,7 @@ export const CollectionPreview: React.FC<CollectionPreviewProps> = (
                     />
                   </Grid>
                   <Grid item xs={7} sm={8}>
-                    <Typography
-                      variant="h3"
-                      align="left"
-                      className={classes.storyTitle}
-                      gutterBottom
-                    >
-                      <a href={story.url}>{story.title}</a>
-                    </Typography>
-                    <Typography
-                      variant="subtitle1"
-                      color="textSecondary"
-                      component="span"
-                      align="left"
-                    >
-                      <span>{displayAuthors}</span>
-                      {displayAuthors.length > 0 && ` ${middot} `}
-                      <span>{story.publisher}</span>
-                    </Typography>
-                    <Hidden smDown implementation="css">
-                      <Typography component="div">
-                        <ReactMarkdown className="compact-markdown">
-                          {story.excerpt ? story.excerpt : ''}
-                        </ReactMarkdown>
-                      </Typography>
-                    </Hidden>
+                    <StoryCard story={story} />
                   </Grid>
                 </Grid>
               </Card>

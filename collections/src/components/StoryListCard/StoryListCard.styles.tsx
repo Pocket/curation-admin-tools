@@ -18,22 +18,5 @@ export const useStyles = makeStyles((theme: Theme) =>
       textDecoration: 'none',
       padding: '1.25 rem 0',
     },
-    title: {
-      fontSize: '1.125rem',
-      fontWeight: 500,
-      '& a': {
-        textDecoration: 'none',
-        color: '#222222',
-      },
-    },
-    subtitle: {
-      fontWeight: 400,
-      textTransform: 'capitalize',
-    },
-    [theme.breakpoints.down('sm')]: {
-      title: {
-        fontSize: '1rem',
-      },
-    },
   })
 );

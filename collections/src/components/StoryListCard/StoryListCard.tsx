@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import ReactMarkdown from 'react-markdown';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import {
@@ -9,20 +8,18 @@ import {
   Card,
   Collapse,
   Grid,
-  Hidden,
   Paper,
-  Typography,
 } from '@material-ui/core';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import EditIcon from '@material-ui/icons/Edit';
 import { transformAuthors } from '../../utils/transformAuthors';
-import { ImageUpload, StoryForm } from '../';
+import { ImageUpload, StoryCard, StoryForm } from '../';
 import { useStyles } from './StoryListCard.styles';
 import { useNotifications } from '../../hooks/useNotifications';
 import {
   CollectionStory,
-  CollectionStoryAuthor,
   useDeleteCollectionStoryMutation,
+  useUpdateCollectionStoryImageUrlMutation,
   useUpdateCollectionStoryMutation,
 } from '../../api/collection-api/generatedTypes';
 
@@ -41,7 +38,9 @@ interface StoryListCardProps {
 }
 
 /**
- * A compact card that displays story information
+ * A Collection Story card component that is responsible for an awful lot of things:
+ * displaying all the controls for a story, i.e image upload, edit and delete buttons,
+ * running the update/delete/upload new image mutations - the lot!
  *
  * @param props
  */
@@ -61,6 +60,9 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
 
   // prepare the "update story" mutation
   const [updateStory] = useUpdateCollectionStoryMutation();
+
+  // prepare the "update story image url" mutation
+  const [updateStoryImageUrl] = useUpdateCollectionStoryImageUrlMutation();
 
   const onDelete = (): void => {
     deleteStory({
@@ -119,25 +121,12 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
   };
 
   /**
-   * Save the S3 URL we get back from the API to the collection record
+   * Save the S3 URL we get back from the API to the collection story record
    */
   const handleImageUploadSave = (url: string): void => {
-    // get rid of the __typename property as the mutation variable
-    // doesn't expect to receive it
-    const authors = story.authors.map((author) => {
-      return { name: author.name, sortOrder: author.sortOrder };
-    });
-
-    updateStory({
+    updateStoryImageUrl({
       variables: {
-        // We send these because we have to
         externalId: story.externalId,
-        url: story.url,
-        title: story.title,
-        excerpt: story.excerpt,
-        publisher: story.publisher ?? '',
-        authors: authors,
-        // This is the only field that needs updating
         imageUrl: url,
       },
     })
@@ -152,19 +141,6 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
       });
   };
 
-  // Work out a comma-separated list of authors if there are any for this story
-  const displayAuthors = story.authors
-    ?.map((author: CollectionStoryAuthor) => {
-      return author.name;
-    })
-    .join(', ');
-
-  // The &middot; character is only needed if the story has authors as it separates
-  // the list of authors and the name of the publisher.
-  // There appears to be no way to display an HTML special character conditionally
-  // (well, except for setting innerHTML directly) other than assigning it to a variable
-  const middot = '\u00b7';
-
   return (
     <>
       <Card variant="outlined" square className={classes.root}>
@@ -177,32 +153,7 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
             />
           </Grid>
           <Grid item xs={7} sm={8}>
-            <Typography
-              className={classes.title}
-              variant="h3"
-              align="left"
-              gutterBottom
-            >
-              <a href={story.url}>{story.title}</a>
-            </Typography>
-            <Typography
-              className={classes.subtitle}
-              variant="subtitle2"
-              color="textSecondary"
-              component="span"
-              align="left"
-            >
-              <span>{displayAuthors}</span>
-              {displayAuthors.length > 0 && ` ${middot} `}
-              <span>{story.publisher}</span>
-            </Typography>
-            <Hidden smDown implementation="css">
-              <Typography component="div">
-                <ReactMarkdown className="compact-markdown">
-                  {story.excerpt ? story.excerpt : ''}
-                </ReactMarkdown>
-              </Typography>
-            </Hidden>
+            <StoryCard story={story} />
           </Grid>
           <Grid item xs={1} sm={1}>
             <ButtonGroup orientation="vertical" variant="text" color="primary">

@@ -19,6 +19,7 @@ export { MarkdownPreview } from './MarkdownPreview/MarkdownPreview';
 export { Modal } from './Modal/Modal';
 export { SharedFormButtons } from './_form-elements/SharedFormButtons/SharedFormButtons';
 export type { SharedFormButtonsProps } from './_form-elements/SharedFormButtons/SharedFormButtons';
+export { StoryCard } from './StoryCard/StoryCard';
 export { StoryForm } from './StoryForm/StoryForm';
 export { StoryListCard } from './StoryListCard/StoryListCard';
 export { ScrollToTop } from './ScrollToTop/ScrollToTop';
