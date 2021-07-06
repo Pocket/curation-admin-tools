@@ -15,6 +15,8 @@ export const getPublishedCollections = gql`
         ...CollectionData
       }
       pagination {
+        currentPage
+        totalPages
         totalResults
       }
     }

@@ -618,7 +618,7 @@ export type GetArchivedCollectionsQuery = { __typename?: 'Query' } & {
     collections: Array<{ __typename?: 'Collection' } & CollectionDataFragment>;
     pagination: { __typename?: 'Pagination' } & Pick<
       Pagination,
-      'totalResults'
+      'currentPage' | 'totalPages' | 'totalResults'
     >;
   };
 };
@@ -642,6 +642,12 @@ export type GetAuthorsQuery = { __typename?: 'Query' } & {
   getCollectionAuthors: { __typename?: 'CollectionAuthorsResult' } & {
     authors: Array<
       { __typename?: 'CollectionAuthor' } & CollectionAuthorDataFragment
+    >;
+    pagination?: Maybe<
+      { __typename?: 'Pagination' } & Pick<
+        Pagination,
+        'currentPage' | 'totalPages' | 'totalResults'
+      >
     >;
   };
 };
@@ -678,7 +684,7 @@ export type GetDraftCollectionsQuery = { __typename?: 'Query' } & {
     collections: Array<{ __typename?: 'Collection' } & CollectionDataFragment>;
     pagination: { __typename?: 'Pagination' } & Pick<
       Pagination,
-      'totalResults'
+      'currentPage' | 'totalPages' | 'totalResults'
     >;
   };
 };
@@ -725,7 +731,7 @@ export type GetPublishedCollectionsQuery = { __typename?: 'Query' } & {
     collections: Array<{ __typename?: 'Collection' } & CollectionDataFragment>;
     pagination: { __typename?: 'Pagination' } & Pick<
       Pagination,
-      'totalResults'
+      'currentPage' | 'totalPages' | 'totalResults'
     >;
   };
 };
@@ -1608,6 +1614,8 @@ export const GetArchivedCollectionsDocument = gql`
         ...CollectionData
       }
       pagination {
+        currentPage
+        totalPages
         totalResults
       }
     }
@@ -1730,6 +1738,11 @@ export const GetAuthorsDocument = gql`
     getCollectionAuthors(page: $page, perPage: $perPage) {
       authors {
         ...CollectionAuthorData
+      }
+      pagination {
+        currentPage
+        totalPages
+        totalResults
       }
     }
   }
@@ -1917,6 +1930,8 @@ export const GetDraftCollectionsDocument = gql`
         ...CollectionData
       }
       pagination {
+        currentPage
+        totalPages
         totalResults
       }
     }
@@ -2063,6 +2078,8 @@ export const GetPublishedCollectionsDocument = gql`
         ...CollectionData
       }
       pagination {
+        currentPage
+        totalPages
         totalResults
       }
     }
