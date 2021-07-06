@@ -3,10 +3,7 @@ import { Avatar, Box, Chip, Typography } from '@material-ui/core';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import ReactMarkdown from 'react-markdown';
 import { useStyles } from './CollectionInfo.styles';
-import {
-  Collection,
-  CollectionAuthor,
-} from '../../api/collection-api/generatedTypes';
+import { Collection } from '../../api/collection-api/generatedTypes';
 import { flattenAuthors } from '../../utils/flattenAuthors';
 
 interface CollectionInfoProps {

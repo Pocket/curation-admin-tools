@@ -23,10 +23,7 @@ import { useStyles } from './StoryForm.styles';
 import { validationSchema } from './StoryForm.validation';
 import { client } from '../../api/client-api/client';
 import { useGetStoryFromParserLazyQuery } from '../../api/client-api/generatedTypes';
-import {
-  CollectionStory,
-  CollectionStoryAuthor,
-} from '../../api/collection-api/generatedTypes';
+import { CollectionStory } from '../../api/collection-api/generatedTypes';
 import { flattenAuthors } from '../../utils/flattenAuthors';
 
 interface StoryFormProps {

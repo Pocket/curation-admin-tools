@@ -12,13 +12,13 @@ import {
 } from '@material-ui/core';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Dropzone, { FileWithPath } from 'react-dropzone';
-import { Button, Modal } from '../';
+import { FileUploadInfo, Modal, SharedFormButtons } from '../';
 import { useStyles } from './ImageUpload.styles';
-import { formatFileSize } from '../../utils/formatFileSize';
 import { useNotifications } from '../../hooks/useNotifications';
 import {
   Collection,
   CollectionAuthor,
+  CollectionImageUploadInput,
   CollectionStory,
   useImageUploadMutation,
 } from '../../api/collection-api/generatedTypes';
@@ -63,14 +63,10 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
   const [uploadInfo, setUploadInfo] = useState<JSX.Element[] | null>(null);
   const [uploadInProgress, setUploadInProgress] = useState<boolean>(false);
 
-  // These are for the uploaded file itself
-  const [file, setFile] = useState<any>(null);
-  const [imageData, setImageData] = useState<{
-    contents: string;
-    size: number;
-    height: number;
-    width: number;
-  }>({ contents: '', size: 0, height: 0, width: 0 });
+  // This one is for the uploaded file itself
+  const [imageData, setImageData] = useState<
+    CollectionImageUploadInput | undefined
+  >(undefined);
 
   // And these ones are for figuring out whether to show the uploaded image
   // or a placeholder
@@ -87,45 +83,39 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
   // prepare the upload to S3 mutation
   const [uploadImage] = useImageUploadMutation();
 
+  // Process the file the user chose from their PC/mobile device,
+  // show file info to the user and set data to use in upload mutation
   const onDrop = (acceptedFiles: FileWithPath[]) => {
-    // Show information about the uploaded file
-    const uploads = acceptedFiles.map((file: FileWithPath) => {
-      setFile(file);
+    const uploads = acceptedFiles.map((file: FileWithPath, index: number) => {
       // Get the actual file
       const reader = new FileReader();
       reader.readAsDataURL(file);
+
+      // Load it
       reader.onloadend = (e) => {
         const contents = e.target?.result;
 
+        // Load the contents of this file to an image element
         const image = new Image() as HTMLImageElement;
         if (typeof contents === 'string') {
           image.src = contents;
 
+          // Set the variables we'll use later when saving the file to S3
           image.onload = function () {
-            // Yes, even declaring the image as HTMLImageElement is not enough
-            // to convince TypeScript. Bringing out the big guns
             setImageData({
-              contents,
-              size: file.size,
-              // @ts-ignore
-              height: this.naturalHeight,
-              // @ts-ignore
-              width: this.naturalWidth,
+              image: file,
+              height: image.naturalHeight,
+              width: image.naturalWidth,
+              fileSizeBytes: file.size,
             });
           };
         }
       };
 
-      return (
-        <Typography align="center" key={file.path}>
-          Name: {file.name}
-          <br />
-          Size: {formatFileSize(file.size)}
-          <br />
-          Type: {file.type}
-        </Typography>
-      );
+      // Generate the output to show to the user
+      return <FileUploadInfo key={index} file={file} />;
     });
+    // Set the output, once available, to a state variable to be used in the main component
     setUploadInfo(uploads);
   };
 
@@ -134,12 +124,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
 
     // Let's upload this thing to S3!
     uploadImage({
-      variables: {
-        image: file,
-        height: imageData.height,
-        width: imageData.width,
-        fileSizeBytes: imageData.size,
-      },
+      variables: imageData,
     })
       .then((data) => {
         setUploadInProgress(false);
@@ -220,17 +205,8 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
             </Dropzone>
           </Grid>
           <Grid item xs={12}>
-            <Box display="flex" justifyContent="center" mt={2}>
-              <Box p={1}>
-                <Button buttonType="positive" type="submit" onClick={onSave}>
-                  Save
-                </Button>
-              </Box>
-              <Box p={1}>
-                <Button buttonType="hollow-neutral" onClick={handleClose}>
-                  Cancel
-                </Button>
-              </Box>
+            <Box mt={2}>
+              <SharedFormButtons onCancel={handleClose} onSave={onSave} />
             </Box>
           </Grid>
         </Grid>

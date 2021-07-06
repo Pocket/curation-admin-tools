@@ -8,7 +8,6 @@ import {
 } from '../../api/collection-api/generatedTypes';
 import { createMemoryHistory } from 'history';
 import { MockedProvider } from '@apollo/client/testing';
-import { AuthorListCard } from '../AuthorListCard/AuthorListCard';
 import userEvent from '@testing-library/user-event';
 
 describe('The CollectionListCard component', () => {
