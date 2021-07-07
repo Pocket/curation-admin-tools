@@ -53,12 +53,10 @@ export const AddAuthorPage: React.FC = (): JSX.Element => {
         // make sure the Authors page is updated when we add a new author
         {
           query: GetAuthorsDocument,
-          variables: { perPage: 50 },
         },
         // The lookup query for collection form dropdowns also needs a refresh
         {
           query: GetInitialCollectionFormDataDocument,
-          variables: { page: 1, perPage: 1000 },
         },
       ],
     })

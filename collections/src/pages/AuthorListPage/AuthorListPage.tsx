@@ -17,13 +17,13 @@ export const AuthorListPage = (): JSX.Element => {
 
   // Load authors
   const { loading, error, data, fetchMore } = useGetAuthorsQuery({
-    variables: { perPage: 5, page: 1 },
+    variables: { perPage: 4, page: 1 },
     notifyOnNetworkStatusChange: true,
   });
 
   // We need to keep track of the current page for pagination
   const [currentPage, setCurrentPage] = useState(
-    data?.getCollectionAuthors?.pagination?.currentPage ?? 1
+    data?.getCollectionAuthors.pagination?.currentPage ?? 1
   );
 
   const updateData = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -55,17 +55,18 @@ export const AuthorListPage = (): JSX.Element => {
       {!data && <HandleApiResponse loading={loading} error={error} />}
 
       {data &&
-        data.getCollectionAuthors?.authors.map((author: CollectionAuthor) => {
+        data.getCollectionAuthors.authors.map((author: CollectionAuthor) => {
           return <AuthorListCard key={author.externalId} author={author} />;
         })}
 
       {data && (
         <Box display="flex" justifyContent="center" mt={2}>
           <Pagination
+            key={`pagination-${currentPage}`}
             variant="outlined"
             color="primary"
             shape="rounded"
-            count={data?.getCollectionAuthors?.pagination?.totalPages}
+            count={data.getCollectionAuthors.pagination?.totalPages!}
             defaultPage={currentPage}
             onChange={updateData}
           />
