@@ -57,7 +57,10 @@ const apolloOptions = {
               if (!args) {
                 return existing;
               } else {
-                const offset = (args.page - 1) * args.perPage;
+                const offset =
+                  ((existing ? existing.pagination.currentPage : args.page) -
+                    1) *
+                  args.perPage;
 
                 // If we read the field before any data has been written to the
                 // cache, this function will return undefined, which correctly
