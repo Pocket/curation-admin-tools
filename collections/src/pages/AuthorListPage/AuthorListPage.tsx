@@ -17,25 +17,41 @@ export const AuthorListPage = (): JSX.Element => {
 
   // Load authors
   const { loading, error, data, fetchMore } = useGetAuthorsQuery({
-    variables: { perPage: 4, page: 1 },
+    // TODO: restore the default perPage value to 50
+    // temporarily dropping this to 2 authors per page to demo pagination
+    variables: { perPage: 2, page: 1 },
+    // this setting is needed so that subsequent calls to fetchMore() helper
+    // to bring in paginated data trigger component re-renders
     notifyOnNetworkStatusChange: true,
   });
 
   // We need to keep track of the current page for pagination
-  const [currentPage, setCurrentPage] = useState(
-    data?.getCollectionAuthors.pagination?.currentPage ?? 1
-  );
+  const [currentPage, setCurrentPage] = useState(1);
 
+  /**
+   * Send off a request to fetch data for the page requested
+   *
+   * @param event
+   * @param value The page number the user has clicked on in the Pagination widget
+   */
   const updateData = (event: React.ChangeEvent<unknown>, value: number) => {
-    setCurrentPage(value);
-
     fetchMore({
+      // Pass the page number the user would like to navigate to.
+      // Everything else: the query document, the `perPage` value and any other
+      // options are reused from the original useQuery() call above.
       variables: { page: value },
     })
       .then((result) => {
-        // ???
+        // update the current page number in state
+        // this is used in the MUI Pagination component below
+        setCurrentPage(value);
+
+        // We don't need to do anything else here - fetchMore() resets values
+        // destructured from the original query, i.e. `loading`, `data`
+        // and the list should re-render as the call to the API is completed
       })
       .catch((error: Error) => {
+        // Show an error in a toast message, if any
         showNotification(error.message, 'error');
       });
   };
