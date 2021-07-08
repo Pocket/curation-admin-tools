@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Box } from '@material-ui/core';
-import { Pagination } from '@material-ui/lab';
 import { AuthorListCard, Button, HandleApiResponse } from '../../components';
 import {
   CollectionAuthor,
@@ -34,17 +33,17 @@ export const AuthorListPage = (): JSX.Element => {
    * @param event
    * @param value The page number the user has clicked on in the Pagination widget
    */
-  const updateData = (event: React.ChangeEvent<unknown>, value: number) => {
+  const updateData = () => {
     fetchMore({
       // Pass the page number the user would like to navigate to.
       // Everything else: the query document, the `perPage` value and any other
       // options are reused from the original useQuery() call above.
-      variables: { page: value },
+      variables: { page: currentPage + 1 },
     })
       .then((result) => {
         // update the current page number in state
         // this is used in the MUI Pagination component below
-        setCurrentPage(value);
+        setCurrentPage(currentPage + 1);
 
         // We don't need to do anything else here - fetchMore() resets values
         // destructured from the original query, i.e. `loading`, `data`
@@ -77,15 +76,15 @@ export const AuthorListPage = (): JSX.Element => {
 
       {data && (
         <Box display="flex" justifyContent="center" mt={2}>
-          <Pagination
-            key={`pagination-${currentPage}`}
+          <Button
             variant="outlined"
-            color="primary"
-            shape="rounded"
-            count={data.getCollectionAuthors.pagination?.totalPages!}
-            defaultPage={currentPage}
-            onChange={updateData}
-          />
+            onClick={updateData}
+            disabled={
+              currentPage >= data.getCollectionAuthors.pagination?.totalPages!
+            }
+          >
+            Load More
+          </Button>
         </Box>
       )}
     </>

@@ -46,36 +46,8 @@ const apolloOptions = {
                 };
               }
             },
-            read(existing, { args }) {
-              // Args object always returns 'page: 1' when it should return the actual page
-              // requested in follow-up fetchMore() calls
-              // https://github.com/apollographql/apollo-client/issues/7496 is the closest
-              // to the issue we have, but not quite - the solution there essentially sidesteps
-              // the problem.
-              console.log('args in getCollectionAuthors.read()', args);
-
-              if (!args) {
-                return existing;
-              } else {
-                const offset = (args.page - 1) * args.perPage;
-
-                // If we read the field before any data has been written to the
-                // cache, this function will return undefined, which correctly
-                // indicates that the field is missing.
-                const pagefulOfAuthors =
-                  existing &&
-                  existing.authors.slice(offset, offset + args.perPage);
-
-                // If we ask for a page outside the bounds of the existing array,
-                // page.length will be 0, and we should return undefined instead of
-                // the empty array.
-                if (pagefulOfAuthors && pagefulOfAuthors.length > 0) {
-                  return {
-                    authors: pagefulOfAuthors,
-                    pagination: existing.pagination,
-                  };
-                }
-              }
+            read(existing) {
+              return existing;
             },
           },
         },
