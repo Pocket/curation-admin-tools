@@ -3,10 +3,8 @@ import { Avatar, Box, Chip, Typography } from '@material-ui/core';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import ReactMarkdown from 'react-markdown';
 import { useStyles } from './CollectionInfo.styles';
-import {
-  Collection,
-  CollectionAuthor,
-} from '../../api/collection-api/generatedTypes';
+import { Collection } from '../../api/collection-api/generatedTypes';
+import { flattenAuthors } from '../../utils/flattenAuthors';
 
 interface CollectionInfoProps {
   /**
@@ -32,13 +30,7 @@ export const CollectionInfo: React.FC<CollectionInfoProps> = (
         align="left"
       >
         <span>{collection.status}</span> &middot;{' '}
-        <span>
-          {collection.authors
-            .map((author: CollectionAuthor) => {
-              return author.name;
-            })
-            .join(', ')}
-        </span>
+        <span>{flattenAuthors(collection.authors)}</span>
       </Typography>
       <Box py={1}>
         {collection.curationCategory && (

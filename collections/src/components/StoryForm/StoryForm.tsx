@@ -23,10 +23,8 @@ import { useStyles } from './StoryForm.styles';
 import { validationSchema } from './StoryForm.validation';
 import { client } from '../../api/client-api/client';
 import { useGetStoryFromParserLazyQuery } from '../../api/client-api/generatedTypes';
-import {
-  CollectionStory,
-  CollectionStoryAuthor,
-} from '../../api/collection-api/generatedTypes';
+import { CollectionStory } from '../../api/collection-api/generatedTypes';
+import { flattenAuthors } from '../../utils/flattenAuthors';
 
 interface StoryFormProps {
   /**
@@ -94,12 +92,7 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
       url: story.url ?? '',
       title: story.title ?? '',
       excerpt: story.excerpt ?? '',
-      authors:
-        story.authors
-          .map((author: CollectionStoryAuthor) => {
-            return author?.name;
-          })
-          .join(', ') ?? '',
+      authors: flattenAuthors(story.authors) ?? '',
       publisher: story.publisher ?? '',
     },
     // We don't want to irritate users by displaying validation errors
@@ -270,7 +263,7 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
               <Box mb={3}>
                 <FormikTextField
                   id="authors"
-                  label="Authors (separated by commas"
+                  label="Authors (separated by commas)"
                   fieldProps={formik.getFieldProps('authors')}
                   fieldMeta={formik.getFieldMeta('authors')}
                 />

@@ -34,4 +34,18 @@ describe('The SharedFormButtons component', () => {
 
     expect(mockOnCancel).toHaveBeenCalled();
   });
+
+  it('calls the "onSave" method when the "Save" button is clicked', async () => {
+    const mockOnSave = jest.fn();
+
+    render(<SharedFormButtons onSave={mockOnSave} />);
+
+    const saveButton = screen.getByText(/save/i);
+
+    await waitFor(() => {
+      userEvent.click(saveButton);
+    });
+
+    expect(mockOnSave).toHaveBeenCalled();
+  });
 });

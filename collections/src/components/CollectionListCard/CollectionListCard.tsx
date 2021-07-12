@@ -11,11 +11,9 @@ import {
 } from '@material-ui/core';
 import ReactMarkdown from 'react-markdown';
 import { useStyles } from './CollectionListCard.styles';
-import {
-  Collection,
-  CollectionAuthor,
-} from '../../api/collection-api/generatedTypes';
+import { Collection } from '../../api/collection-api/generatedTypes';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
+import { flattenAuthors } from '../../utils/flattenAuthors';
 
 interface CollectionListCardProps {
   /**
@@ -75,13 +73,7 @@ export const CollectionListCard: React.FC<CollectionListCardProps> = (
               align="left"
             >
               <span>{collection.status}</span> &middot;{' '}
-              <span>
-                {collection.authors
-                  .map((author: CollectionAuthor) => {
-                    return author.name;
-                  })
-                  .join(', ')}
-              </span>
+              <span>{flattenAuthors(collection.authors)}</span>
             </Typography>{' '}
             <Box py={1}>
               {collection.curationCategory && (

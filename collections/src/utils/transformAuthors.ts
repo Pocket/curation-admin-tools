@@ -1,7 +1,4 @@
-interface StoryAuthor {
-  name: string;
-  sortOrder: number;
-}
+import { CollectionStoryAuthor } from '../api/collection-api/generatedTypes';
 
 /**
  * A helper function that transforms a comma-separated string of names
@@ -9,7 +6,7 @@ interface StoryAuthor {
  *
  * @param authors
  */
-export const transformAuthors = (authors: string): StoryAuthor[] => {
+export const transformAuthors = (authors: string): CollectionStoryAuthor[] => {
   // get rid of any whitespace on the sides
   authors = authors.trim();
 
