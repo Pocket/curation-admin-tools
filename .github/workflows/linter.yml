@@ -47,8 +47,7 @@ jobs:
         uses: actions/setup-node@v2.2.0
         with:
           node-version: 16.x
-      - run: cd collections
-      - run: npm install
+      - run: cd collections && npm install
 
       ################################
       # Run Linter against code base #
