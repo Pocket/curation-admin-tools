@@ -1,14 +1,15 @@
+import React from 'react';
 import { Box, Paper } from '@material-ui/core';
+import { FormikValues } from 'formik';
 import {
   CollectionListCard,
   HandleApiResponse,
   CollectionSearchForm,
   ScrollToTop,
 } from '../../components';
-import { useGetSearchCollectionsLazyQuery } from '../../api';
-import { FormikValues } from 'formik';
+import { useGetSearchCollectionsLazyQuery } from '../../api/collection-api/generatedTypes';
 
-export const CollectionSearchPage = (): JSX.Element => {
+export const CollectionSearchPage: React.FC = (): JSX.Element => {
   // prepare the query for executing in the handleSubmit callback below
   const [
     searchCollections,

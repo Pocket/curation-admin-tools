@@ -3,13 +3,22 @@ import { useSnackbar, VariantType } from 'notistack';
 import { IconButton } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 
+/**
+ * This interface defines the signature of the helper function this hook returns.
+ */
 interface useNotificationsReturnValues {
   showNotification: (message: string, type: VariantType | undefined) => void;
 }
 
 /**
  * Returns a helper method that allows us to queue a toast notification
- * from anywhere in the app
+ * from anywhere in the app.
+ *
+ * Thanks to the notistack package, these notifications stack on top of each
+ * other instead of getting replaced by each subsequent notification
+ * as a single MUI toast message would (sometimes we send out a whole bunch
+ * of notifications one after another, such as when you reorder stories
+ * in a collection.
  */
 export const useNotifications = (): useNotificationsReturnValues => {
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
@@ -39,14 +48,20 @@ export const useNotifications = (): useNotificationsReturnValues => {
     type: VariantType | undefined
   ): void => {
     enqueueSnackbar(message, {
-      variant: type,
+      // This is the close button we defined above
+      action,
+      // Where to place the toast message on the screen
       anchorOrigin: {
         vertical: 'bottom',
         horizontal: 'center',
       },
-      action,
-      // keep error messages on the page until the user dismisses them
+      // Keep error messages on the page until the user dismisses them
+      // and automatically hide all other messages after three seconds
       autoHideDuration: type === 'error' ? undefined : 3000,
+      // enable multi-line messages (use \n)
+      style: { whiteSpace: 'pre-line' },
+      // One of 'default' | 'error' | 'success' | 'warning' | 'info'
+      variant: type,
     });
   };
 

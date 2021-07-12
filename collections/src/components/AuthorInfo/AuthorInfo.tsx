@@ -1,16 +1,23 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import ReactMarkdown from 'react-markdown';
-import { AuthorModel } from '../../api';
 import { useStyles } from './AuthorInfo.styles';
+import { CollectionAuthor } from '../../api/collection-api/generatedTypes';
 
 interface AuthorInfoProps {
   /**
    * An object with everything author-related in it.
    */
-  author: AuthorModel;
+  author: CollectionAuthor;
 }
 
+/**
+ * A simple component that shows author information. The name of the author
+ * and their photo are rendered by other components.
+ *
+ * @param props
+ * @constructor
+ */
 export const AuthorInfo: React.FC<AuthorInfoProps> = (props): JSX.Element => {
   const { author } = props;
   const classes = useStyles();

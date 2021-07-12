@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import * as yup from 'yup';
-import { FormikValues, useFormik } from 'formik';
+import React, { useEffect, useState } from 'react';
+import { ApolloError } from '@apollo/client';
 import {
   Box,
   CardMedia,
@@ -10,21 +9,28 @@ import {
   TextField,
   Typography,
 } from '@material-ui/core';
-import { Button, MarkdownPreview } from '../';
-import { StoryModel } from '../../api';
-import { clientAPIClient } from '../../api/client';
-import { useGetStoryFromParserLazyQuery } from '../../api/client-api/generatedTypes';
-import { useStyles } from './StoryForm.styles';
-import { CollectionStoryAuthor } from '../../api/generatedTypes';
-import { useNotifications } from '../../hooks/useNotifications';
-import { ApolloError } from '@apollo/client';
+import { FormikValues, useFormik } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
+import {
+  Button,
+  FormikTextField,
+  MarkdownPreview,
+  SharedFormButtons,
+  SharedFormButtonsProps,
+} from '../';
+import { useNotifications } from '../../hooks/useNotifications';
+import { useStyles } from './StoryForm.styles';
+import { validationSchema } from './StoryForm.validation';
+import { client } from '../../api/client-api/client';
+import { useGetStoryFromParserLazyQuery } from '../../api/client-api/generatedTypes';
+import { CollectionStory } from '../../api/collection-api/generatedTypes';
+import { flattenAuthors } from '../../utils/flattenAuthors';
 
 interface StoryFormProps {
   /**
    * An object with everything story-related in it.
    */
-  story: StoryModel;
+  story: CollectionStory;
 
   /**
    * What do we do with the submitted data?
@@ -38,22 +44,19 @@ interface StoryFormProps {
    * Whether to show the full form or just the URL+Populate button
    * one-line version.
    */
-  showAllFields?: boolean;
+  showAllFields: boolean;
 
   /**
-   * Whether to show the 'Populate' button. It's not needed if you edit
-   * an existing story.
+   * Whether to show the form in edit mode, that is, without the "Populate" button
+   * and without scrolling the form into view on rendering all the fields.
    */
-  showPopulateButton?: boolean;
+  editMode: boolean;
 }
 
-export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
-  const {
-    story,
-    onSubmit,
-    showAllFields = false,
-    showPopulateButton = true,
-  } = props;
+export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
+  props
+): JSX.Element => {
+  const { story, onCancel, onSubmit, showAllFields, editMode } = props;
   const classes = useStyles();
 
   // Prepare state vars and helper methods for API notifications
@@ -63,6 +66,18 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
   const [showOtherFields, setShowOtherFields] = useState<boolean>(
     showAllFields
   );
+
+  // Listen for when the "Add Story" form opens up to show the rest of the fields
+  // and scroll to the bottom to bring the entire form into view.
+  useEffect(() => {
+    if (!editMode && showOtherFields) {
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        left: 0,
+        behavior: 'smooth',
+      });
+    }
+  }, [showOtherFields, editMode]);
 
   // Which image do we show?
   const [imageSrc, setImageSrc] = useState<string>(
@@ -77,40 +92,22 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
       url: story.url ?? '',
       title: story.title ?? '',
       excerpt: story.excerpt ?? '',
-      authors:
-        story.authors
-          .map((author: CollectionStoryAuthor) => {
-            return author?.name;
-          })
-          .join(', ') ?? '',
+      authors: flattenAuthors(story.authors) ?? '',
       publisher: story.publisher ?? '',
     },
     // We don't want to irritate users by displaying validation errors
     // before they actually submit the form
     validateOnChange: false,
     validateOnBlur: false,
-    validationSchema: yup.object({
-      url: yup.string().trim().required('Please enter a URL').min(12),
-      title: yup.string().trim().required('Please enter a title').min(3),
-      excerpt: yup.string().trim().required('Please enter an excerpt').min(12),
-      authors: yup
-        .string()
-        .trim()
-        .min(
-          2, // minimum could be "AP"
-          'Please enter one or more authors, separated by commas.' +
-            ' Please supply at least 6 characters or leave this field empty' +
-            ' if this story has no authors.'
-        ),
-      publisher: yup.string(),
-    }),
+    validationSchema,
     onSubmit: (values: FormikValues, formikHelpers: FormikHelpers<any>) => {
       onSubmit(values, formikHelpers);
     },
   });
 
   const [getStory, { loading }] = useGetStoryFromParserLazyQuery({
-    client: clientAPIClient,
+    client,
+    fetchPolicy: 'no-cache',
     onCompleted: (data) => {
       // Rather than return errors if it can't parse a URL, the parser
       // returns a null object instead
@@ -137,9 +134,35 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
           data.getItemByUrl.domainMetadata?.name
         );
         formik.setFieldValue('excerpt', data.getItemByUrl.excerpt);
-        formik.setFieldValue('imageUrl', data.getItemByUrl.topImageUrl);
-        setImageSrc(data.getItemByUrl.topImageUrl);
 
+        // Work out the image URL, if any
+        let imageUrl = '';
+
+        if (
+          data.getItemByUrl.topImageUrl &&
+          data.getItemByUrl.topImageUrl.length > 0
+        ) {
+          // Use the publisher's preferred thumbnail image if it exists
+          imageUrl = data.getItemByUrl.topImageUrl;
+          setImageSrc(imageUrl);
+        } else {
+          // Try the images array - for YouTube, for example, this returns
+          // the correct thumbnail
+          if (data.getItemByUrl.images && data.getItemByUrl.images[0]) {
+            imageUrl = data.getItemByUrl.images[0].src!;
+            setImageSrc(imageUrl);
+          } else {
+            // Use the placeholder to display something on the frontend
+            // while the imageUrl field remains empty as set initially
+            setImageSrc('/placeholders/story.svg');
+          }
+        }
+
+        // Save the normalised imageUrl value in a hidden input field
+        // to upload to S3 later
+        formik.setFieldValue('imageUrl', imageUrl);
+
+        // And we're done!
         showNotification(
           `The parser finished processing this story`,
           'success'
@@ -162,17 +185,23 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
   const fetchStoryData = async () => {
     // Make sure we don't send an empty string to the parser
     await formik.setFieldTouched('url');
-    await formik.validateField('url').then(() => {
-      if (!formik.errors.url) {
-        // Get story data from the parser. 'onComplete' callback specified
-        // in the prepared query above will fill in the form with the returned data
-        getStory({
-          variables: {
-            url: formik.values.url,
-          },
-        });
-      }
-    });
+    await formik.validateField('url');
+
+    // NB: this check doesn't work on initial page load because
+    // formik.errors remains an empty object after validating
+    // this field for the first time and the request is still sent
+    // even though the field is empty and we see a validation error
+    // in the UI. Subsequent user interactions with the form work as expected.
+    // Marking this with a TODO to return to at some point in the future
+    if (!formik.errors.url) {
+      // Get story data from the parser. 'onComplete' callback specified
+      // in the prepared query above will fill in the form with the returned data
+      getStory({
+        variables: {
+          url: formik.values.url,
+        },
+      });
+    }
   };
 
   return (
@@ -181,23 +210,20 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
         <Grid item xs={12}>
           <Box display="flex">
             <Box flexGrow={1} alignSelf="center" textOverflow="ellipsis">
-              <TextField
+              <FormikTextField
                 id="url"
                 label="Story URL"
-                fullWidth
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                size="small"
-                variant="outlined"
-                {...formik.getFieldProps('url')}
-                error={!!(formik.touched.url && formik.errors.url)}
-                helperText={formik.errors.url ? formik.errors.url : null}
+                fieldProps={formik.getFieldProps('url')}
+                fieldMeta={formik.getFieldMeta('url')}
               />
             </Box>
-            {showPopulateButton && (
+            {!editMode && (
               <Box alignSelf="baseline" ml={1}>
-                <Button buttonType="hollow" onClick={fetchStoryData}>
+                <Button
+                  buttonType="hollow"
+                  onClick={fetchStoryData}
+                  disabled={loading}
+                >
                   Populate
                   {loading && (
                     <>
@@ -214,18 +240,11 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
         {showOtherFields && (
           <>
             <Grid item xs={12}>
-              <TextField
+              <FormikTextField
                 id="title"
                 label="Title"
-                fullWidth
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                size="small"
-                variant="outlined"
-                {...formik.getFieldProps('title')}
-                error={!!(formik.touched.title && formik.errors.title)}
-                helperText={formik.errors.title ? formik.errors.title : null}
+                fieldProps={formik.getFieldProps('title')}
+                fieldMeta={formik.getFieldMeta('title')}
               />
             </Grid>
             <Grid item xs={12} sm={3}>
@@ -242,57 +261,30 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
             </Grid>
             <Grid item xs={12} sm={9}>
               <Box mb={3}>
-                <TextField
+                <FormikTextField
                   id="authors"
                   label="Authors (separated by commas)"
-                  fullWidth
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  size="small"
-                  variant="outlined"
-                  {...formik.getFieldProps('authors')}
-                  error={!!(formik.touched.authors && formik.errors.authors)}
-                  helperText={
-                    formik.errors.authors ? formik.errors.authors : null
-                  }
+                  fieldProps={formik.getFieldProps('authors')}
+                  fieldMeta={formik.getFieldMeta('authors')}
                 />
               </Box>
 
-              <TextField
+              <FormikTextField
                 id="publisher"
                 label="Publisher"
-                fullWidth
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                size="small"
-                variant="outlined"
-                {...formik.getFieldProps('publisher')}
-                error={!!(formik.touched.publisher && formik.errors.publisher)}
-                helperText={
-                  formik.errors.publisher ? formik.errors.publisher : null
-                }
+                fieldProps={formik.getFieldProps('publisher')}
+                fieldMeta={formik.getFieldMeta('publisher')}
               />
             </Grid>
             <Grid item xs={12}>
               <MarkdownPreview minHeight={6.5} source={formik.values.excerpt}>
-                <TextField
+                <FormikTextField
                   id="excerpt"
                   label="Excerpt"
-                  fullWidth
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
+                  fieldProps={formik.getFieldProps('excerpt')}
+                  fieldMeta={formik.getFieldMeta('excerpt')}
                   multiline
                   rows={4}
-                  size="small"
-                  variant="outlined"
-                  {...formik.getFieldProps('excerpt')}
-                  error={!!(formik.touched.excerpt && formik.errors.excerpt)}
-                  helperText={
-                    formik.errors.excerpt ? formik.errors.excerpt : null
-                  }
                 />
               </MarkdownPreview>
             </Grid>
@@ -302,13 +294,7 @@ export const StoryForm: React.FC<StoryFormProps> = (props): JSX.Element => {
               </Grid>
             )}
             <Grid item xs={12}>
-              <Box display="flex" justifyContent="center">
-                <Box p={1}>
-                  <Button buttonType="positive" type="submit">
-                    Save
-                  </Button>
-                </Box>
-              </Box>
+              <SharedFormButtons onCancel={onCancel} />
             </Grid>
           </>
         )}

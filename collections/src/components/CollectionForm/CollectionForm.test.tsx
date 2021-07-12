@@ -1,12 +1,20 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { AuthorModel, CollectionModel, CollectionStatus } from '../../api';
 import { CollectionForm } from './CollectionForm';
+import {
+  Collection,
+  CollectionAuthor,
+  CollectionStatus,
+  CurationCategory,
+  IabParentCategory,
+} from '../../api/collection-api/generatedTypes';
 
 describe('The CollectionForm component', () => {
-  let collection: CollectionModel;
-  let authors: AuthorModel[];
+  let collection: Omit<Collection, 'stories'>;
+  let authors: CollectionAuthor[];
+  let curationCategories: CurationCategory[];
+  let iabCategories: IabParentCategory[];
   let handleSubmit = jest.fn();
 
   beforeEach(() => {
@@ -36,6 +44,7 @@ describe('The CollectionForm component', () => {
         ' lobortis, ullamcorper ipsum in, eleifend sapien.',
       status: CollectionStatus.Draft,
       authors: [],
+      curationCategory: { externalId: 'cde-234', name: 'Food', slug: 'food' },
     };
 
     authors = [
@@ -53,13 +62,39 @@ describe('The CollectionForm component', () => {
         active: true,
       },
     ];
+
+    curationCategories = [
+      {
+        externalId: 'abc-123',
+        name: 'Business',
+        slug: 'business',
+      },
+      { externalId: 'cde-234', name: 'Food', slug: 'food' },
+    ];
+
+    iabCategories = [
+      {
+        externalId: 'abc-345',
+        name: 'Education',
+        slug: 'education',
+        children: [
+          {
+            externalId: '123-abc',
+            name: 'Language Learning',
+            slug: 'language-learning',
+          },
+        ],
+      },
+    ];
   });
 
   it('renders successfully', () => {
     render(
       <CollectionForm
-        collection={collection}
         authors={authors}
+        collection={collection}
+        curationCategories={curationCategories}
+        iabCategories={iabCategories}
         onSubmit={handleSubmit}
       />
     );
@@ -72,8 +107,10 @@ describe('The CollectionForm component', () => {
   it('shows three action buttons by default', () => {
     render(
       <CollectionForm
-        collection={collection}
         authors={authors}
+        collection={collection}
+        curationCategories={curationCategories}
+        iabCategories={iabCategories}
         onSubmit={handleSubmit}
       />
     );
@@ -85,10 +122,12 @@ describe('The CollectionForm component', () => {
   it('only shows two buttons if not in edit mode', () => {
     render(
       <CollectionForm
-        collection={collection}
         authors={authors}
-        onSubmit={handleSubmit}
+        collection={collection}
+        curationCategories={curationCategories}
+        iabCategories={iabCategories}
         editMode={false}
+        onSubmit={handleSubmit}
       />
     );
 
@@ -99,8 +138,10 @@ describe('The CollectionForm component', () => {
   it('displays collection information', () => {
     render(
       <CollectionForm
-        collection={collection}
         authors={authors}
+        collection={collection}
+        curationCategories={curationCategories}
+        iabCategories={iabCategories}
         onSubmit={handleSubmit}
       />
     );
@@ -127,8 +168,10 @@ describe('The CollectionForm component', () => {
   it('validates the "title" field', async () => {
     render(
       <CollectionForm
-        collection={collection}
         authors={authors}
+        collection={collection}
+        curationCategories={curationCategories}
+        iabCategories={iabCategories}
         onSubmit={handleSubmit}
       />
     );
@@ -176,8 +219,10 @@ describe('The CollectionForm component', () => {
   it('validates the "slug" field', async () => {
     render(
       <CollectionForm
-        collection={collection}
         authors={authors}
+        collection={collection}
+        curationCategories={curationCategories}
+        iabCategories={iabCategories}
         onSubmit={handleSubmit}
       />
     );
@@ -219,8 +264,10 @@ describe('The CollectionForm component', () => {
   it('suggests the slug correctly', async () => {
     render(
       <CollectionForm
-        collection={collection}
         authors={authors}
+        collection={collection}
+        curationCategories={curationCategories}
+        iabCategories={iabCategories}
         onSubmit={handleSubmit}
       />
     );
@@ -254,11 +301,48 @@ describe('The CollectionForm component', () => {
     ).toBeInTheDocument();
   });
 
+  it('suggests a slug free of punctuation and other special characters', async () => {
+    render(
+      <CollectionForm
+        authors={authors}
+        collection={collection}
+        curationCategories={curationCategories}
+        iabCategories={iabCategories}
+        onSubmit={handleSubmit}
+      />
+    );
+
+    const slugField = screen.getByLabelText(/slug/i);
+    const titleField = screen.getByLabelText(/title/i);
+    const suggestSlugButton = screen.getByText(/suggest slug/i);
+
+    // Clear the fields or the user event further on will add to the input
+    // rather than overwrite it
+    userEvent.clear(slugField);
+    userEvent.clear(titleField);
+
+    userEvent.type(
+      titleField,
+      'A !!!title ??? full ### of ```special~~~ chars!#@*^*#^.,;*_/'
+    );
+
+    await waitFor(() => {
+      userEvent.click(suggestSlugButton);
+    });
+
+    // Get a slug that is free
+    expect(
+      screen.getByDisplayValue('a-title-full-of-special-chars')
+    ).toBeInTheDocument();
+  });
+
   it('has markdown preview tabs on two fields', () => {
     render(
       <CollectionForm
-        collection={collection}
         authors={authors}
+        collection={collection}
+        curationCategories={curationCategories}
+        iabCategories={iabCategories}
         onSubmit={handleSubmit}
       />
     );

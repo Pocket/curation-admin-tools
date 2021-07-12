@@ -3,15 +3,15 @@ import { useHistory } from 'react-router-dom';
 import { Box, Paper } from '@material-ui/core';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
-import {
-  CollectionModel,
-  CollectionStatus,
-  useCreateCollectionMutation,
-  useGetAuthorsQuery,
-} from '../../api';
 import { CollectionForm, HandleApiResponse } from '../../components';
 import { useNotifications } from '../../hooks/useNotifications';
-import { GetDraftCollectionsDocument } from '../../api/generatedTypes';
+import {
+  Collection,
+  CollectionStatus,
+  GetDraftCollectionsDocument,
+  useCreateCollectionMutation,
+  useGetInitialCollectionFormDataQuery,
+} from '../../api/collection-api/generatedTypes';
 
 export const AddCollectionPage: React.FC = (): JSX.Element => {
   // Prepare state vars and helper methods for API notifications
@@ -22,7 +22,7 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
   const history = useHistory();
 
   // Provide a default collection object for the form
-  const collection: CollectionModel = {
+  const collection: Collection = {
     externalId: '',
     title: '',
     slug: '',
@@ -31,10 +31,13 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
     imageUrl: '',
     status: CollectionStatus.Draft,
     authors: [],
+    stories: [],
   };
 
-  // Load authors
-  const { loading, error, data: authorsData } = useGetAuthorsQuery();
+  // Load data for all the dropdowns in the add collection form
+  const { loading, error, data } = useGetInitialCollectionFormDataQuery({
+    variables: { page: 1, perPage: 1000 },
+  });
 
   // prepare the "add new collection" mutation
   // has to be done at the top level of the component because it's a hook
@@ -55,6 +58,9 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
         intro: values.intro,
         status: values.status,
         authorExternalId: values.authorExternalId,
+        curationCategoryExternalId: values.curationCategoryExternalId,
+        IABParentCategoryExternalId: values.IABParentCategoryExternalId,
+        IABChildCategoryExternalId: values.IABChildCategoryExternalId,
       },
       // make sure the relevant Collections tab is updated
       // when we add a new collection
@@ -87,18 +93,21 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
       </Box>
       <Paper elevation={4}>
         <Box p={2} mt={3}>
-          {!authorsData && (
-            <HandleApiResponse loading={loading} error={error} />
-          )}
+          {!data && <HandleApiResponse loading={loading} error={error} />}
 
-          {authorsData && authorsData.getCollectionAuthors && (
-            <CollectionForm
-              authors={authorsData.getCollectionAuthors.authors}
-              collection={collection}
-              onSubmit={handleSubmit}
-              editMode={false}
-            />
-          )}
+          {data &&
+            data.getCollectionAuthors &&
+            data.getCurationCategories &&
+            data.getIABCategories && (
+              <CollectionForm
+                authors={data.getCollectionAuthors.authors}
+                curationCategories={data.getCurationCategories}
+                iabCategories={data.getIABCategories}
+                collection={collection}
+                onSubmit={handleSubmit}
+                editMode={false}
+              />
+            )}
         </Box>
       </Paper>
     </>

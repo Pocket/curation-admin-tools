@@ -1,11 +1,14 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Router } from 'react-router-dom';
 import { AuthorListCard } from './AuthorListCard';
-import { AuthorModel } from '../../api';
+import { CollectionAuthor } from '../../api/collection-api/generatedTypes';
+import { MockedProvider } from '@apollo/client/testing';
+import userEvent from '@testing-library/user-event';
+import { createMemoryHistory } from 'history';
 
 describe('The AuthorListCard component', () => {
-  let author: AuthorModel;
+  let author: CollectionAuthor;
 
   beforeEach(() => {
     author = {
@@ -79,5 +82,32 @@ describe('The AuthorListCard component', () => {
     // Doesn't show 'Active' for an inactive author
     const activeSubtitle = screen.queryByText(/^active/i);
     expect(activeSubtitle).not.toBeInTheDocument();
+  });
+
+  it("links to an individual author's page", () => {
+    const history = createMemoryHistory({
+      initialEntries: ['/authors/'],
+    });
+
+    render(
+      <MockedProvider>
+        <Router history={history}>
+          <AuthorListCard author={author} />
+        </Router>
+      </MockedProvider>
+    );
+
+    // While the entire card is a giant link, we can click on
+    // anything we like within that link - i.e., the author's name
+    userEvent.click(screen.getByText(author.name));
+    expect(history.location.pathname).toEqual(`/authors/${author.externalId}/`);
+
+    // Let's go back to the Authors page
+    history.goBack();
+    expect(history.location.pathname).toEqual('/authors/');
+
+    // And click on the image this time
+    userEvent.click(screen.getByRole('img'));
+    expect(history.location.pathname).toEqual(`/authors/${author.externalId}/`);
   });
 });

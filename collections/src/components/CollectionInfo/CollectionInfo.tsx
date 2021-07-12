@@ -1,14 +1,17 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import { Avatar, Box, Chip, Typography } from '@material-ui/core';
+import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import ReactMarkdown from 'react-markdown';
-import { AuthorModel, CollectionModel } from '../../api';
 import { useStyles } from './CollectionInfo.styles';
+import { Collection } from '../../api/collection-api/generatedTypes';
+import { flattenAuthors } from '../../utils/flattenAuthors';
 
 interface CollectionInfoProps {
   /**
    * An object with everything collection-related in it.
+   * Except for stories. We load them separately.
    */
-  collection: CollectionModel;
+  collection: Omit<Collection, 'stories'>;
 }
 
 export const CollectionInfo: React.FC<CollectionInfoProps> = (
@@ -27,14 +30,27 @@ export const CollectionInfo: React.FC<CollectionInfoProps> = (
         align="left"
       >
         <span>{collection.status}</span> &middot;{' '}
-        <span>
-          {collection.authors
-            .map((author: AuthorModel) => {
-              return author.name;
-            })
-            .join(', ')}
-        </span>
+        <span>{flattenAuthors(collection.authors)}</span>
       </Typography>
+      <Box py={1}>
+        {collection.curationCategory && (
+          <Chip
+            variant="outlined"
+            color="primary"
+            label={collection.curationCategory.name}
+            icon={<LabelOutlinedIcon />}
+          />
+        )}{' '}
+        {collection.IABParentCategory && collection.IABChildCategory && (
+          <Chip
+            variant="outlined"
+            color="primary"
+            label={`${collection.IABParentCategory.name} → ${collection.IABChildCategory.name}`}
+            icon={<Avatar className={classes.iabAvatar}>IAB</Avatar>}
+          />
+        )}{' '}
+      </Box>
+
       <h3>Slug</h3>
       <Typography
         variant="subtitle2"

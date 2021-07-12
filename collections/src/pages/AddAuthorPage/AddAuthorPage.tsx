@@ -2,11 +2,15 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { Box, Paper } from '@material-ui/core';
 import { FormikValues } from 'formik';
-import { AuthorModel, useCreateCollectionAuthorMutation } from '../../api';
+import { FormikHelpers } from 'formik/dist/types';
 import { AuthorForm } from '../../components';
 import { useNotifications } from '../../hooks/useNotifications';
-import { GetAuthorsDocument } from '../../api/generatedTypes';
-import { FormikHelpers } from 'formik/dist/types';
+import {
+  CollectionAuthor,
+  GetAuthorsDocument,
+  GetInitialCollectionFormDataDocument,
+  useCreateCollectionAuthorMutation,
+} from '../../api/collection-api/generatedTypes';
 
 export const AddAuthorPage: React.FC = (): JSX.Element => {
   // Prepare state vars and helper methods for API notifications
@@ -17,7 +21,7 @@ export const AddAuthorPage: React.FC = (): JSX.Element => {
   const history = useHistory();
 
   // Provide a default author object for the form
-  const author: AuthorModel = {
+  const author: CollectionAuthor = {
     externalId: '',
     name: '',
     slug: '',
@@ -45,11 +49,16 @@ export const AddAuthorPage: React.FC = (): JSX.Element => {
         imageUrl: '',
         active: values.active,
       },
-      // make sure the Authors page is updated when we add a new author
       refetchQueries: [
+        // make sure the Authors page is updated when we add a new author
         {
           query: GetAuthorsDocument,
           variables: { perPage: 50 },
+        },
+        // The lookup query for collection form dropdowns also needs a refresh
+        {
+          query: GetInitialCollectionFormDataDocument,
+          variables: { page: 1, perPage: 1000 },
         },
       ],
     })

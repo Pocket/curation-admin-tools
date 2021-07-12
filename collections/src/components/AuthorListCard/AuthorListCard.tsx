@@ -2,11 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { Card, CardMedia, Grid, Typography } from '@material-ui/core';
-import { AuthorModel } from '../../api';
 import { useStyles } from './AuthorListCard.styles';
+import { CollectionAuthor } from '../../api/collection-api/generatedTypes';
 
 interface AuthorListCardProps {
-  author: AuthorModel;
+  /**
+   * An object with everything author-related in it.
+   */
+  author: CollectionAuthor;
 }
 
 /**
@@ -18,6 +21,8 @@ export const AuthorListCard: React.FC<AuthorListCardProps> = (props) => {
   const classes = useStyles();
   const { author } = props;
 
+  // We pass the author object along with the link so that when the user clicks
+  // on the card to go to an individual author's page, the page is loaded instantly.
   return (
     <Link
       to={{ pathname: `/authors/${author.externalId}/`, state: { author } }}

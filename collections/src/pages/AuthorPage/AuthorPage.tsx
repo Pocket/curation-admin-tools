@@ -10,6 +10,7 @@ import {
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import { FormikValues } from 'formik';
+import { FormikHelpers } from 'formik/dist/types';
 import {
   AuthorForm,
   AuthorInfo,
@@ -17,16 +18,18 @@ import {
   ImageUpload,
   ScrollToTop,
 } from '../../components';
+import { useNotifications } from '../../hooks/useNotifications';
 import {
-  AuthorModel,
+  CollectionAuthor,
+  GetAuthorsDocument,
+  GetInitialCollectionFormDataDocument,
   useGetAuthorByIdQuery,
   useUpdateCollectionAuthorMutation,
-} from '../../api';
-import { useNotifications } from '../../hooks/useNotifications';
-import { FormikHelpers } from 'formik/dist/types';
+  useUpdateCollectionAuthorImageUrlMutation,
+} from '../../api/collection-api/generatedTypes';
 
 interface AuthorPageProps {
-  author?: AuthorModel;
+  author?: CollectionAuthor;
 }
 
 export const AuthorPage = (): JSX.Element => {
@@ -37,13 +40,16 @@ export const AuthorPage = (): JSX.Element => {
   // has to be done at the top level of the component because it's a hook
   const [updateAuthor] = useUpdateCollectionAuthorMutation();
 
+  // And this one is only used to set the image url once the we know the S3 link
+  const [updateAuthorImageUrl] = useUpdateCollectionAuthorImageUrlMutation();
+
   /**
    * If an Author object was passed to the page from one of the other app pages,
    * let's extract it from the routing.
    */
   const location = useLocation<AuthorPageProps>();
 
-  const [author, setAuthor] = useState<AuthorModel | undefined>(
+  const [author, setAuthor] = useState<CollectionAuthor | undefined>(
     location.state?.author
       ? // Deep clone a read-only object that comes from the routing
         JSON.parse(JSON.stringify(location.state?.author))
@@ -93,6 +99,18 @@ export const AuthorPage = (): JSX.Element => {
         bio: values.bio,
         active: values.active,
       },
+      refetchQueries: [
+        // make sure the Authors page is updated when we add a new author
+        {
+          query: GetAuthorsDocument,
+          variables: { perPage: 50 },
+        },
+        // The lookup query for collection form dropdowns also needs a refresh
+        {
+          query: GetInitialCollectionFormDataDocument,
+          variables: { page: 1, perPage: 1000 },
+        },
+      ],
     })
       .then(({ data }) => {
         showNotification('Author updated successfully!', 'success');
@@ -115,19 +133,15 @@ export const AuthorPage = (): JSX.Element => {
    * Save the S3 URL we get back from the API to the author record
    */
   const handleImageUploadSave = (url: string): void => {
-    updateAuthor({
+    updateAuthorImageUrl({
       variables: {
-        // We keep most things as they are
         externalId: author!.externalId,
-        name: author!.name,
-        slug: author!.slug!,
-        // This is the only field that needs updating
         imageUrl: url,
       },
     })
       .then(({ data }) => {
         if (author) {
-          author.imageUrl = data?.updateCollectionAuthor?.imageUrl;
+          author.imageUrl = data?.updateCollectionAuthorImageUrl?.imageUrl;
           showNotification(`Image saved to "${author!.name}"`, 'success');
         }
       })

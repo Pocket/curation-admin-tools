@@ -1,32 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Box, Grid, LinearProgress } from '@material-ui/core';
 import slugify from 'slugify';
-import * as yup from 'yup';
 import { FormikValues, useFormik } from 'formik';
-
-import {
-  Box,
-  FormControl,
-  Grid,
-  InputLabel,
-  LinearProgress,
-  Select,
-  TextField,
-} from '@material-ui/core';
-import { AuthorModel, CollectionModel, CollectionStatus } from '../../api';
-import { Button, MarkdownPreview } from '../';
-import { useStyles } from './CollectionForm.styles';
 import { FormikHelpers } from 'formik/dist/types';
+import {
+  Button,
+  FormikSelectField,
+  FormikTextField,
+  MarkdownPreview,
+  SharedFormButtons,
+  SharedFormButtonsProps,
+} from '../';
+import { getValidationSchema } from './CollectionForm.validation';
+import { config } from '../../config';
+import {
+  Collection,
+  CollectionAuthor,
+  CollectionStatus,
+  CurationCategory,
+  IabCategory,
+  IabParentCategory,
+} from '../../api/collection-api/generatedTypes';
 
 interface CollectionFormProps {
   /**
-   * An object with everything collection-related in it.
+   * An object with everything collection-related in it bar stories
    */
-  collection: CollectionModel;
+  collection: Omit<Collection, 'stories'>;
 
   /**
-   * A list of CollectionAuthor objects
+   * A list of all collection authors - for the dropdown
    */
-  authors: AuthorModel[];
+  authors: CollectionAuthor[];
+
+  /**
+   * A list of curation categories
+   */
+  curationCategories: CurationCategory[];
+
+  /**
+   * A list of IAB categories
+   */
+  iabCategories: IabParentCategory[];
 
   /**
    * What do we do with the submitted data?
@@ -35,32 +50,27 @@ interface CollectionFormProps {
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ) => void | Promise<any>;
-
-  /**
-   * Show "Cancel" button if the form is used to edit a new collection
-   * rather than add a new one. Also make "Status" field read-only
-   * True by default
-   */
-  editMode?: boolean;
-
-  /**
-   * What to do if the user clicks on the Cancel button
-   */
-  onCancel?: () => void;
 }
 
 /**
  * A form for adding authors or editing information for existing authors
  */
-export const CollectionForm: React.FC<CollectionFormProps> = (
-  props
-): JSX.Element => {
-  const { collection, authors, editMode = true, onCancel, onSubmit } = props;
-  const classes = useStyles();
+export const CollectionForm: React.FC<
+  CollectionFormProps & SharedFormButtonsProps
+> = (props): JSX.Element => {
+  const {
+    authors,
+    collection,
+    curationCategories,
+    iabCategories,
+    editMode = true,
+    onSubmit,
+    onCancel,
+  } = props;
 
   // get a list of author ids for the validation schema
   const authorIds: string[] = [];
-  authors.forEach((author: AuthorModel) => {
+  authors.forEach((author: CollectionAuthor) => {
     authorIds.push(author.externalId);
   });
 
@@ -79,30 +89,16 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
       intro: collection.intro ?? '',
       status: collection.status ?? CollectionStatus.Draft,
       authorExternalId,
+      curationCategoryExternalId: collection.curationCategory?.externalId ?? '',
+      IABParentCategoryExternalId:
+        collection.IABParentCategory?.externalId ?? '',
+      IABChildCategoryExternalId: collection.IABChildCategory?.externalId ?? '',
     },
     // We don't want to irritate users by displaying validation errors
     // before they actually submit the form
     validateOnBlur: false,
     validateOnChange: false,
-    validationSchema: yup.object({
-      title: yup
-        .string()
-        .required('Please enter a title for this collection')
-        .min(6),
-      slug: yup
-        .string()
-        .required(
-          'Please enter a slug or use the "Suggest slug" button to generate one from the collection title'
-        )
-        .min(6),
-      excerpt: yup.string(),
-      intro: yup.string(),
-      status: yup
-        .mixed<CollectionStatus>()
-        .oneOf(Object.values(CollectionStatus))
-        .required(),
-      authorExternalId: yup.string().oneOf(authorIds).required(),
-    }),
+    validationSchema: getValidationSchema(authorIds),
     onSubmit: (values, formikHelpers) => {
       onSubmit(values, formikHelpers);
     },
@@ -112,47 +108,56 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
    * Suggest a slug for the collection - works off the "title" field
    */
   const suggestSlug = () => {
-    const newSlug = slugify(formik.values.title, {
-      lower: true,
-      remove: /[*+~.()'"!:@]/g,
-    });
+    const newSlug = slugify(formik.values.title, config.slugify);
     formik.setFieldValue('slug', newSlug);
   };
+
+  /**
+   * Work out which IAB child category to show when an IAB parent category is chosen
+   */
+  const [iabChildrenCategories, setIabChildrenCategories] = useState<
+    IabCategory[]
+  >([]);
+  React.useEffect(() => {
+    // Determine which IAB parent category has been chosen
+    const currentIabParentCategory = iabCategories.find((category) => {
+      return category.externalId === formik.values.IABParentCategoryExternalId;
+    });
+
+    if (currentIabParentCategory) {
+      // Use its children as the dependent "IAB Child Category"
+      // dropdown options.
+      setIabChildrenCategories(currentIabParentCategory.children);
+    } else {
+      // No parent IAB category has been chosen - unset child categories
+      setIabChildrenCategories([]);
+    }
+  }, [
+    formik.touched.IABParentCategoryExternalId,
+    formik.values.IABParentCategoryExternalId,
+    iabCategories,
+  ]);
 
   return (
     <form name="collection-form" onSubmit={formik.handleSubmit}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <TextField
+          <FormikTextField
             id="title"
             label="Title"
-            fullWidth
-            InputLabelProps={{
-              shrink: true,
-            }}
-            size="small"
-            variant="outlined"
-            {...formik.getFieldProps('title')}
-            error={!!(formik.touched.title && formik.errors.title)}
-            helperText={formik.errors.title ? formik.errors.title : null}
+            fieldProps={formik.getFieldProps('title')}
+            fieldMeta={formik.getFieldMeta('title')}
           />
         </Grid>
 
         <Grid item xs={12}>
           <Box display="flex">
             <Box flexGrow={1} alignSelf="center" textOverflow="ellipsis">
-              <TextField
+              <FormikTextField
                 id="slug"
                 label="Slug"
-                fullWidth
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                size="small"
-                variant="outlined"
-                {...formik.getFieldProps('slug')}
-                error={!!(formik.touched.slug && formik.errors.slug)}
-                helperText={formik.errors.slug ? formik.errors.slug : null}
+                fieldProps={formik.getFieldProps('slug')}
+                fieldMeta={formik.getFieldMeta('slug')}
               />
             </Box>
             <Box alignSelf="baseline" ml={1}>
@@ -164,93 +169,109 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
         </Grid>
 
         <Grid item xs={12} sm={6}>
-          <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel htmlFor="status" shrink={true}>
-              Status
-            </InputLabel>
-            <Select
-              native
-              disabled={!editMode}
-              label="Status"
-              inputProps={{
-                name: 'status',
-                id: 'status',
-              }}
-              {...formik.getFieldProps('status')}
-            >
-              <option value="DRAFT">Draft</option>
-              <option value="PUBLISHED">Published</option>
-              <option value="ARCHIVED">Archived</option>
-            </Select>
-          </FormControl>
+          <FormikSelectField
+            id="status"
+            label="Status"
+            fieldProps={formik.getFieldProps('status')}
+            fieldMeta={formik.getFieldMeta('status')}
+            disabled={!editMode}
+          >
+            <option value="DRAFT">Draft</option>
+            <option value="PUBLISHED">Published</option>
+            <option value="ARCHIVED">Archived</option>
+          </FormikSelectField>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <FormControl variant="outlined" className={classes.formControl}>
-            <InputLabel htmlFor="authorExternalId" shrink={true}>
-              Author
-            </InputLabel>
-            <Select
-              native
-              label="Author"
-              inputProps={{
-                name: 'authorExternalId',
-                id: 'authorExternalId',
-              }}
-              {...formik.getFieldProps('authorExternalId')}
-              error={
-                !!(
-                  formik.touched.authorExternalId &&
-                  formik.errors.authorExternalId
-                )
-              }
-            >
-              <option value=""></option>
-              {authors.map((author: AuthorModel) => {
-                return (
-                  <option value={author.externalId} key={author.externalId}>
-                    {author.name}
-                  </option>
-                );
-              })}
-            </Select>
-          </FormControl>
+          <FormikSelectField
+            id="authorExternalId"
+            label="Author"
+            fieldProps={formik.getFieldProps('authorExternalId')}
+            fieldMeta={formik.getFieldMeta('authorExternalId')}
+          >
+            <option aria-label="None" value="" />
+            {authors.map((author: CollectionAuthor) => {
+              return (
+                <option value={author.externalId} key={author.externalId}>
+                  {author.name}
+                </option>
+              );
+            })}
+          </FormikSelectField>
+        </Grid>
+
+        <Grid item xs={12} sm={6}>
+          <FormikSelectField
+            id="curationCategoryExternalId"
+            label="Curation Category"
+            fieldProps={formik.getFieldProps('curationCategoryExternalId')}
+            fieldMeta={formik.getFieldMeta('curationCategoryExternalId')}
+          >
+            <option aria-label="None" value="" />
+            {curationCategories.map((category: CurationCategory) => {
+              return (
+                <option value={category.externalId} key={category.externalId}>
+                  {category.name}
+                </option>
+              );
+            })}
+          </FormikSelectField>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <FormikSelectField
+            id="IABParentCategoryExternalId"
+            label="IAB Parent Category"
+            fieldProps={formik.getFieldProps('IABParentCategoryExternalId')}
+            fieldMeta={formik.getFieldMeta('IABParentCategoryExternalId')}
+          >
+            <option aria-label="None" value="" />
+            {iabCategories.map((category: IabParentCategory) => {
+              return (
+                <option value={category.externalId} key={category.externalId}>
+                  {category.name}
+                </option>
+              );
+            })}
+          </FormikSelectField>
+          <br />
+          <br />
+          <FormikSelectField
+            id="IABChildCategoryExternalId"
+            label="IAB Child Category"
+            fieldProps={formik.getFieldProps('IABChildCategoryExternalId')}
+            fieldMeta={formik.getFieldMeta('IABChildCategoryExternalId')}
+          >
+            <option aria-label="None" value="" />
+            {iabChildrenCategories.map((category: IabCategory) => {
+              return (
+                <option value={category.externalId} key={category.externalId}>
+                  {category.name}
+                </option>
+              );
+            })}
+          </FormikSelectField>
         </Grid>
         <Grid item xs={12}>
           <MarkdownPreview minHeight={6.5} source={formik.values.excerpt}>
-            <TextField
+            <FormikTextField
               id="excerpt"
               label="Excerpt"
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
+              fieldProps={formik.getFieldProps('excerpt')}
+              fieldMeta={formik.getFieldMeta('excerpt')}
               multiline
               rows={4}
-              size="small"
-              variant="outlined"
-              {...formik.getFieldProps('excerpt')}
-              error={!!(formik.touched.excerpt && formik.errors.excerpt)}
-              helperText={formik.errors.excerpt ? formik.errors.excerpt : null}
             />
           </MarkdownPreview>
         </Grid>
 
         <Grid item xs={12}>
           <MarkdownPreview minHeight={15.5} source={formik.values.intro}>
-            <TextField
+            <FormikTextField
               id="intro"
               label="Intro"
-              fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
+              fieldProps={formik.getFieldProps('intro')}
+              fieldMeta={formik.getFieldMeta('intro')}
               multiline
               rows={12}
-              size="small"
-              variant="outlined"
-              {...formik.getFieldProps('intro')}
-              error={!!(formik.touched.intro && formik.errors.intro)}
-              helperText={formik.errors.intro ? formik.errors.intro : null}
             />
           </MarkdownPreview>
         </Grid>
@@ -262,20 +283,7 @@ export const CollectionForm: React.FC<CollectionFormProps> = (
         )}
 
         <Grid item xs={12}>
-          <Box display="flex" justifyContent="center">
-            <Box p={1}>
-              <Button buttonType="positive" type="submit">
-                Save
-              </Button>
-            </Box>
-            {editMode && (
-              <Box p={1}>
-                <Button buttonType="hollow-neutral" onClick={onCancel}>
-                  Cancel
-                </Button>
-              </Box>
-            )}
-          </Box>
+          <SharedFormButtons editMode={editMode} onCancel={onCancel} />
         </Grid>
       </Grid>
     </form>

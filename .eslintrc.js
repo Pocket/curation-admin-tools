@@ -6,7 +6,7 @@ module.exports = {
     'plugin:prettier/recommended',
   ],
   ignorePatterns: [
-    'collections/src/api/generatedTypes.ts',
+    'collections/src/api/collection-api/generatedTypes.ts',
     'collections/src/api/client-api/generatedTypes.ts',
   ],
   plugins: [],

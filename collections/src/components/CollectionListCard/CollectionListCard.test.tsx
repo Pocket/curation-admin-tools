@@ -1,11 +1,17 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Router } from 'react-router-dom';
 import { CollectionListCard } from './CollectionListCard';
-import { CollectionModel, CollectionStatus } from '../../api';
+import {
+  Collection,
+  CollectionStatus,
+} from '../../api/collection-api/generatedTypes';
+import { createMemoryHistory } from 'history';
+import { MockedProvider } from '@apollo/client/testing';
+import userEvent from '@testing-library/user-event';
 
 describe('The CollectionListCard component', () => {
-  let collection: CollectionModel;
+  let collection: Omit<Collection, 'stories'>;
 
   beforeEach(() => {
     collection = {
@@ -62,5 +68,94 @@ describe('The CollectionListCard component', () => {
     expect(draft).not.toBeInTheDocument();
     const archived = screen.queryByText(/^archived/i);
     expect(archived).not.toBeInTheDocument();
+  });
+
+  it('shows label if curation category is set', () => {
+    collection.curationCategory = {
+      externalId: 'cde-234',
+      name: 'Food',
+      slug: 'food',
+    };
+
+    render(
+      <MemoryRouter>
+        <CollectionListCard collection={collection} />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('Food')).toBeInTheDocument();
+  });
+
+  it('omits label if curation category is not set', () => {
+    render(
+      <MemoryRouter>
+        <CollectionListCard collection={collection} />
+      </MemoryRouter>
+    );
+
+    expect(screen.queryByText('Food')).not.toBeInTheDocument();
+  });
+
+  it('shows IAB label if IAB categories are set is set', () => {
+    collection.IABParentCategory = {
+      externalId: 'cde-234',
+      name: 'Careers',
+      slug: 'careers',
+    };
+
+    collection.IABChildCategory = {
+      externalId: 'cde-234',
+      name: 'Job Fairs',
+      slug: 'job-fairs',
+    };
+
+    render(
+      <MemoryRouter>
+        <CollectionListCard collection={collection} />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('Careers → Job Fairs')).toBeInTheDocument();
+  });
+
+  it('omits IAB label if IAB categories are not set', () => {
+    render(
+      <MemoryRouter>
+        <CollectionListCard collection={collection} />
+      </MemoryRouter>
+    );
+
+    expect(screen.queryByText('Careers → Job Fairs')).not.toBeInTheDocument();
+  });
+
+  it("links to an individual collection's page", () => {
+    const history = createMemoryHistory({
+      initialEntries: ['/collections/'],
+    });
+
+    render(
+      <MockedProvider>
+        <Router history={history}>
+          <CollectionListCard collection={collection} />
+        </Router>
+      </MockedProvider>
+    );
+
+    // While the entire card is a giant link, we can click on
+    // anything we like within that link - i.e., the title of the collection
+    userEvent.click(screen.getByText(collection.title));
+    expect(history.location.pathname).toEqual(
+      `/collections/${collection.externalId}/`
+    );
+
+    // Let's go back to the Collections page
+    history.goBack();
+    expect(history.location.pathname).toEqual('/collections/');
+
+    // And click on the image this time
+    userEvent.click(screen.getByRole('img'));
+    expect(history.location.pathname).toEqual(
+      `/collections/${collection.externalId}/`
+    );
   });
 });

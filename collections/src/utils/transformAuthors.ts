@@ -1,9 +1,12 @@
-interface StoryAuthor {
-  name: string;
-  sortOrder: number;
-}
+import { CollectionStoryAuthor } from '../api/collection-api/generatedTypes';
 
-export const transformAuthors = (authors: string): StoryAuthor[] => {
+/**
+ * A helper function that transforms a comma-separated string of names
+ * into an array of StoryAuthor objects.
+ *
+ * @param authors
+ */
+export const transformAuthors = (authors: string): CollectionStoryAuthor[] => {
   // get rid of any whitespace on the sides
   authors = authors.trim();
 

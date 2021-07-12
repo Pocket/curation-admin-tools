@@ -1,4 +1,9 @@
-// adapted from https://github.com/fortana-co/react-dropzone-uploader/blob/master/src/utils.ts
+/**
+ * A helper function that converts the size of a file from bytes
+ * to a human-readable format.
+ * Adapted from https://github.com/fortana-co/react-dropzone-uploader/blob/master/src/utils.ts
+ * @param size
+ */
 export const formatFileSize = (size: number): string => {
   const units = ['bytes', 'kB', 'MB', 'GB'];
   let labelIndex = 0;

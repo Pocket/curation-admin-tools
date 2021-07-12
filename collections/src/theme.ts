@@ -101,6 +101,10 @@ theme.overrides = {
       '&:hover': {
         border: `2px solid ${theme.palette.primary.dark}`,
       },
+      '&.Mui-disabled': {
+        backgroundColor: theme.palette.grey[100],
+        border: `2px solid ${theme.palette.grey[400]}`,
+      },
     },
 
     /**

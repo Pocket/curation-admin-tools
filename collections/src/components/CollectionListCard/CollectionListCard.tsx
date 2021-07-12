@@ -1,13 +1,26 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardMedia, Grid, Typography } from '@material-ui/core';
+import {
+  Avatar,
+  Box,
+  Card,
+  CardMedia,
+  Chip,
+  Grid,
+  Typography,
+} from '@material-ui/core';
 import ReactMarkdown from 'react-markdown';
-import { CollectionModel } from '../../api';
 import { useStyles } from './CollectionListCard.styles';
-import { CollectionAuthor } from '../../api/generatedTypes';
+import { Collection } from '../../api/collection-api/generatedTypes';
+import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
+import { flattenAuthors } from '../../utils/flattenAuthors';
 
 interface CollectionListCardProps {
-  collection: CollectionModel;
+  /**
+   * An object with everything collection-related in it.
+   * Except for stories. We don't need them in the card.
+   */
+  collection: Omit<Collection, 'stories'>;
 }
 
 /**
@@ -60,14 +73,26 @@ export const CollectionListCard: React.FC<CollectionListCardProps> = (
               align="left"
             >
               <span>{collection.status}</span> &middot;{' '}
-              <span>
-                {collection.authors
-                  .map((author: CollectionAuthor) => {
-                    return author.name;
-                  })
-                  .join(', ')}
-              </span>
-            </Typography>
+              <span>{flattenAuthors(collection.authors)}</span>
+            </Typography>{' '}
+            <Box py={1}>
+              {collection.curationCategory && (
+                <Chip
+                  variant="outlined"
+                  color="primary"
+                  label={collection.curationCategory.name}
+                  icon={<LabelOutlinedIcon />}
+                />
+              )}{' '}
+              {collection.IABParentCategory && collection.IABChildCategory && (
+                <Chip
+                  variant="outlined"
+                  color="primary"
+                  label={`${collection.IABParentCategory.name} → ${collection.IABChildCategory.name}`}
+                  icon={<Avatar className={classes.iabAvatar}>IAB</Avatar>}
+                />
+              )}
+            </Box>
             <Typography noWrap component="div">
               <ReactMarkdown>
                 {collection.excerpt ? collection.excerpt.substring(0, 100) : ''}

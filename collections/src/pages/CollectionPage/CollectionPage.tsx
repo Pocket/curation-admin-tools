@@ -3,51 +3,55 @@ import { useLocation, useParams } from 'react-router-dom';
 import {
   Box,
   Button,
+  ButtonGroup,
   Collapse,
   Grid,
   Paper,
   Typography,
 } from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import {
   DragDropContext,
   Draggable,
   Droppable,
   DropResult,
 } from 'react-beautiful-dnd';
+import { FormikValues } from 'formik';
+import { FormikHelpers } from 'formik/dist/types';
 import {
   CollectionForm,
   CollectionInfo,
+  CollectionPreview,
   HandleApiResponse,
   ImageUpload,
+  Modal,
   ScrollToTop,
   StoryForm,
   StoryListCard,
 } from '../../components';
 import {
-  CollectionModel,
-  StoryModel,
-  useGetAuthorsQuery,
-  useGetCollectionByExternalIdQuery,
-  useGetCollectionStoriesQuery,
-  useUpdateCollectionMutation,
-  useCreateCollectionStoryMutation,
-  useImageUploadMutation,
-  useUpdateCollectionStorySortOrderMutation,
-} from '../../api';
-import { useNotifications } from '../../hooks/useNotifications';
-import { FormikValues } from 'formik';
-import EditIcon from '@material-ui/icons/Edit';
-import {
+  CollectionStory,
   GetArchivedCollectionsDocument,
   GetCollectionByExternalIdDocument,
   GetDraftCollectionsDocument,
   GetPublishedCollectionsDocument,
-} from '../../api/generatedTypes';
+  useGetCollectionByExternalIdQuery,
+  useGetCollectionStoriesQuery,
+  useGetInitialCollectionFormDataQuery,
+  useUpdateCollectionMutation,
+  useUpdateCollectionImageUrlMutation,
+  useCreateCollectionStoryMutation,
+  useImageUploadMutation,
+  useUpdateCollectionStorySortOrderMutation,
+  useUpdateCollectionStoryImageUrlMutation,
+  Collection,
+} from '../../api/collection-api/generatedTypes';
+import { useNotifications } from '../../hooks/useNotifications';
 import { transformAuthors } from '../../utils/transformAuthors';
-import { FormikHelpers } from 'formik/dist/types';
 
 interface CollectionPageProps {
-  collection?: CollectionModel;
+  collection?: Omit<Collection, 'stories'>;
 }
 
 export const CollectionPage = (): JSX.Element => {
@@ -58,8 +62,14 @@ export const CollectionPage = (): JSX.Element => {
   // has to be done at the top level of the component because it's a hook
   const [updateCollection] = useUpdateCollectionMutation();
 
+  // And this one is only used to set the image url once the we know the S3 link
+  const [updateCollectionImageUrl] = useUpdateCollectionImageUrlMutation();
+
   // prepare the "create story" mutation
   const [createStory] = useCreateCollectionStoryMutation();
+
+  // prepare the "update story image url" mutation
+  const [updateStoryImageUrl] = useUpdateCollectionStoryImageUrlMutation();
 
   // prepare the "update story sort order" mutation
   const [updateStorySortOrder] = useUpdateCollectionStorySortOrderMutation();
@@ -73,7 +83,9 @@ export const CollectionPage = (): JSX.Element => {
    */
   const location = useLocation<CollectionPageProps>();
 
-  const [collection, setCollection] = useState<CollectionModel | undefined>(
+  const [collection, setCollection] = useState<
+    Omit<Collection, 'stories'> | undefined
+  >(
     location.state?.collection
       ? // Deep clone a read-only object that comes from the routing
         JSON.parse(JSON.stringify(location.state?.collection))
@@ -101,12 +113,14 @@ export const CollectionPage = (): JSX.Element => {
     setCollection(JSON.parse(JSON.stringify(data.getCollection)));
   }
 
-  // Load authors for the dropdown in the edit form
+  // Load data for all the dropdowns in the edit collection form
   const {
-    loading: authorsLoading,
-    error: authorsError,
-    data: authorsData,
-  } = useGetAuthorsQuery();
+    loading: initialCollectionFormLoading,
+    error: initialCollectionFormError,
+    data: initialCollectionFormData,
+  } = useGetInitialCollectionFormDataQuery({
+    variables: { page: 1, perPage: 1000 },
+  });
 
   // Load collection stories - deliberately in a separate query
   const {
@@ -131,7 +145,9 @@ export const CollectionPage = (): JSX.Element => {
   }
 
   // Let's keep stories in state to be able to reorder them with drag'n'drop
-  const [stories, setStories] = useState<StoryModel[] | undefined>(undefined);
+  const [stories, setStories] = useState<CollectionStory[] | undefined>(
+    undefined
+  );
   // And update the state variable when data is loaded
   useEffect(() => {
     setStories(storiesData?.getCollection?.stories);
@@ -169,6 +185,9 @@ export const CollectionPage = (): JSX.Element => {
         intro: values.intro,
         status: values.status,
         authorExternalId: values.authorExternalId,
+        curationCategoryExternalId: values.curationCategoryExternalId,
+        IABParentCategoryExternalId: values.IABParentCategoryExternalId,
+        IABChildCategoryExternalId: values.IABChildCategoryExternalId,
       },
       refetchQueries: [
         {
@@ -201,6 +220,11 @@ export const CollectionPage = (): JSX.Element => {
           collection.intro = data?.updateCollection?.intro;
           collection.status = data?.updateCollection?.status!;
           collection.authors = data?.updateCollection?.authors!;
+          collection.curationCategory = data?.updateCollection?.curationCategory!;
+          collection.IABParentCategory =
+            data?.updateCollection?.IABParentCategory;
+          collection.IABChildCategory =
+            data?.updateCollection?.IABChildCategory;
           toggleEditForm();
           formikHelpers.setSubmitting(false);
         }
@@ -215,19 +239,9 @@ export const CollectionPage = (): JSX.Element => {
    * Save the S3 URL we get back from the API to the collection record
    */
   const handleImageUploadSave = (url: string): void => {
-    updateCollection({
+    updateCollectionImageUrl({
       variables: {
-        // We keep most things as they are
         externalId: collection!.externalId,
-        title: collection!.title,
-        slug: collection!.slug,
-        excerpt: collection!.excerpt,
-        status: collection!.status,
-        // This is the only (?) piece of the backend part of the frontend code
-        // that is not ready for multiple authors
-        authorExternalId: collection!.authors[0].externalId,
-
-        // This is the only field that needs updating
         imageUrl: url,
       },
       refetchQueries: [
@@ -241,7 +255,7 @@ export const CollectionPage = (): JSX.Element => {
     })
       .then(({ data }) => {
         if (collection) {
-          collection.imageUrl = data?.updateCollection?.imageUrl!;
+          collection.imageUrl = data?.updateCollectionImageUrl?.imageUrl!;
           showNotification(
             `Image saved to "${collection.title.substring(0, 50)}..."`,
             'success'
@@ -266,74 +280,111 @@ export const CollectionPage = (): JSX.Element => {
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ): void => {
-    // If the parser returned an image, let's upload it to S3
-    // First, side-step CORS issues that prevent us from downloading
-    // the image directly from the publisher
-    const parserImageUrl =
-      'https://pocket-image-cache.com/x/filters:no_upscale():format(jpg)/' +
-      encodeURIComponent(values.imageUrl);
+    // First, let's save the new story
+    // Prepare authors. They need to be an array of objects again
+    const authors = transformAuthors(values.authors);
 
-    // Get the file
-    fetch(parserImageUrl)
-      .then((res) => res.blob())
-      .then((blob) => {
-        // Upload the file to S3
-        uploadImage({
-          variables: {
-            image: blob,
-            height: 0,
-            width: 0,
-            fileSizeBytes: blob.size,
-          },
-        })
-          .then((data) => {
-            if (data.data && data.data.collectionImageUpload) {
-              showNotification('Image successfully uploaded to S3', 'success');
+    // Save the new story with the S3 URL
+    createStory({
+      variables: {
+        collectionExternalId: params.id,
+        url: values.url,
+        title: values.title,
+        excerpt: values.excerpt,
+        publisher: values.publisher,
+        imageUrl: '',
+        authors,
+        sortOrder: storySortOrder,
+      },
+    })
+      .then((data) => {
+        showNotification(
+          `Added "${data.data?.createCollectionStory?.title.substring(
+            0,
+            50
+          )}..."`,
+          'success'
+        );
 
-              // Prepare authors. They need to be an array of objects again
-              const authors = transformAuthors(values.authors);
+        // If the parser returned an image, let's upload it to S3
+        // First, side-step CORS issues that prevent us from downloading
+        // the image directly from the publisher
+        const parserImageUrl =
+          'https://pocket-image-cache.com/x/filters:no_upscale():format(jpg)/' +
+          encodeURIComponent(values.imageUrl);
 
-              // Save the new story with the S3 URL
-              createStory({
-                variables: {
-                  collectionExternalId: params.id,
-                  url: values.url,
-                  title: values.title,
-                  excerpt: values.excerpt,
-                  publisher: values.publisher,
-                  imageUrl: data.data.collectionImageUpload.url,
-                  authors,
-                  sortOrder: storySortOrder,
-                },
+        // Get the file
+        fetch(parserImageUrl)
+          .then((res) => res.blob())
+          .then((blob) => {
+            // Upload the file to S3
+            uploadImage({
+              variables: {
+                image: blob,
+                height: 0,
+                width: 0,
+                fileSizeBytes: blob.size,
+              },
+            })
+              .then((imgUploadData) => {
+                if (
+                  imgUploadData.data &&
+                  imgUploadData.data.collectionImageUpload
+                ) {
+                  // Don't show a notification about a successful S3 upload just yet -
+                  // that's just too many. Wait until we save the url to show another
+                  // success message
+                  updateStoryImageUrl({
+                    variables: {
+                      externalId: data.data?.createCollectionStory?.externalId!,
+                      imageUrl: imgUploadData.data.collectionImageUpload.url,
+                    },
+                  })
+                    .then(() => {
+                      showNotification(
+                        'Image uploaded to S3 and linked to story',
+                        'success'
+                      );
+                      // manually refresh the cache
+                      refetchStories();
+                      formikHelpers.setSubmitting(false);
+                    })
+                    .catch((error) => {
+                      // manually refresh the cache
+                      refetchStories();
+                      showNotification(error.message, 'error');
+                      formikHelpers.setSubmitting(false);
+                    });
+                }
               })
-                .then((data) => {
-                  // manually refresh the cache
-                  refetchStories();
-
-                  showNotification(
-                    `Added "${data.data?.createCollectionStory?.title.substring(
-                      0,
-                      50
-                    )}..."`,
-                    'success'
-                  );
-                  setAddStoryFormKey(addStoryFormKey + 1);
-                  formikHelpers.setSubmitting(false);
-                })
-                .catch((error: Error) => {
-                  showNotification(error.message, 'error');
-                  formikHelpers.setSubmitting(false);
-                });
-            }
+              .catch((error) => {
+                // manually refresh the cache
+                refetchStories();
+                showNotification(error.message, 'error');
+              });
           })
-          .catch((error) => {
-            showNotification(error.message, 'error');
+          .catch((error: Error) => {
+            showNotification(
+              'Could not process image - file may be too large.\n' +
+                `(Original error: ${error.message})`,
+              'error'
+            );
+            // manually refresh the cache
+            refetchStories();
+            formikHelpers.setSubmitting(false);
           });
+
+        setAddStoryFormKey(addStoryFormKey + 1);
+        formikHelpers.setSubmitting(false);
+      })
+      .catch((error: Error) => {
+        showNotification(error.message, 'error');
+        formikHelpers.setSubmitting(false);
       });
   };
 
   // provide an empty story object for the 'Add story' form
-  const emptyStory: StoryModel = {
+  const emptyStory: CollectionStory = {
     externalId: '',
     url: '',
     title: '',
@@ -365,7 +416,7 @@ export const CollectionPage = (): JSX.Element => {
     setStories(reorderedStories);
 
     // save the new order of stories to the database
-    reorderedStories.forEach((story: StoryModel, index: number) => {
+    reorderedStories.forEach((story: CollectionStory, index: number) => {
       const newSortOrder = index + 1;
 
       // update each affected story with the new sort order
@@ -389,6 +440,17 @@ export const CollectionPage = (): JSX.Element => {
     });
   };
 
+  const [previewCollectionOpen, setPreviewCollectionOpen] = useState<boolean>(
+    false
+  );
+  /**
+   * Preview the entire collection in a modal
+   */
+  const previewCollection = () => {
+    //
+    setPreviewCollectionOpen(true);
+  };
+
   return (
     <>
       <ScrollToTop />
@@ -405,12 +467,20 @@ export const CollectionPage = (): JSX.Element => {
               </h1>
             </Box>
             <Box alignSelf="center">
-              <Button color="primary" onClick={toggleEditForm}>
-                <EditIcon />
-              </Button>
+              <ButtonGroup
+                orientation="vertical"
+                color="primary"
+                variant="text"
+              >
+                <Button color="primary" onClick={toggleEditForm}>
+                  <EditIcon />
+                </Button>
+                <Button color="primary" onClick={previewCollection}>
+                  <VisibilityIcon />
+                </Button>
+              </ButtonGroup>
             </Box>
           </Box>
-
           <Grid container spacing={2}>
             <Grid item xs={12} sm={4}>
               <ImageUpload
@@ -423,29 +493,37 @@ export const CollectionPage = (): JSX.Element => {
               <CollectionInfo collection={collection} />
             </Grid>
           </Grid>
-
           <Collapse in={showEditForm}>
             <Paper elevation={4}>
               <Box p={2} mt={3}>
                 <Box mb={2}>
                   <h3>Edit Collection</h3>
                 </Box>
-                {!authorsData && (
+                {!initialCollectionFormData && (
                   <HandleApiResponse
-                    loading={authorsLoading}
-                    error={authorsError}
+                    loading={initialCollectionFormLoading}
+                    error={initialCollectionFormError}
                   />
                 )}
 
-                {authorsData && authorsData.getCollectionAuthors && (
-                  <CollectionForm
-                    authors={authorsData.getCollectionAuthors.authors}
-                    collection={collection}
-                    onSubmit={handleSubmit}
-                    editMode={true}
-                    onCancel={toggleEditForm}
-                  />
-                )}
+                {initialCollectionFormData &&
+                  initialCollectionFormData.getCollectionAuthors &&
+                  initialCollectionFormData.getCurationCategories &&
+                  initialCollectionFormData.getIABCategories && (
+                    <CollectionForm
+                      authors={
+                        initialCollectionFormData.getCollectionAuthors.authors
+                      }
+                      collection={collection}
+                      curationCategories={
+                        initialCollectionFormData.getCurationCategories
+                      }
+                      iabCategories={initialCollectionFormData.getIABCategories}
+                      editMode={true}
+                      onCancel={toggleEditForm}
+                      onSubmit={handleSubmit}
+                    />
+                  )}
               </Box>
             </Paper>
           </Collapse>
@@ -460,7 +538,7 @@ export const CollectionPage = (): JSX.Element => {
             )}
             <DragDropContext onDragEnd={onDragEnd}>
               <Droppable droppableId="characters">
-                {(provided, snapshot) => (
+                {(provided) => (
                   <Typography
                     component="div"
                     className="characters"
@@ -468,14 +546,14 @@ export const CollectionPage = (): JSX.Element => {
                     ref={provided.innerRef}
                   >
                     {stories &&
-                      stories.map((story: StoryModel, index: number) => {
+                      stories.map((story: CollectionStory, index: number) => {
                         return (
                           <Draggable
                             key={story.externalId}
                             draggableId={story.externalId}
                             index={index}
                           >
-                            {(provided, snapshot) => {
+                            {(provided) => {
                               return (
                                 <Typography
                                   component="div"
@@ -500,7 +578,6 @@ export const CollectionPage = (): JSX.Element => {
               </Droppable>
             </DragDropContext>
           </Box>
-
           <Paper elevation={4}>
             <Box p={2} mt={3}>
               <Box mb={2}>
@@ -508,11 +585,24 @@ export const CollectionPage = (): JSX.Element => {
               </Box>
               <StoryForm
                 key={addStoryFormKey}
+                onCancel={() => {
+                  setAddStoryFormKey(addStoryFormKey + 1);
+                }}
                 onSubmit={handleCreateStorySubmit}
                 story={emptyStory}
+                editMode={false}
+                showAllFields={false}
               />
             </Box>
           </Paper>
+          <Modal
+            open={previewCollectionOpen}
+            handleClose={() => {
+              setPreviewCollectionOpen(false);
+            }}
+          >
+            <CollectionPreview collection={collection} stories={stories} />
+          </Modal>
         </>
       )}
     </>
