@@ -1,5 +1,5 @@
 # development build - build app
-FROM node:15 as builder
+FROM node:16 as builder
 WORKDIR /usr/src/app
 ARG GIT_SHA
 ARG APP_ENV

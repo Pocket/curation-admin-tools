@@ -43,11 +43,11 @@ jobs:
       # Github Super Linter needs
       # the latest definitions installed
       ##########################
-      - name: Use Node.js 15.x
+      - name: Use Node.js 16.x
         uses: actions/setup-node@v2.2.0
         with:
-          node-version: 15.x
-      - run: npm install
+          node-version: 16.x
+      - run: cd collections && npm install
 
       ################################
       # Run Linter against code base #
