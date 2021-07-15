@@ -3,13 +3,14 @@
 
 version: 2
 updates:
-  # Enable version updates for npm
+  # Enable version updates for Collections Admin UI
   - package-ecosystem: 'npm'
     # Look for `package.json` and `lock` files in the `root` directory
-    directory: '/'
-    # Check the npm registry for updates every day (weekdays)
+    directory: 'collections'
     schedule:
-      interval: 'monthly'
+      interval: 'daily'
+      time: '09:00'
+      timezone: 'America/Los_Angeles'
     commit-message:
       prefix: '[DEPBOT-0101]'
 
@@ -17,9 +18,10 @@ updates:
   - package-ecosystem: 'docker'
     # Look for a `Dockerfile` in the `root` directory
     directory: '/'
-    # Check for updates once a week
     schedule:
-      interval: 'monthly'
+      interval: 'daily'
+      time: '09:00'
+      timezone: 'America/Los_Angeles'
     commit-message:
       prefix: '[DEPBOT-0102]'
 
@@ -27,14 +29,18 @@ updates:
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
-      interval: 'monthly'
+      interval: 'daily'
+      time: '09:00'
+      timezone: 'America/Los_Angeles'
     commit-message:
       prefix: '[DEPBOT-0103]'
 
   # Maintain dependencies for Terraform
-  - package-ecosystem: 'terraform'
+  - package-ecosystem: 'npm'
     directory: '.aws'
     schedule:
-      interval: 'monthly'
+      interval: 'daily'
+      time: '09:00'
+      timezone: 'America/Los_Angeles'
     commit-message:
       prefix: '[DEPBOT-0104]'
