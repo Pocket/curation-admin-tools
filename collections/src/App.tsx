@@ -15,6 +15,9 @@ import {
   CollectionSearchPage,
   CollectionPage,
   AddCollectionPage,
+  PartnerListPage,
+  PartnerPage,
+  AddPartnerPage,
 } from './pages';
 import { Header, MainContentWrapper, MenuLink } from './components';
 
@@ -26,6 +29,10 @@ const menuLinks: MenuLink[] = [
   {
     text: 'Authors',
     url: '/authors/',
+  },
+  {
+    text: 'Partners',
+    url: '/partners/',
   },
   {
     text: 'Search',
@@ -63,6 +70,15 @@ function App(): JSX.Element {
                   </Route>
                   <Route exact path="/collections/:id/">
                     <CollectionPage />
+                  </Route>
+                  <Route exact path="/partners/">
+                    <PartnerListPage />
+                  </Route>
+                  <Route exact path="/partners/add/">
+                    <AddPartnerPage />
+                  </Route>
+                  <Route exact path="/partners/:id/">
+                    <PartnerPage />
                   </Route>
                   <Route exact path="/search/">
                     <CollectionSearchPage />

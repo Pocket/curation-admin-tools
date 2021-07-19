@@ -4,7 +4,7 @@ import { CollectionAuthorData } from '../fragments/CollectionAuthorData';
 /**
  * Update a collection author's image url
  */
-export const updateCollectionStoryImageUrl = gql`
+export const updateCollectionAuthorImageUrl = gql`
   mutation updateCollectionAuthorImageUrl(
     $externalId: String!
     $imageUrl: Url!
