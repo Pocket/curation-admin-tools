@@ -16,6 +16,7 @@ export const CollectionStoryData = gql`
       sortOrder
     }
     publisher
+    fromPartner
     sortOrder
   }
 `;

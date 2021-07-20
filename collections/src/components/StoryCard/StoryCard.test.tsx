@@ -24,6 +24,7 @@ describe('The StoryCard component', () => {
         { name: 'Percy Shelley', sortOrder: 2 },
       ],
       publisher: 'Lackington, Hughes, Harding, Mavor, & Jones',
+      fromPartner: false,
     };
   });
 

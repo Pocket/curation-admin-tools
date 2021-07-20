@@ -220,7 +220,8 @@ export const CollectionPage = (): JSX.Element => {
           collection.intro = data?.updateCollection?.intro;
           collection.status = data?.updateCollection?.status!;
           collection.authors = data?.updateCollection?.authors!;
-          collection.curationCategory = data?.updateCollection?.curationCategory!;
+          collection.curationCategory =
+            data?.updateCollection?.curationCategory!;
           collection.IABParentCategory =
             data?.updateCollection?.IABParentCategory;
           collection.IABChildCategory =
@@ -396,6 +397,7 @@ export const CollectionPage = (): JSX.Element => {
       },
     ],
     publisher: null,
+    fromPartner: false,
     imageUrl: null,
     sortOrder: null,
   };
@@ -440,9 +442,8 @@ export const CollectionPage = (): JSX.Element => {
     });
   };
 
-  const [previewCollectionOpen, setPreviewCollectionOpen] = useState<boolean>(
-    false
-  );
+  const [previewCollectionOpen, setPreviewCollectionOpen] =
+    useState<boolean>(false);
   /**
    * Preview the entire collection in a modal
    */

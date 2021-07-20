@@ -40,6 +40,7 @@ describe('The CollectionPreview component', () => {
         excerpt: 'This story should always be the first.',
         authors: [{ name: 'First Author', sortOrder: 1 }],
         publisher: 'Pocket Collections',
+        fromPartner: false,
       },
     ];
   });

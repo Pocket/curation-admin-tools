@@ -19,6 +19,7 @@ import {
   Collection,
   CollectionAuthor,
   CollectionImageUploadInput,
+  CollectionPartner,
   CollectionStory,
   useImageUploadMutation,
 } from '../../api/collection-api/generatedTypes';
@@ -27,7 +28,11 @@ interface ImageUploadProps {
   /**
    * Any entity with a customizable image
    */
-  entity: Omit<Collection, 'stories'> | CollectionAuthor | CollectionStory;
+  entity:
+    | Omit<Collection, 'stories'>
+    | CollectionAuthor
+    | CollectionPartner
+    | CollectionStory;
 
   /**
    * A path to a placeholder image to show if no image is available

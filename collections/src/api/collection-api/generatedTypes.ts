@@ -83,6 +83,43 @@ export type CollectionInput = {
   excerpt: Scalars['String'];
 };
 
+/** Details of a partner company sponsored collections are associated with. */
+export type CollectionPartner = {
+  __typename?: 'CollectionPartner';
+  externalId: Scalars['String'];
+  name: Scalars['String'];
+  url: Scalars['Url'];
+  imageUrl: Scalars['Url'];
+  blurb: Scalars['Markdown'];
+};
+
+export type CollectionPartnersResult = {
+  __typename?: 'CollectionPartnersResult';
+  pagination?: Maybe<Pagination>;
+  partners: Array<CollectionPartner>;
+};
+
+/**
+ * If a collection was made in partnership with an external company, this
+ * entity will hold all required info about that partnership.
+ */
+export type CollectionPartnership = {
+  __typename?: 'CollectionPartnership';
+  externalId: Scalars['String'];
+  type: CollectionPartnershipType;
+  collection: Collection;
+  name: Scalars['String'];
+  url: Scalars['Url'];
+  imageUrl: Scalars['Url'];
+  blurb: Scalars['Markdown'];
+};
+
+/** Type and enums related to Collections made in partnership with a company. */
+export enum CollectionPartnershipType {
+  Partnered = 'PARTNERED',
+  Sponsored = 'SPONSORED',
+}
+
 export enum CollectionStatus {
   Draft = 'DRAFT',
   Published = 'PUBLISHED',
@@ -100,6 +137,8 @@ export type CollectionStory = {
   publisher?: Maybe<Scalars['String']>;
   sortOrder?: Maybe<Scalars['Int']>;
   item?: Maybe<Item>;
+  /** if True, the story is provided by a partner and should be displayed as such */
+  fromPartner: Scalars['Boolean'];
 };
 
 export type CollectionStoryAuthor = {
@@ -138,6 +177,13 @@ export type CreateCollectionInput = {
   curationCategoryExternalId?: Maybe<Scalars['String']>;
   IABParentCategoryExternalId?: Maybe<Scalars['String']>;
   IABChildCategoryExternalId?: Maybe<Scalars['String']>;
+};
+
+export type CreateCollectionPartnerInput = {
+  name: Scalars['String'];
+  url: Scalars['Url'];
+  imageUrl: Scalars['Url'];
+  blurb: Scalars['Markdown'];
 };
 
 export type CreateCollectionStoryInput = {
@@ -211,6 +257,12 @@ export type Mutation = {
   deleteCollectionStory: CollectionStory;
   /** Uploads an image to S3. Does *not* save the image to any entity (CollectionAuthor/Collection/CollectionStory). */
   collectionImageUpload: CollectionImageUrl;
+  /** Creates a CollectionPartner. */
+  createCollectionPartner: CollectionPartner;
+  /** Updates a CollectionPartner. */
+  updateCollectionPartner: CollectionPartner;
+  /** Updates only the `imageUrl` property of a CollectionPartner. Dedicated to uploading images within the UI. */
+  updateCollectionPartnerImageUrl: CollectionPartner;
 };
 
 export type MutationCreateCollectionAuthorArgs = {
@@ -261,6 +313,18 @@ export type MutationCollectionImageUploadArgs = {
   data: CollectionImageUploadInput;
 };
 
+export type MutationCreateCollectionPartnerArgs = {
+  data: CreateCollectionPartnerInput;
+};
+
+export type MutationUpdateCollectionPartnerArgs = {
+  data: UpdateCollectionPartnerInput;
+};
+
+export type MutationUpdateCollectionPartnerImageUrlArgs = {
+  data: UpdateCollectionPartnerImageUrlInput;
+};
+
 export type Pagination = {
   __typename?: 'Pagination';
   currentPage: Scalars['Int'];
@@ -279,7 +343,11 @@ export type Query = {
   /** Retrieves a CollectionAuthor by externalId. */
   getCollectionAuthor?: Maybe<CollectionAuthor>;
   /** Retrieves a paged list of CollectionAuthors. */
-  getCollectionAuthors: CollectionAuthorsResult;
+  getCollectionAuthors?: Maybe<CollectionAuthorsResult>;
+  /** Retrieves a CollectionAuthor by externalId. */
+  getCollectionPartner?: Maybe<CollectionPartner>;
+  /** Retrieves a paged list of CollectionAuthors. */
+  getCollectionPartners: CollectionPartnersResult;
   /** Retrieves a CollectionStory by a combination of collectionId and url. */
   getCollectionStory?: Maybe<CollectionStory>;
   /** Retrieves a list of CurationCategories, sorted alphabetically */
@@ -307,6 +375,15 @@ export type QueryGetCollectionAuthorArgs = {
 };
 
 export type QueryGetCollectionAuthorsArgs = {
+  page?: Maybe<Scalars['Int']>;
+  perPage?: Maybe<Scalars['Int']>;
+};
+
+export type QueryGetCollectionPartnerArgs = {
+  externalId: Scalars['String'];
+};
+
+export type QueryGetCollectionPartnersArgs = {
   page?: Maybe<Scalars['Int']>;
   perPage?: Maybe<Scalars['Int']>;
 };
@@ -352,6 +429,19 @@ export type UpdateCollectionInput = {
   curationCategoryExternalId?: Maybe<Scalars['String']>;
   IABParentCategoryExternalId?: Maybe<Scalars['String']>;
   IABChildCategoryExternalId?: Maybe<Scalars['String']>;
+};
+
+export type UpdateCollectionPartnerImageUrlInput = {
+  externalId: Scalars['String'];
+  imageUrl: Scalars['Url'];
+};
+
+export type UpdateCollectionPartnerInput = {
+  externalId: Scalars['String'];
+  name: Scalars['String'];
+  url: Scalars['Url'];
+  imageUrl?: Maybe<Scalars['Url']>;
+  blurb: Scalars['Markdown'];
 };
 
 export type UpdateCollectionStoryImageUrlInput = {
@@ -417,6 +507,13 @@ export type CollectionDataFragment = { __typename?: 'Collection' } & Pick<
     >;
   };
 
+export type CollectionPartnerDataFragment = {
+  __typename?: 'CollectionPartner';
+} & Pick<
+  CollectionPartner,
+  'externalId' | 'name' | 'url' | 'imageUrl' | 'blurb'
+>;
+
 export type CollectionStoryDataFragment = {
   __typename?: 'CollectionStory';
 } & Pick<
@@ -427,6 +524,7 @@ export type CollectionStoryDataFragment = {
   | 'excerpt'
   | 'imageUrl'
   | 'publisher'
+  | 'fromPartner'
   | 'sortOrder'
 > & {
     authors: Array<
@@ -465,6 +563,19 @@ export type CreateCollectionAuthorMutation = { __typename?: 'Mutation' } & {
   createCollectionAuthor: {
     __typename?: 'CollectionAuthor';
   } & CollectionAuthorDataFragment;
+};
+
+export type CreateCollectionPartnerMutationVariables = Exact<{
+  name: Scalars['String'];
+  url: Scalars['Url'];
+  blurb: Scalars['Markdown'];
+  imageUrl: Scalars['Url'];
+}>;
+
+export type CreateCollectionPartnerMutation = { __typename?: 'Mutation' } & {
+  createCollectionPartner: {
+    __typename?: 'CollectionPartner';
+  } & CollectionPartnerDataFragment;
 };
 
 export type CreateCollectionStoryMutationVariables = Exact<{
@@ -565,6 +676,33 @@ export type UpdateCollectionImageUrlMutation = { __typename?: 'Mutation' } & {
   } & CollectionDataFragment;
 };
 
+export type UpdateCollectionPartnerMutationVariables = Exact<{
+  externalId: Scalars['String'];
+  name: Scalars['String'];
+  url: Scalars['Url'];
+  blurb: Scalars['Markdown'];
+  imageUrl?: Maybe<Scalars['Url']>;
+}>;
+
+export type UpdateCollectionPartnerMutation = { __typename?: 'Mutation' } & {
+  updateCollectionPartner: {
+    __typename?: 'CollectionPartner';
+  } & CollectionPartnerDataFragment;
+};
+
+export type UpdateCollectionPartnerImageUrlMutationVariables = Exact<{
+  externalId: Scalars['String'];
+  imageUrl: Scalars['Url'];
+}>;
+
+export type UpdateCollectionPartnerImageUrlMutation = {
+  __typename?: 'Mutation';
+} & {
+  updateCollectionPartnerImageUrl: {
+    __typename?: 'CollectionPartner';
+  } & CollectionPartnerDataFragment;
+};
+
 export type UpdateCollectionStoryMutationVariables = Exact<{
   externalId: Scalars['String'];
   url: Scalars['Url'];
@@ -639,11 +777,13 @@ export type GetAuthorsQueryVariables = Exact<{
 }>;
 
 export type GetAuthorsQuery = { __typename?: 'Query' } & {
-  getCollectionAuthors: { __typename?: 'CollectionAuthorsResult' } & {
-    authors: Array<
-      { __typename?: 'CollectionAuthor' } & CollectionAuthorDataFragment
-    >;
-  };
+  getCollectionAuthors?: Maybe<
+    { __typename?: 'CollectionAuthorsResult' } & {
+      authors: Array<
+        { __typename?: 'CollectionAuthor' } & CollectionAuthorDataFragment
+      >;
+    }
+  >;
 };
 
 export type GetCollectionByExternalIdQueryVariables = Exact<{
@@ -652,6 +792,35 @@ export type GetCollectionByExternalIdQueryVariables = Exact<{
 
 export type GetCollectionByExternalIdQuery = { __typename?: 'Query' } & {
   getCollection?: Maybe<{ __typename?: 'Collection' } & CollectionDataFragment>;
+};
+
+export type GetCollectionPartnerQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+export type GetCollectionPartnerQuery = { __typename?: 'Query' } & {
+  getCollectionPartner?: Maybe<
+    { __typename?: 'CollectionPartner' } & CollectionPartnerDataFragment
+  >;
+};
+
+export type GetCollectionPartnersQueryVariables = Exact<{
+  page?: Maybe<Scalars['Int']>;
+  perPage?: Maybe<Scalars['Int']>;
+}>;
+
+export type GetCollectionPartnersQuery = { __typename?: 'Query' } & {
+  getCollectionPartners: { __typename?: 'CollectionPartnersResult' } & {
+    partners: Array<
+      { __typename?: 'CollectionPartner' } & CollectionPartnerDataFragment
+    >;
+    pagination?: Maybe<
+      { __typename?: 'Pagination' } & Pick<
+        Pagination,
+        'currentPage' | 'totalPages' | 'totalResults'
+      >
+    >;
+  };
 };
 
 export type GetCollectionStoriesQueryVariables = Exact<{
@@ -689,11 +858,13 @@ export type GetInitialCollectionFormDataQueryVariables = Exact<{
 }>;
 
 export type GetInitialCollectionFormDataQuery = { __typename?: 'Query' } & {
-  getCollectionAuthors: { __typename?: 'CollectionAuthorsResult' } & {
-    authors: Array<
-      { __typename?: 'CollectionAuthor' } & CollectionAuthorDataFragment
-    >;
-  };
+  getCollectionAuthors?: Maybe<
+    { __typename?: 'CollectionAuthorsResult' } & {
+      authors: Array<
+        { __typename?: 'CollectionAuthor' } & CollectionAuthorDataFragment
+      >;
+    }
+  >;
   getCurationCategories: Array<
     { __typename?: 'CurationCategory' } & Pick<
       CurationCategory,
@@ -788,6 +959,15 @@ export const CollectionDataFragmentDoc = gql`
   }
   ${CollectionAuthorDataFragmentDoc}
 `;
+export const CollectionPartnerDataFragmentDoc = gql`
+  fragment CollectionPartnerData on CollectionPartner {
+    externalId
+    name
+    url
+    imageUrl
+    blurb
+  }
+`;
 export const CollectionStoryDataFragmentDoc = gql`
   fragment CollectionStoryData on CollectionStory {
     externalId
@@ -800,6 +980,7 @@ export const CollectionStoryDataFragmentDoc = gql`
       sortOrder
     }
     publisher
+    fromPartner
     sortOrder
   }
 `;
@@ -878,7 +1059,8 @@ export function useCreateCollectionMutation(
 export type CreateCollectionMutationHookResult = ReturnType<
   typeof useCreateCollectionMutation
 >;
-export type CreateCollectionMutationResult = Apollo.MutationResult<CreateCollectionMutation>;
+export type CreateCollectionMutationResult =
+  Apollo.MutationResult<CreateCollectionMutation>;
 export type CreateCollectionMutationOptions = Apollo.BaseMutationOptions<
   CreateCollectionMutation,
   CreateCollectionMutationVariables
@@ -946,10 +1128,72 @@ export function useCreateCollectionAuthorMutation(
 export type CreateCollectionAuthorMutationHookResult = ReturnType<
   typeof useCreateCollectionAuthorMutation
 >;
-export type CreateCollectionAuthorMutationResult = Apollo.MutationResult<CreateCollectionAuthorMutation>;
+export type CreateCollectionAuthorMutationResult =
+  Apollo.MutationResult<CreateCollectionAuthorMutation>;
 export type CreateCollectionAuthorMutationOptions = Apollo.BaseMutationOptions<
   CreateCollectionAuthorMutation,
   CreateCollectionAuthorMutationVariables
+>;
+export const CreateCollectionPartnerDocument = gql`
+  mutation createCollectionPartner(
+    $name: String!
+    $url: Url!
+    $blurb: Markdown!
+    $imageUrl: Url!
+  ) {
+    createCollectionPartner(
+      data: { name: $name, url: $url, blurb: $blurb, imageUrl: $imageUrl }
+    ) {
+      ...CollectionPartnerData
+    }
+  }
+  ${CollectionPartnerDataFragmentDoc}
+`;
+export type CreateCollectionPartnerMutationFn = Apollo.MutationFunction<
+  CreateCollectionPartnerMutation,
+  CreateCollectionPartnerMutationVariables
+>;
+
+/**
+ * __useCreateCollectionPartnerMutation__
+ *
+ * To run a mutation, you first call `useCreateCollectionPartnerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCollectionPartnerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCollectionPartnerMutation, { data, loading, error }] = useCreateCollectionPartnerMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *      url: // value for 'url'
+ *      blurb: // value for 'blurb'
+ *      imageUrl: // value for 'imageUrl'
+ *   },
+ * });
+ */
+export function useCreateCollectionPartnerMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateCollectionPartnerMutation,
+    CreateCollectionPartnerMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateCollectionPartnerMutation,
+    CreateCollectionPartnerMutationVariables
+  >(CreateCollectionPartnerDocument, options);
+}
+export type CreateCollectionPartnerMutationHookResult = ReturnType<
+  typeof useCreateCollectionPartnerMutation
+>;
+export type CreateCollectionPartnerMutationResult =
+  Apollo.MutationResult<CreateCollectionPartnerMutation>;
+export type CreateCollectionPartnerMutationOptions = Apollo.BaseMutationOptions<
+  CreateCollectionPartnerMutation,
+  CreateCollectionPartnerMutationVariables
 >;
 export const CreateCollectionStoryDocument = gql`
   mutation createCollectionStory(
@@ -1023,7 +1267,8 @@ export function useCreateCollectionStoryMutation(
 export type CreateCollectionStoryMutationHookResult = ReturnType<
   typeof useCreateCollectionStoryMutation
 >;
-export type CreateCollectionStoryMutationResult = Apollo.MutationResult<CreateCollectionStoryMutation>;
+export type CreateCollectionStoryMutationResult =
+  Apollo.MutationResult<CreateCollectionStoryMutation>;
 export type CreateCollectionStoryMutationOptions = Apollo.BaseMutationOptions<
   CreateCollectionStoryMutation,
   CreateCollectionStoryMutationVariables
@@ -1073,7 +1318,8 @@ export function useDeleteCollectionStoryMutation(
 export type DeleteCollectionStoryMutationHookResult = ReturnType<
   typeof useDeleteCollectionStoryMutation
 >;
-export type DeleteCollectionStoryMutationResult = Apollo.MutationResult<DeleteCollectionStoryMutation>;
+export type DeleteCollectionStoryMutationResult =
+  Apollo.MutationResult<DeleteCollectionStoryMutation>;
 export type DeleteCollectionStoryMutationOptions = Apollo.BaseMutationOptions<
   DeleteCollectionStoryMutation,
   DeleteCollectionStoryMutationVariables
@@ -1137,7 +1383,8 @@ export function useImageUploadMutation(
 export type ImageUploadMutationHookResult = ReturnType<
   typeof useImageUploadMutation
 >;
-export type ImageUploadMutationResult = Apollo.MutationResult<ImageUploadMutation>;
+export type ImageUploadMutationResult =
+  Apollo.MutationResult<ImageUploadMutation>;
 export type ImageUploadMutationOptions = Apollo.BaseMutationOptions<
   ImageUploadMutation,
   ImageUploadMutationVariables
@@ -1223,7 +1470,8 @@ export function useUpdateCollectionMutation(
 export type UpdateCollectionMutationHookResult = ReturnType<
   typeof useUpdateCollectionMutation
 >;
-export type UpdateCollectionMutationResult = Apollo.MutationResult<UpdateCollectionMutation>;
+export type UpdateCollectionMutationResult =
+  Apollo.MutationResult<UpdateCollectionMutation>;
 export type UpdateCollectionMutationOptions = Apollo.BaseMutationOptions<
   UpdateCollectionMutation,
   UpdateCollectionMutationVariables
@@ -1294,7 +1542,8 @@ export function useUpdateCollectionAuthorMutation(
 export type UpdateCollectionAuthorMutationHookResult = ReturnType<
   typeof useUpdateCollectionAuthorMutation
 >;
-export type UpdateCollectionAuthorMutationResult = Apollo.MutationResult<UpdateCollectionAuthorMutation>;
+export type UpdateCollectionAuthorMutationResult =
+  Apollo.MutationResult<UpdateCollectionAuthorMutation>;
 export type UpdateCollectionAuthorMutationOptions = Apollo.BaseMutationOptions<
   UpdateCollectionAuthorMutation,
   UpdateCollectionAuthorMutationVariables
@@ -1350,11 +1599,13 @@ export function useUpdateCollectionAuthorImageUrlMutation(
 export type UpdateCollectionAuthorImageUrlMutationHookResult = ReturnType<
   typeof useUpdateCollectionAuthorImageUrlMutation
 >;
-export type UpdateCollectionAuthorImageUrlMutationResult = Apollo.MutationResult<UpdateCollectionAuthorImageUrlMutation>;
-export type UpdateCollectionAuthorImageUrlMutationOptions = Apollo.BaseMutationOptions<
-  UpdateCollectionAuthorImageUrlMutation,
-  UpdateCollectionAuthorImageUrlMutationVariables
->;
+export type UpdateCollectionAuthorImageUrlMutationResult =
+  Apollo.MutationResult<UpdateCollectionAuthorImageUrlMutation>;
+export type UpdateCollectionAuthorImageUrlMutationOptions =
+  Apollo.BaseMutationOptions<
+    UpdateCollectionAuthorImageUrlMutation,
+    UpdateCollectionAuthorImageUrlMutationVariables
+  >;
 export const UpdateCollectionImageUrlDocument = gql`
   mutation updateCollectionImageUrl($externalId: String!, $imageUrl: Url!) {
     updateCollectionImageUrl(
@@ -1403,11 +1654,140 @@ export function useUpdateCollectionImageUrlMutation(
 export type UpdateCollectionImageUrlMutationHookResult = ReturnType<
   typeof useUpdateCollectionImageUrlMutation
 >;
-export type UpdateCollectionImageUrlMutationResult = Apollo.MutationResult<UpdateCollectionImageUrlMutation>;
-export type UpdateCollectionImageUrlMutationOptions = Apollo.BaseMutationOptions<
-  UpdateCollectionImageUrlMutation,
-  UpdateCollectionImageUrlMutationVariables
+export type UpdateCollectionImageUrlMutationResult =
+  Apollo.MutationResult<UpdateCollectionImageUrlMutation>;
+export type UpdateCollectionImageUrlMutationOptions =
+  Apollo.BaseMutationOptions<
+    UpdateCollectionImageUrlMutation,
+    UpdateCollectionImageUrlMutationVariables
+  >;
+export const UpdateCollectionPartnerDocument = gql`
+  mutation updateCollectionPartner(
+    $externalId: String!
+    $name: String!
+    $url: Url!
+    $blurb: Markdown!
+    $imageUrl: Url
+  ) {
+    updateCollectionPartner(
+      data: {
+        externalId: $externalId
+        name: $name
+        url: $url
+        blurb: $blurb
+        imageUrl: $imageUrl
+      }
+    ) {
+      ...CollectionPartnerData
+    }
+  }
+  ${CollectionPartnerDataFragmentDoc}
+`;
+export type UpdateCollectionPartnerMutationFn = Apollo.MutationFunction<
+  UpdateCollectionPartnerMutation,
+  UpdateCollectionPartnerMutationVariables
 >;
+
+/**
+ * __useUpdateCollectionPartnerMutation__
+ *
+ * To run a mutation, you first call `useUpdateCollectionPartnerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCollectionPartnerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCollectionPartnerMutation, { data, loading, error }] = useUpdateCollectionPartnerMutation({
+ *   variables: {
+ *      externalId: // value for 'externalId'
+ *      name: // value for 'name'
+ *      url: // value for 'url'
+ *      blurb: // value for 'blurb'
+ *      imageUrl: // value for 'imageUrl'
+ *   },
+ * });
+ */
+export function useUpdateCollectionPartnerMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateCollectionPartnerMutation,
+    UpdateCollectionPartnerMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateCollectionPartnerMutation,
+    UpdateCollectionPartnerMutationVariables
+  >(UpdateCollectionPartnerDocument, options);
+}
+export type UpdateCollectionPartnerMutationHookResult = ReturnType<
+  typeof useUpdateCollectionPartnerMutation
+>;
+export type UpdateCollectionPartnerMutationResult =
+  Apollo.MutationResult<UpdateCollectionPartnerMutation>;
+export type UpdateCollectionPartnerMutationOptions = Apollo.BaseMutationOptions<
+  UpdateCollectionPartnerMutation,
+  UpdateCollectionPartnerMutationVariables
+>;
+export const UpdateCollectionPartnerImageUrlDocument = gql`
+  mutation updateCollectionPartnerImageUrl(
+    $externalId: String!
+    $imageUrl: Url!
+  ) {
+    updateCollectionPartnerImageUrl(
+      data: { externalId: $externalId, imageUrl: $imageUrl }
+    ) {
+      ...CollectionPartnerData
+    }
+  }
+  ${CollectionPartnerDataFragmentDoc}
+`;
+export type UpdateCollectionPartnerImageUrlMutationFn = Apollo.MutationFunction<
+  UpdateCollectionPartnerImageUrlMutation,
+  UpdateCollectionPartnerImageUrlMutationVariables
+>;
+
+/**
+ * __useUpdateCollectionPartnerImageUrlMutation__
+ *
+ * To run a mutation, you first call `useUpdateCollectionPartnerImageUrlMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCollectionPartnerImageUrlMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCollectionPartnerImageUrlMutation, { data, loading, error }] = useUpdateCollectionPartnerImageUrlMutation({
+ *   variables: {
+ *      externalId: // value for 'externalId'
+ *      imageUrl: // value for 'imageUrl'
+ *   },
+ * });
+ */
+export function useUpdateCollectionPartnerImageUrlMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateCollectionPartnerImageUrlMutation,
+    UpdateCollectionPartnerImageUrlMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateCollectionPartnerImageUrlMutation,
+    UpdateCollectionPartnerImageUrlMutationVariables
+  >(UpdateCollectionPartnerImageUrlDocument, options);
+}
+export type UpdateCollectionPartnerImageUrlMutationHookResult = ReturnType<
+  typeof useUpdateCollectionPartnerImageUrlMutation
+>;
+export type UpdateCollectionPartnerImageUrlMutationResult =
+  Apollo.MutationResult<UpdateCollectionPartnerImageUrlMutation>;
+export type UpdateCollectionPartnerImageUrlMutationOptions =
+  Apollo.BaseMutationOptions<
+    UpdateCollectionPartnerImageUrlMutation,
+    UpdateCollectionPartnerImageUrlMutationVariables
+  >;
 export const UpdateCollectionStoryDocument = gql`
   mutation updateCollectionStory(
     $externalId: String!
@@ -1480,7 +1860,8 @@ export function useUpdateCollectionStoryMutation(
 export type UpdateCollectionStoryMutationHookResult = ReturnType<
   typeof useUpdateCollectionStoryMutation
 >;
-export type UpdateCollectionStoryMutationResult = Apollo.MutationResult<UpdateCollectionStoryMutation>;
+export type UpdateCollectionStoryMutationResult =
+  Apollo.MutationResult<UpdateCollectionStoryMutation>;
 export type UpdateCollectionStoryMutationOptions = Apollo.BaseMutationOptions<
   UpdateCollectionStoryMutation,
   UpdateCollectionStoryMutationVariables
@@ -1536,11 +1917,13 @@ export function useUpdateCollectionStoryImageUrlMutation(
 export type UpdateCollectionStoryImageUrlMutationHookResult = ReturnType<
   typeof useUpdateCollectionStoryImageUrlMutation
 >;
-export type UpdateCollectionStoryImageUrlMutationResult = Apollo.MutationResult<UpdateCollectionStoryImageUrlMutation>;
-export type UpdateCollectionStoryImageUrlMutationOptions = Apollo.BaseMutationOptions<
-  UpdateCollectionStoryImageUrlMutation,
-  UpdateCollectionStoryImageUrlMutationVariables
->;
+export type UpdateCollectionStoryImageUrlMutationResult =
+  Apollo.MutationResult<UpdateCollectionStoryImageUrlMutation>;
+export type UpdateCollectionStoryImageUrlMutationOptions =
+  Apollo.BaseMutationOptions<
+    UpdateCollectionStoryImageUrlMutation,
+    UpdateCollectionStoryImageUrlMutationVariables
+  >;
 export const UpdateCollectionStorySortOrderDocument = gql`
   mutation updateCollectionStorySortOrder(
     $externalId: String!
@@ -1592,11 +1975,13 @@ export function useUpdateCollectionStorySortOrderMutation(
 export type UpdateCollectionStorySortOrderMutationHookResult = ReturnType<
   typeof useUpdateCollectionStorySortOrderMutation
 >;
-export type UpdateCollectionStorySortOrderMutationResult = Apollo.MutationResult<UpdateCollectionStorySortOrderMutation>;
-export type UpdateCollectionStorySortOrderMutationOptions = Apollo.BaseMutationOptions<
-  UpdateCollectionStorySortOrderMutation,
-  UpdateCollectionStorySortOrderMutationVariables
->;
+export type UpdateCollectionStorySortOrderMutationResult =
+  Apollo.MutationResult<UpdateCollectionStorySortOrderMutation>;
+export type UpdateCollectionStorySortOrderMutationOptions =
+  Apollo.BaseMutationOptions<
+    UpdateCollectionStorySortOrderMutation,
+    UpdateCollectionStorySortOrderMutationVariables
+  >;
 export const GetArchivedCollectionsDocument = gql`
   query getArchivedCollections($page: Int, $perPage: Int) {
     searchCollections(
@@ -1843,6 +2228,132 @@ export type GetCollectionByExternalIdLazyQueryHookResult = ReturnType<
 export type GetCollectionByExternalIdQueryResult = Apollo.QueryResult<
   GetCollectionByExternalIdQuery,
   GetCollectionByExternalIdQueryVariables
+>;
+export const GetCollectionPartnerDocument = gql`
+  query getCollectionPartner($id: String!) {
+    getCollectionPartner(externalId: $id) {
+      ...CollectionPartnerData
+    }
+  }
+  ${CollectionPartnerDataFragmentDoc}
+`;
+
+/**
+ * __useGetCollectionPartnerQuery__
+ *
+ * To run a query within a React component, call `useGetCollectionPartnerQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCollectionPartnerQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCollectionPartnerQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetCollectionPartnerQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetCollectionPartnerQuery,
+    GetCollectionPartnerQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetCollectionPartnerQuery,
+    GetCollectionPartnerQueryVariables
+  >(GetCollectionPartnerDocument, options);
+}
+export function useGetCollectionPartnerLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetCollectionPartnerQuery,
+    GetCollectionPartnerQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetCollectionPartnerQuery,
+    GetCollectionPartnerQueryVariables
+  >(GetCollectionPartnerDocument, options);
+}
+export type GetCollectionPartnerQueryHookResult = ReturnType<
+  typeof useGetCollectionPartnerQuery
+>;
+export type GetCollectionPartnerLazyQueryHookResult = ReturnType<
+  typeof useGetCollectionPartnerLazyQuery
+>;
+export type GetCollectionPartnerQueryResult = Apollo.QueryResult<
+  GetCollectionPartnerQuery,
+  GetCollectionPartnerQueryVariables
+>;
+export const GetCollectionPartnersDocument = gql`
+  query getCollectionPartners($page: Int, $perPage: Int) {
+    getCollectionPartners(page: $page, perPage: $perPage) {
+      partners {
+        ...CollectionPartnerData
+      }
+      pagination {
+        currentPage
+        totalPages
+        totalResults
+      }
+    }
+  }
+  ${CollectionPartnerDataFragmentDoc}
+`;
+
+/**
+ * __useGetCollectionPartnersQuery__
+ *
+ * To run a query within a React component, call `useGetCollectionPartnersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCollectionPartnersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCollectionPartnersQuery({
+ *   variables: {
+ *      page: // value for 'page'
+ *      perPage: // value for 'perPage'
+ *   },
+ * });
+ */
+export function useGetCollectionPartnersQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetCollectionPartnersQuery,
+    GetCollectionPartnersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetCollectionPartnersQuery,
+    GetCollectionPartnersQueryVariables
+  >(GetCollectionPartnersDocument, options);
+}
+export function useGetCollectionPartnersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetCollectionPartnersQuery,
+    GetCollectionPartnersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetCollectionPartnersQuery,
+    GetCollectionPartnersQueryVariables
+  >(GetCollectionPartnersDocument, options);
+}
+export type GetCollectionPartnersQueryHookResult = ReturnType<
+  typeof useGetCollectionPartnersQuery
+>;
+export type GetCollectionPartnersLazyQueryHookResult = ReturnType<
+  typeof useGetCollectionPartnersLazyQuery
+>;
+export type GetCollectionPartnersQueryResult = Apollo.QueryResult<
+  GetCollectionPartnersQuery,
+  GetCollectionPartnersQueryVariables
 >;
 export const GetCollectionStoriesDocument = gql`
   query getCollectionStories($id: String!) {
