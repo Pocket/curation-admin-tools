@@ -8,6 +8,7 @@ import {
   CollectionStatus,
   CurationCategory,
   IabParentCategory,
+  Language,
 } from '../../api/collection-api/generatedTypes';
 
 describe('The CollectionForm component', () => {
@@ -15,6 +16,7 @@ describe('The CollectionForm component', () => {
   let authors: CollectionAuthor[];
   let curationCategories: CurationCategory[];
   let iabCategories: IabParentCategory[];
+  let languages: Language[];
   let handleSubmit = jest.fn();
 
   beforeEach(() => {
@@ -42,6 +44,7 @@ describe('The CollectionForm component', () => {
         ' Praesent hendrerit eros luctus ligula facilisis, non sodales est ' +
         'suscipit. Nunc a lorem a metus venenatis euismod. Praesent id lectus' +
         ' lobortis, ullamcorper ipsum in, eleifend sapien.',
+      language: 'de',
       status: CollectionStatus.Draft,
       authors: [],
       curationCategory: { externalId: 'cde-234', name: 'Food', slug: 'food' },
@@ -86,6 +89,15 @@ describe('The CollectionForm component', () => {
         ],
       },
     ];
+
+    languages = [
+      {
+        code: 'en',
+      },
+      {
+        code: 'de',
+      },
+    ];
   });
 
   it('renders successfully', () => {
@@ -95,6 +107,7 @@ describe('The CollectionForm component', () => {
         collection={collection}
         curationCategories={curationCategories}
         iabCategories={iabCategories}
+        languages={languages}
         onSubmit={handleSubmit}
       />
     );
@@ -111,6 +124,7 @@ describe('The CollectionForm component', () => {
         collection={collection}
         curationCategories={curationCategories}
         iabCategories={iabCategories}
+        languages={languages}
         onSubmit={handleSubmit}
       />
     );
@@ -126,6 +140,7 @@ describe('The CollectionForm component', () => {
         collection={collection}
         curationCategories={curationCategories}
         iabCategories={iabCategories}
+        languages={languages}
         editMode={false}
         onSubmit={handleSubmit}
       />
@@ -142,6 +157,7 @@ describe('The CollectionForm component', () => {
         collection={collection}
         curationCategories={curationCategories}
         iabCategories={iabCategories}
+        languages={languages}
         onSubmit={handleSubmit}
       />
     );
@@ -155,6 +171,9 @@ describe('The CollectionForm component', () => {
     const statusField = screen.getByLabelText('Status');
     expect(statusField).toBeInTheDocument();
 
+    const languageField = screen.getByLabelText('Language Code');
+    expect(languageField).toBeInTheDocument();
+
     const authorField = screen.getByLabelText('Author');
     expect(authorField).toBeInTheDocument();
 
@@ -163,6 +182,15 @@ describe('The CollectionForm component', () => {
 
     const introField = screen.getByLabelText('Intro');
     expect(introField).toBeInTheDocument();
+
+    const curationCategoryField = screen.getByLabelText('Curation Category');
+    expect(curationCategoryField).toBeInTheDocument();
+
+    const iabParentCategoryField = screen.getByLabelText('IAB Parent Category');
+    expect(iabParentCategoryField).toBeInTheDocument();
+
+    const iabChildCategoryField = screen.getByLabelText('IAB Child Category');
+    expect(iabChildCategoryField).toBeInTheDocument();
   });
 
   it('validates the "title" field', async () => {
@@ -172,6 +200,7 @@ describe('The CollectionForm component', () => {
         collection={collection}
         curationCategories={curationCategories}
         iabCategories={iabCategories}
+        languages={languages}
         onSubmit={handleSubmit}
       />
     );
@@ -223,6 +252,7 @@ describe('The CollectionForm component', () => {
         collection={collection}
         curationCategories={curationCategories}
         iabCategories={iabCategories}
+        languages={languages}
         onSubmit={handleSubmit}
       />
     );
@@ -268,6 +298,7 @@ describe('The CollectionForm component', () => {
         collection={collection}
         curationCategories={curationCategories}
         iabCategories={iabCategories}
+        languages={languages}
         onSubmit={handleSubmit}
       />
     );
@@ -308,6 +339,7 @@ describe('The CollectionForm component', () => {
         collection={collection}
         curationCategories={curationCategories}
         iabCategories={iabCategories}
+        languages={languages}
         onSubmit={handleSubmit}
       />
     );
@@ -343,6 +375,7 @@ describe('The CollectionForm component', () => {
         collection={collection}
         curationCategories={curationCategories}
         iabCategories={iabCategories}
+        languages={languages}
         onSubmit={handleSubmit}
       />
     );

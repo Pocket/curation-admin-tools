@@ -6,6 +6,7 @@ import {
   Collection,
   CollectionStatus,
 } from '../../api/collection-api/generatedTypes';
+import { CollectionListCard } from '../CollectionListCard/CollectionListCard';
 
 describe('The CollectionInfo component', () => {
   let collection: Omit<Collection, 'stories'>;
@@ -19,6 +20,7 @@ describe('The CollectionInfo component', () => {
       excerpt:
         'There’s a long history of presidential ailments, including George Washington’s near-death encounter with the flu, Grover Cleveland’s secret tumor, and the clandestine suffering of John F. Kennedy. ',
       intro: 'Intro text is generally longer than the excerpt.',
+      language: 'de',
       status: CollectionStatus.Published,
       authors: [],
     };
@@ -56,6 +58,16 @@ describe('The CollectionInfo component', () => {
     expect(draft).not.toBeInTheDocument();
     const archived = screen.queryByText(/^archived/i);
     expect(archived).not.toBeInTheDocument();
+  });
+
+  it('shows language correctly', () => {
+    render(
+      <MemoryRouter>
+        <CollectionInfo collection={collection} />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText(/^de$/i)).toBeInTheDocument();
   });
 
   it('shows label if curation category is set', () => {

@@ -29,6 +29,7 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
     excerpt: '',
     intro: '',
     imageUrl: '',
+    language: 'en',
     status: CollectionStatus.Draft,
     authors: [],
     stories: [],
@@ -61,6 +62,7 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
         curationCategoryExternalId: values.curationCategoryExternalId,
         IABParentCategoryExternalId: values.IABParentCategoryExternalId,
         IABChildCategoryExternalId: values.IABChildCategoryExternalId,
+        language: values.language,
       },
       // make sure the relevant Collections tab is updated
       // when we add a new collection
@@ -98,11 +100,13 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
           {data &&
             data.getCollectionAuthors &&
             data.getCurationCategories &&
-            data.getIABCategories && (
+            data.getIABCategories &&
+            data.getLanguages && (
               <CollectionForm
                 authors={data.getCollectionAuthors.authors}
                 curationCategories={data.getCurationCategories}
                 iabCategories={data.getIABCategories}
+                languages={data.getLanguages}
                 collection={collection}
                 onSubmit={handleSubmit}
                 editMode={false}

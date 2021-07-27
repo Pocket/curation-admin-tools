@@ -23,6 +23,7 @@ describe('The CollectionListCard component', () => {
         'There’s a long history of presidential ailments, including George Washington’s near-death encounter with the flu, Grover Cleveland’s secret tumor, and the clandestine suffering of John F. Kennedy. ',
       intro:
         'There’s a long history of presidential ailments, including George Washington’s near-death encounter with the flu, Grover Cleveland’s secret tumor, and the clandestine suffering of John F. Kennedy. ',
+      language: 'de',
       status: CollectionStatus.Published,
       authors: [],
     };
@@ -68,6 +69,16 @@ describe('The CollectionListCard component', () => {
     expect(draft).not.toBeInTheDocument();
     const archived = screen.queryByText(/^archived/i);
     expect(archived).not.toBeInTheDocument();
+  });
+
+  it('shows language correctly', () => {
+    render(
+      <MemoryRouter>
+        <CollectionListCard collection={collection} />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText(/^de$/i)).toBeInTheDocument();
   });
 
   it('shows label if curation category is set', () => {

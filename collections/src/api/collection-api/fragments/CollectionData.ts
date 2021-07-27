@@ -14,6 +14,7 @@ export const CollectionData = gql`
     excerpt
     intro
     imageUrl
+    language
     status
     authors {
       ...CollectionAuthorData

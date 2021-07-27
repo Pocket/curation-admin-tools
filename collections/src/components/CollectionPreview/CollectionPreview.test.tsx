@@ -21,6 +21,7 @@ describe('The CollectionPreview component', () => {
       excerpt:
         'There’s a long history of presidential ailments, including George Washington’s near-death encounter with the flu, Grover Cleveland’s secret tumor, and the clandestine suffering of John F. Kennedy. ',
       intro: 'Intro text is generally longer than the excerpt.',
+      language: 'en',
       status: CollectionStatus.Published,
       authors: [
         {
