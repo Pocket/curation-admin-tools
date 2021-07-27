@@ -1,6 +1,7 @@
 import React from 'react';
 import { Avatar, Box, Chip, Typography } from '@material-ui/core';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
+import LanguageIcon from '@material-ui/icons/Language';
 import ReactMarkdown from 'react-markdown';
 import { useStyles } from './CollectionInfo.styles';
 import { Collection } from '../../api/collection-api/generatedTypes';
@@ -33,6 +34,12 @@ export const CollectionInfo: React.FC<CollectionInfoProps> = (
         <span>{flattenAuthors(collection.authors)}</span>
       </Typography>
       <Box py={1}>
+        <Chip
+          variant="outlined"
+          color="primary"
+          label={collection.language.toUpperCase()}
+          icon={<LanguageIcon />}
+        />{' '}
         {collection.curationCategory && (
           <Chip
             variant="outlined"

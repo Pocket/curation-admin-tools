@@ -188,6 +188,7 @@ export const CollectionPage = (): JSX.Element => {
         curationCategoryExternalId: values.curationCategoryExternalId,
         IABParentCategoryExternalId: values.IABParentCategoryExternalId,
         IABChildCategoryExternalId: values.IABChildCategoryExternalId,
+        language: values.language,
       },
       refetchQueries: [
         {
@@ -226,6 +227,7 @@ export const CollectionPage = (): JSX.Element => {
             data?.updateCollection?.IABParentCategory;
           collection.IABChildCategory =
             data?.updateCollection?.IABChildCategory;
+          collection.language = data?.updateCollection?.language!;
           toggleEditForm();
           formikHelpers.setSubmitting(false);
         }
@@ -510,7 +512,8 @@ export const CollectionPage = (): JSX.Element => {
                 {initialCollectionFormData &&
                   initialCollectionFormData.getCollectionAuthors &&
                   initialCollectionFormData.getCurationCategories &&
-                  initialCollectionFormData.getIABCategories && (
+                  initialCollectionFormData.getIABCategories &&
+                  initialCollectionFormData.getLanguages && (
                     <CollectionForm
                       authors={
                         initialCollectionFormData.getCollectionAuthors.authors
@@ -520,6 +523,7 @@ export const CollectionPage = (): JSX.Element => {
                         initialCollectionFormData.getCurationCategories
                       }
                       iabCategories={initialCollectionFormData.getIABCategories}
+                      languages={initialCollectionFormData.getLanguages}
                       editMode={true}
                       onCancel={toggleEditForm}
                       onSubmit={handleSubmit}

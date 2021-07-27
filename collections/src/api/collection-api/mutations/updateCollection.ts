@@ -16,6 +16,7 @@ export const updateCollection = gql`
     $curationCategoryExternalId: String
     $IABParentCategoryExternalId: String
     $IABChildCategoryExternalId: String
+    $language: String!
     $imageUrl: Url
   ) {
     updateCollection(
@@ -30,6 +31,7 @@ export const updateCollection = gql`
         curationCategoryExternalId: $curationCategoryExternalId
         IABParentCategoryExternalId: $IABParentCategoryExternalId
         IABChildCategoryExternalId: $IABChildCategoryExternalId
+        language: $language
         imageUrl: $imageUrl
       }
     ) {

@@ -12,6 +12,7 @@ import {
   SharedFormButtonsProps,
 } from '../';
 import { getValidationSchema } from './CollectionForm.validation';
+import { useStyles } from './CollectionForm.styles';
 import { config } from '../../config';
 import {
   Collection,
@@ -20,6 +21,7 @@ import {
   CurationCategory,
   IabCategory,
   IabParentCategory,
+  Language,
 } from '../../api/collection-api/generatedTypes';
 
 interface CollectionFormProps {
@@ -44,6 +46,11 @@ interface CollectionFormProps {
   iabCategories: IabParentCategory[];
 
   /**
+   * A list of all supported languages
+   */
+  languages: Language[];
+
+  /**
    * What do we do with the submitted data?
    */
   onSubmit: (
@@ -63,15 +70,22 @@ export const CollectionForm: React.FC<
     collection,
     curationCategories,
     iabCategories,
-    editMode = true,
+    languages,
     onSubmit,
+    editMode = true,
     onCancel,
   } = props;
 
+  const classes = useStyles();
+
   // get a list of author ids for the validation schema
-  const authorIds: string[] = [];
-  authors.forEach((author: CollectionAuthor) => {
-    authorIds.push(author.externalId);
+  const authorIds = authors.map((author: CollectionAuthor) => {
+    return author.externalId;
+  });
+
+  // get a list of supported languages for the validation schema
+  const languageCodes = languages.map((language: Language) => {
+    return language.code;
   });
 
   // if we're editing, grab the currently assigned author's external id
@@ -87,6 +101,7 @@ export const CollectionForm: React.FC<
       slug: collection.slug ?? '',
       excerpt: collection.excerpt ?? '',
       intro: collection.intro ?? '',
+      language: collection.language ?? 'en',
       status: collection.status ?? CollectionStatus.Draft,
       authorExternalId,
       curationCategoryExternalId: collection.curationCategory?.externalId ?? '',
@@ -98,7 +113,7 @@ export const CollectionForm: React.FC<
     // before they actually submit the form
     validateOnBlur: false,
     validateOnChange: false,
-    validationSchema: getValidationSchema(authorIds),
+    validationSchema: getValidationSchema(authorIds, languageCodes),
     onSubmit: (values, formikHelpers) => {
       onSubmit(values, formikHelpers);
     },
@@ -170,6 +185,7 @@ export const CollectionForm: React.FC<
 
         <Grid item xs={12} sm={6}>
           <FormikSelectField
+            className={classes.marginBottom}
             id="status"
             label="Status"
             fieldProps={formik.getFieldProps('status')}
@@ -180,9 +196,8 @@ export const CollectionForm: React.FC<
             <option value="PUBLISHED">Published</option>
             <option value="ARCHIVED">Archived</option>
           </FormikSelectField>
-        </Grid>
-        <Grid item xs={12} sm={6}>
           <FormikSelectField
+            className={classes.marginBottom}
             id="authorExternalId"
             label="Author"
             fieldProps={formik.getFieldProps('authorExternalId')}
@@ -197,10 +212,25 @@ export const CollectionForm: React.FC<
               );
             })}
           </FormikSelectField>
+          <FormikSelectField
+            id="language"
+            label="Language Code"
+            fieldProps={formik.getFieldProps('language')}
+            fieldMeta={formik.getFieldMeta('language')}
+          >
+            {languages.map((language: Language) => {
+              return (
+                <option value={language.code} key={language.code}>
+                  {language.code.toUpperCase()}
+                </option>
+              );
+            })}
+          </FormikSelectField>
         </Grid>
 
         <Grid item xs={12} sm={6}>
           <FormikSelectField
+            className={classes.marginBottom}
             id="curationCategoryExternalId"
             label="Curation Category"
             fieldProps={formik.getFieldProps('curationCategoryExternalId')}
@@ -215,9 +245,9 @@ export const CollectionForm: React.FC<
               );
             })}
           </FormikSelectField>
-        </Grid>
-        <Grid item xs={12} sm={6}>
+
           <FormikSelectField
+            className={classes.marginBottom}
             id="IABParentCategoryExternalId"
             label="IAB Parent Category"
             fieldProps={formik.getFieldProps('IABParentCategoryExternalId')}
@@ -232,8 +262,6 @@ export const CollectionForm: React.FC<
               );
             })}
           </FormikSelectField>
-          <br />
-          <br />
           <FormikSelectField
             id="IABChildCategoryExternalId"
             label="IAB Child Category"

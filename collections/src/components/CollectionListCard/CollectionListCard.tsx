@@ -14,6 +14,7 @@ import { useStyles } from './CollectionListCard.styles';
 import { Collection } from '../../api/collection-api/generatedTypes';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import { flattenAuthors } from '../../utils/flattenAuthors';
+import LanguageIcon from '@material-ui/icons/Language';
 
 interface CollectionListCardProps {
   /**
@@ -76,6 +77,12 @@ export const CollectionListCard: React.FC<CollectionListCardProps> = (
               <span>{flattenAuthors(collection.authors)}</span>
             </Typography>{' '}
             <Box py={1}>
+              <Chip
+                variant="outlined"
+                color="primary"
+                label={collection.language.toUpperCase()}
+                icon={<LanguageIcon />}
+              />{' '}
               {collection.curationCategory && (
                 <Chip
                   variant="outlined"

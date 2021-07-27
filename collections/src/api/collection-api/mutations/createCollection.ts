@@ -15,6 +15,7 @@ export const createCollection = gql`
     $curationCategoryExternalId: String
     $IABParentCategoryExternalId: String
     $IABChildCategoryExternalId: String
+    $language: String!
   ) {
     createCollection(
       data: {
@@ -27,6 +28,7 @@ export const createCollection = gql`
         curationCategoryExternalId: $curationCategoryExternalId
         IABParentCategoryExternalId: $IABParentCategoryExternalId
         IABChildCategoryExternalId: $IABChildCategoryExternalId
+        language: $language
       }
     ) {
       ...CollectionData

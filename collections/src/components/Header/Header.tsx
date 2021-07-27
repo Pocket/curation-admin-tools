@@ -58,7 +58,7 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
           <Grid
             container
             direction="row"
-            justify="flex-start"
+            justifyContent="flex-start"
             alignItems="center"
           >
             <Hidden smDown implementation="css">

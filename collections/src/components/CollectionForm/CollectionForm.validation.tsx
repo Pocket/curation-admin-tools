@@ -1,7 +1,10 @@
 import * as yup from 'yup';
 import { CollectionStatus } from '../../api/collection-api/generatedTypes';
 
-export const getValidationSchema = (authorIds: string[]) => {
+export const getValidationSchema = (
+  authorIds: string[],
+  languages: string[]
+) => {
   return yup.object({
     title: yup
       .string()
@@ -20,6 +23,10 @@ export const getValidationSchema = (authorIds: string[]) => {
       .min(6),
     excerpt: yup.string(),
     intro: yup.string(),
+    language: yup
+      .string()
+      .oneOf(languages)
+      .required('Please choose a language code'),
     status: yup
       .mixed<CollectionStatus>()
       .oneOf(Object.values(CollectionStatus))
