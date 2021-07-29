@@ -50,7 +50,7 @@ export function createApplicationCodePipeline(
   scope: Construct,
   app: PocketALBApplication
 ) {
-  new PocketECSCodePipeline(this, 'code-pipeline', {
+  new PocketECSCodePipeline(scope, 'code-pipeline', {
     prefix: config.prefix,
     source: {
       codeStarConnectionArn: config.codePipeline.githubConnectionArn,
