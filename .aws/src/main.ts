@@ -23,7 +23,7 @@ class CurationAdminTools extends TerraformStack {
     });
 
     const pocketApp = createPocketAlbApplication(this);
-    createApplicationCodePipeline(pocketApp);
+    createApplicationCodePipeline(this, pocketApp);
   }
 }
 

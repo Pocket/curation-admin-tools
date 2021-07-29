@@ -46,7 +46,10 @@ function createPagerDuty(scope: Construct) {
  * @param app
  * @private
  */
-export function createApplicationCodePipeline(app: PocketALBApplication) {
+export function createApplicationCodePipeline(
+  scope: Construct,
+  app: PocketALBApplication
+) {
   new PocketECSCodePipeline(this, 'code-pipeline', {
     prefix: config.prefix,
     source: {
