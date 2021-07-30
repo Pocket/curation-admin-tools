@@ -3,8 +3,7 @@ version: 2.1
 orbs:
   aws-ecr: circleci/aws-ecr@7.0.0
   aws-ecs: circleci/aws-ecs@2.0.0
-  pocket: pocket/circleci-orbs@1.0.0
-  queue: eddiewebb/queue@1.5.0
+  pocket: pocket/circleci-orbs@1.1.0
 
 # Workflow shortcuts
 not_main: &not_main
@@ -129,31 +128,19 @@ workflows:
           push: true
           react_environment: 'development'
 
-      - queue/block_workflow:
-          <<: *only_dev_main
-          name: wait_for_deploy_queue
-          time: '30'
-
-      - aws-ecs/deploy-service-update:
+      - pocket/execute_codepipeline:
           <<: *only_dev
           context: pocket
-          name: deploy_ecs_dev
-          family: 'CurationAdminTools-Dev'
-          cluster-name: 'CurationAdminTools-Dev'
-          deployment-controller: 'CODE_DEPLOY'
-          codedeploy-application-name: 'CurationAdminTools-Dev-ECS'
-          codedeploy-deployment-group-name: 'CurationAdminTools-Dev-ECS'
-          codedeploy-load-balanced-container-name: app
-          codedeploy-load-balanced-container-port: 80
-          container-image-name-updates: 'container=app,image-and-tag=410318598490.dkr.ecr.us-east-1.amazonaws.com/curationadmintools-dev-app:$CIRCLE_SHA1'
+          name: deploy_dev
+          environment: Dev
           aws-access-key-id: Dev_AWS_ACCESS_KEY
           aws-secret-access-key: Dev_AWS_SECRET_ACCESS_KEY
           aws-region: Dev_AWS_DEFAULT_REGION
-          verify-revision-is-deployed: true
-          verification-timeout: '30'
+          codepipeline-name: CurationAdminTools-Dev-CodePipeline
+          codebuild-project-name: CurationAdminTools-Dev
+          codebuild-project-branch: dev
           requires:
             - build_docker_dev
-            - wait_for_deploy_queue
 
       # Build & Deploy the Prod Docker Image
       - docker_build:
@@ -167,26 +154,19 @@ workflows:
           push: true
           react_environment: 'production'
 
-      - aws-ecs/deploy-service-update:
+      - pocket/execute_codepipeline:
           <<: *only_main
-          name: deploy_ecs_prod
           context: pocket
-          family: 'CurationAdminTools-Prod'
-          cluster-name: 'CurationAdminTools-Prod'
-          deployment-controller: 'CODE_DEPLOY'
-          codedeploy-application-name: 'CurationAdminTools-Prod-ECS'
-          codedeploy-deployment-group-name: 'CurationAdminTools-Prod-ECS'
-          codedeploy-load-balanced-container-name: app
-          codedeploy-load-balanced-container-port: 80
-          container-image-name-updates: 'container=app,image-and-tag=996905175585.dkr.ecr.us-east-1.amazonaws.com/curationadmintools-prod-app:$CIRCLE_SHA1'
+          name: deploy_prod
+          environment: Prod
           aws-access-key-id: Prod_AWS_ACCESS_KEY
           aws-secret-access-key: Prod_AWS_SECRET_ACCESS_KEY
           aws-region: Prod_AWS_DEFAULT_REGION
-          verify-revision-is-deployed: true
-          verification-timeout: '30'
+          codepipeline-name: CurationAdminTools-Prod-CodePipeline
+          codebuild-project-name: CurationAdminTools-Prod
+          codebuild-project-branch: main
           requires:
             - build_docker_prod
-            - wait_for_deploy_queue
 
       - pocket/setup_deploy_params:
           <<: *only_main
@@ -217,7 +197,7 @@ workflows:
           sentry_org: pocket
           workspace-path: /tmp/workspace
           requires:
-            - deploy_ecs_prod
+            - deploy_prod
 
       # Notify sentry of dev deployment
       - pocket/sentry_release_notification:
@@ -230,5 +210,5 @@ workflows:
           sentry_org: pocket
           workspace-path: /tmp/workspace
           requires:
-            - deploy_ecs_dev
+            - deploy_dev
 

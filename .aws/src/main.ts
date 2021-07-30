@@ -3,7 +3,10 @@ import { App, RemoteBackend, TerraformStack } from 'cdktf';
 import { AwsProvider } from '../.gen/providers/aws';
 import { config } from './config';
 import { PagerdutyProvider } from '../.gen/providers/pagerduty';
-import { createPocketAlbApplication } from './pocketAlbApplication';
+import {
+  createApplicationCodePipeline,
+  createPocketAlbApplication,
+} from './pocketAlbApplication';
 
 class CurationAdminTools extends TerraformStack {
   constructor(scope: Construct, name: string) {
@@ -19,7 +22,8 @@ class CurationAdminTools extends TerraformStack {
       workspaces: [{ prefix: `${config.name}-` }],
     });
 
-    createPocketAlbApplication(this);
+    const pocketApp = createPocketAlbApplication(this);
+    createApplicationCodePipeline(this, pocketApp);
   }
 }
 
