@@ -11,7 +11,7 @@ import {
   DataAwsKmsAlias,
   DataAwsRegion,
   DataAwsSnsTopic,
-} from '../.gen/providers/aws';
+} from '@cdktf/provider-aws';
 
 /**
  * @param scope
