@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.4.4",
-    "@graphql-codegen/cli": "^1.21.8",
+    "@graphql-codegen/cli": "^2.0.1",
     "@graphql-codegen/typescript": "^2.0.0",
     "@graphql-codegen/typescript-operations": "^2.0.1",
     "@graphql-codegen/typescript-react-apollo": "^2.3.1",
