@@ -18,7 +18,7 @@ import {
   PartnerInfo,
   ScrollToTop,
 } from '../../components';
-import { useNotifications } from '../../hooks/useNotifications';
+import { useNotifications } from '../../hooks/';
 import {
   CollectionPartner,
   GetCollectionPartnersDocument,

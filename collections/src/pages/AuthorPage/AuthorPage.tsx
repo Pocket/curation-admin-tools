@@ -18,14 +18,14 @@ import {
   ImageUpload,
   ScrollToTop,
 } from '../../components';
-import { useNotifications } from '../../hooks/useNotifications';
+import { useNotifications } from '../../hooks/';
 import {
   CollectionAuthor,
   GetAuthorsDocument,
   GetInitialCollectionFormDataDocument,
   useGetAuthorByIdQuery,
-  useUpdateCollectionAuthorMutation,
   useUpdateCollectionAuthorImageUrlMutation,
+  useUpdateCollectionAuthorMutation,
 } from '../../api/collection-api/generatedTypes';
 
 interface AuthorPageProps {

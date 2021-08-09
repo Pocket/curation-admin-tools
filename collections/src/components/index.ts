@@ -6,6 +6,8 @@ export { Chip } from './Chip/Chip';
 export { CollectionForm } from './CollectionForm/CollectionForm';
 export { CollectionInfo } from './CollectionInfo/CollectionInfo';
 export { CollectionListCard } from './CollectionListCard/CollectionListCard';
+export { CollectionPartnerAssociationForm } from './CollectionPartnerAssociationForm/CollectionPartnerAssociationForm';
+export { CollectionPartnerAssociationInfo } from './CollectionPartnerAssociationInfo/CollectionPartnerAssociationInfo';
 export { CollectionPreview } from './CollectionPreview/CollectionPreview';
 export { CollectionSearchForm } from './CollectionSearchForm/CollectionSearchForm';
 export { FileUploadInfo } from './FileUploadInfo/FileUploadInfo';

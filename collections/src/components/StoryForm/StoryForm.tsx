@@ -18,7 +18,7 @@ import {
   SharedFormButtons,
   SharedFormButtonsProps,
 } from '../';
-import { useNotifications } from '../../hooks/useNotifications';
+import { useNotifications } from '../../hooks/';
 import { useStyles } from './StoryForm.styles';
 import { validationSchema } from './StoryForm.validation';
 import { client } from '../../api/client-api/client';
@@ -63,9 +63,8 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
   const { showNotification } = useNotifications();
 
   // Whether to show the full form or just the URL field with the "Populate" button
-  const [showOtherFields, setShowOtherFields] = useState<boolean>(
-    showAllFields
-  );
+  const [showOtherFields, setShowOtherFields] =
+    useState<boolean>(showAllFields);
 
   // Listen for when the "Add Story" form opens up to show the rest of the fields
   // and scroll to the bottom to bring the entire form into view.
