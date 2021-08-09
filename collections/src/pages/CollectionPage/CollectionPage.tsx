@@ -10,6 +10,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
+import AddIcon from '@material-ui/icons/Add';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import {
   DragDropContext,
@@ -22,6 +23,8 @@ import { FormikHelpers } from 'formik/dist/types';
 import {
   CollectionForm,
   CollectionInfo,
+  CollectionPartnerAssociationForm,
+  CollectionPartnerAssociationInfo,
   CollectionPreview,
   HandleApiResponse,
   ImageUpload,
@@ -31,23 +34,27 @@ import {
   StoryListCard,
 } from '../../components';
 import {
+  Collection,
+  CollectionPartnerAssociation,
+  CollectionPartnershipType,
   CollectionStory,
   GetArchivedCollectionsDocument,
   GetCollectionByExternalIdDocument,
   GetDraftCollectionsDocument,
   GetPublishedCollectionsDocument,
+  useCreateCollectionStoryMutation,
   useGetCollectionByExternalIdQuery,
+  useGetCollectionPartnerAssociationLazyQuery,
+  useGetCollectionPartnersQuery,
   useGetCollectionStoriesQuery,
   useGetInitialCollectionFormDataQuery,
-  useUpdateCollectionMutation,
-  useUpdateCollectionImageUrlMutation,
-  useCreateCollectionStoryMutation,
   useImageUploadMutation,
-  useUpdateCollectionStorySortOrderMutation,
+  useUpdateCollectionImageUrlMutation,
+  useUpdateCollectionMutation,
   useUpdateCollectionStoryImageUrlMutation,
-  Collection,
+  useUpdateCollectionStorySortOrderMutation,
 } from '../../api/collection-api/generatedTypes';
-import { useNotifications } from '../../hooks/useNotifications';
+import { useNotifications, useRunMutation, useToggle } from '../../hooks/';
 import { transformAuthors } from '../../utils/transformAuthors';
 
 interface CollectionPageProps {
@@ -58,9 +65,14 @@ export const CollectionPage = (): JSX.Element => {
   // Prepare state vars and helper methods for API notifications
   const { showNotification } = useNotifications();
 
-  // prepare the "update collection" mutation
-  // has to be done at the top level of the component because it's a hook
-  const [updateCollection] = useUpdateCollectionMutation();
+  // Set up toggles for form visibility and the "Preview Collection" modal
+  const [showEditForm, toggleEditForm] = useToggle();
+  const [showPartnershipForm, togglePartnershipForm] = useToggle();
+  const [previewCollectionOpen, previewCollection] = useToggle(false);
+
+  // Get a helper function that will execute each mutation, show standard notifications
+  // and execute any additional actions in a callback
+  const { runMutation } = useRunMutation();
 
   // And this one is only used to set the image url once the we know the S3 link
   const [updateCollectionImageUrl] = useUpdateCollectionImageUrlMutation();
@@ -162,21 +174,34 @@ export const CollectionPage = (): JSX.Element => {
     }
   }, [stories]);
 
-  const [showEditForm, setShowEditForm] = useState<boolean>(false);
+  // Prepare a query to fetch the collection-partner association, if one exists
+  const [
+    loadAssociation,
+    {
+      loading: associationLoading,
+      error: associationError,
+      data: associationData,
+      refetch: refetchAssociation,
+    },
+  ] = useGetCollectionPartnerAssociationLazyQuery();
 
-  const toggleEditForm = (): void => {
-    setShowEditForm(!showEditForm);
-  };
+  useEffect(() => {
+    if (collection && collection.partnership) {
+      loadAssociation({
+        variables: { externalId: collection.partnership.externalId },
+      });
+    }
+  }, [collection, loadAssociation]);
 
-  /**
-   * Collect "edit collection" form data and send it to the API.
-   * Update components on page if updates have been saved successfully
-   */
-  const handleSubmit = (
+  // 1. Prepare the "update collection" mutation
+  const [updateCollection] = useUpdateCollectionMutation();
+
+  // 3. Update the story when the user submits the form
+  const onCollectionUpdate = (
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ): void => {
-    updateCollection({
+    const options = {
       variables: {
         externalId: collection!.externalId,
         title: values.title,
@@ -210,32 +235,41 @@ export const CollectionPage = (): JSX.Element => {
           variables: { perPage: 50 },
         },
       ],
-    })
-      .then(({ data }) => {
-        showNotification('Collection updated successfully!', 'success');
+    };
 
-        if (collection) {
-          collection.title = data?.updateCollection?.title!;
-          collection.slug = data?.updateCollection?.slug!;
-          collection.excerpt = data?.updateCollection?.excerpt;
-          collection.intro = data?.updateCollection?.intro;
-          collection.status = data?.updateCollection?.status!;
-          collection.authors = data?.updateCollection?.authors!;
-          collection.curationCategory =
-            data?.updateCollection?.curationCategory!;
-          collection.IABParentCategory =
-            data?.updateCollection?.IABParentCategory;
-          collection.IABChildCategory =
-            data?.updateCollection?.IABChildCategory;
-          collection.language = data?.updateCollection?.language!;
-          toggleEditForm();
-          formikHelpers.setSubmitting(false);
-        }
-      })
-      .catch((error: Error) => {
-        showNotification(error.message, 'error');
+    const successCallback = (data: any): void => {
+      if (collection) {
+        // update our collection object with the data that is brought back
+        // by the mutation
+        collection.title = data?.updateCollection?.title!;
+        collection.slug = data?.updateCollection?.slug!;
+        collection.excerpt = data?.updateCollection?.excerpt;
+        collection.intro = data?.updateCollection?.intro;
+        collection.status = data?.updateCollection?.status!;
+        collection.authors = data?.updateCollection?.authors!;
+        collection.curationCategory = data?.updateCollection?.curationCategory!;
+        collection.IABParentCategory =
+          data?.updateCollection?.IABParentCategory;
+        collection.IABChildCategory = data?.updateCollection?.IABChildCategory;
+        collection.language = data?.updateCollection?.language!;
+
+        toggleEditForm();
         formikHelpers.setSubmitting(false);
-      });
+      }
+    };
+
+    const errorCallback = (): void => {
+      formikHelpers.setSubmitting(false);
+    };
+
+    runMutation(
+      collection,
+      updateCollection,
+      options,
+      'Collection successfully updated.',
+      successCallback,
+      errorCallback
+    );
   };
 
   /**
@@ -404,6 +438,32 @@ export const CollectionPage = (): JSX.Element => {
     sortOrder: null,
   };
 
+  // Provide a default collection-partnership association for the 'Add Partnership form
+  const emptyAssociation: CollectionPartnerAssociation = {
+    externalId: '',
+    type: CollectionPartnershipType.Partnered,
+    name: '',
+    url: '',
+    imageUrl: '',
+    blurb: '',
+    partner: {
+      externalId: '',
+      name: '',
+      url: '',
+      imageUrl: '',
+      blurb: '',
+    },
+  };
+
+  // Load the partners for the dropdown in the partnership form
+  const {
+    loading: partnersLoading,
+    error: partnersError,
+    data: partnersData,
+  } = useGetCollectionPartnersQuery({
+    variables: { perPage: 1000 },
+  });
+
   /**
    * Save the new sort order of stories
    * @param result
@@ -442,16 +502,6 @@ export const CollectionPage = (): JSX.Element => {
           });
       }
     });
-  };
-
-  const [previewCollectionOpen, setPreviewCollectionOpen] =
-    useState<boolean>(false);
-  /**
-   * Preview the entire collection in a modal
-   */
-  const previewCollection = () => {
-    //
-    setPreviewCollectionOpen(true);
   };
 
   return (
@@ -526,12 +576,77 @@ export const CollectionPage = (): JSX.Element => {
                       languages={initialCollectionFormData.getLanguages}
                       editMode={true}
                       onCancel={toggleEditForm}
-                      onSubmit={handleSubmit}
+                      onSubmit={onCollectionUpdate}
                     />
                   )}
               </Box>
             </Paper>
           </Collapse>
+
+          <Box mb={8}>
+            <Box display="flex" mt={3}>
+              <Box flexGrow={1} alignSelf="center">
+                <h2>Partnership</h2>
+              </Box>
+              {!collection.partnership && (
+                <Box alignSelf="center">
+                  <ButtonGroup
+                    orientation="vertical"
+                    color="primary"
+                    variant="text"
+                  >
+                    <Button color="primary" onClick={togglePartnershipForm}>
+                      <AddIcon fontSize="large" />
+                    </Button>
+                  </ButtonGroup>
+                </Box>
+              )}
+            </Box>
+
+            {partnersData && (
+              <Collapse in={showPartnershipForm}>
+                <Paper elevation={4}>
+                  <Box p={2} mt={3}>
+                    <Grid container spacing={4}>
+                      <Grid item xs={12}>
+                        <h3>Add Partnership</h3>
+                        {!partnersData && (
+                          <HandleApiResponse
+                            loading={partnersLoading}
+                            error={partnersError}
+                          />
+                        )}
+                        {partnersData && (
+                          <CollectionPartnerAssociationForm
+                            association={emptyAssociation}
+                            partners={
+                              partnersData.getCollectionPartners.partners
+                            }
+                            onSubmit={() => {}}
+                          />
+                        )}
+                      </Grid>
+                    </Grid>
+                  </Box>
+                </Paper>
+              </Collapse>
+            )}
+
+            {!associationData && (
+              <HandleApiResponse
+                loading={associationLoading}
+                error={associationError}
+              />
+            )}
+
+            {associationData &&
+              associationData.getCollectionPartnerAssociation && (
+                <CollectionPartnerAssociationInfo
+                  association={associationData.getCollectionPartnerAssociation}
+                  refetch={refetchAssociation}
+                />
+              )}
+          </Box>
 
           <Box mt={3}>
             <h2>Stories</h2>
@@ -603,7 +718,7 @@ export const CollectionPage = (): JSX.Element => {
           <Modal
             open={previewCollectionOpen}
             handleClose={() => {
-              setPreviewCollectionOpen(false);
+              previewCollection();
             }}
           >
             <CollectionPreview collection={collection} stories={stories} />

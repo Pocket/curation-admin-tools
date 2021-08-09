@@ -4,7 +4,7 @@ import { Box, Paper } from '@material-ui/core';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import { AuthorForm } from '../../components';
-import { useNotifications } from '../../hooks/useNotifications';
+import { useNotifications } from '../../hooks/';
 import {
   CollectionAuthor,
   GetAuthorsDocument,

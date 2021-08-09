@@ -4,7 +4,7 @@ import { CollectionPartnerData } from '../fragments/CollectionPartnerData';
 /**
  * Update a collection partner
  */
-export const createCollectionPartner = gql`
+export const updateCollectionPartner = gql`
   mutation updateCollectionPartner(
     $externalId: String!
     $name: String!

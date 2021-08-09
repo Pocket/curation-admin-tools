@@ -14,12 +14,13 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Dropzone, { FileWithPath } from 'react-dropzone';
 import { FileUploadInfo, Modal, SharedFormButtons } from '../';
 import { useStyles } from './ImageUpload.styles';
-import { useNotifications } from '../../hooks/useNotifications';
+import { useNotifications } from '../../hooks/';
 import {
   Collection,
   CollectionAuthor,
   CollectionImageUploadInput,
   CollectionPartner,
+  CollectionPartnerAssociation,
   CollectionStory,
   useImageUploadMutation,
 } from '../../api/collection-api/generatedTypes';
@@ -32,6 +33,7 @@ interface ImageUploadProps {
     | Omit<Collection, 'stories'>
     | CollectionAuthor
     | CollectionPartner
+    | CollectionPartnerAssociation
     | CollectionStory;
 
   /**
