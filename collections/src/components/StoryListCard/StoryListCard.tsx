@@ -15,7 +15,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import { transformAuthors } from '../../utils/transformAuthors';
 import { ImageUpload, StoryCard, StoryForm } from '../';
 import { useStyles } from './StoryListCard.styles';
-import { useNotifications, useRunMutation, useToggle } from '../../hooks/';
+import { useRunMutation, useToggle } from '../../hooks/';
 import {
   CollectionStory,
   useDeleteCollectionStoryMutation,
@@ -46,7 +46,6 @@ interface StoryListCardProps {
  */
 export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
   const classes = useStyles();
-  const { showNotification } = useNotifications();
   const { story, refetch } = props;
   const [showEditForm, toggleEditForm] = useToggle();
 
@@ -59,14 +58,13 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
   // Delete the story when the user requests this action
   const onDelete = (): void => {
     runMutation(
-      story,
       deleteStory,
       {
         variables: {
           externalId: story.externalId,
         },
       },
-      'Story deleted successfully.',
+      'Story deleted successfully',
       refetch
     );
   };
@@ -95,7 +93,6 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
 
     // Run the mutation
     runMutation(
-      story,
       updateStory,
       { variables },
       'Story updated successfully',
@@ -117,21 +114,16 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
    * Save the S3 URL we get back from the API to the collection story record
    */
   const handleImageUploadSave = (url: string): void => {
-    updateStoryImageUrl({
-      variables: {
-        externalId: story.externalId,
-        imageUrl: url,
+    runMutation(
+      updateStoryImageUrl,
+      {
+        variables: {
+          externalId: story.externalId,
+          imageUrl: url,
+        },
       },
-    })
-      .then(() => {
-        showNotification(
-          `Saved image for "${story.title.substring(0, 50)}..."`,
-          'success'
-        );
-      })
-      .catch((error: Error) => {
-        showNotification(error.message, 'error');
-      });
+      'Image saved successfully'
+    );
   };
 
   return (

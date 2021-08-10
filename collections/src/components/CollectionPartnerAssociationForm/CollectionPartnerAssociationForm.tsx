@@ -45,12 +45,19 @@ export const CollectionPartnerAssociationForm: React.FC<
     return partner.externalId;
   });
 
+  // if we're editing, grab the currently assigned partner's external id,
+  // otherwise use the first id from the partners array as the default value
+  const partnerExternalId =
+    association.partner.externalId.length > 0
+      ? association.partner.externalId
+      : partnerIds[0];
+
   /**
    * Set up form validation
    */
   const formik = useFormik({
     initialValues: {
-      partnerExternalId: association.partner.externalId,
+      partnerExternalId,
       type: association.type,
       name: association.name ?? '',
       url: association.url ?? '',

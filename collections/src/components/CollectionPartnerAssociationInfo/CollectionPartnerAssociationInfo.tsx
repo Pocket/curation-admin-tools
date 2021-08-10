@@ -8,6 +8,12 @@ import {
   Paper,
   Typography,
 } from '@material-ui/core';
+import ReactMarkdown from 'react-markdown';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import { ApolloQueryResult } from '@apollo/client';
+import { FormikValues } from 'formik';
+import { FormikHelpers } from 'formik/dist/types';
 import {
   CollectionPartnerAssociation,
   CollectionPartnershipType,
@@ -16,6 +22,7 @@ import {
   GetCollectionPartnerAssociationQuery,
   useDeleteCollectionPartnerAssociationMutation,
   useGetCollectionPartnersQuery,
+  useUpdateCollectionPartnerAssociationImageUrlMutation,
   useUpdateCollectionPartnerAssociationMutation,
 } from '../../api/collection-api/generatedTypes';
 import {
@@ -23,12 +30,7 @@ import {
   HandleApiResponse,
   ImageUpload,
 } from '../';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import { useRunMutation, useToggle } from '../../hooks/';
-import { ApolloQueryResult } from '@apollo/client';
-import { FormikValues } from 'formik';
-import { FormikHelpers } from 'formik/dist/types';
 
 interface AssociationPreviewProps {
   /**
@@ -77,14 +79,20 @@ export const CollectionPartnerAssociationInfo: React.FC<AssociationPreviewProps>
     // Delete the association when the user requests this action
     const onDelete = (): void => {
       runMutation(
-        association,
         deleteAssociation,
         {
           variables: {
             externalId: association.externalId,
           },
+          refetchQueries: [
+            // make sure the Association component is refreshed
+            {
+              query: GetCollectionPartnerAssociationDocument,
+              variables: { externalId: association.externalId },
+            },
+          ],
         },
-        'Partnership deleted successfully.'
+        'Partnership deleted successfully'
       );
     };
 
@@ -116,10 +124,9 @@ export const CollectionPartnerAssociationInfo: React.FC<AssociationPreviewProps>
       };
 
       runMutation(
-        association,
         updateAssociation,
         options,
-        'Partnership updated successfully.',
+        'Partnership updated successfully',
         () => {
           toggleEditForm();
           formikHelpers.setSubmitting(false);
@@ -130,6 +137,26 @@ export const CollectionPartnerAssociationInfo: React.FC<AssociationPreviewProps>
       );
     };
 
+    // prepare the "update story image url" mutation
+    const [updateImageUrl] =
+      useUpdateCollectionPartnerAssociationImageUrlMutation();
+
+    /**
+     * Save the S3 URL we get back from the API to the collection story record
+     */
+    const handleImageUploadSave = (url: string): void => {
+      runMutation(
+        updateImageUrl,
+        {
+          variables: {
+            externalId: association.externalId,
+            imageUrl: url,
+          },
+        },
+        'Image saved successfully'
+      );
+    };
+
     return (
       <>
         <Grid container spacing={2}>
@@ -137,7 +164,7 @@ export const CollectionPartnerAssociationInfo: React.FC<AssociationPreviewProps>
             <ImageUpload
               entity={association.imageUrl ? association : association.partner}
               placeholder="/placeholders/collection.svg"
-              onImageSave={() => {}}
+              onImageSave={handleImageUploadSave}
             />
           </Grid>
           <Grid item xs={7} sm={8}>
@@ -150,9 +177,9 @@ export const CollectionPartnerAssociationInfo: React.FC<AssociationPreviewProps>
               </a>
             </Typography>
             <Box marginTop={2}>
-              <Typography>
+              <ReactMarkdown>
                 {association.blurb ?? association.partner.blurb}
-              </Typography>
+              </ReactMarkdown>
             </Box>
           </Grid>
           <Grid item xs={1} sm={1}>

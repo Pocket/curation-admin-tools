@@ -42,6 +42,7 @@ import {
   GetCollectionByExternalIdDocument,
   GetDraftCollectionsDocument,
   GetPublishedCollectionsDocument,
+  useCreateCollectionPartnerAssociationMutation,
   useCreateCollectionStoryMutation,
   useGetCollectionByExternalIdQuery,
   useGetCollectionPartnerAssociationLazyQuery,
@@ -186,9 +187,12 @@ export const CollectionPage = (): JSX.Element => {
   ] = useGetCollectionPartnerAssociationLazyQuery();
 
   useEffect(() => {
-    if (collection && collection.partnership) {
+    if (collection) {
+      // resolve the id of the collection-partner association, if it exists
+      const associationExternalId = collection.partnership?.externalId || '';
+
       loadAssociation({
-        variables: { externalId: collection.partnership.externalId },
+        variables: { externalId: associationExternalId },
       });
     }
   }, [collection, loadAssociation]);
@@ -263,7 +267,6 @@ export const CollectionPage = (): JSX.Element => {
     };
 
     runMutation(
-      collection,
       updateCollection,
       options,
       'Collection successfully updated.',
@@ -464,6 +467,37 @@ export const CollectionPage = (): JSX.Element => {
     variables: { perPage: 1000 },
   });
 
+  const [createAssociation] = useCreateCollectionPartnerAssociationMutation();
+
+  const handleCreateAssociationSubmit = (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ): void => {
+    const options = {
+      variables: {
+        type: values.type,
+        partnerExternalId: values.partnerExternalId,
+        collectionExternalId: collection!.externalId,
+        name: values.name ? values.name : null,
+        url: values.url ? values.url : null,
+        blurb: values.blurb ? values.blurb : null,
+      },
+    };
+    runMutation(
+      createAssociation,
+      options,
+      'Partnership created successfully',
+      () => {
+        formikHelpers.setSubmitting(false);
+        togglePartnershipForm();
+      },
+      () => {
+        formikHelpers.setSubmitting(false);
+      },
+      refetchAssociation
+    );
+  };
+
   /**
    * Save the new sort order of stories
    * @param result
@@ -588,20 +622,36 @@ export const CollectionPage = (): JSX.Element => {
               <Box flexGrow={1} alignSelf="center">
                 <h2>Partnership</h2>
               </Box>
-              {!collection.partnership && (
-                <Box alignSelf="center">
-                  <ButtonGroup
-                    orientation="vertical"
-                    color="primary"
-                    variant="text"
-                  >
-                    <Button color="primary" onClick={togglePartnershipForm}>
-                      <AddIcon fontSize="large" />
-                    </Button>
-                  </ButtonGroup>
-                </Box>
-              )}
+              {associationData &&
+                !associationData.getCollectionPartnerAssociation && (
+                  <Box alignSelf="center">
+                    <ButtonGroup
+                      orientation="vertical"
+                      color="primary"
+                      variant="text"
+                    >
+                      <Button color="primary" onClick={togglePartnershipForm}>
+                        <AddIcon fontSize="large" />
+                      </Button>
+                    </ButtonGroup>
+                  </Box>
+                )}
             </Box>
+
+            {!associationData && (
+              <HandleApiResponse
+                loading={associationLoading}
+                error={associationError}
+              />
+            )}
+
+            {associationData &&
+              associationData.getCollectionPartnerAssociation && (
+                <CollectionPartnerAssociationInfo
+                  association={associationData.getCollectionPartnerAssociation}
+                  refetch={refetchAssociation}
+                />
+              )}
 
             {partnersData && (
               <Collapse in={showPartnershipForm}>
@@ -622,7 +672,7 @@ export const CollectionPage = (): JSX.Element => {
                             partners={
                               partnersData.getCollectionPartners.partners
                             }
-                            onSubmit={() => {}}
+                            onSubmit={handleCreateAssociationSubmit}
                           />
                         )}
                       </Grid>
@@ -631,21 +681,6 @@ export const CollectionPage = (): JSX.Element => {
                 </Paper>
               </Collapse>
             )}
-
-            {!associationData && (
-              <HandleApiResponse
-                loading={associationLoading}
-                error={associationError}
-              />
-            )}
-
-            {associationData &&
-              associationData.getCollectionPartnerAssociation && (
-                <CollectionPartnerAssociationInfo
-                  association={associationData.getCollectionPartnerAssociation}
-                  refetch={refetchAssociation}
-                />
-              )}
           </Box>
 
           <Box mt={3}>

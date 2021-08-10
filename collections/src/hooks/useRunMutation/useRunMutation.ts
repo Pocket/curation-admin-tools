@@ -10,7 +10,6 @@ export const useRunMutation = () => {
 
   // TODO: improve types in function signature
   const runMutation = (
-    entity: any,
     mutateFunction: any,
     options: any,
     message: string,
