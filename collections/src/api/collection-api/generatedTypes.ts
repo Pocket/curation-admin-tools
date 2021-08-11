@@ -446,6 +446,11 @@ export type Query = {
   getLanguages: Array<Language>;
   /** Retrieves a CollectionPartnerAssociation by externalId */
   getCollectionPartnerAssociation?: Maybe<CollectionPartnerAssociation>;
+  /**
+   * Retrieves a CollectionPartnerAssociation by the externalId of the collection
+   * it is related to.
+   */
+  getCollectionPartnerAssociationForCollection?: Maybe<CollectionPartnerAssociation>;
 };
 
 export type Query_EntitiesArgs = {
@@ -485,6 +490,10 @@ export type QueryGetCollectionStoryArgs = {
 };
 
 export type QueryGetCollectionPartnerAssociationArgs = {
+  externalId: Scalars['String'];
+};
+
+export type QueryGetCollectionPartnerAssociationForCollectionArgs = {
   externalId: Scalars['String'];
 };
 
@@ -1007,7 +1016,7 @@ export type GetCollectionPartnerAssociationQueryVariables = Exact<{
 }>;
 
 export type GetCollectionPartnerAssociationQuery = { __typename?: 'Query' } & {
-  getCollectionPartnerAssociation?: Maybe<
+  getCollectionPartnerAssociationForCollection?: Maybe<
     {
       __typename?: 'CollectionPartnerAssociation';
     } & CollectionPartnerAssociationDataFragment
@@ -2793,7 +2802,7 @@ export type GetCollectionPartnerQueryResult = Apollo.QueryResult<
 >;
 export const GetCollectionPartnerAssociationDocument = gql`
   query getCollectionPartnerAssociation($externalId: String!) {
-    getCollectionPartnerAssociation(externalId: $externalId) {
+    getCollectionPartnerAssociationForCollection(externalId: $externalId) {
       ...CollectionPartnerAssociationData
     }
   }

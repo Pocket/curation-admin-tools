@@ -186,13 +186,11 @@ export const CollectionPage = (): JSX.Element => {
     },
   ] = useGetCollectionPartnerAssociationLazyQuery();
 
+  // Load the association once collection data is ready
   useEffect(() => {
     if (collection) {
-      // resolve the id of the collection-partner association, if it exists
-      const associationExternalId = collection.partnership?.externalId || '';
-
       loadAssociation({
-        variables: { externalId: associationExternalId },
+        variables: { externalId: collection.externalId },
       });
     }
   }, [collection, loadAssociation]);
@@ -623,7 +621,7 @@ export const CollectionPage = (): JSX.Element => {
                 <h2>Partnership</h2>
               </Box>
               {associationData &&
-                !associationData.getCollectionPartnerAssociation && (
+                !associationData.getCollectionPartnerAssociationForCollection && (
                   <Box alignSelf="center">
                     <ButtonGroup
                       orientation="vertical"
@@ -646,9 +644,11 @@ export const CollectionPage = (): JSX.Element => {
             )}
 
             {associationData &&
-              associationData.getCollectionPartnerAssociation && (
+              associationData.getCollectionPartnerAssociationForCollection && (
                 <CollectionPartnerAssociationInfo
-                  association={associationData.getCollectionPartnerAssociation}
+                  association={
+                    associationData.getCollectionPartnerAssociationForCollection
+                  }
                   refetch={refetchAssociation}
                 />
               )}

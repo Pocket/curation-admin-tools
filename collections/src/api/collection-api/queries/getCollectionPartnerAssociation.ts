@@ -2,11 +2,12 @@ import { gql } from '@apollo/client';
 import { CollectionPartnerAssociationData } from '../fragments/CollectionPartnerAssociationData';
 
 /**
- * Get collection-partner association information by its external id.
+ * Get collection-partner association information by the external id.
+ * of the collection it's related to.
  */
 export const getCollectionPartnerAssociation = gql`
   query getCollectionPartnerAssociation($externalId: String!) {
-    getCollectionPartnerAssociation(externalId: $externalId) {
+    getCollectionPartnerAssociationForCollection(externalId: $externalId) {
       ...CollectionPartnerAssociationData
     }
   }

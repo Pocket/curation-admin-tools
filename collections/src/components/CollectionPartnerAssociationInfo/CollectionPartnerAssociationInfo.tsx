@@ -18,7 +18,6 @@ import {
   CollectionPartnerAssociation,
   CollectionPartnershipType,
   Exact,
-  GetCollectionPartnerAssociationDocument,
   GetCollectionPartnerAssociationQuery,
   useDeleteCollectionPartnerAssociationMutation,
   useGetCollectionPartnersQuery,
@@ -62,7 +61,7 @@ interface AssociationPreviewProps {
  */
 export const CollectionPartnerAssociationInfo: React.FC<AssociationPreviewProps> =
   (props): JSX.Element => {
-    const { association } = props;
+    const { association, refetch } = props;
     const [showEditForm, toggleEditForm] = useToggle();
 
     // Get a helper function that will execute a mutation and show notifications
@@ -84,15 +83,11 @@ export const CollectionPartnerAssociationInfo: React.FC<AssociationPreviewProps>
           variables: {
             externalId: association.externalId,
           },
-          refetchQueries: [
-            // make sure the Association component is refreshed
-            {
-              query: GetCollectionPartnerAssociationDocument,
-              variables: { externalId: association.externalId },
-            },
-          ],
         },
-        'Partnership deleted successfully'
+        'Partnership deleted successfully',
+        undefined,
+        undefined,
+        refetch
       );
     };
 
@@ -114,13 +109,6 @@ export const CollectionPartnerAssociationInfo: React.FC<AssociationPreviewProps>
           imageUrl: association.imageUrl, // we'll update it separately
           blurb: values.blurb ? values.blurb : null,
         },
-        refetchQueries: [
-          // make sure the Association component is refreshed when we update
-          {
-            query: GetCollectionPartnerAssociationDocument,
-            variables: { externalId: association.externalId },
-          },
-        ],
       };
 
       runMutation(
@@ -133,7 +121,8 @@ export const CollectionPartnerAssociationInfo: React.FC<AssociationPreviewProps>
         },
         () => {
           formikHelpers.setSubmitting(false);
-        }
+        },
+        refetch
       );
     };
 
