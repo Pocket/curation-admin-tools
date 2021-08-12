@@ -1,4 +1,4 @@
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 /**
  * Styles for the StoryCard component.
@@ -15,7 +15,6 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     subtitle: {
       fontWeight: 400,
-      textTransform: 'capitalize',
     },
     [theme.breakpoints.down('sm')]: {
       title: {
