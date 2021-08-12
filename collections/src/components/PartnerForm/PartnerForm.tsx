@@ -50,7 +50,7 @@ export const PartnerForm: React.FC<PartnerFormProps & SharedFormButtonsProps> =
     });
 
     return (
-      <form name="author-form" onSubmit={formik.handleSubmit}>
+      <form name="partner-form" onSubmit={formik.handleSubmit}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <FormikTextField

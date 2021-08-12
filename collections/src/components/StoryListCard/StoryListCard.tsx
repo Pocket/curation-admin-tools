@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import {
@@ -15,7 +15,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import { transformAuthors } from '../../utils/transformAuthors';
 import { ImageUpload, StoryCard, StoryForm } from '../';
 import { useStyles } from './StoryListCard.styles';
-import { useNotifications } from '../../hooks/useNotifications';
+import { useRunMutation, useToggle } from '../../hooks/';
 import {
   CollectionStory,
   useDeleteCollectionStoryMutation,
@@ -46,44 +46,32 @@ interface StoryListCardProps {
  */
 export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
   const classes = useStyles();
-  const { showNotification } = useNotifications();
   const { story, refetch } = props;
+  const [showEditForm, toggleEditForm] = useToggle();
 
-  const [showEditForm, setShowEditForm] = useState<boolean>(false);
+  // Get a helper function that will execute a mutation and show notifications
+  const { runMutation } = useRunMutation();
 
-  const toggleEditForm = (): void => {
-    setShowEditForm(!showEditForm);
-  };
-
-  // prepare the "delete story" mutation
+  // Prepare the "delete story" mutate function
   const [deleteStory] = useDeleteCollectionStoryMutation();
 
-  // prepare the "update story" mutation
-  const [updateStory] = useUpdateCollectionStoryMutation();
-
-  // prepare the "update story image url" mutation
-  const [updateStoryImageUrl] = useUpdateCollectionStoryImageUrlMutation();
-
+  // Delete the story when the user requests this action
   const onDelete = (): void => {
-    deleteStory({
-      variables: {
-        externalId: story.externalId,
+    runMutation(
+      deleteStory,
+      {
+        variables: {
+          externalId: story.externalId,
+        },
       },
-    })
-      .then(() => {
-        // manually refresh the cache
-        refetch();
-
-        showNotification(
-          `Deleted "${story.title.substring(0, 50)}..."`,
-          'success'
-        );
-      })
-      .catch((error: Error) => {
-        showNotification(error.message, 'error');
-      });
+      'Story deleted successfully',
+      refetch
+    );
   };
 
+  // 1. Prepare the "update story" mutation
+  const [updateStory] = useUpdateCollectionStoryMutation();
+  // 3. Update the story when the user submits the form
   const onUpdate = (
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
@@ -91,54 +79,51 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
     // prepare authors! They need to be an array of objects again
     const authors = transformAuthors(values.authors);
 
-    updateStory({
-      variables: {
-        externalId: story.externalId,
-        url: values.url,
-        title: values.title,
-        excerpt: values.excerpt,
-        publisher: values.publisher,
-        // NB: not updating the image here. Uploads are handled separately
-        imageUrl: story.imageUrl,
-        authors,
-      },
-    })
-      .then(() => {
-        // manually refresh the cache
-        refetch();
+    // Set out all the values that are going to be updated
+    const variables = {
+      externalId: story.externalId,
+      url: values.url,
+      title: values.title,
+      excerpt: values.excerpt,
+      publisher: values.publisher,
+      // NB: not updating the image here. Uploads are handled separately
+      imageUrl: story.imageUrl,
+      authors,
+    };
 
-        showNotification(
-          `Updated "${story.title.substring(0, 50)}..."`,
-          'success'
-        );
-        setShowEditForm(false);
+    // Run the mutation
+    runMutation(
+      updateStory,
+      { variables },
+      'Story updated successfully',
+      () => {
+        toggleEditForm();
         formikHelpers.setSubmitting(false);
-      })
-      .catch((error: Error) => {
-        showNotification(error.message, 'error');
+      },
+      () => {
         formikHelpers.setSubmitting(false);
-      });
+      },
+      refetch
+    );
   };
+
+  // prepare the "update story image url" mutation
+  const [updateStoryImageUrl] = useUpdateCollectionStoryImageUrlMutation();
 
   /**
    * Save the S3 URL we get back from the API to the collection story record
    */
   const handleImageUploadSave = (url: string): void => {
-    updateStoryImageUrl({
-      variables: {
-        externalId: story.externalId,
-        imageUrl: url,
+    runMutation(
+      updateStoryImageUrl,
+      {
+        variables: {
+          externalId: story.externalId,
+          imageUrl: url,
+        },
       },
-    })
-      .then(() => {
-        showNotification(
-          `Saved image for "${story.title.substring(0, 50)}..."`,
-          'success'
-        );
-      })
-      .catch((error: Error) => {
-        showNotification(error.message, 'error');
-      });
+      'Image saved successfully'
+    );
   };
 
   return (

@@ -64,7 +64,7 @@ describe('The FormikSelectField component', () => {
     });
 
     // The verboseness of the following assertions is due to TypeScript
-    // not being happy witt option elements unless you cast them correctly -
+    // not being happy with option elements unless you cast them correctly -
     // in this case to HTMLOptionElement so that they definitely have
     // a 'selected' property
     const chosenOption = screen.getByRole('option', {

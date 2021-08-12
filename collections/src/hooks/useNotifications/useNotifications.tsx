@@ -11,7 +11,7 @@ interface useNotificationsReturnValues {
 }
 
 /**
- * Returns a helper method that allows us to queue a toast notification
+ * Returns a helper function that allows us to queue a toast notification
  * from anywhere in the app.
  *
  * Thanks to the notistack package, these notifications stack on top of each
