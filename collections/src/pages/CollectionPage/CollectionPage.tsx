@@ -756,7 +756,15 @@ export const CollectionPage = (): JSX.Element => {
               previewCollection();
             }}
           >
-            <CollectionPreview collection={collection} stories={stories} />
+            {associationData && (
+              <CollectionPreview
+                collection={collection}
+                stories={stories}
+                association={
+                  associationData.getCollectionPartnerAssociationForCollection
+                }
+              />
+            )}
           </Modal>
         </>
       )}

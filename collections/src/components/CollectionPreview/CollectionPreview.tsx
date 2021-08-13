@@ -4,10 +4,11 @@ import ReactMarkdown from 'react-markdown';
 import { useStyles } from './CollectionPreview.styles';
 import {
   Collection,
+  CollectionPartnershipType,
   CollectionStory,
 } from '../../api/collection-api/generatedTypes';
 import { flattenAuthors } from '../../utils/flattenAuthors';
-import { StoryCard } from '../StoryCard/StoryCard';
+import { StoryCard } from '../';
 
 interface CollectionPreviewProps {
   /**
@@ -20,6 +21,11 @@ interface CollectionPreviewProps {
    * Collection stories, separately
    */
   stories: CollectionStory[] | undefined;
+
+  /**
+   * Collection-partner association, if present
+   */
+  association?: any;
 }
 
 export const CollectionPreview: React.FC<CollectionPreviewProps> = (
@@ -64,6 +70,18 @@ export const CollectionPreview: React.FC<CollectionPreviewProps> = (
             {collection.intro}
           </ReactMarkdown>
         </Grid>
+
+        {collection.partnership && (
+          <Grid item xs={12}>
+            {collection.partnership.type === CollectionPartnershipType.Partnered
+              ? 'In partnership with '
+              : 'Brought to you by '}
+            <a href={collection.partnership.url}>
+              {collection.partnership.name}
+            </a>
+          </Grid>
+        )}
+
         {stories &&
           stories.map((story: CollectionStory) => {
             return (
