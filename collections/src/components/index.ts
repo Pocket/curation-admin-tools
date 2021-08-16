@@ -23,6 +23,7 @@ export { Modal } from './Modal/Modal';
 export { PartnerForm } from './PartnerForm/PartnerForm';
 export { PartnerInfo } from './PartnerInfo/PartnerInfo';
 export { PartnerListCard } from './PartnerListCard/PartnerListCard';
+export { ReorderableCollectionStoryList } from './ReorderableCollectionStoryList/ReorderableCollectionStoryList';
 export { SharedFormButtons } from './_form-elements/SharedFormButtons/SharedFormButtons';
 export type { SharedFormButtonsProps } from './_form-elements/SharedFormButtons/SharedFormButtons';
 export { StoryCard } from './StoryCard/StoryCard';

@@ -12,12 +12,7 @@ import {
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import {
-  DragDropContext,
-  Draggable,
-  Droppable,
-  DropResult,
-} from 'react-beautiful-dnd';
+import { DropResult } from 'react-beautiful-dnd';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import {
@@ -29,9 +24,9 @@ import {
   HandleApiResponse,
   ImageUpload,
   Modal,
+  ReorderableCollectionStoryList,
   ScrollToTop,
   StoryForm,
-  StoryListCard,
 } from '../../components';
 import {
   Collection,
@@ -500,7 +495,7 @@ export const CollectionPage = (): JSX.Element => {
    * Save the new sort order of stories
    * @param result
    */
-  const onDragEnd = (result: DropResult) => {
+  const reorderStories = (result: DropResult) => {
     // if a story was dragged out of the list, let it snap back to where it was
     // without an error in the console
     if (!result.destination) return;
@@ -517,21 +512,16 @@ export const CollectionPage = (): JSX.Element => {
 
       // update each affected story with the new sort order
       if (story.sortOrder !== newSortOrder) {
-        updateStorySortOrder({
-          variables: {
-            externalId: story.externalId,
-            sortOrder: newSortOrder,
+        runMutation(
+          updateStorySortOrder,
+          {
+            variables: {
+              externalId: story.externalId,
+              sortOrder: newSortOrder,
+            },
           },
-        })
-          .then(() => {
-            showNotification(
-              `Order updated for "${story.title.substring(0, 50)}..."`,
-              'success'
-            );
-          })
-          .catch((error: Error) => {
-            showNotification(error.message, 'error');
-          });
+          `Order updated for "${story.title.substring(0, 50)}..."`
+        );
       }
     });
   };
@@ -691,48 +681,15 @@ export const CollectionPage = (): JSX.Element => {
                 error={storiesError}
               />
             )}
-            <DragDropContext onDragEnd={onDragEnd}>
-              <Droppable droppableId="characters">
-                {(provided) => (
-                  <Typography
-                    component="div"
-                    className="characters"
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                  >
-                    {stories &&
-                      stories.map((story: CollectionStory, index: number) => {
-                        return (
-                          <Draggable
-                            key={story.externalId}
-                            draggableId={story.externalId}
-                            index={index}
-                          >
-                            {(provided) => {
-                              return (
-                                <Typography
-                                  component="div"
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                >
-                                  <StoryListCard
-                                    key={story.externalId}
-                                    story={story}
-                                    refetch={refetchStories}
-                                  />
-                                </Typography>
-                              );
-                            }}
-                          </Draggable>
-                        );
-                      })}
-                    {provided.placeholder}
-                  </Typography>
-                )}
-              </Droppable>
-            </DragDropContext>
+            {stories && (
+              <ReorderableCollectionStoryList
+                stories={stories}
+                reorder={reorderStories}
+                refetch={refetchStories}
+              />
+            )}
           </Box>
+
           <Paper elevation={4}>
             <Box p={2} mt={3}>
               <Box mb={2}>
@@ -750,6 +707,7 @@ export const CollectionPage = (): JSX.Element => {
               />
             </Box>
           </Paper>
+
           <Modal
             open={previewCollectionOpen}
             handleClose={() => {
