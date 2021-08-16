@@ -6,6 +6,7 @@ import {
   CollectionAuthor,
   useGetAuthorsQuery,
 } from '../../api/collection-api/generatedTypes';
+import { config } from '../../config';
 
 /**
  * Author List Page
@@ -13,7 +14,7 @@ import {
 export const AuthorListPage = (): JSX.Element => {
   // Load authors
   const { loading, error, data } = useGetAuthorsQuery({
-    variables: { perPage: 50 },
+    variables: { perPage: config.pagination.authorsPerPage },
   });
 
   return (

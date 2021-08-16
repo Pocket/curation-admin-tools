@@ -30,6 +30,7 @@ import {
   ImageUpload,
 } from '../';
 import { useRunMutation, useToggle } from '../../hooks/';
+import { config } from '../../config';
 
 interface AssociationPreviewProps {
   /**
@@ -69,7 +70,7 @@ export const CollectionPartnerAssociationInfo: React.FC<AssociationPreviewProps>
 
     // Load the partners for the dropdown in the partnership form
     const { loading, error, data } = useGetCollectionPartnersQuery({
-      variables: { perPage: 1000 },
+      variables: { perPage: config.pagination.valuesPerDropdown },
     });
 
     // Prepare the "Delete association" mutate function
