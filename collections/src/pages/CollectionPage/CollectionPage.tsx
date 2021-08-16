@@ -57,6 +57,7 @@ import {
 } from '../../api/collection-api/generatedTypes';
 import { useNotifications, useRunMutation, useToggle } from '../../hooks/';
 import { transformAuthors } from '../../utils/transformAuthors';
+import { config } from '../../config';
 
 interface CollectionPageProps {
   collection?: Omit<Collection, 'stories'>;
@@ -132,7 +133,7 @@ export const CollectionPage = (): JSX.Element => {
     error: initialCollectionFormError,
     data: initialCollectionFormData,
   } = useGetInitialCollectionFormDataQuery({
-    variables: { page: 1, perPage: 1000 },
+    variables: { perPage: config.pagination.valuesPerDropdown },
   });
 
   // Load collection stories - deliberately in a separate query
@@ -195,10 +196,10 @@ export const CollectionPage = (): JSX.Element => {
     }
   }, [collection, loadAssociation]);
 
-  // 1. Prepare the "update collection" mutation
+  // Prepare the "update collection" mutation
   const [updateCollection] = useUpdateCollectionMutation();
 
-  // 3. Update the story when the user submits the form
+  // Update the story when the user submits the form
   const onCollectionUpdate = (
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
@@ -226,15 +227,15 @@ export const CollectionPage = (): JSX.Element => {
         },
         {
           query: GetDraftCollectionsDocument,
-          variables: { perPage: 50 },
+          variables: { perPage: config.pagination.collectionsPerPage },
         },
         {
           query: GetPublishedCollectionsDocument,
-          variables: { perPage: 50 },
+          variables: { perPage: config.pagination.collectionsPerPage },
         },
         {
           query: GetArchivedCollectionsDocument,
-          variables: { perPage: 50 },
+          variables: { perPage: config.pagination.collectionsPerPage },
         },
       ],
     };
@@ -462,7 +463,7 @@ export const CollectionPage = (): JSX.Element => {
     error: partnersError,
     data: partnersData,
   } = useGetCollectionPartnersQuery({
-    variables: { perPage: 1000 },
+    variables: { perPage: config.pagination.valuesPerDropdown },
   });
 
   const [createAssociation] = useCreateCollectionPartnerAssociationMutation();

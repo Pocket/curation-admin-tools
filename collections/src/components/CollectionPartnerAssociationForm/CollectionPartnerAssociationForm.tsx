@@ -33,7 +33,8 @@ interface AssociationFormProps {
 }
 
 /**
- * A form for adding authors or editing information for existing authors
+ * A form for adding a collection-partner association or editing data
+ * for an existing one.
  */
 export const CollectionPartnerAssociationForm: React.FC<
   AssociationFormProps & SharedFormButtonsProps
