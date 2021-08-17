@@ -4,6 +4,8 @@ import { MemoryRouter } from 'react-router-dom';
 import { CollectionPreview } from './CollectionPreview';
 import {
   Collection,
+  CollectionPartnerAssociation,
+  CollectionPartnershipType,
   CollectionStatus,
   CollectionStory,
 } from '../../api/collection-api/generatedTypes';
@@ -11,6 +13,7 @@ import {
 describe('The CollectionPreview component', () => {
   let collection: Omit<Collection, 'stories'>;
   let stories: CollectionStory[];
+  let association: CollectionPartnerAssociation;
 
   beforeEach(() => {
     collection = {
@@ -40,7 +43,7 @@ describe('The CollectionPreview component', () => {
         url: 'https://www.test.com/',
         excerpt: 'This story should always be the first.',
         authors: [{ name: 'First Author', sortOrder: 1 }],
-        publisher: 'Pocket Collections',
+        publisher: 'Pocket Articles',
         fromPartner: false,
       },
     ];
@@ -49,7 +52,11 @@ describe('The CollectionPreview component', () => {
   it('shows basic collection information', () => {
     render(
       <MemoryRouter>
-        <CollectionPreview collection={collection} stories={stories} />
+        <CollectionPreview
+          collection={collection}
+          stories={stories}
+          association={null}
+        />
       </MemoryRouter>
     );
 
@@ -85,7 +92,11 @@ describe('The CollectionPreview component', () => {
 
     render(
       <MemoryRouter>
-        <CollectionPreview collection={collection} stories={stories} />
+        <CollectionPreview
+          collection={collection}
+          stories={stories}
+          association={null}
+        />
       </MemoryRouter>
     );
 
@@ -97,7 +108,11 @@ describe('The CollectionPreview component', () => {
   it('shows collection stories', () => {
     render(
       <MemoryRouter>
-        <CollectionPreview collection={collection} stories={stories} />
+        <CollectionPreview
+          collection={collection}
+          stories={stories}
+          association={null}
+        />
       </MemoryRouter>
     );
 
@@ -120,5 +135,85 @@ describe('The CollectionPreview component', () => {
     // story image alt text is the title of the story
     const image = screen.getByAltText(stories[0].title);
     expect(image).toBeInTheDocument();
+  });
+
+  it('shows sponsored stories', () => {
+    // Add a second, sponsored story
+    stories.push({
+      externalId: '456-cde',
+      title: 'The second story in this collection',
+      url: 'https://www.test.com/sponsored-story',
+      excerpt: 'This story should show the "from partner" flag.',
+      authors: [{ name: 'John Citizen', sortOrder: 1 }],
+      publisher: 'Pocket Sponsor',
+      fromPartner: true,
+    });
+
+    render(
+      <MemoryRouter>
+        <CollectionPreview
+          collection={collection}
+          stories={stories}
+          association={null}
+        />
+      </MemoryRouter>
+    );
+
+    // Out of the two stories in the mock data, only one is sponsored
+    const sponsoredStories = screen.getAllByText(/from partner/i);
+    expect(sponsoredStories.length).toEqual(1);
+  });
+
+  it('shows partnership information', () => {
+    // A minimal collection-partnership association with default values only
+    association = {
+      externalId: '123-abc',
+      type: CollectionPartnershipType.Sponsored,
+      partner: {
+        externalId: '789-qwe',
+        name: 'Bushwalking Paradise',
+        url: 'https://www.getpocket.com/',
+        imageUrl: 'https://www.example.com/image.png',
+        blurb: 'Visit us to experience a bushwalking paradise!',
+      },
+    };
+
+    const { rerender } = render(
+      <MemoryRouter>
+        <CollectionPreview
+          collection={collection}
+          stories={stories}
+          association={association}
+        />
+      </MemoryRouter>
+    );
+
+    let sponsoredCopy: HTMLElement | null =
+      screen.getByText(/brought to you by/i);
+    expect(sponsoredCopy).toBeInTheDocument();
+
+    const partnerImage = screen.getByAltText(association.partner.name);
+    expect(partnerImage).toBeInTheDocument();
+
+    // Now let's update the partnership type to test the other copy
+    association.type = CollectionPartnershipType.Partnered;
+
+    rerender(
+      <MemoryRouter>
+        <CollectionPreview
+          collection={collection}
+          stories={stories}
+          association={association}
+        />
+      </MemoryRouter>
+    );
+
+    // The partnership type copy should reflect the change
+    const partneredCopy = screen.getByText(/in partnership with/i);
+    expect(partneredCopy).toBeInTheDocument();
+
+    // And we shouldn't see the old copy
+    sponsoredCopy = screen.queryByText(/brought to you by/i);
+    expect(sponsoredCopy).not.toBeInTheDocument();
   });
 });
