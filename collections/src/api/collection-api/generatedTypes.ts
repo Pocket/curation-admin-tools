@@ -231,6 +231,7 @@ export type CreateCollectionStoryInput = {
   authors: Array<CollectionStoryAuthorInput>;
   publisher: Scalars['String'];
   sortOrder?: Maybe<Scalars['Int']>;
+  fromPartner: Scalars['Boolean'];
 };
 
 export type CurationCategory = {
@@ -579,6 +580,7 @@ export type UpdateCollectionStoryInput = {
   authors: Array<CollectionStoryAuthorInput>;
   publisher: Scalars['String'];
   sortOrder?: Maybe<Scalars['Int']>;
+  fromPartner: Scalars['Boolean'];
 };
 
 export type UpdateCollectionStorySortOrderInput = {
@@ -751,6 +753,7 @@ export type CreateCollectionStoryMutationVariables = Exact<{
   authors: Array<CollectionStoryAuthorInput> | CollectionStoryAuthorInput;
   publisher: Scalars['String'];
   sortOrder?: Maybe<Scalars['Int']>;
+  fromPartner: Scalars['Boolean'];
 }>;
 
 export type CreateCollectionStoryMutation = { __typename?: 'Mutation' } & {
@@ -921,6 +924,7 @@ export type UpdateCollectionStoryMutationVariables = Exact<{
   authors: Array<CollectionStoryAuthorInput> | CollectionStoryAuthorInput;
   publisher: Scalars['String'];
   sortOrder?: Maybe<Scalars['Int']>;
+  fromPartner: Scalars['Boolean'];
 }>;
 
 export type UpdateCollectionStoryMutation = { __typename?: 'Mutation' } & {
@@ -1526,6 +1530,7 @@ export const CreateCollectionStoryDocument = gql`
     $authors: [CollectionStoryAuthorInput!]!
     $publisher: String!
     $sortOrder: Int
+    $fromPartner: Boolean!
   ) {
     createCollectionStory(
       data: {
@@ -1537,6 +1542,7 @@ export const CreateCollectionStoryDocument = gql`
         authors: $authors
         publisher: $publisher
         sortOrder: $sortOrder
+        fromPartner: $fromPartner
       }
     ) {
       ...CollectionStoryData
@@ -1570,6 +1576,7 @@ export type CreateCollectionStoryMutationFn = Apollo.MutationFunction<
  *      authors: // value for 'authors'
  *      publisher: // value for 'publisher'
  *      sortOrder: // value for 'sortOrder'
+ *      fromPartner: // value for 'fromPartner'
  *   },
  * });
  */
@@ -2310,6 +2317,7 @@ export const UpdateCollectionStoryDocument = gql`
     $authors: [CollectionStoryAuthorInput!]!
     $publisher: String!
     $sortOrder: Int
+    $fromPartner: Boolean!
   ) {
     updateCollectionStory(
       data: {
@@ -2321,6 +2329,7 @@ export const UpdateCollectionStoryDocument = gql`
         authors: $authors
         publisher: $publisher
         sortOrder: $sortOrder
+        fromPartner: $fromPartner
       }
     ) {
       ...CollectionStoryData
@@ -2354,6 +2363,7 @@ export type UpdateCollectionStoryMutationFn = Apollo.MutationFunction<
  *      authors: // value for 'authors'
  *      publisher: // value for 'publisher'
  *      sortOrder: // value for 'sortOrder'
+ *      fromPartner: // value for 'fromPartner'
  *   },
  * });
  */

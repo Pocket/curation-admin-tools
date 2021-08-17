@@ -35,6 +35,13 @@ interface StoryListCardProps {
    * was deleted.
    */
   refetch: () => void;
+
+  /**
+   * Whether to show in the edit form the 'From Partner' switch.
+   * This value comes from a collection partnership, and is not available
+   * from within the story object itself.
+   */
+  showFromPartner: boolean;
 }
 
 /**
@@ -46,7 +53,7 @@ interface StoryListCardProps {
  */
 export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
   const classes = useStyles();
-  const { story, refetch } = props;
+  const { story, refetch, showFromPartner } = props;
   const [showEditForm, toggleEditForm] = useToggle();
 
   // Get a helper function that will execute a mutation and show notifications
@@ -89,6 +96,7 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
       // NB: not updating the image here. Uploads are handled separately
       imageUrl: story.imageUrl,
       authors,
+      fromPartner: values.fromPartner,
     };
 
     // Run the mutation
@@ -165,6 +173,7 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
                 editMode={true}
                 onCancel={toggleEditForm}
                 onSubmit={onUpdate}
+                showFromPartner={showFromPartner}
               />
             </Box>
           </Paper>
