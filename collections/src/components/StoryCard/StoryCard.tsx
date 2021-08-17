@@ -62,7 +62,7 @@ export const StoryCard: React.FC<StoryCardProps> = (props): JSX.Element => {
               color="primary"
               variant="subtitle2"
             >
-              From partner
+              From partner/sponsor
             </Typography>
           </Grid>
         </Grid>

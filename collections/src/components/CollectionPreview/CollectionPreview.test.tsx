@@ -160,7 +160,7 @@ describe('The CollectionPreview component', () => {
     );
 
     // Out of the two stories in the mock data, only one is sponsored
-    const sponsoredStories = screen.getAllByText(/from partner/i);
+    const sponsoredStories = screen.getAllByText(/from partner\/sponsor/i);
     expect(sponsoredStories.length).toEqual(1);
   });
 

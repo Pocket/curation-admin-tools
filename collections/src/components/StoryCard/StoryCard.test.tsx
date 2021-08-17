@@ -116,7 +116,7 @@ describe('The StoryCard component', () => {
     expect(middot).not.toBeInTheDocument();
   });
 
-  it('displays "From Partner" if a story is sponsored', () => {
+  it('displays "From partner/sponsor" if a story is sponsored', () => {
     story.fromPartner = true;
 
     render(
@@ -125,7 +125,7 @@ describe('The StoryCard component', () => {
       </MemoryRouter>
     );
 
-    const fromPartner = screen.getByText(/from partner/i);
+    const fromPartner = screen.getByText(/from partner\/sponsor/i);
     expect(fromPartner).toBeInTheDocument();
   });
 });
