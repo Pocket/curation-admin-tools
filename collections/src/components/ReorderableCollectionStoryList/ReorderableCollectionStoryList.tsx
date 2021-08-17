@@ -16,6 +16,11 @@ interface CollectionStoryListProps {
   stories: CollectionStory[];
 
   /**
+   *
+   */
+  showFromPartner: boolean;
+
+  /**
    * A callback function that will run a mutation every time a story's order
    * in the list is updated
    * @param result
@@ -39,7 +44,7 @@ interface CollectionStoryListProps {
  */
 export const ReorderableCollectionStoryList: React.FC<CollectionStoryListProps> =
   (props): JSX.Element => {
-    const { stories, reorder, refetch } = props;
+    const { stories, showFromPartner, reorder, refetch } = props;
 
     return (
       <DragDropContext onDragEnd={reorder}>
@@ -70,6 +75,7 @@ export const ReorderableCollectionStoryList: React.FC<CollectionStoryListProps> 
                             key={story.externalId}
                             story={story}
                             refetch={refetch}
+                            showFromPartner={showFromPartner}
                           />
                         </Typography>
                       );

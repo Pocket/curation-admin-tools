@@ -52,7 +52,6 @@ import {
 } from '../../api/collection-api/generatedTypes';
 import { useNotifications, useRunMutation, useToggle } from '../../hooks/';
 import { transformAuthors } from '../../utils/transformAuthors';
-import { config } from '../../config';
 
 interface CollectionPageProps {
   collection?: Omit<Collection, 'stories'>;
@@ -128,7 +127,7 @@ export const CollectionPage = (): JSX.Element => {
     error: initialCollectionFormError,
     data: initialCollectionFormData,
   } = useGetInitialCollectionFormDataQuery({
-    variables: { perPage: config.pagination.valuesPerDropdown },
+    variables: { page: 1, perPage: 1000 },
   });
 
   // Load collection stories - deliberately in a separate query
@@ -191,10 +190,10 @@ export const CollectionPage = (): JSX.Element => {
     }
   }, [collection, loadAssociation]);
 
-  // Prepare the "update collection" mutation
+  // 1. Prepare the "update collection" mutation
   const [updateCollection] = useUpdateCollectionMutation();
 
-  // Update the story when the user submits the form
+  // 3. Update the story when the user submits the form
   const onCollectionUpdate = (
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
@@ -222,15 +221,15 @@ export const CollectionPage = (): JSX.Element => {
         },
         {
           query: GetDraftCollectionsDocument,
-          variables: { perPage: config.pagination.collectionsPerPage },
+          variables: { perPage: 50 },
         },
         {
           query: GetPublishedCollectionsDocument,
-          variables: { perPage: config.pagination.collectionsPerPage },
+          variables: { perPage: 50 },
         },
         {
           query: GetArchivedCollectionsDocument,
-          variables: { perPage: config.pagination.collectionsPerPage },
+          variables: { perPage: 50 },
         },
       ],
     };
@@ -329,6 +328,7 @@ export const CollectionPage = (): JSX.Element => {
         imageUrl: '',
         authors,
         sortOrder: storySortOrder,
+        fromPartner: values.fromPartner,
       },
     })
       .then((data) => {
@@ -458,7 +458,7 @@ export const CollectionPage = (): JSX.Element => {
     error: partnersError,
     data: partnersData,
   } = useGetCollectionPartnersQuery({
-    variables: { perPage: config.pagination.valuesPerDropdown },
+    variables: { perPage: 1000 },
   });
 
   const [createAssociation] = useCreateCollectionPartnerAssociationMutation();
@@ -682,33 +682,41 @@ export const CollectionPage = (): JSX.Element => {
                 error={storiesError}
               />
             )}
-            {stories && (
+            {stories && associationData && (
               <ReorderableCollectionStoryList
                 stories={stories}
                 reorder={reorderStories}
                 refetch={refetchStories}
+                showFromPartner={
+                  associationData.getCollectionPartnerAssociationForCollection !==
+                  null
+                }
               />
             )}
           </Box>
-
           <Paper elevation={4}>
             <Box p={2} mt={3}>
               <Box mb={2}>
                 <h3>Add Story</h3>
               </Box>
-              <StoryForm
-                key={addStoryFormKey}
-                onCancel={() => {
-                  setAddStoryFormKey(addStoryFormKey + 1);
-                }}
-                onSubmit={handleCreateStorySubmit}
-                story={emptyStory}
-                editMode={false}
-                showAllFields={false}
-              />
+              {associationData && (
+                <StoryForm
+                  key={addStoryFormKey}
+                  onCancel={() => {
+                    setAddStoryFormKey(addStoryFormKey + 1);
+                  }}
+                  onSubmit={handleCreateStorySubmit}
+                  story={emptyStory}
+                  editMode={false}
+                  showAllFields={false}
+                  showFromPartner={
+                    associationData.getCollectionPartnerAssociationForCollection !==
+                    null
+                  }
+                />
+              )}
             </Box>
           </Paper>
-
           <Modal
             open={previewCollectionOpen}
             handleClose={() => {

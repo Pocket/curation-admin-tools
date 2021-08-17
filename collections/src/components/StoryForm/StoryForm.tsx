@@ -4,8 +4,10 @@ import {
   Box,
   CardMedia,
   CircularProgress,
+  FormControlLabel,
   Grid,
   LinearProgress,
+  Switch,
   TextField,
   Typography,
 } from '@material-ui/core';
@@ -51,12 +53,25 @@ interface StoryFormProps {
    * and without scrolling the form into view on rendering all the fields.
    */
   editMode: boolean;
+
+  /**
+   * Whether to show the 'fromPartner' field - it's only shown for stories
+   * within a sponsored/partnered collection.
+   */
+  showFromPartner: boolean;
 }
 
 export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
   props
 ): JSX.Element => {
-  const { story, onCancel, onSubmit, showAllFields, editMode } = props;
+  const {
+    story,
+    onCancel,
+    onSubmit,
+    showAllFields,
+    editMode,
+    showFromPartner,
+  } = props;
   const classes = useStyles();
 
   // Prepare state vars and helper methods for API notifications
@@ -93,6 +108,7 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
       excerpt: story.excerpt ?? '',
       authors: flattenAuthors(story.authors) ?? '',
       publisher: story.publisher ?? '',
+      fromPartner: story.fromPartner ?? false,
     },
     // We don't want to irritate users by displaying validation errors
     // before they actually submit the form
@@ -162,13 +178,10 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
         formik.setFieldValue('imageUrl', imageUrl);
 
         // And we're done!
-        showNotification(
-          `The parser finished processing this story`,
-          'success'
-        );
+        showNotification('Story parsed successfully', 'success');
       } else {
         // This is the error path
-        showNotification(`The parser couldn't process this URL`, 'error');
+        showNotification(`Story couldn't be parsed`, 'error');
       }
       // If this is used to add a story and only the URL is visible,
       // show the other fields now that they contain something
@@ -259,22 +272,38 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
               </Typography>
             </Grid>
             <Grid item xs={12} sm={9}>
-              <Box mb={3}>
+              <FormikTextField
+                id="authors"
+                label="Authors (separated by commas)"
+                fieldProps={formik.getFieldProps('authors')}
+                fieldMeta={formik.getFieldMeta('authors')}
+              />
+
+              <Box my={3}>
                 <FormikTextField
-                  id="authors"
-                  label="Authors (separated by commas)"
-                  fieldProps={formik.getFieldProps('authors')}
-                  fieldMeta={formik.getFieldMeta('authors')}
+                  id="publisher"
+                  label="Publisher"
+                  fieldProps={formik.getFieldProps('publisher')}
+                  fieldMeta={formik.getFieldMeta('publisher')}
                 />
               </Box>
-
-              <FormikTextField
-                id="publisher"
-                label="Publisher"
-                fieldProps={formik.getFieldProps('publisher')}
-                fieldMeta={formik.getFieldMeta('publisher')}
-              />
+              {showFromPartner && (
+                <Box ml={0.5}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        color="primary"
+                        checked={formik.values.fromPartner}
+                        {...formik.getFieldProps('fromPartner')}
+                      />
+                    }
+                    label={'From Partner'}
+                    labelPlacement="end"
+                  />
+                </Box>
+              )}
             </Grid>
+
             <Grid item xs={12}>
               <MarkdownPreview minHeight={6.5} source={formik.values.excerpt}>
                 <FormikTextField

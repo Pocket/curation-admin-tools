@@ -14,6 +14,7 @@ export const createCollectionStory = gql`
     $authors: [CollectionStoryAuthorInput!]!
     $publisher: String!
     $sortOrder: Int
+    $fromPartner: Boolean
   ) {
     createCollectionStory(
       data: {
@@ -25,6 +26,7 @@ export const createCollectionStory = gql`
         authors: $authors
         publisher: $publisher
         sortOrder: $sortOrder
+        fromPartner: $fromPartner
       }
     ) {
       ...CollectionStoryData

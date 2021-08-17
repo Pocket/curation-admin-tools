@@ -115,4 +115,17 @@ describe('The StoryCard component', () => {
     const middot = screen.queryByText('\u00b7');
     expect(middot).not.toBeInTheDocument();
   });
+
+  it('displays "From Partner" if a story is sponsored', () => {
+    story.fromPartner = true;
+
+    render(
+      <MemoryRouter>
+        <StoryCard story={story} />
+      </MemoryRouter>
+    );
+
+    const fromPartner = screen.getByText(/from partner/i);
+    expect(fromPartner).toBeInTheDocument();
+  });
 });
