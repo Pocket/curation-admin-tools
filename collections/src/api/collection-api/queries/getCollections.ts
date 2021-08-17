@@ -2,12 +2,16 @@ import { gql } from '@apollo/client';
 import { CollectionData } from '../fragments/CollectionData';
 
 /**
- * Get a list of archived collections
+ * Get a paginated list of collections with a given status
  */
-export const getArchivedCollections = gql`
-  query getArchivedCollections($page: Int, $perPage: Int) {
+export const getCollections = gql`
+  query getCollections(
+    $page: Int!
+    $perPage: Int!
+    $status: CollectionStatus!
+  ) {
     searchCollections(
-      filters: { status: ARCHIVED }
+      filters: { status: $status }
       page: $page
       perPage: $perPage
     ) {
@@ -15,6 +19,8 @@ export const getArchivedCollections = gql`
         ...CollectionData
       }
       pagination {
+        currentPage
+        totalPages
         totalResults
       }
     }

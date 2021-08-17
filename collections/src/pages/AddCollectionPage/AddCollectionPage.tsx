@@ -8,7 +8,7 @@ import { useNotifications } from '../../hooks/useNotifications';
 import {
   Collection,
   CollectionStatus,
-  GetDraftCollectionsDocument,
+  GetCollectionsDocument,
   useCreateCollectionMutation,
   useGetInitialCollectionFormDataQuery,
 } from '../../api/collection-api/generatedTypes';
@@ -68,10 +68,8 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
       // when we add a new collection
       refetchQueries: [
         {
-          query: GetDraftCollectionsDocument,
-          variables: {
-            perPage: 50,
-          },
+          query: GetCollectionsDocument,
+          variables: { status: CollectionStatus.Draft },
         },
       ],
     })

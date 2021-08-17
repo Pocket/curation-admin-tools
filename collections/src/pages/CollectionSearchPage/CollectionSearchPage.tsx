@@ -14,7 +14,12 @@ export const CollectionSearchPage: React.FC = (): JSX.Element => {
   const [
     searchCollections,
     { loading, error, data },
-  ] = useGetSearchCollectionsLazyQuery();
+  ] = useGetSearchCollectionsLazyQuery(
+    // We need to make sure search results are never served from the cache.
+    // Otherwise this page is broken as we have a type policy on the
+    // 'searchCollections' query.
+    { fetchPolicy: 'network-only' }
+  );
 
   /**
    * Collect form data and send it to the API.

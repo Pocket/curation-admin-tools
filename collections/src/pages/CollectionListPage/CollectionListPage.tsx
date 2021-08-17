@@ -10,10 +10,9 @@ import {
   TabSet,
 } from '../../components';
 import {
-  useGetDraftCollectionsQuery,
-  useGetPublishedCollectionsQuery,
-  useGetArchivedCollectionsQuery,
   Collection,
+  CollectionStatus,
+  useGetCollectionsQuery,
 } from '../../api/collection-api/generatedTypes';
 
 /**
@@ -38,8 +37,8 @@ export const CollectionListPage = (): JSX.Element => {
   };
 
   // Load draft collections
-  const { loading, error, data } = useGetDraftCollectionsQuery({
-    variables: { perPage: 50 },
+  const { loading, error, data } = useGetCollectionsQuery({
+    variables: { page: 1, perPage: 50, status: CollectionStatus.Draft },
   });
 
   // Load published collections
@@ -47,8 +46,8 @@ export const CollectionListPage = (): JSX.Element => {
     loading: loadingPublished,
     error: errorPublished,
     data: dataPublished,
-  } = useGetPublishedCollectionsQuery({
-    variables: { perPage: 50 },
+  } = useGetCollectionsQuery({
+    variables: { page: 1, perPage: 50, status: CollectionStatus.Published },
   });
 
   // Load archived collections
@@ -56,8 +55,8 @@ export const CollectionListPage = (): JSX.Element => {
     loading: loadingArchived,
     error: errorArchived,
     data: dataArchived,
-  } = useGetArchivedCollectionsQuery({
-    variables: { perPage: 50 },
+  } = useGetCollectionsQuery({
+    variables: { page: 1, perPage: 50, status: CollectionStatus.Archived },
   });
 
   // Define the set of tabs that we're going to show on this page

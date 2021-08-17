@@ -21,7 +21,6 @@ import {
 import { useNotifications } from '../../hooks/useNotifications';
 import {
   CollectionAuthor,
-  GetAuthorsDocument,
   GetInitialCollectionFormDataDocument,
   useGetAuthorByIdQuery,
   useUpdateCollectionAuthorMutation,
@@ -100,15 +99,9 @@ export const AuthorPage = (): JSX.Element => {
         active: values.active,
       },
       refetchQueries: [
-        // make sure the Authors page is updated when we add a new author
-        {
-          query: GetAuthorsDocument,
-          variables: { perPage: 50 },
-        },
-        // The lookup query for collection form dropdowns also needs a refresh
+        // The lookup query for collection form dropdowns needs a refresh
         {
           query: GetInitialCollectionFormDataDocument,
-          variables: { page: 1, perPage: 1000 },
         },
       ],
     })

@@ -31,24 +31,23 @@ import {
   StoryListCard,
 } from '../../components';
 import {
+  Collection,
   CollectionStory,
-  GetArchivedCollectionsDocument,
   GetCollectionByExternalIdDocument,
-  GetDraftCollectionsDocument,
-  GetPublishedCollectionsDocument,
+  GetCollectionsDocument,
+  useCreateCollectionStoryMutation,
   useGetCollectionByExternalIdQuery,
   useGetCollectionStoriesQuery,
   useGetInitialCollectionFormDataQuery,
-  useUpdateCollectionMutation,
-  useUpdateCollectionImageUrlMutation,
-  useCreateCollectionStoryMutation,
   useImageUploadMutation,
-  useUpdateCollectionStorySortOrderMutation,
+  useUpdateCollectionImageUrlMutation,
+  useUpdateCollectionMutation,
   useUpdateCollectionStoryImageUrlMutation,
-  Collection,
+  useUpdateCollectionStorySortOrderMutation,
 } from '../../api/collection-api/generatedTypes';
 import { useNotifications } from '../../hooks/useNotifications';
 import { transformAuthors } from '../../utils/transformAuthors';
+import { CollectionStatus } from '../../api/client-api/generatedTypes';
 
 interface CollectionPageProps {
   collection?: Omit<Collection, 'stories'>;
@@ -198,16 +197,16 @@ export const CollectionPage = (): JSX.Element => {
           },
         },
         {
-          query: GetDraftCollectionsDocument,
-          variables: { perPage: 50 },
+          query: GetCollectionsDocument,
+          variables: { status: CollectionStatus.Draft },
         },
         {
-          query: GetPublishedCollectionsDocument,
-          variables: { perPage: 50 },
+          query: GetCollectionsDocument,
+          variables: { status: CollectionStatus.Published },
         },
         {
-          query: GetArchivedCollectionsDocument,
-          variables: { perPage: 50 },
+          query: GetCollectionsDocument,
+          variables: { status: CollectionStatus.Archived },
         },
       ],
     })
