@@ -11,14 +11,11 @@ import {
 import ReactMarkdown from 'react-markdown';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
-import { ApolloQueryResult } from '@apollo/client';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import {
   CollectionPartnerAssociation,
   CollectionPartnershipType,
-  Exact,
-  GetCollectionPartnerAssociationQuery,
   useDeleteCollectionPartnerAssociationMutation,
   useGetCollectionPartnersQuery,
   useUpdateCollectionPartnerAssociationImageUrlMutation,
@@ -43,15 +40,8 @@ interface AssociationPreviewProps {
    * A helper method that requests the partnership from the API
    * whenever the cache needs updating, i.e. on deleting or updating
    * the partnership.
-   *
-   * The type is a little verbose and can be undefined
-   * as it comes from a useLazyQuery() hook instead of useQuery()
    */
-  refetch:
-    | ((
-        variables?: Partial<Exact<{ externalId: string }>> | undefined
-      ) => Promise<ApolloQueryResult<GetCollectionPartnerAssociationQuery>>)
-    | undefined;
+  refetch: () => void;
 }
 
 /**
