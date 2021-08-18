@@ -635,12 +635,17 @@ export const CollectionPage = (): JSX.Element => {
             )}
 
             {associationData &&
-              associationData.getCollectionPartnerAssociationForCollection && (
+              associationData.getCollectionPartnerAssociationForCollection &&
+              refetchAssociation &&
+              refetchStories && (
                 <CollectionPartnerAssociationInfo
                   association={
                     associationData.getCollectionPartnerAssociationForCollection
                   }
-                  refetch={refetchAssociation}
+                  refetch={() => {
+                    refetchAssociation();
+                    refetchStories();
+                  }}
                 />
               )}
 
