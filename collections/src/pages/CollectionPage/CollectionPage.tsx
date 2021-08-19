@@ -669,6 +669,7 @@ export const CollectionPage = (): JSX.Element => {
                               partnersData.getCollectionPartners.partners
                             }
                             onSubmit={handleCreateAssociationSubmit}
+                            onCancel={togglePartnershipForm}
                           />
                         )}
                       </Grid>
