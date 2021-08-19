@@ -29,15 +29,16 @@ export const readPaginatedDataFromCache = (
 
     const offset = (currentPage - 1) * args.perPage;
 
-    // If we read the field before any data has been written to the
-    // cache, this function will return undefined, which correctly
-    // indicates that the field is missing.
+    // Always return the data from the first item in the cache array
+    // so that on each subsequent click of the "Load more..." button
+    // the old results are delivered alongside with a page's worth
+    // of new ones.
     const pagefulOfData =
-      existing && existing[dataPropName].slice(offset, offset + args.perPage);
+      existing && existing[dataPropName].slice(0, offset + args.perPage);
 
-    // If we ask for a page outside the bounds of the existing array,
-    // page.length will be 0, and we should return undefined instead of
-    // the empty array.
+    // Only return values if there's actually something in the cache.
+    // If nothing is returned from this function, Apollo Client will
+    // attempt to fetch fresh data from the GraphQL API.
     if (pagefulOfData && pagefulOfData.length > 0) {
       return {
         [dataPropName]: pagefulOfData,

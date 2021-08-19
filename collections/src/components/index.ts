@@ -15,6 +15,7 @@ export { HandleApiResponse } from './HandleApiResponse/HandleApiResponse';
 export { Header } from './Header/Header';
 export type { MenuLink } from './Header/Header';
 export { ImageUpload } from './ImageUpload/ImageUpload';
+export { LoadMore } from './LoadMore/LoadMore';
 export { MainContentWrapper } from './MainContentWrapper/MainContentWrapper';
 export { MarkdownPreview } from './MarkdownPreview/MarkdownPreview';
 export { Modal } from './Modal/Modal';

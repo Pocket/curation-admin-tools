@@ -6,7 +6,7 @@ import { readPaginatedDataFromCache } from '../helpers/readPaginatedDataFromCach
 /**
  * A field policy for the 'searchCollections' query.
  *
- * The field policy is required to implement pagination on the frontend properly.
+ * The field policy is required to implement caching on the frontend properly.
  */
 export const searchCollectionsFieldPolicy: FieldPolicy<
   CollectionsResult,

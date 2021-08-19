@@ -7,7 +7,7 @@ import { readPaginatedDataFromCache } from '../helpers/readPaginatedDataFromCach
  * A field policy for the 'getCollectionAuthors' query that is used
  * on the Authors page and also in the 'Authors' dropdown in the 'Edit Collection'
  * form.
- * The field policy is required to implement pagination on the frontend properly.
+ * The field policy is required to implement caching on the frontend properly.
  */
 export const getCollectionAuthorsFieldPolicy: FieldPolicy<
   CollectionAuthorsResult,

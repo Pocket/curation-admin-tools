@@ -25,8 +25,6 @@ export const mergePaginatedDataInCache = (
     const mergedData = existing ? existing[dataPropName].slice(0) : [];
 
     // Insert the incoming elements in the right places, according to args.
-    // For authors, for example, this keeps the list in alphabetical order
-    // even if the user clicks on page numbers randomly.
     const offset = (args.page - 1) * args.perPage;
     const end = offset + Math.min(args.perPage, incoming[dataPropName].length);
 
