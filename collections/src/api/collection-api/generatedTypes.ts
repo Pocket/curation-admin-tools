@@ -44,6 +44,7 @@ export type Collection = {
    * language of the collection.
    */
   language: Scalars['String'];
+  partnership?: Maybe<CollectionPartnership>;
   publishedAt?: Maybe<Scalars['DateString']>;
   authors: Array<CollectionAuthor>;
   stories: Array<CollectionStory>;
@@ -98,11 +99,51 @@ export type CollectionPartner = {
   blurb: Scalars['Markdown'];
 };
 
+/**
+ * If a collection was made in partnership with an external company, this
+ * entity will hold all required info about that partnership.
+ *
+ * Note that this admin-only type exposes both the optional customized fields
+ * and the CollectionPartner entity with the default values.
+ *
+ * The consolidated CollectionPartnership type is available in the public schema.
+ */
+export type CollectionPartnerAssociation = {
+  __typename?: 'CollectionPartnerAssociation';
+  externalId: Scalars['String'];
+  type: CollectionPartnershipType;
+  partner: CollectionPartner;
+  name?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['Url']>;
+  imageUrl?: Maybe<Scalars['Url']>;
+  blurb?: Maybe<Scalars['Markdown']>;
+};
+
 export type CollectionPartnersResult = {
   __typename?: 'CollectionPartnersResult';
   pagination?: Maybe<Pagination>;
   partners: Array<CollectionPartner>;
 };
+
+/**
+ * If a collection was made in partnership with an external company, this
+ * entity will hold all required info about that partnership.
+ */
+export type CollectionPartnership = {
+  __typename?: 'CollectionPartnership';
+  externalId: Scalars['String'];
+  type: CollectionPartnershipType;
+  name: Scalars['String'];
+  url: Scalars['Url'];
+  imageUrl: Scalars['Url'];
+  blurb: Scalars['Markdown'];
+};
+
+/** Type and enums related to Collections made in partnership with a company. */
+export enum CollectionPartnershipType {
+  Partnered = 'PARTNERED',
+  Sponsored = 'SPONSORED',
+}
 
 export enum CollectionStatus {
   Draft = 'DRAFT',
@@ -164,6 +205,16 @@ export type CreateCollectionInput = {
   IABChildCategoryExternalId?: Maybe<Scalars['String']>;
 };
 
+export type CreateCollectionPartnerAssociationInput = {
+  type: CollectionPartnershipType;
+  partnerExternalId: Scalars['String'];
+  collectionExternalId: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['Url']>;
+  imageUrl?: Maybe<Scalars['Url']>;
+  blurb?: Maybe<Scalars['Markdown']>;
+};
+
 export type CreateCollectionPartnerInput = {
   name: Scalars['String'];
   url: Scalars['Url'];
@@ -180,6 +231,7 @@ export type CreateCollectionStoryInput = {
   authors: Array<CollectionStoryAuthorInput>;
   publisher: Scalars['String'];
   sortOrder?: Maybe<Scalars['Int']>;
+  fromPartner?: Maybe<Scalars['Boolean']>;
 };
 
 export type CurationCategory = {
@@ -187,6 +239,10 @@ export type CurationCategory = {
   externalId: Scalars['ID'];
   name: Scalars['String'];
   slug: Scalars['String'];
+};
+
+export type DeleteCollectionPartnerAssociationInput = {
+  externalId: Scalars['String'];
 };
 
 /** Interactive Advertising Bureau Category - these are used on clients to serve relevant ads */
@@ -225,32 +281,61 @@ export type Mutation = {
   createCollectionAuthor: CollectionAuthor;
   /** Updates a CollectionAuthor. */
   updateCollectionAuthor: CollectionAuthor;
-  /** Updates only the `imageUrl` property of a CollectionAuthor. Dedicated to uploading images within the UI. */
+  /**
+   * Updates only the `imageUrl` property of a CollectionAuthor.
+   * Dedicated to uploading images within the UI.
+   */
   updateCollectionAuthorImageUrl: CollectionAuthor;
   /** Creates a Collection. */
   createCollection: Collection;
   /** Updates a Collection. */
   updateCollection: Collection;
-  /** Updates only the `imageUrl` property of a Collection. Dedicated to uploading images within the UI. */
+  /**
+   * Updates only the `imageUrl` property of a Collection.
+   * Dedicated to uploading images within the UI.
+   */
   updateCollectionImageUrl: Collection;
   /** Creates a CollectionStory. */
   createCollectionStory: CollectionStory;
   /** Updates a CollectionStory. */
   updateCollectionStory: CollectionStory;
-  /** Updates only the `sortOrder` property of a CollectionStory. Dedicated to ordering stories within the UI. */
+  /**
+   * Updates only the `sortOrder` property of a CollectionStory.
+   * Dedicated to ordering stories within the UI.
+   */
   updateCollectionStorySortOrder: CollectionStory;
-  /** Updates only the `imageUrl` property of a CollectionStory. Dedicated to uploading images within the UI. */
+  /**
+   * Updates only the `imageUrl` property of a CollectionStory.
+   * Dedicated to uploading images within the UI.
+   */
   updateCollectionStoryImageUrl: CollectionStory;
   /** Deletes a CollectionStory. Also deletes all the related CollectionStoryAuthor records. */
   deleteCollectionStory: CollectionStory;
-  /** Uploads an image to S3. Does *not* save the image to any entity (CollectionAuthor/Collection/CollectionStory). */
+  /**
+   * Uploads an image to S3. Does *not* save the image to any entity
+   * (CollectionAuthor/Collection/CollectionStory).
+   */
   collectionImageUpload: CollectionImageUrl;
   /** Creates a CollectionPartner. */
   createCollectionPartner: CollectionPartner;
   /** Updates a CollectionPartner. */
   updateCollectionPartner: CollectionPartner;
-  /** Updates only the `imageUrl` property of a CollectionPartner. Dedicated to uploading images within the UI. */
+  /**
+   * Updates only the `imageUrl` property of a CollectionPartner.
+   * Dedicated to uploading images within the UI.
+   */
   updateCollectionPartnerImageUrl: CollectionPartner;
+  /** Creates a CollectionPartnerAssociation. */
+  createCollectionPartnerAssociation: CollectionPartnerAssociation;
+  /** Updates a CollectionPartnerAssociation. */
+  updateCollectionPartnerAssociation: CollectionPartnerAssociation;
+  /**
+   * Updates only the `imageUrl` property of a CollectionPartner.
+   * Dedicated to uploading images within the UI.
+   */
+  updateCollectionPartnerAssociationImageUrl: CollectionPartnerAssociation;
+  /** Deletes a CollectionPartnerAssociation. */
+  deleteCollectionPartnerAssociation: CollectionPartnerAssociation;
 };
 
 export type MutationCreateCollectionAuthorArgs = {
@@ -313,6 +398,22 @@ export type MutationUpdateCollectionPartnerImageUrlArgs = {
   data: UpdateCollectionPartnerImageUrlInput;
 };
 
+export type MutationCreateCollectionPartnerAssociationArgs = {
+  data: CreateCollectionPartnerAssociationInput;
+};
+
+export type MutationUpdateCollectionPartnerAssociationArgs = {
+  data: UpdateCollectionPartnerAssociationInput;
+};
+
+export type MutationUpdateCollectionPartnerAssociationImageUrlArgs = {
+  data: UpdateCollectionPartnerAssociationImageUrlInput;
+};
+
+export type MutationDeleteCollectionPartnerAssociationArgs = {
+  externalId: Scalars['String'];
+};
+
 export type Pagination = {
   __typename?: 'Pagination';
   currentPage: Scalars['Int'];
@@ -344,6 +445,13 @@ export type Query = {
   getIABCategories: Array<IabParentCategory>;
   /** Retrieves the languages currently supported. */
   getLanguages: Array<Language>;
+  /** Retrieves a CollectionPartnerAssociation by externalId */
+  getCollectionPartnerAssociation?: Maybe<CollectionPartnerAssociation>;
+  /**
+   * Retrieves a CollectionPartnerAssociation by the externalId of the collection
+   * it is related to.
+   */
+  getCollectionPartnerAssociationForCollection?: Maybe<CollectionPartnerAssociation>;
 };
 
 export type Query_EntitiesArgs = {
@@ -382,6 +490,15 @@ export type QueryGetCollectionStoryArgs = {
   externalId: Scalars['String'];
 };
 
+export type QueryGetCollectionPartnerAssociationArgs = {
+  externalId: Scalars['String'];
+};
+
+export type QueryGetCollectionPartnerAssociationForCollectionArgs = {
+  externalId: Scalars['String'];
+};
+
+/** available filters for searching collections */
 export type SearchCollectionsFilters = {
   author?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
@@ -422,6 +539,21 @@ export type UpdateCollectionInput = {
   IABChildCategoryExternalId?: Maybe<Scalars['String']>;
 };
 
+export type UpdateCollectionPartnerAssociationImageUrlInput = {
+  externalId: Scalars['String'];
+  imageUrl: Scalars['Url'];
+};
+
+export type UpdateCollectionPartnerAssociationInput = {
+  externalId: Scalars['String'];
+  type: CollectionPartnershipType;
+  partnerExternalId: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['Url']>;
+  imageUrl?: Maybe<Scalars['Url']>;
+  blurb?: Maybe<Scalars['Markdown']>;
+};
+
 export type UpdateCollectionPartnerImageUrlInput = {
   externalId: Scalars['String'];
   imageUrl: Scalars['Url'];
@@ -449,6 +581,7 @@ export type UpdateCollectionStoryInput = {
   authors: Array<CollectionStoryAuthorInput>;
   publisher: Scalars['String'];
   sortOrder?: Maybe<Scalars['Int']>;
+  fromPartner?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdateCollectionStorySortOrderInput = {
@@ -466,72 +599,105 @@ export type _Service = {
 
 export type CollectionAuthorDataFragment = {
   __typename?: 'CollectionAuthor';
-} & Pick<
-  CollectionAuthor,
-  'externalId' | 'name' | 'slug' | 'bio' | 'imageUrl' | 'active'
->;
+  externalId: string;
+  name: string;
+  slug?: Maybe<string>;
+  bio?: Maybe<any>;
+  imageUrl?: Maybe<any>;
+  active: boolean;
+};
 
-export type CollectionDataFragment = { __typename?: 'Collection' } & Pick<
-  Collection,
-  | 'externalId'
-  | 'title'
-  | 'slug'
-  | 'excerpt'
-  | 'intro'
-  | 'imageUrl'
-  | 'language'
-  | 'status'
-> & {
-    authors: Array<
-      { __typename?: 'CollectionAuthor' } & CollectionAuthorDataFragment
-    >;
-    curationCategory?: Maybe<
-      { __typename?: 'CurationCategory' } & Pick<
-        CurationCategory,
-        'externalId' | 'name' | 'slug'
-      >
-    >;
-    IABParentCategory?: Maybe<
-      { __typename?: 'IABCategory' } & Pick<
-        IabCategory,
-        'externalId' | 'name' | 'slug'
-      >
-    >;
-    IABChildCategory?: Maybe<
-      { __typename?: 'IABCategory' } & Pick<
-        IabCategory,
-        'externalId' | 'name' | 'slug'
-      >
-    >;
+export type CollectionDataFragment = {
+  __typename?: 'Collection';
+  externalId: string;
+  title: string;
+  slug: string;
+  excerpt?: Maybe<any>;
+  intro?: Maybe<any>;
+  imageUrl?: Maybe<any>;
+  language: string;
+  status: CollectionStatus;
+  authors: Array<{
+    __typename?: 'CollectionAuthor';
+    externalId: string;
+    name: string;
+    slug?: Maybe<string>;
+    bio?: Maybe<any>;
+    imageUrl?: Maybe<any>;
+    active: boolean;
+  }>;
+  curationCategory?: Maybe<{
+    __typename?: 'CurationCategory';
+    externalId: string;
+    name: string;
+    slug: string;
+  }>;
+  IABParentCategory?: Maybe<{
+    __typename?: 'IABCategory';
+    externalId: string;
+    name: string;
+    slug: string;
+  }>;
+  IABChildCategory?: Maybe<{
+    __typename?: 'IABCategory';
+    externalId: string;
+    name: string;
+    slug: string;
+  }>;
+  partnership?: Maybe<{
+    __typename?: 'CollectionPartnership';
+    externalId: string;
+    type: CollectionPartnershipType;
+    name: string;
+    url: any;
+    imageUrl: any;
+    blurb: any;
+  }>;
+};
+
+export type CollectionPartnerAssociationDataFragment = {
+  __typename?: 'CollectionPartnerAssociation';
+  externalId: string;
+  type: CollectionPartnershipType;
+  name?: Maybe<string>;
+  url?: Maybe<any>;
+  imageUrl?: Maybe<any>;
+  blurb?: Maybe<any>;
+  partner: {
+    __typename?: 'CollectionPartner';
+    externalId: string;
+    name: string;
+    url: any;
+    imageUrl: any;
+    blurb: any;
   };
+};
 
 export type CollectionPartnerDataFragment = {
   __typename?: 'CollectionPartner';
-} & Pick<
-  CollectionPartner,
-  'externalId' | 'name' | 'url' | 'imageUrl' | 'blurb'
->;
+  externalId: string;
+  name: string;
+  url: any;
+  imageUrl: any;
+  blurb: any;
+};
 
 export type CollectionStoryDataFragment = {
   __typename?: 'CollectionStory';
-} & Pick<
-  CollectionStory,
-  | 'externalId'
-  | 'url'
-  | 'title'
-  | 'excerpt'
-  | 'imageUrl'
-  | 'publisher'
-  | 'fromPartner'
-  | 'sortOrder'
-> & {
-    authors: Array<
-      { __typename?: 'CollectionStoryAuthor' } & Pick<
-        CollectionStoryAuthor,
-        'name' | 'sortOrder'
-      >
-    >;
-  };
+  externalId: string;
+  url: any;
+  title: string;
+  excerpt: any;
+  imageUrl?: Maybe<any>;
+  publisher?: Maybe<string>;
+  fromPartner: boolean;
+  sortOrder?: Maybe<number>;
+  authors: Array<{
+    __typename?: 'CollectionStoryAuthor';
+    name: string;
+    sortOrder: number;
+  }>;
+};
 
 export type CreateCollectionMutationVariables = Exact<{
   title: Scalars['String'];
@@ -546,8 +712,55 @@ export type CreateCollectionMutationVariables = Exact<{
   language: Scalars['String'];
 }>;
 
-export type CreateCollectionMutation = { __typename?: 'Mutation' } & {
-  createCollection: { __typename?: 'Collection' } & CollectionDataFragment;
+export type CreateCollectionMutation = {
+  __typename?: 'Mutation';
+  createCollection: {
+    __typename?: 'Collection';
+    externalId: string;
+    title: string;
+    slug: string;
+    excerpt?: Maybe<any>;
+    intro?: Maybe<any>;
+    imageUrl?: Maybe<any>;
+    language: string;
+    status: CollectionStatus;
+    authors: Array<{
+      __typename?: 'CollectionAuthor';
+      externalId: string;
+      name: string;
+      slug?: Maybe<string>;
+      bio?: Maybe<any>;
+      imageUrl?: Maybe<any>;
+      active: boolean;
+    }>;
+    curationCategory?: Maybe<{
+      __typename?: 'CurationCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    }>;
+    IABParentCategory?: Maybe<{
+      __typename?: 'IABCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    }>;
+    IABChildCategory?: Maybe<{
+      __typename?: 'IABCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    }>;
+    partnership?: Maybe<{
+      __typename?: 'CollectionPartnership';
+      externalId: string;
+      type: CollectionPartnershipType;
+      name: string;
+      url: any;
+      imageUrl: any;
+      blurb: any;
+    }>;
+  };
 };
 
 export type CreateCollectionAuthorMutationVariables = Exact<{
@@ -558,10 +771,17 @@ export type CreateCollectionAuthorMutationVariables = Exact<{
   active?: Maybe<Scalars['Boolean']>;
 }>;
 
-export type CreateCollectionAuthorMutation = { __typename?: 'Mutation' } & {
+export type CreateCollectionAuthorMutation = {
+  __typename?: 'Mutation';
   createCollectionAuthor: {
     __typename?: 'CollectionAuthor';
-  } & CollectionAuthorDataFragment;
+    externalId: string;
+    name: string;
+    slug?: Maybe<string>;
+    bio?: Maybe<any>;
+    imageUrl?: Maybe<any>;
+    active: boolean;
+  };
 };
 
 export type CreateCollectionPartnerMutationVariables = Exact<{
@@ -571,10 +791,47 @@ export type CreateCollectionPartnerMutationVariables = Exact<{
   imageUrl: Scalars['Url'];
 }>;
 
-export type CreateCollectionPartnerMutation = { __typename?: 'Mutation' } & {
+export type CreateCollectionPartnerMutation = {
+  __typename?: 'Mutation';
   createCollectionPartner: {
     __typename?: 'CollectionPartner';
-  } & CollectionPartnerDataFragment;
+    externalId: string;
+    name: string;
+    url: any;
+    imageUrl: any;
+    blurb: any;
+  };
+};
+
+export type CreateCollectionPartnerAssociationMutationVariables = Exact<{
+  type: CollectionPartnershipType;
+  partnerExternalId: Scalars['String'];
+  collectionExternalId: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['Url']>;
+  imageUrl?: Maybe<Scalars['Url']>;
+  blurb?: Maybe<Scalars['Markdown']>;
+}>;
+
+export type CreateCollectionPartnerAssociationMutation = {
+  __typename?: 'Mutation';
+  createCollectionPartnerAssociation: {
+    __typename?: 'CollectionPartnerAssociation';
+    externalId: string;
+    type: CollectionPartnershipType;
+    name?: Maybe<string>;
+    url?: Maybe<any>;
+    imageUrl?: Maybe<any>;
+    blurb?: Maybe<any>;
+    partner: {
+      __typename?: 'CollectionPartner';
+      externalId: string;
+      name: string;
+      url: any;
+      imageUrl: any;
+      blurb: any;
+    };
+  };
 };
 
 export type CreateCollectionStoryMutationVariables = Exact<{
@@ -586,22 +843,76 @@ export type CreateCollectionStoryMutationVariables = Exact<{
   authors: Array<CollectionStoryAuthorInput> | CollectionStoryAuthorInput;
   publisher: Scalars['String'];
   sortOrder?: Maybe<Scalars['Int']>;
+  fromPartner?: Maybe<Scalars['Boolean']>;
 }>;
 
-export type CreateCollectionStoryMutation = { __typename?: 'Mutation' } & {
+export type CreateCollectionStoryMutation = {
+  __typename?: 'Mutation';
   createCollectionStory: {
     __typename?: 'CollectionStory';
-  } & CollectionStoryDataFragment;
+    externalId: string;
+    url: any;
+    title: string;
+    excerpt: any;
+    imageUrl?: Maybe<any>;
+    publisher?: Maybe<string>;
+    fromPartner: boolean;
+    sortOrder?: Maybe<number>;
+    authors: Array<{
+      __typename?: 'CollectionStoryAuthor';
+      name: string;
+      sortOrder: number;
+    }>;
+  };
+};
+
+export type DeleteCollectionPartnerAssociationMutationVariables = Exact<{
+  externalId: Scalars['String'];
+}>;
+
+export type DeleteCollectionPartnerAssociationMutation = {
+  __typename?: 'Mutation';
+  deleteCollectionPartnerAssociation: {
+    __typename?: 'CollectionPartnerAssociation';
+    externalId: string;
+    type: CollectionPartnershipType;
+    name?: Maybe<string>;
+    url?: Maybe<any>;
+    imageUrl?: Maybe<any>;
+    blurb?: Maybe<any>;
+    partner: {
+      __typename?: 'CollectionPartner';
+      externalId: string;
+      name: string;
+      url: any;
+      imageUrl: any;
+      blurb: any;
+    };
+  };
 };
 
 export type DeleteCollectionStoryMutationVariables = Exact<{
   externalId: Scalars['String'];
 }>;
 
-export type DeleteCollectionStoryMutation = { __typename?: 'Mutation' } & {
+export type DeleteCollectionStoryMutation = {
+  __typename?: 'Mutation';
   deleteCollectionStory: {
     __typename?: 'CollectionStory';
-  } & CollectionStoryDataFragment;
+    externalId: string;
+    url: any;
+    title: string;
+    excerpt: any;
+    imageUrl?: Maybe<any>;
+    publisher?: Maybe<string>;
+    fromPartner: boolean;
+    sortOrder?: Maybe<number>;
+    authors: Array<{
+      __typename?: 'CollectionStoryAuthor';
+      name: string;
+      sortOrder: number;
+    }>;
+  };
 };
 
 export type ImageUploadMutationVariables = Exact<{
@@ -611,11 +922,9 @@ export type ImageUploadMutationVariables = Exact<{
   fileSizeBytes: Scalars['Int'];
 }>;
 
-export type ImageUploadMutation = { __typename?: 'Mutation' } & {
-  collectionImageUpload: { __typename?: 'CollectionImageUrl' } & Pick<
-    CollectionImageUrl,
-    'url'
-  >;
+export type ImageUploadMutation = {
+  __typename?: 'Mutation';
+  collectionImageUpload: { __typename?: 'CollectionImageUrl'; url: string };
 };
 
 export type UpdateCollectionMutationVariables = Exact<{
@@ -633,8 +942,55 @@ export type UpdateCollectionMutationVariables = Exact<{
   imageUrl?: Maybe<Scalars['Url']>;
 }>;
 
-export type UpdateCollectionMutation = { __typename?: 'Mutation' } & {
-  updateCollection: { __typename?: 'Collection' } & CollectionDataFragment;
+export type UpdateCollectionMutation = {
+  __typename?: 'Mutation';
+  updateCollection: {
+    __typename?: 'Collection';
+    externalId: string;
+    title: string;
+    slug: string;
+    excerpt?: Maybe<any>;
+    intro?: Maybe<any>;
+    imageUrl?: Maybe<any>;
+    language: string;
+    status: CollectionStatus;
+    authors: Array<{
+      __typename?: 'CollectionAuthor';
+      externalId: string;
+      name: string;
+      slug?: Maybe<string>;
+      bio?: Maybe<any>;
+      imageUrl?: Maybe<any>;
+      active: boolean;
+    }>;
+    curationCategory?: Maybe<{
+      __typename?: 'CurationCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    }>;
+    IABParentCategory?: Maybe<{
+      __typename?: 'IABCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    }>;
+    IABChildCategory?: Maybe<{
+      __typename?: 'IABCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    }>;
+    partnership?: Maybe<{
+      __typename?: 'CollectionPartnership';
+      externalId: string;
+      type: CollectionPartnershipType;
+      name: string;
+      url: any;
+      imageUrl: any;
+      blurb: any;
+    }>;
+  };
 };
 
 export type UpdateCollectionAuthorMutationVariables = Exact<{
@@ -646,10 +1002,17 @@ export type UpdateCollectionAuthorMutationVariables = Exact<{
   active?: Maybe<Scalars['Boolean']>;
 }>;
 
-export type UpdateCollectionAuthorMutation = { __typename?: 'Mutation' } & {
+export type UpdateCollectionAuthorMutation = {
+  __typename?: 'Mutation';
   updateCollectionAuthor: {
     __typename?: 'CollectionAuthor';
-  } & CollectionAuthorDataFragment;
+    externalId: string;
+    name: string;
+    slug?: Maybe<string>;
+    bio?: Maybe<any>;
+    imageUrl?: Maybe<any>;
+    active: boolean;
+  };
 };
 
 export type UpdateCollectionAuthorImageUrlMutationVariables = Exact<{
@@ -659,10 +1022,15 @@ export type UpdateCollectionAuthorImageUrlMutationVariables = Exact<{
 
 export type UpdateCollectionAuthorImageUrlMutation = {
   __typename?: 'Mutation';
-} & {
   updateCollectionAuthorImageUrl: {
     __typename?: 'CollectionAuthor';
-  } & CollectionAuthorDataFragment;
+    externalId: string;
+    name: string;
+    slug?: Maybe<string>;
+    bio?: Maybe<any>;
+    imageUrl?: Maybe<any>;
+    active: boolean;
+  };
 };
 
 export type UpdateCollectionImageUrlMutationVariables = Exact<{
@@ -670,10 +1038,55 @@ export type UpdateCollectionImageUrlMutationVariables = Exact<{
   imageUrl: Scalars['Url'];
 }>;
 
-export type UpdateCollectionImageUrlMutation = { __typename?: 'Mutation' } & {
+export type UpdateCollectionImageUrlMutation = {
+  __typename?: 'Mutation';
   updateCollectionImageUrl: {
     __typename?: 'Collection';
-  } & CollectionDataFragment;
+    externalId: string;
+    title: string;
+    slug: string;
+    excerpt?: Maybe<any>;
+    intro?: Maybe<any>;
+    imageUrl?: Maybe<any>;
+    language: string;
+    status: CollectionStatus;
+    authors: Array<{
+      __typename?: 'CollectionAuthor';
+      externalId: string;
+      name: string;
+      slug?: Maybe<string>;
+      bio?: Maybe<any>;
+      imageUrl?: Maybe<any>;
+      active: boolean;
+    }>;
+    curationCategory?: Maybe<{
+      __typename?: 'CurationCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    }>;
+    IABParentCategory?: Maybe<{
+      __typename?: 'IABCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    }>;
+    IABChildCategory?: Maybe<{
+      __typename?: 'IABCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    }>;
+    partnership?: Maybe<{
+      __typename?: 'CollectionPartnership';
+      externalId: string;
+      type: CollectionPartnershipType;
+      name: string;
+      url: any;
+      imageUrl: any;
+      blurb: any;
+    }>;
+  };
 };
 
 export type UpdateCollectionPartnerMutationVariables = Exact<{
@@ -684,10 +1097,74 @@ export type UpdateCollectionPartnerMutationVariables = Exact<{
   imageUrl?: Maybe<Scalars['Url']>;
 }>;
 
-export type UpdateCollectionPartnerMutation = { __typename?: 'Mutation' } & {
+export type UpdateCollectionPartnerMutation = {
+  __typename?: 'Mutation';
   updateCollectionPartner: {
     __typename?: 'CollectionPartner';
-  } & CollectionPartnerDataFragment;
+    externalId: string;
+    name: string;
+    url: any;
+    imageUrl: any;
+    blurb: any;
+  };
+};
+
+export type UpdateCollectionPartnerAssociationMutationVariables = Exact<{
+  externalId: Scalars['String'];
+  type: CollectionPartnershipType;
+  partnerExternalId: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['Url']>;
+  imageUrl?: Maybe<Scalars['Url']>;
+  blurb?: Maybe<Scalars['Markdown']>;
+}>;
+
+export type UpdateCollectionPartnerAssociationMutation = {
+  __typename?: 'Mutation';
+  updateCollectionPartnerAssociation: {
+    __typename?: 'CollectionPartnerAssociation';
+    externalId: string;
+    type: CollectionPartnershipType;
+    name?: Maybe<string>;
+    url?: Maybe<any>;
+    imageUrl?: Maybe<any>;
+    blurb?: Maybe<any>;
+    partner: {
+      __typename?: 'CollectionPartner';
+      externalId: string;
+      name: string;
+      url: any;
+      imageUrl: any;
+      blurb: any;
+    };
+  };
+};
+
+export type UpdateCollectionPartnerAssociationImageUrlMutationVariables =
+  Exact<{
+    externalId: Scalars['String'];
+    imageUrl: Scalars['Url'];
+  }>;
+
+export type UpdateCollectionPartnerAssociationImageUrlMutation = {
+  __typename?: 'Mutation';
+  updateCollectionPartnerAssociationImageUrl: {
+    __typename?: 'CollectionPartnerAssociation';
+    externalId: string;
+    type: CollectionPartnershipType;
+    name?: Maybe<string>;
+    url?: Maybe<any>;
+    imageUrl?: Maybe<any>;
+    blurb?: Maybe<any>;
+    partner: {
+      __typename?: 'CollectionPartner';
+      externalId: string;
+      name: string;
+      url: any;
+      imageUrl: any;
+      blurb: any;
+    };
+  };
 };
 
 export type UpdateCollectionPartnerImageUrlMutationVariables = Exact<{
@@ -697,10 +1174,14 @@ export type UpdateCollectionPartnerImageUrlMutationVariables = Exact<{
 
 export type UpdateCollectionPartnerImageUrlMutation = {
   __typename?: 'Mutation';
-} & {
   updateCollectionPartnerImageUrl: {
     __typename?: 'CollectionPartner';
-  } & CollectionPartnerDataFragment;
+    externalId: string;
+    name: string;
+    url: any;
+    imageUrl: any;
+    blurb: any;
+  };
 };
 
 export type UpdateCollectionStoryMutationVariables = Exact<{
@@ -712,12 +1193,27 @@ export type UpdateCollectionStoryMutationVariables = Exact<{
   authors: Array<CollectionStoryAuthorInput> | CollectionStoryAuthorInput;
   publisher: Scalars['String'];
   sortOrder?: Maybe<Scalars['Int']>;
+  fromPartner?: Maybe<Scalars['Boolean']>;
 }>;
 
-export type UpdateCollectionStoryMutation = { __typename?: 'Mutation' } & {
+export type UpdateCollectionStoryMutation = {
+  __typename?: 'Mutation';
   updateCollectionStory: {
     __typename?: 'CollectionStory';
-  } & CollectionStoryDataFragment;
+    externalId: string;
+    url: any;
+    title: string;
+    excerpt: any;
+    imageUrl?: Maybe<any>;
+    publisher?: Maybe<string>;
+    fromPartner: boolean;
+    sortOrder?: Maybe<number>;
+    authors: Array<{
+      __typename?: 'CollectionStoryAuthor';
+      name: string;
+      sortOrder: number;
+    }>;
+  };
 };
 
 export type UpdateCollectionStoryImageUrlMutationVariables = Exact<{
@@ -727,10 +1223,22 @@ export type UpdateCollectionStoryImageUrlMutationVariables = Exact<{
 
 export type UpdateCollectionStoryImageUrlMutation = {
   __typename?: 'Mutation';
-} & {
   updateCollectionStoryImageUrl: {
     __typename?: 'CollectionStory';
-  } & CollectionStoryDataFragment;
+    externalId: string;
+    url: any;
+    title: string;
+    excerpt: any;
+    imageUrl?: Maybe<any>;
+    publisher?: Maybe<string>;
+    fromPartner: boolean;
+    sortOrder?: Maybe<number>;
+    authors: Array<{
+      __typename?: 'CollectionStoryAuthor';
+      name: string;
+      sortOrder: number;
+    }>;
+  };
 };
 
 export type UpdateCollectionStorySortOrderMutationVariables = Exact<{
@@ -740,10 +1248,22 @@ export type UpdateCollectionStorySortOrderMutationVariables = Exact<{
 
 export type UpdateCollectionStorySortOrderMutation = {
   __typename?: 'Mutation';
-} & {
   updateCollectionStorySortOrder: {
     __typename?: 'CollectionStory';
-  } & CollectionStoryDataFragment;
+    externalId: string;
+    url: any;
+    title: string;
+    excerpt: any;
+    imageUrl?: Maybe<any>;
+    publisher?: Maybe<string>;
+    fromPartner: boolean;
+    sortOrder?: Maybe<number>;
+    authors: Array<{
+      __typename?: 'CollectionStoryAuthor';
+      name: string;
+      sortOrder: number;
+    }>;
+  };
 };
 
 export type GetArchivedCollectionsQueryVariables = Exact<{
@@ -751,13 +1271,58 @@ export type GetArchivedCollectionsQueryVariables = Exact<{
   perPage?: Maybe<Scalars['Int']>;
 }>;
 
-export type GetArchivedCollectionsQuery = { __typename?: 'Query' } & {
-  searchCollections: { __typename?: 'CollectionsResult' } & {
-    collections: Array<{ __typename?: 'Collection' } & CollectionDataFragment>;
-    pagination: { __typename?: 'Pagination' } & Pick<
-      Pagination,
-      'totalResults'
-    >;
+export type GetArchivedCollectionsQuery = {
+  __typename?: 'Query';
+  searchCollections: {
+    __typename?: 'CollectionsResult';
+    collections: Array<{
+      __typename?: 'Collection';
+      externalId: string;
+      title: string;
+      slug: string;
+      excerpt?: Maybe<any>;
+      intro?: Maybe<any>;
+      imageUrl?: Maybe<any>;
+      language: string;
+      status: CollectionStatus;
+      authors: Array<{
+        __typename?: 'CollectionAuthor';
+        externalId: string;
+        name: string;
+        slug?: Maybe<string>;
+        bio?: Maybe<any>;
+        imageUrl?: Maybe<any>;
+        active: boolean;
+      }>;
+      curationCategory?: Maybe<{
+        __typename?: 'CurationCategory';
+        externalId: string;
+        name: string;
+        slug: string;
+      }>;
+      IABParentCategory?: Maybe<{
+        __typename?: 'IABCategory';
+        externalId: string;
+        name: string;
+        slug: string;
+      }>;
+      IABChildCategory?: Maybe<{
+        __typename?: 'IABCategory';
+        externalId: string;
+        name: string;
+        slug: string;
+      }>;
+      partnership?: Maybe<{
+        __typename?: 'CollectionPartnership';
+        externalId: string;
+        type: CollectionPartnershipType;
+        name: string;
+        url: any;
+        imageUrl: any;
+        blurb: any;
+      }>;
+    }>;
+    pagination: { __typename?: 'Pagination'; totalResults: number };
   };
 };
 
@@ -765,10 +1330,17 @@ export type GetAuthorByIdQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
-export type GetAuthorByIdQuery = { __typename?: 'Query' } & {
-  getCollectionAuthor?: Maybe<
-    { __typename?: 'CollectionAuthor' } & CollectionAuthorDataFragment
-  >;
+export type GetAuthorByIdQuery = {
+  __typename?: 'Query';
+  getCollectionAuthor?: Maybe<{
+    __typename?: 'CollectionAuthor';
+    externalId: string;
+    name: string;
+    slug?: Maybe<string>;
+    bio?: Maybe<any>;
+    imageUrl?: Maybe<any>;
+    active: boolean;
+  }>;
 };
 
 export type GetAuthorsQueryVariables = Exact<{
@@ -776,11 +1348,19 @@ export type GetAuthorsQueryVariables = Exact<{
   perPage?: Maybe<Scalars['Int']>;
 }>;
 
-export type GetAuthorsQuery = { __typename?: 'Query' } & {
-  getCollectionAuthors: { __typename?: 'CollectionAuthorsResult' } & {
-    authors: Array<
-      { __typename?: 'CollectionAuthor' } & CollectionAuthorDataFragment
-    >;
+export type GetAuthorsQuery = {
+  __typename?: 'Query';
+  getCollectionAuthors: {
+    __typename?: 'CollectionAuthorsResult';
+    authors: Array<{
+      __typename?: 'CollectionAuthor';
+      externalId: string;
+      name: string;
+      slug?: Maybe<string>;
+      bio?: Maybe<any>;
+      imageUrl?: Maybe<any>;
+      active: boolean;
+    }>;
   };
 };
 
@@ -788,18 +1368,96 @@ export type GetCollectionByExternalIdQueryVariables = Exact<{
   externalId: Scalars['String'];
 }>;
 
-export type GetCollectionByExternalIdQuery = { __typename?: 'Query' } & {
-  getCollection?: Maybe<{ __typename?: 'Collection' } & CollectionDataFragment>;
+export type GetCollectionByExternalIdQuery = {
+  __typename?: 'Query';
+  getCollection?: Maybe<{
+    __typename?: 'Collection';
+    externalId: string;
+    title: string;
+    slug: string;
+    excerpt?: Maybe<any>;
+    intro?: Maybe<any>;
+    imageUrl?: Maybe<any>;
+    language: string;
+    status: CollectionStatus;
+    authors: Array<{
+      __typename?: 'CollectionAuthor';
+      externalId: string;
+      name: string;
+      slug?: Maybe<string>;
+      bio?: Maybe<any>;
+      imageUrl?: Maybe<any>;
+      active: boolean;
+    }>;
+    curationCategory?: Maybe<{
+      __typename?: 'CurationCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    }>;
+    IABParentCategory?: Maybe<{
+      __typename?: 'IABCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    }>;
+    IABChildCategory?: Maybe<{
+      __typename?: 'IABCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    }>;
+    partnership?: Maybe<{
+      __typename?: 'CollectionPartnership';
+      externalId: string;
+      type: CollectionPartnershipType;
+      name: string;
+      url: any;
+      imageUrl: any;
+      blurb: any;
+    }>;
+  }>;
 };
 
 export type GetCollectionPartnerQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
-export type GetCollectionPartnerQuery = { __typename?: 'Query' } & {
-  getCollectionPartner?: Maybe<
-    { __typename?: 'CollectionPartner' } & CollectionPartnerDataFragment
-  >;
+export type GetCollectionPartnerQuery = {
+  __typename?: 'Query';
+  getCollectionPartner?: Maybe<{
+    __typename?: 'CollectionPartner';
+    externalId: string;
+    name: string;
+    url: any;
+    imageUrl: any;
+    blurb: any;
+  }>;
+};
+
+export type GetCollectionPartnerAssociationQueryVariables = Exact<{
+  externalId: Scalars['String'];
+}>;
+
+export type GetCollectionPartnerAssociationQuery = {
+  __typename?: 'Query';
+  getCollectionPartnerAssociationForCollection?: Maybe<{
+    __typename?: 'CollectionPartnerAssociation';
+    externalId: string;
+    type: CollectionPartnershipType;
+    name?: Maybe<string>;
+    url?: Maybe<any>;
+    imageUrl?: Maybe<any>;
+    blurb?: Maybe<any>;
+    partner: {
+      __typename?: 'CollectionPartner';
+      externalId: string;
+      name: string;
+      url: any;
+      imageUrl: any;
+      blurb: any;
+    };
+  }>;
 };
 
 export type GetCollectionPartnersQueryVariables = Exact<{
@@ -807,17 +1465,24 @@ export type GetCollectionPartnersQueryVariables = Exact<{
   perPage?: Maybe<Scalars['Int']>;
 }>;
 
-export type GetCollectionPartnersQuery = { __typename?: 'Query' } & {
-  getCollectionPartners: { __typename?: 'CollectionPartnersResult' } & {
-    partners: Array<
-      { __typename?: 'CollectionPartner' } & CollectionPartnerDataFragment
-    >;
-    pagination?: Maybe<
-      { __typename?: 'Pagination' } & Pick<
-        Pagination,
-        'currentPage' | 'totalPages' | 'totalResults'
-      >
-    >;
+export type GetCollectionPartnersQuery = {
+  __typename?: 'Query';
+  getCollectionPartners: {
+    __typename?: 'CollectionPartnersResult';
+    partners: Array<{
+      __typename?: 'CollectionPartner';
+      externalId: string;
+      name: string;
+      url: any;
+      imageUrl: any;
+      blurb: any;
+    }>;
+    pagination?: Maybe<{
+      __typename?: 'Pagination';
+      currentPage: number;
+      totalPages: number;
+      totalResults: number;
+    }>;
   };
 };
 
@@ -825,14 +1490,28 @@ export type GetCollectionStoriesQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
-export type GetCollectionStoriesQuery = { __typename?: 'Query' } & {
-  getCollection?: Maybe<
-    { __typename?: 'Collection' } & Pick<Collection, 'externalId'> & {
-        stories: Array<
-          { __typename?: 'CollectionStory' } & CollectionStoryDataFragment
-        >;
-      }
-  >;
+export type GetCollectionStoriesQuery = {
+  __typename?: 'Query';
+  getCollection?: Maybe<{
+    __typename?: 'Collection';
+    externalId: string;
+    stories: Array<{
+      __typename?: 'CollectionStory';
+      externalId: string;
+      url: any;
+      title: string;
+      excerpt: any;
+      imageUrl?: Maybe<any>;
+      publisher?: Maybe<string>;
+      fromPartner: boolean;
+      sortOrder?: Maybe<number>;
+      authors: Array<{
+        __typename?: 'CollectionStoryAuthor';
+        name: string;
+        sortOrder: number;
+      }>;
+    }>;
+  }>;
 };
 
 export type GetDraftCollectionsQueryVariables = Exact<{
@@ -840,13 +1519,58 @@ export type GetDraftCollectionsQueryVariables = Exact<{
   perPage?: Maybe<Scalars['Int']>;
 }>;
 
-export type GetDraftCollectionsQuery = { __typename?: 'Query' } & {
-  searchCollections: { __typename?: 'CollectionsResult' } & {
-    collections: Array<{ __typename?: 'Collection' } & CollectionDataFragment>;
-    pagination: { __typename?: 'Pagination' } & Pick<
-      Pagination,
-      'totalResults'
-    >;
+export type GetDraftCollectionsQuery = {
+  __typename?: 'Query';
+  searchCollections: {
+    __typename?: 'CollectionsResult';
+    collections: Array<{
+      __typename?: 'Collection';
+      externalId: string;
+      title: string;
+      slug: string;
+      excerpt?: Maybe<any>;
+      intro?: Maybe<any>;
+      imageUrl?: Maybe<any>;
+      language: string;
+      status: CollectionStatus;
+      authors: Array<{
+        __typename?: 'CollectionAuthor';
+        externalId: string;
+        name: string;
+        slug?: Maybe<string>;
+        bio?: Maybe<any>;
+        imageUrl?: Maybe<any>;
+        active: boolean;
+      }>;
+      curationCategory?: Maybe<{
+        __typename?: 'CurationCategory';
+        externalId: string;
+        name: string;
+        slug: string;
+      }>;
+      IABParentCategory?: Maybe<{
+        __typename?: 'IABCategory';
+        externalId: string;
+        name: string;
+        slug: string;
+      }>;
+      IABChildCategory?: Maybe<{
+        __typename?: 'IABCategory';
+        externalId: string;
+        name: string;
+        slug: string;
+      }>;
+      partnership?: Maybe<{
+        __typename?: 'CollectionPartnership';
+        externalId: string;
+        type: CollectionPartnershipType;
+        name: string;
+        url: any;
+        imageUrl: any;
+        blurb: any;
+      }>;
+    }>;
+    pagination: { __typename?: 'Pagination'; totalResults: number };
   };
 };
 
@@ -855,32 +1579,39 @@ export type GetInitialCollectionFormDataQueryVariables = Exact<{
   perPage?: Maybe<Scalars['Int']>;
 }>;
 
-export type GetInitialCollectionFormDataQuery = { __typename?: 'Query' } & {
-  getCollectionAuthors: { __typename?: 'CollectionAuthorsResult' } & {
-    authors: Array<
-      { __typename?: 'CollectionAuthor' } & CollectionAuthorDataFragment
-    >;
+export type GetInitialCollectionFormDataQuery = {
+  __typename?: 'Query';
+  getCollectionAuthors: {
+    __typename?: 'CollectionAuthorsResult';
+    authors: Array<{
+      __typename?: 'CollectionAuthor';
+      externalId: string;
+      name: string;
+      slug?: Maybe<string>;
+      bio?: Maybe<any>;
+      imageUrl?: Maybe<any>;
+      active: boolean;
+    }>;
   };
-  getLanguages: Array<{ __typename?: 'Language' } & Pick<Language, 'code'>>;
-  getCurationCategories: Array<
-    { __typename?: 'CurationCategory' } & Pick<
-      CurationCategory,
-      'externalId' | 'name' | 'slug'
-    >
-  >;
-  getIABCategories: Array<
-    { __typename?: 'IABParentCategory' } & Pick<
-      IabParentCategory,
-      'externalId' | 'name' | 'slug'
-    > & {
-        children: Array<
-          { __typename?: 'IABCategory' } & Pick<
-            IabCategory,
-            'externalId' | 'name' | 'slug'
-          >
-        >;
-      }
-  >;
+  getLanguages: Array<{ __typename?: 'Language'; code: string }>;
+  getCurationCategories: Array<{
+    __typename?: 'CurationCategory';
+    externalId: string;
+    name: string;
+    slug: string;
+  }>;
+  getIABCategories: Array<{
+    __typename?: 'IABParentCategory';
+    externalId: string;
+    name: string;
+    slug: string;
+    children: Array<{
+      __typename?: 'IABCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    }>;
+  }>;
 };
 
 export type GetPublishedCollectionsQueryVariables = Exact<{
@@ -888,13 +1619,58 @@ export type GetPublishedCollectionsQueryVariables = Exact<{
   perPage?: Maybe<Scalars['Int']>;
 }>;
 
-export type GetPublishedCollectionsQuery = { __typename?: 'Query' } & {
-  searchCollections: { __typename?: 'CollectionsResult' } & {
-    collections: Array<{ __typename?: 'Collection' } & CollectionDataFragment>;
-    pagination: { __typename?: 'Pagination' } & Pick<
-      Pagination,
-      'totalResults'
-    >;
+export type GetPublishedCollectionsQuery = {
+  __typename?: 'Query';
+  searchCollections: {
+    __typename?: 'CollectionsResult';
+    collections: Array<{
+      __typename?: 'Collection';
+      externalId: string;
+      title: string;
+      slug: string;
+      excerpt?: Maybe<any>;
+      intro?: Maybe<any>;
+      imageUrl?: Maybe<any>;
+      language: string;
+      status: CollectionStatus;
+      authors: Array<{
+        __typename?: 'CollectionAuthor';
+        externalId: string;
+        name: string;
+        slug?: Maybe<string>;
+        bio?: Maybe<any>;
+        imageUrl?: Maybe<any>;
+        active: boolean;
+      }>;
+      curationCategory?: Maybe<{
+        __typename?: 'CurationCategory';
+        externalId: string;
+        name: string;
+        slug: string;
+      }>;
+      IABParentCategory?: Maybe<{
+        __typename?: 'IABCategory';
+        externalId: string;
+        name: string;
+        slug: string;
+      }>;
+      IABChildCategory?: Maybe<{
+        __typename?: 'IABCategory';
+        externalId: string;
+        name: string;
+        slug: string;
+      }>;
+      partnership?: Maybe<{
+        __typename?: 'CollectionPartnership';
+        externalId: string;
+        type: CollectionPartnershipType;
+        name: string;
+        url: any;
+        imageUrl: any;
+        blurb: any;
+      }>;
+    }>;
+    pagination: { __typename?: 'Pagination'; totalResults: number };
   };
 };
 
@@ -906,13 +1682,58 @@ export type GetSearchCollectionsQueryVariables = Exact<{
   title?: Maybe<Scalars['String']>;
 }>;
 
-export type GetSearchCollectionsQuery = { __typename?: 'Query' } & {
-  searchCollections: { __typename?: 'CollectionsResult' } & {
-    collections: Array<{ __typename?: 'Collection' } & CollectionDataFragment>;
-    pagination: { __typename?: 'Pagination' } & Pick<
-      Pagination,
-      'totalResults'
-    >;
+export type GetSearchCollectionsQuery = {
+  __typename?: 'Query';
+  searchCollections: {
+    __typename?: 'CollectionsResult';
+    collections: Array<{
+      __typename?: 'Collection';
+      externalId: string;
+      title: string;
+      slug: string;
+      excerpt?: Maybe<any>;
+      intro?: Maybe<any>;
+      imageUrl?: Maybe<any>;
+      language: string;
+      status: CollectionStatus;
+      authors: Array<{
+        __typename?: 'CollectionAuthor';
+        externalId: string;
+        name: string;
+        slug?: Maybe<string>;
+        bio?: Maybe<any>;
+        imageUrl?: Maybe<any>;
+        active: boolean;
+      }>;
+      curationCategory?: Maybe<{
+        __typename?: 'CurationCategory';
+        externalId: string;
+        name: string;
+        slug: string;
+      }>;
+      IABParentCategory?: Maybe<{
+        __typename?: 'IABCategory';
+        externalId: string;
+        name: string;
+        slug: string;
+      }>;
+      IABChildCategory?: Maybe<{
+        __typename?: 'IABCategory';
+        externalId: string;
+        name: string;
+        slug: string;
+      }>;
+      partnership?: Maybe<{
+        __typename?: 'CollectionPartnership';
+        externalId: string;
+        type: CollectionPartnershipType;
+        name: string;
+        url: any;
+        imageUrl: any;
+        blurb: any;
+      }>;
+    }>;
+    pagination: { __typename?: 'Pagination'; totalResults: number };
   };
 };
 
@@ -954,6 +1775,14 @@ export const CollectionDataFragmentDoc = gql`
       name
       slug
     }
+    partnership {
+      externalId
+      type
+      name
+      url
+      imageUrl
+      blurb
+    }
   }
   ${CollectionAuthorDataFragmentDoc}
 `;
@@ -965,6 +1794,20 @@ export const CollectionPartnerDataFragmentDoc = gql`
     imageUrl
     blurb
   }
+`;
+export const CollectionPartnerAssociationDataFragmentDoc = gql`
+  fragment CollectionPartnerAssociationData on CollectionPartnerAssociation {
+    externalId
+    type
+    name
+    url
+    imageUrl
+    blurb
+    partner {
+      ...CollectionPartnerData
+    }
+  }
+  ${CollectionPartnerDataFragmentDoc}
 `;
 export const CollectionStoryDataFragmentDoc = gql`
   fragment CollectionStoryData on CollectionStory {
@@ -1196,6 +2039,83 @@ export type CreateCollectionPartnerMutationOptions = Apollo.BaseMutationOptions<
   CreateCollectionPartnerMutation,
   CreateCollectionPartnerMutationVariables
 >;
+export const CreateCollectionPartnerAssociationDocument = gql`
+  mutation createCollectionPartnerAssociation(
+    $type: CollectionPartnershipType!
+    $partnerExternalId: String!
+    $collectionExternalId: String!
+    $name: String
+    $url: Url
+    $imageUrl: Url
+    $blurb: Markdown
+  ) {
+    createCollectionPartnerAssociation(
+      data: {
+        type: $type
+        partnerExternalId: $partnerExternalId
+        collectionExternalId: $collectionExternalId
+        name: $name
+        url: $url
+        imageUrl: $imageUrl
+        blurb: $blurb
+      }
+    ) {
+      ...CollectionPartnerAssociationData
+    }
+  }
+  ${CollectionPartnerAssociationDataFragmentDoc}
+`;
+export type CreateCollectionPartnerAssociationMutationFn =
+  Apollo.MutationFunction<
+    CreateCollectionPartnerAssociationMutation,
+    CreateCollectionPartnerAssociationMutationVariables
+  >;
+
+/**
+ * __useCreateCollectionPartnerAssociationMutation__
+ *
+ * To run a mutation, you first call `useCreateCollectionPartnerAssociationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCollectionPartnerAssociationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCollectionPartnerAssociationMutation, { data, loading, error }] = useCreateCollectionPartnerAssociationMutation({
+ *   variables: {
+ *      type: // value for 'type'
+ *      partnerExternalId: // value for 'partnerExternalId'
+ *      collectionExternalId: // value for 'collectionExternalId'
+ *      name: // value for 'name'
+ *      url: // value for 'url'
+ *      imageUrl: // value for 'imageUrl'
+ *      blurb: // value for 'blurb'
+ *   },
+ * });
+ */
+export function useCreateCollectionPartnerAssociationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateCollectionPartnerAssociationMutation,
+    CreateCollectionPartnerAssociationMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateCollectionPartnerAssociationMutation,
+    CreateCollectionPartnerAssociationMutationVariables
+  >(CreateCollectionPartnerAssociationDocument, options);
+}
+export type CreateCollectionPartnerAssociationMutationHookResult = ReturnType<
+  typeof useCreateCollectionPartnerAssociationMutation
+>;
+export type CreateCollectionPartnerAssociationMutationResult =
+  Apollo.MutationResult<CreateCollectionPartnerAssociationMutation>;
+export type CreateCollectionPartnerAssociationMutationOptions =
+  Apollo.BaseMutationOptions<
+    CreateCollectionPartnerAssociationMutation,
+    CreateCollectionPartnerAssociationMutationVariables
+  >;
 export const CreateCollectionStoryDocument = gql`
   mutation createCollectionStory(
     $collectionExternalId: String!
@@ -1206,6 +2126,7 @@ export const CreateCollectionStoryDocument = gql`
     $authors: [CollectionStoryAuthorInput!]!
     $publisher: String!
     $sortOrder: Int
+    $fromPartner: Boolean
   ) {
     createCollectionStory(
       data: {
@@ -1217,6 +2138,7 @@ export const CreateCollectionStoryDocument = gql`
         authors: $authors
         publisher: $publisher
         sortOrder: $sortOrder
+        fromPartner: $fromPartner
       }
     ) {
       ...CollectionStoryData
@@ -1250,6 +2172,7 @@ export type CreateCollectionStoryMutationFn = Apollo.MutationFunction<
  *      authors: // value for 'authors'
  *      publisher: // value for 'publisher'
  *      sortOrder: // value for 'sortOrder'
+ *      fromPartner: // value for 'fromPartner'
  *   },
  * });
  */
@@ -1274,6 +2197,59 @@ export type CreateCollectionStoryMutationOptions = Apollo.BaseMutationOptions<
   CreateCollectionStoryMutation,
   CreateCollectionStoryMutationVariables
 >;
+export const DeleteCollectionPartnerAssociationDocument = gql`
+  mutation deleteCollectionPartnerAssociation($externalId: String!) {
+    deleteCollectionPartnerAssociation(externalId: $externalId) {
+      ...CollectionPartnerAssociationData
+    }
+  }
+  ${CollectionPartnerAssociationDataFragmentDoc}
+`;
+export type DeleteCollectionPartnerAssociationMutationFn =
+  Apollo.MutationFunction<
+    DeleteCollectionPartnerAssociationMutation,
+    DeleteCollectionPartnerAssociationMutationVariables
+  >;
+
+/**
+ * __useDeleteCollectionPartnerAssociationMutation__
+ *
+ * To run a mutation, you first call `useDeleteCollectionPartnerAssociationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCollectionPartnerAssociationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCollectionPartnerAssociationMutation, { data, loading, error }] = useDeleteCollectionPartnerAssociationMutation({
+ *   variables: {
+ *      externalId: // value for 'externalId'
+ *   },
+ * });
+ */
+export function useDeleteCollectionPartnerAssociationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteCollectionPartnerAssociationMutation,
+    DeleteCollectionPartnerAssociationMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    DeleteCollectionPartnerAssociationMutation,
+    DeleteCollectionPartnerAssociationMutationVariables
+  >(DeleteCollectionPartnerAssociationDocument, options);
+}
+export type DeleteCollectionPartnerAssociationMutationHookResult = ReturnType<
+  typeof useDeleteCollectionPartnerAssociationMutation
+>;
+export type DeleteCollectionPartnerAssociationMutationResult =
+  Apollo.MutationResult<DeleteCollectionPartnerAssociationMutation>;
+export type DeleteCollectionPartnerAssociationMutationOptions =
+  Apollo.BaseMutationOptions<
+    DeleteCollectionPartnerAssociationMutation,
+    DeleteCollectionPartnerAssociationMutationVariables
+  >;
 export const DeleteCollectionStoryDocument = gql`
   mutation deleteCollectionStory($externalId: String!) {
     deleteCollectionStory(externalId: $externalId) {
@@ -1734,6 +2710,141 @@ export type UpdateCollectionPartnerMutationOptions = Apollo.BaseMutationOptions<
   UpdateCollectionPartnerMutation,
   UpdateCollectionPartnerMutationVariables
 >;
+export const UpdateCollectionPartnerAssociationDocument = gql`
+  mutation updateCollectionPartnerAssociation(
+    $externalId: String!
+    $type: CollectionPartnershipType!
+    $partnerExternalId: String!
+    $name: String
+    $url: Url
+    $imageUrl: Url
+    $blurb: Markdown
+  ) {
+    updateCollectionPartnerAssociation(
+      data: {
+        externalId: $externalId
+        type: $type
+        partnerExternalId: $partnerExternalId
+        name: $name
+        url: $url
+        imageUrl: $imageUrl
+        blurb: $blurb
+      }
+    ) {
+      ...CollectionPartnerAssociationData
+    }
+  }
+  ${CollectionPartnerAssociationDataFragmentDoc}
+`;
+export type UpdateCollectionPartnerAssociationMutationFn =
+  Apollo.MutationFunction<
+    UpdateCollectionPartnerAssociationMutation,
+    UpdateCollectionPartnerAssociationMutationVariables
+  >;
+
+/**
+ * __useUpdateCollectionPartnerAssociationMutation__
+ *
+ * To run a mutation, you first call `useUpdateCollectionPartnerAssociationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCollectionPartnerAssociationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCollectionPartnerAssociationMutation, { data, loading, error }] = useUpdateCollectionPartnerAssociationMutation({
+ *   variables: {
+ *      externalId: // value for 'externalId'
+ *      type: // value for 'type'
+ *      partnerExternalId: // value for 'partnerExternalId'
+ *      name: // value for 'name'
+ *      url: // value for 'url'
+ *      imageUrl: // value for 'imageUrl'
+ *      blurb: // value for 'blurb'
+ *   },
+ * });
+ */
+export function useUpdateCollectionPartnerAssociationMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateCollectionPartnerAssociationMutation,
+    UpdateCollectionPartnerAssociationMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateCollectionPartnerAssociationMutation,
+    UpdateCollectionPartnerAssociationMutationVariables
+  >(UpdateCollectionPartnerAssociationDocument, options);
+}
+export type UpdateCollectionPartnerAssociationMutationHookResult = ReturnType<
+  typeof useUpdateCollectionPartnerAssociationMutation
+>;
+export type UpdateCollectionPartnerAssociationMutationResult =
+  Apollo.MutationResult<UpdateCollectionPartnerAssociationMutation>;
+export type UpdateCollectionPartnerAssociationMutationOptions =
+  Apollo.BaseMutationOptions<
+    UpdateCollectionPartnerAssociationMutation,
+    UpdateCollectionPartnerAssociationMutationVariables
+  >;
+export const UpdateCollectionPartnerAssociationImageUrlDocument = gql`
+  mutation updateCollectionPartnerAssociationImageUrl(
+    $externalId: String!
+    $imageUrl: Url!
+  ) {
+    updateCollectionPartnerAssociationImageUrl(
+      data: { externalId: $externalId, imageUrl: $imageUrl }
+    ) {
+      ...CollectionPartnerAssociationData
+    }
+  }
+  ${CollectionPartnerAssociationDataFragmentDoc}
+`;
+export type UpdateCollectionPartnerAssociationImageUrlMutationFn =
+  Apollo.MutationFunction<
+    UpdateCollectionPartnerAssociationImageUrlMutation,
+    UpdateCollectionPartnerAssociationImageUrlMutationVariables
+  >;
+
+/**
+ * __useUpdateCollectionPartnerAssociationImageUrlMutation__
+ *
+ * To run a mutation, you first call `useUpdateCollectionPartnerAssociationImageUrlMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCollectionPartnerAssociationImageUrlMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCollectionPartnerAssociationImageUrlMutation, { data, loading, error }] = useUpdateCollectionPartnerAssociationImageUrlMutation({
+ *   variables: {
+ *      externalId: // value for 'externalId'
+ *      imageUrl: // value for 'imageUrl'
+ *   },
+ * });
+ */
+export function useUpdateCollectionPartnerAssociationImageUrlMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateCollectionPartnerAssociationImageUrlMutation,
+    UpdateCollectionPartnerAssociationImageUrlMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateCollectionPartnerAssociationImageUrlMutation,
+    UpdateCollectionPartnerAssociationImageUrlMutationVariables
+  >(UpdateCollectionPartnerAssociationImageUrlDocument, options);
+}
+export type UpdateCollectionPartnerAssociationImageUrlMutationHookResult =
+  ReturnType<typeof useUpdateCollectionPartnerAssociationImageUrlMutation>;
+export type UpdateCollectionPartnerAssociationImageUrlMutationResult =
+  Apollo.MutationResult<UpdateCollectionPartnerAssociationImageUrlMutation>;
+export type UpdateCollectionPartnerAssociationImageUrlMutationOptions =
+  Apollo.BaseMutationOptions<
+    UpdateCollectionPartnerAssociationImageUrlMutation,
+    UpdateCollectionPartnerAssociationImageUrlMutationVariables
+  >;
 export const UpdateCollectionPartnerImageUrlDocument = gql`
   mutation updateCollectionPartnerImageUrl(
     $externalId: String!
@@ -1802,6 +2913,7 @@ export const UpdateCollectionStoryDocument = gql`
     $authors: [CollectionStoryAuthorInput!]!
     $publisher: String!
     $sortOrder: Int
+    $fromPartner: Boolean
   ) {
     updateCollectionStory(
       data: {
@@ -1813,6 +2925,7 @@ export const UpdateCollectionStoryDocument = gql`
         authors: $authors
         publisher: $publisher
         sortOrder: $sortOrder
+        fromPartner: $fromPartner
       }
     ) {
       ...CollectionStoryData
@@ -1846,6 +2959,7 @@ export type UpdateCollectionStoryMutationFn = Apollo.MutationFunction<
  *      authors: // value for 'authors'
  *      publisher: // value for 'publisher'
  *      sortOrder: // value for 'sortOrder'
+ *      fromPartner: // value for 'fromPartner'
  *   },
  * });
  */
@@ -2291,6 +3405,65 @@ export type GetCollectionPartnerLazyQueryHookResult = ReturnType<
 export type GetCollectionPartnerQueryResult = Apollo.QueryResult<
   GetCollectionPartnerQuery,
   GetCollectionPartnerQueryVariables
+>;
+export const GetCollectionPartnerAssociationDocument = gql`
+  query getCollectionPartnerAssociation($externalId: String!) {
+    getCollectionPartnerAssociationForCollection(externalId: $externalId) {
+      ...CollectionPartnerAssociationData
+    }
+  }
+  ${CollectionPartnerAssociationDataFragmentDoc}
+`;
+
+/**
+ * __useGetCollectionPartnerAssociationQuery__
+ *
+ * To run a query within a React component, call `useGetCollectionPartnerAssociationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCollectionPartnerAssociationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCollectionPartnerAssociationQuery({
+ *   variables: {
+ *      externalId: // value for 'externalId'
+ *   },
+ * });
+ */
+export function useGetCollectionPartnerAssociationQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetCollectionPartnerAssociationQuery,
+    GetCollectionPartnerAssociationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetCollectionPartnerAssociationQuery,
+    GetCollectionPartnerAssociationQueryVariables
+  >(GetCollectionPartnerAssociationDocument, options);
+}
+export function useGetCollectionPartnerAssociationLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetCollectionPartnerAssociationQuery,
+    GetCollectionPartnerAssociationQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetCollectionPartnerAssociationQuery,
+    GetCollectionPartnerAssociationQueryVariables
+  >(GetCollectionPartnerAssociationDocument, options);
+}
+export type GetCollectionPartnerAssociationQueryHookResult = ReturnType<
+  typeof useGetCollectionPartnerAssociationQuery
+>;
+export type GetCollectionPartnerAssociationLazyQueryHookResult = ReturnType<
+  typeof useGetCollectionPartnerAssociationLazyQuery
+>;
+export type GetCollectionPartnerAssociationQueryResult = Apollo.QueryResult<
+  GetCollectionPartnerAssociationQuery,
+  GetCollectionPartnerAssociationQueryVariables
 >;
 export const GetCollectionPartnersDocument = gql`
   query getCollectionPartners($page: Int, $perPage: Int) {

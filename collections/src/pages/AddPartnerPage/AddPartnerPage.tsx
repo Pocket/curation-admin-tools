@@ -4,12 +4,13 @@ import { Box, Paper } from '@material-ui/core';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import { PartnerForm } from '../../components';
-import { useNotifications } from '../../hooks/useNotifications';
+import { useNotifications } from '../../hooks/';
 import {
   CollectionPartner,
   GetCollectionPartnersDocument,
   useCreateCollectionPartnerMutation,
 } from '../../api/collection-api/generatedTypes';
+import { config } from '../../config';
 
 export const AddPartnerPage: React.FC = (): JSX.Element => {
   // Prepare state vars and helper methods for API notifications
@@ -50,7 +51,7 @@ export const AddPartnerPage: React.FC = (): JSX.Element => {
         // make sure the Partners page is updated when we add a new partner
         {
           query: GetCollectionPartnersDocument,
-          variables: { perPage: 50 },
+          variables: { perPage: config.pagination.partnersPerPage },
         },
       ],
     })

@@ -18,15 +18,16 @@ import {
   ImageUpload,
   ScrollToTop,
 } from '../../components';
-import { useNotifications } from '../../hooks/useNotifications';
+import { useNotifications } from '../../hooks/';
 import {
   CollectionAuthor,
   GetAuthorsDocument,
   GetInitialCollectionFormDataDocument,
   useGetAuthorByIdQuery,
-  useUpdateCollectionAuthorMutation,
   useUpdateCollectionAuthorImageUrlMutation,
+  useUpdateCollectionAuthorMutation,
 } from '../../api/collection-api/generatedTypes';
+import { config } from '../../config';
 
 interface AuthorPageProps {
   author?: CollectionAuthor;
@@ -103,12 +104,12 @@ export const AuthorPage = (): JSX.Element => {
         // make sure the Authors page is updated when we add a new author
         {
           query: GetAuthorsDocument,
-          variables: { perPage: 50 },
+          variables: { perPage: config.pagination.authorsPerPage },
         },
         // The lookup query for collection form dropdowns also needs a refresh
         {
           query: GetInitialCollectionFormDataDocument,
-          variables: { page: 1, perPage: 1000 },
+          variables: { perPage: config.pagination.valuesPerDropdown },
         },
       ],
     })
