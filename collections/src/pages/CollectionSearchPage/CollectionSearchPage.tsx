@@ -3,23 +3,21 @@ import { Box, Paper } from '@material-ui/core';
 import { FormikValues } from 'formik';
 import {
   CollectionListCard,
-  HandleApiResponse,
   CollectionSearchForm,
+  HandleApiResponse,
   ScrollToTop,
 } from '../../components';
 import { useGetSearchCollectionsLazyQuery } from '../../api/collection-api/generatedTypes';
 
 export const CollectionSearchPage: React.FC = (): JSX.Element => {
   // prepare the query for executing in the handleSubmit callback below
-  const [
-    searchCollections,
-    { loading, error, data },
-  ] = useGetSearchCollectionsLazyQuery(
-    // We need to make sure search results are never served from the cache.
-    // Otherwise this page is broken as we have a type policy on the
-    // 'searchCollections' query.
-    { fetchPolicy: 'network-only' }
-  );
+  const [searchCollections, { loading, error, data }] =
+    useGetSearchCollectionsLazyQuery(
+      // We need to make sure search results are never served from the cache.
+      // Otherwise this page is broken as we have a type policy on the
+      // 'searchCollections' query.
+      { fetchPolicy: 'no-cache' }
+    );
 
   /**
    * Collect form data and send it to the API.

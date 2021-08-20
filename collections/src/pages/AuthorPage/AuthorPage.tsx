@@ -21,13 +21,11 @@ import {
 import { useNotifications } from '../../hooks/';
 import {
   CollectionAuthor,
-  GetAuthorsDocument,
   GetInitialCollectionFormDataDocument,
   useGetAuthorByIdQuery,
   useUpdateCollectionAuthorImageUrlMutation,
   useUpdateCollectionAuthorMutation,
 } from '../../api/collection-api/generatedTypes';
-import { config } from '../../config';
 
 interface AuthorPageProps {
   author?: CollectionAuthor;
@@ -101,12 +99,9 @@ export const AuthorPage = (): JSX.Element => {
         active: values.active,
       },
       refetchQueries: [
-        // make sure the Authors page is updated when we add a new author
-        {
-          query: GetAuthorsDocument,
-          variables: { perPage: config.pagination.authorsPerPage },
-        },
-        // The lookup query for collection form dropdowns also needs a refresh
+        // The lookup query for collection form dropdowns needs a refresh.
+        // Since it contains a call to `getCollectionAuthors`, we don't need to
+        // refresh it separately.
         {
           query: GetInitialCollectionFormDataDocument,
         },

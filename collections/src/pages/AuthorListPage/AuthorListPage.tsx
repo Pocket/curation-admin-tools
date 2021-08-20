@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Box } from '@material-ui/core';
 import {
@@ -11,48 +11,22 @@ import {
   CollectionAuthor,
   useGetAuthorsQuery,
 } from '../../api/collection-api/generatedTypes';
+import { useFetchMoreResults } from '../../hooks/';
 import { config } from '../../config';
-import { useNotifications } from '../../hooks/';
 
 /**
  * Author List Page
  */
 export const AuthorListPage = (): JSX.Element => {
-  const { showNotification } = useNotifications();
-
-  // We need to keep track of the current page for pagination
-  const [currentPage, setCurrentPage] = useState(1);
-
-  // Keep track of whether we're doing an initial data load (which is captured
-  // in the 'loading' variable or we're fetching data for subsequent pages
-  const [reloading, setReloading] = useState(false);
-
-  const { loading, error, data, fetchMore } = useGetAuthorsQuery({
-    variables: { perPage: config.pagination.authorsPerPage, page: currentPage },
-  });
-
-  /**
-   * Send off a request to fetch data for the page requested
-   */
-  const updateData = () => {
-    setReloading(true);
-
-    // Refresh query results with another pageful of data. Bypasses cache
-    fetchMore({
+  const [loading, reloading, error, data, updateData] = useFetchMoreResults(
+    useGetAuthorsQuery,
+    {
       variables: {
         perPage: config.pagination.authorsPerPage,
-        page: currentPage + 1,
+        page: 1,
       },
-    })
-      .then(() => {
-        setReloading(false);
-        setCurrentPage(currentPage + 1);
-      })
-      .catch((error) => {
-        // Show an error in a toast message, if any
-        showNotification(error.message, 'error');
-      });
-  };
+    }
+  );
 
   return (
     <>

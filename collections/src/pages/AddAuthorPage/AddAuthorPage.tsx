@@ -7,11 +7,9 @@ import { AuthorForm } from '../../components';
 import { useNotifications } from '../../hooks/';
 import {
   CollectionAuthor,
-  GetAuthorsDocument,
   GetInitialCollectionFormDataDocument,
   useCreateCollectionAuthorMutation,
 } from '../../api/collection-api/generatedTypes';
-import { config } from '../../config';
 
 export const AddAuthorPage: React.FC = (): JSX.Element => {
   // Prepare state vars and helper methods for API notifications
@@ -51,12 +49,9 @@ export const AddAuthorPage: React.FC = (): JSX.Element => {
         active: values.active,
       },
       refetchQueries: [
-        // make sure the Authors page is updated when we add a new author
-        {
-          query: GetAuthorsDocument,
-          variables: { perPage: config.pagination.authorsPerPage },
-        },
-        // The lookup query for collection form dropdowns needs a refresh
+        // The lookup query for collection form dropdowns needs a refresh.
+        // Since it contains a call to `getCollectionAuthors`, we don't need to
+        // refresh it separately.
         {
           query: GetInitialCollectionFormDataDocument,
         },

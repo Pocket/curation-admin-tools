@@ -6,6 +6,7 @@ import {
   CollectionListCard,
   CustomTabType,
   HandleApiResponse,
+  LoadMore,
   TabPanel,
   TabSet,
 } from '../../components';
@@ -15,6 +16,7 @@ import {
   useGetCollectionsQuery,
 } from '../../api/collection-api/generatedTypes';
 import { config } from '../../config';
+import { useFetchMoreResults } from '../../hooks';
 
 /**
  * Collection List Page
@@ -38,20 +40,23 @@ export const CollectionListPage = (): JSX.Element => {
   };
 
   // Load draft collections
-  const { loading, error, data } = useGetCollectionsQuery({
-    variables: {
-      page: 1,
-      perPage: config.pagination.collectionsPerPage,
-      status: CollectionStatus.Draft,
-    },
-  });
+  const [loading, reloading, error, data, fetchMoreDraftCollections] =
+    useFetchMoreResults(useGetCollectionsQuery, {
+      variables: {
+        page: 1,
+        perPage: config.pagination.collectionsPerPage,
+        status: CollectionStatus.Draft,
+      },
+    });
 
   // Load published collections
-  const {
-    loading: loadingPublished,
-    error: errorPublished,
-    data: dataPublished,
-  } = useGetCollectionsQuery({
+  const [
+    loadingPublished,
+    reloadingPublished,
+    errorPublished,
+    dataPublished,
+    fetchMorePublishedCollections,
+  ] = useFetchMoreResults(useGetCollectionsQuery, {
     variables: {
       page: 1,
       perPage: config.pagination.collectionsPerPage,
@@ -60,11 +65,13 @@ export const CollectionListPage = (): JSX.Element => {
   });
 
   // Load archived collections
-  const {
-    loading: loadingArchived,
-    error: errorArchived,
-    data: dataArchived,
-  } = useGetCollectionsQuery({
+  const [
+    loadingArchived,
+    reloadingArchived,
+    errorArchived,
+    dataArchived,
+    fetchMoreArchivedCollections,
+  ] = useFetchMoreResults(useGetCollectionsQuery, {
     variables: {
       page: 1,
       perPage: config.pagination.collectionsPerPage,
@@ -125,6 +132,17 @@ export const CollectionListPage = (): JSX.Element => {
               );
             }
           )}
+
+        {data && (
+          <LoadMore
+            buttonDisabled={
+              data.searchCollections.collections.length ===
+              data.searchCollections.pagination?.totalResults
+            }
+            loadMore={fetchMoreDraftCollections}
+            showSpinner={reloading}
+          />
+        )}
       </TabPanel>
 
       <TabPanel value={value} index="/collections/published/">
@@ -146,6 +164,17 @@ export const CollectionListPage = (): JSX.Element => {
               );
             }
           )}
+
+        {dataPublished && (
+          <LoadMore
+            buttonDisabled={
+              dataPublished.searchCollections.collections.length ===
+              dataPublished.searchCollections.pagination?.totalResults
+            }
+            loadMore={fetchMorePublishedCollections}
+            showSpinner={reloadingPublished}
+          />
+        )}
       </TabPanel>
 
       <TabPanel value={value} index="/collections/archived/">
@@ -164,6 +193,17 @@ export const CollectionListPage = (): JSX.Element => {
               );
             }
           )}
+
+        {dataArchived && (
+          <LoadMore
+            buttonDisabled={
+              dataArchived.searchCollections.collections.length ===
+              dataArchived.searchCollections.pagination?.totalResults
+            }
+            loadMore={fetchMoreArchivedCollections}
+            showSpinner={reloadingArchived}
+          />
+        )}
       </TabPanel>
     </>
   );
