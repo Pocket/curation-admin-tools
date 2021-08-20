@@ -14,6 +14,7 @@ import {
   CollectionStatus,
   useGetCollectionsQuery,
 } from '../../api/collection-api/generatedTypes';
+import { config } from '../../config';
 
 /**
  * Collection List Page
@@ -38,7 +39,11 @@ export const CollectionListPage = (): JSX.Element => {
 
   // Load draft collections
   const { loading, error, data } = useGetCollectionsQuery({
-    variables: { page: 1, perPage: 50, status: CollectionStatus.Draft },
+    variables: {
+      page: 1,
+      perPage: config.pagination.collectionsPerPage,
+      status: CollectionStatus.Draft,
+    },
   });
 
   // Load published collections
@@ -47,7 +52,11 @@ export const CollectionListPage = (): JSX.Element => {
     error: errorPublished,
     data: dataPublished,
   } = useGetCollectionsQuery({
-    variables: { page: 1, perPage: 50, status: CollectionStatus.Published },
+    variables: {
+      page: 1,
+      perPage: config.pagination.collectionsPerPage,
+      status: CollectionStatus.Published,
+    },
   });
 
   // Load archived collections
@@ -56,7 +65,11 @@ export const CollectionListPage = (): JSX.Element => {
     error: errorArchived,
     data: dataArchived,
   } = useGetCollectionsQuery({
-    variables: { page: 1, perPage: 50, status: CollectionStatus.Archived },
+    variables: {
+      page: 1,
+      perPage: config.pagination.collectionsPerPage,
+      status: CollectionStatus.Archived,
+    },
   });
 
   // Define the set of tabs that we're going to show on this page

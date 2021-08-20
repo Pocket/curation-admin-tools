@@ -1,5 +1,6 @@
 import React from 'react';
-import { Hidden, Typography } from '@material-ui/core';
+import { Grid, Hidden, Typography } from '@material-ui/core';
+import CheckIcon from '@material-ui/icons/Check';
 import ReactMarkdown from 'react-markdown';
 import { useStyles } from './StoryCard.styles';
 import { CollectionStory } from '../../api/collection-api/generatedTypes';
@@ -38,6 +39,7 @@ export const StoryCard: React.FC<StoryCardProps> = (props): JSX.Element => {
       >
         <a href={story.url}>{story.title}</a>
       </Typography>
+
       <Typography
         className={classes.subtitle}
         variant="subtitle2"
@@ -49,6 +51,22 @@ export const StoryCard: React.FC<StoryCardProps> = (props): JSX.Element => {
         {displayAuthors.length > 0 && ` ${middot} `}
         <span>{story.publisher}</span>
       </Typography>
+      {story.fromPartner && (
+        <Grid container alignItems="center">
+          <Grid item>
+            <CheckIcon color="primary" />
+          </Grid>
+          <Grid item>
+            <Typography
+              className={classes.subtitle}
+              color="primary"
+              variant="subtitle2"
+            >
+              From partner/sponsor
+            </Typography>
+          </Grid>
+        </Grid>
+      )}
       <Hidden smDown implementation="css">
         <Typography component="div">
           <ReactMarkdown className="compact-markdown">

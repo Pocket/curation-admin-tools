@@ -6,6 +6,7 @@ import {
   CollectionPartner,
   useGetCollectionPartnersQuery,
 } from '../../api/collection-api/generatedTypes';
+import { config } from '../../config';
 
 /**
  * Partner List Page
@@ -13,7 +14,7 @@ import {
 export const PartnerListPage = (): JSX.Element => {
   // Load partners
   const { loading, error, data } = useGetCollectionPartnersQuery({
-    variables: { perPage: 50 },
+    variables: { perPage: config.pagination.partnersPerPage },
   });
 
   return (

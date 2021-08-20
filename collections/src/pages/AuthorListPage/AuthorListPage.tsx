@@ -11,7 +11,8 @@ import {
   CollectionAuthor,
   useGetAuthorsQuery,
 } from '../../api/collection-api/generatedTypes';
-import { useNotifications } from '../../hooks/useNotifications';
+import { config } from '../../config';
+import { useNotifications } from '../../hooks/';
 
 /**
  * Author List Page
@@ -26,9 +27,8 @@ export const AuthorListPage = (): JSX.Element => {
   // in the 'loading' variable or we're fetching data for subsequent pages
   const [reloading, setReloading] = useState(false);
 
-  const RESULTS_PER_PAGE = 2; // TODO: reinstate the default 30
   const { loading, error, data, fetchMore } = useGetAuthorsQuery({
-    variables: { perPage: RESULTS_PER_PAGE, page: currentPage },
+    variables: { perPage: config.pagination.authorsPerPage, page: currentPage },
   });
 
   /**
@@ -39,7 +39,10 @@ export const AuthorListPage = (): JSX.Element => {
 
     // Refresh query results with another pageful of data. Bypasses cache
     fetchMore({
-      variables: { perPage: RESULTS_PER_PAGE, page: currentPage + 1 },
+      variables: {
+        perPage: config.pagination.authorsPerPage,
+        page: currentPage + 1,
+      },
     })
       .then(() => {
         setReloading(false);

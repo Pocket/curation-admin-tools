@@ -4,7 +4,7 @@ import { Box, Paper } from '@material-ui/core';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import { CollectionForm, HandleApiResponse } from '../../components';
-import { useNotifications } from '../../hooks/useNotifications';
+import { useNotifications } from '../../hooks/';
 import {
   Collection,
   CollectionStatus,
@@ -12,6 +12,7 @@ import {
   useCreateCollectionMutation,
   useGetInitialCollectionFormDataQuery,
 } from '../../api/collection-api/generatedTypes';
+import { config } from '../../config';
 
 export const AddCollectionPage: React.FC = (): JSX.Element => {
   // Prepare state vars and helper methods for API notifications
@@ -37,7 +38,7 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
 
   // Load data for all the dropdowns in the add collection form
   const { loading, error, data } = useGetInitialCollectionFormDataQuery({
-    variables: { page: 1, perPage: 1000 },
+    variables: { perPage: config.pagination.valuesPerDropdown },
   });
 
   // prepare the "add new collection" mutation

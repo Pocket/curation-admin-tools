@@ -6,7 +6,6 @@ import {
   Collection,
   CollectionStatus,
 } from '../../api/collection-api/generatedTypes';
-import { CollectionListCard } from '../CollectionListCard/CollectionListCard';
 
 describe('The CollectionInfo component', () => {
   let collection: Omit<Collection, 'stories'>;

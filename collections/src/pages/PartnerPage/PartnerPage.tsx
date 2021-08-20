@@ -18,7 +18,7 @@ import {
   PartnerInfo,
   ScrollToTop,
 } from '../../components';
-import { useNotifications } from '../../hooks/useNotifications';
+import { useNotifications } from '../../hooks/';
 import {
   CollectionPartner,
   GetCollectionPartnersDocument,
@@ -26,6 +26,7 @@ import {
   useUpdateCollectionPartnerImageUrlMutation,
   useUpdateCollectionPartnerMutation,
 } from '../../api/collection-api/generatedTypes';
+import { config } from '../../config';
 
 interface PartnerPageProps {
   partner?: CollectionPartner;
@@ -101,7 +102,7 @@ export const PartnerPage = (): JSX.Element => {
         // make sure the Partners page is updated when we update a partner
         {
           query: GetCollectionPartnersDocument,
-          variables: { perPage: 50 },
+          variables: { perPage: config.pagination.collectionsPerPage },
         },
       ],
     })
@@ -135,7 +136,7 @@ export const PartnerPage = (): JSX.Element => {
         // make sure the Partners page is updated when we update a partner's image
         {
           query: GetCollectionPartnersDocument,
-          variables: { perPage: 50 },
+          variables: { perPage: config.pagination.partnersPerPage },
         },
       ],
     })

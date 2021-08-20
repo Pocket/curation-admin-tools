@@ -16,6 +16,12 @@ export const config = {
     'https://client-api.getpocket.com'
   }`,
   environment: process.env.NODE_ENV,
+  pagination: {
+    authorsPerPage: 2, // TODO: go back to 30
+    collectionsPerPage: 2, // TODO: go back to 30
+    partnersPerPage: 2, // TODO: go back to 30
+    valuesPerDropdown: 1000,
+  },
   //Not a secret since the  app is client side
   sentryDSN:
     'https://cab6b9b6144345ac8b5c045d0c51834c@o28549.ingest.sentry.io/5726568',

@@ -14,4 +14,5 @@ export const validationSchema = yup.object({
         ' if this story has no authors.'
     ),
   publisher: yup.string(),
+  fromPartner: yup.boolean(),
 });

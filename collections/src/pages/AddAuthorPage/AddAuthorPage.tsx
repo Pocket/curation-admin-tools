@@ -4,12 +4,14 @@ import { Box, Paper } from '@material-ui/core';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import { AuthorForm } from '../../components';
-import { useNotifications } from '../../hooks/useNotifications';
+import { useNotifications } from '../../hooks/';
 import {
   CollectionAuthor,
+  GetAuthorsDocument,
   GetInitialCollectionFormDataDocument,
   useCreateCollectionAuthorMutation,
 } from '../../api/collection-api/generatedTypes';
+import { config } from '../../config';
 
 export const AddAuthorPage: React.FC = (): JSX.Element => {
   // Prepare state vars and helper methods for API notifications
@@ -49,6 +51,11 @@ export const AddAuthorPage: React.FC = (): JSX.Element => {
         active: values.active,
       },
       refetchQueries: [
+        // make sure the Authors page is updated when we add a new author
+        {
+          query: GetAuthorsDocument,
+          variables: { perPage: config.pagination.authorsPerPage },
+        },
         // The lookup query for collection form dropdowns needs a refresh
         {
           query: GetInitialCollectionFormDataDocument,
