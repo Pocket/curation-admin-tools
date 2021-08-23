@@ -17,7 +17,16 @@ export const HomePage = (): JSX.Element => {
     variables: { page: 1, perPage: 3, status: CollectionStatus.Draft },
   });
 
-  // Load a few of the most recent published collections
+  // Load some most recently updated collections that are under review
+  const {
+    loading: loadingReview,
+    error: errorReview,
+    data: dataReview,
+  } = useGetCollectionsQuery({
+    variables: { page: 1, perPage: 3, status: CollectionStatus.Review },
+  });
+
+  // Load a few of the most recently published collections
   const {
     loading: loadingPublished,
     error: errorPublished,
@@ -53,6 +62,35 @@ export const HomePage = (): JSX.Element => {
             );
           }
         )}
+
+      <h2>
+        Latest Collections Under Review{' '}
+        <Box display="inline">
+          <Button
+            component={Link}
+            size="large"
+            color="primary"
+            to="/collections/review/"
+          >
+            See all
+          </Button>
+        </Box>
+      </h2>
+      {!dataReview && (
+        <HandleApiResponse loading={loadingReview} error={errorReview} />
+      )}
+      {dataReview &&
+        dataReview.searchCollections.collections.map(
+          (collection: Omit<Collection, 'stories'>) => {
+            return (
+              <CollectionListCard
+                key={collection.externalId}
+                collection={collection}
+              />
+            );
+          }
+        )}
+
       <h2>
         Latest Published Collections{' '}
         <Box display="inline">
