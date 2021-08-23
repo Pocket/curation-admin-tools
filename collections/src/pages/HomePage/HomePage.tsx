@@ -64,7 +64,7 @@ export const HomePage = (): JSX.Element => {
         )}
 
       <h2>
-        Latest Collections Under Review{' '}
+        Latest Review Collections{' '}
         <Box display="inline">
           <Button
             component={Link}

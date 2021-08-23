@@ -103,7 +103,7 @@ export const CollectionListPage = (): JSX.Element => {
       hasLink: true,
     },
     {
-      label: 'Under Review',
+      label: 'Review',
       pathname: '/collections/review/',
       count: dataReview?.searchCollections.pagination.totalResults,
       hasLink: true,
