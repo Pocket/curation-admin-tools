@@ -48,7 +48,6 @@ import {
 } from '../../api/collection-api/generatedTypes';
 import { useNotifications, useRunMutation, useToggle } from '../../hooks/';
 import { transformAuthors } from '../../utils/transformAuthors';
-import { CollectionStatus } from '../../api/client-api/generatedTypes';
 import { config } from '../../config';
 
 interface CollectionPageProps {
