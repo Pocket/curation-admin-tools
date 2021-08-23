@@ -38,7 +38,7 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
 
   // Load data for all the dropdowns in the add collection form
   const { loading, error, data } = useGetInitialCollectionFormDataQuery({
-    variables: { perPage: config.pagination.valuesPerDropdown },
+    variables: { page: 1, perPage: config.pagination.valuesPerDropdown },
   });
 
   // prepare the "add new collection" mutation
@@ -70,7 +70,11 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
       refetchQueries: [
         {
           query: GetCollectionsDocument,
-          variables: { status: CollectionStatus.Draft },
+          variables: {
+            page: 1,
+            perPage: config.pagination.collectionsPerPage,
+            status: CollectionStatus.Draft,
+          },
         },
       ],
     })

@@ -29,6 +29,7 @@ import {
   Collection,
   CollectionPartnerAssociation,
   CollectionPartnershipType,
+  CollectionStatus,
   CollectionStory,
   GetCollectionByExternalIdDocument,
   GetCollectionsDocument,
@@ -48,6 +49,7 @@ import {
 import { useNotifications, useRunMutation, useToggle } from '../../hooks/';
 import { transformAuthors } from '../../utils/transformAuthors';
 import { CollectionStatus } from '../../api/client-api/generatedTypes';
+import { config } from '../../config';
 
 interface CollectionPageProps {
   collection?: Omit<Collection, 'stories'>;
@@ -216,15 +218,36 @@ export const CollectionPage = (): JSX.Element => {
         },
         {
           query: GetCollectionsDocument,
-          variables: { status: CollectionStatus.Draft },
+          // Must have all the required variables for the query to be executed.
+          variables: {
+            page: 1,
+            perPage: config.pagination.collectionsPerPage,
+            status: CollectionStatus.Draft,
+          },
         },
         {
           query: GetCollectionsDocument,
-          variables: { status: CollectionStatus.Published },
+          variables: {
+            page: 1,
+            perPage: config.pagination.collectionsPerPage,
+            status: CollectionStatus.Review,
+          },
         },
         {
           query: GetCollectionsDocument,
-          variables: { status: CollectionStatus.Archived },
+          variables: {
+            page: 1,
+            perPage: config.pagination.collectionsPerPage,
+            status: CollectionStatus.Published,
+          },
+        },
+        {
+          query: GetCollectionsDocument,
+          variables: {
+            page: 1,
+            perPage: config.pagination.collectionsPerPage,
+            status: CollectionStatus.Archived,
+          },
         },
       ],
     };
@@ -661,6 +684,7 @@ export const CollectionPage = (): JSX.Element => {
                               partnersData.getCollectionPartners.partners
                             }
                             onSubmit={handleCreateAssociationSubmit}
+                            onCancel={togglePartnershipForm}
                           />
                         )}
                       </Grid>
