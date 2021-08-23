@@ -32,11 +32,10 @@ import {
   Collection,
   CollectionPartnerAssociation,
   CollectionPartnershipType,
+  CollectionStatus,
   CollectionStory,
-  GetArchivedCollectionsDocument,
   GetCollectionByExternalIdDocument,
-  GetDraftCollectionsDocument,
-  GetPublishedCollectionsDocument,
+  GetCollectionsDocument,
   useCreateCollectionPartnerAssociationMutation,
   useCreateCollectionStoryMutation,
   useGetCollectionByExternalIdQuery,
@@ -52,6 +51,7 @@ import {
 } from '../../api/collection-api/generatedTypes';
 import { useNotifications, useRunMutation, useToggle } from '../../hooks/';
 import { transformAuthors } from '../../utils/transformAuthors';
+import { config } from '../../config';
 
 interface CollectionPageProps {
   collection?: Omit<Collection, 'stories'>;
@@ -220,16 +220,29 @@ export const CollectionPage = (): JSX.Element => {
           },
         },
         {
-          query: GetDraftCollectionsDocument,
-          variables: { perPage: 50 },
+          query: GetCollectionsDocument,
+          // Must have all the required variables for the query to be executed.
+          variables: {
+            page: 1,
+            perPage: config.pagination.collectionsPerPage,
+            status: CollectionStatus.Draft,
+          },
         },
         {
-          query: GetPublishedCollectionsDocument,
-          variables: { perPage: 50 },
+          query: GetCollectionsDocument,
+          variables: {
+            page: 1,
+            perPage: config.pagination.collectionsPerPage,
+            status: CollectionStatus.Published,
+          },
         },
         {
-          query: GetArchivedCollectionsDocument,
-          variables: { perPage: 50 },
+          query: GetCollectionsDocument,
+          variables: {
+            page: 1,
+            perPage: config.pagination.collectionsPerPage,
+            status: CollectionStatus.Archived,
+          },
         },
       ],
     };

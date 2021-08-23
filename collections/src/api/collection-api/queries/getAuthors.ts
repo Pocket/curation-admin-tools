@@ -10,6 +10,11 @@ export const getAuthors = gql`
       authors {
         ...CollectionAuthorData
       }
+      pagination {
+        currentPage
+        totalPages
+        totalResults
+      }
     }
   }
   ${CollectionAuthorData}

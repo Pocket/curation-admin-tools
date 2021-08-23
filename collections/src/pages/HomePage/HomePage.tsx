@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { Box, Button } from '@material-ui/core';
 import {
   Collection,
-  useGetDraftCollectionsQuery,
-  useGetPublishedCollectionsQuery,
+  CollectionStatus,
+  useGetCollectionsQuery,
 } from '../../api/collection-api/generatedTypes';
 import { CollectionListCard, HandleApiResponse } from '../../components';
 
@@ -13,8 +13,8 @@ import { CollectionListCard, HandleApiResponse } from '../../components';
  */
 export const HomePage = (): JSX.Element => {
   // Load a few of the most recent draft collections
-  const { loading, error, data } = useGetDraftCollectionsQuery({
-    variables: { page: 1, perPage: 3 },
+  const { loading, error, data } = useGetCollectionsQuery({
+    variables: { page: 1, perPage: 3, status: CollectionStatus.Draft },
   });
 
   // Load a few of the most recent published collections
@@ -22,8 +22,8 @@ export const HomePage = (): JSX.Element => {
     loading: loadingPublished,
     error: errorPublished,
     data: dataPublished,
-  } = useGetPublishedCollectionsQuery({
-    variables: { page: 1, perPage: 3 },
+  } = useGetCollectionsQuery({
+    variables: { page: 1, perPage: 3, status: CollectionStatus.Published },
   });
 
   return (

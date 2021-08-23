@@ -17,9 +17,9 @@ export const config = {
   }`,
   environment: process.env.NODE_ENV,
   pagination: {
-    authorsPerPage: 50,
-    collectionsPerPage: 50,
-    partnersPerPage: 50,
+    authorsPerPage: 30,
+    collectionsPerPage: 30,
+    partnersPerPage: 30,
     valuesPerDropdown: 1000,
   },
   //Not a secret since the  app is client side

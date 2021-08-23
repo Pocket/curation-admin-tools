@@ -8,7 +8,7 @@ import { useNotifications } from '../../hooks/';
 import {
   Collection,
   CollectionStatus,
-  GetDraftCollectionsDocument,
+  GetCollectionsDocument,
   useCreateCollectionMutation,
   useGetInitialCollectionFormDataQuery,
 } from '../../api/collection-api/generatedTypes';
@@ -38,7 +38,7 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
 
   // Load data for all the dropdowns in the add collection form
   const { loading, error, data } = useGetInitialCollectionFormDataQuery({
-    variables: { perPage: config.pagination.valuesPerDropdown },
+    variables: { page: 1, perPage: config.pagination.valuesPerDropdown },
   });
 
   // prepare the "add new collection" mutation
@@ -69,9 +69,11 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
       // when we add a new collection
       refetchQueries: [
         {
-          query: GetDraftCollectionsDocument,
+          query: GetCollectionsDocument,
           variables: {
+            page: 1,
             perPage: config.pagination.collectionsPerPage,
+            status: CollectionStatus.Draft,
           },
         },
       ],

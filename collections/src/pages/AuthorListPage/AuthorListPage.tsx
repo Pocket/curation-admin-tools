@@ -1,21 +1,32 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Box } from '@material-ui/core';
-import { AuthorListCard, Button, HandleApiResponse } from '../../components';
+import {
+  AuthorListCard,
+  Button,
+  HandleApiResponse,
+  LoadMore,
+} from '../../components';
 import {
   CollectionAuthor,
   useGetAuthorsQuery,
 } from '../../api/collection-api/generatedTypes';
+import { useFetchMoreResults } from '../../hooks/';
 import { config } from '../../config';
 
 /**
  * Author List Page
  */
 export const AuthorListPage = (): JSX.Element => {
-  // Load authors
-  const { loading, error, data } = useGetAuthorsQuery({
-    variables: { perPage: config.pagination.authorsPerPage },
-  });
+  const [loading, reloading, error, data, updateData] = useFetchMoreResults(
+    useGetAuthorsQuery,
+    {
+      variables: {
+        perPage: config.pagination.authorsPerPage,
+        page: 1,
+      },
+    }
+  );
 
   return (
     <>
@@ -33,9 +44,20 @@ export const AuthorListPage = (): JSX.Element => {
       {!data && <HandleApiResponse loading={loading} error={error} />}
 
       {data &&
-        data.getCollectionAuthors?.authors.map((author: CollectionAuthor) => {
+        data.getCollectionAuthors.authors.map((author: CollectionAuthor) => {
           return <AuthorListCard key={author.externalId} author={author} />;
         })}
+
+      {data && (
+        <LoadMore
+          buttonDisabled={
+            data.getCollectionAuthors.authors.length ===
+            data.getCollectionAuthors.pagination?.totalResults
+          }
+          loadMore={updateData}
+          showSpinner={reloading}
+        />
+      )}
     </>
   );
 };

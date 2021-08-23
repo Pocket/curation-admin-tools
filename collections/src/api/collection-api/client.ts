@@ -1,6 +1,11 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client';
 import { config } from '../../config';
+import {
+  getCollectionAuthorsFieldPolicy,
+  getCollectionPartnersFieldPolicy,
+  searchCollectionsFieldPolicy,
+} from './field-policies/';
 
 const apolloOptions = {
   cache: new InMemoryCache({
@@ -13,6 +18,13 @@ const apolloOptions = {
       },
       Collection: {
         keyFields: ['externalId'],
+      },
+      Query: {
+        fields: {
+          getCollectionAuthors: getCollectionAuthorsFieldPolicy,
+          getCollectionPartners: getCollectionPartnersFieldPolicy,
+          searchCollections: searchCollectionsFieldPolicy,
+        },
       },
     },
   }),

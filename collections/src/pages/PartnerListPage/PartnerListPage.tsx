@@ -1,21 +1,33 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Box } from '@material-ui/core';
-import { Button, HandleApiResponse, PartnerListCard } from '../../components';
+import {
+  Button,
+  HandleApiResponse,
+  LoadMore,
+  PartnerListCard,
+} from '../../components';
 import {
   CollectionPartner,
   useGetCollectionPartnersQuery,
 } from '../../api/collection-api/generatedTypes';
 import { config } from '../../config';
+import { useFetchMoreResults } from '../../hooks';
 
 /**
  * Partner List Page
  */
 export const PartnerListPage = (): JSX.Element => {
   // Load partners
-  const { loading, error, data } = useGetCollectionPartnersQuery({
-    variables: { perPage: config.pagination.partnersPerPage },
-  });
+  const [loading, reloading, error, data, updateData] = useFetchMoreResults(
+    useGetCollectionPartnersQuery,
+    {
+      variables: {
+        perPage: config.pagination.partnersPerPage,
+        page: 1,
+      },
+    }
+  );
 
   return (
     <>
@@ -40,6 +52,17 @@ export const PartnerListPage = (): JSX.Element => {
             );
           }
         )}
+
+      {data && (
+        <LoadMore
+          buttonDisabled={
+            data.getCollectionPartners.partners.length ===
+            data.getCollectionPartners.pagination?.totalResults
+          }
+          loadMore={updateData}
+          showSpinner={reloading}
+        />
+      )}
     </>
   );
 };
