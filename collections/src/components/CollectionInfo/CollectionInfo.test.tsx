@@ -20,8 +20,8 @@ describe('The CollectionInfo component', () => {
         'There’s a long history of presidential ailments, including George Washington’s near-death encounter with the flu, Grover Cleveland’s secret tumor, and the clandestine suffering of John F. Kennedy. ',
       intro: 'Intro text is generally longer than the excerpt.',
       language: 'de',
-      status: CollectionStatus.Published,
-      authors: [],
+      status: CollectionStatus.Draft,
+      authors: [{ externalId: '123-abc', name: 'Joe Bloggs', active: true }],
     };
   });
 
@@ -36,12 +36,26 @@ describe('The CollectionInfo component', () => {
     const slug = screen.getByText(collection.slug);
     expect(slug).toBeInTheDocument();
 
+    // There is no active link since it's still a draft collection
+    const link = screen.queryByRole('link');
+    expect(link).not.toBeInTheDocument();
+
     // The excerpt is present
     const excerpt = screen.getByText(/presidential ailments/i);
     expect(excerpt).toBeInTheDocument();
+
+    // Shows the correct status
+    const status = screen.getByText(/^draft/i);
+    expect(status).toBeInTheDocument();
+
+    // Shows the name of the author
+    const author = screen.getByText('Joe Bloggs');
+    expect(author).toBeInTheDocument();
   });
 
   it('shows "Published" status correctly', () => {
+    collection.status = CollectionStatus.Published;
+
     render(
       <MemoryRouter>
         <CollectionInfo collection={collection} />
@@ -52,11 +66,52 @@ describe('The CollectionInfo component', () => {
     const published = screen.getByText(/^published/i);
     expect(published).toBeInTheDocument();
 
-    // Doesn't show the other two possible collection states
+    // Doesn't show the other possible collection states
     const draft = screen.queryByText(/^draft/i);
     expect(draft).not.toBeInTheDocument();
+    const review = screen.queryByText('/^review/i');
+    expect(review).not.toBeInTheDocument();
     const archived = screen.queryByText(/^archived/i);
     expect(archived).not.toBeInTheDocument();
+  });
+
+  it('shows an active link for a published or "under review" collection', () => {
+    collection.status = CollectionStatus.Review;
+
+    const { rerender } = render(
+      <MemoryRouter>
+        <CollectionInfo collection={collection} />
+      </MemoryRouter>
+    );
+
+    const link = screen.getByRole('link');
+    expect(link).toBeInTheDocument();
+
+    expect(link.getAttribute('href')).toEqual(
+      `https://getpocket.com/collections/${collection.slug}`
+    );
+
+    const textOnlySlug = screen.queryByText(collection.slug);
+    expect(textOnlySlug).not.toBeInTheDocument();
+
+    // Let's update the collection and make sure the active link is still there
+    collection.status = CollectionStatus.Published;
+    rerender(
+      <MemoryRouter>
+        <CollectionInfo collection={collection} />
+      </MemoryRouter>
+    );
+
+    // Test that the active link persists
+    const link2 = screen.getByRole('link');
+    expect(link2).toBeInTheDocument();
+
+    expect(link2.getAttribute('href')).toEqual(
+      `https://getpocket.com/collections/${collection.slug}`
+    );
+
+    const textOnlySlug2 = screen.queryByText(collection.slug);
+    expect(textOnlySlug2).not.toBeInTheDocument();
   });
 
   it('shows language correctly', () => {

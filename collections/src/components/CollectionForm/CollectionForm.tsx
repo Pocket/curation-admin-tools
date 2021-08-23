@@ -193,6 +193,7 @@ export const CollectionForm: React.FC<
             disabled={!editMode}
           >
             <option value="DRAFT">Draft</option>
+            <option value="REVIEW">Review</option>
             <option value="PUBLISHED">Published</option>
             <option value="ARCHIVED">Archived</option>
           </FormikSelectField>

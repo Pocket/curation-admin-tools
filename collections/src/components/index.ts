@@ -8,7 +8,6 @@ export { CollectionInfo } from './CollectionInfo/CollectionInfo';
 export { CollectionListCard } from './CollectionListCard/CollectionListCard';
 export { CollectionPartnerAssociationForm } from './CollectionPartnerAssociationForm/CollectionPartnerAssociationForm';
 export { CollectionPartnerAssociationInfo } from './CollectionPartnerAssociationInfo/CollectionPartnerAssociationInfo';
-export { CollectionPreview } from './CollectionPreview/CollectionPreview';
 export { CollectionSearchForm } from './CollectionSearchForm/CollectionSearchForm';
 export { FileUploadInfo } from './FileUploadInfo/FileUploadInfo';
 export { FormikTextField } from './_form-elements/FormikTextField/FormikTextField';

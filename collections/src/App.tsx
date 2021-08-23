@@ -7,17 +7,17 @@ import { SnackbarProvider } from 'notistack';
 import { client } from './api/collection-api/client';
 import theme from './theme';
 import {
-  HomePage,
+  AddAuthorPage,
+  AddCollectionPage,
+  AddPartnerPage,
   AuthorListPage,
   AuthorPage,
-  AddAuthorPage,
   CollectionListPage,
-  CollectionSearchPage,
   CollectionPage,
-  AddCollectionPage,
+  CollectionSearchPage,
+  HomePage,
   PartnerListPage,
   PartnerPage,
-  AddPartnerPage,
 } from './pages';
 import { Header, MainContentWrapper, MenuLink } from './components';
 
@@ -65,7 +65,7 @@ function App(): JSX.Element {
                   <Route exact path="/collections/add/">
                     <AddCollectionPage />
                   </Route>
-                  <Route path="/collections/:status(drafts|published|archived)/">
+                  <Route path="/collections/:status(drafts|review|published|archived)/">
                     <CollectionListPage />
                   </Route>
                   <Route exact path="/collections/:id/">

@@ -11,7 +11,6 @@ import {
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
-import VisibilityIcon from '@material-ui/icons/Visibility';
 import { DropResult } from 'react-beautiful-dnd';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
@@ -20,10 +19,8 @@ import {
   CollectionInfo,
   CollectionPartnerAssociationForm,
   CollectionPartnerAssociationInfo,
-  CollectionPreview,
   HandleApiResponse,
   ImageUpload,
-  Modal,
   ReorderableCollectionStoryList,
   ScrollToTop,
   StoryForm,
@@ -61,10 +58,9 @@ export const CollectionPage = (): JSX.Element => {
   // Prepare state vars and helper methods for API notifications
   const { showNotification } = useNotifications();
 
-  // Set up toggles for form visibility and the "Preview Collection" modal
+  // Set up toggles for form visibility
   const [showEditForm, toggleEditForm] = useToggle();
   const [showPartnershipForm, togglePartnershipForm] = useToggle();
-  const [previewCollectionOpen, previewCollection] = useToggle(false);
 
   // Get a helper function that will execute each mutation, show standard notifications
   // and execute any additional actions in a callback
@@ -226,6 +222,14 @@ export const CollectionPage = (): JSX.Element => {
             page: 1,
             perPage: config.pagination.collectionsPerPage,
             status: CollectionStatus.Draft,
+          },
+        },
+        {
+          query: GetCollectionsDocument,
+          variables: {
+            page: 1,
+            perPage: config.pagination.collectionsPerPage,
+            status: CollectionStatus.Review,
           },
         },
         {
@@ -564,9 +568,6 @@ export const CollectionPage = (): JSX.Element => {
                 <Button color="primary" onClick={toggleEditForm}>
                   <EditIcon />
                 </Button>
-                <Button color="primary" onClick={previewCollection}>
-                  <VisibilityIcon />
-                </Button>
               </ButtonGroup>
             </Box>
           </Box>
@@ -736,22 +737,6 @@ export const CollectionPage = (): JSX.Element => {
               )}
             </Box>
           </Paper>
-          <Modal
-            open={previewCollectionOpen}
-            handleClose={() => {
-              previewCollection();
-            }}
-          >
-            {associationData && (
-              <CollectionPreview
-                collection={collection}
-                stories={stories}
-                association={
-                  associationData.getCollectionPartnerAssociationForCollection
-                }
-              />
-            )}
-          </Modal>
         </>
       )}
     </>

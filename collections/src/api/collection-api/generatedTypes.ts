@@ -147,6 +147,7 @@ export enum CollectionPartnershipType {
 
 export enum CollectionStatus {
   Draft = 'DRAFT',
+  Review = 'REVIEW',
   Published = 'PUBLISHED',
   Archived = 'ARCHIVED',
 }
