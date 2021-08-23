@@ -20,10 +20,8 @@ import {
   CollectionInfo,
   CollectionPartnerAssociationForm,
   CollectionPartnerAssociationInfo,
-  CollectionPreview,
   HandleApiResponse,
   ImageUpload,
-  Modal,
   ReorderableCollectionStoryList,
   ScrollToTop,
   StoryForm,
@@ -60,10 +58,9 @@ export const CollectionPage = (): JSX.Element => {
   // Prepare state vars and helper methods for API notifications
   const { showNotification } = useNotifications();
 
-  // Set up toggles for form visibility and the "Preview Collection" modal
+  // Set up toggles for form visibility
   const [showEditForm, toggleEditForm] = useToggle();
   const [showPartnershipForm, togglePartnershipForm] = useToggle();
-  const [previewCollectionOpen, previewCollection] = useToggle(false);
 
   // Get a helper function that will execute each mutation, show standard notifications
   // and execute any additional actions in a callback
@@ -550,7 +547,7 @@ export const CollectionPage = (): JSX.Element => {
                 <Button color="primary" onClick={toggleEditForm}>
                   <EditIcon />
                 </Button>
-                <Button color="primary" onClick={previewCollection}>
+                <Button color="primary">
                   <VisibilityIcon />
                 </Button>
               </ButtonGroup>
@@ -721,22 +718,6 @@ export const CollectionPage = (): JSX.Element => {
               )}
             </Box>
           </Paper>
-          <Modal
-            open={previewCollectionOpen}
-            handleClose={() => {
-              previewCollection();
-            }}
-          >
-            {associationData && (
-              <CollectionPreview
-                collection={collection}
-                stories={stories}
-                association={
-                  associationData.getCollectionPartnerAssociationForCollection
-                }
-              />
-            )}
-          </Modal>
         </>
       )}
     </>

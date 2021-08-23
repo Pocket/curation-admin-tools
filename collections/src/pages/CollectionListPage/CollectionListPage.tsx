@@ -49,6 +49,21 @@ export const CollectionListPage = (): JSX.Element => {
       },
     });
 
+  // Load collections under review
+  const [
+    loadingReview,
+    reloadingReview,
+    errorReview,
+    dataReview,
+    fetchMoreReviewCollections,
+  ] = useFetchMoreResults(useGetCollectionsQuery, {
+    variables: {
+      page: 1,
+      perPage: config.pagination.collectionsPerPage,
+      status: CollectionStatus.Review,
+    },
+  });
+
   // Load published collections
   const [
     loadingPublished,
@@ -85,6 +100,12 @@ export const CollectionListPage = (): JSX.Element => {
       label: 'Drafts',
       pathname: '/collections/drafts/',
       count: data?.searchCollections.pagination.totalResults,
+      hasLink: true,
+    },
+    {
+      label: 'Under Review',
+      pathname: '/collections/review/',
+      count: dataReview?.searchCollections.pagination.totalResults,
       hasLink: true,
     },
     {
@@ -141,6 +162,35 @@ export const CollectionListPage = (): JSX.Element => {
             }
             loadMore={fetchMoreDraftCollections}
             showSpinner={reloading}
+          />
+        )}
+      </TabPanel>
+
+      <TabPanel value={value} index="/collections/review/">
+        {!dataReview && (
+          <HandleApiResponse loading={loadingReview} error={errorReview} />
+        )}
+
+        {dataReview &&
+          dataReview.searchCollections.collections.map(
+            (collection: Omit<Collection, 'stories'>) => {
+              return (
+                <CollectionListCard
+                  key={collection.externalId}
+                  collection={collection}
+                />
+              );
+            }
+          )}
+
+        {dataReview && (
+          <LoadMore
+            buttonDisabled={
+              dataReview.searchCollections.collections.length ===
+              dataReview.searchCollections.pagination?.totalResults
+            }
+            loadMore={fetchMoreReviewCollections}
+            showSpinner={reloadingReview}
           />
         )}
       </TabPanel>

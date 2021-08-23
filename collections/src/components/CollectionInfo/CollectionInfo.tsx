@@ -4,7 +4,10 @@ import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import LanguageIcon from '@material-ui/icons/Language';
 import ReactMarkdown from 'react-markdown';
 import { useStyles } from './CollectionInfo.styles';
-import { Collection } from '../../api/collection-api/generatedTypes';
+import {
+  Collection,
+  CollectionStatus,
+} from '../../api/collection-api/generatedTypes';
 import { flattenAuthors } from '../../utils/flattenAuthors';
 
 interface CollectionInfoProps {
@@ -20,6 +23,14 @@ export const CollectionInfo: React.FC<CollectionInfoProps> = (
 ): JSX.Element => {
   const { collection } = props;
   const classes = useStyles();
+
+  const baseURL = 'https://getpocket.com/collections/';
+
+  // Link to a published collection or one under review on production.
+  const linkIsClickable = [
+    CollectionStatus.Review,
+    CollectionStatus.Published,
+  ].includes(collection.status);
 
   return (
     <>
@@ -65,10 +76,19 @@ export const CollectionInfo: React.FC<CollectionInfoProps> = (
         component="span"
         align="left"
       >
-        https://getpocket.com/collections/
-        <Typography component="span">
-          <strong>{collection.slug}</strong>
-        </Typography>
+        {linkIsClickable && (
+          <a href={`${baseURL}${collection.slug}`} target="_blank">
+            {`${baseURL}${collection.slug}`}
+          </a>
+        )}
+        {!linkIsClickable && (
+          <>
+            {baseURL}
+            <Typography component="span">
+              <strong>{collection.slug}</strong>
+            </Typography>
+          </>
+        )}
       </Typography>
       <h3>Excerpt</h3>
       <Typography
