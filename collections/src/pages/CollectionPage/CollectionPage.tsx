@@ -11,7 +11,6 @@ import {
 } from '@material-ui/core';
 import EditIcon from '@material-ui/icons/Edit';
 import AddIcon from '@material-ui/icons/Add';
-import VisibilityIcon from '@material-ui/icons/Visibility';
 import { DropResult } from 'react-beautiful-dnd';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
@@ -546,9 +545,6 @@ export const CollectionPage = (): JSX.Element => {
               >
                 <Button color="primary" onClick={toggleEditForm}>
                   <EditIcon />
-                </Button>
-                <Button color="primary">
-                  <VisibilityIcon />
                 </Button>
               </ButtonGroup>
             </Box>
