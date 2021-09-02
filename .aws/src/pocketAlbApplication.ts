@@ -1,17 +1,8 @@
-import {
-  PocketALBApplication,
-  PocketECSCodePipeline,
-  PocketPagerDuty,
-} from '@pocket/terraform-modules';
-import { config } from './config';
-import { Construct } from 'constructs';
-import { DataTerraformRemoteState } from 'cdktf';
-import {
-  DataAwsCallerIdentity,
-  DataAwsKmsAlias,
-  DataAwsRegion,
-  DataAwsSnsTopic,
-} from '@cdktf/provider-aws';
+import { PocketALBApplication, PocketECSCodePipeline, PocketPagerDuty } from "@pocket/terraform-modules";
+import { config, isDev } from "./config";
+import { Construct } from "constructs";
+import { DataTerraformRemoteState } from "cdktf";
+import { DataAwsCallerIdentity, DataAwsKmsAlias, DataAwsRegion, DataAwsSnsTopic } from "@cdktf/provider-aws";
 
 /**
  * @param scope
@@ -200,17 +191,17 @@ export function createPocketAlbApplication(
         threshold: 10,
         evaluationPeriods: 2,
         period: 600,
-        actions: [pagerDuty.snsNonCriticalAlarmTopic.arn],
+        actions: isDev ? [] : [pagerDuty.snsNonCriticalAlarmTopic.arn],
       },
       httpLatency: {
         evaluationPeriods: 2,
         threshold: 500,
-        actions: [pagerDuty.snsNonCriticalAlarmTopic.arn],
+        actions: isDev ? [] : [pagerDuty.snsNonCriticalAlarmTopic.arn],
       },
       httpRequestCount: {
         threshold: 5000,
         evaluationPeriods: 2,
-        actions: [pagerDuty.snsNonCriticalAlarmTopic.arn],
+        actions: isDev ? [] : [pagerDuty.snsNonCriticalAlarmTopic.arn],
       },
     },
   });
