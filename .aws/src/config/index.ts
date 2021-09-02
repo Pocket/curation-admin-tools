@@ -2,7 +2,7 @@ const name = 'CurationAdminTools';
 const domainPrefix = 'curation-admin-tools';
 const devDomain = 'getpocket.dev';
 const prodDomain = 'readitlater.com';
-const isDev = process.env.NODE_ENV === 'development';
+export const isDev = process.env.NODE_ENV === 'development';
 const environment = isDev ? 'Dev' : 'Prod';
 const domain = `${domainPrefix}.` + (isDev ? devDomain : prodDomain);
 const collectionApiEndpoint =
