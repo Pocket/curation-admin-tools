@@ -46,8 +46,8 @@
     "eject": "react-scripts eject",
     "lint-check": "tsc --noEmit && eslint src/**/*.ts{,x}",
     "lint-fix": "tsc --noEmit && eslint src/**/*.ts{,x} --fix",
-    "api:generate-collection-types": "graphql-codegen --config src/config/collection-api-codegen.json -r dotenv/config",
-    "api:generate-client-types": "graphql-codegen --config src/config/client-api-codegen.json -r dotenv/config"
+    "api:generate-collection-types": "graphql-codegen --config src/collections/config/collection-api-codegen.json -r dotenv/config",
+    "api:generate-client-types": "graphql-codegen --config src/collections/config/client-api-codegen.json -r dotenv/config"
   },
   "eslintConfig": {
     "extends": [

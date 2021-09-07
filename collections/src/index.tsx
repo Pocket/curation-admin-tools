@@ -5,7 +5,7 @@ import { Integrations } from '@sentry/tracing';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { config } from './config';
+import { config } from './collections/config';
 
 Sentry.init({
   dsn: config.sentryDSN,
