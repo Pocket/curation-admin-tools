@@ -5,9 +5,9 @@ import { makeStyles, Theme } from '@material-ui/core/styles';
 const useStyles = makeStyles((theme: Theme) => ({
   mainContent: {
     maxWidth: 1000,
-    marginTop: '6.5rem',
+    marginTop: '7.5rem',
     [theme.breakpoints.down('sm')]: {
-      marginTop: '4.5rem',
+      marginTop: '5.5rem',
     },
   },
 }));

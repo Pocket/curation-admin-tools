@@ -81,9 +81,12 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
     })
       .then(({ data }) => {
         // Success! Move on to the author page to be able to upload a photo, etc.
-        history.push(`/collections/${data?.createCollection?.externalId}/`, {
-          collection: data?.createCollection,
-        });
+        history.push(
+          `/collections/collections/${data?.createCollection?.externalId}/`,
+          {
+            collection: data?.createCollection,
+          }
+        );
       })
       .catch((error: Error) => {
         showNotification(error.message, 'error');

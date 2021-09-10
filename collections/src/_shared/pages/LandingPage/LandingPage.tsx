@@ -1,24 +1,40 @@
 import React from 'react';
-import { Header, MainContentWrapper, MenuLink } from '../../components';
-//import { Link } from 'react-router-dom';
+import { Header, MainContentWrapper } from '../../components';
+import { Grid, Paper, Typography } from '@material-ui/core';
+import { Link } from 'react-router-dom';
+import { useStyles } from './LandingPage.styles';
+import CollectionsBookmarkIcon from '@material-ui/icons/CollectionsBookmark';
+import LibraryAddCheckIcon from '@material-ui/icons/LibraryAddCheck';
 
 export const LandingPage = (): JSX.Element => {
-  const menuLinks: MenuLink[] = [
-    {
-      text: 'Collections',
-      url: '/collections',
-    },
-    {
-      text: 'Prospects',
-      url: '/prospects',
-    },
-  ];
+  const classes = useStyles();
 
   return (
     <>
-      <Header productName="Curation Tools" menuLinks={menuLinks} />
+      <Header productName="Curation Tools" menuLinks={[]} />
       <MainContentWrapper>
-        <h2>TADA! Landing page</h2>
+        <Grid container spacing={2} className={classes.root}>
+          <Grid item xs={12} sm={6}>
+            <Paper className={classes.paper}>
+              <Link to="/collections" className={classes.link}>
+                <Typography variant="h3" component="div">
+                  <CollectionsBookmarkIcon fontSize="inherit" />
+                </Typography>
+                <h2>Collections</h2>
+              </Link>
+            </Paper>
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <Paper className={classes.paper}>
+              <Link to="/prospects" className={classes.link}>
+                <Typography variant="h3" component="div">
+                  <LibraryAddCheckIcon fontSize="inherit" />
+                </Typography>
+                <h2>Prospects</h2>
+              </Link>
+            </Paper>
+          </Grid>
+        </Grid>
       </MainContentWrapper>
     </>
   );
