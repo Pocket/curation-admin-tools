@@ -1,4 +1,4 @@
-name: Collections Admin UI CI
+name: Curation Admin Tools CI
 
 on:
   push:
@@ -10,7 +10,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     defaults:
@@ -20,7 +19,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [16.8]
 
     steps:
       - name: Check out the repository
