@@ -26,7 +26,7 @@ import {
  */
 export const CollectionsLandingPage = (): JSX.Element => {
   // Get the base path (/collections)
-  let { path } = useRouteMatch();
+  const { path } = useRouteMatch();
 
   const menuLinks: MenuLink[] = [
     {

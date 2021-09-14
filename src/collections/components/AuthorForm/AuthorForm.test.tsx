@@ -6,7 +6,7 @@ import { CollectionAuthor } from '../../api/collection-api/generatedTypes';
 
 describe('The AuthorForm component', () => {
   let author: CollectionAuthor;
-  let handleSubmit = jest.fn();
+  const handleSubmit = jest.fn();
 
   beforeEach(() => {
     author = {

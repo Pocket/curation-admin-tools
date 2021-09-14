@@ -17,7 +17,7 @@ describe('The CollectionForm component', () => {
   let curationCategories: CurationCategory[];
   let iabCategories: IabParentCategory[];
   let languages: Language[];
-  let handleSubmit = jest.fn();
+  const handleSubmit = jest.fn();
 
   beforeEach(() => {
     collection = {

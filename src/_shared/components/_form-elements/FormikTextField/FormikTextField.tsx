@@ -35,25 +35,24 @@ interface FormikTextFieldProps {
  * down the properties of interest to the field itself.
  */
 
-export const FormikTextField: React.FC<
-  FormikTextFieldProps & TextFieldProps
-> = (props): JSX.Element => {
-  const { id, label, fieldProps, fieldMeta, ...otherProps } = props;
+export const FormikTextField: React.FC<FormikTextFieldProps & TextFieldProps> =
+  (props): JSX.Element => {
+    const { id, label, fieldProps, fieldMeta, ...otherProps } = props;
 
-  return (
-    <TextField
-      id={id}
-      label={label}
-      fullWidth
-      InputLabelProps={{
-        shrink: true,
-      }}
-      size="small"
-      variant="outlined"
-      {...fieldProps}
-      error={!!(fieldMeta.touched && fieldMeta.error)}
-      helperText={fieldMeta.error ? fieldMeta.error : null}
-      {...otherProps}
-    />
-  );
-};
+    return (
+      <TextField
+        id={id}
+        label={label}
+        fullWidth
+        InputLabelProps={{
+          shrink: true,
+        }}
+        size="small"
+        variant="outlined"
+        {...fieldProps}
+        error={!!(fieldMeta.touched && fieldMeta.error)}
+        helperText={fieldMeta.error ? fieldMeta.error : null}
+        {...otherProps}
+      />
+    );
+  };

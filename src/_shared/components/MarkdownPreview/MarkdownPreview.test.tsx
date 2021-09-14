@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { MarkdownPreview } from './MarkdownPreview';
 
 describe('The MarkdownPreview component', () => {
-  let markdownSource =
+  const markdownSource =
     '* Lists\n' +
     '* [ ] todo\n' +
     '* [x] done\n' +

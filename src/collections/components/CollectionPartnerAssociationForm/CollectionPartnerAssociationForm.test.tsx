@@ -11,7 +11,7 @@ import { CollectionPartnerAssociationForm } from './CollectionPartnerAssociation
 describe('The CollectionPartnerAssociationForm component', () => {
   let association: CollectionPartnerAssociation;
   let partners: CollectionPartner[];
-  let handleSubmit = jest.fn();
+  const handleSubmit = jest.fn();
 
   beforeEach(() => {
     association = {

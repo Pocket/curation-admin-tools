@@ -30,6 +30,7 @@ const useStyles = makeStyles(() =>
  * Prospects/Snoozed/Approved/Rejected. Optionally shows a Chip with
  * the number of articles available on that tab.
  */
+// eslint-disable-next-line react/display-name
 export const TabLink = React.forwardRef<
   HTMLAnchorElement,
   LinkProps & TabLinkProps

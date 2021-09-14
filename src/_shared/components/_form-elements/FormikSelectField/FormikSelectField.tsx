@@ -46,31 +46,30 @@ interface FormikSelectFieldProps {
  * down the properties of interest to the field itself.
  */
 
-export const FormikSelectField: React.FC<
-  FormikSelectFieldProps & SelectProps
-> = (props): JSX.Element => {
-  const { id, label, fieldProps, fieldMeta, children, ...otherProps } = props;
-  const classes = useStyles();
+export const FormikSelectField: React.FC<FormikSelectFieldProps & SelectProps> =
+  (props): JSX.Element => {
+    const { id, label, fieldProps, fieldMeta, children, ...otherProps } = props;
+    const classes = useStyles();
 
-  return (
-    <FormControl variant="outlined" className={classes.formControl}>
-      <InputLabel htmlFor={id}>{label}</InputLabel>
-      <Select
-        native
-        label={label}
-        inputProps={{
-          name: id,
-          id,
-        }}
-        {...fieldProps}
-        error={!!(fieldMeta.touched && fieldMeta.error)}
-        {...otherProps}
-      >
-        {children}
-      </Select>
-      <FormHelperText error>
-        {fieldMeta.error ? fieldMeta.error : null}
-      </FormHelperText>
-    </FormControl>
-  );
-};
+    return (
+      <FormControl variant="outlined" className={classes.formControl}>
+        <InputLabel htmlFor={id}>{label}</InputLabel>
+        <Select
+          native
+          label={label}
+          inputProps={{
+            name: id,
+            id,
+          }}
+          {...fieldProps}
+          error={!!(fieldMeta.touched && fieldMeta.error)}
+          {...otherProps}
+        >
+          {children}
+        </Select>
+        <FormHelperText error>
+          {fieldMeta.error ? fieldMeta.error : null}
+        </FormHelperText>
+      </FormControl>
+    );
+  };

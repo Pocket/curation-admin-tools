@@ -3,13 +3,19 @@ module.exports = {
     'eslint:recommended',
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
+    'plugin:react/recommended',
     'plugin:prettier/recommended',
   ],
   ignorePatterns: [
-    'collections/src/api/collection-api/generatedTypes.ts',
-    'collections/src/api/client-api/generatedTypes.ts',
+    'src/collections/api/collection-api/generatedTypes.ts',
+    'src/collections/api/client-api/generatedTypes.ts',
   ],
-  plugins: [],
+  parserOptions: {
+    ecmaFeatures: {
+      jsx: true,
+    },
+  },
+  plugins: ['react'],
   rules: {
     'prettier/prettier': [
       'error',
@@ -20,6 +26,9 @@ module.exports = {
         singleQuote: true,
       },
     ],
+    // We don't use prop types in React, TypeScript interfaces is enough
+    'react/prop-types': 0,
+
     // allows unused vars when declared in arguments
     '@typescript-eslint/no-unused-vars': [
       'error',
@@ -31,24 +40,15 @@ module.exports = {
     '@typescript-eslint/camelcase': 0,
     // allows 'any' typehint
     '@typescript-eslint/no-explicit-any': 0,
-    // enforces 2 spaces indent
-    indent: [
-      'error',
-      2,
-      {
-        SwitchCase: 1,
-        VariableDeclarator: { var: 2, let: 2, const: 3 },
-        outerIIFEBody: 1,
-        MemberExpression: 1,
-        FunctionDeclaration: { parameters: 1, body: 1 },
-        FunctionExpression: { parameters: 1, body: 1 },
-        CallExpression: { arguments: 1 },
-        ArrayExpression: 1,
-        ObjectExpression: 1,
-        ImportDeclaration: 1,
-        flatTernaryExpressions: false,
-        ignoreComments: false,
-      },
-    ],
+    // we rely on this heavily, knowing data will be returned by the API
+    // TODO: review the code that requires this rule to be turned off for now
+    '@typescript-eslint/no-non-null-asserted-optional-chain': 0,
+  },
+  settings: {
+    react: {
+      // Settings for eslint-plugin-react
+      pragma: 'React',
+      version: 'detect',
+    },
   },
 };

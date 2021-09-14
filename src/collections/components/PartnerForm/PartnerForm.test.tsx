@@ -6,7 +6,7 @@ import { CollectionPartner } from '../../api/collection-api/generatedTypes';
 
 describe('The PartnerForm component', () => {
   let partner: CollectionPartner;
-  let handleSubmit = jest.fn();
+  const handleSubmit = jest.fn();
 
   beforeEach(() => {
     partner = {

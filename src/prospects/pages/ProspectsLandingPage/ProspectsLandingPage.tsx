@@ -11,7 +11,7 @@ import {
  */
 export const ProspectsLandingPage = (): JSX.Element => {
   // Get the base path (/prospects)
-  let { path } = useRouteMatch();
+  const { path } = useRouteMatch();
 
   const menuLinks: MenuLink[] = [
     {
