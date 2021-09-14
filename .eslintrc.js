@@ -43,6 +43,8 @@ module.exports = {
     // we rely on this heavily, knowing data will be returned by the API
     // TODO: review the code that requires this rule to be turned off for now
     '@typescript-eslint/no-non-null-asserted-optional-chain': 0,
+    '@typescript-eslint/no-non-null-assertion': 0,
+    '@typescript-eslint/explicit-module-boundary-types': 0,
   },
   settings: {
     react: {
