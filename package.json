@@ -1,0 +1,79 @@
+{
+  "name": "curation-admin-tools",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@apollo/client": "^3.4.11",
+    "@graphql-codegen/cli": "^2.2.0",
+    "@graphql-codegen/typescript": "^2.2.2",
+    "@graphql-codegen/typescript-operations": "^2.1.4",
+    "@graphql-codegen/typescript-react-apollo": "^3.1.4",
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "@material-ui/lab": "^4.0.0-alpha.60",
+    "@sentry/react": "^6.12.0",
+    "@sentry/tracing": "^6.12.0",
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^12.1.0",
+    "@testing-library/user-event": "^13.2.1",
+    "@types/apollo-upload-client": "^14.1.0",
+    "@types/jest": "^27.0.1",
+    "@types/node": "^16.9.1",
+    "@types/react": "^17.0.20",
+    "@types/react-beautiful-dnd": "^13.1.2",
+    "@types/react-dom": "^17.0.9",
+    "@types/react-router-dom": "^5.1.8",
+    "apollo-upload-client": "^16.0.0",
+    "formik": "^2.2.9",
+    "graphql": "^15.5.3",
+    "notistack": "^1.0.10",
+    "react": "^17.0.2",
+    "react-beautiful-dnd": "^13.1.0",
+    "react-dom": "^17.0.2",
+    "react-dropzone": "^11.3.4",
+    "react-markdown": "^6.0.3",
+    "react-router-dom": "^5.3.0",
+    "react-scripts": "4.0.3",
+    "slugify": "^1.6.0",
+    "typescript": "^4.4.3",
+    "web-vitals": "^2.1.0",
+    "yup": "^0.32.9"
+  },
+  "scripts": {
+    "start": "NODE_ENV=local react-scripts start",
+    "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint-check": "tsc --noEmit && eslint src/**/*.ts{,x}",
+    "lint-fix": "tsc --noEmit && eslint src/**/*.ts{,x} --fix",
+    "api:generate-collection-types": "graphql-codegen --config src/collections/config/collection-api-codegen.json -r dotenv/config",
+    "api:generate-client-types": "graphql-codegen --config src/collections/config/client-api-codegen.json -r dotenv/config"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@testing-library/react-hooks": "^7.0.2",
+    "@typescript-eslint/eslint-plugin": "^4.31.0",
+    "@typescript-eslint/parser": "^4.31.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.4.0"
+  }
+}

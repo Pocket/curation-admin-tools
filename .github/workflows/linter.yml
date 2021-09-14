@@ -4,7 +4,7 @@
 ## Linter GitHub Actions ##
 ###########################
 ###########################
-name: Lint Code Base
+name: Curation Admin Tools
 
 #
 # Documentation:
@@ -47,15 +47,15 @@ jobs:
         uses: actions/setup-node@v2.4.0
         with:
           node-version: 16.x
-      - run: cd collections && npm install
+      - run: npm install
 
       ################################
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
-        uses: docker://github/super-linter:v3
+        uses: docker://ghcr.io/github/super-linter:slim-v4
         env:
-          DEFAULT_BRANCH: master
+          DEFAULT_BRANCH: main
           LINTER_RULES_PATH: /
           VALIDATE_ALL_CODEBASE: true
           TYPESCRIPT_ES_CONFIG_FILE: .eslintrc.js
