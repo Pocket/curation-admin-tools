@@ -1,4 +1,4 @@
-name: Collections Admin UI CI
+name: Curation Admin Tools
 
 on:
   push:
@@ -12,11 +12,12 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+      name: Run Unit Tests
 
     defaults:
       run:
         shell: bash
-        working-directory: collections
+        working-directory: ./
 
     strategy:
       matrix:
