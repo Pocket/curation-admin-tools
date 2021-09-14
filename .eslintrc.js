@@ -10,14 +10,12 @@ module.exports = {
     'src/collections/api/collection-api/generatedTypes.ts',
     'src/collections/api/client-api/generatedTypes.ts',
   ],
-  /*
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
     },
   },
   plugins: ['react'],
-  */
   rules: {
     'prettier/prettier': [
       'error',
@@ -48,7 +46,6 @@ module.exports = {
     '@typescript-eslint/no-non-null-assertion': 0,
     '@typescript-eslint/explicit-module-boundary-types': 0,
   },
-  /*
   settings: {
     react: {
       // Settings for eslint-plugin-react
@@ -56,5 +53,4 @@ module.exports = {
       version: 'detect',
     },
   },
-  */
 };
