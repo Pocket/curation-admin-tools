@@ -28,7 +28,7 @@ function createPagerDuty(scope: Construct) {
     }
   );
 
-  return new PocketPagerDuty(scope, 'pagerduty', {
+  return new PocketPagerDuty(scope, 'pagerduty_policies', {
     prefix: config.prefix,
     service: {
       criticalEscalationPolicyId: incidentManagement.get(
