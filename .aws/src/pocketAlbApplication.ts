@@ -196,7 +196,7 @@ export function createPocketAlbApplication(
     },
     alarms: {
       //TODO: When we start using this more we will change from non-critical to critical
-      http5xxError: {
+      http5xxErrorPercentage: {
         threshold: 10,
         evaluationPeriods: 2,
         period: 600,
@@ -206,12 +206,7 @@ export function createPocketAlbApplication(
         evaluationPeriods: 2,
         threshold: 500,
         actions: isDev ? [] : [pagerDuty.snsNonCriticalAlarmTopic.arn],
-      },
-      httpRequestCount: {
-        threshold: 5000,
-        evaluationPeriods: 2,
-        actions: isDev ? [] : [pagerDuty.snsNonCriticalAlarmTopic.arn],
-      },
+      }
     },
   });
 }

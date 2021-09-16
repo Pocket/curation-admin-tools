@@ -2,7 +2,7 @@ import { Construct } from 'constructs';
 import { App, RemoteBackend, TerraformStack } from 'cdktf';
 import { AwsProvider } from '@cdktf/provider-aws';
 import { config } from './config';
-import { PagerdutyProvider } from '../.gen/providers/pagerduty';
+import { PagerdutyProvider } from '@cdktf/provider-pagerduty';
 import {
   createApplicationCodePipeline,
   createPocketAlbApplication,
