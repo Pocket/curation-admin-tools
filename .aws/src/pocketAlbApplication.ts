@@ -195,17 +195,12 @@ export function createPocketAlbApplication(
       targetMaxCapacity: 10,
     },
     alarms: {
-      //TODO: When we start using this more we will change from non-critical to critical
+      // alarms if >=25% of http responses are 5xx over 20 minutes
       http5xxErrorPercentage: {
-        threshold: 10,
-        evaluationPeriods: 2,
-        period: 600,
-        actions: isDev ? [] : [pagerDuty.snsNonCriticalAlarmTopic.arn],
-      },
-      httpLatency: {
-        evaluationPeriods: 2,
-        threshold: 500,
-        actions: isDev ? [] : [pagerDuty.snsNonCriticalAlarmTopic.arn],
+        threshold: 25, // 25%
+        evaluationPeriods: 4,
+        period: 300, // 5 minutes
+        actions: isDev ? [] : [pagerDuty.snsCriticalAlarmTopic.arn],
       }
     },
   });
