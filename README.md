@@ -1,5 +1,7 @@
 # Curation Admin Tools - A Suite 🎩
 
+This repository is home to a suite of internal tools for Pocket curators developed with React.
+
 ## Local Setup
 
 Check out the repository and install packages:
@@ -19,6 +21,17 @@ REACT_APP_CLIENT_API_ENDPOINT="[YOUR_CLIENT_API_ADDRESS_HERE]"
 REACT_APP_COLLECTION_API_ENDPOINT="[YOUR_COLLECTION_API_ADDRESS_HERE]"
 ```
 
+_Tip_: it is easiest to work with the Curation Tools Frontend by pointing to production Client API and spinning up Collection API locally. For setting up Collection API on your machine, refer to instructions here: https://github.com/Pocket/collection-api.
+
+However, if you need to test image uploads, the best option is to connect to the Dev Collection API which sends images to S3 just like the production code does. Make sure the `dev` branch is up-to-date before using the Dev environment. If it's a number of commits behind, check out the `main` branch locally, make sure you have the latest code and deploy it to Dev:
+
+```bash
+cd collection-api
+git checkout main
+git pull
+git push -f origin main:dev
+```
+
 Start the React app:
 
 ```bash
@@ -29,11 +42,37 @@ The app will open in your default browser at [http://localhost:3000](http://loca
 
 ## Testing
 
-To run the tests in watch mode, run the following command
+To run the tests in watch mode, run the following command:
 
 ```bash
 npm run test
 ```
+
+## App structure
+
+The `src/_shared` folder houses the basic building blocks of the app, such as any UI components that can be reused across different tools, useful helper functions and React hooks.
+
+`src/collections` is the home for Collections Admin Tool that lets Pocket curators create, edit and publish collections of stories for Pocket users.
+
+`src/prospects` will house the new Prospecting Tool (_details TBA_).
+
+Within the folder for each tool, the structure is as follows (taking Collections as an example):
+
+```bash
+collections/
+├─ api/
+│  ├─ client-api/
+│  ├─ collection-api/
+├─ components/
+├─ pages/
+├─ utils/
+```
+
+Each API endpoint has its own folder with queries and mutations used with that endpoint, connection setup and generated types - see below in more detail about those.
+
+The `components` folder houses any components specific to that particular tool, for example, `CollectionListCard`. The `pages` folder is home to page-level components, i.e. `AddCollectionPage`.
+
+All components are functional React components. Each component lives in its own folder. Unit tests, styles, validation schemas (for form components) are placed in separate files alongside each component.
 
 ## Consuming data
 
