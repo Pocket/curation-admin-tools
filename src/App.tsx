@@ -7,6 +7,7 @@ import theme from './theme';
 import { LandingPage } from './_shared/pages';
 import { CollectionsLandingPage } from './collections/pages';
 import { ProspectsLandingPage } from './prospects/pages';
+import { Login } from './Login';
 
 function App(): JSX.Element {
   return (
@@ -15,6 +16,8 @@ function App(): JSX.Element {
         <BrowserRouter>
           <>
             <Switch>
+              <Route path="/login" component={Login} />
+              {/*<Route path="/oauth_callback" component={LoginCallback} />*/}
               <Route exact path="/">
                 <LandingPage />
               </Route>
