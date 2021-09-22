@@ -18,7 +18,7 @@
     "@testing-library/user-event": "^13.2.1",
     "@types/apollo-upload-client": "^14.1.0",
     "@types/jest": "^27.0.2",
-    "@types/node": "^16.9.4",
+    "@types/node": "^16.9.6",
     "@types/react": "^17.0.22",
     "@types/react-beautiful-dnd": "^13.1.2",
     "@types/react-dom": "^17.0.9",
