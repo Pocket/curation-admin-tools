@@ -51,7 +51,7 @@ import {
   useToggle,
 } from '../../../_shared/hooks';
 import { transformAuthors } from '../../utils/transformAuthors';
-import { config } from '../../config';
+import { config } from '../../../config';
 
 interface CollectionPageProps {
   collection?: Omit<Collection, 'stories'>;

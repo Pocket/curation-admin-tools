@@ -21,7 +21,7 @@ import {
   useUpdateCollectionPartnerImageUrlMutation,
   useUpdateCollectionPartnerMutation,
 } from '../../api/collection-api/generatedTypes';
-import { config } from '../../config';
+import { config } from '../../../config';
 
 interface PartnerPageProps {
   partner?: CollectionPartner;

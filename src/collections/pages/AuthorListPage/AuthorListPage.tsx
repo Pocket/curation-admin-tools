@@ -12,7 +12,7 @@ import {
   useGetAuthorsQuery,
 } from '../../api/collection-api/generatedTypes';
 import { useFetchMoreResults } from '../../../_shared/hooks';
-import { config } from '../../config';
+import { config } from '../../../config';
 
 /**
  * Author List Page

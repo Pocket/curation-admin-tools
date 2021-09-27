@@ -17,7 +17,7 @@ import {
   SharedFormButtonsProps,
 } from '../../../_shared/components';
 import { validationSchema } from './AuthorForm.validation';
-import { config } from '../../config';
+import { config } from '../../../config';
 import { CollectionAuthor } from '../../api/collection-api/generatedTypes';
 
 interface AuthorFormProps {

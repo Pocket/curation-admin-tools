@@ -24,7 +24,7 @@ import {
 import { HandleApiResponse } from '../../../_shared/components';
 import { CollectionPartnerAssociationForm, ImageUpload } from '../';
 import { useRunMutation, useToggle } from '../../../_shared/hooks';
-import { config } from '../../config';
+import { config } from '../../../config';
 
 interface AssociationPreviewProps {
   /**

@@ -10,7 +10,7 @@ import {
   GetCollectionPartnersDocument,
   useCreateCollectionPartnerMutation,
 } from '../../api/collection-api/generatedTypes';
-import { config } from '../../config';
+import { config } from '../../../config';
 
 export const AddPartnerPage: React.FC = (): JSX.Element => {
   // Prepare state vars and helper methods for API notifications

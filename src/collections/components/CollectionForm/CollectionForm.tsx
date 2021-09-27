@@ -13,7 +13,7 @@ import {
 } from '../../../_shared/components';
 import { getValidationSchema } from './CollectionForm.validation';
 import { useStyles } from './CollectionForm.styles';
-import { config } from '../../config';
+import { config } from '../../../config';
 import {
   Collection,
   CollectionAuthor,

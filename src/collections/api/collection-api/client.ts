@@ -1,6 +1,6 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client';
-import { config } from '../../config';
+import { config } from '../../../config';
 import {
   getCollectionAuthorsFieldPolicy,
   getCollectionPartnersFieldPolicy,
