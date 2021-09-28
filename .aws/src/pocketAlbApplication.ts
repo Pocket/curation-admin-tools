@@ -2,7 +2,7 @@ import {
   PocketALBApplication,
   PocketECSCodePipeline,
   PocketPagerDuty,
-} from '@pocket/terraform-modules';
+} from '@pocket-tools/terraform-modules';
 import { config, isDev } from './config';
 import { Construct } from 'constructs';
 import { DataTerraformRemoteState } from 'cdktf';
@@ -201,7 +201,7 @@ export function createPocketAlbApplication(
         evaluationPeriods: 4,
         period: 300, // 5 minutes
         actions: isDev ? [] : [pagerDuty.snsCriticalAlarmTopic.arn],
-      }
+      },
     },
   });
 }
