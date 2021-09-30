@@ -10,6 +10,12 @@ export const config = {
       ? 'https://collection-api.readitlater.com/admin'
       : 'https://collection-api.getpocket.dev/admin')
   }`,
+  curatedCorpusApiEndpoint: `${
+    process.env.REACT_APP_CURATED_CORPUS_API_ENDPOINT ??
+    (isProduction
+      ? 'https://curated-corpus-api.readitlater.com/admin'
+      : 'https://curated-corpus-api.getpocket.dev/admin')
+  }`,
   //Client api only exists on production
   clientApiEndpoint: `${
     process.env.REACT_APP_CLIENT_API_ENDPOINT ??
@@ -20,6 +26,7 @@ export const config = {
     authorsPerPage: 30,
     collectionsPerPage: 30,
     partnersPerPage: 30,
+    curatedItemsPerPage: 30,
     valuesPerDropdown: 1000,
   },
   //Not a secret since the  app is client side

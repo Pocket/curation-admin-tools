@@ -1,10 +1,13 @@
 import React from 'react';
-import { useRouteMatch } from 'react-router-dom';
+import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
 import {
   Header,
   MainContentWrapper,
   MenuLink,
 } from '../../../_shared/components';
+import { CuratedItemsPage } from '../';
+import { client } from '../../../prospects/api/curated-corpus-api/client';
+import { ApolloProvider } from '@apollo/client';
 
 /**
  * Prospects landing page
@@ -19,21 +22,27 @@ export const ProspectsLandingPage = (): JSX.Element => {
       url: `${path}/prospects/`,
     },
     {
-      text: 'Links',
-      url: `${path}/222/`,
-    },
-    {
-      text: 'Links',
-      url: `${path}/333/`,
+      text: 'Corpus',
+      url: `${path}/corpus/`,
     },
   ];
 
   return (
-    <>
+    <ApolloProvider client={client}>
       <Header productName="Prospect Curation" menuLinks={menuLinks} />
       <MainContentWrapper>
-        <h2>Prospects! Hooray!</h2>
+        <Switch>
+          <Route exact path={`${path}/`}>
+            <h2>Prospects landing page!</h2>
+            <p>
+              Try going to the <Link to={`${path}/corpus/`}>Corpus</Link> page
+            </p>
+          </Route>
+          <Route exact path={`${path}/corpus/`}>
+            <CuratedItemsPage />
+          </Route>
+        </Switch>
       </MainContentWrapper>
-    </>
+    </ApolloProvider>
   );
 };

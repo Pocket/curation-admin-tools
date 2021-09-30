@@ -1,0 +1,26 @@
+{
+  "overwrite": true,
+  "schema": [ "${REACT_APP_CURATED_CORPUS_API_ENDPOINT}"],
+  "documents": [
+    "src/prospects/api/curated-corpus-api/queries/*.ts",
+    "src/prospects/api/curated-corpus-api/mutations/*.ts",
+    "src/prospects/api/curated-corpus-api/fragments/*.ts"
+  ],
+  "generates": {
+    "src/prospects/api/curated-corpus-api/generatedTypes.ts": {
+      "plugins": [
+        "typescript",
+        "typescript-operations",
+        "typescript-react-apollo"
+      ],
+      "config": {
+        "federation": true
+      }
+    }
+  },
+  "hooks": {
+    "afterAllFileWrite": [
+      "prettier -w src/prospects/api/curated-corpus-api/generatedTypes.ts"
+    ]
+  }
+}
