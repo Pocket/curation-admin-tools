@@ -25,7 +25,7 @@
     "@types/react-router-dom": "^5.3.0",
     "apollo-upload-client": "^16.0.0",
     "formik": "^2.2.9",
-    "graphql": "^15.6.0",
+    "graphql": "^15.6.1",
     "notistack": "^1.0.10",
     "react": "^17.0.2",
     "react-beautiful-dnd": "^13.1.0",
