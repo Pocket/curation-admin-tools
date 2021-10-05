@@ -32,7 +32,7 @@ REACT_APP_COLLECTION_API_ENDPOINT=http://localhost:4004/admin
 REACT_APP_CURATED_CORPUS_API_ENDPOINT=http://localhost:4025/admin
 ```
 
-Alternatively, connect to the versions of the above API deployed to the Pocket Development environment:
+Alternatively, connect to the versions of the above API deployed to the Pocket Development environment. Note that you will need to be connected to the Pocket Dev VPN to access these endpoints:
 
 ```dotenv
 REACT_APP_COLLECTION_API_ENDPOINT=https://collection-api.getpocket.dev/admin
@@ -64,7 +64,7 @@ git push -f origin main:dev
 
 This is useful for user acceptance testing, live demos of as-yet-not-merged features and code reviews by team members outside of your immediate team who may not have the time to go through all of the setup steps to be able to review a pull request.
 
-The Dev checkout is available at [https://curation-admin-tools.getpocket.dev/](https://curation-admin-tools.getpocket.dev/).
+The Dev checkout is available at [https://curation-admin-tools.getpocket.dev/](https://curation-admin-tools.getpocket.dev/). Note that this address is also accessible only via the Pocket Dev VPN.
 
 To deploy the latest changes merged to `main` to Dev, run the following command in your terminal:
 
