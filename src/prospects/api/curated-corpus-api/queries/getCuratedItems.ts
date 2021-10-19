@@ -1,29 +1,29 @@
 import { gql } from '@apollo/client';
+import { CuratedItemData } from '../fragments/curatedItemData';
 
 /**
- * Get a list of curated items - no frills! yet
+ * Get a list of curated items
  */
 export const getCuratedItems = gql`
-  query getCuratedItems($page: Int, $perPage: Int) {
-    getCuratedItems(page: $page, perPage: $perPage) {
-      items {
-        externalId
-        title
-        language
-        url
-        imageUrl
-        excerpt
-        status
-        createdBy
-        createdAt
-        updatedAt
+  query getCuratedItems(
+    $filters: CuratedItemFilter
+    $pagination: PaginationInput
+  ) {
+    getCuratedItems(filters: $filters, pagination: $pagination) {
+      totalCount
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
       }
-      pagination {
-        currentPage
-        totalPages
-        totalResults
-        perPage
+      edges {
+        cursor
+        node {
+          ...CuratedItemData
+        }
       }
     }
   }
+  ${CuratedItemData}
 `;
