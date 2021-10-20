@@ -1,20 +1,19 @@
 import React from 'react';
 import { useFetchMoreResults } from '../../../_shared/hooks';
-import { config } from '../../../config';
 import {
-  CuratedItem,
+  CuratedItemEdge,
   useGetCuratedItemsQuery,
 } from '../../api/curated-corpus-api/generatedTypes';
 import { HandleApiResponse, LoadMore } from '../../../_shared/components';
-import { CuratedItemListCard } from '../../components';
+import { CuratedItemListCard, CuratedItemSearchForm } from '../../components';
+import { config } from '../../../config';
 
 export const CuratedItemsPage: React.FC = (): JSX.Element => {
   const [loading, reloading, error, data, updateData] = useFetchMoreResults(
     useGetCuratedItemsQuery,
     {
       variables: {
-        perPage: config.pagination.curatedItemsPerPage,
-        page: 1,
+        pagination: { first: config.pagination.curatedItemsPerPage },
       },
     }
   );
@@ -23,18 +22,31 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
     <>
       <h1>Curated Corpus</h1>
 
+      <CuratedItemSearchForm
+        onSubmit={() => {
+          // This arrow function is not empty.
+          // Take that, ESLint!
+        }}
+      />
       {!data && <HandleApiResponse loading={loading} error={error} />}
 
       {data &&
-        data.getCuratedItems.items.map((item: CuratedItem) => {
-          return <CuratedItemListCard key={item.externalId} item={item} />;
+        data.getCuratedItems.edges.map((edge: CuratedItemEdge) => {
+          if (edge.node) {
+            return (
+              <CuratedItemListCard
+                key={edge.node?.externalId}
+                item={edge.node}
+              />
+            );
+          }
         })}
 
       {data && (
         <LoadMore
           buttonDisabled={
-            data.getCuratedItems.items.length ===
-            data.getCuratedItems.pagination?.totalResults
+            data.getCuratedItems.edges.length ===
+            data.getCuratedItems.totalCount
           }
           loadMore={updateData}
           showSpinner={reloading}
