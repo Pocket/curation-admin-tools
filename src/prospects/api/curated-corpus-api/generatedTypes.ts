@@ -1,5 +1,6 @@
-import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+import { gql } from '@apollo/client';
+
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K];
@@ -157,8 +158,6 @@ export type CuratedItemFilter = {
 export enum CuratedStatus {
   /** This story is suitable for our curated corpus. It's a second-tier recommendation. */
   Corpus = 'CORPUS',
-  /** Do not use this story. */
-  Decline = 'DECLINE',
   /** Recommend this story for Pocket users. This is first-tier content. */
   Recommendation = 'RECOMMENDATION',
 }

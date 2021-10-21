@@ -22,8 +22,8 @@ export const ProspectsLandingPage = (): JSX.Element => {
       url: `${path}/prospects/`,
     },
     {
-      text: 'Corpus',
-      url: `${path}/corpus/`,
+      text: 'Live Corpus',
+      url: `${path}/live-corpus/`,
     },
   ];
 
@@ -35,10 +35,11 @@ export const ProspectsLandingPage = (): JSX.Element => {
           <Route exact path={`${path}/`}>
             <h2>Prospects landing page!</h2>
             <p>
-              Try going to the <Link to={`${path}/corpus/`}>Corpus</Link> page
+              Try going to the{' '}
+              <Link to={`${path}/live-corpus/`}>Live Corpus</Link> page
             </p>
           </Route>
-          <Route exact path={`${path}/corpus/`}>
+          <Route exact path={`${path}/live-corpus/`}>
             <CuratedItemsPage />
           </Route>
         </Switch>

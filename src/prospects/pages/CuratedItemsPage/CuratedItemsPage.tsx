@@ -20,7 +20,7 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
 
   return (
     <>
-      <h1>Curated Corpus</h1>
+      <h1>Live Corpus</h1>
 
       <CuratedItemSearchForm
         onSubmit={() => {

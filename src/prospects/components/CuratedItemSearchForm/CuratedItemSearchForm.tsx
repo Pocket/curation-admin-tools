@@ -1,12 +1,14 @@
 import React from 'react';
-import { FormikValues, useFormik } from 'formik';
-import { Box, Grid } from '@material-ui/core';
+import { FormikHelpers, FormikValues, useFormik } from 'formik';
+import { Grid } from '@material-ui/core';
+import { CuratedStatus } from '../../api/curated-corpus-api/generatedTypes';
 import {
   Button,
   FormikSelectField,
   FormikTextField,
 } from '../../../_shared/components';
-import { FormikHelpers } from 'formik/dist/types';
+import { validationSchema } from './CuratedItemSearchForm.validation';
+import { languages, topics } from '../../helpers/definitions';
 
 interface CuratedItemSearchFormProps {
   /**
@@ -26,26 +28,6 @@ export const CuratedItemSearchForm: React.FC<CuratedItemSearchFormProps> = (
 ): JSX.Element => {
   const { onSubmit } = props;
 
-  // Lifted from Collection API - Curation Categories
-  // Where do we get this from/store in this tool?
-  const topics = [
-    { slug: 'business', name: 'Business' },
-    { slug: 'career', name: 'Career' },
-    { slug: 'coronavirus', name: 'Coronavirus' },
-    { slug: 'education', name: 'Education' },
-    { slug: 'entertainment', name: 'Entertainment' },
-    { slug: 'food', name: 'Food' },
-    { slug: 'health-and-fitness', name: 'Health & Fitness' },
-    { slug: 'parenting', name: 'Parenting' },
-    { slug: 'personal-finance', name: 'Personal Finance' },
-    { slug: 'politics', name: 'Politics' },
-    { slug: 'science', name: 'Science' },
-    { slug: 'self-improvement', name: 'Self Improvement' },
-    { slug: 'sports', name: 'Sports' },
-    { slug: 'technology', name: 'Technology' },
-    { slug: 'travel', name: 'Travel' },
-  ];
-
   /**
    * Set up form validation
    */
@@ -55,12 +37,13 @@ export const CuratedItemSearchForm: React.FC<CuratedItemSearchFormProps> = (
       url: '',
       topic: '',
       language: '',
+      status: '',
     },
     // We don't want to irritate users by displaying validation errors
     // before they actually submit the form
     validateOnBlur: false,
     validateOnChange: false,
-    // validationSchema: getValidationSchema(topics, languageCodes, statusCodes),
+    validationSchema,
     onSubmit: (values, formikHelpers) => {
       onSubmit(values, formikHelpers);
     },
@@ -72,7 +55,7 @@ export const CuratedItemSearchForm: React.FC<CuratedItemSearchFormProps> = (
         <Grid item xs={12}>
           <FormikTextField
             id="title"
-            label="Title"
+            label="Filter by Title"
             fieldProps={formik.getFieldProps('title')}
             fieldMeta={formik.getFieldMeta('title')}
           />
@@ -81,14 +64,26 @@ export const CuratedItemSearchForm: React.FC<CuratedItemSearchFormProps> = (
         <Grid item xs={12}>
           <FormikTextField
             id="url"
-            label="URL"
+            label="Filter by URL"
             fieldProps={formik.getFieldProps('url')}
             fieldMeta={formik.getFieldMeta('url')}
           />
         </Grid>
       </Grid>
 
-      <Grid container xs={12} spacing={2}>
+      <Grid container spacing={3}>
+        <Grid item xs={12} sm={4}>
+          <FormikSelectField
+            id="status"
+            label="Status"
+            fieldProps={formik.getFieldProps('status')}
+            fieldMeta={formik.getFieldMeta('status')}
+          >
+            <option aria-label="None" value="" />
+            <option value={CuratedStatus.Recommendation}>Recommendation</option>
+            <option value={CuratedStatus.Corpus}>Corpus</option>
+          </FormikSelectField>
+        </Grid>
         <Grid item xs={12} sm={4}>
           <FormikSelectField
             id="topic"
@@ -99,7 +94,7 @@ export const CuratedItemSearchForm: React.FC<CuratedItemSearchFormProps> = (
             <option aria-label="None" value="" />
             {topics.map((topic) => {
               return (
-                <option value={topic.slug} key={topic.slug}>
+                <option value={topic.code} key={topic.code}>
                   {topic.name}
                 </option>
               );
@@ -114,28 +109,19 @@ export const CuratedItemSearchForm: React.FC<CuratedItemSearchFormProps> = (
             fieldMeta={formik.getFieldMeta('language')}
           >
             <option aria-label="None" value="" />
-            <option value="en">English</option>
-            <option value="de">German</option>
-          </FormikSelectField>
-        </Grid>
-        <Grid item xs={12} sm={4}>
-          <FormikSelectField
-            id="status"
-            label="Status"
-            fieldProps={formik.getFieldProps('status')}
-            fieldMeta={formik.getFieldMeta('status')}
-          >
-            <option aria-label="None" value="" />
-            <option value="RECOMMENDATION">Recommendation</option>
-            <option value="CORPUS">Corpus</option>
+            {languages.map((language) => {
+              return (
+                <option value={language.code} key={language.code}>
+                  {language.name}
+                </option>
+              );
+            })}
           </FormikSelectField>
         </Grid>
         <Grid item xs={12}>
-          <Box display="flex">
-            <Button buttonType="positive" type="submit" fullWidth>
-              Search
-            </Button>
-          </Box>
+          <Button buttonType="positive" type="submit" fullWidth>
+            Search
+          </Button>
         </Grid>
       </Grid>
     </form>
