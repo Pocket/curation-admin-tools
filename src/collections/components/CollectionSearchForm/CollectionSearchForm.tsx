@@ -19,7 +19,7 @@ interface CollectionSearchFormProps {
 }
 
 /**
- * A form for adding authors or editing information for existing authors
+ * A form for searching collections.
  */
 export const CollectionSearchForm: React.FC<CollectionSearchFormProps> = (
   props
