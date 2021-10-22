@@ -6,33 +6,41 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      margin: 'auto',
-      padding: '1.25rem 0.25rem',
-      border: 0,
-      borderBottom: `1px solid ${theme.palette.grey[300]}`,
-      cursor: 'pointer',
-      '&:active': {
-        backgroundColor: theme.palette.grey[300],
-      },
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
     },
-    image: {
-      borderRadius: 4,
+    actions: {
+      margin: 'auto',
+    },
+    content: {
+      padding: '0.5rem',
+    },
+    flexGrow: {
+      flexGrow: 1,
     },
     link: {
       textDecoration: 'none',
-      padding: '1.25 rem 0',
+      color: theme.palette.grey[900],
+    },
+    list: {
+      borderBottom: `1px solid ${theme.palette.grey[300]}`,
+    },
+    listItemIcon: {
+      minWidth: '2rem',
+    },
+    publisher: {
+      marginTop: '0.25rem',
+      fontWeight: 400,
+      fontSize: '0.875rem',
+      color: theme.palette.grey[600],
     },
     title: {
-      fontSize: '1.25rem',
+      fontSize: '1rem',
       fontWeight: 500,
     },
-    subtitle: {
-      fontWeight: 400,
-    },
-    [theme.breakpoints.down('sm')]: {
-      title: {
-        fontSize: '1rem',
-      },
+    status: {
+      textTransform: 'capitalize',
     },
   })
 );

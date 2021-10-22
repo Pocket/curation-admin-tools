@@ -1,17 +1,22 @@
 import React from 'react';
-import { useStyles } from './CuratedItemListCard.styles';
-import { Link } from 'react-router-dom';
 import {
-  Box,
   Card,
+  CardActions,
+  CardContent,
   CardMedia,
-  Chip,
-  Grid,
+  Link,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
   Typography,
 } from '@material-ui/core';
 import LanguageIcon from '@material-ui/icons/Language';
-import ReactMarkdown from 'react-markdown';
+import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
+import ThumbUpIcon from '@material-ui/icons/ThumbUp';
+import { useStyles } from './CuratedItemListCard.styles';
 import { CuratedItem } from '../../api/curated-corpus-api/generatedTypes';
+import { Button } from '../../../_shared/components';
 
 interface CuratedItemListCardProps {
   /**
@@ -27,61 +32,73 @@ export const CuratedItemListCard: React.FC<CuratedItemListCardProps> = (
   const { item } = props;
 
   return (
-    <Link
-      to={{
-        pathname: `/prospects/corpus/${item.externalId}/`,
-        state: { item },
-      }}
-      className={classes.link}
-    >
-      <Card variant="outlined" square className={classes.root}>
-        <Grid container spacing={2}>
-          <Grid item xs={4} sm={2}>
-            <CardMedia
-              component="img"
-              src={
-                item.imageUrl && item.imageUrl.length > 0
-                  ? item.imageUrl
-                  : '/placeholders/collectionSmall.svg'
-              }
-              alt={item.title}
-              className={classes.image}
-            />
-          </Grid>
-          <Grid item xs={8} sm={10}>
-            <Typography
-              className={classes.title}
-              variant="h3"
-              align="left"
-              gutterBottom
-            >
-              {item.title}
-            </Typography>
-            <Typography
-              className={classes.subtitle}
-              variant="subtitle2"
-              color="textSecondary"
-              component="span"
-              align="left"
-            >
-              <span>{item.status}</span>
-            </Typography>{' '}
-            <Box py={1}>
-              <Chip
-                variant="outlined"
-                color="primary"
-                label={item.language.toUpperCase()}
-                icon={<LanguageIcon />}
-              />
-            </Box>
-            <Typography noWrap component="div">
-              <ReactMarkdown>
-                {item.excerpt ? item.excerpt.substring(0, 100) : ''}
-              </ReactMarkdown>
-            </Typography>
-          </Grid>
-        </Grid>
-      </Card>
-    </Link>
+    <Card className={classes.root}>
+      <CardMedia
+        component="img"
+        src={
+          item.imageUrl && item.imageUrl.length > 0
+            ? item.imageUrl
+            : '/placeholders/collectionSmall.svg'
+        }
+        alt={item.title}
+      />
+      <CardContent className={classes.content}>
+        <Typography className={classes.publisher} gutterBottom>
+          Publisher Name
+        </Typography>
+        <Typography
+          className={classes.title}
+          variant="h3"
+          align="left"
+          gutterBottom
+        >
+          <Link href={item.url} className={classes.link}>
+            {item.title}
+          </Link>
+        </Typography>
+        <Typography variant="body2" component="p" gutterBottom>
+          {item.excerpt}
+        </Typography>
+      </CardContent>
+
+      {/* Push the rest of the elements to the bottom of the card. */}
+      <div className={classes.flexGrow} />
+
+      <List dense className={classes.list}>
+        <ListItem>
+          <ListItemIcon className={classes.listItemIcon}>
+            <ThumbUpIcon />
+          </ListItemIcon>
+          <ListItemText
+            className={classes.status}
+            primary={item.status.toLowerCase()}
+          />
+        </ListItem>
+        <ListItem>
+          <ListItemIcon className={classes.listItemIcon}>
+            <LabelOutlinedIcon />
+          </ListItemIcon>
+          <ListItemText primary={item.topic} />
+        </ListItem>
+        <ListItem>
+          <ListItemIcon className={classes.listItemIcon}>
+            <LanguageIcon />
+          </ListItemIcon>
+          <ListItemText primary={item.language.toUpperCase()} />
+        </ListItem>
+      </List>
+
+      <CardActions className={classes.actions}>
+        <Button buttonType="positive" variant="text">
+          Schedule
+        </Button>
+        <Button buttonType="negative" variant="text">
+          Reject
+        </Button>
+        <Button buttonType="positive" variant="text">
+          Edit
+        </Button>
+      </CardActions>
+    </Card>
   );
 };
