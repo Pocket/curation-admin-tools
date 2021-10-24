@@ -3,8 +3,8 @@ import {
    * backport from v.5 to fix deprecation warnings in Material UI
    * see here for details: https://github.com/mui-org/material-ui/issues/13394
    */
-  unstable_createMuiStrictModeTheme as createMuiTheme,
   Theme,
+  unstable_createMuiStrictModeTheme as createMuiTheme,
 } from '@material-ui/core/styles';
 
 /* Curation frontend colors */

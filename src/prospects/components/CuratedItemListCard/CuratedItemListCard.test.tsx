@@ -1,9 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter, Router } from 'react-router-dom';
-import { createMemoryHistory } from 'history';
-import { MockedProvider } from '@apollo/client/testing';
-import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
 import {
   CuratedItem,
   CuratedStatus,
@@ -43,10 +40,7 @@ describe('The CuratedItemListCard component', () => {
     // The link to the curated item page is present and is well-formed
     const link = screen.getByRole('link');
     expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute(
-      'href',
-      expect.stringContaining(item.externalId)
-    );
+    expect(link).toHaveAttribute('href', expect.stringContaining(item.url));
 
     // The excerpt is also present
     const excerpt = screen.getByText(/wanted to know about react/i);
@@ -79,36 +73,5 @@ describe('The CuratedItemListCard component', () => {
     );
 
     expect(screen.getByText(/^de$/i)).toBeInTheDocument();
-  });
-
-  it("links to an individual item's page", () => {
-    const history = createMemoryHistory({
-      initialEntries: ['/prospects/corpus/'],
-    });
-
-    render(
-      <MockedProvider>
-        <Router history={history}>
-          <CuratedItemListCard item={item} />
-        </Router>
-      </MockedProvider>
-    );
-
-    // While the entire card is a giant link, we can click on
-    // anything we like within that link - i.e., the title of the item
-    userEvent.click(screen.getByText(item.title));
-    expect(history.location.pathname).toEqual(
-      `/prospects/corpus/${item.externalId}/`
-    );
-
-    // Let's go back to the Corpus page
-    history.goBack();
-    expect(history.location.pathname).toEqual('/prospects/corpus/');
-
-    // And click on the image this time
-    userEvent.click(screen.getByRole('img'));
-    expect(history.location.pathname).toEqual(
-      `/prospects/corpus/${item.externalId}/`
-    );
   });
 });
