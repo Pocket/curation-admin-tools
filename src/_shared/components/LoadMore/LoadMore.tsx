@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, CircularProgress } from '@material-ui/core';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import { Button } from '../';
 
 interface LoadMoreProps {
@@ -33,12 +34,22 @@ export const LoadMore: React.FC<LoadMoreProps> = (props): JSX.Element => {
 
   return (
     <Box display="flex" justifyContent="center" mt={2}>
-      <Button buttonType="hollow" onClick={loadMore} disabled={buttonDisabled}>
+      <Button
+        buttonType="positive"
+        variant="text"
+        onClick={loadMore}
+        disabled={buttonDisabled}
+      >
         Load More Results
         {showSpinner && (
           <>
             &nbsp;
             <CircularProgress size={14} />
+          </>
+        )}
+        {!showSpinner && (
+          <>
+            &nbsp; <ArrowDownwardIcon />
           </>
         )}
       </Button>

@@ -26,11 +26,11 @@ export const LandingPage = (): JSX.Element => {
           </Grid>
           <Grid item xs={12} sm={6}>
             <Paper className={classes.paper}>
-              <Link to="/prospects" className={classes.link}>
+              <Link to="/curated-corpus" className={classes.link}>
                 <Typography variant="h3" component="div">
                   <LibraryAddCheckIcon fontSize="inherit" />
                 </Typography>
-                <h2>Prospects</h2>
+                <h2>Curated Corpus</h2>
               </Link>
             </Paper>
           </Grid>

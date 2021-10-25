@@ -21,8 +21,6 @@ export type Scalars = {
   Float: number;
   /** A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   Date: any;
-  /** A timestamp formatted as an ISO 8601 string. */
-  DateString: any;
   /** This is a temporary return type for a test query on the public API. */
   PCTest: any;
   /** A URL - usually, for an interesting story on the internet that's worth saving to Pocket. */
@@ -48,6 +46,8 @@ export type CreateCuratedItemInput = {
   language: Scalars['String'];
   /** Optionally, specify the external ID of the New Tab this item should be scheduled for. */
   newTabFeedExternalId?: Maybe<Scalars['ID']>;
+  /** The name of the online publication that published this story. */
+  publisher: Scalars['String'];
   /** Optionally, specify the date this item should be appearing on New Tab. Format: YYYY-MM-DD */
   scheduledDate?: Maybe<Scalars['Date']>;
   /** The outcome of the curators' review of the Curated Item. */
@@ -76,8 +76,8 @@ export type CreateNewTabFeedScheduledItemInput = {
 /** A prospective story that has been reviewed by the curators and saved to the curated corpus. */
 export type CuratedItem = {
   __typename?: 'CuratedItem';
-  /** An ISO-formatted timestamp of when the entity was created. */
-  createdAt: Scalars['DateString'];
+  /** A Unix timestamp of when the entity was created. */
+  createdAt: Scalars['Int'];
   /** A single sign-on user identifier of the user who created this entity. */
   createdBy: Scalars['String'];
   /** The excerpt of the story. */
@@ -100,6 +100,8 @@ export type CuratedItem = {
   isSyndicated: Scalars['Boolean'];
   /** What language this story is in. This is a two-letter code, for example, 'en' for English. */
   language: Scalars['String'];
+  /** The name of the online publication that published this story. */
+  publisher: Scalars['String'];
   /** The outcome of the curators' review. */
   status: CuratedStatus;
   /** The title of the story. */
@@ -109,8 +111,8 @@ export type CuratedItem = {
    * Temporarily a string value that will be provided by Prospect API, possibly an enum in the future.
    */
   topic: Scalars['String'];
-  /** An ISO-formatted timestamp of when the entity was last updated. */
-  updatedAt: Scalars['DateString'];
+  /** A Unix timestamp of when the entity was last updated. */
+  updatedAt: Scalars['Int'];
   /** A single sign-on user identifier of the user who last updated this entity. Null on creation. */
   updatedBy?: Maybe<Scalars['String']>;
   /** The URL of the story. */
@@ -148,7 +150,7 @@ export type CuratedItemFilter = {
   status?: Maybe<CuratedStatus>;
   /** Optional filter on the title field. Returns partial matches. */
   title?: Maybe<Scalars['String']>;
-  /** Optional filter on the topic field. Returns partial matches. */
+  /** Optional filter on the topic field. */
   topic?: Maybe<Scalars['String']>;
   /** Optional filter on the URL field. Returns partial matches. */
   url?: Maybe<Scalars['Url']>;
@@ -202,8 +204,8 @@ export type MutationUpdateCuratedItemArgs = {
  */
 export type NewTabFeedScheduledItem = {
   __typename?: 'NewTabFeedScheduledItem';
-  /** An ISO-formatted timestamp of when the entity was created. */
-  createdAt: Scalars['DateString'];
+  /** A Unix timestamp of when the entity was created. */
+  createdAt: Scalars['Int'];
   /** A single sign-on user identifier of the user who created this entity. */
   createdBy: Scalars['String'];
   /** The associated Curated Item. */
@@ -215,8 +217,8 @@ export type NewTabFeedScheduledItem = {
    * This date is relative to the time zone of the New Tab. Format: YYYY-MM-DD.
    */
   scheduledDate: Scalars['Date'];
-  /** An ISO-formatted timestamp of when the entity was last updated. */
-  updatedAt: Scalars['DateString'];
+  /** A Unix timestamp of when the entity was last updated. */
+  updatedAt: Scalars['Int'];
   /** A single sign-on user identifier of the user who last updated this entity. Null on creation. */
   updatedBy?: Maybe<Scalars['String']>;
 };
@@ -325,6 +327,8 @@ export type UpdateCuratedItemInput = {
   isSyndicated: Scalars['Boolean'];
   /** What language this item is in. This is a two-letter code, for example, 'en' for English. */
   language: Scalars['String'];
+  /** The name of the online publication that published this story. */
+  publisher: Scalars['String'];
   /** The outcome of the curators' review of the Curated Item. */
   status: CuratedStatus;
   /** The title of the Curated Item. */
@@ -343,6 +347,7 @@ export type CuratedItemDataFragment = {
   externalId: string;
   title: string;
   language: string;
+  publisher: string;
   url: any;
   imageUrl: any;
   excerpt: string;
@@ -352,9 +357,9 @@ export type CuratedItemDataFragment = {
   isShortLived: boolean;
   isSyndicated: boolean;
   createdBy: string;
-  createdAt: any;
+  createdAt: number;
   updatedBy?: string | null | undefined;
-  updatedAt: any;
+  updatedAt: number;
 };
 
 export type GetCuratedItemsQueryVariables = Exact<{
@@ -385,6 +390,7 @@ export type GetCuratedItemsQuery = {
                     externalId: string;
                     title: string;
                     language: string;
+                    publisher: string;
                     url: any;
                     imageUrl: any;
                     excerpt: string;
@@ -394,9 +400,9 @@ export type GetCuratedItemsQuery = {
                     isShortLived: boolean;
                     isSyndicated: boolean;
                     createdBy: string;
-                    createdAt: any;
+                    createdAt: number;
                     updatedBy?: string | null | undefined;
-                    updatedAt: any;
+                    updatedAt: number;
                   }
                 | null
                 | undefined;
@@ -414,6 +420,7 @@ export const CuratedItemDataFragmentDoc = gql`
     externalId
     title
     language
+    publisher
     url
     imageUrl
     excerpt

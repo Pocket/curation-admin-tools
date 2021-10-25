@@ -8,6 +8,7 @@ export const CuratedItemData = gql`
     externalId
     title
     language
+    publisher
     url
     imageUrl
     excerpt

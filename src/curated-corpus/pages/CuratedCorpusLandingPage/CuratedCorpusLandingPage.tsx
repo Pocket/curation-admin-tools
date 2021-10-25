@@ -6,13 +6,13 @@ import {
   MenuLink,
 } from '../../../_shared/components';
 import { CuratedItemsPage } from '../';
-import { client } from '../../../prospects/api/curated-corpus-api/client';
+import { client } from '../../api/curated-corpus-api/client';
 import { ApolloProvider } from '@apollo/client';
 
 /**
- * Prospects landing page
+ * Curated Corpus landing page
  */
-export const ProspectsLandingPage = (): JSX.Element => {
+export const CuratedCorpusLandingPage = (): JSX.Element => {
   // Get the base path (/prospects)
   const { path } = useRouteMatch();
 
@@ -23,23 +23,22 @@ export const ProspectsLandingPage = (): JSX.Element => {
     },
     {
       text: 'Live Corpus',
-      url: `${path}/live-corpus/`,
+      url: `${path}/live/`,
     },
   ];
 
   return (
     <ApolloProvider client={client}>
-      <Header productName="Prospect Curation" menuLinks={menuLinks} />
+      <Header productName="Curated Corpus" menuLinks={menuLinks} />
       <MainContentWrapper>
         <Switch>
           <Route exact path={`${path}/`}>
-            <h2>Prospects landing page!</h2>
+            <h2>Curated Corpus landing page!</h2>
             <p>
-              Try going to the{' '}
-              <Link to={`${path}/live-corpus/`}>Live Corpus</Link> page
+              Try the <Link to={`${path}/live/`}>Live Corpus</Link> page
             </p>
           </Route>
-          <Route exact path={`${path}/live-corpus/`}>
+          <Route exact path={`${path}/live/`}>
             <CuratedItemsPage />
           </Route>
         </Switch>

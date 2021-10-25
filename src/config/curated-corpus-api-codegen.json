@@ -2,12 +2,12 @@
   "overwrite": true,
   "schema": [ "${REACT_APP_CURATED_CORPUS_API_ENDPOINT}"],
   "documents": [
-    "src/prospects/api/curated-corpus-api/queries/*.ts",
-    "src/prospects/api/curated-corpus-api/mutations/*.ts",
-    "src/prospects/api/curated-corpus-api/fragments/*.ts"
+    "src/curated-corpus/api/curated-corpus-api/queries/*.ts",
+    "src/curated-corpus/api/curated-corpus-api/mutations/*.ts",
+    "src/curated-corpus/api/curated-corpus-api/fragments/*.ts"
   ],
   "generates": {
-    "src/prospects/api/curated-corpus-api/generatedTypes.ts": {
+    "src/curated-corpus/api/curated-corpus-api/generatedTypes.ts": {
       "plugins": [
         "typescript",
         "typescript-operations",
@@ -20,7 +20,7 @@
   },
   "hooks": {
     "afterAllFileWrite": [
-      "prettier -w src/prospects/api/curated-corpus-api/generatedTypes.ts"
+      "prettier -w src/curated-corpus/api/curated-corpus-api/generatedTypes.ts"
     ]
   }
 }

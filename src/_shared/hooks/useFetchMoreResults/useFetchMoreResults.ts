@@ -1,7 +1,7 @@
-import { useNotifications } from '../useNotifications/useNotifications';
 import { useState } from 'react';
 import * as Apollo from '@apollo/client';
 import { ApolloError } from '@apollo/client';
+import { useNotifications } from '../';
 
 /**
  * This hook handles loading lists of data in paginated chunks:
@@ -51,7 +51,7 @@ export const useFetchMoreResults = (
     // Refresh query results with another pageful of data. Bypasses cache
     fetchMore({
       // Any other variables passed to the initial query remain the same,
-      // only the 'page' variable will be overriden on subsequent calls
+      // only the 'page' variable will be overridden on subsequent calls
       // to the GraphQL server.
       variables: {
         page: currentPage + 1,
