@@ -1,6 +1,5 @@
-import * as Apollo from '@apollo/client';
 import { gql } from '@apollo/client';
-
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K];
@@ -123,7 +122,7 @@ export type CuratedItem = {
 export type CuratedItemConnection = {
   __typename?: 'CuratedItemConnection';
   /** A list of edges. */
-  edges?: Maybe<Array<Maybe<CuratedItemEdge>>>;
+  edges: Array<CuratedItemEdge>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** Identifies the total count of Curated Items in the connection. */
@@ -136,7 +135,7 @@ export type CuratedItemEdge = {
   /** A cursor for use in pagination. */
   cursor: Scalars['String'];
   /** The Curated Item at the end of the edge. */
-  node?: Maybe<CuratedItem>;
+  node: CuratedItem;
 };
 
 /** Available fields for filtering CuratedItems. */
@@ -379,39 +378,29 @@ export type GetCuratedItemsQuery = {
       startCursor?: string | null | undefined;
       endCursor?: string | null | undefined;
     };
-    edges?:
-      | Array<
-          | {
-              __typename?: 'CuratedItemEdge';
-              cursor: string;
-              node?:
-                | {
-                    __typename?: 'CuratedItem';
-                    externalId: string;
-                    title: string;
-                    language: string;
-                    publisher: string;
-                    url: any;
-                    imageUrl: any;
-                    excerpt: string;
-                    status: CuratedStatus;
-                    topic: string;
-                    isCollection: boolean;
-                    isShortLived: boolean;
-                    isSyndicated: boolean;
-                    createdBy: string;
-                    createdAt: number;
-                    updatedBy?: string | null | undefined;
-                    updatedAt: number;
-                  }
-                | null
-                | undefined;
-            }
-          | null
-          | undefined
-        >
-      | null
-      | undefined;
+    edges: Array<{
+      __typename?: 'CuratedItemEdge';
+      cursor: string;
+      node: {
+        __typename?: 'CuratedItem';
+        externalId: string;
+        title: string;
+        language: string;
+        publisher: string;
+        url: any;
+        imageUrl: any;
+        excerpt: string;
+        status: CuratedStatus;
+        topic: string;
+        isCollection: boolean;
+        isShortLived: boolean;
+        isSyndicated: boolean;
+        createdBy: string;
+        createdAt: number;
+        updatedBy?: string | null | undefined;
+        updatedAt: number;
+      };
+    }>;
   };
 };
 
