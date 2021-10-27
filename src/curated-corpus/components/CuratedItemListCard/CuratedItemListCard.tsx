@@ -44,7 +44,7 @@ export const CuratedItemListCard: React.FC<CuratedItemListCardProps> = (
       />
       <CardContent className={classes.content}>
         <Typography className={classes.publisher} gutterBottom>
-          Publisher Name
+          {item.publisher}
         </Typography>
         <Typography
           className={classes.title}
@@ -78,7 +78,10 @@ export const CuratedItemListCard: React.FC<CuratedItemListCardProps> = (
           <ListItemIcon className={classes.listItemIcon}>
             <LabelOutlinedIcon />
           </ListItemIcon>
-          <ListItemText primary={item.topic} />
+          <ListItemText
+            className={classes.topic}
+            primary={item.topic.toLowerCase()}
+          />
         </ListItem>
         <ListItem>
           <ListItemIcon className={classes.listItemIcon}>

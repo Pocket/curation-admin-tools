@@ -6,7 +6,7 @@ import theme from './theme';
 
 import { LandingPage } from './_shared/pages';
 import { CollectionsLandingPage } from './collections/pages';
-import { ProspectsLandingPage } from './prospects/pages';
+import { CuratedCorpusLandingPage } from './curated-corpus/pages';
 
 function App(): JSX.Element {
   return (
@@ -21,8 +21,8 @@ function App(): JSX.Element {
               <Route path="/collections">
                 <CollectionsLandingPage />
               </Route>
-              <Route path="/prospects">
-                <ProspectsLandingPage />
+              <Route path="/curated-corpus">
+                <CuratedCorpusLandingPage />
               </Route>
             </Switch>
           </>

@@ -19,10 +19,15 @@ describe('The CuratedItemListCard component', () => {
       excerpt:
         'Everything You Wanted to Know About React and Were Afraid To Ask',
       language: 'de',
+      publisher: 'Amazing Inventions',
+      topic: 'Technology',
       status: CuratedStatus.Recommendation,
-      createdAt: null,
+      isCollection: false,
+      isSyndicated: false,
+      isShortLived: false,
+      createdAt: 1635014926,
       createdBy: 'Amy',
-      updatedAt: null,
+      updatedAt: 1635114926,
     };
   });
 
