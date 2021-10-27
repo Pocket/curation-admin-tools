@@ -39,6 +39,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       fontSize: '1rem',
       fontWeight: 500,
     },
+    topic: {
+      textTransform: 'capitalize',
+    },
     status: {
       textTransform: 'capitalize',
     },

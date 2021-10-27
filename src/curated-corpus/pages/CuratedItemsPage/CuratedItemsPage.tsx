@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Grid, Typography } from '@material-ui/core';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
+import { Grid, Typography } from '@material-ui/core';
 import { FormikValues } from 'formik';
 import { config } from '../../../config';
 import {
@@ -9,23 +7,34 @@ import {
   CuratedItemFilter,
   useGetCuratedItemsLazyQuery,
 } from '../../api/curated-corpus-api/generatedTypes';
-import { Button, HandleApiResponse } from '../../../_shared/components';
-import { CuratedItemListCard, CuratedItemSearchForm } from '../../components';
+import { HandleApiResponse } from '../../../_shared/components';
+import {
+  CuratedItemListCard,
+  CuratedItemSearchForm,
+  NextPrevPagination,
+} from '../../components';
 
 export const CuratedItemsPage: React.FC = (): JSX.Element => {
+  // Get the usual API response vars and a helper method to retrieve data
+  // that can be used inside hooks.
   const [getCuratedItems, { loading, error, data }] =
     useGetCuratedItemsLazyQuery(
       // We need to make sure search results are never served from the cache.
       { fetchPolicy: 'no-cache', notifyOnNetworkStatusChange: true }
     );
 
-  const [before, setBefore] = useState<string | null | undefined>(undefined);
-  const [after, setAfter] = useState<string | null | undefined>(undefined);
+  // Save the filters in a state variable to be able to use them when paginating
+  // through results.
   const [filters, setFilters] = useState<CuratedItemFilter>({});
 
+  // Save the cursors returned with every request to be able to use them when
+  // paginating through results.
+  const [before, setBefore] = useState<string | null | undefined>(undefined);
+  const [after, setAfter] = useState<string | null | undefined>(undefined);
+
+  // On the initial page load, load most recently added Curated Items -
+  // the first page of results, no filters applied.
   useEffect(() => {
-    // On the initial page load, load most recently added Curated Items -
-    // the first page of results, no filters applied.
     getCuratedItems({
       variables: {
         pagination: { first: config.pagination.curatedItemsPerPage },
@@ -33,6 +42,7 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
     });
   }, []);
 
+  // Set the cursors once data is returned by the API.
   useEffect(() => {
     if (data) {
       setAfter(data.getCuratedItems.pageInfo.endCursor);
@@ -40,8 +50,17 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
     }
   }, [data]);
 
+  /**
+   * Process search form values and convert them into a CuratedItemFilter
+   * object that will be accepted as a variable by the getCuratedItems query.
+   * @param values
+   */
   const handleSubmit = (values: FormikValues): void => {
-    // prepare the search filters
+    // Using `any` here as TS is rather unhappy at the below for() loop
+    // if filters are correctly typed as CuratedItemFilter.
+    // The alternative appears to be setting the type correctly and then
+    // manually checking each possible filter form value and setting it
+    // in the filter input if it contains something.
     const filters: any = {};
 
     for (const key in values) {
@@ -50,7 +69,7 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
       }
     }
 
-    // execute the search
+    // Execute the search.
     getCuratedItems({
       variables: {
         pagination: { first: config.pagination.curatedItemsPerPage },
@@ -61,7 +80,13 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
     setFilters(filters);
   };
 
-  const loadNextPage = () => {
+  /**
+   * Fetch the next page's worth of search results.
+   *
+   * Note: no caching policies have been implemented yet.
+   * Results are always retrieved from the API.
+   */
+  const loadNext = () => {
     getCuratedItems({
       variables: {
         pagination: { first: config.pagination.curatedItemsPerPage, after },
@@ -70,7 +95,13 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
     });
   };
 
-  const loadPreviousPage = () => {
+  /**
+   * Fetch the previous page's worth of search results.
+   *
+   * Note: no caching policies have been implemented yet.
+   * Results are always retrieved from the API.
+   */
+  const loadPrevious = () => {
     getCuratedItems({
       variables: {
         pagination: { last: config.pagination.curatedItemsPerPage, before },
@@ -120,20 +151,12 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
       </Grid>
 
       {data && (
-        <Box display="flex" justifyContent="center" m={2}>
-          {data.getCuratedItems.pageInfo.hasPreviousPage && (
-            <Button variant="text" onClick={loadPreviousPage}>
-              <ArrowBackIcon /> Previous Page
-            </Button>
-          )}
-
-          {data.getCuratedItems.pageInfo.hasNextPage && (
-            <Button variant="text" onClick={loadNextPage}>
-              Next Page
-              <ArrowForwardIcon />
-            </Button>
-          )}
-        </Box>
+        <NextPrevPagination
+          hasNextPage={data.getCuratedItems.pageInfo.hasNextPage}
+          loadNext={loadNext}
+          hasPreviousPage={data.getCuratedItems.pageInfo.hasPreviousPage}
+          loadPrevious={loadPrevious}
+        />
       )}
     </>
   );

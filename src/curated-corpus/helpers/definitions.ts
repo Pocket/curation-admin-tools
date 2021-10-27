@@ -1,30 +1,30 @@
-// Lifted from Collection API - Curation Categories
-// Where do we get this from/store in this tool?
-
+// Here we keep sets of options for curating items
 export interface DropdownOption {
   code: string;
   name: string;
 }
-
+// This is a list of topics. The 15 "standard" topics + coronavirus.
 export const topics: DropdownOption[] = [
-  { code: 'business', name: 'Business' },
-  { code: 'career', name: 'Career' },
-  { code: 'coronavirus', name: 'Coronavirus' },
-  { code: 'education', name: 'Education' },
-  { code: 'entertainment', name: 'Entertainment' },
-  { code: 'food', name: 'Food' },
-  { code: 'health-and-fitness', name: 'Health & Fitness' },
-  { code: 'parenting', name: 'Parenting' },
-  { code: 'personal-finance', name: 'Personal Finance' },
-  { code: 'politics', name: 'Politics' },
-  { code: 'science', name: 'Science' },
-  { code: 'self-improvement', name: 'Self Improvement' },
-  { code: 'sports', name: 'Sports' },
-  { code: 'technology', name: 'Technology' },
-  { code: 'travel', name: 'Travel' },
+  { code: 'BUSINESS', name: 'Business' },
+  { code: 'CAREER', name: 'Career' },
+  { code: 'CORONAVIRUS', name: 'Coronavirus' },
+  { code: 'EDUCATION', name: 'Education' },
+  { code: 'ENTERTAINMENT', name: 'Entertainment' },
+  { code: 'FOOD', name: 'Food' },
+  { code: 'GAMING', name: 'Gaming' },
+  { code: 'HEALTH & FITNESS', name: 'Health & Fitness' },
+  { code: 'PARENTING', name: 'Parenting' },
+  { code: 'PERSONAL FINANCE', name: 'Personal Finance' },
+  { code: 'POLITICS', name: 'Politics' },
+  { code: 'SCIENCE', name: 'Science' },
+  { code: 'SELF IMPROVEMENT', name: 'Self Improvement' },
+  { code: 'SPORTS', name: 'Sports' },
+  { code: 'Technology', name: 'Technology' },
+  { code: 'Travel', name: 'Travel' },
 ];
 
+// Language codes. Currently only English and German are needed.
 export const languages: DropdownOption[] = [
-  { code: 'en', name: 'English' },
-  { code: 'de', name: 'German' },
+  { code: 'EN', name: 'English' },
+  { code: 'DE', name: 'German' },
 ];

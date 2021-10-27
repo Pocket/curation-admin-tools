@@ -78,7 +78,10 @@ export const CuratedItemListCard: React.FC<CuratedItemListCardProps> = (
           <ListItemIcon className={classes.listItemIcon}>
             <LabelOutlinedIcon />
           </ListItemIcon>
-          <ListItemText primary={item.topic} />
+          <ListItemText
+            className={classes.topic}
+            primary={item.topic.toLowerCase()}
+          />
         </ListItem>
         <ListItem>
           <ListItemIcon className={classes.listItemIcon}>
