@@ -7,11 +7,12 @@ import {
   CuratedItemFilter,
   useGetCuratedItemsLazyQuery,
 } from '../../api/curated-corpus-api/generatedTypes';
-import { HandleApiResponse } from '../../../_shared/components';
+import { Button, HandleApiResponse, Modal } from '../../../_shared/components';
 import {
   CuratedItemListCard,
   CuratedItemSearchForm,
   NextPrevPagination,
+  ScheduleCuratedItemForm,
 } from '../../components';
 
 export const CuratedItemsPage: React.FC = (): JSX.Element => {
@@ -110,12 +111,51 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
     });
   };
 
+  // Temp prototyping of scheduling modal
+  const [openSetScheduleModal, setOpenScheduleModal] = useState(false);
+
   return (
     <>
       <h1>Live Corpus</h1>
       <CuratedItemSearchForm onSubmit={handleSubmit} />
 
       {!data && <HandleApiResponse loading={loading} error={error} />}
+
+      <h5>---temp---</h5>
+
+      <Button
+        onClick={() => {
+          setOpenScheduleModal(true);
+        }}
+      >
+        Open the Schedule modal
+      </Button>
+
+      <Modal
+        open={openSetScheduleModal}
+        handleClose={() => {
+          setOpenScheduleModal(false);
+        }}
+      >
+        <Grid container>
+          <Grid item xs={12} spacing={2}>
+            <h2>Schedule this item for New Tab</h2>
+          </Grid>
+          <Grid item xs={12}>
+            <ScheduleCuratedItemForm
+              curatedItemExternalId={'ttt'}
+              newTabList={['en-us', 'en-uk', 'en-intl']}
+              onSubmit={() => {
+                // nothing to see here
+              }}
+              onCancel={() => {
+                setOpenScheduleModal(false);
+              }}
+            />
+          </Grid>
+        </Grid>
+      </Modal>
+      <h5>---end temp---</h5>
 
       <Grid
         container
