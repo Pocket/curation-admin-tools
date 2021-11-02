@@ -13,7 +13,7 @@
     "@material-ui/lab": "^4.0.0-alpha.60",
     "@sentry/react": "^6.13.3",
     "@sentry/tracing": "^6.13.3",
-    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
     "@types/apollo-upload-client": "^14.1.0",
