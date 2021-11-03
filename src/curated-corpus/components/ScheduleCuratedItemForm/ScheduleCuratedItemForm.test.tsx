@@ -37,7 +37,7 @@ describe('The CuratedItemSearchForm component', () => {
     );
 
     const buttons = screen.getAllByRole('button');
-    // "Save" and "Cancel" buttons + the date picker is also a button.
-    expect(buttons).toHaveLength(3);
+    // "Save" and "Cancel" buttons.
+    expect(buttons).toHaveLength(2);
   });
 });
