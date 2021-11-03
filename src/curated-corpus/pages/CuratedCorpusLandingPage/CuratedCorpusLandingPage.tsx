@@ -5,7 +5,7 @@ import {
   MainContentWrapper,
   MenuLink,
 } from '../../../_shared/components';
-import { CuratedItemsPage } from '../';
+import { CuratedItemsPage, RejectedItemsPage } from '../';
 import { client } from '../../api/curated-corpus-api/client';
 import { ApolloProvider } from '@apollo/client';
 
@@ -25,6 +25,10 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
       text: 'Live Corpus',
       url: `${path}/live/`,
     },
+    {
+      text: 'Rejected Items',
+      url: `${path}/rejected-items`,
+    },
   ];
 
   return (
@@ -40,6 +44,9 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
           </Route>
           <Route exact path={`${path}/live/`}>
             <CuratedItemsPage />
+          </Route>
+          <Route exact path={`${path}/rejected-items/`}>
+            <RejectedItemsPage />
           </Route>
         </Switch>
       </MainContentWrapper>

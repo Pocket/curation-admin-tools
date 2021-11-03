@@ -28,6 +28,7 @@ export const config = {
     partnersPerPage: 30,
     // To display four items in a row, 32 is a better choice than 30 which gives us 7 1/2 rows.
     curatedItemsPerPage: 32,
+    rejectedItemsPerPage: 32,
     valuesPerDropdown: 1000,
   },
   //Not a secret since the  app is client side

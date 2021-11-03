@@ -14,6 +14,7 @@ import {
 import LanguageIcon from '@material-ui/icons/Language';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
+import FaceIcon from '@material-ui/icons/Face';
 import { useStyles } from './CuratedItemListCard.styles';
 import { CuratedItem } from '../../api/curated-corpus-api/generatedTypes';
 import { Button } from '../../../_shared/components';
@@ -73,6 +74,12 @@ export const CuratedItemListCard: React.FC<CuratedItemListCardProps> = (
             className={classes.status}
             primary={item.status.toLowerCase()}
           />
+        </ListItem>
+        <ListItem>
+          <ListItemIcon className={classes.listItemIcon}>
+            <FaceIcon />
+          </ListItemIcon>
+          <ListItemText className={classes.topic} primary={item.createdBy} />
         </ListItem>
         <ListItem>
           <ListItemIcon className={classes.listItemIcon}>
