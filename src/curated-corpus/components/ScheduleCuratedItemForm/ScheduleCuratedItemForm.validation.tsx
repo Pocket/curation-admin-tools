@@ -1,10 +1,26 @@
 import * as yup from 'yup';
+import { NewTab, newTabs } from '../../helpers/definitions';
+import { DateTime } from 'luxon';
+
+// TODO: When auth is in, this should be limited to values the user has access to.
+const newTabAllowedValues = newTabs.map((newTab: NewTab) => {
+  return newTab.guid;
+});
 
 export const validationSchema = yup.object({
-  // This should be strictly limited to the list of new tab feeds we have
-  newTabFeedExternalId: yup.string().trim().required(),
+  // This is a hidden field that we pass along
+  curatedItemExternalId: yup.string().trim().required(),
 
-  // The options on the date picker are limited to today + up to 60 days into the future
-  // TODO: Still need to validate it here
-  scheduledDate: yup.string().required(),
+  newTabGuid: yup
+    .string()
+    .oneOf(newTabAllowedValues)
+    .trim()
+    .required('Please choose a New Tab.'),
+
+  scheduledDate: yup
+    .date()
+    .min(DateTime.local())
+    .max(DateTime.local().plus({ days: 60 }))
+    .required('Please choose a date no more than 60 days in advance.')
+    .nullable(),
 });

@@ -3,17 +3,19 @@ import { Grid, Typography } from '@material-ui/core';
 import { FormikValues } from 'formik';
 import { config } from '../../../config';
 import {
+  CuratedItem,
   CuratedItemEdge,
   CuratedItemFilter,
   useGetCuratedItemsLazyQuery,
 } from '../../api/curated-corpus-api/generatedTypes';
-import { Button, HandleApiResponse, Modal } from '../../../_shared/components';
+import { HandleApiResponse } from '../../../_shared/components';
 import {
   CuratedItemListCard,
   CuratedItemSearchForm,
   NextPrevPagination,
-  ScheduleCuratedItemForm,
+  ScheduleCuratedItemModal,
 } from '../../components';
+import { useToggle } from '../../../_shared/hooks';
 
 export const CuratedItemsPage: React.FC = (): JSX.Element => {
   // Get the usual API response vars and a helper method to retrieve data
@@ -111,8 +113,17 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
     });
   };
 
-  // Temp prototyping of scheduling modal
-  const [openSetScheduleModal, setOpenScheduleModal] = useState(false);
+  /**
+   * Keep track of whether the "Schedule this item for New Tab" modal is open or not.
+   */
+  const [scheduleModalOpen, toggleScheduleModal] = useToggle(false);
+
+  /**
+   * Set the current Curated Item to be worked on (e.g., scheduled for New Tab).
+   */
+  const [currentItem, setCurrentItem] = useState<CuratedItem | undefined>(
+    undefined
+  );
 
   return (
     <>
@@ -121,41 +132,13 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
 
       {!data && <HandleApiResponse loading={loading} error={error} />}
 
-      <h5>---temp---</h5>
-
-      <Button
-        onClick={() => {
-          setOpenScheduleModal(true);
-        }}
-      >
-        Open the Schedule modal
-      </Button>
-
-      <Modal
-        open={openSetScheduleModal}
-        handleClose={() => {
-          setOpenScheduleModal(false);
-        }}
-      >
-        <Grid container>
-          <Grid item xs={12} spacing={2}>
-            <h2>Schedule this item for New Tab</h2>
-          </Grid>
-          <Grid item xs={12}>
-            <ScheduleCuratedItemForm
-              curatedItemExternalId={'ttt'}
-              newTabList={['en-us', 'en-uk', 'en-intl']}
-              onSubmit={() => {
-                // nothing to see here
-              }}
-              onCancel={() => {
-                setOpenScheduleModal(false);
-              }}
-            />
-          </Grid>
-        </Grid>
-      </Modal>
-      <h5>---end temp---</h5>
+      {currentItem && (
+        <ScheduleCuratedItemModal
+          curatedItem={currentItem}
+          isOpen={scheduleModalOpen}
+          toggleModal={toggleScheduleModal}
+        />
+      )}
 
       <Grid
         container
@@ -184,6 +167,10 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
                 <CuratedItemListCard
                   key={edge.node.externalId}
                   item={edge.node}
+                  onSchedule={() => {
+                    setCurrentItem(edge.node);
+                    toggleScheduleModal();
+                  }}
                 />
               </Grid>
             );

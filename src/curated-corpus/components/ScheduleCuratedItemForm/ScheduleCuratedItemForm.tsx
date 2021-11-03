@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { KeyboardDatePicker } from '@material-ui/pickers';
-import { Grid } from '@material-ui/core';
+import { Box, Grid, TextField } from '@material-ui/core';
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import { DateTime } from 'luxon';
+import { DatePicker } from '@material-ui/pickers';
 import {
   FormikSelectField,
   SharedFormButtons,
@@ -10,6 +10,7 @@ import {
 } from '../../../_shared/components';
 import { validationSchema } from './ScheduleCuratedItemForm.validation';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import { NewTab } from '../../helpers/definitions';
 
 interface ScheduleCuratedItemFormProps {
   /**
@@ -17,8 +18,10 @@ interface ScheduleCuratedItemFormProps {
    */
   curatedItemExternalId: string;
 
-  // should be NewTabFeed, but do we have this in the schema? not yet
-  newTabList: string[];
+  /**
+   * The list of New Tabs the logged-in user has access to.
+   */
+  newTabList: NewTab[];
 
   /**
    * What do we do with the submitted data?
@@ -53,16 +56,18 @@ export const ScheduleCuratedItemForm: React.FC<
 
   const formik = useFormik({
     initialValues: {
-      newTabFeedExternalId: '',
-      curatedItemExternalId: curatedItemExternalId,
+      newTabGuid: '',
+      curatedItemExternalId,
       scheduledDate: selectedDate,
     },
     validateOnBlur: false,
     validateOnChange: false,
     validationSchema,
-    // TODO: pass the Luxon DateTime object saved in `selectedDate`
-    //  instead of the string value from the input here
     onSubmit: (values, formikHelpers) => {
+      // Make sure the date is the one selected by the user
+      // (Without this, Formik passes on the initial date = tomorrow.)
+      values.scheduledDate = selectedDate;
+
       onSubmit(values, formikHelpers);
     },
   });
@@ -73,23 +78,23 @@ export const ScheduleCuratedItemForm: React.FC<
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <FormikSelectField
-              id="status"
+              id="newTabGuid"
               label="Choose a New Tab"
-              fieldProps={formik.getFieldProps('newTabExternalId')}
-              fieldMeta={formik.getFieldMeta('newTabExternalId')}
+              fieldProps={formik.getFieldProps('newTabGuid')}
+              fieldMeta={formik.getFieldMeta('newTabGuid')}
             >
               <option aria-label="None" value="" />
-              {newTabList.map((newTab, index) => {
+              {newTabList.map((newTab: NewTab) => {
                 return (
-                  <option value={newTab} key={index + 1}>
-                    New Tab #{index} ({newTab})
+                  <option value={newTab.guid} key={newTab.guid}>
+                    {newTab.name}
                   </option>
                 );
               })}
             </FormikSelectField>
           </Grid>
           <Grid item xs={12}>
-            <KeyboardDatePicker
+            <DatePicker
               variant="inline"
               inputVariant="outlined"
               format="MMMM d, yyyy"
@@ -98,12 +103,9 @@ export const ScheduleCuratedItemForm: React.FC<
               label="Choose a date"
               value={selectedDate}
               onChange={handleDateChange}
-              KeyboardButtonProps={{
-                'aria-label': 'change date',
-              }}
               disablePast
               initialFocusedDate={tomorrow}
-              maxDate={tomorrow.plus({ months: 2 })}
+              maxDate={tomorrow.plus({ days: 59 })}
               disableToolbar
               autoOk
               fullWidth
@@ -111,6 +113,14 @@ export const ScheduleCuratedItemForm: React.FC<
           </Grid>
         </Grid>
         <SharedFormButtons onCancel={onCancel} />
+        <Box display="none">
+          <TextField
+            type="hidden"
+            id="curatedItemExternalId"
+            label="curatedItemExternalId"
+            {...formik.getFieldProps('curatedItemExternalId')}
+          />
+        </Box>
       </form>
     </>
   );
