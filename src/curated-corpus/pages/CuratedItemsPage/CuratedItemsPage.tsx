@@ -3,6 +3,7 @@ import { Grid, Typography } from '@material-ui/core';
 import { FormikValues } from 'formik';
 import { config } from '../../../config';
 import {
+  CuratedItem,
   CuratedItemEdge,
   CuratedItemFilter,
   useGetCuratedItemsLazyQuery,
@@ -12,7 +13,9 @@ import {
   CuratedItemListCard,
   CuratedItemSearchForm,
   NextPrevPagination,
+  ScheduleCuratedItemModal,
 } from '../../components';
+import { useToggle } from '../../../_shared/hooks';
 
 export const CuratedItemsPage: React.FC = (): JSX.Element => {
   // Get the usual API response vars and a helper method to retrieve data
@@ -110,12 +113,32 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
     });
   };
 
+  /**
+   * Keep track of whether the "Schedule this item for New Tab" modal is open or not.
+   */
+  const [scheduleModalOpen, toggleScheduleModal] = useToggle(false);
+
+  /**
+   * Set the current Curated Item to be worked on (e.g., scheduled for New Tab).
+   */
+  const [currentItem, setCurrentItem] = useState<CuratedItem | undefined>(
+    undefined
+  );
+
   return (
     <>
       <h1>Live Corpus</h1>
       <CuratedItemSearchForm onSubmit={handleSubmit} />
 
       {!data && <HandleApiResponse loading={loading} error={error} />}
+
+      {currentItem && (
+        <ScheduleCuratedItemModal
+          curatedItem={currentItem}
+          isOpen={scheduleModalOpen}
+          toggleModal={toggleScheduleModal}
+        />
+      )}
 
       <Grid
         container
@@ -144,6 +167,10 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
                 <CuratedItemListCard
                   key={edge.node.externalId}
                   item={edge.node}
+                  onSchedule={() => {
+                    setCurrentItem(edge.node);
+                    toggleScheduleModal();
+                  }}
                 />
               </Grid>
             );
