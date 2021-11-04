@@ -24,13 +24,15 @@ interface CuratedItemListCardProps {
    * An object with everything curated item-related in it.
    */
   item: CuratedItem;
+
+  onSchedule: () => void;
 }
 
 export const CuratedItemListCard: React.FC<CuratedItemListCardProps> = (
   props
 ): JSX.Element => {
   const classes = useStyles();
-  const { item } = props;
+  const { item, onSchedule } = props;
 
   return (
     <Card className={classes.root}>
@@ -99,7 +101,7 @@ export const CuratedItemListCard: React.FC<CuratedItemListCardProps> = (
       </List>
 
       <CardActions className={classes.actions}>
-        <Button buttonType="positive" variant="text">
+        <Button buttonType="positive" variant="text" onClick={onSchedule}>
           Schedule
         </Button>
         <Button buttonType="negative" variant="text">

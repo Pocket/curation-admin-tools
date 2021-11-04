@@ -23,6 +23,42 @@ export const topics: DropdownOption[] = [
   { code: 'Travel', name: 'Travel' },
 ];
 
+// This will come from Prospect API's generated types in due course
+export enum ProspectType {
+  GLOBAL = 'GLOBAL',
+  TIMESPENT = 'ORGANIC_TIMESPENT',
+  SYNDICATED = 'SYNDICATED',
+}
+
+// New Tab as it exists on Prospect API.
+export type NewTab = {
+  name: string;
+  guid: string;
+  utcOffset: number;
+  prospectTypes: ProspectType[];
+};
+
+// And this can be used for New Tab scheduling dropdowns.
+// 'name' as a display value and 'guid' as actual value sent to the API
+export const newTabs: NewTab[] = [
+  {
+    name: 'en-US',
+    guid: 'EN_US',
+    utcOffset: -4000,
+    prospectTypes: [
+      ProspectType.GLOBAL,
+      ProspectType.TIMESPENT,
+      ProspectType.SYNDICATED,
+    ],
+  },
+  {
+    name: 'de-DE',
+    guid: 'DE_DE',
+    utcOffset: 1000,
+    prospectTypes: [ProspectType.GLOBAL],
+  },
+];
+
 // Language codes. Currently only English and German are needed.
 export const languages: DropdownOption[] = [
   { code: 'EN', name: 'English' },
