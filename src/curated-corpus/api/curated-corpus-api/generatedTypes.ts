@@ -296,6 +296,8 @@ export type Query = {
   getCuratedItems: CuratedItemConnection;
   /** Retrieves a list of Curated Items that are scheduled to appear on New Tab */
   getNewTabFeedScheduledItems: NewTabFeedScheduledItemsResult;
+  /** Retrieves a paginated, filterable list of RejectedCuratedCorpusItems. */
+  getRejectedCuratedCorpusItems: RejectedCuratedCorpusItemConnection;
 };
 
 export type QueryGetCuratedItemsArgs = {
@@ -305,6 +307,72 @@ export type QueryGetCuratedItemsArgs = {
 
 export type QueryGetNewTabFeedScheduledItemsArgs = {
   filters: NewTabFeedScheduledItemsFilterInput;
+};
+
+export type QueryGetRejectedCuratedCorpusItemsArgs = {
+  filters?: Maybe<RejectedCuratedCorpusItemFilter>;
+  pagination?: Maybe<PaginationInput>;
+};
+
+/** A prospective story that has been rejected by the curators. */
+export type RejectedCuratedCorpusItem = {
+  __typename?: 'RejectedCuratedCorpusItem';
+  /** A Unix timestamp of when the entity was created. */
+  createdAt: Scalars['Int'];
+  /** A single sign-on user identifier of the user who created this entity. */
+  createdBy: Scalars['String'];
+  /** An alternative primary key in UUID format that is generated on creation. */
+  externalId: Scalars['ID'];
+  /** What language this story is in. This is a two-letter code, for example, 'en' for English. */
+  language: Scalars['String'];
+  /** The name of the online publication that published this story. */
+  publisher: Scalars['String'];
+  /** Reason why it was rejected. Can be multiple reasons. Will likely be stored either as comma-separated values or JSON. */
+  reason: Scalars['String'];
+  /** The title of the story. */
+  title: Scalars['String'];
+  /**
+   * A topic this story best fits in.
+   * Temporarily a string value that will be provided by Prospect API, possibly an enum in the future.
+   */
+  topic: Scalars['String'];
+  /** The URL of the story. */
+  url: Scalars['Url'];
+};
+
+/** The connection type for Rejected Curated Item. */
+export type RejectedCuratedCorpusItemConnection = {
+  __typename?: 'RejectedCuratedCorpusItemConnection';
+  /** A list of edges. */
+  edges: Array<RejectedCuratedCorpusItemEdge>;
+  /** Information to aid in pagination. */
+  pageInfo: PageInfo;
+  /** Identifies the total count of Rejected Curated Items in the connection. */
+  totalCount: Scalars['Int'];
+};
+
+/** An edge in a connection for RejectedCuratedCorpusItem type. */
+export type RejectedCuratedCorpusItemEdge = {
+  __typename?: 'RejectedCuratedCorpusItemEdge';
+  /** A cursor for use in pagination. */
+  cursor: Scalars['String'];
+  /** The Rejected Curated Item at the end of the edge. */
+  node: RejectedCuratedCorpusItem;
+};
+
+/** Available fields for filtering RejectedCuratedCorpusItems. */
+export type RejectedCuratedCorpusItemFilter = {
+  /**
+   * Optional filter on the language Rejected Curated Items have been classified as.
+   * This is a two-letter string, e.g. 'en' for English or 'de' for 'German'.
+   */
+  language?: Maybe<Scalars['String']>;
+  /** Optional filter on the title field. Returns partial matches. */
+  title?: Maybe<Scalars['String']>;
+  /** Optional filter on the topic field. */
+  topic?: Maybe<Scalars['String']>;
+  /** Optional filter on the URL field. Returns partial matches. */
+  url?: Maybe<Scalars['Url']>;
 };
 
 /** Input data for updating a Curated Item. */
@@ -361,6 +429,19 @@ export type CuratedItemDataFragment = {
   updatedAt: number;
 };
 
+export type RejectedCuratedCorpusItemDataFragment = {
+  __typename?: 'RejectedCuratedCorpusItem';
+  externalId: string;
+  url: any;
+  title: string;
+  topic: string;
+  language: string;
+  publisher: string;
+  reason: string;
+  createdBy: string;
+  createdAt: number;
+};
+
 export type GetCuratedItemsQueryVariables = Exact<{
   filters?: Maybe<CuratedItemFilter>;
   pagination?: Maybe<PaginationInput>;
@@ -404,6 +485,42 @@ export type GetCuratedItemsQuery = {
   };
 };
 
+export type GetRejectedCuratedCorpusItemsQueryVariables = Exact<{
+  filters?: Maybe<RejectedCuratedCorpusItemFilter>;
+  pagination?: Maybe<PaginationInput>;
+}>;
+
+export type GetRejectedCuratedCorpusItemsQuery = {
+  __typename?: 'Query';
+  getRejectedCuratedCorpusItems: {
+    __typename?: 'RejectedCuratedCorpusItemConnection';
+    totalCount: number;
+    pageInfo: {
+      __typename?: 'PageInfo';
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+      startCursor?: string | null | undefined;
+      endCursor?: string | null | undefined;
+    };
+    edges: Array<{
+      __typename?: 'RejectedCuratedCorpusItemEdge';
+      cursor: string;
+      node: {
+        __typename?: 'RejectedCuratedCorpusItem';
+        externalId: string;
+        url: any;
+        title: string;
+        topic: string;
+        language: string;
+        publisher: string;
+        reason: string;
+        createdBy: string;
+        createdAt: number;
+      };
+    }>;
+  };
+};
+
 export const CuratedItemDataFragmentDoc = gql`
   fragment CuratedItemData on CuratedItem {
     externalId
@@ -422,6 +539,19 @@ export const CuratedItemDataFragmentDoc = gql`
     createdAt
     updatedBy
     updatedAt
+  }
+`;
+export const RejectedCuratedCorpusItemDataFragmentDoc = gql`
+  fragment RejectedCuratedCorpusItemData on RejectedCuratedCorpusItem {
+    externalId
+    url
+    title
+    topic
+    language
+    publisher
+    reason
+    createdBy
+    createdAt
   }
 `;
 export const GetCuratedItemsDocument = gql`
@@ -498,4 +628,79 @@ export type GetCuratedItemsLazyQueryHookResult = ReturnType<
 export type GetCuratedItemsQueryResult = Apollo.QueryResult<
   GetCuratedItemsQuery,
   GetCuratedItemsQueryVariables
+>;
+export const GetRejectedCuratedCorpusItemsDocument = gql`
+  query getRejectedCuratedCorpusItems(
+    $filters: RejectedCuratedCorpusItemFilter
+    $pagination: PaginationInput
+  ) {
+    getRejectedCuratedCorpusItems(filters: $filters, pagination: $pagination) {
+      totalCount
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+        startCursor
+        endCursor
+      }
+      edges {
+        cursor
+        node {
+          ...RejectedCuratedCorpusItemData
+        }
+      }
+    }
+  }
+  ${RejectedCuratedCorpusItemDataFragmentDoc}
+`;
+
+/**
+ * __useGetRejectedCuratedCorpusItemsQuery__
+ *
+ * To run a query within a React component, call `useGetRejectedCuratedCorpusItemsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRejectedCuratedCorpusItemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRejectedCuratedCorpusItemsQuery({
+ *   variables: {
+ *      filters: // value for 'filters'
+ *      pagination: // value for 'pagination'
+ *   },
+ * });
+ */
+export function useGetRejectedCuratedCorpusItemsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetRejectedCuratedCorpusItemsQuery,
+    GetRejectedCuratedCorpusItemsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetRejectedCuratedCorpusItemsQuery,
+    GetRejectedCuratedCorpusItemsQueryVariables
+  >(GetRejectedCuratedCorpusItemsDocument, options);
+}
+export function useGetRejectedCuratedCorpusItemsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetRejectedCuratedCorpusItemsQuery,
+    GetRejectedCuratedCorpusItemsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetRejectedCuratedCorpusItemsQuery,
+    GetRejectedCuratedCorpusItemsQueryVariables
+  >(GetRejectedCuratedCorpusItemsDocument, options);
+}
+export type GetRejectedCuratedCorpusItemsQueryHookResult = ReturnType<
+  typeof useGetRejectedCuratedCorpusItemsQuery
+>;
+export type GetRejectedCuratedCorpusItemsLazyQueryHookResult = ReturnType<
+  typeof useGetRejectedCuratedCorpusItemsLazyQuery
+>;
+export type GetRejectedCuratedCorpusItemsQueryResult = Apollo.QueryResult<
+  GetRejectedCuratedCorpusItemsQuery,
+  GetRejectedCuratedCorpusItemsQueryVariables
 >;

@@ -59,7 +59,7 @@ describe('The CuratedItemListCard component', () => {
       </MemoryRouter>
     );
 
-    // Shows 'Recommendation' status for a recommended storya
+    // Shows 'Recommendation' status for a recommended story
     const recommendation = screen.getByText(/^recommendation/i);
     expect(recommendation).toBeInTheDocument();
 
@@ -78,5 +78,46 @@ describe('The CuratedItemListCard component', () => {
     );
 
     expect(screen.getByText(/^de$/i)).toBeInTheDocument();
+  });
+  it('should render curated item card with createdBy', () => {
+    render(
+      <MemoryRouter>
+        <CuratedItemListCard item={item} />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText(item.createdBy)).toBeInTheDocument();
+  });
+
+  it('should render curated item card with excerpt', () => {
+    render(
+      <MemoryRouter>
+        <CuratedItemListCard item={item} />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText(item.excerpt)).toBeInTheDocument();
+  });
+
+  it('should render curated item card with the action buttons', () => {
+    render(
+      <MemoryRouter>
+        <CuratedItemListCard item={item} />
+      </MemoryRouter>
+    );
+
+    const scheduleButton = screen.getByRole('button', {
+      name: /Schedule/i,
+    });
+    const rejectButton = screen.getByRole('button', {
+      name: /Reject/i,
+    });
+    const editButton = screen.getByRole('button', {
+      name: /Edit/i,
+    });
+
+    expect(scheduleButton).toBeInTheDocument();
+    expect(rejectButton).toBeInTheDocument();
+    expect(editButton).toBeInTheDocument();
   });
 });
