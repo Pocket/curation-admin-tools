@@ -28,8 +28,8 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
       url: `${path}/live/`,
     },
     {
-      text: 'Rejected Items',
-      url: `${path}/rejected-items`,
+      text: 'Rejected Corpus',
+      url: `${path}/rejected`,
     },
   ];
 
