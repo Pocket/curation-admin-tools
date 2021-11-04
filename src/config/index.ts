@@ -23,7 +23,7 @@ export const config = {
   }`,
   environment: process.env.NODE_ENV,
   pagination: {
-    authorsPerPage: 30,
+    authorsPerPage: 200,
     collectionsPerPage: 30,
     partnersPerPage: 30,
     // To display four items in a row, 32 is a better choice than 30 which gives us 7 1/2 rows.
