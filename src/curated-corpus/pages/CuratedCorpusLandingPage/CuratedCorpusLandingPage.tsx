@@ -48,7 +48,7 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
             <Route exact path={`${path}/live/`}>
               <CuratedItemsPage />
             </Route>
-            <Route exact path={`${path}/rejected-items/`}>
+            <Route exact path={`${path}/rejected/`}>
               <RejectedItemsPage />
             </Route>
           </Switch>

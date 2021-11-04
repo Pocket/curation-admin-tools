@@ -7,4 +7,3 @@ export { RejectedItemSearchForm } from './RejectedItemSearchForm/RejectedCurated
 
 export { ScheduleCuratedItemForm } from './ScheduleCuratedItemForm/ScheduleCuratedItemForm';
 export { ScheduleCuratedItemModal } from './ScheduleCuratedItemModal/ScheduleCuratedItemModal';
-
