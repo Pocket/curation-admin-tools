@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Grid, Typography } from '@material-ui/core';
-import { FormikValues } from 'formik';
+import { FormikHelpers, FormikValues } from 'formik';
 import { config } from '../../../config';
 import {
   CuratedItem,
   CuratedItemEdge,
   CuratedItemFilter,
+  useCreateNewTabFeedScheduledItemMutation,
   useGetCuratedItemsLazyQuery,
 } from '../../api/curated-corpus-api/generatedTypes';
 import { HandleApiResponse } from '../../../_shared/components';
@@ -15,7 +16,8 @@ import {
   NextPrevPagination,
   ScheduleCuratedItemModal,
 } from '../../components';
-import { useToggle } from '../../../_shared/hooks';
+import { useRunMutation, useToggle } from '../../../_shared/hooks';
+import { DateTime } from 'luxon';
 
 export const CuratedItemsPage: React.FC = (): JSX.Element => {
   // Get the usual API response vars and a helper method to retrieve data
@@ -25,6 +27,10 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
       // We need to make sure search results are never served from the cache.
       { fetchPolicy: 'no-cache', notifyOnNetworkStatusChange: true }
     );
+
+  // Get a helper function that will execute each mutation, show standard notifications
+  // and execute any additional actions in a callback
+  const { runMutation } = useRunMutation();
 
   // Save the filters in a state variable to be able to use them when paginating
   // through results.
@@ -125,6 +131,37 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
     undefined
   );
 
+  // 1. Prepare the "schedule curated item" mutation
+  const [scheduleCuratedItem] = useCreateNewTabFeedScheduledItemMutation();
+  // 2. Schedule the curated item when the user saves a scheduling request
+  const onScheduleSave = (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ): void => {
+    // Set out all the variables we need to pass to the mutation
+    const variables = {
+      curatedItemExternalId: currentItem?.externalId,
+      newTabGuid: values.newTabGuid,
+      scheduledDate: values.scheduledDate.toISODate(),
+    };
+
+    // Run the mutation
+    runMutation(
+      scheduleCuratedItem,
+      { variables },
+      `Item scheduled successfully for ${values.scheduledDate.toLocaleString(
+        DateTime.DATE_FULL
+      )}`,
+      () => {
+        toggleScheduleModal();
+        formikHelpers.setSubmitting(false);
+      },
+      () => {
+        formikHelpers.setSubmitting(false);
+      }
+    );
+  };
+
   return (
     <>
       <h1>Live Corpus</h1>
@@ -136,6 +173,7 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
         <ScheduleCuratedItemModal
           curatedItem={currentItem}
           isOpen={scheduleModalOpen}
+          onSave={onScheduleSave}
           toggleModal={toggleScheduleModal}
         />
       )}

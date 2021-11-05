@@ -4,16 +4,22 @@ import { Box, Grid, Typography } from '@material-ui/core';
 import { ScheduleCuratedItemForm } from '../';
 import { newTabs } from '../../helpers/definitions';
 import { CuratedItem } from '../../api/curated-corpus-api/generatedTypes';
+import { FormikValues } from 'formik';
+import { FormikHelpers } from 'formik/dist/types';
 
 interface ScheduleCuratedItemModalProps {
   curatedItem: CuratedItem;
   isOpen: boolean;
+  onSave: (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ) => void | Promise<any>;
   toggleModal: () => void;
 }
 
 export const ScheduleCuratedItemModal: React.FC<ScheduleCuratedItemModalProps> =
   (props): JSX.Element => {
-    const { curatedItem, isOpen, toggleModal } = props;
+    const { curatedItem, isOpen, onSave, toggleModal } = props;
 
     return (
       <Modal
@@ -35,9 +41,7 @@ export const ScheduleCuratedItemModal: React.FC<ScheduleCuratedItemModalProps> =
             <ScheduleCuratedItemForm
               curatedItemExternalId={curatedItem.externalId}
               newTabList={newTabs}
-              onSubmit={() => {
-                // nothing to see here
-              }}
+              onSubmit={onSave}
               onCancel={() => {
                 toggleModal();
               }}
