@@ -43,8 +43,8 @@ export type CreateCuratedItemInput = {
   isSyndicated: Scalars['Boolean'];
   /** What language this item is in. This is a two-letter code, for example, 'en' for English. */
   language: Scalars['String'];
-  /** Optionally, specify the external ID of the New Tab this item should be scheduled for. */
-  newTabFeedExternalId?: Maybe<Scalars['ID']>;
+  /** Optionally, specify the GUID of the New Tab this item should be scheduled for. */
+  newTabGuid?: Maybe<Scalars['ID']>;
   /** The name of the online publication that published this story. */
   publisher: Scalars['String'];
   /** Optionally, specify the date this item should be appearing on New Tab. Format: YYYY-MM-DD */
@@ -66,8 +66,8 @@ export type CreateCuratedItemInput = {
 export type CreateNewTabFeedScheduledItemInput = {
   /** The ID of the Curated Item that needs to be scheduled. */
   curatedItemExternalId: Scalars['ID'];
-  /** The ID of the New Tab Feed the Curated Item above is going to appear on. */
-  newTabFeedExternalId: Scalars['ID'];
+  /** The GUID of the New Tab Feed the Curated Item is going to appear on. Example: 'EN_US'. */
+  newTabGuid: Scalars['ID'];
   /** The date the associated Curated Item is scheduled to appear on New Tab. Format: YYYY-MM-DD. */
   scheduledDate: Scalars['Date'];
 };
@@ -222,12 +222,12 @@ export type NewTabFeedScheduledItem = {
   updatedBy?: Maybe<Scalars['String']>;
 };
 
-/** Available fields for filtering scheduled items for a given New Tab Feed. */
+/** Available fields for filtering scheduled items for a given New Tab. */
 export type NewTabFeedScheduledItemsFilterInput = {
   /** To what day to show scheduled items to, inclusive. Expects a date in YYYY-MM-DD format. */
   endDate: Scalars['Date'];
-  /** The ID of the New Tab Feed. A string in UUID format. */
-  newTabExternalId: Scalars['ID'];
+  /** The GUID of the New Tab. Example: 'EN_US'. */
+  newTabGuid: Scalars['ID'];
   /** Which day to show scheduled items from. Expects a date in YYYY-MM-DD format. */
   startDate: Scalars['Date'];
 };
@@ -442,6 +442,44 @@ export type RejectedCuratedCorpusItemDataFragment = {
   createdAt: number;
 };
 
+export type CreateNewTabFeedScheduledItemMutationVariables = Exact<{
+  curatedItemExternalId: Scalars['ID'];
+  newTabGuid: Scalars['ID'];
+  scheduledDate: Scalars['Date'];
+}>;
+
+export type CreateNewTabFeedScheduledItemMutation = {
+  __typename?: 'Mutation';
+  createNewTabFeedScheduledItem: {
+    __typename?: 'NewTabFeedScheduledItem';
+    externalId: string;
+    createdAt: number;
+    createdBy: string;
+    updatedAt: number;
+    updatedBy?: string | null | undefined;
+    scheduledDate: any;
+    curatedItem: {
+      __typename?: 'CuratedItem';
+      externalId: string;
+      title: string;
+      language: string;
+      publisher: string;
+      url: any;
+      imageUrl: any;
+      excerpt: string;
+      status: CuratedStatus;
+      topic: string;
+      isCollection: boolean;
+      isShortLived: boolean;
+      isSyndicated: boolean;
+      createdBy: string;
+      createdAt: number;
+      updatedBy?: string | null | undefined;
+      updatedAt: number;
+    };
+  };
+};
+
 export type GetCuratedItemsQueryVariables = Exact<{
   filters?: Maybe<CuratedItemFilter>;
   pagination?: Maybe<PaginationInput>;
@@ -554,6 +592,78 @@ export const RejectedCuratedCorpusItemDataFragmentDoc = gql`
     createdAt
   }
 `;
+export const CreateNewTabFeedScheduledItemDocument = gql`
+  mutation createNewTabFeedScheduledItem(
+    $curatedItemExternalId: ID!
+    $newTabGuid: ID!
+    $scheduledDate: Date!
+  ) {
+    createNewTabFeedScheduledItem(
+      data: {
+        curatedItemExternalId: $curatedItemExternalId
+        newTabGuid: $newTabGuid
+        scheduledDate: $scheduledDate
+      }
+    ) {
+      externalId
+      createdAt
+      createdBy
+      updatedAt
+      updatedBy
+      scheduledDate
+      curatedItem {
+        ...CuratedItemData
+      }
+    }
+  }
+  ${CuratedItemDataFragmentDoc}
+`;
+export type CreateNewTabFeedScheduledItemMutationFn = Apollo.MutationFunction<
+  CreateNewTabFeedScheduledItemMutation,
+  CreateNewTabFeedScheduledItemMutationVariables
+>;
+
+/**
+ * __useCreateNewTabFeedScheduledItemMutation__
+ *
+ * To run a mutation, you first call `useCreateNewTabFeedScheduledItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateNewTabFeedScheduledItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createNewTabFeedScheduledItemMutation, { data, loading, error }] = useCreateNewTabFeedScheduledItemMutation({
+ *   variables: {
+ *      curatedItemExternalId: // value for 'curatedItemExternalId'
+ *      newTabGuid: // value for 'newTabGuid'
+ *      scheduledDate: // value for 'scheduledDate'
+ *   },
+ * });
+ */
+export function useCreateNewTabFeedScheduledItemMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateNewTabFeedScheduledItemMutation,
+    CreateNewTabFeedScheduledItemMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateNewTabFeedScheduledItemMutation,
+    CreateNewTabFeedScheduledItemMutationVariables
+  >(CreateNewTabFeedScheduledItemDocument, options);
+}
+export type CreateNewTabFeedScheduledItemMutationHookResult = ReturnType<
+  typeof useCreateNewTabFeedScheduledItemMutation
+>;
+export type CreateNewTabFeedScheduledItemMutationResult =
+  Apollo.MutationResult<CreateNewTabFeedScheduledItemMutation>;
+export type CreateNewTabFeedScheduledItemMutationOptions =
+  Apollo.BaseMutationOptions<
+    CreateNewTabFeedScheduledItemMutation,
+    CreateNewTabFeedScheduledItemMutationVariables
+  >;
 export const GetCuratedItemsDocument = gql`
   query getCuratedItems(
     $filters: CuratedItemFilter

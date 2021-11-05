@@ -78,7 +78,7 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
 
   // 1. Prepare the "update story" mutation
   const [updateStory] = useUpdateCollectionStoryMutation();
-  // 3. Update the story when the user submits the form
+  // 2. Update the story when the user submits the form
   const onUpdate = (
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
