@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import { RejectedItemSearchForm } from './RejectedCuratedItemSearchForm';
+import { RejectedItemSearchForm } from './RejectedItemSearchForm';
 import userEvent from '@testing-library/user-event';
 
 describe('The RejectedItemSearchForm component', () => {

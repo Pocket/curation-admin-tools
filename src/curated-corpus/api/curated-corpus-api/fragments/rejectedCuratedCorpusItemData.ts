@@ -3,9 +3,10 @@ import { gql } from '@apollo/client';
 /**
  * All the fields for a Rejected Curated Corpus Item
  */
-export const RejectedCuratedCorpusItemData = gql`
-  fragment RejectedCuratedCorpusItemData on RejectedCuratedCorpusItem {
+export const RejectedItemData = gql`
+  fragment RejectedItemData on RejectedCuratedCorpusItem {
     externalId
+    prospectId
     url
     title
     topic

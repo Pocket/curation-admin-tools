@@ -7,10 +7,10 @@ import {
   FormikSelectField,
   FormikTextField,
 } from '../../../_shared/components';
-import { validationSchema } from './CuratedItemSearchForm.validation';
+import { validationSchema } from './ApprovedItemSearchForm.validation';
 import { languages, topics } from '../../helpers/definitions';
 
-interface CuratedItemSearchFormProps {
+interface ApprovedItemSearchFormProps {
   /**
    * What do we do with the submitted data?
    */
@@ -23,7 +23,7 @@ interface CuratedItemSearchFormProps {
 /**
  * A form for filtering and searching approved Curated Items.
  */
-export const CuratedItemSearchForm: React.FC<CuratedItemSearchFormProps> = (
+export const ApprovedItemSearchForm: React.FC<ApprovedItemSearchFormProps> = (
   props
 ): JSX.Element => {
   const { onSubmit } = props;
@@ -50,7 +50,7 @@ export const CuratedItemSearchForm: React.FC<CuratedItemSearchFormProps> = (
   });
 
   return (
-    <form name="curated-item-search-form" onSubmit={formik.handleSubmit}>
+    <form name="approved-item-search-form" onSubmit={formik.handleSubmit}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <FormikTextField

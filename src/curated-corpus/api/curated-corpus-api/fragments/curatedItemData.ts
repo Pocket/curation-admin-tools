@@ -4,8 +4,9 @@ import { gql } from '@apollo/client';
  * Everything we need to fetch for a Curated Item
  */
 export const CuratedItemData = gql`
-  fragment CuratedItemData on CuratedItem {
+  fragment CuratedItemData on ApprovedCuratedCorpusItem {
     externalId
+    prospectId
     title
     language
     publisher
