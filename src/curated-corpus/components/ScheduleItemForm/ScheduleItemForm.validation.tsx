@@ -9,7 +9,7 @@ const newTabAllowedValues = newTabs.map((newTab: NewTab) => {
 
 export const validationSchema = yup.object({
   // This is a hidden field that we pass along
-  curatedItemExternalId: yup.string().trim().required(),
+  approvedItemExternalId: yup.string().trim().required(),
 
   newTabGuid: yup
     .string()

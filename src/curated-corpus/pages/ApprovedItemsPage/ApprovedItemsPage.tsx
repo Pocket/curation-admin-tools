@@ -3,27 +3,27 @@ import { Grid, Typography } from '@material-ui/core';
 import { FormikHelpers, FormikValues } from 'formik';
 import { config } from '../../../config';
 import {
-  CuratedItem,
-  CuratedItemEdge,
-  CuratedItemFilter,
+  ApprovedCuratedCorpusItem,
+  ApprovedCuratedCorpusItemEdge,
+  ApprovedCuratedCorpusItemFilter,
   useCreateNewTabFeedScheduledItemMutation,
-  useGetCuratedItemsLazyQuery,
+  useGetApprovedItemsLazyQuery,
 } from '../../api/curated-corpus-api/generatedTypes';
 import { HandleApiResponse } from '../../../_shared/components';
 import {
-  CuratedItemListCard,
-  CuratedItemSearchForm,
+  ApprovedItemListCard,
+  ApprovedItemSearchForm,
   NextPrevPagination,
-  ScheduleCuratedItemModal,
+  ScheduleItemModal,
 } from '../../components';
 import { useRunMutation, useToggle } from '../../../_shared/hooks';
 import { DateTime } from 'luxon';
 
-export const CuratedItemsPage: React.FC = (): JSX.Element => {
+export const ApprovedItemsPage: React.FC = (): JSX.Element => {
   // Get the usual API response vars and a helper method to retrieve data
   // that can be used inside hooks.
-  const [getCuratedItems, { loading, error, data }] =
-    useGetCuratedItemsLazyQuery(
+  const [getApprovedCuratedCorpusItems, { loading, error, data }] =
+    useGetApprovedItemsLazyQuery(
       // We need to make sure search results are never served from the cache.
       { fetchPolicy: 'no-cache', notifyOnNetworkStatusChange: true }
     );
@@ -34,7 +34,7 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
 
   // Save the filters in a state variable to be able to use them when paginating
   // through results.
-  const [filters, setFilters] = useState<CuratedItemFilter>({});
+  const [filters, setFilters] = useState<ApprovedCuratedCorpusItemFilter>({});
 
   // Save the cursors returned with every request to be able to use them when
   // paginating through results.
@@ -44,7 +44,7 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
   // On the initial page load, load most recently added Curated Items -
   // the first page of results, no filters applied.
   useEffect(() => {
-    getCuratedItems({
+    getApprovedCuratedCorpusItems({
       variables: {
         pagination: { first: config.pagination.curatedItemsPerPage },
       },
@@ -54,8 +54,8 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
   // Set the cursors once data is returned by the API.
   useEffect(() => {
     if (data) {
-      setAfter(data.getCuratedItems.pageInfo.endCursor);
-      setBefore(data.getCuratedItems.pageInfo.startCursor);
+      setAfter(data.getApprovedCuratedCorpusItems.pageInfo.endCursor);
+      setBefore(data.getApprovedCuratedCorpusItems.pageInfo.startCursor);
     }
   }, [data]);
 
@@ -79,7 +79,7 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
     }
 
     // Execute the search.
-    getCuratedItems({
+    getApprovedCuratedCorpusItems({
       variables: {
         pagination: { first: config.pagination.curatedItemsPerPage },
         filters,
@@ -96,7 +96,7 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
    * Results are always retrieved from the API.
    */
   const loadNext = () => {
-    getCuratedItems({
+    getApprovedCuratedCorpusItems({
       variables: {
         pagination: { first: config.pagination.curatedItemsPerPage, after },
         filters,
@@ -111,7 +111,7 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
    * Results are always retrieved from the API.
    */
   const loadPrevious = () => {
-    getCuratedItems({
+    getApprovedCuratedCorpusItems({
       variables: {
         pagination: { last: config.pagination.curatedItemsPerPage, before },
         filters,
@@ -125,11 +125,11 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
   const [scheduleModalOpen, toggleScheduleModal] = useToggle(false);
 
   /**
-   * Set the current Curated Item to be worked on (e.g., scheduled for New Tab).
+   * Set the current Approved Item to be worked on (e.g., scheduled for New Tab).
    */
-  const [currentItem, setCurrentItem] = useState<CuratedItem | undefined>(
-    undefined
-  );
+  const [currentItem, setCurrentItem] = useState<
+    ApprovedCuratedCorpusItem | undefined
+  >(undefined);
 
   // 1. Prepare the "schedule curated item" mutation
   const [scheduleCuratedItem] = useCreateNewTabFeedScheduledItemMutation();
@@ -165,13 +165,13 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
   return (
     <>
       <h1>Live Corpus</h1>
-      <CuratedItemSearchForm onSubmit={handleSubmit} />
+      <ApprovedItemSearchForm onSubmit={handleSubmit} />
 
       {!data && <HandleApiResponse loading={loading} error={error} />}
 
       {currentItem && (
-        <ScheduleCuratedItemModal
-          curatedItem={currentItem}
+        <ScheduleItemModal
+          approvedItem={currentItem}
           isOpen={scheduleModalOpen}
           onSave={onScheduleSave}
           toggleModal={toggleScheduleModal}
@@ -188,38 +188,42 @@ export const CuratedItemsPage: React.FC = (): JSX.Element => {
         {data && (
           <Grid item xs={12}>
             <Typography>
-              Found {data.getCuratedItems.totalCount} results.
+              Found {data.getApprovedCuratedCorpusItems.totalCount} results.
             </Typography>
           </Grid>
         )}
         {data &&
-          data.getCuratedItems.edges.map((edge: CuratedItemEdge) => {
-            return (
-              <Grid
-                item
-                xs={12}
-                sm={6}
-                md={3}
-                key={`grid-${edge.node.externalId}`}
-              >
-                <CuratedItemListCard
-                  key={edge.node.externalId}
-                  item={edge.node}
-                  onSchedule={() => {
-                    setCurrentItem(edge.node);
-                    toggleScheduleModal();
-                  }}
-                />
-              </Grid>
-            );
-          })}
+          data.getApprovedCuratedCorpusItems.edges.map(
+            (edge: ApprovedCuratedCorpusItemEdge) => {
+              return (
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  md={3}
+                  key={`grid-${edge.node.externalId}`}
+                >
+                  <ApprovedItemListCard
+                    key={edge.node.externalId}
+                    item={edge.node}
+                    onSchedule={() => {
+                      setCurrentItem(edge.node);
+                      toggleScheduleModal();
+                    }}
+                  />
+                </Grid>
+              );
+            }
+          )}
       </Grid>
 
       {data && (
         <NextPrevPagination
-          hasNextPage={data.getCuratedItems.pageInfo.hasNextPage}
+          hasNextPage={data.getApprovedCuratedCorpusItems.pageInfo.hasNextPage}
           loadNext={loadNext}
-          hasPreviousPage={data.getCuratedItems.pageInfo.hasPreviousPage}
+          hasPreviousPage={
+            data.getApprovedCuratedCorpusItems.pageInfo.hasPreviousPage
+          }
           loadPrevious={loadPrevious}
         />
       )}

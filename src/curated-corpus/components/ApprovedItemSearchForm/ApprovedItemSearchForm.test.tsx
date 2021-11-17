@@ -1,13 +1,13 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
-import { CuratedItemSearchForm } from './CuratedItemSearchForm';
+import { ApprovedItemSearchForm } from './ApprovedItemSearchForm';
 import userEvent from '@testing-library/user-event';
 
 describe('The CuratedItemSearchForm component', () => {
   const handleSubmit = jest.fn();
 
   it('renders successfully', () => {
-    render(<CuratedItemSearchForm onSubmit={handleSubmit} />);
+    render(<ApprovedItemSearchForm onSubmit={handleSubmit} />);
 
     // there is at least a form and nothing falls over
     const form = screen.getByRole('form');
@@ -15,14 +15,14 @@ describe('The CuratedItemSearchForm component', () => {
   });
 
   it('has a single "Search" button', () => {
-    render(<CuratedItemSearchForm onSubmit={handleSubmit} />);
+    render(<ApprovedItemSearchForm onSubmit={handleSubmit} />);
 
     const button = screen.getByRole('button');
     expect(button).toBeInTheDocument();
   });
 
   it('has all the expected fields', () => {
-    render(<CuratedItemSearchForm onSubmit={handleSubmit} />);
+    render(<ApprovedItemSearchForm onSubmit={handleSubmit} />);
 
     const titleField = screen.getByLabelText(/filter by title/i);
     expect(titleField).toBeInTheDocument();
@@ -41,7 +41,7 @@ describe('The CuratedItemSearchForm component', () => {
   });
 
   it('allows users to search without any filters', async () => {
-    render(<CuratedItemSearchForm onSubmit={handleSubmit} />);
+    render(<ApprovedItemSearchForm onSubmit={handleSubmit} />);
 
     const button = screen.getByRole('button');
 
@@ -53,7 +53,7 @@ describe('The CuratedItemSearchForm component', () => {
   });
 
   it('validates the partial match fields', async () => {
-    render(<CuratedItemSearchForm onSubmit={handleSubmit} />);
+    render(<ApprovedItemSearchForm onSubmit={handleSubmit} />);
 
     const titleField = screen.getByLabelText(/filter by title/i);
     const urlField = screen.getByLabelText(/filter by url/i);

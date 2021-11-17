@@ -1,11 +1,11 @@
 import { gql } from '@apollo/client';
-import { RejectedCuratedCorpusItemData } from '../fragments/rejectedCuratedCorpusItemData';
+import { RejectedItemData } from '../fragments/rejectedCuratedCorpusItemData';
 
 /**
  * Get a list of rejected curated items
  */
-export const getRejectedCuratedCorpus = gql`
-  query getRejectedCuratedCorpusItems(
+export const getRejectedItems = gql`
+  query getRejectedItems(
     $filters: RejectedCuratedCorpusItemFilter
     $pagination: PaginationInput
   ) {
@@ -20,10 +20,10 @@ export const getRejectedCuratedCorpus = gql`
       edges {
         cursor
         node {
-          ...RejectedCuratedCorpusItemData
+          ...RejectedItemData
         }
       }
     }
   }
-  ${RejectedCuratedCorpusItemData}
+  ${RejectedItemData}
 `;

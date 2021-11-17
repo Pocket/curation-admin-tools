@@ -8,15 +8,15 @@ import {
   SharedFormButtons,
   SharedFormButtonsProps,
 } from '../../../_shared/components';
-import { validationSchema } from './ScheduleCuratedItemForm.validation';
+import { validationSchema } from './ScheduleItemForm.validation';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { NewTab } from '../../helpers/definitions';
 
-interface ScheduleCuratedItemFormProps {
+interface ScheduleItemFormProps {
   /**
-   * The UUID of the Curated Item about to be scheduled.
+   * The UUID of the Approved Curated Item about to be scheduled.
    */
-  curatedItemExternalId: string;
+  approvedItemExternalId: string;
 
   /**
    * The list of New Tabs the logged-in user has access to.
@@ -32,10 +32,10 @@ interface ScheduleCuratedItemFormProps {
   ) => void | Promise<any>;
 }
 
-export const ScheduleCuratedItemForm: React.FC<
-  ScheduleCuratedItemFormProps & SharedFormButtonsProps
+export const ScheduleItemForm: React.FC<
+  ScheduleItemFormProps & SharedFormButtonsProps
 > = (props): JSX.Element => {
-  const { curatedItemExternalId, newTabList, onCancel, onSubmit } = props;
+  const { approvedItemExternalId, newTabList, onCancel, onSubmit } = props;
 
   // Set the default scheduled date to tomorrow.
   // Do we need to worry about timezones here? .local() returns the date
@@ -57,7 +57,7 @@ export const ScheduleCuratedItemForm: React.FC<
   const formik = useFormik({
     initialValues: {
       newTabGuid: '',
-      curatedItemExternalId,
+      approvedItemExternalId,
       scheduledDate: selectedDate,
     },
     validateOnBlur: false,
@@ -74,7 +74,7 @@ export const ScheduleCuratedItemForm: React.FC<
 
   return (
     <>
-      <form name="curated-item-search-form" onSubmit={formik.handleSubmit}>
+      <form name="approved-item-search-form" onSubmit={formik.handleSubmit}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <FormikSelectField
@@ -116,9 +116,9 @@ export const ScheduleCuratedItemForm: React.FC<
         <Box display="none">
           <TextField
             type="hidden"
-            id="curatedItemExternalId"
-            label="curatedItemExternalId"
-            {...formik.getFieldProps('curatedItemExternalId')}
+            id="approvedItemExternalId"
+            label="approvedItemExternalId"
+            {...formik.getFieldProps('approvedItemExternalId')}
           />
         </Box>
       </form>

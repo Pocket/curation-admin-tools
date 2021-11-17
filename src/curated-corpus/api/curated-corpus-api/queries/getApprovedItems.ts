@@ -2,14 +2,14 @@ import { gql } from '@apollo/client';
 import { CuratedItemData } from '../fragments/curatedItemData';
 
 /**
- * Get a list of curated items
+ * Get a list of approved curated items
  */
-export const getCuratedItems = gql`
-  query getCuratedItems(
-    $filters: CuratedItemFilter
+export const getApprovedItems = gql`
+  query getApprovedItems(
+    $filters: ApprovedCuratedCorpusItemFilter
     $pagination: PaginationInput
   ) {
-    getCuratedItems(filters: $filters, pagination: $pagination) {
+    getApprovedCuratedCorpusItems(filters: $filters, pagination: $pagination) {
       totalCount
       pageInfo {
         hasNextPage
