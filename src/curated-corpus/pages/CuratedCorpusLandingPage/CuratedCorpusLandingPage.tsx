@@ -8,7 +8,7 @@ import {
   MainContentWrapper,
   MenuLink,
 } from '../../../_shared/components';
-import { CuratedItemsPage, RejectedItemsPage } from '../';
+import { CuratedItemsPage, ProspectsPage, RejectedItemsPage } from '../';
 import { client } from '../../api/curated-corpus-api/client';
 
 /**
@@ -44,6 +44,9 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
               <p>
                 Try the <Link to={`${path}/live/`}>Live Corpus</Link> page
               </p>
+            </Route>
+            <Route exact path={`${path}/prospects/`}>
+              <ProspectsPage />
             </Route>
             <Route exact path={`${path}/live/`}>
               <CuratedItemsPage />
