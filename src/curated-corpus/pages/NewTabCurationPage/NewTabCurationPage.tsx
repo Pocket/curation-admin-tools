@@ -5,7 +5,7 @@ import { client } from '../../api/prospect-api/client';
 import { ProspectListCard } from '../../components';
 import { Box, Grid, Typography } from '@material-ui/core';
 
-export const ProspectsPage: React.FC = (): JSX.Element => {
+export const NewTabCurationPage: React.FC = (): JSX.Element => {
   const { loading, error, data } = useGetProspectsQuery(
     // We need to make sure search results are never served from the cache.
     {

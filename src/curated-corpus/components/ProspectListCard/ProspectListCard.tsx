@@ -42,8 +42,11 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
             alt={prospect.title ?? 'No title supplied'}
             className={classes.image}
           />
-          Saves: {prospect.saveCount} &middot; Source:{' '}
-          {prospect.prospectType.toLowerCase()}
+          <Typography variant="subtitle2" color="textSecondary">
+            Saves: {prospect.saveCount}
+            <br />
+            Source: {prospect.prospectType.toLowerCase()}
+          </Typography>
         </Grid>
         <Grid item xs={12} sm={9}>
           <Link href={prospect.url} className={classes.link}>
