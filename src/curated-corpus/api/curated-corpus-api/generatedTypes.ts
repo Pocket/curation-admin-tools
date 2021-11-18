@@ -1,6 +1,7 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
+export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
   [K in keyof T]: T[K];
 };
@@ -26,55 +27,9 @@ export type Scalars = {
   Url: any;
 };
 
-/** Input data for creating a Curated Item and optionally scheduling this item to appear on New Tab. */
-export type CreateCuratedItemInput = {
-  /** The excerpt of the Curated Item. */
-  excerpt: Scalars['String'];
-  /** The image URL for this item's accompanying picture. */
-  imageUrl: Scalars['Url'];
-  /** Whether this story is a Pocket Collection. */
-  isCollection: Scalars['Boolean'];
-  /**
-   * A flag to ML to not recommend this item long term after it is added to the corpus.
-   * Example: a story covering an election.
-   */
-  isShortLived: Scalars['Boolean'];
-  /** Whether this item is a syndicated article. */
-  isSyndicated: Scalars['Boolean'];
-  /** What language this item is in. This is a two-letter code, for example, 'en' for English. */
-  language: Scalars['String'];
-  /** Optionally, specify the GUID of the New Tab this item should be scheduled for. */
-  newTabGuid?: Maybe<Scalars['ID']>;
-  /** The name of the online publication that published this story. */
-  publisher: Scalars['String'];
-  /** Optionally, specify the date this item should be appearing on New Tab. Format: YYYY-MM-DD */
-  scheduledDate?: Maybe<Scalars['Date']>;
-  /** The outcome of the curators' review of the Curated Item. */
-  status: CuratedStatus;
-  /** The title of the Curated Item. */
-  title: Scalars['String'];
-  /**
-   * A topic this story best fits in.
-   * Temporarily a string value that will be provided by Prospect API, possibly an enum in the future.
-   */
-  topic: Scalars['String'];
-  /** The URL of the Curated Item. */
-  url: Scalars['Url'];
-};
-
-/** Input data for creating a scheduled entry for a Curated Item on a New Tab Feed. */
-export type CreateNewTabFeedScheduledItemInput = {
-  /** The ID of the Curated Item that needs to be scheduled. */
-  curatedItemExternalId: Scalars['ID'];
-  /** The GUID of the New Tab Feed the Curated Item is going to appear on. Example: 'EN_US'. */
-  newTabGuid: Scalars['ID'];
-  /** The date the associated Curated Item is scheduled to appear on New Tab. Format: YYYY-MM-DD. */
-  scheduledDate: Scalars['Date'];
-};
-
 /** A prospective story that has been reviewed by the curators and saved to the curated corpus. */
-export type CuratedItem = {
-  __typename?: 'CuratedItem';
+export type ApprovedCuratedCorpusItem = {
+  __typename?: 'ApprovedCuratedCorpusItem';
   /** A Unix timestamp of when the entity was created. */
   createdAt: Scalars['Int'];
   /** A single sign-on user identifier of the user who created this entity. */
@@ -99,6 +54,8 @@ export type CuratedItem = {
   isSyndicated: Scalars['Boolean'];
   /** What language this story is in. This is a two-letter code, for example, 'en' for English. */
   language: Scalars['String'];
+  /** The GUID of the corresponding Prospect ID. */
+  prospectId: Scalars['ID'];
   /** The name of the online publication that published this story. */
   publisher: Scalars['String'];
   /** The outcome of the curators' review. */
@@ -118,41 +75,89 @@ export type CuratedItem = {
   url: Scalars['Url'];
 };
 
-/** The connection type for Curated Item. */
-export type CuratedItemConnection = {
-  __typename?: 'CuratedItemConnection';
+/** The connection type for Approved Item. */
+export type ApprovedCuratedCorpusItemConnection = {
+  __typename?: 'ApprovedCuratedCorpusItemConnection';
   /** A list of edges. */
-  edges: Array<CuratedItemEdge>;
+  edges: Array<ApprovedCuratedCorpusItemEdge>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
-  /** Identifies the total count of Curated Items in the connection. */
+  /** Identifies the total count of Approved Items in the connection. */
   totalCount: Scalars['Int'];
 };
 
 /** An edge in a connection. */
-export type CuratedItemEdge = {
-  __typename?: 'CuratedItemEdge';
+export type ApprovedCuratedCorpusItemEdge = {
+  __typename?: 'ApprovedCuratedCorpusItemEdge';
   /** A cursor for use in pagination. */
   cursor: Scalars['String'];
-  /** The Curated Item at the end of the edge. */
-  node: CuratedItem;
+  /** The Approved Item at the end of the edge. */
+  node: ApprovedCuratedCorpusItem;
 };
 
-/** Available fields for filtering CuratedItems. */
-export type CuratedItemFilter = {
+/** Available fields for filtering ApprovedCuratedCorpusItems. */
+export type ApprovedCuratedCorpusItemFilter = {
   /**
-   * Optional filter on the language Curated Items have been classified as.
+   * Optional filter on the language Approved Items have been classified as.
    * This is a two-letter string, e.g. 'en' for English or 'de' for 'German'.
    */
-  language?: Maybe<Scalars['String']>;
-  /** Optional filter on the status of Curated Items. */
-  status?: Maybe<CuratedStatus>;
+  language?: InputMaybe<Scalars['String']>;
+  /** Optional filter on the status of Approved Items. */
+  status?: InputMaybe<CuratedStatus>;
   /** Optional filter on the title field. Returns partial matches. */
-  title?: Maybe<Scalars['String']>;
+  title?: InputMaybe<Scalars['String']>;
   /** Optional filter on the topic field. */
-  topic?: Maybe<Scalars['String']>;
+  topic?: InputMaybe<Scalars['String']>;
   /** Optional filter on the URL field. Returns partial matches. */
-  url?: Maybe<Scalars['Url']>;
+  url?: InputMaybe<Scalars['Url']>;
+};
+
+/** Input data for creating an Approved Item and optionally scheduling this item to appear on New Tab. */
+export type CreateApprovedCuratedCorpusItemInput = {
+  /** The excerpt of the Approved Item. */
+  excerpt: Scalars['String'];
+  /** The image URL for this item's accompanying picture. */
+  imageUrl: Scalars['Url'];
+  /** Whether this story is a Pocket Collection. */
+  isCollection: Scalars['Boolean'];
+  /**
+   * A flag to ML to not recommend this item long term after it is added to the corpus.
+   * Example: a story covering an election.
+   */
+  isShortLived: Scalars['Boolean'];
+  /** Whether this item is a syndicated article. */
+  isSyndicated: Scalars['Boolean'];
+  /** What language this item is in. This is a two-letter code, for example, 'en' for English. */
+  language: Scalars['String'];
+  /** Optionally, specify the GUID of the New Tab this item should be scheduled for. */
+  newTabGuid?: InputMaybe<Scalars['ID']>;
+  /** The GUID of the corresponding Prospect ID. */
+  prospectId: Scalars['ID'];
+  /** The name of the online publication that published this story. */
+  publisher: Scalars['String'];
+  /** Optionally, specify the date this item should be appearing on New Tab. Format: YYYY-MM-DD */
+  scheduledDate?: InputMaybe<Scalars['Date']>;
+  /** The outcome of the curators' review of the Approved Item. */
+  status: CuratedStatus;
+  /** The title of the Approved Item. */
+  title: Scalars['String'];
+  /**
+   * A topic this story best fits in.
+   * Temporarily a string value that will be provided by Prospect API, possibly an enum in the future.
+   */
+  topic: Scalars['String'];
+  /** The URL of the Approved Item. */
+  url: Scalars['Url'];
+};
+
+/** Input data for creating a scheduled entry for an Approved Item on a New Tab Feed. */
+export type CreateScheduledCuratedCorpusItemInput = {
+  /** The ID of the Approved Item that needs to be scheduled. */
+  approvedItemExternalId: Scalars['ID'];
+  /** The GUID of the New Tab Feed the Approved Item is going to appear on. Example: 'EN_US'. */
+  newTabGuid: Scalars['ID'];
+  /** The date the associated Approved Item is scheduled to appear on New Tab. Format: YYYY-MM-DD. */
+  scheduledDate: Scalars['Date'];
 };
 
 /** The outcome of the curators reviewing a prospective story. */
@@ -164,79 +169,37 @@ export enum CuratedStatus {
 }
 
 /** Input data for deleting a scheduled item for a New Tab Feed. */
-export type DeleteNewTabFeedScheduledItemInput = {
+export type DeleteScheduledCuratedCorpusItemInput = {
   /** ID of the scheduled item. A string in UUID format. */
   externalId: Scalars['ID'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  /** Creates a Curated Item and optionally schedules it to appear on New Tab. */
-  createCuratedItem: CuratedItem;
+  /** Creates an Approved Item and optionally schedules it to appear on New Tab. */
+  createApprovedCuratedCorpusItem: ApprovedCuratedCorpusItem;
   /** Creates a New Tab Scheduled Item. */
-  createNewTabFeedScheduledItem: NewTabFeedScheduledItem;
+  createScheduledCuratedCorpusItem: ScheduledCuratedCorpusItem;
   /** Deletes an item from New Tab Schedule. */
-  deleteNewTabFeedScheduledItem: NewTabFeedScheduledItem;
-  /** Updates a Curated Item. */
-  updateCuratedItem: CuratedItem;
+  deleteScheduledCuratedCorpusItem: ScheduledCuratedCorpusItem;
+  /** Updates an Approved Item. */
+  updateApprovedCuratedCorpusItem: ApprovedCuratedCorpusItem;
 };
 
-export type MutationCreateCuratedItemArgs = {
-  data: CreateCuratedItemInput;
+export type MutationCreateApprovedCuratedCorpusItemArgs = {
+  data: CreateApprovedCuratedCorpusItemInput;
 };
 
-export type MutationCreateNewTabFeedScheduledItemArgs = {
-  data: CreateNewTabFeedScheduledItemInput;
+export type MutationCreateScheduledCuratedCorpusItemArgs = {
+  data: CreateScheduledCuratedCorpusItemInput;
 };
 
-export type MutationDeleteNewTabFeedScheduledItemArgs = {
-  data: DeleteNewTabFeedScheduledItemInput;
+export type MutationDeleteScheduledCuratedCorpusItemArgs = {
+  data: DeleteScheduledCuratedCorpusItemInput;
 };
 
-export type MutationUpdateCuratedItemArgs = {
-  data: UpdateCuratedItemInput;
-};
-
-/**
- * A scheduled entry for a Curated Item to appear on a New Tab Feed.
- * For example, a story that is scheduled to appear on December 31st, 2021 on the New Tab in Firefox for the US audience.
- */
-export type NewTabFeedScheduledItem = {
-  __typename?: 'NewTabFeedScheduledItem';
-  /** A Unix timestamp of when the entity was created. */
-  createdAt: Scalars['Int'];
-  /** A single sign-on user identifier of the user who created this entity. */
-  createdBy: Scalars['String'];
-  /** The associated Curated Item. */
-  curatedItem: CuratedItem;
-  /** An alternative primary key in UUID format that is generated on creation. */
-  externalId: Scalars['ID'];
-  /**
-   * The date the associated Curated Item is scheduled to appear on New Tab.
-   * This date is relative to the time zone of the New Tab. Format: YYYY-MM-DD.
-   */
-  scheduledDate: Scalars['Date'];
-  /** A Unix timestamp of when the entity was last updated. */
-  updatedAt: Scalars['Int'];
-  /** A single sign-on user identifier of the user who last updated this entity. Null on creation. */
-  updatedBy?: Maybe<Scalars['String']>;
-};
-
-/** Available fields for filtering scheduled items for a given New Tab. */
-export type NewTabFeedScheduledItemsFilterInput = {
-  /** To what day to show scheduled items to, inclusive. Expects a date in YYYY-MM-DD format. */
-  endDate: Scalars['Date'];
-  /** The GUID of the New Tab. Example: 'EN_US'. */
-  newTabGuid: Scalars['ID'];
-  /** Which day to show scheduled items from. Expects a date in YYYY-MM-DD format. */
-  startDate: Scalars['Date'];
-};
-
-/** The shape of the result returned by the getNewTabFeedScheduledItems query. */
-export type NewTabFeedScheduledItemsResult = {
-  __typename?: 'NewTabFeedScheduledItemsResult';
-  /** An array of items for a given New Tab Feed */
-  items: Array<NewTabFeedScheduledItem>;
+export type MutationUpdateApprovedCuratedCorpusItemArgs = {
+  data: UpdateApprovedCuratedCorpusItemInput;
 };
 
 /** Options for returning items sorted by the supplied field. */
@@ -272,46 +235,56 @@ export type PaginationInput = {
    * Returns the elements in the list that come after the specified cursor.
    * The specified cursor is not included in the result.
    */
-  after?: Maybe<Scalars['String']>;
+  after?: InputMaybe<Scalars['String']>;
   /**
    * Returns the elements in the list that come before the specified cursor.
    * The specified cursor is not included in the result.
    */
-  before?: Maybe<Scalars['String']>;
+  before?: InputMaybe<Scalars['String']>;
   /**
    * Returns the first _n_ elements from the list. Must be a non-negative integer.
    * If `first` contains a value, `last` should be null/omitted in the input.
    */
-  first?: Maybe<Scalars['Int']>;
+  first?: InputMaybe<Scalars['Int']>;
   /**
    * Returns the last _n_ elements from the list. Must be a non-negative integer.
    * If `last` contains a value, `first` should be null/omitted in the input.
    */
-  last?: Maybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
 };
+
+/**
+ * Prospect types. This enum is not used anywhere in this schema, however it is used
+ * by the Curation Admin Tools frontend to filter prospects.
+ */
+export enum ProspectType {
+  Global = 'GLOBAL',
+  OrganicTimespent = 'ORGANIC_TIMESPENT',
+  Syndicated = 'SYNDICATED',
+}
 
 export type Query = {
   __typename?: 'Query';
-  /** Retrieves a paginated, filterable list of CuratedItems. */
-  getCuratedItems: CuratedItemConnection;
-  /** Retrieves a list of Curated Items that are scheduled to appear on New Tab */
-  getNewTabFeedScheduledItems: NewTabFeedScheduledItemsResult;
+  /** Retrieves a paginated, filterable list of ApprovedCuratedCorpusItems. */
+  getApprovedCuratedCorpusItems: ApprovedCuratedCorpusItemConnection;
   /** Retrieves a paginated, filterable list of RejectedCuratedCorpusItems. */
   getRejectedCuratedCorpusItems: RejectedCuratedCorpusItemConnection;
+  /** Retrieves a list of Approved Items that are scheduled to appear on New Tab */
+  getScheduledCuratedCorpusItems: ScheduledCuratedCorpusItemsResult;
 };
 
-export type QueryGetCuratedItemsArgs = {
-  filters?: Maybe<CuratedItemFilter>;
-  pagination?: Maybe<PaginationInput>;
-};
-
-export type QueryGetNewTabFeedScheduledItemsArgs = {
-  filters: NewTabFeedScheduledItemsFilterInput;
+export type QueryGetApprovedCuratedCorpusItemsArgs = {
+  filters?: InputMaybe<ApprovedCuratedCorpusItemFilter>;
+  pagination?: InputMaybe<PaginationInput>;
 };
 
 export type QueryGetRejectedCuratedCorpusItemsArgs = {
-  filters?: Maybe<RejectedCuratedCorpusItemFilter>;
-  pagination?: Maybe<PaginationInput>;
+  filters?: InputMaybe<RejectedCuratedCorpusItemFilter>;
+  pagination?: InputMaybe<PaginationInput>;
+};
+
+export type QueryGetScheduledCuratedCorpusItemsArgs = {
+  filters: ScheduledCuratedCorpusItemsFilterInput;
 };
 
 /** A prospective story that has been rejected by the curators. */
@@ -325,6 +298,8 @@ export type RejectedCuratedCorpusItem = {
   externalId: Scalars['ID'];
   /** What language this story is in. This is a two-letter code, for example, 'en' for English. */
   language: Scalars['String'];
+  /** The GUID of the corresponding Prospect ID. */
+  prospectId: Scalars['ID'];
   /** The name of the online publication that published this story. */
   publisher: Scalars['String'];
   /** Reason why it was rejected. Can be multiple reasons. Will likely be stored either as comma-separated values or JSON. */
@@ -366,20 +341,98 @@ export type RejectedCuratedCorpusItemFilter = {
    * Optional filter on the language Rejected Curated Items have been classified as.
    * This is a two-letter string, e.g. 'en' for English or 'de' for 'German'.
    */
-  language?: Maybe<Scalars['String']>;
+  language?: InputMaybe<Scalars['String']>;
   /** Optional filter on the title field. Returns partial matches. */
-  title?: Maybe<Scalars['String']>;
+  title?: InputMaybe<Scalars['String']>;
   /** Optional filter on the topic field. */
-  topic?: Maybe<Scalars['String']>;
+  topic?: InputMaybe<Scalars['String']>;
   /** Optional filter on the URL field. Returns partial matches. */
-  url?: Maybe<Scalars['Url']>;
+  url?: InputMaybe<Scalars['Url']>;
 };
 
-/** Input data for updating a Curated Item. */
-export type UpdateCuratedItemInput = {
-  /** The excerpt of the Curated Item. */
+/**
+ * Possible reasons for rejecting a prospect. This enum is not used anywhere in this schema,
+ * however it is used by the Curation Admin Tools frontend to specify rejection reasons.
+ */
+export enum RejectionReason {
+  Misinformation = 'MISINFORMATION',
+  OffensiveMaterial = 'OFFENSIVE_MATERIAL',
+  Other = 'OTHER',
+  Paywall = 'PAYWALL',
+  PoliticalOpinion = 'POLITICAL_OPINION',
+  TimeSensitive = 'TIME_SENSITIVE',
+}
+
+/**
+ * A scheduled entry for an Approved Item to appear on a New Tab Feed.
+ * For example, a story that is scheduled to appear on December 31st, 2021 on the New Tab in Firefox for the US audience.
+ */
+export type ScheduledCuratedCorpusItem = {
+  __typename?: 'ScheduledCuratedCorpusItem';
+  /** The associated Approved Item. */
+  approvedItem: ApprovedCuratedCorpusItem;
+  /** A Unix timestamp of when the entity was created. */
+  createdAt: Scalars['Int'];
+  /** A single sign-on user identifier of the user who created this entity. */
+  createdBy: Scalars['String'];
+  /** An alternative primary key in UUID format that is generated on creation. */
+  externalId: Scalars['ID'];
+  /**
+   * The date the associated Approved Item is scheduled to appear on New Tab.
+   * This date is relative to the time zone of the New Tab. Format: YYYY-MM-DD.
+   */
+  scheduledDate: Scalars['Date'];
+  /** A Unix timestamp of when the entity was last updated. */
+  updatedAt: Scalars['Int'];
+  /** A single sign-on user identifier of the user who last updated this entity. Null on creation. */
+  updatedBy?: Maybe<Scalars['String']>;
+};
+
+/** Available fields for filtering scheduled items for a given New Tab. */
+export type ScheduledCuratedCorpusItemsFilterInput = {
+  /** To what day to show scheduled items to, inclusive. Expects a date in YYYY-MM-DD format. */
+  endDate: Scalars['Date'];
+  /** The GUID of the New Tab. Example: 'EN_US'. */
+  newTabGuid: Scalars['ID'];
+  /** Which day to show scheduled items from. Expects a date in YYYY-MM-DD format. */
+  startDate: Scalars['Date'];
+};
+
+/** The shape of the result returned by the getScheduledCuratedCorpusItems query. */
+export type ScheduledCuratedCorpusItemsResult = {
+  __typename?: 'ScheduledCuratedCorpusItemsResult';
+  /** An array of items for a given New Tab Feed */
+  items: Array<ScheduledCuratedCorpusItem>;
+};
+
+/**
+ * The list of Pocket topics. This enum is not used anywhere in this schema, however it is used
+ * by the Curation Admin Tools frontend to edit curated items.
+ */
+export enum Topics {
+  Business = 'BUSINESS',
+  Career = 'CAREER',
+  Coronavirus = 'CORONAVIRUS',
+  Education = 'EDUCATION',
+  Entertainment = 'ENTERTAINMENT',
+  Food = 'FOOD',
+  Gaming = 'GAMING',
+  HealthFitness = 'HEALTH_FITNESS',
+  Parenting = 'PARENTING',
+  PersonalFinance = 'PERSONAL_FINANCE',
+  Politics = 'POLITICS',
+  Science = 'SCIENCE',
+  SelfImprovement = 'SELF_IMPROVEMENT',
+  Sports = 'SPORTS',
+  Technology = 'TECHNOLOGY',
+  Travel = 'TRAVEL',
+}
+
+/** Input data for updating an Approved Item. */
+export type UpdateApprovedCuratedCorpusItemInput = {
+  /** The excerpt of the Approved Item. */
   excerpt: Scalars['String'];
-  /** Curated Item ID. */
+  /** Approved Item ID. */
   externalId: Scalars['ID'];
   /** The image URL for this item's accompanying picture. */
   imageUrl: Scalars['Url'];
@@ -394,24 +447,27 @@ export type UpdateCuratedItemInput = {
   isSyndicated: Scalars['Boolean'];
   /** What language this item is in. This is a two-letter code, for example, 'en' for English. */
   language: Scalars['String'];
+  /** The GUID of the corresponding Prospect ID. */
+  prospectId: Scalars['ID'];
   /** The name of the online publication that published this story. */
   publisher: Scalars['String'];
-  /** The outcome of the curators' review of the Curated Item. */
+  /** The outcome of the curators' review of the Approved Item. */
   status: CuratedStatus;
-  /** The title of the Curated Item. */
+  /** The title of the Approved Item. */
   title: Scalars['String'];
   /**
    * A topic this story best fits in.
    * Temporarily a string value that will be provided by Prospect API, possibly an enum in the future.
    */
   topic: Scalars['String'];
-  /** The URL of the Curated Item. */
+  /** The URL of the Approved Item. */
   url: Scalars['Url'];
 };
 
 export type CuratedItemDataFragment = {
-  __typename?: 'CuratedItem';
+  __typename?: 'ApprovedCuratedCorpusItem';
   externalId: string;
+  prospectId: string;
   title: string;
   language: string;
   publisher: string;
@@ -429,9 +485,10 @@ export type CuratedItemDataFragment = {
   updatedAt: number;
 };
 
-export type RejectedCuratedCorpusItemDataFragment = {
+export type RejectedItemDataFragment = {
   __typename?: 'RejectedCuratedCorpusItem';
   externalId: string;
+  prospectId: string;
   url: any;
   title: string;
   topic: string;
@@ -443,24 +500,25 @@ export type RejectedCuratedCorpusItemDataFragment = {
 };
 
 export type CreateNewTabFeedScheduledItemMutationVariables = Exact<{
-  curatedItemExternalId: Scalars['ID'];
+  approvedItemExternalId: Scalars['ID'];
   newTabGuid: Scalars['ID'];
   scheduledDate: Scalars['Date'];
 }>;
 
 export type CreateNewTabFeedScheduledItemMutation = {
   __typename?: 'Mutation';
-  createNewTabFeedScheduledItem: {
-    __typename?: 'NewTabFeedScheduledItem';
+  createScheduledCuratedCorpusItem: {
+    __typename?: 'ScheduledCuratedCorpusItem';
     externalId: string;
     createdAt: number;
     createdBy: string;
     updatedAt: number;
     updatedBy?: string | null | undefined;
     scheduledDate: any;
-    curatedItem: {
-      __typename?: 'CuratedItem';
+    approvedItem: {
+      __typename?: 'ApprovedCuratedCorpusItem';
       externalId: string;
+      prospectId: string;
       title: string;
       language: string;
       publisher: string;
@@ -480,15 +538,15 @@ export type CreateNewTabFeedScheduledItemMutation = {
   };
 };
 
-export type GetCuratedItemsQueryVariables = Exact<{
-  filters?: Maybe<CuratedItemFilter>;
+export type GetApprovedItemsQueryVariables = Exact<{
+  filters?: Maybe<ApprovedCuratedCorpusItemFilter>;
   pagination?: Maybe<PaginationInput>;
 }>;
 
-export type GetCuratedItemsQuery = {
+export type GetApprovedItemsQuery = {
   __typename?: 'Query';
-  getCuratedItems: {
-    __typename?: 'CuratedItemConnection';
+  getApprovedCuratedCorpusItems: {
+    __typename?: 'ApprovedCuratedCorpusItemConnection';
     totalCount: number;
     pageInfo: {
       __typename?: 'PageInfo';
@@ -498,11 +556,12 @@ export type GetCuratedItemsQuery = {
       endCursor?: string | null | undefined;
     };
     edges: Array<{
-      __typename?: 'CuratedItemEdge';
+      __typename?: 'ApprovedCuratedCorpusItemEdge';
       cursor: string;
       node: {
-        __typename?: 'CuratedItem';
+        __typename?: 'ApprovedCuratedCorpusItem';
         externalId: string;
+        prospectId: string;
         title: string;
         language: string;
         publisher: string;
@@ -523,12 +582,12 @@ export type GetCuratedItemsQuery = {
   };
 };
 
-export type GetRejectedCuratedCorpusItemsQueryVariables = Exact<{
+export type GetRejectedItemsQueryVariables = Exact<{
   filters?: Maybe<RejectedCuratedCorpusItemFilter>;
   pagination?: Maybe<PaginationInput>;
 }>;
 
-export type GetRejectedCuratedCorpusItemsQuery = {
+export type GetRejectedItemsQuery = {
   __typename?: 'Query';
   getRejectedCuratedCorpusItems: {
     __typename?: 'RejectedCuratedCorpusItemConnection';
@@ -546,6 +605,7 @@ export type GetRejectedCuratedCorpusItemsQuery = {
       node: {
         __typename?: 'RejectedCuratedCorpusItem';
         externalId: string;
+        prospectId: string;
         url: any;
         title: string;
         topic: string;
@@ -560,8 +620,9 @@ export type GetRejectedCuratedCorpusItemsQuery = {
 };
 
 export const CuratedItemDataFragmentDoc = gql`
-  fragment CuratedItemData on CuratedItem {
+  fragment CuratedItemData on ApprovedCuratedCorpusItem {
     externalId
+    prospectId
     title
     language
     publisher
@@ -579,9 +640,10 @@ export const CuratedItemDataFragmentDoc = gql`
     updatedAt
   }
 `;
-export const RejectedCuratedCorpusItemDataFragmentDoc = gql`
-  fragment RejectedCuratedCorpusItemData on RejectedCuratedCorpusItem {
+export const RejectedItemDataFragmentDoc = gql`
+  fragment RejectedItemData on RejectedCuratedCorpusItem {
     externalId
+    prospectId
     url
     title
     topic
@@ -594,13 +656,13 @@ export const RejectedCuratedCorpusItemDataFragmentDoc = gql`
 `;
 export const CreateNewTabFeedScheduledItemDocument = gql`
   mutation createNewTabFeedScheduledItem(
-    $curatedItemExternalId: ID!
+    $approvedItemExternalId: ID!
     $newTabGuid: ID!
     $scheduledDate: Date!
   ) {
-    createNewTabFeedScheduledItem(
+    createScheduledCuratedCorpusItem(
       data: {
-        curatedItemExternalId: $curatedItemExternalId
+        approvedItemExternalId: $approvedItemExternalId
         newTabGuid: $newTabGuid
         scheduledDate: $scheduledDate
       }
@@ -611,7 +673,7 @@ export const CreateNewTabFeedScheduledItemDocument = gql`
       updatedAt
       updatedBy
       scheduledDate
-      curatedItem {
+      approvedItem {
         ...CuratedItemData
       }
     }
@@ -636,7 +698,7 @@ export type CreateNewTabFeedScheduledItemMutationFn = Apollo.MutationFunction<
  * @example
  * const [createNewTabFeedScheduledItemMutation, { data, loading, error }] = useCreateNewTabFeedScheduledItemMutation({
  *   variables: {
- *      curatedItemExternalId: // value for 'curatedItemExternalId'
+ *      approvedItemExternalId: // value for 'approvedItemExternalId'
  *      newTabGuid: // value for 'newTabGuid'
  *      scheduledDate: // value for 'scheduledDate'
  *   },
@@ -664,12 +726,12 @@ export type CreateNewTabFeedScheduledItemMutationOptions =
     CreateNewTabFeedScheduledItemMutation,
     CreateNewTabFeedScheduledItemMutationVariables
   >;
-export const GetCuratedItemsDocument = gql`
-  query getCuratedItems(
-    $filters: CuratedItemFilter
+export const GetApprovedItemsDocument = gql`
+  query getApprovedItems(
+    $filters: ApprovedCuratedCorpusItemFilter
     $pagination: PaginationInput
   ) {
-    getCuratedItems(filters: $filters, pagination: $pagination) {
+    getApprovedCuratedCorpusItems(filters: $filters, pagination: $pagination) {
       totalCount
       pageInfo {
         hasNextPage
@@ -689,58 +751,58 @@ export const GetCuratedItemsDocument = gql`
 `;
 
 /**
- * __useGetCuratedItemsQuery__
+ * __useGetApprovedItemsQuery__
  *
- * To run a query within a React component, call `useGetCuratedItemsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetCuratedItemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetApprovedItemsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetApprovedItemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetCuratedItemsQuery({
+ * const { data, loading, error } = useGetApprovedItemsQuery({
  *   variables: {
  *      filters: // value for 'filters'
  *      pagination: // value for 'pagination'
  *   },
  * });
  */
-export function useGetCuratedItemsQuery(
+export function useGetApprovedItemsQuery(
   baseOptions?: Apollo.QueryHookOptions<
-    GetCuratedItemsQuery,
-    GetCuratedItemsQueryVariables
+    GetApprovedItemsQuery,
+    GetApprovedItemsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<GetCuratedItemsQuery, GetCuratedItemsQueryVariables>(
-    GetCuratedItemsDocument,
+  return Apollo.useQuery<GetApprovedItemsQuery, GetApprovedItemsQueryVariables>(
+    GetApprovedItemsDocument,
     options
   );
 }
-export function useGetCuratedItemsLazyQuery(
+export function useGetApprovedItemsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    GetCuratedItemsQuery,
-    GetCuratedItemsQueryVariables
+    GetApprovedItemsQuery,
+    GetApprovedItemsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    GetCuratedItemsQuery,
-    GetCuratedItemsQueryVariables
-  >(GetCuratedItemsDocument, options);
+    GetApprovedItemsQuery,
+    GetApprovedItemsQueryVariables
+  >(GetApprovedItemsDocument, options);
 }
-export type GetCuratedItemsQueryHookResult = ReturnType<
-  typeof useGetCuratedItemsQuery
+export type GetApprovedItemsQueryHookResult = ReturnType<
+  typeof useGetApprovedItemsQuery
 >;
-export type GetCuratedItemsLazyQueryHookResult = ReturnType<
-  typeof useGetCuratedItemsLazyQuery
+export type GetApprovedItemsLazyQueryHookResult = ReturnType<
+  typeof useGetApprovedItemsLazyQuery
 >;
-export type GetCuratedItemsQueryResult = Apollo.QueryResult<
-  GetCuratedItemsQuery,
-  GetCuratedItemsQueryVariables
+export type GetApprovedItemsQueryResult = Apollo.QueryResult<
+  GetApprovedItemsQuery,
+  GetApprovedItemsQueryVariables
 >;
-export const GetRejectedCuratedCorpusItemsDocument = gql`
-  query getRejectedCuratedCorpusItems(
+export const GetRejectedItemsDocument = gql`
+  query getRejectedItems(
     $filters: RejectedCuratedCorpusItemFilter
     $pagination: PaginationInput
   ) {
@@ -755,62 +817,62 @@ export const GetRejectedCuratedCorpusItemsDocument = gql`
       edges {
         cursor
         node {
-          ...RejectedCuratedCorpusItemData
+          ...RejectedItemData
         }
       }
     }
   }
-  ${RejectedCuratedCorpusItemDataFragmentDoc}
+  ${RejectedItemDataFragmentDoc}
 `;
 
 /**
- * __useGetRejectedCuratedCorpusItemsQuery__
+ * __useGetRejectedItemsQuery__
  *
- * To run a query within a React component, call `useGetRejectedCuratedCorpusItemsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetRejectedCuratedCorpusItemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetRejectedItemsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRejectedItemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetRejectedCuratedCorpusItemsQuery({
+ * const { data, loading, error } = useGetRejectedItemsQuery({
  *   variables: {
  *      filters: // value for 'filters'
  *      pagination: // value for 'pagination'
  *   },
  * });
  */
-export function useGetRejectedCuratedCorpusItemsQuery(
+export function useGetRejectedItemsQuery(
   baseOptions?: Apollo.QueryHookOptions<
-    GetRejectedCuratedCorpusItemsQuery,
-    GetRejectedCuratedCorpusItemsQueryVariables
+    GetRejectedItemsQuery,
+    GetRejectedItemsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    GetRejectedCuratedCorpusItemsQuery,
-    GetRejectedCuratedCorpusItemsQueryVariables
-  >(GetRejectedCuratedCorpusItemsDocument, options);
+  return Apollo.useQuery<GetRejectedItemsQuery, GetRejectedItemsQueryVariables>(
+    GetRejectedItemsDocument,
+    options
+  );
 }
-export function useGetRejectedCuratedCorpusItemsLazyQuery(
+export function useGetRejectedItemsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    GetRejectedCuratedCorpusItemsQuery,
-    GetRejectedCuratedCorpusItemsQueryVariables
+    GetRejectedItemsQuery,
+    GetRejectedItemsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    GetRejectedCuratedCorpusItemsQuery,
-    GetRejectedCuratedCorpusItemsQueryVariables
-  >(GetRejectedCuratedCorpusItemsDocument, options);
+    GetRejectedItemsQuery,
+    GetRejectedItemsQueryVariables
+  >(GetRejectedItemsDocument, options);
 }
-export type GetRejectedCuratedCorpusItemsQueryHookResult = ReturnType<
-  typeof useGetRejectedCuratedCorpusItemsQuery
+export type GetRejectedItemsQueryHookResult = ReturnType<
+  typeof useGetRejectedItemsQuery
 >;
-export type GetRejectedCuratedCorpusItemsLazyQueryHookResult = ReturnType<
-  typeof useGetRejectedCuratedCorpusItemsLazyQuery
+export type GetRejectedItemsLazyQueryHookResult = ReturnType<
+  typeof useGetRejectedItemsLazyQuery
 >;
-export type GetRejectedCuratedCorpusItemsQueryResult = Apollo.QueryResult<
-  GetRejectedCuratedCorpusItemsQuery,
-  GetRejectedCuratedCorpusItemsQueryVariables
+export type GetRejectedItemsQueryResult = Apollo.QueryResult<
+  GetRejectedItemsQuery,
+  GetRejectedItemsQueryVariables
 >;

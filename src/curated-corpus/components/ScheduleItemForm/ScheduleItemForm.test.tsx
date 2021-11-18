@@ -2,7 +2,7 @@ import React from 'react';
 import LuxonUtils from '@date-io/luxon';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { render, screen } from '@testing-library/react';
-import { ScheduleCuratedItemForm } from './ScheduleCuratedItemForm';
+import { ScheduleItemForm } from './ScheduleItemForm';
 import { newTabs } from '../../helpers/definitions';
 
 describe('The CuratedItemSearchForm component', () => {
@@ -12,10 +12,10 @@ describe('The CuratedItemSearchForm component', () => {
   it('renders successfully', () => {
     render(
       <MuiPickersUtilsProvider utils={LuxonUtils}>
-        <ScheduleCuratedItemForm
+        <ScheduleItemForm
           onSubmit={handleSubmit}
           newTabList={newTabList}
-          curatedItemExternalId={'123abc'}
+          approvedItemExternalId={'123abc'}
         />
       </MuiPickersUtilsProvider>
     );
@@ -28,10 +28,10 @@ describe('The CuratedItemSearchForm component', () => {
   it('has two buttons', () => {
     render(
       <MuiPickersUtilsProvider utils={LuxonUtils}>
-        <ScheduleCuratedItemForm
+        <ScheduleItemForm
           onSubmit={handleSubmit}
           newTabList={newTabList}
-          curatedItemExternalId={'123abc'}
+          approvedItemExternalId={'123abc'}
         />
       </MuiPickersUtilsProvider>
     );

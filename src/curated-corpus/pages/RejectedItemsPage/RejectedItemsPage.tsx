@@ -5,12 +5,12 @@ import { config } from '../../../config';
 import {
   RejectedCuratedCorpusItemEdge,
   RejectedCuratedCorpusItemFilter,
-  useGetRejectedCuratedCorpusItemsLazyQuery,
+  useGetRejectedItemsLazyQuery,
 } from '../../api/curated-corpus-api/generatedTypes';
 
 import { HandleApiResponse } from '../../../_shared/components';
 import {
-  RejectedCuratedItemListCard,
+  RejectedItemListCard,
   RejectedItemSearchForm,
   NextPrevPagination,
 } from '../../components';
@@ -20,7 +20,7 @@ export const RejectedItemsPage: React.FC = (): JSX.Element => {
   // Get the usual API response vars and a helper method to retrieve data
   // that can be used inside hooks.
   const [getRejectedCuratedCorpusItems, { loading, error, data }] =
-    useGetRejectedCuratedCorpusItemsLazyQuery(
+    useGetRejectedItemsLazyQuery(
       // We need to make sure search results are never served from the cache.
       { fetchPolicy: 'no-cache', notifyOnNetworkStatusChange: true }
     );
@@ -114,7 +114,7 @@ export const RejectedItemsPage: React.FC = (): JSX.Element => {
 
   return (
     <>
-      <h1>Rejected Items</h1>
+      <h1>Rejected Corpus</h1>
       <RejectedItemSearchForm onSubmit={handleSubmit} />
 
       {!data && <HandleApiResponse loading={loading} error={error} />}
@@ -144,7 +144,7 @@ export const RejectedItemsPage: React.FC = (): JSX.Element => {
                   md={3}
                   key={`grid-${edge.node.externalId}`}
                 >
-                  <RejectedCuratedItemListCard
+                  <RejectedItemListCard
                     key={edge.node.externalId}
                     item={edge.node}
                   />

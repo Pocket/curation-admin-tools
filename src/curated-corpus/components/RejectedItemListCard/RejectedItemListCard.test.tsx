@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { RejectedCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
-import { RejectedCuratedItemListCard } from './RejectedItemListCard';
+import { RejectedItemListCard } from './RejectedItemListCard';
 
 describe('The RejectedItemListCard component', () => {
   let rejectedItem: RejectedCuratedCorpusItem;
@@ -10,6 +10,7 @@ describe('The RejectedItemListCard component', () => {
   beforeEach(() => {
     rejectedItem = {
       externalId: '123-abc',
+      prospectId: '123-xyz',
       title: 'How To Win Friends And Influence People with React',
       url: 'http://www.test.com/how-to',
       language: 'DE',
@@ -24,7 +25,7 @@ describe('The RejectedItemListCard component', () => {
   it('should render rejected item card with title link', () => {
     render(
       <MemoryRouter>
-        <RejectedCuratedItemListCard item={rejectedItem} />
+        <RejectedItemListCard item={rejectedItem} />
       </MemoryRouter>
     );
 
@@ -40,7 +41,7 @@ describe('The RejectedItemListCard component', () => {
   it('should render rejected item card with language', () => {
     render(
       <MemoryRouter>
-        <RejectedCuratedItemListCard item={rejectedItem} />
+        <RejectedItemListCard item={rejectedItem} />
       </MemoryRouter>
     );
 
@@ -50,7 +51,7 @@ describe('The RejectedItemListCard component', () => {
   it('should render rejected item card with reason', () => {
     render(
       <MemoryRouter>
-        <RejectedCuratedItemListCard item={rejectedItem} />
+        <RejectedItemListCard item={rejectedItem} />
       </MemoryRouter>
     );
 
@@ -60,7 +61,7 @@ describe('The RejectedItemListCard component', () => {
   it('should render rejected item card with the createdBy', () => {
     render(
       <MemoryRouter>
-        <RejectedCuratedItemListCard item={rejectedItem} />
+        <RejectedItemListCard item={rejectedItem} />
       </MemoryRouter>
     );
 
@@ -70,7 +71,7 @@ describe('The RejectedItemListCard component', () => {
   it('should render rejected item card with topic', () => {
     render(
       <MemoryRouter>
-        <RejectedCuratedItemListCard item={rejectedItem} />
+        <RejectedItemListCard item={rejectedItem} />
       </MemoryRouter>
     );
 

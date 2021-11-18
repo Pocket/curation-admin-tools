@@ -15,20 +15,20 @@ import LanguageIcon from '@material-ui/icons/Language';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import FaceIcon from '@material-ui/icons/Face';
-import { useStyles } from './CuratedItemListCard.styles';
-import { CuratedItem } from '../../api/curated-corpus-api/generatedTypes';
+import { useStyles } from './ApprovedItemListCard.styles';
+import { ApprovedCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
 import { Button } from '../../../_shared/components';
 
-interface CuratedItemListCardProps {
+interface ApprovedItemListCardProps {
   /**
-   * An object with everything curated item-related in it.
+   * An object with everything approved curated item-related in it.
    */
-  item: CuratedItem;
+  item: ApprovedCuratedCorpusItem;
 
   onSchedule: () => void;
 }
 
-export const CuratedItemListCard: React.FC<CuratedItemListCardProps> = (
+export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
   props
 ): JSX.Element => {
   const classes = useStyles();

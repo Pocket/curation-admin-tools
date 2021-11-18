@@ -2,17 +2,18 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import {
-  CuratedItem,
+  ApprovedCuratedCorpusItem,
   CuratedStatus,
 } from '../../api/curated-corpus-api/generatedTypes';
-import { CuratedItemListCard } from './CuratedItemListCard';
+import { ApprovedItemListCard } from './ApprovedItemListCard';
 
-describe('The CuratedItemListCard component', () => {
-  let item: CuratedItem;
+describe('The ApprovedItemListCard component', () => {
+  let item: ApprovedCuratedCorpusItem;
 
   beforeEach(() => {
     item = {
       externalId: '123-abc',
+      prospectId: '123-xyz',
       title: 'How To Win Friends And Influence People with React',
       url: 'http://www.test.com/how-to',
       imageUrl: 'https://placeimg.com/640/480/people?random=494',
@@ -31,10 +32,10 @@ describe('The CuratedItemListCard component', () => {
     };
   });
 
-  it('shows basic curated item information', () => {
+  it('shows basic approved item information', () => {
     render(
       <MemoryRouter>
-        <CuratedItemListCard item={item} />
+        <ApprovedItemListCard item={item} onSchedule={() => ({})} />
       </MemoryRouter>
     );
 
@@ -42,7 +43,7 @@ describe('The CuratedItemListCard component', () => {
     const photo = screen.getByAltText(item.title);
     expect(photo).toBeInTheDocument();
 
-    // The link to the curated item page is present and is well-formed
+    // The link to the approved item page is present and is well-formed
     const link = screen.getByRole('link');
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute('href', expect.stringContaining(item.url));
@@ -55,7 +56,7 @@ describe('The CuratedItemListCard component', () => {
   it('shows curated status correctly', () => {
     render(
       <MemoryRouter>
-        <CuratedItemListCard item={item} />
+        <ApprovedItemListCard item={item} onSchedule={() => ({})} />
       </MemoryRouter>
     );
 
@@ -73,36 +74,36 @@ describe('The CuratedItemListCard component', () => {
   it('shows language correctly', () => {
     render(
       <MemoryRouter>
-        <CuratedItemListCard item={item} />
+        <ApprovedItemListCard item={item} onSchedule={() => ({})} />
       </MemoryRouter>
     );
 
     expect(screen.getByText(/^de$/i)).toBeInTheDocument();
   });
-  it('should render curated item card with createdBy', () => {
+  it('should render approved item card with createdBy', () => {
     render(
       <MemoryRouter>
-        <CuratedItemListCard item={item} />
+        <ApprovedItemListCard item={item} onSchedule={() => ({})} />
       </MemoryRouter>
     );
 
     expect(screen.getByText(item.createdBy)).toBeInTheDocument();
   });
 
-  it('should render curated item card with excerpt', () => {
+  it('should render approved item card with excerpt', () => {
     render(
       <MemoryRouter>
-        <CuratedItemListCard item={item} />
+        <ApprovedItemListCard item={item} onSchedule={() => ({})} />
       </MemoryRouter>
     );
 
     expect(screen.getByText(item.excerpt)).toBeInTheDocument();
   });
 
-  it('should render curated item card with the action buttons', () => {
+  it('should render approved item card with the action buttons', () => {
     render(
       <MemoryRouter>
-        <CuratedItemListCard item={item} />
+        <ApprovedItemListCard item={item} onSchedule={() => ({})} />
       </MemoryRouter>
     );
 

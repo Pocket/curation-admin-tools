@@ -3,13 +3,13 @@ import { CuratedItemData } from '../fragments/curatedItemData';
 
 export const createNewTabFeedScheduledItem = gql`
   mutation createNewTabFeedScheduledItem(
-    $curatedItemExternalId: ID!
+    $approvedItemExternalId: ID!
     $newTabGuid: ID!
     $scheduledDate: Date!
   ) {
-    createNewTabFeedScheduledItem(
+    createScheduledCuratedCorpusItem(
       data: {
-        curatedItemExternalId: $curatedItemExternalId
+        approvedItemExternalId: $approvedItemExternalId
         newTabGuid: $newTabGuid
         scheduledDate: $scheduledDate
       }
@@ -20,7 +20,7 @@ export const createNewTabFeedScheduledItem = gql`
       updatedAt
       updatedBy
       scheduledDate
-      curatedItem {
+      approvedItem {
         ...CuratedItemData
       }
     }

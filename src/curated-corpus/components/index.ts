@@ -1,11 +1,11 @@
-export { CuratedItemListCard } from './CuratedItemListCard/CuratedItemListCard';
-export { CuratedItemSearchForm } from './CuratedItemSearchForm/CuratedItemSearchForm';
+export { ApprovedItemListCard } from './ApprovedItemListCard/ApprovedItemListCard';
+export { ApprovedItemSearchForm } from './ApprovedItemSearchForm/ApprovedItemSearchForm';
 export { NextPrevPagination } from './NextPrevPagination/NextPrevPagination';
 
 export { ProspectListCard } from './ProspectListCard/ProspectListCard';
 
-export { RejectedCuratedItemListCard } from './RejectedItemListCard/RejectedItemListCard';
-export { RejectedItemSearchForm } from './RejectedItemSearchForm/RejectedCuratedItemSearchForm';
+export { RejectedItemListCard } from './RejectedItemListCard/RejectedItemListCard';
+export { RejectedItemSearchForm } from './RejectedItemSearchForm/RejectedItemSearchForm';
 
-export { ScheduleCuratedItemForm } from './ScheduleCuratedItemForm/ScheduleCuratedItemForm';
-export { ScheduleCuratedItemModal } from './ScheduleCuratedItemModal/ScheduleCuratedItemModal';
+export { ScheduleItemForm } from './ScheduleItemForm/ScheduleItemForm';
+export { ScheduleItemModal } from './ScheduleItemModal/ScheduleItemModal';
