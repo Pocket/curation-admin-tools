@@ -51,8 +51,9 @@
     "lint-check": "tsc --noEmit && eslint src/**/*.ts{,x}",
     "lint-fix": "tsc --noEmit && eslint src/**/*.ts{,x} --fix",
     "api:generate-collection-types": "graphql-codegen --config src/config/collection-api-codegen.json -r dotenv/config",
+    "api:generate-client-types": "graphql-codegen --config src/config/client-api-codegen.json -r dotenv/config",
     "api:generate-curated-corpus-types": "graphql-codegen --config src/config/curated-corpus-api-codegen.json -r dotenv/config",
-    "api:generate-client-types": "graphql-codegen --config src/config/client-api-codegen.json -r dotenv/config"
+    "api:generate-prospect-types": "graphql-codegen --config src/config/prospect-api-codegen.json -r dotenv/config"
   },
   "eslintConfig": {
     "extends": [

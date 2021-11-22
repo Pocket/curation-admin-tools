@@ -8,7 +8,7 @@ import {
   MainContentWrapper,
   MenuLink,
 } from '../../../_shared/components';
-import { ApprovedItemsPage, RejectedItemsPage } from '../';
+import { ApprovedItemsPage, NewTabCurationPage, RejectedItemsPage } from '../';
 import { client } from '../../api/curated-corpus-api/client';
 
 /**
@@ -20,8 +20,8 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
 
   const menuLinks: MenuLink[] = [
     {
-      text: 'Prospects',
-      url: `${path}/prospects/`,
+      text: 'New Tab Curation',
+      url: `${path}/new-tab/`,
     },
     {
       text: 'Live Corpus',
@@ -44,6 +44,9 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
               <p>
                 Try the <Link to={`${path}/live/`}>Live Corpus</Link> page
               </p>
+            </Route>
+            <Route exact path={`${path}/new-tab/`}>
+              <NewTabCurationPage />
             </Route>
             <Route exact path={`${path}/live/`}>
               <ApprovedItemsPage />

@@ -2,6 +2,8 @@ export { ApprovedItemListCard } from './ApprovedItemListCard/ApprovedItemListCar
 export { ApprovedItemSearchForm } from './ApprovedItemSearchForm/ApprovedItemSearchForm';
 export { NextPrevPagination } from './NextPrevPagination/NextPrevPagination';
 
+export { ProspectListCard } from './ProspectListCard/ProspectListCard';
+
 export { RejectedItemListCard } from './RejectedItemListCard/RejectedItemListCard';
 export { RejectedItemSearchForm } from './RejectedItemSearchForm/RejectedItemSearchForm';
 

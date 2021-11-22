@@ -16,6 +16,12 @@ export const config = {
       ? 'https://curated-corpus-api.readitlater.com/admin'
       : 'https://curated-corpus-api.getpocket.dev/admin')
   }`,
+  prospectApiEndpoint: `${
+    process.env.REACT_APP_PROSPECT_API_ENDPOINT ??
+    (isProduction
+      ? 'https://prospect-api.readitlater.com/admin'
+      : 'https://prospect-api.getpocket.dev/admin')
+  }`,
   //Client api only exists on production
   clientApiEndpoint: `${
     process.env.REACT_APP_CLIENT_API_ENDPOINT ??
