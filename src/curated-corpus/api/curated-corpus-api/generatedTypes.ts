@@ -23,8 +23,16 @@ export type Scalars = {
   Date: any;
   /** This is a temporary return type for a test query on the public API. */
   PCTest: any;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
   /** A URL - usually, for an interesting story on the internet that's worth saving to Pocket. */
   Url: any;
+};
+
+export type ApprovedCuratedCorpusImageUrl = {
+  __typename?: 'ApprovedCuratedCorpusImageUrl';
+  /** The url of the image stored in the s3 bucket */
+  url: Scalars['String'];
 };
 
 /** A prospective story that has been reviewed by the curators and saved to the curated corpus. */
@@ -184,6 +192,8 @@ export type Mutation = {
   deleteScheduledCuratedCorpusItem: ScheduledCuratedCorpusItem;
   /** Updates an Approved Item. */
   updateApprovedCuratedCorpusItem: ApprovedCuratedCorpusItem;
+  /** Uploads an image to S3 for an Approved Curated Corpus Item */
+  uploadApprovedCuratedCorpusItemImage: ApprovedCuratedCorpusImageUrl;
 };
 
 export type MutationCreateApprovedCuratedCorpusItemArgs = {
@@ -200,6 +210,10 @@ export type MutationDeleteScheduledCuratedCorpusItemArgs = {
 
 export type MutationUpdateApprovedCuratedCorpusItemArgs = {
   data: UpdateApprovedCuratedCorpusItemInput;
+};
+
+export type MutationUploadApprovedCuratedCorpusItemImageArgs = {
+  data: Scalars['Upload'];
 };
 
 /** Options for returning items sorted by the supplied field. */
@@ -539,8 +553,8 @@ export type CreateNewTabFeedScheduledItemMutation = {
 };
 
 export type GetApprovedItemsQueryVariables = Exact<{
-  filters?: Maybe<ApprovedCuratedCorpusItemFilter>;
-  pagination?: Maybe<PaginationInput>;
+  filters?: InputMaybe<ApprovedCuratedCorpusItemFilter>;
+  pagination?: InputMaybe<PaginationInput>;
 }>;
 
 export type GetApprovedItemsQuery = {
@@ -583,8 +597,8 @@ export type GetApprovedItemsQuery = {
 };
 
 export type GetRejectedItemsQueryVariables = Exact<{
-  filters?: Maybe<RejectedCuratedCorpusItemFilter>;
-  pagination?: Maybe<PaginationInput>;
+  filters?: InputMaybe<RejectedCuratedCorpusItemFilter>;
+  pagination?: InputMaybe<PaginationInput>;
 }>;
 
 export type GetRejectedItemsQuery = {
@@ -614,6 +628,46 @@ export type GetRejectedItemsQuery = {
         reason: string;
         createdBy: string;
         createdAt: number;
+      };
+    }>;
+  };
+};
+
+export type GetScheduledItemsQueryVariables = Exact<{
+  filters: ScheduledCuratedCorpusItemsFilterInput;
+}>;
+
+export type GetScheduledItemsQuery = {
+  __typename?: 'Query';
+  getScheduledCuratedCorpusItems: {
+    __typename?: 'ScheduledCuratedCorpusItemsResult';
+    items: Array<{
+      __typename?: 'ScheduledCuratedCorpusItem';
+      externalId: string;
+      createdAt: number;
+      createdBy: string;
+      updatedAt: number;
+      updatedBy?: string | null | undefined;
+      scheduledDate: any;
+      approvedItem: {
+        __typename?: 'ApprovedCuratedCorpusItem';
+        externalId: string;
+        prospectId: string;
+        title: string;
+        language: string;
+        publisher: string;
+        url: any;
+        imageUrl: any;
+        excerpt: string;
+        status: CuratedStatus;
+        topic: string;
+        isCollection: boolean;
+        isShortLived: boolean;
+        isSyndicated: boolean;
+        createdBy: string;
+        createdAt: number;
+        updatedBy?: string | null | undefined;
+        updatedAt: number;
       };
     }>;
   };
@@ -875,4 +929,73 @@ export type GetRejectedItemsLazyQueryHookResult = ReturnType<
 export type GetRejectedItemsQueryResult = Apollo.QueryResult<
   GetRejectedItemsQuery,
   GetRejectedItemsQueryVariables
+>;
+export const GetScheduledItemsDocument = gql`
+  query getScheduledItems($filters: ScheduledCuratedCorpusItemsFilterInput!) {
+    getScheduledCuratedCorpusItems(filters: $filters) {
+      items {
+        externalId
+        createdAt
+        createdBy
+        updatedAt
+        updatedBy
+        scheduledDate
+        approvedItem {
+          ...CuratedItemData
+        }
+      }
+    }
+  }
+  ${CuratedItemDataFragmentDoc}
+`;
+
+/**
+ * __useGetScheduledItemsQuery__
+ *
+ * To run a query within a React component, call `useGetScheduledItemsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetScheduledItemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetScheduledItemsQuery({
+ *   variables: {
+ *      filters: // value for 'filters'
+ *   },
+ * });
+ */
+export function useGetScheduledItemsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetScheduledItemsQuery,
+    GetScheduledItemsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetScheduledItemsQuery,
+    GetScheduledItemsQueryVariables
+  >(GetScheduledItemsDocument, options);
+}
+export function useGetScheduledItemsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetScheduledItemsQuery,
+    GetScheduledItemsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetScheduledItemsQuery,
+    GetScheduledItemsQueryVariables
+  >(GetScheduledItemsDocument, options);
+}
+export type GetScheduledItemsQueryHookResult = ReturnType<
+  typeof useGetScheduledItemsQuery
+>;
+export type GetScheduledItemsLazyQueryHookResult = ReturnType<
+  typeof useGetScheduledItemsLazyQuery
+>;
+export type GetScheduledItemsQueryResult = Apollo.QueryResult<
+  GetScheduledItemsQuery,
+  GetScheduledItemsQueryVariables
 >;
