@@ -15,6 +15,12 @@ const githubConnectionArn = isDev
   : 'arn:aws:codestar-connections:us-east-1:996905175585:connection/5fa5aa2b-a2d2-43e3-ab5a-72ececfc1870';
 const branch = isDev ? 'dev' : 'main';
 
+// We use the production client always because all it does is authenticate us and is public
+const oauth2ClientId = '6qt94s9d651k24mvul9q2lbrcv';
+const oauth2Provider =
+  'https://pocket-admin-prod.auth.us-east-1.amazoncognito.com/oauth2';
+const oauth2RedirectUri = `${domain}/oauth/callback`;
+
 export const config = {
   name,
   prefix: `${name}-${environment}`,
@@ -30,6 +36,9 @@ export const config = {
   envVars: {
     collectionApiEndpoint,
     clientApiEndpoint,
+    oauth2ClientId,
+    oauth2Provider,
+    oauth2RedirectUri,
   },
   tags: {
     service: name,

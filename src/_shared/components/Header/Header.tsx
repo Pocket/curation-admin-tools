@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
   AppBar,
+  Avatar,
   Container,
   Drawer,
   Grid,
@@ -16,6 +17,7 @@ import { Link } from 'react-router-dom';
 import pocketLogo from '../../assets/PKTLogoRounded_RGB.png';
 import pocketShield from '../../assets/pocket-shield.svg';
 import { useStyles } from './Header.styles';
+import { useAuth } from '../../hooks';
 
 export interface MenuLink {
   text: string;
@@ -42,6 +44,7 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
   const { productName, menuLinks } = props;
 
   const [open, setOpen] = useState(false);
+  const { authService, parsedIdToken } = useAuth();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -147,6 +150,12 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
                 </List>
               </Grid>
             </Hidden>
+
+            {authService.getUser() != null && (
+              <Grid item>
+                <Avatar alt={parsedIdToken.name} src={parsedIdToken.picture} />
+              </Grid>
+            )}
           </Grid>
         </Container>
       </AppBar>
