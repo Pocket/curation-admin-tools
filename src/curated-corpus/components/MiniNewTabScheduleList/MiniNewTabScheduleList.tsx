@@ -4,6 +4,8 @@ import { groupByObjectPropertyValue } from '../../../_shared/utils/groupByObject
 import { NewTabGroupedList } from '../';
 
 interface MiniNewTabScheduleGroupedListProps {
+  isSidebar?: boolean;
+
   scheduledItems: ScheduledCuratedCorpusItem[];
 }
 
@@ -16,7 +18,7 @@ interface MiniNewTabScheduleGroupedListProps {
  */
 export const MiniNewTabScheduleList: React.FC<MiniNewTabScheduleGroupedListProps> =
   (props): JSX.Element => {
-    const { scheduledItems } = props;
+    const { isSidebar = true, scheduledItems } = props;
 
     const groupedByDate = groupByObjectPropertyValue(
       scheduledItems,
@@ -32,7 +34,7 @@ export const MiniNewTabScheduleList: React.FC<MiniNewTabScheduleGroupedListProps
           key={scheduledDate}
           scheduledDate={scheduledDate}
           scheduledItems={groupedByDate[scheduledDate]}
-          isSidebar
+          isSidebar={isSidebar}
         />
       );
     }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { DateTime } from 'luxon';
-import { Typography } from '@material-ui/core';
-import { MiniNewTabScheduleCard } from '../';
+import { Grid, Typography } from '@material-ui/core';
+import { MiniNewTabScheduleCard, ScheduledItemCardWrapper } from '../';
 import { ScheduledCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
 import { useStyles } from './NewTabGroupedList.styles';
 
@@ -40,7 +40,7 @@ export const NewTabGroupedList: React.FC<NewTabGroupedListProps> = (
   //  the same list on the New Tab page
   const ScheduleCard = isSidebar
     ? MiniNewTabScheduleCard
-    : MiniNewTabScheduleCard;
+    : ScheduledItemCardWrapper;
 
   // Determine how to show the date. For today and tomorrow, use relative terms
   const tomorrow = DateTime.local().plus({ days: 1 });
@@ -49,20 +49,23 @@ export const NewTabGroupedList: React.FC<NewTabGroupedListProps> = (
   if (scheduledDateObj <= tomorrow) {
     displayDate = scheduledDateObj.toRelativeCalendar();
   } else {
+    // For beyond the next couple of days, use a standard date
     displayDate = scheduledDateObj
       .setLocale('en')
       .toLocaleString(DateTime.DATE_FULL);
   }
-  // For beyond the next couple of days, use a standard date
+
   return (
     <>
-      <Typography
-        className={isSidebar ? classes.compact : classes.large}
-        variant={isSidebar ? 'h4' : 'h2'}
-      >
-        {displayDate} ({numberOfStories}{' '}
-        {numberOfStories === 1 ? 'story' : 'stories'})
-      </Typography>
+      <Grid item xs={12}>
+        <Typography
+          className={isSidebar ? classes.compact : classes.large}
+          variant={isSidebar ? 'h4' : 'h2'}
+        >
+          {displayDate} ({numberOfStories}{' '}
+          {numberOfStories === 1 ? 'story' : 'stories'})
+        </Typography>
+      </Grid>
       {scheduledItems.map((item) => {
         return <ScheduleCard key={item.externalId} item={item} />;
       })}

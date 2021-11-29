@@ -2,6 +2,15 @@ import { expect } from 'chai';
 import { groupByObjectPropertyValue } from './groupByObjectPropertyValue';
 
 describe('groupByObjectPropertyValue', () => {
+  const input = [
+    { groupId: 1, name: 'Andy' },
+    { groupId: 1, name: 'Andrew' },
+    { groupId: 3, name: 'Drew' },
+    { groupId: 5, name: 'Anders' },
+    { groupId: 5, name: 'Andre' },
+    { groupId: 5, name: 'Andrei' },
+  ];
+
   it('returns an empty object if input array is empty', () => {
     const result = groupByObjectPropertyValue([], 'prop');
 
@@ -33,15 +42,6 @@ describe('groupByObjectPropertyValue', () => {
   });
 
   it('groups objects into multiple groups by prop value', () => {
-    const input = [
-      { groupId: 1, name: 'Andy' },
-      { groupId: 1, name: 'Andrew' },
-      { groupId: 3, name: 'Drew' },
-      { groupId: 5, name: 'Anders' },
-      { groupId: 5, name: 'Andre' },
-      { groupId: 5, name: 'Andrei' },
-    ];
-
     const result = groupByObjectPropertyValue(input, 'groupId');
 
     expect(result[1]).to.have.lengthOf(2);

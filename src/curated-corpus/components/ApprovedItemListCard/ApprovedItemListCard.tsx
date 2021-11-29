@@ -1,7 +1,5 @@
 import React from 'react';
 import {
-  Card,
-  CardActions,
   CardContent,
   CardMedia,
   Link,
@@ -11,31 +9,31 @@ import {
   ListItemText,
   Typography,
 } from '@material-ui/core';
-import LanguageIcon from '@material-ui/icons/Language';
-import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
-import ThumbUpIcon from '@material-ui/icons/ThumbUp';
+import AlarmIcon from '@material-ui/icons/Alarm';
+import BookmarksIcon from '@material-ui/icons/Bookmarks';
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import FaceIcon from '@material-ui/icons/Face';
+import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
+import LanguageIcon from '@material-ui/icons/Language';
+import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import { useStyles } from './ApprovedItemListCard.styles';
 import { ApprovedCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
-import { Button } from '../../../_shared/components';
 
 interface ApprovedItemListCardProps {
   /**
    * An object with everything approved curated item-related in it.
    */
   item: ApprovedCuratedCorpusItem;
-
-  onSchedule: () => void;
 }
 
 export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
   props
 ): JSX.Element => {
   const classes = useStyles();
-  const { item, onSchedule } = props;
+  const { item } = props;
 
   return (
-    <Card className={classes.root}>
+    <>
       <CardMedia
         component="img"
         src={
@@ -92,25 +90,37 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
             primary={item.topic.toLowerCase()}
           />
         </ListItem>
-        <ListItem>
+        <ListItem divider>
           <ListItemIcon className={classes.listItemIcon}>
             <LanguageIcon />
           </ListItemIcon>
           <ListItemText primary={item.language.toUpperCase()} />
         </ListItem>
+        {item.isSyndicated && (
+          <ListItem>
+            <ListItemIcon className={classes.listItemIcon}>
+              <CheckCircleOutlineIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText secondary={'Syndicated'} />
+          </ListItem>
+        )}
+        {item.isCollection && (
+          <ListItem>
+            <ListItemIcon className={classes.listItemIcon}>
+              <BookmarksIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText secondary={'Collection'} />
+          </ListItem>
+        )}
+        {item.isShortLived && (
+          <ListItem>
+            <ListItemIcon className={classes.listItemIcon}>
+              <AlarmIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText secondary={'Short-lived'} />
+          </ListItem>
+        )}
       </List>
-
-      <CardActions className={classes.actions}>
-        <Button buttonType="positive" variant="text" onClick={onSchedule}>
-          Schedule
-        </Button>
-        <Button buttonType="negative" variant="text">
-          Reject
-        </Button>
-        <Button buttonType="positive" variant="text">
-          Edit
-        </Button>
-      </CardActions>
-    </Card>
+    </>
   );
 };
