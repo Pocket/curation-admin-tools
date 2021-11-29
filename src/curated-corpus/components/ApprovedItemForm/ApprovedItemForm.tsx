@@ -2,12 +2,19 @@ import React, { useState } from 'react';
 
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 
-import { validationSchema } from './EditItemForm.validation';
+import { validationSchema } from './ApprovedItemForm.validation';
 import { ApprovedCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
-import { topics, languages, corpuses } from '../../helpers/definitions';
-import { EditItemFormBody, EditItemFormBodyProps } from './EditItemFormBody';
+import {
+  topics,
+  languages,
+  curationStatusOptions,
+} from '../../helpers/definitions';
+import {
+  ApprovedItemFormBody,
+  ApprovedItemFormBodyProps,
+} from './ApprovedItemFormBody';
 
-interface EditItemFormProps {
+interface ApprovedItemFormProps {
   /**
    * The approved item that needs to be edited.
    */
@@ -27,12 +34,12 @@ interface EditItemFormProps {
 /**
  * This component houses all the logic and data that
  * will be used in this form. The logic and data is passed down
- * to EditFormBody component which is responsible for only displaying
+ * to ApprovedItemFormBody component which is responsible for only displaying
  * and editing data.
  *
  */
 
-export const EditItemForm: React.FC<EditItemFormProps> = (
+export const ApprovedItemForm: React.FC<ApprovedItemFormProps> = (
   props
 ): JSX.Element => {
   const { approvedItem, onSubmit, onCancel } = props;
@@ -42,7 +49,7 @@ export const EditItemForm: React.FC<EditItemFormProps> = (
     approvedItem.isShortLived
   );
 
-  const approvedItemCorpus = corpuses.find(
+  const approvedItemCorpus = curationStatusOptions.find(
     (item) => item.code === approvedItem.status
   )?.name;
 
@@ -61,8 +68,10 @@ export const EditItemForm: React.FC<EditItemFormProps> = (
       publisher: approvedItem.publisher,
       language: approvedItemLanguage ?? '',
       topic: approvedItemTopic ?? '',
-      corpus: approvedItemCorpus ?? '',
+      curationStatus: approvedItemCorpus ?? '',
       shortLived: approvedItem.isShortLived,
+      syndicated: approvedItem.isSyndicated,
+      collection: approvedItem.isCollection,
       excerpt: approvedItem.excerpt,
     },
     validateOnBlur: false,
@@ -77,15 +86,17 @@ export const EditItemForm: React.FC<EditItemFormProps> = (
     setIsShortLived(!isShortLived);
   };
 
-  const editItemFormBodyProps: EditItemFormBodyProps = {
+  const approvedItemFormBodyProps: ApprovedItemFormBodyProps = {
     approvedItem: approvedItem,
     formik: formik,
     topics: topics,
     languages: languages,
-    corpuses: corpuses,
+    curationStatus: curationStatusOptions,
+    isSyndicated: approvedItem.isSyndicated,
+    isCollection: approvedItem.isCollection,
     isShortLived: isShortLived,
     toggleIsShortLived: toggleIsShortLived,
     onCancel: onCancel,
   };
-  return <EditItemFormBody {...editItemFormBodyProps} />;
+  return <ApprovedItemFormBody {...approvedItemFormBodyProps} />;
 };

@@ -4,9 +4,9 @@ import { Box, Grid, Typography } from '@material-ui/core';
 import { ApprovedCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
-import { EditItemForm } from '../EditItemForm/EditItemForm';
+import { ApprovedItemForm } from '../ApprovedItemForm/ApprovedItemForm';
 
-interface EditItemModalProps {
+interface ApprovedItemModalProps {
   approvedItem: ApprovedCuratedCorpusItem;
   isOpen: boolean;
   onSave: (
@@ -16,7 +16,7 @@ interface EditItemModalProps {
   toggleModal: () => void;
 }
 
-export const EditItemModal: React.FC<EditItemModalProps> = (
+export const ApprovedItemModal: React.FC<ApprovedItemModalProps> = (
   props
 ): JSX.Element => {
   const { approvedItem, isOpen, onSave, toggleModal } = props;
@@ -38,7 +38,7 @@ export const EditItemModal: React.FC<EditItemModalProps> = (
           </Box>
         </Grid>
         <Grid item xs={12}>
-          <EditItemForm
+          <ApprovedItemForm
             approvedItem={approvedItem}
             onSubmit={onSave}
             onCancel={toggleModal}

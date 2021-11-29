@@ -11,23 +11,27 @@ import { DropdownOption } from '../../helpers/definitions';
 import { ApprovedCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
 import { FormikProps } from 'formik';
 
-interface EditItemFormBodyFields {
+interface ApprovedItemFormBodyFields {
   url: string;
   title: string;
   publisher: string;
   language: string;
   topic: string;
-  corpus: string;
+  curationStatus: string;
   shortLived: boolean;
+  syndicated: boolean;
+  collection: boolean;
   excerpt: string;
 }
 
-export interface EditItemFormBodyProps {
+export interface ApprovedItemFormBodyProps {
   approvedItem: ApprovedCuratedCorpusItem;
-  formik: FormikProps<EditItemFormBodyFields>;
+  formik: FormikProps<ApprovedItemFormBodyFields>;
   topics: DropdownOption[];
   languages: DropdownOption[];
-  corpuses: DropdownOption[];
+  curationStatus: DropdownOption[];
+  isSyndicated: boolean;
+  isCollection: boolean;
   isShortLived: boolean;
   toggleIsShortLived: VoidFunction;
   onCancel: VoidFunction;
@@ -36,18 +40,20 @@ export interface EditItemFormBodyProps {
 /**
  * This component is sort of a dummy component. It only displays
  * and edits data. All the logic is passed down from its parent
- * EditItemForm component
+ * ApprovedItemForm component
  */
 
-export const EditItemFormBody: React.FC<
-  EditItemFormBodyProps & SharedFormButtonsProps
+export const ApprovedItemFormBody: React.FC<
+  ApprovedItemFormBodyProps & SharedFormButtonsProps
 > = ({
   approvedItem,
   formik,
   onCancel,
   topics,
   languages,
-  corpuses,
+  curationStatus,
+  isCollection,
+  isSyndicated,
   isShortLived,
   toggleIsShortLived,
 }) => {
@@ -60,6 +66,7 @@ export const EditItemFormBody: React.FC<
             label="Item URL"
             fieldProps={formik.getFieldProps('url')}
             fieldMeta={formik.getFieldMeta('url')}
+            disabled
           ></FormikTextField>
         </Grid>
         <Grid item xs={12}>
@@ -68,6 +75,14 @@ export const EditItemFormBody: React.FC<
             label="Title"
             fieldProps={formik.getFieldProps('title')}
             fieldMeta={formik.getFieldMeta('title')}
+          ></FormikTextField>
+        </Grid>
+        <Grid item md={12} xs={12}>
+          <FormikTextField
+            id="publisher"
+            label="Publisher"
+            fieldProps={formik.getFieldProps('publisher')}
+            fieldMeta={formik.getFieldMeta('publisher')}
           ></FormikTextField>
         </Grid>
         <Grid item xs={12}>
@@ -82,17 +97,9 @@ export const EditItemFormBody: React.FC<
             </Grid>
             <Grid item md={9}>
               <Grid container spacing={3}>
-                <Grid item md={12} xs={12}>
-                  <FormikTextField
-                    id="publisher"
-                    label="Publisher"
-                    fieldProps={formik.getFieldProps('publisher')}
-                    fieldMeta={formik.getFieldMeta('publisher')}
-                  ></FormikTextField>
-                </Grid>
                 <Grid item md={12}>
                   <Grid container direction="row" spacing={3}>
-                    <Grid item md={3} xs={12}>
+                    <Grid item md={4} xs={12}>
                       <FormikSelectField
                         id="language"
                         label="Language"
@@ -109,7 +116,7 @@ export const EditItemFormBody: React.FC<
                         })}
                       </FormikSelectField>
                     </Grid>
-                    <Grid item md={3} xs={12}>
+                    <Grid item md={4} xs={12}>
                       <FormikSelectField
                         id="topic"
                         label="Topic"
@@ -126,15 +133,15 @@ export const EditItemFormBody: React.FC<
                         })}
                       </FormikSelectField>
                     </Grid>
-                    <Grid item md={3} xs={12}>
+                    <Grid item md={4} xs={12}>
                       <FormikSelectField
-                        id="corpus"
-                        label="Corpus"
-                        fieldProps={formik.getFieldProps('corpus')}
-                        fieldMeta={formik.getFieldMeta('corpus')}
+                        id="curationStatus"
+                        label="Curation Status"
+                        fieldProps={formik.getFieldProps('curationStatus')}
+                        fieldMeta={formik.getFieldMeta('curationStatus')}
                       >
                         <option aria-label="None" value="" />
-                        {corpuses.map((corpus: DropdownOption) => {
+                        {curationStatus.map((corpus: DropdownOption) => {
                           return (
                             <option value={corpus.name} key={corpus.code}>
                               {corpus.name}
@@ -143,7 +150,9 @@ export const EditItemFormBody: React.FC<
                         })}
                       </FormikSelectField>
                     </Grid>
-                    <Grid item md={3} xs={12}>
+                  </Grid>
+                  <Grid container direction="row" spacing={3}>
+                    <Grid item md={4} xs={12}>
                       <FormControlLabel
                         control={
                           <Switch
@@ -154,7 +163,33 @@ export const EditItemFormBody: React.FC<
                           />
                         }
                         label={'Short Lived'}
-                        labelPlacement="end"
+                        labelPlacement="top"
+                      />
+                    </Grid>
+                    <Grid item md={4} xs={12}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            disabled
+                            checked={isCollection}
+                            {...formik.getFieldProps('collection')}
+                          />
+                        }
+                        label={'Collection'}
+                        labelPlacement="top"
+                      />
+                    </Grid>
+                    <Grid item md={4} xs={12}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            disabled
+                            checked={isSyndicated}
+                            {...formik.getFieldProps('syndicated')}
+                          />
+                        }
+                        label={'Syndicated'}
+                        labelPlacement="top"
                       />
                     </Grid>
                   </Grid>
@@ -167,6 +202,7 @@ export const EditItemFormBody: React.FC<
           <FormikTextField
             id="excerpt"
             label="Excerpt"
+            multiline
             fieldProps={formik.getFieldProps('excerpt')}
             fieldMeta={formik.getFieldMeta('excerpt')}
           ></FormikTextField>
