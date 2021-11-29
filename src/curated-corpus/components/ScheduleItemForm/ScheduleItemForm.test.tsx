@@ -5,7 +5,7 @@ import { render, screen } from '@testing-library/react';
 import { ScheduleItemForm } from './ScheduleItemForm';
 import { newTabs } from '../../helpers/definitions';
 
-describe('The CuratedItemSearchForm component', () => {
+describe('The ScheduleItemForm component', () => {
   const handleSubmit = jest.fn();
   const newTabList = newTabs;
 
