@@ -145,7 +145,7 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
   ): void => {
     // Set out all the variables we need to pass to the mutation
     const variables = {
-      curatedItemExternalId: currentItem?.externalId,
+      approvedItemExternalId: currentItem?.externalId,
       newTabGuid: values.newTabGuid,
       scheduledDate: values.scheduledDate.toISODate(),
     };
