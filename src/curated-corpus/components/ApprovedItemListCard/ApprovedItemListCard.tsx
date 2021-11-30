@@ -34,7 +34,6 @@ interface ApprovedItemListCardProps {
 export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
   props
 ): JSX.Element => {
-  
   const classes = useStyles();
   const { item, onReject, onSchedule, onEdit } = props;
 
