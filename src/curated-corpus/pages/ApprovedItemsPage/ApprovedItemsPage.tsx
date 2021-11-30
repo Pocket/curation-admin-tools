@@ -14,6 +14,7 @@ import {
   ApprovedItemListCard,
   ApprovedItemSearchForm,
   NextPrevPagination,
+  RejectItemModal,
   ScheduleItemModal,
 } from '../../components';
 import { useRunMutation, useToggle } from '../../../_shared/hooks';
@@ -123,6 +124,10 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
    * Keep track of whether the "Schedule this item for New Tab" modal is open or not.
    */
   const [scheduleModalOpen, toggleScheduleModal] = useToggle(false);
+  /**
+   * Keep track of whether the "Reject this item" modal is open or not.
+   */
+  const [rejectModalOpen, toggleRejectModal] = useToggle(false);
 
   /**
    * Set the current Approved Item to be worked on (e.g., scheduled for New Tab).
@@ -170,12 +175,22 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
       {!data && <HandleApiResponse loading={loading} error={error} />}
 
       {currentItem && (
-        <ScheduleItemModal
-          approvedItem={currentItem}
-          isOpen={scheduleModalOpen}
-          onSave={onScheduleSave}
-          toggleModal={toggleScheduleModal}
-        />
+        <>
+          <ScheduleItemModal
+            approvedItem={currentItem}
+            isOpen={scheduleModalOpen}
+            onSave={onScheduleSave}
+            toggleModal={toggleScheduleModal}
+          />
+          <RejectItemModal
+            prospect={currentItem}
+            isOpen={rejectModalOpen}
+            onSave={() => {
+              // nothing to see here
+            }}
+            toggleModal={toggleRejectModal}
+          />
+        </>
       )}
 
       <Grid
@@ -209,6 +224,10 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
                     onSchedule={() => {
                       setCurrentItem(edge.node);
                       toggleScheduleModal();
+                    }}
+                    onReject={() => {
+                      setCurrentItem(edge.node);
+                      toggleRejectModal();
                     }}
                   />
                 </Grid>
