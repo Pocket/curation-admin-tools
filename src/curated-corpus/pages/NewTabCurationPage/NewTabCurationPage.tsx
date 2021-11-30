@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { DateTime } from 'luxon';
 import { Box, Grid, Hidden, Typography } from '@material-ui/core';
 import { HandleApiResponse } from '../../../_shared/components';
-import { MiniNewTabScheduleList, ProspectListCard } from '../../components';
+import {
+  MiniNewTabScheduleList,
+  ProspectListCard,
+  RejectProspectModal,
+} from '../../components';
 import { client } from '../../api/prospect-api/client';
-import { useGetProspectsQuery } from '../../api/prospect-api/generatedTypes';
+import {
+  Prospect,
+  useGetProspectsQuery,
+} from '../../api/prospect-api/generatedTypes';
 import { useGetScheduledItemsQuery } from '../../api/curated-corpus-api/generatedTypes';
+import { useToggle } from '../../../_shared/hooks';
 
 export const NewTabCurationPage: React.FC = (): JSX.Element => {
   // TODO: remove hardcoded value when New Tab selector is added to the page
@@ -38,8 +46,31 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
     },
   });
 
+  /**
+   * Set the current Prospect to be worked on (e.g., to be approved or rejected).
+   */
+  const [currentItem, setCurrentItem] = useState<Prospect | undefined>(
+    undefined
+  );
+
+  /**
+   * Keep track of whether the "Reject this prospect" modal is open or not.
+   */
+  const [rejectModalOpen, toggleRejectModal] = useToggle(false);
+
   return (
     <>
+      {currentItem && (
+        <RejectProspectModal
+          prospect={currentItem}
+          isOpen={rejectModalOpen}
+          onSave={() => {
+            // nothing to see here
+          }}
+          toggleModal={toggleRejectModal}
+        />
+      )}
+
       <h1>New Tab Curation</h1>
       <Box mb={3}>
         <Typography>
@@ -54,7 +85,16 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
 
           {data &&
             data.getProspects.map((prospect) => {
-              return <ProspectListCard key={prospect.id} prospect={prospect} />;
+              return (
+                <ProspectListCard
+                  key={prospect.id}
+                  prospect={prospect}
+                  onReject={() => {
+                    setCurrentItem(prospect);
+                    toggleRejectModal();
+                  }}
+                />
+              );
             })}
         </Grid>
         <Hidden xsDown>

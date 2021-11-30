@@ -74,7 +74,7 @@ export const ScheduleItemForm: React.FC<
 
   return (
     <>
-      <form name="approved-item-search-form" onSubmit={formik.handleSubmit}>
+      <form name="schedule-item-form" onSubmit={formik.handleSubmit}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <FormikSelectField
