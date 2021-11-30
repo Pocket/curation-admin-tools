@@ -20,13 +20,18 @@ interface ProspectListCardProps {
    * An object with everything prospect-related in it.
    */
   prospect: Prospect;
+
+  /**
+   * What to do when the user presses the "Reject" button on the card.
+   */
+  onReject: () => void;
 }
 
 export const ProspectListCard: React.FC<ProspectListCardProps> = (
   props
 ): JSX.Element => {
   const classes = useStyles();
-  const { prospect } = props;
+  const { prospect, onReject } = props;
 
   return (
     <Card className={classes.root}>
@@ -93,7 +98,7 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
         <Button buttonType="positive" variant="text">
           Add to Corpus
         </Button>
-        <Button buttonType="negative" variant="text">
+        <Button buttonType="negative" variant="text" onClick={onReject}>
           Reject
         </Button>
       </CardActions>

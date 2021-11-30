@@ -14,6 +14,7 @@ import {
   ApprovedItemListCard,
   ApprovedItemSearchForm,
   NextPrevPagination,
+  RejectItemModal,
   ScheduleItemModal,
 } from '../../components';
 import { useRunMutation, useToggle } from '../../../_shared/hooks';
@@ -124,6 +125,10 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
    * Keep track of whether the "Schedule this item for New Tab" modal is open or not.
    */
   const [scheduleModalOpen, toggleScheduleModal] = useToggle(false);
+  /**
+   * Keep track of whether the "Reject this item" modal is open or not.
+   */
+  const [rejectModalOpen, toggleRejectModal] = useToggle(false);
 
   /**
    * Keep track of whether the "Edit this item" modal is open or not.
@@ -196,6 +201,14 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
             onSave={onEditItemSave}
             toggleModal={toggleEditModal}
           />
+          <RejectItemModal
+            prospect={currentItem}
+            isOpen={rejectModalOpen}
+            onSave={() => {
+              // nothing to see here
+            }}
+            toggleModal={toggleRejectModal}
+          />
         </>
       )}
 
@@ -234,6 +247,10 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
                     onEdit={() => {
                       setCurrentItem(edge.node);
                       toggleEditModal();
+                    }}
+                    onReject={() => {
+                      setCurrentItem(edge.node);
+                      toggleRejectModal();
                     }}
                   />
                 </Grid>

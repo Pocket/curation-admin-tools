@@ -645,6 +645,46 @@ export type GetRejectedItemsQuery = {
   };
 };
 
+export type GetScheduledItemsQueryVariables = Exact<{
+  filters: ScheduledCuratedCorpusItemsFilterInput;
+}>;
+
+export type GetScheduledItemsQuery = {
+  __typename?: 'Query';
+  getScheduledCuratedCorpusItems: {
+    __typename?: 'ScheduledCuratedCorpusItemsResult';
+    items: Array<{
+      __typename?: 'ScheduledCuratedCorpusItem';
+      externalId: string;
+      createdAt: number;
+      createdBy: string;
+      updatedAt: number;
+      updatedBy?: string | null | undefined;
+      scheduledDate: any;
+      approvedItem: {
+        __typename?: 'ApprovedCuratedCorpusItem';
+        externalId: string;
+        prospectId: string;
+        title: string;
+        language: string;
+        publisher: string;
+        url: any;
+        imageUrl: any;
+        excerpt: string;
+        status: CuratedStatus;
+        topic: string;
+        isCollection: boolean;
+        isShortLived: boolean;
+        isSyndicated: boolean;
+        createdBy: string;
+        createdAt: number;
+        updatedBy?: string | null | undefined;
+        updatedAt: number;
+      };
+    }>;
+  };
+};
+
 export const CuratedItemDataFragmentDoc = gql`
   fragment CuratedItemData on ApprovedCuratedCorpusItem {
     externalId
@@ -953,4 +993,73 @@ export type GetRejectedItemsLazyQueryHookResult = ReturnType<
 export type GetRejectedItemsQueryResult = Apollo.QueryResult<
   GetRejectedItemsQuery,
   GetRejectedItemsQueryVariables
+>;
+export const GetScheduledItemsDocument = gql`
+  query getScheduledItems($filters: ScheduledCuratedCorpusItemsFilterInput!) {
+    getScheduledCuratedCorpusItems(filters: $filters) {
+      items {
+        externalId
+        createdAt
+        createdBy
+        updatedAt
+        updatedBy
+        scheduledDate
+        approvedItem {
+          ...CuratedItemData
+        }
+      }
+    }
+  }
+  ${CuratedItemDataFragmentDoc}
+`;
+
+/**
+ * __useGetScheduledItemsQuery__
+ *
+ * To run a query within a React component, call `useGetScheduledItemsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetScheduledItemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetScheduledItemsQuery({
+ *   variables: {
+ *      filters: // value for 'filters'
+ *   },
+ * });
+ */
+export function useGetScheduledItemsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetScheduledItemsQuery,
+    GetScheduledItemsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetScheduledItemsQuery,
+    GetScheduledItemsQueryVariables
+  >(GetScheduledItemsDocument, options);
+}
+export function useGetScheduledItemsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetScheduledItemsQuery,
+    GetScheduledItemsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetScheduledItemsQuery,
+    GetScheduledItemsQueryVariables
+  >(GetScheduledItemsDocument, options);
+}
+export type GetScheduledItemsQueryHookResult = ReturnType<
+  typeof useGetScheduledItemsQuery
+>;
+export type GetScheduledItemsLazyQueryHookResult = ReturnType<
+  typeof useGetScheduledItemsLazyQuery
+>;
+export type GetScheduledItemsQueryResult = Apollo.QueryResult<
+  GetScheduledItemsQuery,
+  GetScheduledItemsQueryVariables
 >;

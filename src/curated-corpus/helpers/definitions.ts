@@ -1,4 +1,5 @@
 // Here we keep sets of options for curating items
+
 export interface DropdownOption {
   code: string;
   name: string;
