@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 
@@ -44,11 +44,6 @@ export const ApprovedItemForm: React.FC<ApprovedItemFormProps> = (
 ): JSX.Element => {
   const { approvedItem, onSubmit, onCancel } = props;
 
-  //TODO: @Herraj - add state variables and logic for holding the new form input values
-  const [isShortLived, setIsShortLived] = useState<boolean>(
-    approvedItem.isShortLived
-  );
-
   const approvedItemCorpus = curationStatusOptions.find(
     (item) => item.code === approvedItem.status
   )?.name;
@@ -82,20 +77,12 @@ export const ApprovedItemForm: React.FC<ApprovedItemFormProps> = (
     },
   });
 
-  const toggleIsShortLived = (): void => {
-    setIsShortLived(!isShortLived);
-  };
-
   const approvedItemFormBodyProps: ApprovedItemFormBodyProps = {
     approvedItem: approvedItem,
     formik: formik,
     topics: topics,
     languages: languages,
     curationStatus: curationStatusOptions,
-    isSyndicated: approvedItem.isSyndicated,
-    isCollection: approvedItem.isCollection,
-    isShortLived: isShortLived,
-    toggleIsShortLived: toggleIsShortLived,
     onCancel: onCancel,
   };
   return <ApprovedItemFormBody {...approvedItemFormBodyProps} />;

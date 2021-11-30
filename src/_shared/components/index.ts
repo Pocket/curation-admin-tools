@@ -18,4 +18,4 @@ export { TabNavigation } from './TabNavigation/TabNavigation';
 export { TabPanel } from './TabPanel/TabPanel';
 export { TabSet } from './TabSet/TabSet';
 export type { CustomTabType } from './TabSet/TabSet';
-export { ImageUpload } from './ImageUpload/ImageUpload';
+export { ImageUpload } from '../../curated-corpus/components/ImageUpload/ImageUpload';

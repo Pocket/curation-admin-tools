@@ -26,4 +26,6 @@ export const validationSchema = yup.object({
     .trim()
     .required('Please add an excerpt.')
     .min(20, 'Excerpt needs to be longer than 20 characters.'),
+
+  shortLived: yup.boolean().required(),
 });

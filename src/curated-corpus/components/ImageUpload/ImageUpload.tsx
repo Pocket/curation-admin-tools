@@ -13,7 +13,7 @@ import {
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Dropzone, { FileWithPath } from 'react-dropzone';
 import { Modal, SharedFormButtons } from '../../../_shared/components';
-import { FileUploadInfo } from '../FileUploadInfo/FileUploadInfo';
+import { FileUploadInfo } from '../../../_shared/components/FileUploadInfo/FileUploadInfo';
 import { useStyles } from './ImageUpload.styles';
 import { useNotifications } from '../../../_shared/hooks';
 import {
@@ -28,7 +28,7 @@ import {
   ApprovedCuratedCorpusItem,
   MutationUploadApprovedCuratedCorpusItemImageArgs,
   useUploadApprovedCuratedCorpusItemImageMutation,
-} from '../../../curated-corpus/api/curated-corpus-api/generatedTypes';
+} from '../../api/curated-corpus-api/generatedTypes';
 
 interface ImageUploadProps {
   /**

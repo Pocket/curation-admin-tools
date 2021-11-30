@@ -30,10 +30,6 @@ export interface ApprovedItemFormBodyProps {
   topics: DropdownOption[];
   languages: DropdownOption[];
   curationStatus: DropdownOption[];
-  isSyndicated: boolean;
-  isCollection: boolean;
-  isShortLived: boolean;
-  toggleIsShortLived: VoidFunction;
   onCancel: VoidFunction;
 }
 
@@ -45,18 +41,7 @@ export interface ApprovedItemFormBodyProps {
 
 export const ApprovedItemFormBody: React.FC<
   ApprovedItemFormBodyProps & SharedFormButtonsProps
-> = ({
-  approvedItem,
-  formik,
-  onCancel,
-  topics,
-  languages,
-  curationStatus,
-  isCollection,
-  isSyndicated,
-  isShortLived,
-  toggleIsShortLived,
-}) => {
+> = ({ approvedItem, formik, onCancel, topics, languages, curationStatus }) => {
   return (
     <form name="approved-item-edit-form" onSubmit={formik.handleSubmit}>
       <Grid container spacing={3}>
@@ -83,6 +68,15 @@ export const ApprovedItemFormBody: React.FC<
             label="Publisher"
             fieldProps={formik.getFieldProps('publisher')}
             fieldMeta={formik.getFieldMeta('publisher')}
+          ></FormikTextField>
+        </Grid>
+        <Grid item md={12} xs={12}>
+          <FormikTextField
+            id="excerpt"
+            label="Excerpt"
+            multiline
+            fieldProps={formik.getFieldProps('excerpt')}
+            fieldMeta={formik.getFieldMeta('excerpt')}
           ></FormikTextField>
         </Grid>
         <Grid item xs={12}>
@@ -157,13 +151,12 @@ export const ApprovedItemFormBody: React.FC<
                         control={
                           <Switch
                             color="primary"
-                            checked={isShortLived}
-                            {...formik.getFieldProps('isShortLived')}
-                            onChange={toggleIsShortLived}
+                            checked={formik.values.shortLived}
+                            {...formik.getFieldProps('shortLived')}
                           />
                         }
                         label={'Short Lived'}
-                        labelPlacement="top"
+                        labelPlacement="end"
                       />
                     </Grid>
                     <Grid item md={4} xs={12}>
@@ -171,12 +164,12 @@ export const ApprovedItemFormBody: React.FC<
                         control={
                           <Switch
                             disabled
-                            checked={isCollection}
+                            checked={formik.values.collection}
                             {...formik.getFieldProps('collection')}
                           />
                         }
                         label={'Collection'}
-                        labelPlacement="top"
+                        labelPlacement="end"
                       />
                     </Grid>
                     <Grid item md={4} xs={12}>
@@ -184,12 +177,12 @@ export const ApprovedItemFormBody: React.FC<
                         control={
                           <Switch
                             disabled
-                            checked={isSyndicated}
+                            checked={formik.values.syndicated}
                             {...formik.getFieldProps('syndicated')}
                           />
                         }
                         label={'Syndicated'}
-                        labelPlacement="top"
+                        labelPlacement="end"
                       />
                     </Grid>
                   </Grid>
@@ -197,15 +190,6 @@ export const ApprovedItemFormBody: React.FC<
               </Grid>
             </Grid>
           </Grid>
-        </Grid>
-        <Grid item md={12} xs={12}>
-          <FormikTextField
-            id="excerpt"
-            label="Excerpt"
-            multiline
-            fieldProps={formik.getFieldProps('excerpt')}
-            fieldMeta={formik.getFieldMeta('excerpt')}
-          ></FormikTextField>
         </Grid>
       </Grid>
       <SharedFormButtons onCancel={onCancel} />
