@@ -7,7 +7,6 @@ import {
 } from '../../api/curated-corpus-api/generatedTypes';
 
 import { NewTabGroupedList } from './NewTabGroupedList';
-import { DateTime } from 'luxon';
 
 describe('The MiniNewTabScheduleCard component', () => {
   let scheduledItems: ScheduledCuratedCorpusItem[];
@@ -50,39 +49,7 @@ describe('The MiniNewTabScheduleCard component', () => {
     scheduledItems = [item, secondItem];
   });
 
-  it('shows the "Today" heading for today\'s date', () => {
-    render(
-      <MemoryRouter>
-        <NewTabGroupedList
-          scheduledDate={DateTime.local().toFormat('yyyy-MM-dd')}
-          scheduledItems={scheduledItems}
-        />
-      </MemoryRouter>
-    );
-
-    // The heading is "Today"
-    const listHeading = screen.getByText(/today/i);
-    expect(listHeading).toBeInTheDocument();
-  });
-
-  it('shows the "Tomorrow" heading for tomorrow\'s date', () => {
-    render(
-      <MemoryRouter>
-        <NewTabGroupedList
-          scheduledDate={DateTime.local()
-            .plus({ days: 1 })
-            .toFormat('yyyy-MM-dd')}
-          scheduledItems={scheduledItems}
-        />
-      </MemoryRouter>
-    );
-
-    // The heading is "Tomorrow"
-    const listHeading = screen.getByText(/tomorrow/i);
-    expect(listHeading).toBeInTheDocument();
-  });
-
-  it('shows a date beyond today and tomorrow correctly', () => {
+  it('shows a date correctly', () => {
     render(
       <MemoryRouter>
         <NewTabGroupedList

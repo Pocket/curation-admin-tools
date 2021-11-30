@@ -1,13 +1,13 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
-import { RejectProspectForm } from './RejectProspectForm';
+import { RejectItemForm } from './RejectItemForm';
 import userEvent from '@testing-library/user-event';
 
-describe('The RejectProspectForm component', () => {
+describe('The RejectItemForm component', () => {
   const handleSubmit = jest.fn();
 
   it('renders successfully', () => {
-    render(<RejectProspectForm onSubmit={handleSubmit} />);
+    render(<RejectItemForm onSubmit={handleSubmit} />);
 
     // there is at least a form and nothing falls over
     const form = screen.getByRole('form');
@@ -15,7 +15,7 @@ describe('The RejectProspectForm component', () => {
   });
 
   it('has the requisite fields and buttons', () => {
-    render(<RejectProspectForm onSubmit={handleSubmit} />);
+    render(<RejectItemForm onSubmit={handleSubmit} />);
 
     const checkboxes = screen.getAllByRole('checkbox');
     // We have six rejection reasons. They come from an enum in the Curated Corpus
@@ -28,7 +28,7 @@ describe('The RejectProspectForm component', () => {
   });
 
   it('displays an error message if no checkboxes have been selected', async () => {
-    render(<RejectProspectForm onSubmit={handleSubmit} />);
+    render(<RejectItemForm onSubmit={handleSubmit} />);
 
     await waitFor(() => {
       userEvent.click(screen.getByText(/save/i));
@@ -42,7 +42,7 @@ describe('The RejectProspectForm component', () => {
   });
 
   it('submits the form if at least one checkbox was selected', async () => {
-    render(<RejectProspectForm onSubmit={handleSubmit} />);
+    render(<RejectItemForm onSubmit={handleSubmit} />);
 
     const chosenReason = screen.getByLabelText(/time sensitive/i);
     await waitFor(() => {

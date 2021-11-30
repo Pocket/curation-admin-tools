@@ -4,10 +4,11 @@ import { Box, Grid, Typography } from '@material-ui/core';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import { Prospect } from '../../api/prospect-api/generatedTypes';
-import { RejectProspectForm } from '../RejectProspectForm/RejectProspectForm';
+import { RejectItemForm } from '../RejectItemForm/RejectItemForm';
+import { ApprovedCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
 
 interface RejectProspectModalProps {
-  prospect: Prospect;
+  prospect: Prospect | ApprovedCuratedCorpusItem;
   isOpen: boolean;
   onSave: (
     values: FormikValues,
@@ -16,10 +17,10 @@ interface RejectProspectModalProps {
   toggleModal: () => void;
 }
 
-export const RejectProspectModal: React.FC<RejectProspectModalProps> = (
+export const RejectItemModal: React.FC<RejectProspectModalProps> = (
   props
 ): JSX.Element => {
-  const { prospect, isOpen, toggleModal } = props;
+  const { prospect, isOpen, onSave, toggleModal } = props;
 
   return (
     <Modal
@@ -39,10 +40,8 @@ export const RejectProspectModal: React.FC<RejectProspectModalProps> = (
         </Grid>
         <Grid item xs={12}>
           <Box p={3}>
-            <RejectProspectForm
-              onSubmit={() => {
-                console.log('things are happening!');
-              }}
+            <RejectItemForm
+              onSubmit={onSave}
               onCancel={() => {
                 toggleModal();
               }}

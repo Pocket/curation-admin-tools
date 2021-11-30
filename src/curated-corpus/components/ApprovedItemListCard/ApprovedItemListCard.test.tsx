@@ -9,6 +9,8 @@ import { ApprovedItemListCard } from './ApprovedItemListCard';
 
 describe('The ApprovedItemListCard component', () => {
   let item: ApprovedCuratedCorpusItem;
+  const onSchedule = jest.fn();
+  const onReject = jest.fn();
 
   beforeEach(() => {
     item = {
@@ -35,7 +37,11 @@ describe('The ApprovedItemListCard component', () => {
   it('shows basic approved item information', () => {
     render(
       <MemoryRouter>
-        <ApprovedItemListCard item={item} onSchedule={() => ({})} />
+        <ApprovedItemListCard
+          item={item}
+          onSchedule={onSchedule}
+          onReject={onReject}
+        />
       </MemoryRouter>
     );
 
@@ -56,7 +62,11 @@ describe('The ApprovedItemListCard component', () => {
   it('shows curated status correctly', () => {
     render(
       <MemoryRouter>
-        <ApprovedItemListCard item={item} onSchedule={() => ({})} />
+        <ApprovedItemListCard
+          item={item}
+          onSchedule={onSchedule}
+          onReject={onReject}
+        />
       </MemoryRouter>
     );
 
@@ -74,7 +84,11 @@ describe('The ApprovedItemListCard component', () => {
   it('shows language correctly', () => {
     render(
       <MemoryRouter>
-        <ApprovedItemListCard item={item} onSchedule={() => ({})} />
+        <ApprovedItemListCard
+          item={item}
+          onSchedule={onSchedule}
+          onReject={onReject}
+        />
       </MemoryRouter>
     );
 
@@ -83,7 +97,11 @@ describe('The ApprovedItemListCard component', () => {
   it('should render approved item card with createdBy', () => {
     render(
       <MemoryRouter>
-        <ApprovedItemListCard item={item} onSchedule={() => ({})} />
+        <ApprovedItemListCard
+          item={item}
+          onSchedule={onSchedule}
+          onReject={onReject}
+        />
       </MemoryRouter>
     );
 
@@ -93,7 +111,11 @@ describe('The ApprovedItemListCard component', () => {
   it('should render approved item card with excerpt', () => {
     render(
       <MemoryRouter>
-        <ApprovedItemListCard item={item} onSchedule={() => ({})} />
+        <ApprovedItemListCard
+          item={item}
+          onSchedule={onSchedule}
+          onReject={onReject}
+        />
       </MemoryRouter>
     );
 
@@ -103,7 +125,11 @@ describe('The ApprovedItemListCard component', () => {
   it('should render approved item card with the action buttons', () => {
     render(
       <MemoryRouter>
-        <ApprovedItemListCard item={item} onSchedule={() => ({})} />
+        <ApprovedItemListCard
+          item={item}
+          onSchedule={onSchedule}
+          onReject={onReject}
+        />
       </MemoryRouter>
     );
 

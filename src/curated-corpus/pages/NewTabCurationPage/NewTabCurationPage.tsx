@@ -5,7 +5,7 @@ import { HandleApiResponse } from '../../../_shared/components';
 import {
   MiniNewTabScheduleList,
   ProspectListCard,
-  RejectProspectModal,
+  RejectItemModal,
 } from '../../components';
 import { client } from '../../api/prospect-api/client';
 import {
@@ -61,7 +61,7 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
   return (
     <>
       {currentItem && (
-        <RejectProspectModal
+        <RejectItemModal
           prospect={currentItem}
           isOpen={rejectModalOpen}
           onSave={() => {
