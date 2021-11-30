@@ -28,13 +28,14 @@ interface ApprovedItemListCardProps {
   onReject: () => void;
 
   onSchedule: () => void;
+  onEdit: VoidFunction;
 }
 
 export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
   props
 ): JSX.Element => {
   const classes = useStyles();
-  const { item, onReject, onSchedule } = props;
+  const { item, onReject, onSchedule, onEdit } = props;
 
   return (
     <Card className={classes.root}>
@@ -109,7 +110,7 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
         <Button buttonType="negative" variant="text" onClick={onReject}>
           Reject
         </Button>
-        <Button buttonType="positive" variant="text">
+        <Button buttonType="positive" variant="text" onClick={onEdit}>
           Edit
         </Button>
       </CardActions>

@@ -19,6 +19,7 @@ import {
 } from '../../components';
 import { useRunMutation, useToggle } from '../../../_shared/hooks';
 import { DateTime } from 'luxon';
+import { ApprovedItemModal } from '../../components/ApprovedItemModal/ApprovedItemModal';
 
 export const ApprovedItemsPage: React.FC = (): JSX.Element => {
   // Get the usual API response vars and a helper method to retrieve data
@@ -130,6 +131,11 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
   const [rejectModalOpen, toggleRejectModal] = useToggle(false);
 
   /**
+   * Keep track of whether the "Edit this item" modal is open or not.
+   */
+  const [editModalOpen, toggleEditModal] = useToggle(false);
+
+  /**
    * Set the current Approved Item to be worked on (e.g., scheduled for New Tab).
    */
   const [currentItem, setCurrentItem] = useState<
@@ -167,6 +173,13 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
     );
   };
 
+  const onEditItemSave = (): void => {
+    //TODO: @Herraj - Add some mutation logic here. Possibly remove this dependency of drilling down this callback 3 levels deep
+
+    //place holder
+    alert('Item Successfully Edited');
+  };
+
   return (
     <>
       <h1>Live Corpus</h1>
@@ -181,6 +194,12 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
             isOpen={scheduleModalOpen}
             onSave={onScheduleSave}
             toggleModal={toggleScheduleModal}
+          />
+          <ApprovedItemModal
+            approvedItem={currentItem}
+            isOpen={editModalOpen}
+            onSave={onEditItemSave}
+            toggleModal={toggleEditModal}
           />
           <RejectItemModal
             prospect={currentItem}
@@ -224,6 +243,10 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
                     onSchedule={() => {
                       setCurrentItem(edge.node);
                       toggleScheduleModal();
+                    }}
+                    onEdit={() => {
+                      setCurrentItem(edge.node);
+                      toggleEditModal();
                     }}
                     onReject={() => {
                       setCurrentItem(edge.node);
