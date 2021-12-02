@@ -14,28 +14,29 @@ interface MiniNewTabScheduleGroupedListProps {
  * @param props
  * @constructor
  */
-export const MiniNewTabScheduleList: React.FC<MiniNewTabScheduleGroupedListProps> =
-  (props): JSX.Element => {
-    const { scheduledItems } = props;
+export const MiniNewTabScheduleList: React.FC<
+  MiniNewTabScheduleGroupedListProps
+> = (props): JSX.Element => {
+  const { scheduledItems } = props;
 
-    const groupedByDate = groupByObjectPropertyValue(
-      scheduledItems,
-      'scheduledDate'
+  const groupedByDate = groupByObjectPropertyValue(
+    scheduledItems,
+    'scheduledDate'
+  );
+
+  // This is decidedly not pretty, but we can't iterate over object props
+  // within JSX.
+  const lists: JSX.Element[] = [];
+  for (const scheduledDate in groupedByDate) {
+    lists.push(
+      <NewTabGroupedList
+        key={scheduledDate}
+        scheduledDate={scheduledDate}
+        scheduledItems={groupedByDate[scheduledDate]}
+        isSidebar
+      />
     );
+  }
 
-    // This is decidedly not pretty, but we can't iterate over object props
-    // within JSX.
-    const lists: JSX.Element[] = [];
-    for (const scheduledDate in groupedByDate) {
-      lists.push(
-        <NewTabGroupedList
-          key={scheduledDate}
-          scheduledDate={scheduledDate}
-          scheduledItems={groupedByDate[scheduledDate]}
-          isSidebar
-        />
-      );
-    }
-
-    return <>{lists}</>;
-  };
+  return <>{lists}</>;
+};
