@@ -42,18 +42,9 @@ export const NewTabGroupedList: React.FC<NewTabGroupedListProps> = (
     ? MiniNewTabScheduleCard
     : ScheduledItemCardWrapper;
 
-  // Determine how to show the date. For today and tomorrow, use relative terms
-  const tomorrow = DateTime.local().plus({ days: 1 });
-  const scheduledDateObj = DateTime.fromFormat(scheduledDate, 'yyyy-MM-dd');
-  let displayDate: string | null;
-  if (scheduledDateObj <= tomorrow) {
-    displayDate = scheduledDateObj.toRelativeCalendar();
-  } else {
-    // For beyond the next couple of days, use a standard date
-    displayDate = scheduledDateObj
-      .setLocale('en')
-      .toLocaleString(DateTime.DATE_FULL);
-  }
+  const displayDate = DateTime.fromFormat(scheduledDate, 'yyyy-MM-dd')
+    .setLocale('en')
+    .toLocaleString(DateTime.DATE_FULL);
 
   return (
     <>

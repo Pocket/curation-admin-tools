@@ -9,6 +9,8 @@ import { ApprovedItemListCard } from './ApprovedItemListCard';
 
 describe('The ApprovedItemListCard component', () => {
   let item: ApprovedCuratedCorpusItem;
+  const onSchedule = jest.fn();
+  const onReject = jest.fn();
 
   beforeEach(() => {
     item = {

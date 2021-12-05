@@ -552,6 +552,18 @@ export type CreateNewTabFeedScheduledItemMutation = {
   };
 };
 
+export type UploadApprovedCuratedCorpusItemImageMutationVariables = Exact<{
+  image: Scalars['Upload'];
+}>;
+
+export type UploadApprovedCuratedCorpusItemImageMutation = {
+  __typename?: 'Mutation';
+  uploadApprovedCuratedCorpusItemImage: {
+    __typename?: 'ApprovedCuratedCorpusImageUrl';
+    url: string;
+  };
+};
+
 export type GetApprovedItemsQueryVariables = Exact<{
   filters?: InputMaybe<ApprovedCuratedCorpusItemFilter>;
   pagination?: InputMaybe<PaginationInput>;
@@ -779,6 +791,58 @@ export type CreateNewTabFeedScheduledItemMutationOptions =
   Apollo.BaseMutationOptions<
     CreateNewTabFeedScheduledItemMutation,
     CreateNewTabFeedScheduledItemMutationVariables
+  >;
+export const UploadApprovedCuratedCorpusItemImageDocument = gql`
+  mutation uploadApprovedCuratedCorpusItemImage($image: Upload!) {
+    uploadApprovedCuratedCorpusItemImage(data: $image) {
+      url
+    }
+  }
+`;
+export type UploadApprovedCuratedCorpusItemImageMutationFn =
+  Apollo.MutationFunction<
+    UploadApprovedCuratedCorpusItemImageMutation,
+    UploadApprovedCuratedCorpusItemImageMutationVariables
+  >;
+
+/**
+ * __useUploadApprovedCuratedCorpusItemImageMutation__
+ *
+ * To run a mutation, you first call `useUploadApprovedCuratedCorpusItemImageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadApprovedCuratedCorpusItemImageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadApprovedCuratedCorpusItemImageMutation, { data, loading, error }] = useUploadApprovedCuratedCorpusItemImageMutation({
+ *   variables: {
+ *      image: // value for 'image'
+ *   },
+ * });
+ */
+export function useUploadApprovedCuratedCorpusItemImageMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UploadApprovedCuratedCorpusItemImageMutation,
+    UploadApprovedCuratedCorpusItemImageMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UploadApprovedCuratedCorpusItemImageMutation,
+    UploadApprovedCuratedCorpusItemImageMutationVariables
+  >(UploadApprovedCuratedCorpusItemImageDocument, options);
+}
+export type UploadApprovedCuratedCorpusItemImageMutationHookResult = ReturnType<
+  typeof useUploadApprovedCuratedCorpusItemImageMutation
+>;
+export type UploadApprovedCuratedCorpusItemImageMutationResult =
+  Apollo.MutationResult<UploadApprovedCuratedCorpusItemImageMutation>;
+export type UploadApprovedCuratedCorpusItemImageMutationOptions =
+  Apollo.BaseMutationOptions<
+    UploadApprovedCuratedCorpusItemImageMutation,
+    UploadApprovedCuratedCorpusItemImageMutationVariables
   >;
 export const GetApprovedItemsDocument = gql`
   query getApprovedItems(

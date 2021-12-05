@@ -85,7 +85,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
             <LoadExtraButton
               arrowDirection="up"
               label="Load Previous"
-              loadMore={() => {
+              onClick={() => {
                 loadMore('past');
               }}
             />
@@ -110,7 +110,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
             <LoadExtraButton
               arrowDirection="down"
               label="Load Next"
-              loadMore={() => {
+              onClick={() => {
                 loadMore('future');
               }}
             />

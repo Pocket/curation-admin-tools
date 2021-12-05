@@ -11,14 +11,18 @@ interface ApprovedItemCardWrapperProps {
    */
   item: ApprovedCuratedCorpusItem;
 
-  onSchedule: () => void;
+  onReject: VoidFunction;
+
+  onSchedule: VoidFunction;
+
+  onEdit: VoidFunction;
 }
 
 export const ApprovedItemCardWrapper: React.FC<ApprovedItemCardWrapperProps> = (
   props
 ): JSX.Element => {
   const classes = useStyles();
-  const { item, onSchedule } = props;
+  const { item, onEdit, onReject, onSchedule } = props;
 
   return (
     <Card className={classes.root}>
@@ -28,10 +32,10 @@ export const ApprovedItemCardWrapper: React.FC<ApprovedItemCardWrapperProps> = (
         <Button buttonType="positive" variant="text" onClick={onSchedule}>
           Schedule
         </Button>
-        <Button buttonType="negative" variant="text">
+        <Button buttonType="negative" variant="text" onClick={onReject}>
           Reject
         </Button>
-        <Button buttonType="positive" variant="text">
+        <Button buttonType="positive" variant="text" onClick={onEdit}>
           Edit
         </Button>
       </CardActions>

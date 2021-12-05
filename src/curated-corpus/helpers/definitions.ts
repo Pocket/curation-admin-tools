@@ -20,8 +20,8 @@ export const topics: DropdownOption[] = [
   { code: 'SCIENCE', name: 'Science' },
   { code: 'SELF IMPROVEMENT', name: 'Self Improvement' },
   { code: 'SPORTS', name: 'Sports' },
-  { code: 'Technology', name: 'Technology' },
-  { code: 'Travel', name: 'Travel' },
+  { code: 'TECHNOLOGY', name: 'Technology' },
+  { code: 'TRAVEL', name: 'Travel' },
 ];
 
 // This will come from Prospect API's generated types in due course
@@ -64,4 +64,10 @@ export const newTabs: NewTab[] = [
 export const languages: DropdownOption[] = [
   { code: 'EN', name: 'English' },
   { code: 'DE', name: 'German' },
+];
+
+// This maps to the status (CuratedStatus type) field in DB for an ApprovedItem
+export const curationStatusOptions: DropdownOption[] = [
+  { code: 'RECOMMENDATION', name: 'Recommendation' },
+  { code: 'CORPUS', name: 'Corpus' },
 ];

@@ -150,7 +150,7 @@ theme.overrides = {
     },
     track: {
       backgroundColor: curationPalette.neutral,
-      opacity: '1 !important',
+      opacity: '1',
       borderRadius: 20,
       position: 'relative',
     },
@@ -166,9 +166,15 @@ theme.overrides = {
       },
       '& + $track': {
         background: theme.palette.primary.main,
+        opacity: '1 !important',
+      },
+    },
+    disabled: {
+      '& + $track': {
+        opacity: '0.2 !important',
+        cursor: 'not-allowed',
       },
     },
   },
 };
-
 export default theme;

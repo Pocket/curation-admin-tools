@@ -12,22 +12,23 @@ interface ScheduledItemCardWrapperProps {
   item: ScheduledCuratedCorpusItem;
 }
 
-export const ScheduledItemCardWrapper: React.FC<ScheduledItemCardWrapperProps> =
-  (props): JSX.Element => {
-    const classes = useStyles();
-    const { item } = props;
+export const ScheduledItemCardWrapper: React.FC<
+  ScheduledItemCardWrapperProps
+> = (props): JSX.Element => {
+  const classes = useStyles();
+  const { item } = props;
 
-    return (
-      <Grid item xs={12} sm={6} md={3}>
-        <Card className={classes.root}>
-          <ApprovedItemListCard item={item.approvedItem} />
+  return (
+    <Grid item xs={12} sm={6} md={3}>
+      <Card className={classes.root}>
+        <ApprovedItemListCard item={item.approvedItem} />
 
-          <CardActions className={classes.actions}>
-            <Button buttonType="negative" variant="text">
-              Remove
-            </Button>
-          </CardActions>
-        </Card>
-      </Grid>
-    );
-  };
+        <CardActions className={classes.actions}>
+          <Button buttonType="negative" variant="text">
+            Remove
+          </Button>
+        </CardActions>
+      </Card>
+    </Grid>
+  );
+};
