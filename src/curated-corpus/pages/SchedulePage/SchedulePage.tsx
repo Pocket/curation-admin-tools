@@ -36,31 +36,41 @@ export const SchedulePage: React.FC = (): JSX.Element => {
     },
   });
 
+  /**
+   * Load two more days' worth of data in the direction indicated
+   *
+   * @param direction
+   */
   const loadMore = (direction: 'past' | 'future') => {
-    // Load two more days' worth of data
     let filters: ScheduledCuratedCorpusItemsFilterInput;
 
-    if (direction === 'past') {
+    if (direction === 'future') {
+      // shift the dates two days into the future
+      filters = {
+        newTabGuid,
+        startDate: startDate.plus({ days: 2 }).toFormat('yyyy-MM-dd'),
+        endDate: endDate.plus({ days: 2 }).toFormat('yyyy-MM-dd'),
+      };
+    } else {
+      // shift the dates two days into the past
       filters = {
         newTabGuid,
         startDate: startDate.minus({ days: 2 }).toFormat('yyyy-MM-dd'),
-        endDate: endDate.toFormat('yyyy-MM-dd'),
-      };
-    } else {
-      filters = {
-        newTabGuid,
-        startDate: startDate.toFormat('yyyy-MM-dd'),
-        endDate: endDate.plus({ days: 2 }).toFormat('yyyy-MM-dd'),
+        endDate: endDate.minus({ days: 2 }).toFormat('yyyy-MM-dd'),
       };
     }
     fetchMore({
       variables: filters,
     })
       .then(() => {
+        // Update the state variables as they will be used to calculate the dates
+        // for the next fetchMore() request.
         if (direction === 'future') {
+          setStartDate(startDate.plus({ days: 2 }));
           setEndDate(endDate.plus({ days: 2 }));
         } else {
           setStartDate(startDate.minus({ days: 2 }));
+          setEndDate(startDate.minus({ days: 2 }));
         }
       })
       .catch((error: ApolloError) => {
@@ -85,7 +95,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
           {data && (
             <LoadExtraButton
               arrowDirection="up"
-              label="Load Previous"
+              label="Show Previous"
               onClick={() => {
                 loadMore('past');
               }}
@@ -111,7 +121,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
           {data && (
             <LoadExtraButton
               arrowDirection="down"
-              label="Load Next"
+              label="Show Next"
               onClick={() => {
                 loadMore('future');
               }}
