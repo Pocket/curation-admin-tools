@@ -1,6 +1,5 @@
-import * as Apollo from '@apollo/client';
 import { gql } from '@apollo/client';
-
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -318,7 +317,7 @@ export type Query = {
   /** Retrieves a paginated, filterable list of RejectedCuratedCorpusItems. */
   getRejectedCuratedCorpusItems: RejectedCuratedCorpusItemConnection;
   /** Retrieves a list of Approved Items that are scheduled to appear on New Tab */
-  getScheduledCuratedCorpusItems: ScheduledCuratedCorpusItemsResult;
+  getScheduledCuratedCorpusItems: Array<ScheduledCuratedCorpusItemsResult>;
 };
 
 export type QueryGetApprovedCuratedCorpusItemsArgs = {
@@ -459,6 +458,12 @@ export type ScheduledCuratedCorpusItemsResult = {
   __typename?: 'ScheduledCuratedCorpusItemsResult';
   /** An array of items for a given New Tab Feed */
   items: Array<ScheduledCuratedCorpusItem>;
+  /** The date items are scheduled for, in YYYY-MM-DD format. */
+  scheduledDate: Scalars['Date'];
+  /** The number of syndicated articles for the scheduled date. */
+  syndicatedCount: Scalars['Int'];
+  /** The total number of items for the scheduled date. */
+  totalCount: Scalars['Int'];
 };
 
 /**
@@ -622,6 +627,46 @@ export type RejectApprovedItemMutation = {
   };
 };
 
+export type UpdateApprovedCuratedCorpusItemMutationVariables = Exact<{
+  externalId: Scalars['ID'];
+  prospectId: Scalars['ID'];
+  url: Scalars['Url'];
+  title: Scalars['String'];
+  excerpt: Scalars['String'];
+  status: CuratedStatus;
+  language: Scalars['String'];
+  publisher: Scalars['String'];
+  imageUrl: Scalars['Url'];
+  topic: Scalars['String'];
+  isCollection: Scalars['Boolean'];
+  isShortLived: Scalars['Boolean'];
+  isSyndicated: Scalars['Boolean'];
+}>;
+
+export type UpdateApprovedCuratedCorpusItemMutation = {
+  __typename?: 'Mutation';
+  updateApprovedCuratedCorpusItem: {
+    __typename?: 'ApprovedCuratedCorpusItem';
+    externalId: string;
+    prospectId: string;
+    title: string;
+    language: string;
+    publisher: string;
+    url: any;
+    imageUrl: any;
+    excerpt: string;
+    status: CuratedStatus;
+    topic: string;
+    isCollection: boolean;
+    isShortLived: boolean;
+    isSyndicated: boolean;
+    createdBy: string;
+    createdAt: number;
+    updatedBy?: string | null | undefined;
+    updatedAt: number;
+  };
+};
+
 export type UploadApprovedCuratedCorpusItemImageMutationVariables = Exact<{
   image: Scalars['Upload'];
 }>;
@@ -721,7 +766,7 @@ export type GetScheduledItemsQueryVariables = Exact<{
 
 export type GetScheduledItemsQuery = {
   __typename?: 'Query';
-  getScheduledCuratedCorpusItems: {
+  getScheduledCuratedCorpusItems: Array<{
     __typename?: 'ScheduledCuratedCorpusItemsResult';
     items: Array<{
       __typename?: 'ScheduledCuratedCorpusItem';
@@ -752,7 +797,7 @@ export type GetScheduledItemsQuery = {
         updatedAt: number;
       };
     }>;
-  };
+  }>;
 };
 
 export const CuratedItemDataFragmentDoc = gql`
@@ -913,6 +958,100 @@ export type RejectApprovedItemMutationOptions = Apollo.BaseMutationOptions<
   RejectApprovedItemMutation,
   RejectApprovedItemMutationVariables
 >;
+export const UpdateApprovedCuratedCorpusItemDocument = gql`
+  mutation updateApprovedCuratedCorpusItem(
+    $externalId: ID!
+    $prospectId: ID!
+    $url: Url!
+    $title: String!
+    $excerpt: String!
+    $status: CuratedStatus!
+    $language: String!
+    $publisher: String!
+    $imageUrl: Url!
+    $topic: String!
+    $isCollection: Boolean!
+    $isShortLived: Boolean!
+    $isSyndicated: Boolean!
+  ) {
+    updateApprovedCuratedCorpusItem(
+      data: {
+        externalId: $externalId
+        prospectId: $prospectId
+        url: $url
+        title: $title
+        excerpt: $excerpt
+        status: $status
+        language: $language
+        publisher: $publisher
+        imageUrl: $imageUrl
+        topic: $topic
+        isCollection: $isCollection
+        isShortLived: $isShortLived
+        isSyndicated: $isSyndicated
+      }
+    ) {
+      ...CuratedItemData
+    }
+  }
+  ${CuratedItemDataFragmentDoc}
+`;
+export type UpdateApprovedCuratedCorpusItemMutationFn = Apollo.MutationFunction<
+  UpdateApprovedCuratedCorpusItemMutation,
+  UpdateApprovedCuratedCorpusItemMutationVariables
+>;
+
+/**
+ * __useUpdateApprovedCuratedCorpusItemMutation__
+ *
+ * To run a mutation, you first call `useUpdateApprovedCuratedCorpusItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateApprovedCuratedCorpusItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateApprovedCuratedCorpusItemMutation, { data, loading, error }] = useUpdateApprovedCuratedCorpusItemMutation({
+ *   variables: {
+ *      externalId: // value for 'externalId'
+ *      prospectId: // value for 'prospectId'
+ *      url: // value for 'url'
+ *      title: // value for 'title'
+ *      excerpt: // value for 'excerpt'
+ *      status: // value for 'status'
+ *      language: // value for 'language'
+ *      publisher: // value for 'publisher'
+ *      imageUrl: // value for 'imageUrl'
+ *      topic: // value for 'topic'
+ *      isCollection: // value for 'isCollection'
+ *      isShortLived: // value for 'isShortLived'
+ *      isSyndicated: // value for 'isSyndicated'
+ *   },
+ * });
+ */
+export function useUpdateApprovedCuratedCorpusItemMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateApprovedCuratedCorpusItemMutation,
+    UpdateApprovedCuratedCorpusItemMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateApprovedCuratedCorpusItemMutation,
+    UpdateApprovedCuratedCorpusItemMutationVariables
+  >(UpdateApprovedCuratedCorpusItemDocument, options);
+}
+export type UpdateApprovedCuratedCorpusItemMutationHookResult = ReturnType<
+  typeof useUpdateApprovedCuratedCorpusItemMutation
+>;
+export type UpdateApprovedCuratedCorpusItemMutationResult =
+  Apollo.MutationResult<UpdateApprovedCuratedCorpusItemMutation>;
+export type UpdateApprovedCuratedCorpusItemMutationOptions =
+  Apollo.BaseMutationOptions<
+    UpdateApprovedCuratedCorpusItemMutation,
+    UpdateApprovedCuratedCorpusItemMutationVariables
+  >;
 export const UploadApprovedCuratedCorpusItemImageDocument = gql`
   mutation uploadApprovedCuratedCorpusItemImage($image: Upload!) {
     uploadApprovedCuratedCorpusItemImage(data: $image) {

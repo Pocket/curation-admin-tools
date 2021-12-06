@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 
@@ -34,20 +34,26 @@ interface ApprovedItemFormProps {
   ) => void | Promise<any>;
 
   onCancel: VoidFunction;
+
+  /**
+   * This function is called by the ImageUpload component after it
+   * successfully uploads an image to the S3 Bucket.
+   */
+  onImageSave: (url: string) => void;
 }
 
 /**
- * This component houses all the logic and data that
- * will be used in this form. The logic and data is passed down
- * to ApprovedItemFormBody component which is responsible for only displaying
- * and editing data.
- *
+ * This component houses all the logic and data that will be used in this form.
  */
 
 export const ApprovedItemForm: React.FC<
   ApprovedItemFormProps & SharedFormButtonsProps
 > = (props): JSX.Element => {
-  const { approvedItem, onSubmit, onCancel } = props;
+  const { approvedItem, onSubmit, onCancel, onImageSave } = props;
+
+  // State variable to keep track of if the image for an approved item is changed
+  // i.e successfully uploaded to s3
+  const [isImageChanged, setIsImageChanged] = useState<boolean>(false);
 
   const approvedItemCorpus = curationStatusOptions.find(
     (item) => item.code === approvedItem.status
@@ -81,6 +87,10 @@ export const ApprovedItemForm: React.FC<
       onSubmit(values, formikHelpers);
     },
   });
+
+  //Boolean to disable the save button if nothing in the form has changed
+  //to prevent unnecessary form submissions with the same data
+  const saveDisabled = !(isImageChanged || formik.dirty);
 
   return (
     <form name="approved-item-edit-form" onSubmit={formik.handleSubmit}>
@@ -124,9 +134,9 @@ export const ApprovedItemForm: React.FC<
             <Grid item md={3}>
               <ImageUpload
                 entity={approvedItem}
-                //TODO: @Herraj - Add logic for this
-                onImageSave={() => ({})}
+                onImageSave={onImageSave}
                 placeholder="Upload Item Image"
+                onImageChanged={setIsImageChanged}
               />
             </Grid>
             <Grid item md={9}>
@@ -232,7 +242,10 @@ export const ApprovedItemForm: React.FC<
           </Grid>
         </Grid>
       </Grid>
-      <SharedFormButtons onCancel={onCancel} />
+      <SharedFormButtons
+        onCancel={onCancel}
+        saveButtonDisabled={saveDisabled}
+      />
     </form>
   );
 };
