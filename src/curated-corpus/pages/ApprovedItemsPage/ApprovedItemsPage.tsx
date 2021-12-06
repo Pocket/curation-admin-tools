@@ -13,7 +13,7 @@ import {
 } from '../../api/curated-corpus-api/generatedTypes';
 import { HandleApiResponse } from '../../../_shared/components';
 import {
-  ApprovedItemListCard,
+  ApprovedItemCardWrapper,
   ApprovedItemSearchForm,
   NextPrevPagination,
   RejectItemModal,
@@ -331,7 +331,7 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
                   md={3}
                   key={`grid-${edge.node.externalId}`}
                 >
-                  <ApprovedItemListCard
+                  <ApprovedItemCardWrapper
                     key={edge.node.externalId}
                     item={edge.node}
                     onSchedule={() => {

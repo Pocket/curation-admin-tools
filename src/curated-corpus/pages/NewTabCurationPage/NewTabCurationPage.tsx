@@ -3,7 +3,7 @@ import { DateTime } from 'luxon';
 import { Box, Grid, Hidden, Typography } from '@material-ui/core';
 import { HandleApiResponse } from '../../../_shared/components';
 import {
-  MiniNewTabScheduleList,
+  NewTabGroupedList,
   ProspectListCard,
   RejectItemModal,
 } from '../../components';
@@ -12,7 +12,10 @@ import {
   Prospect,
   useGetProspectsQuery,
 } from '../../api/prospect-api/generatedTypes';
-import { useGetScheduledItemsQuery } from '../../api/curated-corpus-api/generatedTypes';
+import {
+  ScheduledCuratedCorpusItemsResult,
+  useGetScheduledItemsQuery,
+} from '../../api/curated-corpus-api/generatedTypes';
 import { useToggle } from '../../../_shared/hooks';
 
 //TODO: @jpetto, @Herraj refactor line 114 to align with the new ScheduledItemsResult type
@@ -108,13 +111,16 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
                 error={errorScheduled}
               />
             )}
-            {dataScheduled && (
-              <MiniNewTabScheduleList
-                scheduledItems={
-                  dataScheduled.getScheduledCuratedCorpusItems[0].items
-                }
-              />
-            )}
+            {dataScheduled &&
+              dataScheduled.getScheduledCuratedCorpusItems.map(
+                (data: ScheduledCuratedCorpusItemsResult) => (
+                  <NewTabGroupedList
+                    key={data.scheduledDate}
+                    data={data}
+                    isSidebar
+                  />
+                )
+              )}
           </Grid>
         </Hidden>
       </Grid>

@@ -768,6 +768,9 @@ export type GetScheduledItemsQuery = {
   __typename?: 'Query';
   getScheduledCuratedCorpusItems: Array<{
     __typename?: 'ScheduledCuratedCorpusItemsResult';
+    totalCount: number;
+    syndicatedCount: number;
+    scheduledDate: any;
     items: Array<{
       __typename?: 'ScheduledCuratedCorpusItem';
       externalId: string;
@@ -1257,6 +1260,9 @@ export type GetRejectedItemsQueryResult = Apollo.QueryResult<
 export const GetScheduledItemsDocument = gql`
   query getScheduledItems($filters: ScheduledCuratedCorpusItemsFilterInput!) {
     getScheduledCuratedCorpusItems(filters: $filters) {
+      totalCount
+      syndicatedCount
+      scheduledDate
       items {
         externalId
         createdAt

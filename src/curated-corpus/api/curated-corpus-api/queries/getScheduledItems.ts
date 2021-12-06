@@ -4,6 +4,9 @@ import { CuratedItemData } from '../fragments/curatedItemData';
 export const getScheduledItems = gql`
   query getScheduledItems($filters: ScheduledCuratedCorpusItemsFilterInput!) {
     getScheduledCuratedCorpusItems(filters: $filters) {
+      totalCount
+      syndicatedCount
+      scheduledDate
       items {
         externalId
         createdAt
