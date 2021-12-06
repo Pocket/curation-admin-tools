@@ -10,7 +10,7 @@ export const validationSchema = yup
     [RejectionReason.Misinformation]: yup.boolean(),
     [RejectionReason.Other]: yup.boolean(),
   })
-  .test('reasonRequired', '', (obj) => {
+  .test('reason', '', (obj) => {
     // If at least one checkbox was selected, let the form validation pass
     if (
       obj[RejectionReason.Paywall] ||
@@ -26,6 +26,6 @@ export const validationSchema = yup
     return new yup.ValidationError(
       'Please specify at least one rejection reason.',
       null,
-      'reasonRequired'
+      'reason'
     );
   });

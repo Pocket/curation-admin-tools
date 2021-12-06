@@ -8,6 +8,7 @@ import {
   ApprovedCuratedCorpusItemFilter,
   useCreateNewTabFeedScheduledItemMutation,
   useGetApprovedItemsLazyQuery,
+  useRejectApprovedItemMutation,
 } from '../../api/curated-corpus-api/generatedTypes';
 import { HandleApiResponse } from '../../../_shared/components';
 import {
@@ -24,7 +25,7 @@ import { ApprovedItemModal } from '../../components/ApprovedItemModal/ApprovedIt
 export const ApprovedItemsPage: React.FC = (): JSX.Element => {
   // Get the usual API response vars and a helper method to retrieve data
   // that can be used inside hooks.
-  const [getApprovedCuratedCorpusItems, { loading, error, data }] =
+  const [getApprovedCuratedCorpusItems, { loading, error, data, refetch }] =
     useGetApprovedItemsLazyQuery(
       // We need to make sure search results are never served from the cache.
       { fetchPolicy: 'no-cache', notifyOnNetworkStatusChange: true }
@@ -142,6 +143,38 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
     ApprovedCuratedCorpusItem | undefined
   >(undefined);
 
+  // 1. Prepare the "reject curated item" mutation
+  const [rejectCuratedItem] = useRejectApprovedItemMutation();
+  // 2. Remove the curated item from the recommendation corpus and place it
+  // into the rejected item list.
+  const onRejectSave = (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ): void => {
+    // Set out all the variables we need to pass to the mutation
+    const variables = {
+      data: {
+        externalId: currentItem?.externalId,
+        reason: values.reason,
+      },
+    };
+
+    // Run the mutation
+    runMutation(
+      rejectCuratedItem,
+      { variables },
+      `Item successfully moved to the rejected corpus.`,
+      () => {
+        toggleRejectModal();
+        formikHelpers.setSubmitting(false);
+      },
+      () => {
+        formikHelpers.setSubmitting(false);
+      },
+      refetch
+    );
+  };
+
   // 1. Prepare the "schedule curated item" mutation
   const [scheduleCuratedItem] = useCreateNewTabFeedScheduledItemMutation();
   // 2. Schedule the curated item when the user saves a scheduling request
@@ -175,9 +208,8 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
 
   const onEditItemSave = (): void => {
     //TODO: @Herraj - Add some mutation logic here. Possibly remove this dependency of drilling down this callback 3 levels deep
-
     //place holder
-    alert('Item Successfully Edited');
+    // alert('Item Successfully Edited');
   };
 
   return (
@@ -204,9 +236,7 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
           <RejectItemModal
             prospect={currentItem}
             isOpen={rejectModalOpen}
-            onSave={() => {
-              // nothing to see here
-            }}
+            onSave={onRejectSave}
             toggleModal={toggleRejectModal}
           />
         </>
