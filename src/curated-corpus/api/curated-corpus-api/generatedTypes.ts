@@ -158,27 +158,6 @@ export type CreateApprovedCuratedCorpusItemInput = {
   url: Scalars['Url'];
 };
 
-/** Input data for creating a Rejected Item. */
-export type CreateRejectedCuratedCorpusItemInput = {
-  /** What language this item is in. This is a two-letter code, for example, 'en' for English. */
-  language?: InputMaybe<Scalars['String']>;
-  /** The GUID of the corresponding Prospect ID. */
-  prospectId: Scalars['ID'];
-  /** The name of the online publication that published this story. */
-  publisher?: InputMaybe<Scalars['String']>;
-  /** A comma-separated list of rejection reasons. */
-  reason: Scalars['String'];
-  /** The title of the Rejected Item. */
-  title?: InputMaybe<Scalars['String']>;
-  /**
-   * A topic this story best fits in.
-   * Temporarily a string value that will be provided by Prospect API, possibly an enum in the future.
-   */
-  topic: Scalars['String'];
-  /** The URL of the Rejected Item. */
-  url: Scalars['Url'];
-};
-
 /** Input data for creating a scheduled entry for an Approved Item on a New Tab Feed. */
 export type CreateScheduledCuratedCorpusItemInput = {
   /** The ID of the Approved Item that needs to be scheduled. */
@@ -207,14 +186,10 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Creates an Approved Item and optionally schedules it to appear on New Tab. */
   createApprovedCuratedCorpusItem: ApprovedCuratedCorpusItem;
-  /** Creates a Rejected Item. */
-  createRejectedCuratedCorpusItem: RejectedCuratedCorpusItem;
   /** Creates a New Tab Scheduled Item. */
   createScheduledCuratedCorpusItem: ScheduledCuratedCorpusItem;
   /** Deletes an item from New Tab Schedule. */
   deleteScheduledCuratedCorpusItem: ScheduledCuratedCorpusItem;
-  /** Rejects an Approved Item: deletes it from the corpus and creates a Rejected Item instead. */
-  rejectApprovedCuratedCorpusItem: ApprovedCuratedCorpusItem;
   /** Updates an Approved Item. */
   updateApprovedCuratedCorpusItem: ApprovedCuratedCorpusItem;
   /** Uploads an image to S3 for an Approved Curated Corpus Item */
@@ -225,20 +200,12 @@ export type MutationCreateApprovedCuratedCorpusItemArgs = {
   data: CreateApprovedCuratedCorpusItemInput;
 };
 
-export type MutationCreateRejectedCuratedCorpusItemArgs = {
-  data: CreateRejectedCuratedCorpusItemInput;
-};
-
 export type MutationCreateScheduledCuratedCorpusItemArgs = {
   data: CreateScheduledCuratedCorpusItemInput;
 };
 
 export type MutationDeleteScheduledCuratedCorpusItemArgs = {
   data: DeleteScheduledCuratedCorpusItemInput;
-};
-
-export type MutationRejectApprovedCuratedCorpusItemArgs = {
-  data: RejectApprovedCuratedCorpusItemInput;
 };
 
 export type MutationUpdateApprovedCuratedCorpusItemArgs = {
@@ -332,14 +299,6 @@ export type QueryGetRejectedCuratedCorpusItemsArgs = {
 
 export type QueryGetScheduledCuratedCorpusItemsArgs = {
   filters: ScheduledCuratedCorpusItemsFilterInput;
-};
-
-/** Input data for rejecting an Approved Item. */
-export type RejectApprovedCuratedCorpusItemInput = {
-  /** Approved Item ID. */
-  externalId: Scalars['ID'];
-  /** A comma-separated list of rejection reasons. */
-  reason: Scalars['String'];
 };
 
 /** A prospective story that has been rejected by the curators. */
@@ -593,46 +552,6 @@ export type CreateNewTabFeedScheduledItemMutation = {
   };
 };
 
-export type UpdateApprovedCuratedCorpusItemMutationVariables = Exact<{
-  externalId: Scalars['ID'];
-  prospectId: Scalars['ID'];
-  url: Scalars['Url'];
-  title: Scalars['String'];
-  excerpt: Scalars['String'];
-  status: CuratedStatus;
-  language: Scalars['String'];
-  publisher: Scalars['String'];
-  imageUrl: Scalars['Url'];
-  topic: Scalars['String'];
-  isCollection: Scalars['Boolean'];
-  isShortLived: Scalars['Boolean'];
-  isSyndicated: Scalars['Boolean'];
-}>;
-
-export type UpdateApprovedCuratedCorpusItemMutation = {
-  __typename?: 'Mutation';
-  updateApprovedCuratedCorpusItem: {
-    __typename?: 'ApprovedCuratedCorpusItem';
-    externalId: string;
-    prospectId: string;
-    title: string;
-    language: string;
-    publisher: string;
-    url: any;
-    imageUrl: any;
-    excerpt: string;
-    status: CuratedStatus;
-    topic: string;
-    isCollection: boolean;
-    isShortLived: boolean;
-    isSyndicated: boolean;
-    createdBy: string;
-    createdAt: number;
-    updatedBy?: string | null | undefined;
-    updatedAt: number;
-  };
-};
-
 export type UploadApprovedCuratedCorpusItemImageMutationVariables = Exact<{
   image: Scalars['Upload'];
 }>;
@@ -872,100 +791,6 @@ export type CreateNewTabFeedScheduledItemMutationOptions =
   Apollo.BaseMutationOptions<
     CreateNewTabFeedScheduledItemMutation,
     CreateNewTabFeedScheduledItemMutationVariables
-  >;
-export const UpdateApprovedCuratedCorpusItemDocument = gql`
-  mutation updateApprovedCuratedCorpusItem(
-    $externalId: ID!
-    $prospectId: ID!
-    $url: Url!
-    $title: String!
-    $excerpt: String!
-    $status: CuratedStatus!
-    $language: String!
-    $publisher: String!
-    $imageUrl: Url!
-    $topic: String!
-    $isCollection: Boolean!
-    $isShortLived: Boolean!
-    $isSyndicated: Boolean!
-  ) {
-    updateApprovedCuratedCorpusItem(
-      data: {
-        externalId: $externalId
-        prospectId: $prospectId
-        url: $url
-        title: $title
-        excerpt: $excerpt
-        status: $status
-        language: $language
-        publisher: $publisher
-        imageUrl: $imageUrl
-        topic: $topic
-        isCollection: $isCollection
-        isShortLived: $isShortLived
-        isSyndicated: $isSyndicated
-      }
-    ) {
-      ...CuratedItemData
-    }
-  }
-  ${CuratedItemDataFragmentDoc}
-`;
-export type UpdateApprovedCuratedCorpusItemMutationFn = Apollo.MutationFunction<
-  UpdateApprovedCuratedCorpusItemMutation,
-  UpdateApprovedCuratedCorpusItemMutationVariables
->;
-
-/**
- * __useUpdateApprovedCuratedCorpusItemMutation__
- *
- * To run a mutation, you first call `useUpdateApprovedCuratedCorpusItemMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateApprovedCuratedCorpusItemMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateApprovedCuratedCorpusItemMutation, { data, loading, error }] = useUpdateApprovedCuratedCorpusItemMutation({
- *   variables: {
- *      externalId: // value for 'externalId'
- *      prospectId: // value for 'prospectId'
- *      url: // value for 'url'
- *      title: // value for 'title'
- *      excerpt: // value for 'excerpt'
- *      status: // value for 'status'
- *      language: // value for 'language'
- *      publisher: // value for 'publisher'
- *      imageUrl: // value for 'imageUrl'
- *      topic: // value for 'topic'
- *      isCollection: // value for 'isCollection'
- *      isShortLived: // value for 'isShortLived'
- *      isSyndicated: // value for 'isSyndicated'
- *   },
- * });
- */
-export function useUpdateApprovedCuratedCorpusItemMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    UpdateApprovedCuratedCorpusItemMutation,
-    UpdateApprovedCuratedCorpusItemMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    UpdateApprovedCuratedCorpusItemMutation,
-    UpdateApprovedCuratedCorpusItemMutationVariables
-  >(UpdateApprovedCuratedCorpusItemDocument, options);
-}
-export type UpdateApprovedCuratedCorpusItemMutationHookResult = ReturnType<
-  typeof useUpdateApprovedCuratedCorpusItemMutation
->;
-export type UpdateApprovedCuratedCorpusItemMutationResult =
-  Apollo.MutationResult<UpdateApprovedCuratedCorpusItemMutation>;
-export type UpdateApprovedCuratedCorpusItemMutationOptions =
-  Apollo.BaseMutationOptions<
-    UpdateApprovedCuratedCorpusItemMutation,
-    UpdateApprovedCuratedCorpusItemMutationVariables
   >;
 export const UploadApprovedCuratedCorpusItemImageDocument = gql`
   mutation uploadApprovedCuratedCorpusItemImage($image: Upload!) {

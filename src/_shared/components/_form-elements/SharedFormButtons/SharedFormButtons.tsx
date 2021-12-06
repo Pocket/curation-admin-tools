@@ -10,11 +10,6 @@ export interface SharedFormButtonsProps {
   editMode?: boolean;
 
   /**
-   * Optional prop to disable the save button on a form/on this component
-   */
-  saveButtonDisabled?: boolean;
-
-  /**
    * What to do if the user clicks on the Cancel button
    */
   onCancel?: () => void;
@@ -30,23 +25,13 @@ export interface SharedFormButtonsProps {
 export const SharedFormButtons: React.FC<SharedFormButtonsProps> = (
   props
 ): JSX.Element => {
-  const {
-    editMode = true,
-    saveButtonDisabled = false,
-    onCancel,
-    onSave,
-  } = props;
+  const { editMode = true, onCancel, onSave } = props;
 
   return (
     <>
       <Box display="flex" justifyContent="center">
         <Box p={1}>
-          <Button
-            buttonType="positive"
-            type="submit"
-            onClick={onSave}
-            disabled={saveButtonDisabled}
-          >
+          <Button buttonType="positive" type="submit" onClick={onSave}>
             Save
           </Button>
         </Box>

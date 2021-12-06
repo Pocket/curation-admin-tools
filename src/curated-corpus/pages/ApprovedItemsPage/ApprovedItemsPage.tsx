@@ -8,7 +8,6 @@ import {
   ApprovedCuratedCorpusItemFilter,
   useCreateNewTabFeedScheduledItemMutation,
   useGetApprovedItemsLazyQuery,
-  useUpdateApprovedCuratedCorpusItemMutation,
 } from '../../api/curated-corpus-api/generatedTypes';
 import { HandleApiResponse } from '../../../_shared/components';
 import {
@@ -44,11 +43,6 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
   const [before, setBefore] = useState<string | null | undefined>(undefined);
   const [after, setAfter] = useState<string | null | undefined>(undefined);
 
-  // State variable to keep track of if an item has been edited
-  // This is used as a dependency in the useEffect below to fetch
-  // update the items on the page with newly edited item
-  const [hasEdited, setHasEdited] = useState<boolean>(false);
-
   // On the initial page load, load most recently added Curated Items -
   // the first page of results, no filters applied.
   useEffect(() => {
@@ -57,8 +51,7 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
         pagination: { first: config.pagination.curatedItemsPerPage },
       },
     });
-    setHasEdited(false);
-  }, [hasEdited]);
+  }, []);
 
   // Set the cursors once data is returned by the API.
   useEffect(() => {
@@ -180,66 +173,11 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
     );
   };
 
-  // Mutation for updating an approved item
-  const [updateApprovedItem] = useUpdateApprovedCuratedCorpusItemMutation();
+  const onEditItemSave = (): void => {
+    //TODO: @Herraj - Add some mutation logic here. Possibly remove this dependency of drilling down this callback 3 levels deep
 
-  /**
-   * Executed on form submission
-   */
-  const onEditItemSave = (
-    values: FormikValues,
-    formikHelpers: FormikHelpers<any>
-  ): void => {
-    // Mapping these values to match the format that mutation/DB accepts
-    const languageCode: string = values.language === 'English' ? 'en' : 'de';
-    const curationStatus: string = values.curationStatus.toUpperCase();
-    const topic: string = values.topic.toUpperCase();
-
-    const variables = {
-      externalId: currentItem?.externalId,
-      prospectId: currentItem?.prospectId,
-      url: values.url,
-      title: values.title,
-      excerpt: values.excerpt,
-      status: curationStatus,
-      language: languageCode,
-      publisher: values.publisher,
-      imageUrl: currentItem?.imageUrl,
-      topic: topic,
-      isCollection: values.collection,
-      isShortLived: values.shortLived,
-      isSyndicated: values.syndicated,
-    };
-
-    // Executed the mutation to update the approved item
-    runMutation(
-      updateApprovedItem,
-      { variables },
-      `Approved item successfully updated`,
-      () => {
-        toggleEditModal();
-        setHasEdited(true);
-        formikHelpers.setSubmitting(false);
-      },
-      () => {
-        formikHelpers.setSubmitting(false);
-      }
-    );
-  };
-
-  // This function is executed by the ImageUpload component
-  // after it uploads an image to S3, it runs the mutation to
-  // update the current item's ImageUrl
-  const onApprovedItemImageSave = (url: string): void => {
-    // update the approved item with new image url
-    const variables = { ...currentItem, ImageUrl: url };
-
-    // Run the mutation to update item with new image url
-    runMutation(updateApprovedItem, { variables });
-
-    if (currentItem) {
-      setCurrentItem({ ...currentItem, imageUrl: url });
-    }
+    //place holder
+    alert('Item Successfully Edited');
   };
 
   return (
@@ -262,7 +200,6 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
             isOpen={editModalOpen}
             onSave={onEditItemSave}
             toggleModal={toggleEditModal}
-            onImageSave={onApprovedItemImageSave}
           />
           <RejectItemModal
             prospect={currentItem}

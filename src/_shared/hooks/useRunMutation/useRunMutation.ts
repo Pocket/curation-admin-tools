@@ -12,7 +12,7 @@ export const useRunMutation = () => {
   const runMutation = (
     mutateFunction: any,
     options: any,
-    message?: string,
+    message: string,
     successCallback?: (data?: any) => void,
     errorCallback?: () => void,
     refetch?: any
@@ -25,7 +25,7 @@ export const useRunMutation = () => {
         }
 
         // let the user know all is well...
-        message && showNotification(message, 'success');
+        showNotification(message, 'success');
 
         // execute any additional actions, i.e. hiding the edit form
         // or transitioning to another page
