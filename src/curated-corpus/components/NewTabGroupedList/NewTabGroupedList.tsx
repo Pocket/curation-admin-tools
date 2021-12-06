@@ -2,22 +2,22 @@ import React from 'react';
 import { DateTime } from 'luxon';
 import { Grid, Typography } from '@material-ui/core';
 import { MiniNewTabScheduleCard, ScheduledItemCardWrapper } from '../';
-import { ScheduledCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
+import {
+  ScheduledCuratedCorpusItem,
+  ScheduledCuratedCorpusItemsResult,
+} from '../../api/curated-corpus-api/generatedTypes';
 import { useStyles } from './NewTabGroupedList.styles';
 
 interface NewTabGroupedListProps {
-  /**
-   * The date the items in the list are scheduled for. Format: YYYY-MM-DD
-   */
-  scheduledDate: string;
   /**
    * Which heading/card component to use to display the list
    */
   isSidebar?: boolean;
   /**
-   * A list of Scheduled items to display.
+   * A list of Scheduled items to display with accompanying data
+   * such as the scheduled date.
    */
-  scheduledItems: ScheduledCuratedCorpusItem[];
+  data: ScheduledCuratedCorpusItemsResult;
 }
 
 /**
@@ -32,17 +32,15 @@ export const NewTabGroupedList: React.FC<NewTabGroupedListProps> = (
   props
 ): JSX.Element => {
   const classes = useStyles();
-  const { scheduledDate, isSidebar = false, scheduledItems } = props;
+  const { isSidebar = false, data } = props;
 
-  const numberOfStories = scheduledItems.length;
-
-  // TODO: update second option to full-page component when implementing
-  //  the same list on the New Tab page
+  // Use a different component depending on whether this list is snown in a sidebar
+  // or on the Schedule page
   const ScheduleCard = isSidebar
     ? MiniNewTabScheduleCard
     : ScheduledItemCardWrapper;
 
-  const displayDate = DateTime.fromFormat(scheduledDate, 'yyyy-MM-dd')
+  const displayDate = DateTime.fromFormat(data.scheduledDate, 'yyyy-MM-dd')
     .setLocale('en')
     .toLocaleString(DateTime.DATE_FULL);
 
@@ -53,11 +51,10 @@ export const NewTabGroupedList: React.FC<NewTabGroupedListProps> = (
           className={isSidebar ? classes.compact : classes.large}
           variant={isSidebar ? 'h4' : 'h2'}
         >
-          {displayDate} ({numberOfStories}{' '}
-          {numberOfStories === 1 ? 'story' : 'stories'})
+          {displayDate} ({data.syndicatedCount}/{data.totalCount} syndicated)
         </Typography>
       </Grid>
-      {scheduledItems.map((item) => {
+      {data.items.map((item: ScheduledCuratedCorpusItem) => {
         return <ScheduleCard key={item.externalId} item={item} />;
       })}
     </>

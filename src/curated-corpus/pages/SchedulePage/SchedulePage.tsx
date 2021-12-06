@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { Box, Grid, Typography } from '@material-ui/core';
 import {
   ScheduledCuratedCorpusItemsFilterInput,
+  ScheduledCuratedCorpusItemsResult,
   useGetScheduledItemsQuery,
 } from '../../api/curated-corpus-api/generatedTypes';
 import { DateTime } from 'luxon';
 import { HandleApiResponse } from '../../../_shared/components';
-import { LoadExtraButton, MiniNewTabScheduleList } from '../../components';
+import { LoadExtraButton, NewTabGroupedList } from '../../components';
 import { ApolloError } from '@apollo/client';
 import { useNotifications } from '../../../_shared/hooks';
 
@@ -91,20 +92,21 @@ export const SchedulePage: React.FC = (): JSX.Element => {
             />
           )}
 
-          {data && (
-            <Grid
-              container
-              direction="row"
-              alignItems="stretch"
-              justifyContent="flex-start"
-              spacing={3}
-            >
-              <MiniNewTabScheduleList
-                isSidebar={false}
-                scheduledItems={data.getScheduledCuratedCorpusItems.items}
-              />
-            </Grid>
-          )}
+          {data &&
+            data.getScheduledCuratedCorpusItems.map(
+              (data: ScheduledCuratedCorpusItemsResult) => (
+                <Grid
+                  container
+                  direction="row"
+                  alignItems="stretch"
+                  justifyContent="flex-start"
+                  spacing={3}
+                  key={data.scheduledDate}
+                >
+                  <NewTabGroupedList key={data.scheduledDate} data={data} />
+                </Grid>
+              )
+            )}
 
           {data && (
             <LoadExtraButton

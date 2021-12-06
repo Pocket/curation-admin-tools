@@ -3,7 +3,6 @@ export { ApprovedItemListCard } from './ApprovedItemListCard/ApprovedItemListCar
 export { ApprovedItemSearchForm } from './ApprovedItemSearchForm/ApprovedItemSearchForm';
 export { LoadExtraButton } from './LoadExtraButton/LoadExtraButton';
 export { MiniNewTabScheduleCard } from './MiniNewTabScheduleCard/MiniNewTabScheduleCard';
-export { MiniNewTabScheduleList } from './MiniNewTabScheduleList/MiniNewTabScheduleList';
 export { NewTabGroupedList } from './NewTabGroupedList/NewTabGroupedList';
 export { NextPrevPagination } from './NextPrevPagination/NextPrevPagination';
 export { ProspectListCard } from './ProspectListCard/ProspectListCard';

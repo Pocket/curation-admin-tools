@@ -158,6 +158,27 @@ export type CreateApprovedCuratedCorpusItemInput = {
   url: Scalars['Url'];
 };
 
+/** Input data for creating a Rejected Item. */
+export type CreateRejectedCuratedCorpusItemInput = {
+  /** What language this item is in. This is a two-letter code, for example, 'en' for English. */
+  language?: InputMaybe<Scalars['String']>;
+  /** The GUID of the corresponding Prospect ID. */
+  prospectId: Scalars['ID'];
+  /** The name of the online publication that published this story. */
+  publisher?: InputMaybe<Scalars['String']>;
+  /** A comma-separated list of rejection reasons. */
+  reason: Scalars['String'];
+  /** The title of the Rejected Item. */
+  title?: InputMaybe<Scalars['String']>;
+  /**
+   * A topic this story best fits in.
+   * Temporarily a string value that will be provided by Prospect API, possibly an enum in the future.
+   */
+  topic: Scalars['String'];
+  /** The URL of the Rejected Item. */
+  url: Scalars['Url'];
+};
+
 /** Input data for creating a scheduled entry for an Approved Item on a New Tab Feed. */
 export type CreateScheduledCuratedCorpusItemInput = {
   /** The ID of the Approved Item that needs to be scheduled. */
@@ -186,10 +207,14 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Creates an Approved Item and optionally schedules it to appear on New Tab. */
   createApprovedCuratedCorpusItem: ApprovedCuratedCorpusItem;
+  /** Creates a Rejected Item. */
+  createRejectedCuratedCorpusItem: RejectedCuratedCorpusItem;
   /** Creates a New Tab Scheduled Item. */
   createScheduledCuratedCorpusItem: ScheduledCuratedCorpusItem;
   /** Deletes an item from New Tab Schedule. */
   deleteScheduledCuratedCorpusItem: ScheduledCuratedCorpusItem;
+  /** Rejects an Approved Item: deletes it from the corpus and creates a Rejected Item instead. */
+  rejectApprovedCuratedCorpusItem: ApprovedCuratedCorpusItem;
   /** Updates an Approved Item. */
   updateApprovedCuratedCorpusItem: ApprovedCuratedCorpusItem;
   /** Uploads an image to S3 for an Approved Curated Corpus Item */
@@ -200,12 +225,20 @@ export type MutationCreateApprovedCuratedCorpusItemArgs = {
   data: CreateApprovedCuratedCorpusItemInput;
 };
 
+export type MutationCreateRejectedCuratedCorpusItemArgs = {
+  data: CreateRejectedCuratedCorpusItemInput;
+};
+
 export type MutationCreateScheduledCuratedCorpusItemArgs = {
   data: CreateScheduledCuratedCorpusItemInput;
 };
 
 export type MutationDeleteScheduledCuratedCorpusItemArgs = {
   data: DeleteScheduledCuratedCorpusItemInput;
+};
+
+export type MutationRejectApprovedCuratedCorpusItemArgs = {
+  data: RejectApprovedCuratedCorpusItemInput;
 };
 
 export type MutationUpdateApprovedCuratedCorpusItemArgs = {
@@ -284,7 +317,7 @@ export type Query = {
   /** Retrieves a paginated, filterable list of RejectedCuratedCorpusItems. */
   getRejectedCuratedCorpusItems: RejectedCuratedCorpusItemConnection;
   /** Retrieves a list of Approved Items that are scheduled to appear on New Tab */
-  getScheduledCuratedCorpusItems: ScheduledCuratedCorpusItemsResult;
+  getScheduledCuratedCorpusItems: Array<ScheduledCuratedCorpusItemsResult>;
 };
 
 export type QueryGetApprovedCuratedCorpusItemsArgs = {
@@ -299,6 +332,14 @@ export type QueryGetRejectedCuratedCorpusItemsArgs = {
 
 export type QueryGetScheduledCuratedCorpusItemsArgs = {
   filters: ScheduledCuratedCorpusItemsFilterInput;
+};
+
+/** Input data for rejecting an Approved Item. */
+export type RejectApprovedCuratedCorpusItemInput = {
+  /** Approved Item ID. */
+  externalId: Scalars['ID'];
+  /** A comma-separated list of rejection reasons. */
+  reason: Scalars['String'];
 };
 
 /** A prospective story that has been rejected by the curators. */
@@ -417,6 +458,12 @@ export type ScheduledCuratedCorpusItemsResult = {
   __typename?: 'ScheduledCuratedCorpusItemsResult';
   /** An array of items for a given New Tab Feed */
   items: Array<ScheduledCuratedCorpusItem>;
+  /** The date items are scheduled for, in YYYY-MM-DD format. */
+  scheduledDate: Scalars['Date'];
+  /** The number of syndicated articles for the scheduled date. */
+  syndicatedCount: Scalars['Int'];
+  /** The total number of items for the scheduled date. */
+  totalCount: Scalars['Int'];
 };
 
 /**
@@ -651,8 +698,11 @@ export type GetScheduledItemsQueryVariables = Exact<{
 
 export type GetScheduledItemsQuery = {
   __typename?: 'Query';
-  getScheduledCuratedCorpusItems: {
+  getScheduledCuratedCorpusItems: Array<{
     __typename?: 'ScheduledCuratedCorpusItemsResult';
+    totalCount: number;
+    syndicatedCount: number;
+    scheduledDate: any;
     items: Array<{
       __typename?: 'ScheduledCuratedCorpusItem';
       externalId: string;
@@ -682,7 +732,7 @@ export type GetScheduledItemsQuery = {
         updatedAt: number;
       };
     }>;
-  };
+  }>;
 };
 
 export const CuratedItemDataFragmentDoc = gql`
@@ -997,6 +1047,9 @@ export type GetRejectedItemsQueryResult = Apollo.QueryResult<
 export const GetScheduledItemsDocument = gql`
   query getScheduledItems($filters: ScheduledCuratedCorpusItemsFilterInput!) {
     getScheduledCuratedCorpusItems(filters: $filters) {
+      totalCount
+      syndicatedCount
+      scheduledDate
       items {
         externalId
         createdAt
