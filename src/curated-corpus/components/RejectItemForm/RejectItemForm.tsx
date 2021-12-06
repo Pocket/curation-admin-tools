@@ -38,13 +38,23 @@ export const RejectItemForm: React.FC<
       [RejectionReason.TimeSensitive]: false,
       [RejectionReason.Misinformation]: false,
       [RejectionReason.Other]: false,
-      reasonRequired: '',
+      reason: '',
     },
     validateOnBlur: false,
     validateOnChange: false,
     validationSchema,
     onSubmit: (values, formikHelpers) => {
-      // Do something here, but not just yet
+      // Populate the 'reason' field value with a comma-separated list
+      // of rejection reasons.
+      const rejectionReasons: string[] = [];
+      for (const [key, value] of Object.entries(values)) {
+        if (value === true) {
+          rejectionReasons.push(key);
+        }
+      }
+      values.reason = rejectionReasons.join(',');
+
+      // Send the values along to the parent function call that will run the mutation
       onSubmit(values, formikHelpers);
     },
   });
@@ -127,8 +137,8 @@ export const RejectItemForm: React.FC<
         </Grid>
       </Grid>
       <Box mb={2}>
-        {formik.errors && formik.errors.reasonRequired && (
-          <FormHelperText error>{formik.errors.reasonRequired}</FormHelperText>
+        {formik.errors && formik.errors.reason && (
+          <FormHelperText error>{formik.errors.reason}</FormHelperText>
         )}
       </Box>
       <SharedFormButtons onCancel={onCancel} />
