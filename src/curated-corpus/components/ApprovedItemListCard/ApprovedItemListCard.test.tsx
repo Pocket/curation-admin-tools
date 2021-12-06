@@ -37,11 +37,7 @@ describe('The ApprovedItemListCard component', () => {
   it('shows basic approved item information', () => {
     render(
       <MemoryRouter>
-        <ApprovedItemListCard
-          item={item}
-          onSchedule={onSchedule}
-          onReject={onReject}
-        />
+        <ApprovedItemListCard item={item} />
       </MemoryRouter>
     );
 
@@ -62,11 +58,7 @@ describe('The ApprovedItemListCard component', () => {
   it('shows curated status correctly', () => {
     render(
       <MemoryRouter>
-        <ApprovedItemListCard
-          item={item}
-          onSchedule={onSchedule}
-          onReject={onReject}
-        />
+        <ApprovedItemListCard item={item} />
       </MemoryRouter>
     );
 
@@ -84,11 +76,7 @@ describe('The ApprovedItemListCard component', () => {
   it('shows language correctly', () => {
     render(
       <MemoryRouter>
-        <ApprovedItemListCard
-          item={item}
-          onSchedule={onSchedule}
-          onReject={onReject}
-        />
+        <ApprovedItemListCard item={item} />
       </MemoryRouter>
     );
 
@@ -97,11 +85,7 @@ describe('The ApprovedItemListCard component', () => {
   it('should render approved item card with createdBy', () => {
     render(
       <MemoryRouter>
-        <ApprovedItemListCard
-          item={item}
-          onSchedule={onSchedule}
-          onReject={onReject}
-        />
+        <ApprovedItemListCard item={item} />
       </MemoryRouter>
     );
 
@@ -111,40 +95,41 @@ describe('The ApprovedItemListCard component', () => {
   it('should render approved item card with excerpt', () => {
     render(
       <MemoryRouter>
-        <ApprovedItemListCard
-          item={item}
-          onSchedule={onSchedule}
-          onReject={onReject}
-        />
+        <ApprovedItemListCard item={item} />
       </MemoryRouter>
     );
 
     expect(screen.getByText(item.excerpt)).toBeInTheDocument();
   });
 
-  it('should render approved item card with the action buttons', () => {
+  it('should not render any extra flags if item does not have these props', () => {
     render(
       <MemoryRouter>
-        <ApprovedItemListCard
-          item={item}
-          onSchedule={onSchedule}
-          onReject={onReject}
-        />
+        <ApprovedItemListCard item={item} />
       </MemoryRouter>
     );
 
-    const scheduleButton = screen.getByRole('button', {
-      name: /Schedule/i,
-    });
-    const rejectButton = screen.getByRole('button', {
-      name: /Reject/i,
-    });
-    const editButton = screen.getByRole('button', {
-      name: /Edit/i,
-    });
+    expect(screen.queryByText(/collection/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/syndicated/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/short lived/i)).not.toBeInTheDocument();
+  });
 
-    expect(scheduleButton).toBeInTheDocument();
-    expect(rejectButton).toBeInTheDocument();
-    expect(editButton).toBeInTheDocument();
+  it('should render any extra flags if item has these props set', () => {
+    item = {
+      ...item,
+      isCollection: true,
+      isShortLived: true,
+      isSyndicated: true,
+    };
+
+    render(
+      <MemoryRouter>
+        <ApprovedItemListCard item={item} />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText(/collection/i)).toBeInTheDocument();
+    expect(screen.getByText(/syndicated/i)).toBeInTheDocument();
+    expect(screen.getByText(/short-lived/i)).toBeInTheDocument();
   });
 });

@@ -318,7 +318,7 @@ export type Query = {
   /** Retrieves a paginated, filterable list of RejectedCuratedCorpusItems. */
   getRejectedCuratedCorpusItems: RejectedCuratedCorpusItemConnection;
   /** Retrieves a list of Approved Items that are scheduled to appear on New Tab */
-  getScheduledCuratedCorpusItems: ScheduledCuratedCorpusItemsResult;
+  getScheduledCuratedCorpusItems: Array<ScheduledCuratedCorpusItemsResult>;
 };
 
 export type QueryGetApprovedCuratedCorpusItemsArgs = {
@@ -459,6 +459,12 @@ export type ScheduledCuratedCorpusItemsResult = {
   __typename?: 'ScheduledCuratedCorpusItemsResult';
   /** An array of items for a given New Tab Feed */
   items: Array<ScheduledCuratedCorpusItem>;
+  /** The date items are scheduled for, in YYYY-MM-DD format. */
+  scheduledDate: Scalars['Date'];
+  /** The number of syndicated articles for the scheduled date. */
+  syndicatedCount: Scalars['Int'];
+  /** The total number of items for the scheduled date. */
+  totalCount: Scalars['Int'];
 };
 
 /**
@@ -721,8 +727,11 @@ export type GetScheduledItemsQueryVariables = Exact<{
 
 export type GetScheduledItemsQuery = {
   __typename?: 'Query';
-  getScheduledCuratedCorpusItems: {
+  getScheduledCuratedCorpusItems: Array<{
     __typename?: 'ScheduledCuratedCorpusItemsResult';
+    totalCount: number;
+    syndicatedCount: number;
+    scheduledDate: any;
     items: Array<{
       __typename?: 'ScheduledCuratedCorpusItem';
       externalId: string;
@@ -752,7 +761,7 @@ export type GetScheduledItemsQuery = {
         updatedAt: number;
       };
     }>;
-  };
+  }>;
 };
 
 export const CuratedItemDataFragmentDoc = gql`
@@ -1118,6 +1127,9 @@ export type GetRejectedItemsQueryResult = Apollo.QueryResult<
 export const GetScheduledItemsDocument = gql`
   query getScheduledItems($filters: ScheduledCuratedCorpusItemsFilterInput!) {
     getScheduledCuratedCorpusItems(filters: $filters) {
+      totalCount
+      syndicatedCount
+      scheduledDate
       items {
         externalId
         createdAt
