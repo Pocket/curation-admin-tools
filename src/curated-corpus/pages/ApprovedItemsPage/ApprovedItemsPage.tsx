@@ -45,11 +45,6 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
   const [before, setBefore] = useState<string | null | undefined>(undefined);
   const [after, setAfter] = useState<string | null | undefined>(undefined);
 
-  // State variable to keep track of if an item has been edited
-  // This is used as a dependency in the useEffect below to fetch
-  // update the items on the page with newly edited item
-  const [hasEdited, setHasEdited] = useState<boolean>(false);
-
   // On the initial page load, load most recently added Curated Items -
   // the first page of results, no filters applied.
   useEffect(() => {
@@ -58,8 +53,7 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
         pagination: { first: config.pagination.curatedItemsPerPage },
       },
     });
-    setHasEdited(false);
-  }, [hasEdited]);
+  }, []);
 
   // Set the cursors once data is returned by the API.
   useEffect(() => {
@@ -147,7 +141,7 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
    * Set the current Approved Item to be worked on (e.g., scheduled for New Tab).
    */
   const [currentItem, setCurrentItem] = useState<
-    ApprovedCuratedCorpusItem | undefined
+    Omit<ApprovedCuratedCorpusItem, '__typename'> | undefined
   >(undefined);
 
   // 1. Prepare the "reject curated item" mutation
@@ -229,43 +223,66 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
     const topic: string = values.topic.toUpperCase();
 
     const variables = {
-      externalId: currentItem?.externalId,
-      prospectId: currentItem?.prospectId,
-      url: values.url,
-      title: values.title,
-      excerpt: values.excerpt,
-      status: curationStatus,
-      language: languageCode,
-      publisher: values.publisher,
-      imageUrl: currentItem?.imageUrl,
-      topic: topic,
-      isCollection: values.collection,
-      isShortLived: values.shortLived,
-      isSyndicated: values.syndicated,
+      data: {
+        externalId: currentItem?.externalId,
+        prospectId: currentItem?.prospectId,
+        url: values.url,
+        title: values.title,
+        excerpt: values.excerpt,
+        status: curationStatus,
+        language: languageCode,
+        publisher: values.publisher,
+        imageUrl: currentItem?.imageUrl,
+        topic: topic,
+        isCollection: values.collection,
+        isShortLived: values.shortLived,
+        isSyndicated: values.syndicated,
+      },
     };
 
     // Executed the mutation to update the approved item
     runMutation(
       updateApprovedItem,
       { variables },
-      `Approved item successfully updated`,
+      `Curated item "${currentItem?.title.substring(
+        0,
+        50
+      )}..." successfully updated`,
       () => {
         toggleEditModal();
-        setHasEdited(true);
         formikHelpers.setSubmitting(false);
       },
       () => {
         formikHelpers.setSubmitting(false);
-      }
+      },
+      refetch
     );
   };
 
-  // This function is executed by the ImageUpload component
-  // after it uploads an image to S3, it runs the mutation to
-  // update the current item's ImageUrl
+  /**
+   * This function is executed by the ImageUpload component after it uploads an image to S3,
+   * it runs the mutation to update the current item's ImageUrl
+   */
   const onApprovedItemImageSave = (url: string): void => {
     // update the approved item with new image url
-    const variables = { ...currentItem, ImageUrl: url };
+
+    const variables = {
+      data: {
+        externalId: currentItem?.externalId,
+        prospectId: currentItem?.prospectId,
+        url: currentItem?.url,
+        title: currentItem?.title,
+        excerpt: currentItem?.excerpt,
+        status: currentItem?.status,
+        language: currentItem?.language,
+        publisher: currentItem?.publisher,
+        imageUrl: url,
+        topic: currentItem?.topic,
+        isCollection: currentItem?.isCollection,
+        isShortLived: currentItem?.isShortLived,
+        isSyndicated: currentItem?.isSyndicated,
+      },
+    };
 
     // Run the mutation to update item with new image url
     runMutation(updateApprovedItem, { variables });

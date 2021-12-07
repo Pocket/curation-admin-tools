@@ -18,8 +18,6 @@ import {
 } from '../../api/curated-corpus-api/generatedTypes';
 import { useToggle } from '../../../_shared/hooks';
 
-//TODO: @jpetto, @Herraj refactor line 114 to align with the new ScheduledItemsResult type
-
 export const NewTabCurationPage: React.FC = (): JSX.Element => {
   // TODO: remove hardcoded value when New Tab selector is added to the page
   const newTabGuid = 'EN_US';

@@ -117,6 +117,10 @@ theme.overrides = {
         border: `2px solid ${theme.palette.secondary.dark}`,
       },
     },
+
+    disabled: {
+      border: 'none',
+    },
   },
 
   /* The divider is slightly darker than the default MUI one. */

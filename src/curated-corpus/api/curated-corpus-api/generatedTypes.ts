@@ -628,19 +628,7 @@ export type RejectApprovedItemMutation = {
 };
 
 export type UpdateApprovedCuratedCorpusItemMutationVariables = Exact<{
-  externalId: Scalars['ID'];
-  prospectId: Scalars['ID'];
-  url: Scalars['Url'];
-  title: Scalars['String'];
-  excerpt: Scalars['String'];
-  status: CuratedStatus;
-  language: Scalars['String'];
-  publisher: Scalars['String'];
-  imageUrl: Scalars['Url'];
-  topic: Scalars['String'];
-  isCollection: Scalars['Boolean'];
-  isShortLived: Scalars['Boolean'];
-  isSyndicated: Scalars['Boolean'];
+  data: UpdateApprovedCuratedCorpusItemInput;
 }>;
 
 export type UpdateApprovedCuratedCorpusItemMutation = {
@@ -963,37 +951,9 @@ export type RejectApprovedItemMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const UpdateApprovedCuratedCorpusItemDocument = gql`
   mutation updateApprovedCuratedCorpusItem(
-    $externalId: ID!
-    $prospectId: ID!
-    $url: Url!
-    $title: String!
-    $excerpt: String!
-    $status: CuratedStatus!
-    $language: String!
-    $publisher: String!
-    $imageUrl: Url!
-    $topic: String!
-    $isCollection: Boolean!
-    $isShortLived: Boolean!
-    $isSyndicated: Boolean!
+    $data: UpdateApprovedCuratedCorpusItemInput!
   ) {
-    updateApprovedCuratedCorpusItem(
-      data: {
-        externalId: $externalId
-        prospectId: $prospectId
-        url: $url
-        title: $title
-        excerpt: $excerpt
-        status: $status
-        language: $language
-        publisher: $publisher
-        imageUrl: $imageUrl
-        topic: $topic
-        isCollection: $isCollection
-        isShortLived: $isShortLived
-        isSyndicated: $isSyndicated
-      }
-    ) {
+    updateApprovedCuratedCorpusItem(data: $data) {
       ...CuratedItemData
     }
   }
@@ -1017,19 +977,7 @@ export type UpdateApprovedCuratedCorpusItemMutationFn = Apollo.MutationFunction<
  * @example
  * const [updateApprovedCuratedCorpusItemMutation, { data, loading, error }] = useUpdateApprovedCuratedCorpusItemMutation({
  *   variables: {
- *      externalId: // value for 'externalId'
- *      prospectId: // value for 'prospectId'
- *      url: // value for 'url'
- *      title: // value for 'title'
- *      excerpt: // value for 'excerpt'
- *      status: // value for 'status'
- *      language: // value for 'language'
- *      publisher: // value for 'publisher'
- *      imageUrl: // value for 'imageUrl'
- *      topic: // value for 'topic'
- *      isCollection: // value for 'isCollection'
- *      isShortLived: // value for 'isShortLived'
- *      isSyndicated: // value for 'isSyndicated'
+ *      data: // value for 'data'
  *   },
  * });
  */
