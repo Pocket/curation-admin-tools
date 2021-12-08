@@ -14,12 +14,13 @@ interface ApprovedItemModalProps {
     formikHelpers: FormikHelpers<any>
   ) => void | Promise<any>;
   toggleModal: () => void;
+  onImageSave: (url: string) => void;
 }
 
 export const ApprovedItemModal: React.FC<ApprovedItemModalProps> = (
   props
 ): JSX.Element => {
-  const { approvedItem, isOpen, onSave, toggleModal } = props;
+  const { approvedItem, isOpen, onSave, toggleModal, onImageSave } = props;
 
   return (
     <Modal
@@ -42,6 +43,7 @@ export const ApprovedItemModal: React.FC<ApprovedItemModalProps> = (
             approvedItem={approvedItem}
             onSubmit={onSave}
             onCancel={toggleModal}
+            onImageSave={onImageSave}
           />
         </Grid>
       </Grid>

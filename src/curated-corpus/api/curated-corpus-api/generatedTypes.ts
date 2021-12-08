@@ -1,6 +1,5 @@
-import * as Apollo from '@apollo/client';
 import { gql } from '@apollo/client';
-
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -628,6 +627,34 @@ export type RejectApprovedItemMutation = {
   };
 };
 
+export type UpdateApprovedCuratedCorpusItemMutationVariables = Exact<{
+  data: UpdateApprovedCuratedCorpusItemInput;
+}>;
+
+export type UpdateApprovedCuratedCorpusItemMutation = {
+  __typename?: 'Mutation';
+  updateApprovedCuratedCorpusItem: {
+    __typename?: 'ApprovedCuratedCorpusItem';
+    externalId: string;
+    prospectId: string;
+    title: string;
+    language: string;
+    publisher: string;
+    url: any;
+    imageUrl: any;
+    excerpt: string;
+    status: CuratedStatus;
+    topic: string;
+    isCollection: boolean;
+    isShortLived: boolean;
+    isSyndicated: boolean;
+    createdBy: string;
+    createdAt: number;
+    updatedBy?: string | null | undefined;
+    updatedAt: number;
+  };
+};
+
 export type UploadApprovedCuratedCorpusItemImageMutationVariables = Exact<{
   image: Scalars['Upload'];
 }>;
@@ -922,6 +949,60 @@ export type RejectApprovedItemMutationOptions = Apollo.BaseMutationOptions<
   RejectApprovedItemMutation,
   RejectApprovedItemMutationVariables
 >;
+export const UpdateApprovedCuratedCorpusItemDocument = gql`
+  mutation updateApprovedCuratedCorpusItem(
+    $data: UpdateApprovedCuratedCorpusItemInput!
+  ) {
+    updateApprovedCuratedCorpusItem(data: $data) {
+      ...CuratedItemData
+    }
+  }
+  ${CuratedItemDataFragmentDoc}
+`;
+export type UpdateApprovedCuratedCorpusItemMutationFn = Apollo.MutationFunction<
+  UpdateApprovedCuratedCorpusItemMutation,
+  UpdateApprovedCuratedCorpusItemMutationVariables
+>;
+
+/**
+ * __useUpdateApprovedCuratedCorpusItemMutation__
+ *
+ * To run a mutation, you first call `useUpdateApprovedCuratedCorpusItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateApprovedCuratedCorpusItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateApprovedCuratedCorpusItemMutation, { data, loading, error }] = useUpdateApprovedCuratedCorpusItemMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateApprovedCuratedCorpusItemMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateApprovedCuratedCorpusItemMutation,
+    UpdateApprovedCuratedCorpusItemMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateApprovedCuratedCorpusItemMutation,
+    UpdateApprovedCuratedCorpusItemMutationVariables
+  >(UpdateApprovedCuratedCorpusItemDocument, options);
+}
+export type UpdateApprovedCuratedCorpusItemMutationHookResult = ReturnType<
+  typeof useUpdateApprovedCuratedCorpusItemMutation
+>;
+export type UpdateApprovedCuratedCorpusItemMutationResult =
+  Apollo.MutationResult<UpdateApprovedCuratedCorpusItemMutation>;
+export type UpdateApprovedCuratedCorpusItemMutationOptions =
+  Apollo.BaseMutationOptions<
+    UpdateApprovedCuratedCorpusItemMutation,
+    UpdateApprovedCuratedCorpusItemMutationVariables
+  >;
 export const UploadApprovedCuratedCorpusItemImageDocument = gql`
   mutation uploadApprovedCuratedCorpusItemImage($image: Upload!) {
     uploadApprovedCuratedCorpusItemImage(data: $image) {

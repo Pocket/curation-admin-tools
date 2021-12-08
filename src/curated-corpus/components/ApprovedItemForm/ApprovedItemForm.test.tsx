@@ -14,6 +14,7 @@ describe('The ApprovedItemForm component', () => {
   let item: ApprovedCuratedCorpusItem;
   const onSubmit = jest.fn();
   const onCancel = jest.fn();
+  const onImageSave = jest.fn();
 
   beforeEach(() => {
     item = {
@@ -45,6 +46,7 @@ describe('The ApprovedItemForm component', () => {
             approvedItem={item}
             onSubmit={onSubmit}
             onCancel={onCancel}
+            onImageSave={onImageSave}
           />
         </SnackbarProvider>
       </ApolloProvider>
@@ -99,6 +101,7 @@ describe('The ApprovedItemForm component', () => {
             approvedItem={item}
             onSubmit={onSubmit}
             onCancel={onCancel}
+            onImageSave={onImageSave}
           />
         </SnackbarProvider>
       </ApolloProvider>
@@ -118,6 +121,7 @@ describe('The ApprovedItemForm component', () => {
             approvedItem={item}
             onSubmit={onSubmit}
             onCancel={onCancel}
+            onImageSave={onImageSave}
           />
         </SnackbarProvider>
       </ApolloProvider>
@@ -131,7 +135,7 @@ describe('The ApprovedItemForm component', () => {
     expect(cancelButton).toBeInTheDocument();
   });
 
-  describe('When the form buttons are clicked', () => {
+  describe('When the form fields are edited', () => {
     it('should call the onSave callback for the save button ', async () => {
       render(
         <ApolloProvider client={client}>
@@ -140,13 +144,18 @@ describe('The ApprovedItemForm component', () => {
               approvedItem={item}
               onSubmit={onSubmit}
               onCancel={onCancel}
+              onImageSave={onImageSave}
             />
           </SnackbarProvider>
         </ApolloProvider>
       );
 
-      const saveButton = screen.getByText(/Save/);
+      const title = screen.getByLabelText(/Title/);
+      userEvent.type(title, 'test title');
 
+      const saveButton = screen.getByRole('button', {
+        name: /save/i,
+      });
       await waitFor(() => {
         userEvent.click(saveButton);
       });
@@ -161,16 +170,46 @@ describe('The ApprovedItemForm component', () => {
               approvedItem={item}
               onSubmit={onSubmit}
               onCancel={onCancel}
+              onImageSave={onImageSave}
             />
           </SnackbarProvider>
         </ApolloProvider>
       );
 
-      const cancelButton = screen.getByText(/Cancel/);
+      const title = screen.getByLabelText(/Title/);
+      userEvent.type(title, 'test title');
+
+      const cancelButton = screen.getByRole('button', {
+        name: /cancel/i,
+      });
       await waitFor(() => {
         userEvent.click(cancelButton);
       });
       expect(onCancel).toHaveBeenCalled();
+    });
+  });
+
+  describe('When the form fields are NOT edited', () => {
+    it('should NOT call the onSave callback for the save button ', async () => {
+      render(
+        <ApolloProvider client={client}>
+          <SnackbarProvider maxSnack={3}>
+            <ApprovedItemForm
+              approvedItem={item}
+              onSubmit={onSubmit}
+              onCancel={onCancel}
+              onImageSave={onImageSave}
+            />
+          </SnackbarProvider>
+        </ApolloProvider>
+      );
+
+      const saveButton = screen.getByRole('button', {
+        name: /save/i,
+      });
+
+      expect(saveButton).toBeDisabled();
+      expect(onSubmit).not.toHaveBeenCalled();
     });
   });
 });

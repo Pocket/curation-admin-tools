@@ -53,6 +53,14 @@ interface ImageUploadProps {
    * @param url
    */
   onImageSave: (url: string) => void;
+
+  /**
+   * Called when the image has been changed (successfully uploaded to S3) for an approved item.
+   * This only toggles the boolean state variable in its direct parent ApprovedItemForm
+   * OnImageSave is also doing the same thing but it's being drilled down by 3 levels above
+   * TODO: @Herraj - need to do some refactoring here
+   */
+  onImageChanged?: (value: boolean) => void;
 }
 
 /**
@@ -76,7 +84,7 @@ interface ImageUploadProps {
 
 export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
   const classes = useStyles();
-  const { entity, placeholder, onImageSave } = props;
+  const { entity, placeholder, onImageSave, onImageChanged } = props;
   const { showNotification } = useNotifications();
 
   // These state vars are used to show/hide the file upload modal and progress bar
@@ -145,7 +153,6 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
       variables: { image: imageData?.data },
     })
       .then((data) => {
-        console.table(data);
         setUploadInProgress(false);
 
         if (data.data && data.data.uploadApprovedCuratedCorpusItemImage) {
@@ -154,8 +161,12 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
           setHasImage(true);
           showNotification('Image successfully uploaded to S3', 'success');
 
-          // Pass the URL to the parent component function
+          // This calls the updateApprovedItem mutation to map the new image url
+          // to the current item that is being edited
           onImageSave(data.data.uploadApprovedCuratedCorpusItemImage.url);
+          // This changes the state variable in the direct parent, ApprovedItemForm
+          // to enable/disable the save button on the form
+          onImageChanged && onImageChanged(true);
         }
       })
       .catch((error) => {
