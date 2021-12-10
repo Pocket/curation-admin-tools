@@ -49,6 +49,8 @@ export type Prospect = {
   excerpt?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   imageUrl?: Maybe<Scalars['String']>;
+  isCollection?: Maybe<Scalars['Boolean']>;
+  isSyndicated?: Maybe<Scalars['Boolean']>;
   language?: Maybe<Scalars['String']>;
   newTab: Scalars['String'];
   prospectType: Scalars['String'];
@@ -88,7 +90,7 @@ export type ProspectDataFragment = {
 
 export type GetProspectsQueryVariables = Exact<{
   newTab: Scalars['String'];
-  prospectType?: Maybe<Scalars['String']>;
+  prospectType?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetProspectsQuery = {

@@ -29,6 +29,8 @@ import {
   useUploadApprovedCuratedCorpusItemImageMutation,
 } from '../../api/curated-corpus-api/generatedTypes';
 
+import { Prospect } from '../../api/prospect-api/generatedTypes';
+
 interface ImageUploadProps {
   /**
    * Any entity with a customizable image
@@ -39,7 +41,8 @@ interface ImageUploadProps {
     | CollectionPartner
     | CollectionPartnerAssociation
     | CollectionStory
-    | ApprovedCuratedCorpusItem;
+    | ApprovedCuratedCorpusItem
+    | Prospect;
 
   /**
    * A path to a placeholder image to show if no image is available

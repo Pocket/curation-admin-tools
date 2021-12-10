@@ -6,6 +6,7 @@ import {
   NewTabGroupedList,
   ProspectListCard,
   RejectItemModal,
+  ProspectItemModal,
 } from '../../components';
 import { client } from '../../api/prospect-api/client';
 import {
@@ -59,10 +60,17 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
     undefined
   );
 
+  const [isRecommendation, setIsRecommendation] = useState<boolean>(false);
+
   /**
    * Keep track of whether the "Reject this prospect" modal is open or not.
    */
   const [rejectModalOpen, toggleRejectModal] = useToggle(false);
+
+  /**
+   * Keep track of whether the "Recommend" or "Add to Corpus" modal is open or not.
+   */
+  const [prospectItemOpen, toggleProspectItemModal] = useToggle(false);
 
   // Get a helper function that will execute each mutation, show standard notifications
   // and execute any additional actions in a callback
@@ -110,12 +118,25 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
   return (
     <>
       {currentItem && (
-        <RejectItemModal
-          prospect={currentItem}
-          isOpen={rejectModalOpen}
-          onSave={onRejectSave}
-          toggleModal={toggleRejectModal}
-        />
+        <>
+          <RejectItemModal
+            prospect={currentItem}
+            isOpen={rejectModalOpen}
+            onSave={onRejectSave}
+            toggleModal={toggleRejectModal}
+          />
+
+          <ProspectItemModal
+            prospectItem={currentItem}
+            isRecommendation={isRecommendation}
+            isOpen={prospectItemOpen}
+            onSave={() => {
+              alert('clicked!');
+            }}
+            toggleModal={toggleProspectItemModal}
+            onImageSave={() => ({})}
+          />
+        </>
       )}
 
       <h1>New Tab Curation</h1>
@@ -136,6 +157,16 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
                 <ProspectListCard
                   key={prospect.id}
                   prospect={prospect}
+                  onAddToCorpus={() => {
+                    setCurrentItem(prospect);
+                    toggleProspectItemModal();
+                    setIsRecommendation(false);
+                  }}
+                  onRecommend={() => {
+                    setCurrentItem(prospect);
+                    toggleProspectItemModal();
+                    setIsRecommendation(true);
+                  }}
                   onReject={() => {
                     setCurrentItem(prospect);
                     toggleRejectModal();

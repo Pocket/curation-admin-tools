@@ -13,3 +13,5 @@ export { RejectItemModal } from './RejectItemModal/RejectItemModal';
 export { RejectItemForm } from './RejectItemForm/RejectItemForm';
 export { ScheduleItemForm } from './ScheduleItemForm/ScheduleItemForm';
 export { ScheduleItemModal } from './ScheduleItemModal/ScheduleItemModal';
+export { ApprovedItemModal } from './ApprovedItemModal/ApprovedItemModal';
+export { ProspectItemModal } from './ProspectItemModal/ProspectItemModal';
