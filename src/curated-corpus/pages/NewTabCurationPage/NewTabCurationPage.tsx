@@ -13,10 +13,13 @@ import {
   useGetProspectsQuery,
 } from '../../api/prospect-api/generatedTypes';
 import {
+  RejectProspectMutationVariables,
   ScheduledCuratedCorpusItemsResult,
   useGetScheduledItemsQuery,
+  useRejectProspectMutation,
 } from '../../api/curated-corpus-api/generatedTypes';
-import { useToggle } from '../../../_shared/hooks';
+import { useRunMutation, useToggle } from '../../../_shared/hooks';
+import { FormikHelpers, FormikValues } from 'formik';
 
 export const NewTabCurationPage: React.FC = (): JSX.Element => {
   // TODO: remove hardcoded value when New Tab selector is added to the page
@@ -61,15 +64,56 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
    */
   const [rejectModalOpen, toggleRejectModal] = useToggle(false);
 
+  // Get a helper function that will execute each mutation, show standard notifications
+  // and execute any additional actions in a callback
+  const { runMutation } = useRunMutation();
+
+  // 1. Prepare the "reject prospect" mutation
+  const [rejectProspect] = useRejectProspectMutation();
+  // 2. Add the prospect to the rejected corpus
+  // 3. Additionally, let Prospect API know the prospect has been processed.
+  const onRejectSave = (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ): void => {
+    // Set out all the variables we need to pass to the mutation
+    const variables: RejectProspectMutationVariables = {
+      data: {
+        prospectId: currentItem?.id ?? '', // TODO: sort out types here
+        url: currentItem?.url,
+        title: currentItem?.title,
+        topic: currentItem?.topic ?? '',
+        language: currentItem?.language,
+        publisher: currentItem?.publisher,
+        reason: values.reason,
+      },
+    };
+
+    // Add the prospect to the rejected corpus
+    runMutation(
+      rejectProspect,
+      { variables },
+      `Item successfully added to the rejected corpus.`,
+      () => {
+        toggleRejectModal();
+        formikHelpers.setSubmitting(false);
+      },
+      () => {
+        formikHelpers.setSubmitting(false);
+      }
+    );
+
+    // Mark the prospect as processed in the Prospect API datastore.
+    // TODO: add logic here. Don't forget to connect to Prospect API for this mutation
+  };
+
   return (
     <>
       {currentItem && (
         <RejectItemModal
           prospect={currentItem}
           isOpen={rejectModalOpen}
-          onSave={() => {
-            // nothing to see here
-          }}
+          onSave={onRejectSave}
           toggleModal={toggleRejectModal}
         />
       )}

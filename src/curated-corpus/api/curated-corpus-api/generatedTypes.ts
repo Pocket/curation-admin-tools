@@ -456,6 +456,8 @@ export type ScheduledCuratedCorpusItemsFilterInput = {
 /** The shape of the result returned by the getScheduledCuratedCorpusItems query. */
 export type ScheduledCuratedCorpusItemsResult = {
   __typename?: 'ScheduledCuratedCorpusItemsResult';
+  /** The number of curated items that are collections for the scheduled date. */
+  collectionCount: Scalars['Int'];
   /** An array of items for a given New Tab Feed */
   items: Array<ScheduledCuratedCorpusItem>;
   /** The date items are scheduled for, in YYYY-MM-DD format. */
@@ -627,6 +629,27 @@ export type RejectApprovedItemMutation = {
   };
 };
 
+export type RejectProspectMutationVariables = Exact<{
+  data: CreateRejectedCuratedCorpusItemInput;
+}>;
+
+export type RejectProspectMutation = {
+  __typename?: 'Mutation';
+  createRejectedCuratedCorpusItem: {
+    __typename?: 'RejectedCuratedCorpusItem';
+    externalId: string;
+    prospectId: string;
+    url: any;
+    title: string;
+    topic: string;
+    language: string;
+    publisher: string;
+    reason: string;
+    createdBy: string;
+    createdAt: number;
+  };
+};
+
 export type UpdateApprovedCuratedCorpusItemMutationVariables = Exact<{
   data: UpdateApprovedCuratedCorpusItemInput;
 }>;
@@ -756,8 +779,9 @@ export type GetScheduledItemsQuery = {
   __typename?: 'Query';
   getScheduledCuratedCorpusItems: Array<{
     __typename?: 'ScheduledCuratedCorpusItemsResult';
-    totalCount: number;
+    collectionCount: number;
     syndicatedCount: number;
+    totalCount: number;
     scheduledDate: any;
     items: Array<{
       __typename?: 'ScheduledCuratedCorpusItem';
@@ -948,6 +972,57 @@ export type RejectApprovedItemMutationResult =
 export type RejectApprovedItemMutationOptions = Apollo.BaseMutationOptions<
   RejectApprovedItemMutation,
   RejectApprovedItemMutationVariables
+>;
+export const RejectProspectDocument = gql`
+  mutation rejectProspect($data: CreateRejectedCuratedCorpusItemInput!) {
+    createRejectedCuratedCorpusItem(data: $data) {
+      ...RejectedItemData
+    }
+  }
+  ${RejectedItemDataFragmentDoc}
+`;
+export type RejectProspectMutationFn = Apollo.MutationFunction<
+  RejectProspectMutation,
+  RejectProspectMutationVariables
+>;
+
+/**
+ * __useRejectProspectMutation__
+ *
+ * To run a mutation, you first call `useRejectProspectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRejectProspectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [rejectProspectMutation, { data, loading, error }] = useRejectProspectMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useRejectProspectMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    RejectProspectMutation,
+    RejectProspectMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    RejectProspectMutation,
+    RejectProspectMutationVariables
+  >(RejectProspectDocument, options);
+}
+export type RejectProspectMutationHookResult = ReturnType<
+  typeof useRejectProspectMutation
+>;
+export type RejectProspectMutationResult =
+  Apollo.MutationResult<RejectProspectMutation>;
+export type RejectProspectMutationOptions = Apollo.BaseMutationOptions<
+  RejectProspectMutation,
+  RejectProspectMutationVariables
 >;
 export const UpdateApprovedCuratedCorpusItemDocument = gql`
   mutation updateApprovedCuratedCorpusItem(
@@ -1208,8 +1283,9 @@ export type GetRejectedItemsQueryResult = Apollo.QueryResult<
 export const GetScheduledItemsDocument = gql`
   query getScheduledItems($filters: ScheduledCuratedCorpusItemsFilterInput!) {
     getScheduledCuratedCorpusItems(filters: $filters) {
-      totalCount
+      collectionCount
       syndicatedCount
+      totalCount
       scheduledDate
       items {
         externalId
