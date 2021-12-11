@@ -87,7 +87,7 @@ export const ApprovedItemForm: React.FC<
       onSubmit(values, formikHelpers);
     },
   });
-
+  console.log(approvedItem.topic);
   //Boolean to disable the save button if nothing in the form has changed
   //to prevent unnecessary form submissions with the same data
   const saveDisabled = !(isImageChanged || formik.dirty);

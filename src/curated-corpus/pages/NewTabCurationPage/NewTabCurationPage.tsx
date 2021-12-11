@@ -115,6 +115,10 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
     // TODO: add logic here. Don't forget to connect to Prospect API for this mutation
   };
 
+  const onProspectSave = () => {
+    alert('Bob');
+  };
+
   return (
     <>
       {currentItem && (
@@ -130,9 +134,7 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
             prospectItem={currentItem}
             isRecommendation={isRecommendation}
             isOpen={prospectItemOpen}
-            onSave={() => {
-              alert('clicked!');
-            }}
+            onSave={onProspectSave}
             toggleModal={toggleProspectItemModal}
             onImageSave={() => ({})}
           />

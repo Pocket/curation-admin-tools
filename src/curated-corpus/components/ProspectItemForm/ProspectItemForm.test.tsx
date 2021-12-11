@@ -1,40 +1,36 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import {
-  ApprovedCuratedCorpusItem,
-  CuratedStatus,
-} from '../../api/curated-corpus-api/generatedTypes';
+import { Prospect } from '../../api/prospect-api/generatedTypes';
 import { SnackbarProvider } from 'notistack';
 import { ApolloProvider } from '@apollo/client';
 import { client } from '../../api/curated-corpus-api/client';
-import { ApprovedItemForm } from './ProspectItemForm';
+import { ProspectItemForm } from './ProspectItemForm';
 import userEvent from '@testing-library/user-event';
 
-describe('The ApprovedItemForm component', () => {
-  let item: ApprovedCuratedCorpusItem;
+describe('The ProspectItemForm component', () => {
+  let prospect: Prospect;
   const onSubmit = jest.fn();
   const onCancel = jest.fn();
   const onImageSave = jest.fn();
 
   beforeEach(() => {
-    item = {
-      externalId: '123-abc',
-      prospectId: '123-xyz',
-      title: 'How To Win Friends And Influence People with React',
+    prospect = {
+      id: '123-abc',
+      title: 'How To Win Friends And Influence People with DynamoDB',
+      newTab: 'EN_US',
+      prospectType: 'organic-timespent',
       url: 'http://www.test.com/how-to',
-      imageUrl: 'https://placeimg.com/640/480/people?random=494',
+      imageUrl: 'https://placeimg.com/640/480/people?random=495',
       excerpt:
-        'Everything You Wanted to Know About React and Were Afraid To Ask',
+        'Everything You Wanted to Know About DynamoDB and Were Afraid To Ask',
       language: 'de',
       publisher: 'Amazing Inventions',
-      topic: 'TECHNOLOGY',
-      status: CuratedStatus.Recommendation,
-      isCollection: false,
-      isSyndicated: false,
-      isShortLived: false,
+      topic: 'Technology',
       createdAt: 1635014926,
-      createdBy: 'Amy',
-      updatedAt: 1635114926,
+      domain: 'some-test-domain',
+      isCollection: true,
+      isSyndicated: false,
+      saveCount: 5,
     };
   });
 
@@ -42,8 +38,9 @@ describe('The ApprovedItemForm component', () => {
     render(
       <ApolloProvider client={client}>
         <SnackbarProvider maxSnack={3}>
-          <ApprovedItemForm
-            approvedItem={item}
+          <ProspectItemForm
+            prospectItem={prospect}
+            isRecommendation={true}
             onSubmit={onSubmit}
             onCancel={onCancel}
             onImageSave={onImageSave}

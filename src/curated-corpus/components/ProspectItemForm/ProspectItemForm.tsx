@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
+import { DateTime } from 'luxon';
+import { DatePicker } from '@material-ui/pickers';
+import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 
 import { validationSchema } from './ProspectItemForm.validation';
 import { Prospect } from '../../api/prospect-api/generatedTypes';
@@ -84,6 +87,16 @@ export const ProspectItemForm: React.FC<
     },
   });
 
+  const [selectedDate, setSelectedDate] = useState<DateTime | null>(null);
+
+  const handleDateChange = (
+    date: MaterialUiPickersDate,
+    value?: string | null | undefined
+  ) => {
+    setSelectedDate(date);
+  };
+
+  console.table(prospectItem.topic);
   //Boolean to disable the save button if the prospect has no imageUrl and
   //no new image has been uploaded by the user.
   // saveDisabled will be false (save button enabled) when either there's a imageUrl or user uploaded new image
@@ -222,6 +235,22 @@ export const ProspectItemForm: React.FC<
                         label={'Syndicated'}
                         labelPlacement="end"
                         disabled
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <DatePicker
+                        variant="inline"
+                        inputVariant="outlined"
+                        format="MMMM d, yyyy"
+                        margin="none"
+                        id="scheduled-date"
+                        label="Choose a date to schedule"
+                        value={selectedDate}
+                        onChange={handleDateChange}
+                        disablePast
+                        disableToolbar
+                        autoOk
+                        fullWidth
                       />
                     </Grid>
                   </Grid>
