@@ -11,6 +11,7 @@ import { client } from '../../api/prospect-api/client';
 import {
   Prospect,
   useGetProspectsQuery,
+  useUpdateProspectAsCuratedMutation,
 } from '../../api/prospect-api/generatedTypes';
 import {
   RejectProspectMutationVariables,
@@ -26,15 +27,11 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
   const newTabGuid = 'EN_US';
 
   // Get a list of prospects on the page
-  const { loading, error, data } = useGetProspectsQuery(
-    // We need to make sure these results are never served from the cache.
-    {
-      fetchPolicy: 'no-cache',
-      notifyOnNetworkStatusChange: true,
-      variables: { newTab: newTabGuid },
-      client,
-    }
-  );
+  const { loading, error, data, refetch } = useGetProspectsQuery({
+    notifyOnNetworkStatusChange: true,
+    variables: { newTab: newTabGuid },
+    client,
+  });
 
   // Get today and tomorrow's items that are already scheduled for this New Tab
   const {
@@ -68,15 +65,25 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
   // and execute any additional actions in a callback
   const { runMutation } = useRunMutation();
 
-  // 1. Prepare the "reject prospect" mutation
+  // Prepare the "reject prospect" mutation
   const [rejectProspect] = useRejectProspectMutation();
-  // 2. Add the prospect to the rejected corpus
-  // 3. Additionally, let Prospect API know the prospect has been processed.
+  // Prepare the "update prospect as curated" mutation
+  const [updateProspectAsCurated] = useUpdateProspectAsCuratedMutation({
+    client,
+  });
+
+  /**
+   * Add the prospect to the rejected corpus.
+   * Additionally, let Prospect API know the prospect has been processed.
+   *
+   * @param values
+   * @param formikHelpers
+   */
   const onRejectSave = (
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ): void => {
-    // Set out all the variables we need to pass to the mutation
+    // Set out all the variables we need to pass to the first mutation
     const variables: RejectProspectMutationVariables = {
       data: {
         prospectId: currentItem?.id ?? '', // TODO: sort out types here
@@ -88,6 +95,20 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
         reason: values.reason,
       },
     };
+
+    // Mark the prospect as processed in the Prospect API datastore.
+    runMutation(
+      updateProspectAsCurated,
+      { variables: { prospectId: currentItem?.id }, client },
+      `Item successfully marked as curated.`,
+      () => {
+        formikHelpers.setSubmitting(false);
+      },
+      () => {
+        formikHelpers.setSubmitting(false);
+      },
+      refetch
+    );
 
     // Add the prospect to the rejected corpus
     runMutation(
@@ -102,9 +123,6 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
         formikHelpers.setSubmitting(false);
       }
     );
-
-    // Mark the prospect as processed in the Prospect API datastore.
-    // TODO: add logic here. Don't forget to connect to Prospect API for this mutation
   };
 
   return (
