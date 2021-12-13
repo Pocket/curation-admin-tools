@@ -69,7 +69,6 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
    */
   const [prospectItemOpen, toggleProspectItemModal] = useToggle(false);
 
-
   // Get a helper function that will execute each mutation, show standard notifications
   // and execute any additional actions in a callback
   const { runMutation } = useRunMutation();
@@ -93,7 +92,6 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ): void => {
-    
     // Set out all the variables we need to pass to the first mutation
     const variables: RejectProspectMutationVariables = {
       data: {
