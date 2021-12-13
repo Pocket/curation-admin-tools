@@ -6,17 +6,19 @@ import { gql } from '@apollo/client';
 export const ProspectData = gql`
   fragment ProspectData on Prospect {
     id
+    newTab
     topic
     prospectType
     url
+    createdAt
     imageUrl
-    newTab
     publisher
     domain
     title
     excerpt
     language
     saveCount
-    createdAt
+    isSyndicated
+    isCollection
   }
 `;

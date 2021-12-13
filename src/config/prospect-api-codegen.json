@@ -3,6 +3,7 @@
   "schema": [ "${REACT_APP_PROSPECT_API_ENDPOINT}"],
   "documents": [
     "src/curated-corpus/api/prospect-api/queries/*.ts",
+    "src/curated-corpus/api/prospect-api/mutations/*.ts",
     "src/curated-corpus/api/prospect-api/fragments/*.ts"
   ],
   "generates": {
