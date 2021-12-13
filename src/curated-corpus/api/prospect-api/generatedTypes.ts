@@ -49,6 +49,8 @@ export type Prospect = {
   excerpt?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   imageUrl?: Maybe<Scalars['String']>;
+  isCollection?: Maybe<Scalars['Boolean']>;
+  isSyndicated?: Maybe<Scalars['Boolean']>;
   language?: Maybe<Scalars['String']>;
   newTab: Scalars['String'];
   prospectType: Scalars['String'];
@@ -72,23 +74,54 @@ export type QueryGetProspectsArgs = {
 export type ProspectDataFragment = {
   __typename?: 'Prospect';
   id: string;
+  newTab: string;
   topic: string;
   prospectType: string;
   url: string;
+  createdAt?: number | null | undefined;
   imageUrl?: string | null | undefined;
-  newTab: string;
   publisher?: string | null | undefined;
   domain?: string | null | undefined;
   title?: string | null | undefined;
   excerpt?: string | null | undefined;
   language?: string | null | undefined;
   saveCount?: number | null | undefined;
-  createdAt?: number | null | undefined;
+  isSyndicated?: boolean | null | undefined;
+  isCollection?: boolean | null | undefined;
+};
+
+export type UpdateProspectAsCuratedMutationVariables = Exact<{
+  prospectId: Scalars['String'];
+}>;
+
+export type UpdateProspectAsCuratedMutation = {
+  __typename?: 'Mutation';
+  updateProspectAsCurated?:
+    | {
+        __typename?: 'Prospect';
+        id: string;
+        newTab: string;
+        topic: string;
+        prospectType: string;
+        url: string;
+        createdAt?: number | null | undefined;
+        imageUrl?: string | null | undefined;
+        publisher?: string | null | undefined;
+        domain?: string | null | undefined;
+        title?: string | null | undefined;
+        excerpt?: string | null | undefined;
+        language?: string | null | undefined;
+        saveCount?: number | null | undefined;
+        isSyndicated?: boolean | null | undefined;
+        isCollection?: boolean | null | undefined;
+      }
+    | null
+    | undefined;
 };
 
 export type GetProspectsQueryVariables = Exact<{
   newTab: Scalars['String'];
-  prospectType?: Maybe<Scalars['String']>;
+  prospectType?: InputMaybe<Scalars['String']>;
 }>;
 
 export type GetProspectsQuery = {
@@ -96,38 +129,93 @@ export type GetProspectsQuery = {
   getProspects: Array<{
     __typename?: 'Prospect';
     id: string;
+    newTab: string;
     topic: string;
     prospectType: string;
     url: string;
+    createdAt?: number | null | undefined;
     imageUrl?: string | null | undefined;
-    newTab: string;
     publisher?: string | null | undefined;
     domain?: string | null | undefined;
     title?: string | null | undefined;
     excerpt?: string | null | undefined;
     language?: string | null | undefined;
     saveCount?: number | null | undefined;
-    createdAt?: number | null | undefined;
+    isSyndicated?: boolean | null | undefined;
+    isCollection?: boolean | null | undefined;
   }>;
 };
 
 export const ProspectDataFragmentDoc = gql`
   fragment ProspectData on Prospect {
     id
+    newTab
     topic
     prospectType
     url
+    createdAt
     imageUrl
-    newTab
     publisher
     domain
     title
     excerpt
     language
     saveCount
-    createdAt
+    isSyndicated
+    isCollection
   }
 `;
+export const UpdateProspectAsCuratedDocument = gql`
+  mutation updateProspectAsCurated($prospectId: String!) {
+    updateProspectAsCurated(prospectId: $prospectId) {
+      ...ProspectData
+    }
+  }
+  ${ProspectDataFragmentDoc}
+`;
+export type UpdateProspectAsCuratedMutationFn = Apollo.MutationFunction<
+  UpdateProspectAsCuratedMutation,
+  UpdateProspectAsCuratedMutationVariables
+>;
+
+/**
+ * __useUpdateProspectAsCuratedMutation__
+ *
+ * To run a mutation, you first call `useUpdateProspectAsCuratedMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProspectAsCuratedMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateProspectAsCuratedMutation, { data, loading, error }] = useUpdateProspectAsCuratedMutation({
+ *   variables: {
+ *      prospectId: // value for 'prospectId'
+ *   },
+ * });
+ */
+export function useUpdateProspectAsCuratedMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateProspectAsCuratedMutation,
+    UpdateProspectAsCuratedMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateProspectAsCuratedMutation,
+    UpdateProspectAsCuratedMutationVariables
+  >(UpdateProspectAsCuratedDocument, options);
+}
+export type UpdateProspectAsCuratedMutationHookResult = ReturnType<
+  typeof useUpdateProspectAsCuratedMutation
+>;
+export type UpdateProspectAsCuratedMutationResult =
+  Apollo.MutationResult<UpdateProspectAsCuratedMutation>;
+export type UpdateProspectAsCuratedMutationOptions = Apollo.BaseMutationOptions<
+  UpdateProspectAsCuratedMutation,
+  UpdateProspectAsCuratedMutationVariables
+>;
 export const GetProspectsDocument = gql`
   query getProspects($newTab: String!, $prospectType: String) {
     getProspects(filters: { newTab: $newTab, prospectType: $prospectType }) {
