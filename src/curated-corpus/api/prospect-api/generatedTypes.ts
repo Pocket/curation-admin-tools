@@ -39,7 +39,7 @@ export type Mutation = {
 };
 
 export type MutationUpdateProspectAsCuratedArgs = {
-  prospectId: Scalars['String'];
+  prospectId: Scalars['ID'];
 };
 
 export type Prospect = {
@@ -47,7 +47,7 @@ export type Prospect = {
   createdAt?: Maybe<Scalars['Int']>;
   domain?: Maybe<Scalars['String']>;
   excerpt?: Maybe<Scalars['String']>;
-  id: Scalars['String'];
+  id: Scalars['ID'];
   imageUrl?: Maybe<Scalars['String']>;
   isCollection?: Maybe<Scalars['Boolean']>;
   isSyndicated?: Maybe<Scalars['Boolean']>;
@@ -91,7 +91,7 @@ export type ProspectDataFragment = {
 };
 
 export type UpdateProspectAsCuratedMutationVariables = Exact<{
-  prospectId: Scalars['String'];
+  prospectId: Scalars['ID'];
 }>;
 
 export type UpdateProspectAsCuratedMutation = {
@@ -166,7 +166,7 @@ export const ProspectDataFragmentDoc = gql`
   }
 `;
 export const UpdateProspectAsCuratedDocument = gql`
-  mutation updateProspectAsCurated($prospectId: String!) {
+  mutation updateProspectAsCurated($prospectId: ID!) {
     updateProspectAsCurated(prospectId: $prospectId) {
       ...ProspectData
     }
