@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 import { ProspectData } from '../fragments/prospect';
 
-export const rejectApprovedItem = gql`
-  mutation updateProspectAsCurated($prospectId: String!) {
+export const updateProspectAsCurated = gql`
+  mutation updateProspectAsCurated($prospectId: ID!) {
     updateProspectAsCurated(prospectId: $prospectId) {
       ...ProspectData
     }
