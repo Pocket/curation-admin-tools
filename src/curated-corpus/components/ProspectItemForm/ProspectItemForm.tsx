@@ -29,6 +29,7 @@ interface ProspectItemFormProps {
    * On submit handle function called on the 'Save' button click
    */
   onSubmit: (
+    prospect: Prospect,
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ) => void | Promise<any>;
@@ -83,7 +84,7 @@ export const ProspectItemForm: React.FC<
     validateOnChange: false,
     validationSchema,
     onSubmit: (values, formikHelpers) => {
-      onSubmit(values, formikHelpers);
+      onSubmit(prospectItem, values, formikHelpers);
     },
   });
 
@@ -96,7 +97,8 @@ export const ProspectItemForm: React.FC<
     setSelectedDate(date);
   };
 
-  console.table(prospectItem.topic);
+  //TODO: remove this
+  console.log(prospectItem.imageUrl);
   //Boolean to disable the save button if the prospect has no imageUrl and
   //no new image has been uploaded by the user.
   // saveDisabled will be false (save button enabled) when either there's a imageUrl or user uploaded new image

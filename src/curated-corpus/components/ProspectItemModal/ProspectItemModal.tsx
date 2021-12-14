@@ -11,6 +11,7 @@ interface ProspectItemModalProps {
   isRecommendation: boolean;
   isOpen: boolean;
   onSave: (
+    prospect: Prospect,
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ) => void | Promise<any>;
