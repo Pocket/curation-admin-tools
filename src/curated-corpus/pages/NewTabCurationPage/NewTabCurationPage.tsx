@@ -174,11 +174,7 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
             {dataScheduled &&
               dataScheduled.getScheduledCuratedCorpusItems.map(
                 (data: ScheduledCuratedCorpusItemsResult) => (
-                  <NewTabGroupedList
-                    key={data.scheduledDate}
-                    data={data}
-                    isSidebar
-                  />
+                  <NewTabGroupedList key={data.scheduledDate} data={data} />
                 )
               )}
           </Grid>

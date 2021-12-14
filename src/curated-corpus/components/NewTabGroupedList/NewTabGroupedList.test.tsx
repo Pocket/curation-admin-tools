@@ -51,6 +51,7 @@ describe('The NewTabGroupedList component', () => {
       scheduledDate: '2050-01-01',
       totalCount: 2,
       syndicatedCount: 1,
+      collectionCount: 0,
       items: [item, secondItem],
     };
   });

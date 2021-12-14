@@ -11,5 +11,7 @@ export { RejectedItemSearchForm } from './RejectedItemSearchForm/RejectedItemSea
 export { ScheduledItemCardWrapper } from './ScheduledItemCardWrapper/ScheduledItemCardWrapper';
 export { RejectItemModal } from './RejectItemModal/RejectItemModal';
 export { RejectItemForm } from './RejectItemForm/RejectItemForm';
+export { RemoveItemFromNewTabForm } from './RemoveItemFromNewTabForm/RemoveItemFromNewTabForm';
+export { RemoveItemFromNewTabModal } from './RemoveItemFromNewTabModal/RemoveItemFromNewTabModal';
 export { ScheduleItemForm } from './ScheduleItemForm/ScheduleItemForm';
 export { ScheduleItemModal } from './ScheduleItemModal/ScheduleItemModal';

@@ -1,5 +1,6 @@
-import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+import { gql } from '@apollo/client';
+
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -601,6 +602,43 @@ export type CreateNewTabFeedScheduledItemMutation = {
   };
 };
 
+export type DeleteScheduledItemMutationVariables = Exact<{
+  externalId: Scalars['ID'];
+}>;
+
+export type DeleteScheduledItemMutation = {
+  __typename?: 'Mutation';
+  deleteScheduledCuratedCorpusItem: {
+    __typename?: 'ScheduledCuratedCorpusItem';
+    externalId: string;
+    createdAt: number;
+    createdBy: string;
+    updatedAt: number;
+    updatedBy?: string | null | undefined;
+    scheduledDate: any;
+    approvedItem: {
+      __typename?: 'ApprovedCuratedCorpusItem';
+      externalId: string;
+      prospectId: string;
+      title: string;
+      language: string;
+      publisher: string;
+      url: any;
+      imageUrl: any;
+      excerpt: string;
+      status: CuratedStatus;
+      topic: string;
+      isCollection: boolean;
+      isShortLived: boolean;
+      isSyndicated: boolean;
+      createdBy: string;
+      createdAt: number;
+      updatedBy?: string | null | undefined;
+      updatedAt: number;
+    };
+  };
+};
+
 export type RejectApprovedItemMutationVariables = Exact<{
   data: RejectApprovedCuratedCorpusItemInput;
 }>;
@@ -922,6 +960,65 @@ export type CreateNewTabFeedScheduledItemMutationOptions =
     CreateNewTabFeedScheduledItemMutation,
     CreateNewTabFeedScheduledItemMutationVariables
   >;
+export const DeleteScheduledItemDocument = gql`
+  mutation deleteScheduledItem($externalId: ID!) {
+    deleteScheduledCuratedCorpusItem(data: { externalId: $externalId }) {
+      externalId
+      createdAt
+      createdBy
+      updatedAt
+      updatedBy
+      scheduledDate
+      approvedItem {
+        ...CuratedItemData
+      }
+    }
+  }
+  ${CuratedItemDataFragmentDoc}
+`;
+export type DeleteScheduledItemMutationFn = Apollo.MutationFunction<
+  DeleteScheduledItemMutation,
+  DeleteScheduledItemMutationVariables
+>;
+
+/**
+ * __useDeleteScheduledItemMutation__
+ *
+ * To run a mutation, you first call `useDeleteScheduledItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteScheduledItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteScheduledItemMutation, { data, loading, error }] = useDeleteScheduledItemMutation({
+ *   variables: {
+ *      externalId: // value for 'externalId'
+ *   },
+ * });
+ */
+export function useDeleteScheduledItemMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteScheduledItemMutation,
+    DeleteScheduledItemMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    DeleteScheduledItemMutation,
+    DeleteScheduledItemMutationVariables
+  >(DeleteScheduledItemDocument, options);
+}
+export type DeleteScheduledItemMutationHookResult = ReturnType<
+  typeof useDeleteScheduledItemMutation
+>;
+export type DeleteScheduledItemMutationResult =
+  Apollo.MutationResult<DeleteScheduledItemMutation>;
+export type DeleteScheduledItemMutationOptions = Apollo.BaseMutationOptions<
+  DeleteScheduledItemMutation,
+  DeleteScheduledItemMutationVariables
+>;
 export const RejectApprovedItemDocument = gql`
   mutation rejectApprovedItem($data: RejectApprovedCuratedCorpusItemInput!) {
     rejectApprovedCuratedCorpusItem(data: $data) {
