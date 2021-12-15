@@ -117,7 +117,7 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
     runMutation(
       updateProspectAsCurated,
       { variables: { prospectId: currentItem?.id }, client },
-      `Item successfully marked as curated.`,
+      '',
       () => {
         formikHelpers.setSubmitting(false);
       },
@@ -221,8 +221,22 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
                   },
                 })
                   .then(() => {
+                    // Mark the prospect as processed in the Prospect API datastore.
+                    runMutation(
+                      updateProspectAsCurated,
+                      { variables: { prospectId: currentItem?.id }, client },
+                      '',
+                      () => {
+                        formikHelpers.setSubmitting(false);
+                      },
+                      () => {
+                        formikHelpers.setSubmitting(false);
+                      },
+                      refetch
+                    );
+
                     showNotification(
-                      'Image uploaded to S3 and linked to prospect',
+                      'Item successfully added to the curated corpus.',
                       'success'
                     );
                     toggleApprovedItemModal();
