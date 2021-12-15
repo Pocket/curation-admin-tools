@@ -19,8 +19,15 @@ import {
   ScheduledCuratedCorpusItemsResult,
   useGetScheduledItemsQuery,
   useRejectProspectMutation,
+  useUploadApprovedCuratedCorpusItemImageMutation,
+  useCreateApprovedCuratedCorpusItemMutation,
 } from '../../api/curated-corpus-api/generatedTypes';
-import { useRunMutation, useToggle } from '../../../_shared/hooks';
+import {
+  useRunMutation,
+  useToggle,
+  useNotifications,
+} from '../../../_shared/hooks';
+
 import { transformProspectToApprovedItem } from '../../helpers/helperFunctions';
 import { FormikHelpers, FormikValues } from 'formik';
 
@@ -88,6 +95,7 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
    * @param values
    * @param formikHelpers
    */
+
   const onRejectSave = (
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
@@ -132,11 +140,163 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
         formikHelpers.setSubmitting(false);
       }
     );
+
+    // Mark the prospect as processed in the Prospect API datastore.
+    // TODO: add logic here. Don't forget to connect to Prospect API for this mutation
   };
 
-  const onProspectSave = () => {
-    //TODO: @Herraj - replace with mutation logic in the next PR
-    console.log('prospect save clicked');
+  // Prepare the upload approved item image mutation
+  const [uploadApprovedItemImage] =
+    useUploadApprovedCuratedCorpusItemImageMutation();
+
+  // Prepare the create approved item mutation
+  const [createApprovedItem] = useCreateApprovedCuratedCorpusItemMutation();
+
+  // The toast notification hook
+  const { showNotification } = useNotifications();
+
+  // State variable to track if the user has uploaded a new image
+  const [prospectS3Image, setProspectS3Image] = useState<string | undefined>(
+    undefined
+  );
+
+  /**
+   *
+   * This function gets called when the user saves(approves) a prospect
+   */
+  const onProspectSave = (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ) => {
+    // If the parser returned an image, let's upload it to S3
+    // First, side-step CORS issues that prevent us from downloading
+    // the image directly from the publisher
+    if (values.imageUrl) {
+      const parserImageUrl =
+        'https://pocket-image-cache.com/x/filters:no_upscale():format(jpg)/' +
+        encodeURIComponent(values.imageUrl);
+
+      // Get the file
+      fetch(parserImageUrl)
+        .then((res) => res.blob())
+        .then((blob) => {
+          // Upload the file to S3
+          uploadApprovedItemImage({
+            variables: {
+              image: blob,
+            },
+          })
+            .then((imgUploadData) => {
+              if (
+                imgUploadData.data &&
+                imgUploadData.data.uploadApprovedCuratedCorpusItemImage.url
+              ) {
+                const languageCode: string =
+                  values.language === 'English' ? 'en' : 'de';
+                const curationStatus = values.curationStatus.toUpperCase();
+                const topic: string = values.topic.toUpperCase();
+                const s3ImageUrl: string =
+                  imgUploadData.data.uploadApprovedCuratedCorpusItemImage.url;
+
+                const approvedProspect = {
+                  prospectId: currentItem?.id ?? '',
+                  url: values.url,
+                  title: values.title,
+                  excerpt: values.excerpt,
+                  status: curationStatus,
+                  language: languageCode,
+                  publisher: values.publisher,
+                  imageUrl: s3ImageUrl,
+                  topic: topic,
+                  isCollection: values.collection,
+                  isShortLived: values.shortLived,
+                  isSyndicated: values.syndicated,
+                };
+                // Don't show a notification about a successful S3 upload just yet -
+                // that's just too many. Wait until we save the url to show another
+                // success message
+                createApprovedItem({
+                  variables: {
+                    data: { ...approvedProspect },
+                  },
+                })
+                  .then(() => {
+                    showNotification(
+                      'Image uploaded to S3 and linked to prospect',
+                      'success'
+                    );
+                    toggleApprovedItemModal();
+                    // manually refresh the cache
+                    refetch();
+                    formikHelpers.setSubmitting(false);
+                  })
+                  .catch((error) => {
+                    // manually refresh the cache
+                    refetch();
+                    showNotification(error.message, 'error');
+                    formikHelpers.setSubmitting(false);
+                  });
+              }
+            })
+            .catch((error) => {
+              // manually refresh the cache
+              refetch();
+              showNotification(error.message, 'error');
+            });
+        })
+        .catch((error: Error) => {
+          showNotification(
+            'Could not process image - file may be too large.\n' +
+              `(Original error: ${error.message})`,
+            'error'
+          );
+          // manually refresh the cache
+          refetch();
+          formikHelpers.setSubmitting(false);
+        });
+    } else if (prospectS3Image) {
+      // This if block is hit when the prospect doesn't have an imageUrl value but
+      // the user uploads a new image.
+
+      const languageCode: string = values.language === 'English' ? 'en' : 'de';
+      const curationStatus = values.curationStatus.toUpperCase();
+      const topic: string = values.topic.toUpperCase();
+      const s3ImageUrl: string = prospectS3Image;
+
+      const variables = {
+        data: {
+          prospectId: currentItem?.id ?? '',
+          url: values.url,
+          title: values.title,
+          excerpt: values.excerpt,
+          status: curationStatus,
+          language: languageCode,
+          publisher: values.publisher,
+          imageUrl: s3ImageUrl,
+          topic: topic,
+          isCollection: values.collection,
+          isShortLived: values.shortLived,
+          isSyndicated: values.syndicated,
+        },
+      };
+
+      // Executed the mutation to create an approved item
+      runMutation(
+        createApprovedItem,
+        { variables },
+        `Prospect "${values.title.substring(0, 50)}..." successfully approved`,
+        () => {
+          toggleApprovedItemModal();
+          formikHelpers.setSubmitting(false);
+        },
+        () => {
+          formikHelpers.setSubmitting(false);
+        },
+        refetch
+      );
+    } else {
+      showNotification('Please upload an image before submitting', 'error');
+    }
   };
 
   return (
@@ -158,7 +318,7 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
             isOpen={approvedItemModalOpen}
             onSave={onProspectSave}
             toggleModal={toggleApprovedItemModal}
-            onImageSave={() => ({})}
+            onImageSave={setProspectS3Image}
           />
         </>
       )}

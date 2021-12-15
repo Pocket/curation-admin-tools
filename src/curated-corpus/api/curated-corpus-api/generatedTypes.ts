@@ -563,6 +563,34 @@ export type RejectedItemDataFragment = {
   createdAt: number;
 };
 
+export type CreateApprovedCuratedCorpusItemMutationVariables = Exact<{
+  data: CreateApprovedCuratedCorpusItemInput;
+}>;
+
+export type CreateApprovedCuratedCorpusItemMutation = {
+  __typename?: 'Mutation';
+  createApprovedCuratedCorpusItem: {
+    __typename?: 'ApprovedCuratedCorpusItem';
+    externalId: string;
+    prospectId: string;
+    title: string;
+    language: string;
+    publisher: string;
+    url: any;
+    imageUrl: any;
+    excerpt: string;
+    status: CuratedStatus;
+    topic: string;
+    isCollection: boolean;
+    isShortLived: boolean;
+    isSyndicated: boolean;
+    createdBy: string;
+    createdAt: number;
+    updatedBy?: string | null | undefined;
+    updatedAt: number;
+  };
+};
+
 export type CreateNewTabFeedScheduledItemMutationVariables = Exact<{
   approvedItemExternalId: Scalars['ID'];
   newTabGuid: Scalars['ID'];
@@ -888,6 +916,60 @@ export const RejectedItemDataFragmentDoc = gql`
     createdAt
   }
 `;
+export const CreateApprovedCuratedCorpusItemDocument = gql`
+  mutation createApprovedCuratedCorpusItem(
+    $data: CreateApprovedCuratedCorpusItemInput!
+  ) {
+    createApprovedCuratedCorpusItem(data: $data) {
+      ...CuratedItemData
+    }
+  }
+  ${CuratedItemDataFragmentDoc}
+`;
+export type CreateApprovedCuratedCorpusItemMutationFn = Apollo.MutationFunction<
+  CreateApprovedCuratedCorpusItemMutation,
+  CreateApprovedCuratedCorpusItemMutationVariables
+>;
+
+/**
+ * __useCreateApprovedCuratedCorpusItemMutation__
+ *
+ * To run a mutation, you first call `useCreateApprovedCuratedCorpusItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateApprovedCuratedCorpusItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createApprovedCuratedCorpusItemMutation, { data, loading, error }] = useCreateApprovedCuratedCorpusItemMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateApprovedCuratedCorpusItemMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateApprovedCuratedCorpusItemMutation,
+    CreateApprovedCuratedCorpusItemMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateApprovedCuratedCorpusItemMutation,
+    CreateApprovedCuratedCorpusItemMutationVariables
+  >(CreateApprovedCuratedCorpusItemDocument, options);
+}
+export type CreateApprovedCuratedCorpusItemMutationHookResult = ReturnType<
+  typeof useCreateApprovedCuratedCorpusItemMutation
+>;
+export type CreateApprovedCuratedCorpusItemMutationResult =
+  Apollo.MutationResult<CreateApprovedCuratedCorpusItemMutation>;
+export type CreateApprovedCuratedCorpusItemMutationOptions =
+  Apollo.BaseMutationOptions<
+    CreateApprovedCuratedCorpusItemMutation,
+    CreateApprovedCuratedCorpusItemMutationVariables
+  >;
 export const CreateNewTabFeedScheduledItemDocument = gql`
   mutation createNewTabFeedScheduledItem(
     $approvedItemExternalId: ID!
