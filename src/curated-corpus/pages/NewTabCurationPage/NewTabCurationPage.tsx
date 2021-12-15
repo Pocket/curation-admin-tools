@@ -6,6 +6,7 @@ import {
   NewTabGroupedList,
   ProspectListCard,
   RejectItemModal,
+  ApprovedItemModal,
 } from '../../components';
 import { client } from '../../api/prospect-api/client';
 import {
@@ -20,6 +21,7 @@ import {
   useRejectProspectMutation,
 } from '../../api/curated-corpus-api/generatedTypes';
 import { useRunMutation, useToggle } from '../../../_shared/hooks';
+import { transformProspectToApprovedItem } from '../../helpers/helperFunctions';
 import { FormikHelpers, FormikValues } from 'formik';
 
 export const NewTabCurationPage: React.FC = (): JSX.Element => {
@@ -56,10 +58,17 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
     undefined
   );
 
+  const [isRecommendation, setIsRecommendation] = useState<boolean>(false);
+
   /**
    * Keep track of whether the "Reject this prospect" modal is open or not.
    */
   const [rejectModalOpen, toggleRejectModal] = useToggle(false);
+
+  /**
+   * Keep track of whether the "Edit Item" modal is open or not.
+   */
+  const [approvedItemModalOpen, toggleApprovedItemModal] = useToggle(false);
 
   // Get a helper function that will execute each mutation, show standard notifications
   // and execute any additional actions in a callback
@@ -125,15 +134,33 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
     );
   };
 
+  const onProspectSave = () => {
+    //TODO: @Herraj - replace with mutation logic in the next PR
+    console.log('prospect save clicked');
+  };
+
   return (
     <>
       {currentItem && (
-        <RejectItemModal
-          prospect={currentItem}
-          isOpen={rejectModalOpen}
-          onSave={onRejectSave}
-          toggleModal={toggleRejectModal}
-        />
+        <>
+          <RejectItemModal
+            prospect={currentItem}
+            isOpen={rejectModalOpen}
+            onSave={onRejectSave}
+            toggleModal={toggleRejectModal}
+          />
+
+          <ApprovedItemModal
+            approvedItem={transformProspectToApprovedItem(
+              currentItem,
+              isRecommendation
+            )}
+            isOpen={approvedItemModalOpen}
+            onSave={onProspectSave}
+            toggleModal={toggleApprovedItemModal}
+            onImageSave={() => ({})}
+          />
+        </>
       )}
 
       <h1>New Tab Curation</h1>
@@ -154,6 +181,16 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
                 <ProspectListCard
                   key={prospect.id}
                   prospect={prospect}
+                  onAddToCorpus={() => {
+                    setCurrentItem(prospect);
+                    setIsRecommendation(false);
+                    toggleApprovedItemModal();
+                  }}
+                  onRecommend={() => {
+                    setCurrentItem(prospect);
+                    setIsRecommendation(true);
+                    toggleApprovedItemModal();
+                  }}
                   onReject={() => {
                     setCurrentItem(prospect);
                     toggleRejectModal();

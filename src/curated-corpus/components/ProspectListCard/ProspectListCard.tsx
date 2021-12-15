@@ -22,6 +22,15 @@ interface ProspectListCardProps {
   prospect: Prospect;
 
   /**
+   * Function called when "Add to Corpus" button is clicked
+   */
+  onAddToCorpus: VoidFunction;
+
+  /**
+   * Function called when "Recommend" button is clicked
+   */
+  onRecommend: VoidFunction;
+  /**
    * What to do when the user presses the "Reject" button on the card.
    */
   onReject: () => void;
@@ -31,7 +40,7 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
   props
 ): JSX.Element => {
   const classes = useStyles();
-  const { prospect, onReject } = props;
+  const { prospect, onAddToCorpus, onRecommend, onReject } = props;
 
   return (
     <Card className={classes.root}>
@@ -92,10 +101,10 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
         </Grid>
       </Grid>
       <CardActions className={classes.actions}>
-        <Button buttonType="positive" variant="text">
+        <Button buttonType="positive" variant="text" onClick={onRecommend}>
           Recommend
         </Button>
-        <Button buttonType="positive" variant="text">
+        <Button buttonType="positive" variant="text" onClick={onAddToCorpus}>
           Add to Corpus
         </Button>
         <Button buttonType="negative" variant="text" onClick={onReject}>

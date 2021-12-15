@@ -15,3 +15,4 @@ export { RemoveItemFromNewTabForm } from './RemoveItemFromNewTabForm/RemoveItemF
 export { RemoveItemFromNewTabModal } from './RemoveItemFromNewTabModal/RemoveItemFromNewTabModal';
 export { ScheduleItemForm } from './ScheduleItemForm/ScheduleItemForm';
 export { ScheduleItemModal } from './ScheduleItemModal/ScheduleItemModal';
+export { ApprovedItemModal } from './ApprovedItemModal/ApprovedItemModal';
