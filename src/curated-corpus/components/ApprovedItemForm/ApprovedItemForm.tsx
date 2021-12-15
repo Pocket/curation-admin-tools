@@ -9,7 +9,14 @@ import {
   languages,
   curationStatusOptions,
 } from '../../helpers/definitions';
-import { Grid, FormControlLabel, Switch, Hidden } from '@material-ui/core';
+
+import {
+  Grid,
+  FormControlLabel,
+  Switch,
+  Hidden,
+  FormHelperText,
+} from '@material-ui/core';
 import {
   FormikTextField,
   SharedFormButtons,
@@ -134,10 +141,10 @@ export const ApprovedItemForm: React.FC<
               <ImageUpload
                 entity={approvedItem}
                 onImageSave={onImageSave}
-                placeholder="Upload Item Image"
+                placeholder="/placeholders/story.svg"
                 onImageChanged={setImageUrlField}
               />
-              <Hidden xsUp implementation="css">
+              <Hidden xsUp>
                 <FormikTextField
                   id="imageUrl"
                   label="imageUrl"
@@ -145,6 +152,12 @@ export const ApprovedItemForm: React.FC<
                   fieldMeta={formik.getFieldMeta('imageUrl')}
                 ></FormikTextField>
               </Hidden>
+              <FormHelperText error>
+                {formik.getFieldMeta('imageUrl').error
+                  ? formik.getFieldMeta('imageUrl').error
+                  : null}
+              </FormHelperText>
+
             </Grid>
             <Grid item md={9}>
               <Grid container spacing={3}>

@@ -29,5 +29,5 @@ export const validationSchema = yup.object({
 
   shortLived: yup.boolean().required(),
 
-  imageUrl: yup.string(),
+  imageUrl: yup.string().required('Please upload an image'),
 });
