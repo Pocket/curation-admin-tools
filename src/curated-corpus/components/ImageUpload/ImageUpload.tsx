@@ -60,7 +60,7 @@ interface ImageUploadProps {
    * OnImageSave is also doing the same thing but it's being drilled down by 3 levels above
    * TODO: @Herraj - need to do some refactoring here
    */
-  onImageChanged?: (value: boolean) => void;
+  onImageChanged?: (value: string) => void;
 }
 
 /**
@@ -166,7 +166,8 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
           onImageSave(data.data.uploadApprovedCuratedCorpusItemImage.url);
           // This changes the state variable in the direct parent, ApprovedItemForm
           // to enable/disable the save button on the form
-          onImageChanged && onImageChanged(true);
+          onImageChanged &&
+            onImageChanged(data.data.uploadApprovedCuratedCorpusItemImage.url);
         }
       })
       .catch((error) => {

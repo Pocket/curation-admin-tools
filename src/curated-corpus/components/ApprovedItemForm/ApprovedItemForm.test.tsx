@@ -190,7 +190,7 @@ describe('The ApprovedItemForm component', () => {
   });
 
   describe('When the form fields are NOT edited', () => {
-    it('should NOT call the onSave callback for the save button ', async () => {
+    it('should call the onSave callback for the save button ', async () => {
       render(
         <ApolloProvider client={client}>
           <SnackbarProvider maxSnack={3}>
@@ -208,7 +208,35 @@ describe('The ApprovedItemForm component', () => {
         name: /save/i,
       });
 
-      expect(saveButton).toBeDisabled();
+      await waitFor(() => {
+        userEvent.click(saveButton);
+      });
+      expect(onSubmit).toHaveBeenCalled();
+    });
+
+    it('should NOT call the onSave callback if it does not have an image', async () => {
+      const itemWithoutImage = { ...item, imageUrl: '' };
+
+      render(
+        <ApolloProvider client={client}>
+          <SnackbarProvider maxSnack={3}>
+            <ApprovedItemForm
+              approvedItem={itemWithoutImage}
+              onSubmit={onSubmit}
+              onCancel={onCancel}
+              onImageSave={onImageSave}
+            />
+          </SnackbarProvider>
+        </ApolloProvider>
+      );
+
+      const saveButton = screen.getByRole('button', {
+        name: /save/i,
+      });
+
+      await waitFor(() => {
+        userEvent.click(saveButton);
+      });
       expect(onSubmit).not.toHaveBeenCalled();
     });
   });

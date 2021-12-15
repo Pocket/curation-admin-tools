@@ -18,10 +18,10 @@ import {
   NextPrevPagination,
   RejectItemModal,
   ScheduleItemModal,
+  ApprovedItemModal,
 } from '../../components';
 import { useRunMutation, useToggle } from '../../../_shared/hooks';
 import { DateTime } from 'luxon';
-import { ApprovedItemModal } from '../../components/ApprovedItemModal/ApprovedItemModal';
 
 export const ApprovedItemsPage: React.FC = (): JSX.Element => {
   // Get the usual API response vars and a helper method to retrieve data
