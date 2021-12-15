@@ -157,7 +157,6 @@ export const ApprovedItemForm: React.FC<
                   ? formik.getFieldMeta('imageUrl').error
                   : null}
               </FormHelperText>
-
             </Grid>
             <Grid item md={9}>
               <Grid container spacing={3}>

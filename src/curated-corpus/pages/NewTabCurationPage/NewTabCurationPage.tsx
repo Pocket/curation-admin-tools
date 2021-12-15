@@ -291,11 +291,6 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
     }
   };
 
-  const onProspectSave = () => {
-    //TODO: @Herraj - replace with mutation logic in the next PR
-    console.log('prospect save clicked');
-  };
-
   return (
     <>
       {currentItem && (
@@ -316,7 +311,6 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
             onSave={onProspectSave}
             toggleModal={toggleApprovedItemModal}
             onImageSave={setProspectS3Image}
-
           />
         </>
       )}
