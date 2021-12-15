@@ -24,6 +24,15 @@ interface ProspectListCardProps {
   onAddToCorpus: VoidFunction;
   onRecommend: VoidFunction;
   /**
+   * Function called when "Add to Corpus" button is clicked
+   */
+  onAddToCorpus: VoidFunction;
+
+  /**
+   * Function called when "Recommend" button is clicked
+   */
+  onRecommend: VoidFunction;
+  /**
    * What to do when the user presses the "Reject" button on the card.
    */
   onReject: () => void;

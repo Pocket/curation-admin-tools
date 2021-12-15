@@ -28,4 +28,6 @@ export const validationSchema = yup.object({
     .min(20, 'Excerpt needs to be longer than 20 characters.'),
 
   shortLived: yup.boolean().required(),
+
+  imageUrl: yup.string().required('Please upload an image'),
 });

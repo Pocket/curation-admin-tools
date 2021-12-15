@@ -6,7 +6,7 @@ import {
   NewTabGroupedList,
   ProspectListCard,
   RejectItemModal,
-  ProspectItemModal,
+  ApprovedItemModal,
 } from '../../components';
 import { client } from '../../api/prospect-api/client';
 import {
@@ -22,11 +22,8 @@ import {
   useUploadApprovedCuratedCorpusItemImageMutation,
   useCreateApprovedCuratedCorpusItemMutation,
 } from '../../api/curated-corpus-api/generatedTypes';
-import {
-  useRunMutation,
-  useToggle,
-  useNotifications,
-} from '../../../_shared/hooks';
+import { useRunMutation, useToggle } from '../../../_shared/hooks';
+import { transformProspectToApprovedItem } from '../../helpers/helperFunctions';
 import { FormikHelpers, FormikValues } from 'formik';
 
 export const NewTabCurationPage: React.FC = (): JSX.Element => {
@@ -71,9 +68,9 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
   const [rejectModalOpen, toggleRejectModal] = useToggle(false);
 
   /**
-   * Keep track of whether the "Recommend" or "Add to Corpus" modal is open or not.
+   * Keep track of whether the "Edit Item" modal is open or not.
    */
-  const [prospectItemOpen, toggleProspectItemModal] = useToggle(false);
+  const [approvedItemModalOpen, toggleApprovedItemModal] = useToggle(false);
 
   // Get a helper function that will execute each mutation, show standard notifications
   // and execute any additional actions in a callback
@@ -288,6 +285,11 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
     }
   };
 
+  const onProspectSave = () => {
+    //TODO: @Herraj - replace with mutation logic in the next PR
+    console.log('prospect save clicked');
+  };
+
   return (
     <>
       {currentItem && (
@@ -299,15 +301,15 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
             toggleModal={toggleRejectModal}
           />
 
-          <ProspectItemModal
-            prospectItem={currentItem}
-            isRecommendation={isRecommendation}
-            isOpen={prospectItemOpen}
+          <ApprovedItemModal
+            approvedItem={transformProspectToApprovedItem(
+              currentItem,
+              isRecommendation
+            )}
+            isOpen={approvedItemModalOpen}
             onSave={onProspectSave}
-            toggleModal={toggleProspectItemModal}
-            onImageSave={(url: string) => {
-              setProspectS3Image(url);
-            }}
+            toggleModal={toggleApprovedItemModal}
+            onImageSave={() => ({})}
           />
         </>
       )}
@@ -332,13 +334,13 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
                   prospect={prospect}
                   onAddToCorpus={() => {
                     setCurrentItem(prospect);
-                    toggleProspectItemModal();
                     setIsRecommendation(false);
+                    toggleApprovedItemModal();
                   }}
                   onRecommend={() => {
                     setCurrentItem(prospect);
-                    toggleProspectItemModal();
                     setIsRecommendation(true);
+                    toggleApprovedItemModal();
                   }}
                   onReject={() => {
                     setCurrentItem(prospect);
@@ -360,11 +362,7 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
             {dataScheduled &&
               dataScheduled.getScheduledCuratedCorpusItems.map(
                 (data: ScheduledCuratedCorpusItemsResult) => (
-                  <NewTabGroupedList
-                    key={data.scheduledDate}
-                    data={data}
-                    isSidebar
-                  />
+                  <NewTabGroupedList key={data.scheduledDate} data={data} />
                 )
               )}
           </Grid>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 
@@ -9,7 +9,7 @@ import {
   languages,
   curationStatusOptions,
 } from '../../helpers/definitions';
-import { Grid, FormControlLabel, Switch } from '@material-ui/core';
+import { Grid, FormControlLabel, Switch, Hidden } from '@material-ui/core';
 import {
   FormikTextField,
   SharedFormButtons,
@@ -51,10 +51,6 @@ export const ApprovedItemForm: React.FC<
 > = (props): JSX.Element => {
   const { approvedItem, onSubmit, onCancel, onImageSave } = props;
 
-  // State variable to keep track of if the image for an approved item is changed
-  // i.e successfully uploaded to s3
-  const [isImageChanged, setIsImageChanged] = useState<boolean>(false);
-
   const approvedItemCorpus = curationStatusOptions.find(
     (item) => item.code === approvedItem.status
   )?.name;
@@ -79,6 +75,7 @@ export const ApprovedItemForm: React.FC<
       syndicated: approvedItem.isSyndicated,
       collection: approvedItem.isCollection,
       excerpt: approvedItem.excerpt,
+      imageUrl: approvedItem.imageUrl,
     },
     validateOnBlur: false,
     validateOnChange: false,
@@ -87,10 +84,12 @@ export const ApprovedItemForm: React.FC<
       onSubmit(values, formikHelpers);
     },
   });
-  console.log(approvedItem.imageUrl);
-  //Boolean to disable the save button if nothing in the form has changed
-  //to prevent unnecessary form submissions with the same data
-  const saveDisabled = !(isImageChanged || formik.dirty);
+
+  // Set the hidden imageUrl field once the image upload component
+  // returns an s3 url
+  const setImageUrlField = (url: string) => {
+    formik.setFieldValue('imageUrl', url);
+  };
 
   return (
     <form name="approved-item-edit-form" onSubmit={formik.handleSubmit}>
@@ -136,8 +135,16 @@ export const ApprovedItemForm: React.FC<
                 entity={approvedItem}
                 onImageSave={onImageSave}
                 placeholder="Upload Item Image"
-                onImageChanged={setIsImageChanged}
+                onImageChanged={setImageUrlField}
               />
+              <Hidden xsUp>
+                <FormikTextField
+                  id="imageUrl"
+                  label="imageUrl"
+                  fieldProps={formik.getFieldProps('imageUrl')}
+                  fieldMeta={formik.getFieldMeta('imageUrl')}
+                ></FormikTextField>
+              </Hidden>
             </Grid>
             <Grid item md={9}>
               <Grid container spacing={3}>
@@ -242,10 +249,7 @@ export const ApprovedItemForm: React.FC<
           </Grid>
         </Grid>
       </Grid>
-      <SharedFormButtons
-        onCancel={onCancel}
-        saveButtonDisabled={saveDisabled}
-      />
+      <SharedFormButtons onCancel={onCancel} />
     </form>
   );
 };
