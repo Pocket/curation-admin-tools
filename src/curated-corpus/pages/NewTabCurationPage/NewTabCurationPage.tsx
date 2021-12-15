@@ -145,17 +145,25 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
     // TODO: add logic here. Don't forget to connect to Prospect API for this mutation
   };
 
+  // Prepare the upload approved item image mutation
   const [uploadApprovedItemImage] =
     useUploadApprovedCuratedCorpusItemImageMutation();
 
+  // Prepare the create approved item mutation
   const [createApprovedItem] = useCreateApprovedCuratedCorpusItemMutation();
 
+  // The toast notification hook
   const { showNotification } = useNotifications();
 
+  // State variable to track if the user has uploaded a new image
   const [prospectS3Image, setProspectS3Image] = useState<string | undefined>(
     undefined
   );
 
+  /**
+   *
+   * This function gets called when the user saves(approves) a prospect
+   */
   const onProspectSave = (
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
