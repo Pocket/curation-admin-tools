@@ -35,7 +35,7 @@ interface FormikSelectFieldProps {
   /**
    * Children elements - <option> tags
    */
-  children: JSX.Element | (JSX.Element | JSX.Element[])[];
+  children: (JSX.Element | JSX.Element[])[];
 }
 
 /**
