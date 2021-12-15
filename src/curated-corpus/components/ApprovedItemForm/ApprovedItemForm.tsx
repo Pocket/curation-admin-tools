@@ -26,12 +26,6 @@ interface ApprovedItemFormProps {
   approvedItem: ApprovedCuratedCorpusItem;
 
   /**
-   * Optional variable to determine if the passed in item
-   * is a Prospect item.
-   */
-  isProspect?: boolean;
-
-  /**
    * On submit handle function called on the 'Save' button click
    */
   onSubmit: (
