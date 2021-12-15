@@ -137,7 +137,7 @@ export const ApprovedItemForm: React.FC<
                 placeholder="Upload Item Image"
                 onImageChanged={setImageUrlField}
               />
-              <Hidden xsUp>
+              <Hidden xsUp implementation="css">
                 <FormikTextField
                   id="imageUrl"
                   label="imageUrl"

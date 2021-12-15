@@ -22,7 +22,11 @@ import {
   useUploadApprovedCuratedCorpusItemImageMutation,
   useCreateApprovedCuratedCorpusItemMutation,
 } from '../../api/curated-corpus-api/generatedTypes';
-import { useRunMutation, useToggle } from '../../../_shared/hooks';
+import {
+  useRunMutation,
+  useToggle,
+  useNotifications,
+} from '../../../_shared/hooks';
 import { transformProspectToApprovedItem } from '../../helpers/helperFunctions';
 import { FormikHelpers, FormikValues } from 'formik';
 
@@ -152,18 +156,16 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
   );
 
   const onProspectSave = (
-    prospect: Prospect,
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ) => {
     // If the parser returned an image, let's upload it to S3
     // First, side-step CORS issues that prevent us from downloading
     // the image directly from the publisher
-
-    if (prospect.imageUrl) {
+    if (values.imageUrl) {
       const parserImageUrl =
         'https://pocket-image-cache.com/x/filters:no_upscale():format(jpg)/' +
-        encodeURIComponent(prospect.imageUrl);
+        encodeURIComponent(values.imageUrl);
 
       // Get the file
       fetch(parserImageUrl)
@@ -214,7 +216,7 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
                       'Image uploaded to S3 and linked to prospect',
                       'success'
                     );
-                    toggleProspectItemModal();
+                    toggleApprovedItemModal();
                     // manually refresh the cache
                     refetch();
                     formikHelpers.setSubmitting(false);
@@ -244,6 +246,9 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
           formikHelpers.setSubmitting(false);
         });
     } else if (prospectS3Image) {
+      // This if block is hit when the prospect doesn't have an imageUrl value but
+      // the user uploads a new image.
+
       const languageCode: string = values.language === 'English' ? 'en' : 'de';
       const curationStatus = values.curationStatus.toUpperCase();
       const topic: string = values.topic.toUpperCase();
@@ -266,13 +271,13 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
         },
       };
 
-      // Executed the mutation to update the approved item
+      // Executed the mutation to create an approved item
       runMutation(
         createApprovedItem,
         { variables },
-        `Prospect "${values.title.substring(0, 50)}..." successfully updated`,
+        `Prospect "${values.title.substring(0, 50)}..." successfully approved`,
         () => {
-          toggleProspectItemModal();
+          toggleApprovedItemModal();
           formikHelpers.setSubmitting(false);
         },
         () => {
@@ -283,11 +288,6 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
     } else {
       showNotification('Please upload an image before submitting', 'error');
     }
-  };
-
-  const onProspectSave = () => {
-    //TODO: @Herraj - replace with mutation logic in the next PR
-    console.log('prospect save clicked');
   };
 
   return (
@@ -309,7 +309,7 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
             isOpen={approvedItemModalOpen}
             onSave={onProspectSave}
             toggleModal={toggleApprovedItemModal}
-            onImageSave={() => ({})}
+            onImageSave={setProspectS3Image}
           />
         </>
       )}

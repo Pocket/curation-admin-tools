@@ -18,7 +18,7 @@ import LanguageIcon from '@material-ui/icons/Language';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import { useStyles } from './ApprovedItemListCard.styles';
 import { ApprovedCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
-import { topics } from '../../helpers/definitions';
+//import { topics } from '../../helpers/definitions';
 
 interface ApprovedItemListCardProps {
   /**
@@ -33,9 +33,9 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
   const classes = useStyles();
   const { item } = props;
 
-  const approvedItemTopic = topics.find(
-    (topic) => topic.code === item.topic
-  )?.name;
+  // const approvedItemTopic = topics.find(
+  //   (topic) => topic.code === item.topic
+  // )?.name;
 
   return (
     <>
@@ -92,7 +92,7 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
           </ListItemIcon>
           <ListItemText
             className={classes.topic}
-            primary={approvedItemTopic ?? ''}
+            primary={item.topic.toLowerCase()}
           />
         </ListItem>
         <ListItem divider>

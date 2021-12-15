@@ -21,8 +21,6 @@ interface ProspectListCardProps {
    */
   prospect: Prospect;
 
-  onAddToCorpus: VoidFunction;
-  onRecommend: VoidFunction;
   /**
    * Function called when "Add to Corpus" button is clicked
    */
