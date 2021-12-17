@@ -42,51 +42,52 @@ interface CollectionStoryListProps {
  * @param props
  * @constructor
  */
-export const ReorderableCollectionStoryList: React.FC<CollectionStoryListProps> =
-  (props): JSX.Element => {
-    const { stories, showFromPartner, reorder, refetch } = props;
+export const ReorderableCollectionStoryList: React.FC<
+  CollectionStoryListProps
+> = (props): JSX.Element => {
+  const { stories, showFromPartner, reorder, refetch } = props;
 
-    return (
-      <DragDropContext onDragEnd={reorder}>
-        <Droppable droppableId="characters">
-          {(provided) => (
-            <Typography
-              component="div"
-              className="characters"
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
-              {stories.map((story: CollectionStory, index: number) => {
-                return (
-                  <Draggable
-                    key={story.externalId}
-                    draggableId={story.externalId}
-                    index={index}
-                  >
-                    {(provided) => {
-                      return (
-                        <Typography
-                          component="div"
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          <StoryListCard
-                            key={story.externalId}
-                            story={story}
-                            refetch={refetch}
-                            showFromPartner={showFromPartner}
-                          />
-                        </Typography>
-                      );
-                    }}
-                  </Draggable>
-                );
-              })}
-              {provided.placeholder}
-            </Typography>
-          )}
-        </Droppable>
-      </DragDropContext>
-    );
-  };
+  return (
+    <DragDropContext onDragEnd={reorder}>
+      <Droppable droppableId="characters">
+        {(provided) => (
+          <Typography
+            component="div"
+            className="characters"
+            {...provided.droppableProps}
+            ref={provided.innerRef}
+          >
+            {stories.map((story: CollectionStory, index: number) => {
+              return (
+                <Draggable
+                  key={story.externalId}
+                  draggableId={story.externalId}
+                  index={index}
+                >
+                  {(provided) => {
+                    return (
+                      <Typography
+                        component="div"
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      >
+                        <StoryListCard
+                          key={story.externalId}
+                          story={story}
+                          refetch={refetch}
+                          showFromPartner={showFromPartner}
+                        />
+                      </Typography>
+                    );
+                  }}
+                </Draggable>
+              );
+            })}
+            {provided.placeholder}
+          </Typography>
+        )}
+      </Droppable>
+    </DragDropContext>
+  );
+};

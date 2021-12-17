@@ -6,6 +6,9 @@ import { ProspectListCard } from './ProspectListCard';
 
 describe('The ProspectListCard component', () => {
   let prospect: Prospect;
+  const onAddToCorpus = jest.fn();
+  const onRecommend = jest.fn();
+  const onReject = jest.fn();
 
   beforeEach(() => {
     prospect = {
@@ -26,7 +29,12 @@ describe('The ProspectListCard component', () => {
   it('shows basic prospect information', () => {
     render(
       <MemoryRouter>
-        <ProspectListCard prospect={prospect} />
+        <ProspectListCard
+          prospect={prospect}
+          onAddToCorpus={onAddToCorpus}
+          onRecommend={onRecommend}
+          onReject={onReject}
+        />
       </MemoryRouter>
     );
 
@@ -47,7 +55,13 @@ describe('The ProspectListCard component', () => {
   it('shows language correctly', () => {
     render(
       <MemoryRouter>
-        <ProspectListCard prospect={prospect} />
+        {' '}
+        <ProspectListCard
+          prospect={prospect}
+          onAddToCorpus={onAddToCorpus}
+          onRecommend={onRecommend}
+          onReject={onReject}
+        />
       </MemoryRouter>
     );
 
@@ -57,7 +71,12 @@ describe('The ProspectListCard component', () => {
   it('shows topic correctly', () => {
     render(
       <MemoryRouter>
-        <ProspectListCard prospect={prospect} />
+        <ProspectListCard
+          prospect={prospect}
+          onAddToCorpus={onAddToCorpus}
+          onRecommend={onRecommend}
+          onReject={onReject}
+        />
       </MemoryRouter>
     );
 
@@ -67,7 +86,13 @@ describe('The ProspectListCard component', () => {
   it('should render prospect card with excerpt', () => {
     render(
       <MemoryRouter>
-        <ProspectListCard prospect={prospect} />
+        {' '}
+        <ProspectListCard
+          prospect={prospect}
+          onAddToCorpus={onAddToCorpus}
+          onRecommend={onRecommend}
+          onReject={onReject}
+        />
       </MemoryRouter>
     );
 
@@ -77,7 +102,12 @@ describe('The ProspectListCard component', () => {
   it('should render curated item card with the action buttons', () => {
     render(
       <MemoryRouter>
-        <ProspectListCard prospect={prospect} />
+        <ProspectListCard
+          prospect={prospect}
+          onAddToCorpus={onAddToCorpus}
+          onRecommend={onRecommend}
+          onReject={onReject}
+        />
       </MemoryRouter>
     );
 

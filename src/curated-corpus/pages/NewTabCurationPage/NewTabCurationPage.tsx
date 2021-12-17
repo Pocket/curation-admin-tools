@@ -1,26 +1,46 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { DateTime } from 'luxon';
 import { Box, Grid, Hidden, Typography } from '@material-ui/core';
 import { HandleApiResponse } from '../../../_shared/components';
-import { MiniNewTabScheduleList, ProspectListCard } from '../../components';
+import {
+  NewTabGroupedList,
+  ProspectListCard,
+  RejectItemModal,
+  ApprovedItemModal,
+} from '../../components';
 import { client } from '../../api/prospect-api/client';
-import { useGetProspectsQuery } from '../../api/prospect-api/generatedTypes';
-import { useGetScheduledItemsQuery } from '../../api/curated-corpus-api/generatedTypes';
+import {
+  Prospect,
+  useGetProspectsQuery,
+  useUpdateProspectAsCuratedMutation,
+} from '../../api/prospect-api/generatedTypes';
+import {
+  RejectProspectMutationVariables,
+  ScheduledCuratedCorpusItemsResult,
+  useGetScheduledItemsQuery,
+  useRejectProspectMutation,
+  useUploadApprovedCuratedCorpusItemImageMutation,
+  useCreateApprovedCuratedCorpusItemMutation,
+} from '../../api/curated-corpus-api/generatedTypes';
+import {
+  useRunMutation,
+  useToggle,
+  useNotifications,
+} from '../../../_shared/hooks';
+
+import { transformProspectToApprovedItem } from '../../helpers/helperFunctions';
+import { FormikHelpers, FormikValues } from 'formik';
 
 export const NewTabCurationPage: React.FC = (): JSX.Element => {
   // TODO: remove hardcoded value when New Tab selector is added to the page
   const newTabGuid = 'EN_US';
 
   // Get a list of prospects on the page
-  const { loading, error, data } = useGetProspectsQuery(
-    // We need to make sure these results are never served from the cache.
-    {
-      fetchPolicy: 'no-cache',
-      notifyOnNetworkStatusChange: true,
-      variables: { newTab: newTabGuid },
-      client,
-    }
-  );
+  const { loading, error, data, refetch } = useGetProspectsQuery({
+    notifyOnNetworkStatusChange: true,
+    variables: { newTab: newTabGuid },
+    client,
+  });
 
   // Get today and tomorrow's items that are already scheduled for this New Tab
   const {
@@ -38,8 +58,285 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
     },
   });
 
+  /**
+   * Set the current Prospect to be worked on (e.g., to be approved or rejected).
+   */
+  const [currentItem, setCurrentItem] = useState<Prospect | undefined>(
+    undefined
+  );
+
+  const [isRecommendation, setIsRecommendation] = useState<boolean>(false);
+
+  /**
+   * Keep track of whether the "Reject this prospect" modal is open or not.
+   */
+  const [rejectModalOpen, toggleRejectModal] = useToggle(false);
+
+  /**
+   * Keep track of whether the "Edit Item" modal is open or not.
+   */
+  const [approvedItemModalOpen, toggleApprovedItemModal] = useToggle(false);
+
+  // Get a helper function that will execute each mutation, show standard notifications
+  // and execute any additional actions in a callback
+  const { runMutation } = useRunMutation();
+
+  // Prepare the "reject prospect" mutation
+  const [rejectProspect] = useRejectProspectMutation();
+  // Prepare the "update prospect as curated" mutation
+  const [updateProspectAsCurated] = useUpdateProspectAsCuratedMutation({
+    client,
+  });
+
+  /**
+   * Add the prospect to the rejected corpus.
+   * Additionally, let Prospect API know the prospect has been processed.
+   *
+   * @param values
+   * @param formikHelpers
+   */
+
+  const onRejectSave = (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ): void => {
+    // Set out all the variables we need to pass to the first mutation
+    const variables: RejectProspectMutationVariables = {
+      data: {
+        prospectId: currentItem?.id ?? '', // TODO: sort out types here
+        url: currentItem?.url,
+        title: currentItem?.title,
+        topic: currentItem?.topic ?? '',
+        language: currentItem?.language,
+        publisher: currentItem?.publisher,
+        reason: values.reason,
+      },
+    };
+
+    // Mark the prospect as processed in the Prospect API datastore.
+    runMutation(
+      updateProspectAsCurated,
+      { variables: { prospectId: currentItem?.id }, client },
+      '',
+      () => {
+        formikHelpers.setSubmitting(false);
+      },
+      () => {
+        formikHelpers.setSubmitting(false);
+      },
+      refetch
+    );
+
+    // Add the prospect to the rejected corpus
+    runMutation(
+      rejectProspect,
+      { variables },
+      `Item successfully added to the rejected corpus.`,
+      () => {
+        toggleRejectModal();
+        formikHelpers.setSubmitting(false);
+      },
+      () => {
+        formikHelpers.setSubmitting(false);
+      }
+    );
+
+    // Mark the prospect as processed in the Prospect API datastore.
+    // TODO: add logic here. Don't forget to connect to Prospect API for this mutation
+  };
+
+  // Prepare the upload approved item image mutation
+  const [uploadApprovedItemImage] =
+    useUploadApprovedCuratedCorpusItemImageMutation();
+
+  // Prepare the create approved item mutation
+  const [createApprovedItem] = useCreateApprovedCuratedCorpusItemMutation();
+
+  // The toast notification hook
+  const { showNotification } = useNotifications();
+
+  // State variable to track if the user has uploaded a new image
+  const [prospectS3Image, setProspectS3Image] = useState<string | undefined>(
+    undefined
+  );
+
+  /**
+   *
+   * This function gets called when the user saves(approves) a prospect
+   */
+  const onProspectSave = (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ) => {
+    // If the parser returned an image, let's upload it to S3
+    // First, side-step CORS issues that prevent us from downloading
+    // the image directly from the publisher
+    if (values.imageUrl) {
+      const parserImageUrl =
+        'https://pocket-image-cache.com/x/filters:no_upscale():format(jpg)/' +
+        encodeURIComponent(values.imageUrl);
+
+      // Get the file
+      fetch(parserImageUrl)
+        .then((res) => res.blob())
+        .then((blob) => {
+          // Upload the file to S3
+          uploadApprovedItemImage({
+            variables: {
+              image: blob,
+            },
+          })
+            .then((imgUploadData) => {
+              if (
+                imgUploadData.data &&
+                imgUploadData.data.uploadApprovedCuratedCorpusItemImage.url
+              ) {
+                const languageCode: string =
+                  values.language === 'English' ? 'en' : 'de';
+                const curationStatus = values.curationStatus.toUpperCase();
+                const topic: string = values.topic.toUpperCase();
+                const s3ImageUrl: string =
+                  imgUploadData.data.uploadApprovedCuratedCorpusItemImage.url;
+
+                const approvedProspect = {
+                  prospectId: currentItem?.id ?? '',
+                  url: values.url,
+                  title: values.title,
+                  excerpt: values.excerpt,
+                  status: curationStatus,
+                  language: languageCode,
+                  publisher: values.publisher,
+                  imageUrl: s3ImageUrl,
+                  topic: topic,
+                  isCollection: values.collection,
+                  isShortLived: values.shortLived,
+                  isSyndicated: values.syndicated,
+                };
+                // Don't show a notification about a successful S3 upload just yet -
+                // that's just too many. Wait until we save the url to show another
+                // success message
+                createApprovedItem({
+                  variables: {
+                    data: { ...approvedProspect },
+                  },
+                })
+                  .then(() => {
+                    // Mark the prospect as processed in the Prospect API datastore.
+                    runMutation(
+                      updateProspectAsCurated,
+                      { variables: { prospectId: currentItem?.id }, client },
+                      '',
+                      () => {
+                        formikHelpers.setSubmitting(false);
+                      },
+                      () => {
+                        formikHelpers.setSubmitting(false);
+                      },
+                      refetch
+                    );
+
+                    showNotification(
+                      'Item successfully added to the curated corpus.',
+                      'success'
+                    );
+                    toggleApprovedItemModal();
+                    // manually refresh the cache
+                    refetch();
+                    formikHelpers.setSubmitting(false);
+                  })
+                  .catch((error) => {
+                    // manually refresh the cache
+                    refetch();
+                    showNotification(error.message, 'error');
+                    formikHelpers.setSubmitting(false);
+                  });
+              }
+            })
+            .catch((error) => {
+              // manually refresh the cache
+              refetch();
+              showNotification(error.message, 'error');
+            });
+        })
+        .catch((error: Error) => {
+          showNotification(
+            'Could not process image - file may be too large.\n' +
+              `(Original error: ${error.message})`,
+            'error'
+          );
+          // manually refresh the cache
+          refetch();
+          formikHelpers.setSubmitting(false);
+        });
+    } else if (prospectS3Image) {
+      // This if block is hit when the prospect doesn't have an imageUrl value but
+      // the user uploads a new image.
+
+      const languageCode: string = values.language === 'English' ? 'en' : 'de';
+      const curationStatus = values.curationStatus.toUpperCase();
+      const topic: string = values.topic.toUpperCase();
+      const s3ImageUrl: string = prospectS3Image;
+
+      const variables = {
+        data: {
+          prospectId: currentItem?.id ?? '',
+          url: values.url,
+          title: values.title,
+          excerpt: values.excerpt,
+          status: curationStatus,
+          language: languageCode,
+          publisher: values.publisher,
+          imageUrl: s3ImageUrl,
+          topic: topic,
+          isCollection: values.collection,
+          isShortLived: values.shortLived,
+          isSyndicated: values.syndicated,
+        },
+      };
+
+      // Executed the mutation to create an approved item
+      runMutation(
+        createApprovedItem,
+        { variables },
+        `Prospect "${values.title.substring(0, 50)}..." successfully approved`,
+        () => {
+          toggleApprovedItemModal();
+          formikHelpers.setSubmitting(false);
+        },
+        () => {
+          formikHelpers.setSubmitting(false);
+        },
+        refetch
+      );
+    } else {
+      showNotification('Please upload an image before submitting', 'error');
+    }
+  };
+
   return (
     <>
+      {currentItem && (
+        <>
+          <RejectItemModal
+            prospect={currentItem}
+            isOpen={rejectModalOpen}
+            onSave={onRejectSave}
+            toggleModal={toggleRejectModal}
+          />
+
+          <ApprovedItemModal
+            approvedItem={transformProspectToApprovedItem(
+              currentItem,
+              isRecommendation
+            )}
+            isOpen={approvedItemModalOpen}
+            onSave={onProspectSave}
+            toggleModal={toggleApprovedItemModal}
+            onImageSave={setProspectS3Image}
+          />
+        </>
+      )}
+
       <h1>New Tab Curation</h1>
       <Box mb={3}>
         <Typography>
@@ -54,7 +351,26 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
 
           {data &&
             data.getProspects.map((prospect) => {
-              return <ProspectListCard key={prospect.id} prospect={prospect} />;
+              return (
+                <ProspectListCard
+                  key={prospect.id}
+                  prospect={prospect}
+                  onAddToCorpus={() => {
+                    setCurrentItem(prospect);
+                    setIsRecommendation(false);
+                    toggleApprovedItemModal();
+                  }}
+                  onRecommend={() => {
+                    setCurrentItem(prospect);
+                    setIsRecommendation(true);
+                    toggleApprovedItemModal();
+                  }}
+                  onReject={() => {
+                    setCurrentItem(prospect);
+                    toggleRejectModal();
+                  }}
+                />
+              );
             })}
         </Grid>
         <Hidden xsDown>
@@ -66,13 +382,12 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
                 error={errorScheduled}
               />
             )}
-            {dataScheduled && (
-              <MiniNewTabScheduleList
-                scheduledItems={
-                  dataScheduled.getScheduledCuratedCorpusItems.items
-                }
-              />
-            )}
+            {dataScheduled &&
+              dataScheduled.getScheduledCuratedCorpusItems.map(
+                (data: ScheduledCuratedCorpusItemsResult) => (
+                  <NewTabGroupedList key={data.scheduledDate} data={data} />
+                )
+              )}
           </Grid>
         </Hidden>
       </Grid>

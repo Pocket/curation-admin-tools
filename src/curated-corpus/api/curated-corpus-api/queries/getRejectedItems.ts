@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { RejectedItemData } from '../fragments/rejectedCuratedCorpusItemData';
+import { RejectedItemData } from '../fragments/rejectedItemData';
 
 /**
  * Get a list of rejected curated items

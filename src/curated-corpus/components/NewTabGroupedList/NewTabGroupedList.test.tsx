@@ -3,14 +3,13 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import {
   CuratedStatus,
-  ScheduledCuratedCorpusItem,
+  ScheduledCuratedCorpusItemsResult,
 } from '../../api/curated-corpus-api/generatedTypes';
 
 import { NewTabGroupedList } from './NewTabGroupedList';
-import { DateTime } from 'luxon';
 
-describe('The MiniNewTabScheduleCard component', () => {
-  let scheduledItems: ScheduledCuratedCorpusItem[];
+describe('The NewTabGroupedList component', () => {
+  let data: ScheduledCuratedCorpusItemsResult;
 
   beforeEach(() => {
     const item = {
@@ -44,75 +43,48 @@ describe('The MiniNewTabScheduleCard component', () => {
     const secondItem = {
       ...item,
       externalId: '987-qwerty',
+      isSyndicated: true,
       approvedItem: { ...item.approvedItem, title: 'Second story' },
     };
 
-    scheduledItems = [item, secondItem];
+    data = {
+      scheduledDate: '2050-01-01',
+      totalCount: 2,
+      syndicatedCount: 1,
+      collectionCount: 0,
+      items: [item, secondItem],
+    };
   });
 
-  it('shows the "Today" heading for today\'s date', () => {
+  it('shows the list heading correctly', () => {
     render(
       <MemoryRouter>
-        <NewTabGroupedList
-          scheduledDate={DateTime.local().toFormat('yyyy-MM-dd')}
-          scheduledItems={scheduledItems}
-        />
+        <NewTabGroupedList data={data} />
       </MemoryRouter>
     );
 
-    // The heading is "Today"
-    const listHeading = screen.getByText(/today/i);
-    expect(listHeading).toBeInTheDocument();
-  });
+    // The heading contains the correct date
+    const heading = screen.getByText(/January 1, 2050/i);
+    expect(heading).toBeInTheDocument();
 
-  it('shows the "Tomorrow" heading for tomorrow\'s date', () => {
-    render(
-      <MemoryRouter>
-        <NewTabGroupedList
-          scheduledDate={DateTime.local()
-            .plus({ days: 1 })
-            .toFormat('yyyy-MM-dd')}
-          scheduledItems={scheduledItems}
-        />
-      </MemoryRouter>
-    );
-
-    // The heading is "Tomorrow"
-    const listHeading = screen.getByText(/tomorrow/i);
-    expect(listHeading).toBeInTheDocument();
-  });
-
-  it('shows a date beyond today and tomorrow correctly', () => {
-    render(
-      <MemoryRouter>
-        <NewTabGroupedList
-          scheduledDate={'2050-01-01'}
-          scheduledItems={scheduledItems}
-        />
-      </MemoryRouter>
-    );
-
-    // The heading is the correct date
-    const listHeading = screen.getByText(/January 1, 2050/i);
-    expect(listHeading).toBeInTheDocument();
+    // The heading contains the right numbers for syndicated/total split
+    const headingTakeTwo = screen.getByText(/1\/2 syndicated/i);
+    expect(headingTakeTwo).toBeInTheDocument();
   });
 
   it('shows a card for each item in the list', () => {
     render(
       <MemoryRouter>
-        <NewTabGroupedList
-          scheduledDate={'2050-01-01'}
-          scheduledItems={scheduledItems}
-        />
+        <NewTabGroupedList data={data} />
       </MemoryRouter>
     );
 
     // There is a card (well, we're only checking for title here) for the first story
-    const title1 = screen.getByText(scheduledItems[0].approvedItem.title);
+    const title1 = screen.getByText(data.items[0].approvedItem.title);
     expect(title1).toBeInTheDocument();
 
     // There is a card for the second story
-    const title2 = screen.getByText(scheduledItems[1].approvedItem.title);
+    const title2 = screen.getByText(data.items[1].approvedItem.title);
     expect(title2).toBeInTheDocument();
   });
 });

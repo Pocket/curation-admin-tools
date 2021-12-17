@@ -57,7 +57,7 @@ describe('The LoadMore component', () => {
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
   });
 
-  it('calls the "loadMore" button on click', async () => {
+  it('calls the "loadMore" method on click', async () => {
     render(
       <LoadMore
         buttonDisabled={buttonDisabled}

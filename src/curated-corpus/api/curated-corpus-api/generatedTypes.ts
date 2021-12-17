@@ -1,5 +1,6 @@
-import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+import { gql } from '@apollo/client';
+
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -158,6 +159,27 @@ export type CreateApprovedCuratedCorpusItemInput = {
   url: Scalars['Url'];
 };
 
+/** Input data for creating a Rejected Item. */
+export type CreateRejectedCuratedCorpusItemInput = {
+  /** What language this item is in. This is a two-letter code, for example, 'en' for English. */
+  language?: InputMaybe<Scalars['String']>;
+  /** The GUID of the corresponding Prospect ID. */
+  prospectId: Scalars['ID'];
+  /** The name of the online publication that published this story. */
+  publisher?: InputMaybe<Scalars['String']>;
+  /** A comma-separated list of rejection reasons. */
+  reason: Scalars['String'];
+  /** The title of the Rejected Item. */
+  title?: InputMaybe<Scalars['String']>;
+  /**
+   * A topic this story best fits in.
+   * Temporarily a string value that will be provided by Prospect API, possibly an enum in the future.
+   */
+  topic: Scalars['String'];
+  /** The URL of the Rejected Item. */
+  url: Scalars['Url'];
+};
+
 /** Input data for creating a scheduled entry for an Approved Item on a New Tab Feed. */
 export type CreateScheduledCuratedCorpusItemInput = {
   /** The ID of the Approved Item that needs to be scheduled. */
@@ -186,10 +208,14 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** Creates an Approved Item and optionally schedules it to appear on New Tab. */
   createApprovedCuratedCorpusItem: ApprovedCuratedCorpusItem;
+  /** Creates a Rejected Item. */
+  createRejectedCuratedCorpusItem: RejectedCuratedCorpusItem;
   /** Creates a New Tab Scheduled Item. */
   createScheduledCuratedCorpusItem: ScheduledCuratedCorpusItem;
   /** Deletes an item from New Tab Schedule. */
   deleteScheduledCuratedCorpusItem: ScheduledCuratedCorpusItem;
+  /** Rejects an Approved Item: deletes it from the corpus and creates a Rejected Item instead. */
+  rejectApprovedCuratedCorpusItem: ApprovedCuratedCorpusItem;
   /** Updates an Approved Item. */
   updateApprovedCuratedCorpusItem: ApprovedCuratedCorpusItem;
   /** Uploads an image to S3 for an Approved Curated Corpus Item */
@@ -200,12 +226,20 @@ export type MutationCreateApprovedCuratedCorpusItemArgs = {
   data: CreateApprovedCuratedCorpusItemInput;
 };
 
+export type MutationCreateRejectedCuratedCorpusItemArgs = {
+  data: CreateRejectedCuratedCorpusItemInput;
+};
+
 export type MutationCreateScheduledCuratedCorpusItemArgs = {
   data: CreateScheduledCuratedCorpusItemInput;
 };
 
 export type MutationDeleteScheduledCuratedCorpusItemArgs = {
   data: DeleteScheduledCuratedCorpusItemInput;
+};
+
+export type MutationRejectApprovedCuratedCorpusItemArgs = {
+  data: RejectApprovedCuratedCorpusItemInput;
 };
 
 export type MutationUpdateApprovedCuratedCorpusItemArgs = {
@@ -284,7 +318,7 @@ export type Query = {
   /** Retrieves a paginated, filterable list of RejectedCuratedCorpusItems. */
   getRejectedCuratedCorpusItems: RejectedCuratedCorpusItemConnection;
   /** Retrieves a list of Approved Items that are scheduled to appear on New Tab */
-  getScheduledCuratedCorpusItems: ScheduledCuratedCorpusItemsResult;
+  getScheduledCuratedCorpusItems: Array<ScheduledCuratedCorpusItemsResult>;
 };
 
 export type QueryGetApprovedCuratedCorpusItemsArgs = {
@@ -299,6 +333,14 @@ export type QueryGetRejectedCuratedCorpusItemsArgs = {
 
 export type QueryGetScheduledCuratedCorpusItemsArgs = {
   filters: ScheduledCuratedCorpusItemsFilterInput;
+};
+
+/** Input data for rejecting an Approved Item. */
+export type RejectApprovedCuratedCorpusItemInput = {
+  /** Approved Item ID. */
+  externalId: Scalars['ID'];
+  /** A comma-separated list of rejection reasons. */
+  reason: Scalars['String'];
 };
 
 /** A prospective story that has been rejected by the curators. */
@@ -415,8 +457,16 @@ export type ScheduledCuratedCorpusItemsFilterInput = {
 /** The shape of the result returned by the getScheduledCuratedCorpusItems query. */
 export type ScheduledCuratedCorpusItemsResult = {
   __typename?: 'ScheduledCuratedCorpusItemsResult';
+  /** The number of curated items that are collections for the scheduled date. */
+  collectionCount: Scalars['Int'];
   /** An array of items for a given New Tab Feed */
   items: Array<ScheduledCuratedCorpusItem>;
+  /** The date items are scheduled for, in YYYY-MM-DD format. */
+  scheduledDate: Scalars['Date'];
+  /** The number of syndicated articles for the scheduled date. */
+  syndicatedCount: Scalars['Int'];
+  /** The total number of items for the scheduled date. */
+  totalCount: Scalars['Int'];
 };
 
 /**
@@ -513,6 +563,34 @@ export type RejectedItemDataFragment = {
   createdAt: number;
 };
 
+export type CreateApprovedCuratedCorpusItemMutationVariables = Exact<{
+  data: CreateApprovedCuratedCorpusItemInput;
+}>;
+
+export type CreateApprovedCuratedCorpusItemMutation = {
+  __typename?: 'Mutation';
+  createApprovedCuratedCorpusItem: {
+    __typename?: 'ApprovedCuratedCorpusItem';
+    externalId: string;
+    prospectId: string;
+    title: string;
+    language: string;
+    publisher: string;
+    url: any;
+    imageUrl: any;
+    excerpt: string;
+    status: CuratedStatus;
+    topic: string;
+    isCollection: boolean;
+    isShortLived: boolean;
+    isSyndicated: boolean;
+    createdBy: string;
+    createdAt: number;
+    updatedBy?: string | null | undefined;
+    updatedAt: number;
+  };
+};
+
 export type CreateNewTabFeedScheduledItemMutationVariables = Exact<{
   approvedItemExternalId: Scalars['ID'];
   newTabGuid: Scalars['ID'];
@@ -549,6 +627,132 @@ export type CreateNewTabFeedScheduledItemMutation = {
       updatedBy?: string | null | undefined;
       updatedAt: number;
     };
+  };
+};
+
+export type DeleteScheduledItemMutationVariables = Exact<{
+  externalId: Scalars['ID'];
+}>;
+
+export type DeleteScheduledItemMutation = {
+  __typename?: 'Mutation';
+  deleteScheduledCuratedCorpusItem: {
+    __typename?: 'ScheduledCuratedCorpusItem';
+    externalId: string;
+    createdAt: number;
+    createdBy: string;
+    updatedAt: number;
+    updatedBy?: string | null | undefined;
+    scheduledDate: any;
+    approvedItem: {
+      __typename?: 'ApprovedCuratedCorpusItem';
+      externalId: string;
+      prospectId: string;
+      title: string;
+      language: string;
+      publisher: string;
+      url: any;
+      imageUrl: any;
+      excerpt: string;
+      status: CuratedStatus;
+      topic: string;
+      isCollection: boolean;
+      isShortLived: boolean;
+      isSyndicated: boolean;
+      createdBy: string;
+      createdAt: number;
+      updatedBy?: string | null | undefined;
+      updatedAt: number;
+    };
+  };
+};
+
+export type RejectApprovedItemMutationVariables = Exact<{
+  data: RejectApprovedCuratedCorpusItemInput;
+}>;
+
+export type RejectApprovedItemMutation = {
+  __typename?: 'Mutation';
+  rejectApprovedCuratedCorpusItem: {
+    __typename?: 'ApprovedCuratedCorpusItem';
+    externalId: string;
+    prospectId: string;
+    title: string;
+    language: string;
+    publisher: string;
+    url: any;
+    imageUrl: any;
+    excerpt: string;
+    status: CuratedStatus;
+    topic: string;
+    isCollection: boolean;
+    isShortLived: boolean;
+    isSyndicated: boolean;
+    createdBy: string;
+    createdAt: number;
+    updatedBy?: string | null | undefined;
+    updatedAt: number;
+  };
+};
+
+export type RejectProspectMutationVariables = Exact<{
+  data: CreateRejectedCuratedCorpusItemInput;
+}>;
+
+export type RejectProspectMutation = {
+  __typename?: 'Mutation';
+  createRejectedCuratedCorpusItem: {
+    __typename?: 'RejectedCuratedCorpusItem';
+    externalId: string;
+    prospectId: string;
+    url: any;
+    title: string;
+    topic: string;
+    language: string;
+    publisher: string;
+    reason: string;
+    createdBy: string;
+    createdAt: number;
+  };
+};
+
+export type UpdateApprovedCuratedCorpusItemMutationVariables = Exact<{
+  data: UpdateApprovedCuratedCorpusItemInput;
+}>;
+
+export type UpdateApprovedCuratedCorpusItemMutation = {
+  __typename?: 'Mutation';
+  updateApprovedCuratedCorpusItem: {
+    __typename?: 'ApprovedCuratedCorpusItem';
+    externalId: string;
+    prospectId: string;
+    title: string;
+    language: string;
+    publisher: string;
+    url: any;
+    imageUrl: any;
+    excerpt: string;
+    status: CuratedStatus;
+    topic: string;
+    isCollection: boolean;
+    isShortLived: boolean;
+    isSyndicated: boolean;
+    createdBy: string;
+    createdAt: number;
+    updatedBy?: string | null | undefined;
+    updatedAt: number;
+  };
+};
+
+export type UploadApprovedCuratedCorpusItemImageMutationVariables = Exact<{
+  image: Scalars['Upload'];
+}>;
+
+export type UploadApprovedCuratedCorpusItemImageMutation = {
+  __typename?: 'Mutation';
+  uploadApprovedCuratedCorpusItemImage: {
+    __typename?: 'ApprovedCuratedCorpusImageUrl';
+    url: string;
   };
 };
 
@@ -639,8 +843,12 @@ export type GetScheduledItemsQueryVariables = Exact<{
 
 export type GetScheduledItemsQuery = {
   __typename?: 'Query';
-  getScheduledCuratedCorpusItems: {
+  getScheduledCuratedCorpusItems: Array<{
     __typename?: 'ScheduledCuratedCorpusItemsResult';
+    collectionCount: number;
+    syndicatedCount: number;
+    totalCount: number;
+    scheduledDate: any;
     items: Array<{
       __typename?: 'ScheduledCuratedCorpusItem';
       externalId: string;
@@ -670,7 +878,7 @@ export type GetScheduledItemsQuery = {
         updatedAt: number;
       };
     }>;
-  };
+  }>;
 };
 
 export const CuratedItemDataFragmentDoc = gql`
@@ -708,6 +916,60 @@ export const RejectedItemDataFragmentDoc = gql`
     createdAt
   }
 `;
+export const CreateApprovedCuratedCorpusItemDocument = gql`
+  mutation createApprovedCuratedCorpusItem(
+    $data: CreateApprovedCuratedCorpusItemInput!
+  ) {
+    createApprovedCuratedCorpusItem(data: $data) {
+      ...CuratedItemData
+    }
+  }
+  ${CuratedItemDataFragmentDoc}
+`;
+export type CreateApprovedCuratedCorpusItemMutationFn = Apollo.MutationFunction<
+  CreateApprovedCuratedCorpusItemMutation,
+  CreateApprovedCuratedCorpusItemMutationVariables
+>;
+
+/**
+ * __useCreateApprovedCuratedCorpusItemMutation__
+ *
+ * To run a mutation, you first call `useCreateApprovedCuratedCorpusItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateApprovedCuratedCorpusItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createApprovedCuratedCorpusItemMutation, { data, loading, error }] = useCreateApprovedCuratedCorpusItemMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateApprovedCuratedCorpusItemMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateApprovedCuratedCorpusItemMutation,
+    CreateApprovedCuratedCorpusItemMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateApprovedCuratedCorpusItemMutation,
+    CreateApprovedCuratedCorpusItemMutationVariables
+  >(CreateApprovedCuratedCorpusItemDocument, options);
+}
+export type CreateApprovedCuratedCorpusItemMutationHookResult = ReturnType<
+  typeof useCreateApprovedCuratedCorpusItemMutation
+>;
+export type CreateApprovedCuratedCorpusItemMutationResult =
+  Apollo.MutationResult<CreateApprovedCuratedCorpusItemMutation>;
+export type CreateApprovedCuratedCorpusItemMutationOptions =
+  Apollo.BaseMutationOptions<
+    CreateApprovedCuratedCorpusItemMutation,
+    CreateApprovedCuratedCorpusItemMutationVariables
+  >;
 export const CreateNewTabFeedScheduledItemDocument = gql`
   mutation createNewTabFeedScheduledItem(
     $approvedItemExternalId: ID!
@@ -779,6 +1041,273 @@ export type CreateNewTabFeedScheduledItemMutationOptions =
   Apollo.BaseMutationOptions<
     CreateNewTabFeedScheduledItemMutation,
     CreateNewTabFeedScheduledItemMutationVariables
+  >;
+export const DeleteScheduledItemDocument = gql`
+  mutation deleteScheduledItem($externalId: ID!) {
+    deleteScheduledCuratedCorpusItem(data: { externalId: $externalId }) {
+      externalId
+      createdAt
+      createdBy
+      updatedAt
+      updatedBy
+      scheduledDate
+      approvedItem {
+        ...CuratedItemData
+      }
+    }
+  }
+  ${CuratedItemDataFragmentDoc}
+`;
+export type DeleteScheduledItemMutationFn = Apollo.MutationFunction<
+  DeleteScheduledItemMutation,
+  DeleteScheduledItemMutationVariables
+>;
+
+/**
+ * __useDeleteScheduledItemMutation__
+ *
+ * To run a mutation, you first call `useDeleteScheduledItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteScheduledItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteScheduledItemMutation, { data, loading, error }] = useDeleteScheduledItemMutation({
+ *   variables: {
+ *      externalId: // value for 'externalId'
+ *   },
+ * });
+ */
+export function useDeleteScheduledItemMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteScheduledItemMutation,
+    DeleteScheduledItemMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    DeleteScheduledItemMutation,
+    DeleteScheduledItemMutationVariables
+  >(DeleteScheduledItemDocument, options);
+}
+export type DeleteScheduledItemMutationHookResult = ReturnType<
+  typeof useDeleteScheduledItemMutation
+>;
+export type DeleteScheduledItemMutationResult =
+  Apollo.MutationResult<DeleteScheduledItemMutation>;
+export type DeleteScheduledItemMutationOptions = Apollo.BaseMutationOptions<
+  DeleteScheduledItemMutation,
+  DeleteScheduledItemMutationVariables
+>;
+export const RejectApprovedItemDocument = gql`
+  mutation rejectApprovedItem($data: RejectApprovedCuratedCorpusItemInput!) {
+    rejectApprovedCuratedCorpusItem(data: $data) {
+      ...CuratedItemData
+    }
+  }
+  ${CuratedItemDataFragmentDoc}
+`;
+export type RejectApprovedItemMutationFn = Apollo.MutationFunction<
+  RejectApprovedItemMutation,
+  RejectApprovedItemMutationVariables
+>;
+
+/**
+ * __useRejectApprovedItemMutation__
+ *
+ * To run a mutation, you first call `useRejectApprovedItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRejectApprovedItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [rejectApprovedItemMutation, { data, loading, error }] = useRejectApprovedItemMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useRejectApprovedItemMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    RejectApprovedItemMutation,
+    RejectApprovedItemMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    RejectApprovedItemMutation,
+    RejectApprovedItemMutationVariables
+  >(RejectApprovedItemDocument, options);
+}
+export type RejectApprovedItemMutationHookResult = ReturnType<
+  typeof useRejectApprovedItemMutation
+>;
+export type RejectApprovedItemMutationResult =
+  Apollo.MutationResult<RejectApprovedItemMutation>;
+export type RejectApprovedItemMutationOptions = Apollo.BaseMutationOptions<
+  RejectApprovedItemMutation,
+  RejectApprovedItemMutationVariables
+>;
+export const RejectProspectDocument = gql`
+  mutation rejectProspect($data: CreateRejectedCuratedCorpusItemInput!) {
+    createRejectedCuratedCorpusItem(data: $data) {
+      ...RejectedItemData
+    }
+  }
+  ${RejectedItemDataFragmentDoc}
+`;
+export type RejectProspectMutationFn = Apollo.MutationFunction<
+  RejectProspectMutation,
+  RejectProspectMutationVariables
+>;
+
+/**
+ * __useRejectProspectMutation__
+ *
+ * To run a mutation, you first call `useRejectProspectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRejectProspectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [rejectProspectMutation, { data, loading, error }] = useRejectProspectMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useRejectProspectMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    RejectProspectMutation,
+    RejectProspectMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    RejectProspectMutation,
+    RejectProspectMutationVariables
+  >(RejectProspectDocument, options);
+}
+export type RejectProspectMutationHookResult = ReturnType<
+  typeof useRejectProspectMutation
+>;
+export type RejectProspectMutationResult =
+  Apollo.MutationResult<RejectProspectMutation>;
+export type RejectProspectMutationOptions = Apollo.BaseMutationOptions<
+  RejectProspectMutation,
+  RejectProspectMutationVariables
+>;
+export const UpdateApprovedCuratedCorpusItemDocument = gql`
+  mutation updateApprovedCuratedCorpusItem(
+    $data: UpdateApprovedCuratedCorpusItemInput!
+  ) {
+    updateApprovedCuratedCorpusItem(data: $data) {
+      ...CuratedItemData
+    }
+  }
+  ${CuratedItemDataFragmentDoc}
+`;
+export type UpdateApprovedCuratedCorpusItemMutationFn = Apollo.MutationFunction<
+  UpdateApprovedCuratedCorpusItemMutation,
+  UpdateApprovedCuratedCorpusItemMutationVariables
+>;
+
+/**
+ * __useUpdateApprovedCuratedCorpusItemMutation__
+ *
+ * To run a mutation, you first call `useUpdateApprovedCuratedCorpusItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateApprovedCuratedCorpusItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateApprovedCuratedCorpusItemMutation, { data, loading, error }] = useUpdateApprovedCuratedCorpusItemMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateApprovedCuratedCorpusItemMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateApprovedCuratedCorpusItemMutation,
+    UpdateApprovedCuratedCorpusItemMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateApprovedCuratedCorpusItemMutation,
+    UpdateApprovedCuratedCorpusItemMutationVariables
+  >(UpdateApprovedCuratedCorpusItemDocument, options);
+}
+export type UpdateApprovedCuratedCorpusItemMutationHookResult = ReturnType<
+  typeof useUpdateApprovedCuratedCorpusItemMutation
+>;
+export type UpdateApprovedCuratedCorpusItemMutationResult =
+  Apollo.MutationResult<UpdateApprovedCuratedCorpusItemMutation>;
+export type UpdateApprovedCuratedCorpusItemMutationOptions =
+  Apollo.BaseMutationOptions<
+    UpdateApprovedCuratedCorpusItemMutation,
+    UpdateApprovedCuratedCorpusItemMutationVariables
+  >;
+export const UploadApprovedCuratedCorpusItemImageDocument = gql`
+  mutation uploadApprovedCuratedCorpusItemImage($image: Upload!) {
+    uploadApprovedCuratedCorpusItemImage(data: $image) {
+      url
+    }
+  }
+`;
+export type UploadApprovedCuratedCorpusItemImageMutationFn =
+  Apollo.MutationFunction<
+    UploadApprovedCuratedCorpusItemImageMutation,
+    UploadApprovedCuratedCorpusItemImageMutationVariables
+  >;
+
+/**
+ * __useUploadApprovedCuratedCorpusItemImageMutation__
+ *
+ * To run a mutation, you first call `useUploadApprovedCuratedCorpusItemImageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadApprovedCuratedCorpusItemImageMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadApprovedCuratedCorpusItemImageMutation, { data, loading, error }] = useUploadApprovedCuratedCorpusItemImageMutation({
+ *   variables: {
+ *      image: // value for 'image'
+ *   },
+ * });
+ */
+export function useUploadApprovedCuratedCorpusItemImageMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UploadApprovedCuratedCorpusItemImageMutation,
+    UploadApprovedCuratedCorpusItemImageMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UploadApprovedCuratedCorpusItemImageMutation,
+    UploadApprovedCuratedCorpusItemImageMutationVariables
+  >(UploadApprovedCuratedCorpusItemImageDocument, options);
+}
+export type UploadApprovedCuratedCorpusItemImageMutationHookResult = ReturnType<
+  typeof useUploadApprovedCuratedCorpusItemImageMutation
+>;
+export type UploadApprovedCuratedCorpusItemImageMutationResult =
+  Apollo.MutationResult<UploadApprovedCuratedCorpusItemImageMutation>;
+export type UploadApprovedCuratedCorpusItemImageMutationOptions =
+  Apollo.BaseMutationOptions<
+    UploadApprovedCuratedCorpusItemImageMutation,
+    UploadApprovedCuratedCorpusItemImageMutationVariables
   >;
 export const GetApprovedItemsDocument = gql`
   query getApprovedItems(
@@ -933,6 +1462,10 @@ export type GetRejectedItemsQueryResult = Apollo.QueryResult<
 export const GetScheduledItemsDocument = gql`
   query getScheduledItems($filters: ScheduledCuratedCorpusItemsFilterInput!) {
     getScheduledCuratedCorpusItems(filters: $filters) {
+      collectionCount
+      syndicatedCount
+      totalCount
+      scheduledDate
       items {
         externalId
         createdAt

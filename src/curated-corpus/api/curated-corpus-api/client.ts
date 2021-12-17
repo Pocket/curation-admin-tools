@@ -3,7 +3,22 @@ import { createUploadLink } from 'apollo-upload-client';
 import { config } from '../../../config';
 
 const apolloOptions = {
-  cache: new InMemoryCache({}),
+  cache: new InMemoryCache({
+    typePolicies: {
+      ApprovedCuratedCorpusItem: {
+        keyFields: ['externalId'],
+      },
+      RejectedCuratedCorpusItem: {
+        keyFields: ['externalId'],
+      },
+      ScheduledCuratedCorpusItem: {
+        keyFields: ['externalId'],
+      },
+      ScheduledCuratedCorpusItemsResult: {
+        keyFields: ['scheduledDate'],
+      },
+    },
+  }),
   name: config.apolloClientName,
   version: config.version,
 };
