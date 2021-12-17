@@ -19,8 +19,8 @@ import {
   ScheduledCuratedCorpusItemsResult,
   useGetScheduledItemsQuery,
   useRejectProspectMutation,
-  useUploadApprovedCuratedCorpusItemImageMutation,
   useCreateApprovedCuratedCorpusItemMutation,
+  useUploadApprovedCuratedCorpusItemImageMutation,
 } from '../../api/curated-corpus-api/generatedTypes';
 import {
   useRunMutation,
@@ -28,7 +28,10 @@ import {
   useNotifications,
 } from '../../../_shared/hooks';
 
-import { transformProspectToApprovedItem } from '../../helpers/helperFunctions';
+import {
+  downloadAndUploadApprovedItemImageToS3,
+  transformProspectToApprovedItem,
+} from '../../helpers/helperFunctions';
 import { FormikHelpers, FormikValues } from 'formik';
 
 export const NewTabCurationPage: React.FC = (): JSX.Element => {
@@ -145,12 +148,12 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
     // TODO: add logic here. Don't forget to connect to Prospect API for this mutation
   };
 
+  // Prepare the create approved item mutation
+  const [createApprovedItem] = useCreateApprovedCuratedCorpusItemMutation();
+
   // Prepare the upload approved item image mutation
   const [uploadApprovedItemImage] =
     useUploadApprovedCuratedCorpusItemImageMutation();
-
-  // Prepare the create approved item mutation
-  const [createApprovedItem] = useCreateApprovedCuratedCorpusItemMutation();
 
   // The toast notification hook
   const { showNotification } = useNotifications();
@@ -162,145 +165,49 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
 
   /**
    *
-   * This function gets called when the user saves(approves) a prospect
+   * This function gets called by the onProspectSave function
+   * it creates an approved item from a prospect and marks it as curated
    */
-  const onProspectSave = (
+  const createApprovedItemAndMarkAsCurated = async (
+    s3ImageUrl: string,
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
-  ) => {
-    // If the parser returned an image, let's upload it to S3
-    // First, side-step CORS issues that prevent us from downloading
-    // the image directly from the publisher
-    if (values.imageUrl) {
-      const parserImageUrl =
-        'https://pocket-image-cache.com/x/filters:no_upscale():format(jpg)/' +
-        encodeURIComponent(values.imageUrl);
+  ): Promise<void> => {
+    //build an approved item
+    const languageCode: string = values.language === 'English' ? 'en' : 'de';
+    const curationStatus = values.curationStatus.toUpperCase();
+    const topic: string = values.topic.toUpperCase();
+    const imageUrl: string = s3ImageUrl;
 
-      // Get the file
-      fetch(parserImageUrl)
-        .then((res) => res.blob())
-        .then((blob) => {
-          // Upload the file to S3
-          uploadApprovedItemImage({
-            variables: {
-              image: blob,
-            },
-          })
-            .then((imgUploadData) => {
-              if (
-                imgUploadData.data &&
-                imgUploadData.data.uploadApprovedCuratedCorpusItemImage.url
-              ) {
-                const languageCode: string =
-                  values.language === 'English' ? 'en' : 'de';
-                const curationStatus = values.curationStatus.toUpperCase();
-                const topic: string = values.topic.toUpperCase();
-                const s3ImageUrl: string =
-                  imgUploadData.data.uploadApprovedCuratedCorpusItemImage.url;
+    const approvedProspect = {
+      prospectId: currentItem?.id ?? '',
+      url: values.url,
+      title: values.title,
+      excerpt: values.excerpt,
+      status: curationStatus,
+      language: languageCode,
+      publisher: values.publisher,
+      imageUrl: imageUrl,
+      topic: topic,
+      isCollection: values.collection,
+      isShortLived: values.shortLived,
+      isSyndicated: values.syndicated,
+    };
 
-                const approvedProspect = {
-                  prospectId: currentItem?.id ?? '',
-                  url: values.url,
-                  title: values.title,
-                  excerpt: values.excerpt,
-                  status: curationStatus,
-                  language: languageCode,
-                  publisher: values.publisher,
-                  imageUrl: s3ImageUrl,
-                  topic: topic,
-                  isCollection: values.collection,
-                  isShortLived: values.shortLived,
-                  isSyndicated: values.syndicated,
-                };
-                // Don't show a notification about a successful S3 upload just yet -
-                // that's just too many. Wait until we save the url to show another
-                // success message
-                createApprovedItem({
-                  variables: {
-                    data: { ...approvedProspect },
-                  },
-                })
-                  .then(() => {
-                    // Mark the prospect as processed in the Prospect API datastore.
-                    runMutation(
-                      updateProspectAsCurated,
-                      { variables: { prospectId: currentItem?.id }, client },
-                      '',
-                      () => {
-                        formikHelpers.setSubmitting(false);
-                      },
-                      () => {
-                        formikHelpers.setSubmitting(false);
-                      },
-                      refetch
-                    );
+    // call the create approved item mutation
+    const data = await createApprovedItem({
+      variables: {
+        data: { ...approvedProspect },
+      },
+    });
 
-                    showNotification(
-                      'Item successfully added to the curated corpus.',
-                      'success'
-                    );
-                    toggleApprovedItemModal();
-                    // manually refresh the cache
-                    refetch();
-                    formikHelpers.setSubmitting(false);
-                  })
-                  .catch((error) => {
-                    // manually refresh the cache
-                    refetch();
-                    showNotification(error.message, 'error');
-                    formikHelpers.setSubmitting(false);
-                  });
-              }
-            })
-            .catch((error) => {
-              // manually refresh the cache
-              refetch();
-              showNotification(error.message, 'error');
-            });
-        })
-        .catch((error: Error) => {
-          showNotification(
-            'Could not process image - file may be too large.\n' +
-              `(Original error: ${error.message})`,
-            'error'
-          );
-          // manually refresh the cache
-          refetch();
-          formikHelpers.setSubmitting(false);
-        });
-    } else if (prospectS3Image) {
-      // This if block is hit when the prospect doesn't have an imageUrl value but
-      // the user uploads a new image.
-
-      const languageCode: string = values.language === 'English' ? 'en' : 'de';
-      const curationStatus = values.curationStatus.toUpperCase();
-      const topic: string = values.topic.toUpperCase();
-      const s3ImageUrl: string = prospectS3Image;
-
-      const variables = {
-        data: {
-          prospectId: currentItem?.id ?? '',
-          url: values.url,
-          title: values.title,
-          excerpt: values.excerpt,
-          status: curationStatus,
-          language: languageCode,
-          publisher: values.publisher,
-          imageUrl: s3ImageUrl,
-          topic: topic,
-          isCollection: values.collection,
-          isShortLived: values.shortLived,
-          isSyndicated: values.syndicated,
-        },
-      };
-
-      // Executed the mutation to create an approved item
+    // if approved item is created then mark prospect as curated
+    if (data.data?.createApprovedCuratedCorpusItem) {
       runMutation(
-        createApprovedItem,
-        { variables },
-        `Prospect "${values.title.substring(0, 50)}..." successfully approved`,
+        updateProspectAsCurated,
+        { variables: { prospectId: currentItem?.id }, client },
+        '',
         () => {
-          toggleApprovedItemModal();
           formikHelpers.setSubmitting(false);
         },
         () => {
@@ -308,9 +215,49 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
         },
         refetch
       );
-    } else {
-      showNotification('Please upload an image before submitting', 'error');
+
+      showNotification(
+        'Item successfully added to the curated corpus.',
+        'success'
+      );
+      toggleApprovedItemModal();
+      // manually refresh the cache
+      formikHelpers.setSubmitting(false);
     }
+  };
+
+  /**
+   *
+   * This function gets called when the user saves(approves) a prospect
+   */
+  const onProspectSave = async (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ) => {
+    // early exit if the prospect does not have an imageUrl
+    // and the user has not uploaded a new image
+    if (!values.imageUrl && !prospectS3Image) {
+      showNotification('Please upload an image before submitting', 'error');
+      return;
+    }
+    // set `s3ImageUrl` variable to user provided one if it exists
+    let s3ImageUrl = prospectS3Image;
+    // if the user has not uploaded a new image, upload the one on prospect
+    if (!s3ImageUrl) {
+      try {
+        // this is using the prospect's image url
+        // also passing in the `uploadApprovedItem` mutation callback
+        s3ImageUrl = await downloadAndUploadApprovedItemImageToS3(
+          values.imageUrl,
+          uploadApprovedItemImage
+        );
+      } catch (error: any) {
+        showNotification(error.message, 'error');
+        return;
+      }
+    }
+    // create approved item and mark it with our s3 image url
+    createApprovedItemAndMarkAsCurated(s3ImageUrl, values, formikHelpers);
   };
 
   return (
