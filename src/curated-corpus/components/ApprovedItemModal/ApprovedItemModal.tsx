@@ -46,7 +46,7 @@ export const ApprovedItemModal: React.FC<ApprovedItemModalProps> = (
             <Typography variant="subtitle1">
               {showItemTitle && (
                 <>
-                  <em>Title: {approvedItem.title}</em>
+                  <em>Title: </em> {approvedItem.title}
                 </>
               )}
             </Typography>
