@@ -9,18 +9,28 @@ import { ApprovedItemForm } from '../ApprovedItemForm/ApprovedItemForm';
 interface ApprovedItemModalProps {
   approvedItem: ApprovedCuratedCorpusItem;
   isOpen: boolean;
+  heading?: string;
+  showItemTitle?: boolean;
   onSave: (
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ) => void | Promise<any>;
   toggleModal: () => void;
-  onImageSave: (url: string) => void;
+  onImageSave?: (url: string) => void;
 }
 
 export const ApprovedItemModal: React.FC<ApprovedItemModalProps> = (
   props
 ): JSX.Element => {
-  const { approvedItem, isOpen, onSave, toggleModal, onImageSave } = props;
+  const {
+    approvedItem,
+    showItemTitle,
+    heading,
+    isOpen,
+    onSave,
+    toggleModal,
+    onImageSave,
+  } = props;
 
   return (
     <Modal
@@ -31,10 +41,14 @@ export const ApprovedItemModal: React.FC<ApprovedItemModalProps> = (
     >
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <h2>Edit Item</h2>
+          {heading && <h2>{heading}</h2>}
           <Box mb={3}>
             <Typography variant="subtitle1">
-              <em>Title</em>: {approvedItem.title}
+              {showItemTitle && (
+                <>
+                  <em>Title: {approvedItem.title}</em>
+                </>
+              )}
             </Typography>
           </Box>
         </Grid>

@@ -184,14 +184,9 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
   // The toast notification hook
   const { showNotification } = useNotifications();
 
-  // State variable to track if the user has uploaded a new image
-  const [prospectS3Image, setProspectS3Image] = useState<string | undefined>(
-    undefined
-  );
-
   /**
    *
-   * This function gets called by the onProspectSave function
+   * This function gets called by the onCuratedItemSave function
    * it creates an approved item from a prospect and marks it as curated
    */
   const createApprovedItemAndMarkAsCurated = async (
@@ -205,8 +200,8 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
     const topic: string = values.topic.toUpperCase();
     const imageUrl: string = s3ImageUrl;
 
-    const approvedProspect = {
-      prospectId: currentItem?.id ?? '',
+    const approvedItem = {
+      prospectId: currentItem?.id!,
       url: values.url,
       title: values.title,
       excerpt: values.excerpt,
@@ -220,42 +215,39 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
       isSyndicated: values.syndicated,
     };
 
-    // call the create approved item mutation
-    const data = await createApprovedItem({
-      variables: {
-        data: { ...approvedProspect },
-      },
-    });
-
-    // if approved item is created then mark prospect as curated
-    if (data.data?.createApprovedCuratedCorpusItem) {
-      runMutation(
-        updateProspectAsCurated,
-        { variables: { prospectId: currentItem?.id }, client },
-        '',
-        () => {
-          toggleApprovedItemModal();
-
-          // Remove the newly curated item from the list of prospects displayed
-          // on the page.
-          setProspects(
-            prospects.filter((prospect) => prospect.id !== currentItem?.id!)
-          );
-
-          formikHelpers.setSubmitting(false);
+    try {
+      // call the create approved item mutation
+      const data = await createApprovedItem({
+        variables: {
+          data: { ...approvedItem },
         },
-        () => {
-          formikHelpers.setSubmitting(false);
-        }
-      );
+      });
 
-      showNotification(
-        'Item successfully added to the curated corpus.',
-        'success'
-      );
-      toggleApprovedItemModal();
-      // manually refresh the cache
-      formikHelpers.setSubmitting(false);
+      // if approved item is created then mark prospect as curated
+      if (data.data?.createApprovedCuratedCorpusItem) {
+        runMutation(
+          updateProspectAsCurated,
+          { variables: { prospectId: currentItem?.id }, client },
+          'Item successfully added to the curated corpus.',
+          () => {
+            toggleApprovedItemModal();
+
+            // Remove the newly curated item from the list of prospects displayed
+            // on the page.
+            setProspects(
+              prospects.filter((prospect) => prospect.id !== currentItem?.id!)
+            );
+
+            formikHelpers.setSubmitting(false);
+          },
+          () => {
+            formikHelpers.setSubmitting(false);
+          }
+        );
+        formikHelpers.setSubmitting(false);
+      }
+    } catch (error: any) {
+      showNotification(error.message, 'error');
     }
   };
 
@@ -263,34 +255,25 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
    *
    * This function gets called when the user saves(approves) a prospect
    */
-  const onProspectSave = async (
+  const onCuratedItemSave = async (
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ) => {
-    // early exit if the prospect does not have an imageUrl
-    // and the user has not uploaded a new image
-    if (!values.imageUrl && !prospectS3Image) {
-      showNotification('Please upload an image before submitting', 'error');
+    let s3ImageUrl: string;
+    try {
+      // We download the image from source using the imageUrl field from the form
+      // and then we upload the image to s3 and store the s3 url in the variable below
+      s3ImageUrl = await downloadAndUploadApprovedItemImageToS3(
+        values.imageUrl,
+        uploadApprovedItemImage
+      );
+
+      // create approved item and mark it with our s3 image url
+      createApprovedItemAndMarkAsCurated(s3ImageUrl, values, formikHelpers);
+    } catch (error: any) {
+      showNotification(error.message, 'error');
       return;
     }
-    // set `s3ImageUrl` variable to user provided one if it exists
-    let s3ImageUrl = prospectS3Image;
-    // if the user has not uploaded a new image, upload the one on prospect
-    if (!s3ImageUrl) {
-      try {
-        // this is using the prospect's image url
-        // also passing in the `uploadApprovedItem` mutation callback
-        s3ImageUrl = await downloadAndUploadApprovedItemImageToS3(
-          values.imageUrl,
-          uploadApprovedItemImage
-        );
-      } catch (error: any) {
-        showNotification(error.message, 'error');
-        return;
-      }
-    }
-    // create approved item and mark it with our s3 image url
-    createApprovedItemAndMarkAsCurated(s3ImageUrl, values, formikHelpers);
   };
 
   return (
@@ -309,10 +292,10 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
               currentItem,
               isRecommendation
             )}
+            heading={isRecommendation ? 'Recommend' : 'Add to Corpus'}
             isOpen={approvedItemModalOpen}
-            onSave={onProspectSave}
+            onSave={onCuratedItemSave}
             toggleModal={toggleApprovedItemModal}
-            onImageSave={setProspectS3Image}
           />
         </>
       )}

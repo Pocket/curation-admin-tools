@@ -46,7 +46,7 @@ interface ApprovedItemFormProps {
    * This function is called by the ImageUpload component after it
    * successfully uploads an image to the S3 Bucket.
    */
-  onImageSave: (url: string) => void;
+  onImageSave?: (url: string) => void;
 }
 
 /**
