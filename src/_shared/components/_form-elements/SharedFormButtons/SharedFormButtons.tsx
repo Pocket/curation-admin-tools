@@ -13,7 +13,12 @@ export interface SharedFormButtonsProps {
    * Optional prop to disable the save button on a form/on this component
    */
   saveButtonDisabled?: boolean;
+  /**
+   * The default for the shared buttons is "Save", but sometimes another
+   * call to action is appropriate, e.g. "Confirm".
+   */
 
+  saveButtonLabel?: string;
   /**
    * What to do if the user clicks on the Cancel button
    */
@@ -33,6 +38,7 @@ export const SharedFormButtons: React.FC<SharedFormButtonsProps> = (
   const {
     editMode = true,
     saveButtonDisabled = false,
+    saveButtonLabel = 'Save',
     onCancel,
     onSave,
   } = props;
@@ -47,7 +53,7 @@ export const SharedFormButtons: React.FC<SharedFormButtonsProps> = (
             onClick={onSave}
             disabled={saveButtonDisabled}
           >
-            Save
+            {saveButtonLabel}
           </Button>
         </Box>
         {editMode && (
