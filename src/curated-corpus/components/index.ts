@@ -9,6 +9,7 @@ export { ProspectListCard } from './ProspectListCard/ProspectListCard';
 export { RejectedItemListCard } from './RejectedItemListCard/RejectedItemListCard';
 export { RejectedItemSearchForm } from './RejectedItemSearchForm/RejectedItemSearchForm';
 export { ScheduledItemCardWrapper } from './ScheduledItemCardWrapper/ScheduledItemCardWrapper';
+export { RefreshProspectsModal } from './RefreshProspectsModal/RefreshProspectsModal';
 export { RejectItemModal } from './RejectItemModal/RejectItemModal';
 export { RejectItemForm } from './RejectItemForm/RejectItemForm';
 export { RemoveItemFromNewTabForm } from './RemoveItemFromNewTabForm/RemoveItemFromNewTabForm';

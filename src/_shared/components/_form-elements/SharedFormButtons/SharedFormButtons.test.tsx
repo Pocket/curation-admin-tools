@@ -48,4 +48,11 @@ describe('The SharedFormButtons component', () => {
 
     expect(mockOnSave).toHaveBeenCalled();
   });
+
+  it('displays a custom label for the "Save" button if provided', () => {
+    render(<SharedFormButtons saveButtonLabel="Confirm" />);
+
+    expect(screen.queryByText(/save/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/confirm/i)).toBeInTheDocument();
+  });
 });

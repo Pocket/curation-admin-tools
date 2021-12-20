@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
-import { Box, Grid, Hidden, Typography } from '@material-ui/core';
+import { Box, Button, Grid, Hidden, Typography } from '@material-ui/core';
+import CachedIcon from '@material-ui/icons/Cached';
 import { HandleApiResponse } from '../../../_shared/components';
 import {
+  ApprovedItemModal,
   NewTabGroupedList,
   ProspectListCard,
+  RefreshProspectsModal,
   RejectItemModal,
-  ApprovedItemModal,
 } from '../../components';
 import { client } from '../../api/prospect-api/client';
 import {
@@ -17,15 +19,15 @@ import {
 import {
   RejectProspectMutationVariables,
   ScheduledCuratedCorpusItemsResult,
+  useCreateApprovedCuratedCorpusItemMutation,
   useGetScheduledItemsQuery,
   useRejectProspectMutation,
-  useCreateApprovedCuratedCorpusItemMutation,
   useUploadApprovedCuratedCorpusItemImageMutation,
 } from '../../api/curated-corpus-api/generatedTypes';
 import {
+  useNotifications,
   useRunMutation,
   useToggle,
-  useNotifications,
 } from '../../../_shared/hooks';
 
 import {
@@ -40,6 +42,9 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
 
   // Get a list of prospects on the page
   const { loading, error, data, refetch } = useGetProspectsQuery({
+    // Do not cache prospects at all. On update, remove the relevant prospect
+    // card from the screen manually once the prospect has been curated.
+    fetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
     variables: { newTab: newTabGuid },
     client,
@@ -80,6 +85,12 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
    */
   const [approvedItemModalOpen, toggleApprovedItemModal] = useToggle(false);
 
+  /**
+   * Keep track of whether the "Refresh Prospects" modal is open or not.
+   */
+  const [refreshProspectsModalOpen, toggleRefreshProspectsModal] =
+    useToggle(false);
+
   // Get a helper function that will execute each mutation, show standard notifications
   // and execute any additional actions in a callback
   const { runMutation } = useRunMutation();
@@ -91,6 +102,18 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
     client,
   });
 
+  // Instead of working off Apollo Client's cache for the `getProspects` query
+  // let's set up another variable for the prospect card list.
+  const [prospects, setProspects] = useState<Prospect[]>([]);
+
+  // When the batch of random prospects has loaded, update our `prospects` variable
+  // with the contents of the API response. This will allow us to remove items from
+  // the response array and unmount the relevant prospect cards when they have been
+  // processed.
+  useEffect(() => {
+    setProspects(data?.getProspects!);
+  }, [data]);
+
   /**
    * Add the prospect to the rejected corpus.
    * Additionally, let Prospect API know the prospect has been processed.
@@ -98,7 +121,6 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
    * @param values
    * @param formikHelpers
    */
-
   const onRejectSave = (
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
@@ -106,7 +128,7 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
     // Set out all the variables we need to pass to the first mutation
     const variables: RejectProspectMutationVariables = {
       data: {
-        prospectId: currentItem?.id ?? '', // TODO: sort out types here
+        prospectId: currentItem?.id!,
         url: currentItem?.url,
         title: currentItem?.title,
         topic: currentItem?.topic ?? '',
@@ -120,14 +142,13 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
     runMutation(
       updateProspectAsCurated,
       { variables: { prospectId: currentItem?.id }, client },
-      '',
+      undefined,
       () => {
         formikHelpers.setSubmitting(false);
       },
       () => {
         formikHelpers.setSubmitting(false);
-      },
-      refetch
+      }
     );
 
     // Add the prospect to the rejected corpus
@@ -136,16 +157,21 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
       { variables },
       `Item successfully added to the rejected corpus.`,
       () => {
+        // Hide the modal
         toggleRejectModal();
+
+        // Remove the newly rejected item from the list of prospects displayed
+        // on the page.
+        setProspects(
+          prospects.filter((prospect) => prospect.id !== currentItem?.id!)
+        );
+
         formikHelpers.setSubmitting(false);
       },
       () => {
         formikHelpers.setSubmitting(false);
       }
     );
-
-    // Mark the prospect as processed in the Prospect API datastore.
-    // TODO: add logic here. Don't forget to connect to Prospect API for this mutation
   };
 
   // Prepare the create approved item mutation
@@ -208,12 +234,19 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
         { variables: { prospectId: currentItem?.id }, client },
         '',
         () => {
+          toggleApprovedItemModal();
+
+          // Remove the newly curated item from the list of prospects displayed
+          // on the page.
+          setProspects(
+            prospects.filter((prospect) => prospect.id !== currentItem?.id!)
+          );
+
           formikHelpers.setSubmitting(false);
         },
         () => {
           formikHelpers.setSubmitting(false);
-        },
-        refetch
+        }
       );
 
       showNotification(
@@ -284,20 +317,48 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
         </>
       )}
 
-      <h1>New Tab Curation</h1>
-      <Box mb={3}>
-        <Typography>
-          I am curating for <strong>{newTabGuid}</strong> (temporarily
-          hardcoded)
-        </Typography>
-      </Box>
+      <RefreshProspectsModal
+        isOpen={refreshProspectsModalOpen}
+        onConfirm={() => {
+          refetch();
+          toggleRefreshProspectsModal();
+        }}
+        toggleModal={toggleRefreshProspectsModal}
+      />
 
+      <h1>New Tab Curation</h1>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={9}>
-          {!data && <HandleApiResponse loading={loading} error={error} />}
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <Typography>
+                I am curating for <strong>{newTabGuid}</strong> (temporarily
+                hardcoded)
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Box display="flex" justifyContent="flex-end" mb={2}>
+                <Button
+                  color="default"
+                  onClick={() => {
+                    // If all the prospects have been processed already,
+                    // there is no need for a confirmation dialogue here,
+                    // let's just fetch a new batch of prospects.
+                    prospects && prospects.length > 0
+                      ? toggleRefreshProspectsModal()
+                      : refetch();
+                  }}
+                >
+                  <CachedIcon fontSize="large" />
+                </Button>
+              </Box>
+            </Grid>
+          </Grid>
 
-          {data &&
-            data.getProspects.map((prospect) => {
+          {!prospects && <HandleApiResponse loading={loading} error={error} />}
+
+          {prospects &&
+            prospects.map((prospect) => {
               return (
                 <ProspectListCard
                   key={prospect.id}

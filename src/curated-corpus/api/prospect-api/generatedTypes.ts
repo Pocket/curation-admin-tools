@@ -57,7 +57,7 @@ export type Prospect = {
   publisher?: Maybe<Scalars['String']>;
   saveCount?: Maybe<Scalars['Int']>;
   title?: Maybe<Scalars['String']>;
-  topic: Scalars['String'];
+  topic?: Maybe<Scalars['String']>;
   url: Scalars['String'];
 };
 
@@ -75,7 +75,7 @@ export type ProspectDataFragment = {
   __typename?: 'Prospect';
   id: string;
   newTab: string;
-  topic: string;
+  topic?: string | null | undefined;
   prospectType: string;
   url: string;
   createdAt?: number | null | undefined;
@@ -101,7 +101,7 @@ export type UpdateProspectAsCuratedMutation = {
         __typename?: 'Prospect';
         id: string;
         newTab: string;
-        topic: string;
+        topic?: string | null | undefined;
         prospectType: string;
         url: string;
         createdAt?: number | null | undefined;
@@ -130,7 +130,7 @@ export type GetProspectsQuery = {
     __typename?: 'Prospect';
     id: string;
     newTab: string;
-    topic: string;
+    topic?: string | null | undefined;
     prospectType: string;
     url: string;
     createdAt?: number | null | undefined;
