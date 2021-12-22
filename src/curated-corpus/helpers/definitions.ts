@@ -1,4 +1,8 @@
 // Here we keep sets of options for curating items
+import {
+  CuratedStatus,
+  ProspectType,
+} from '../api/curated-corpus-api/generatedTypes';
 
 export interface DropdownOption {
   code: string;
@@ -24,12 +28,13 @@ export const topics: DropdownOption[] = [
   { code: 'TRAVEL', name: 'Travel' },
 ];
 
-// This will come from Prospect API's generated types in due course
-export enum ProspectType {
-  GLOBAL = 'GLOBAL',
-  TIMESPENT = 'ORGANIC_TIMESPENT',
-  SYNDICATED = 'SYNDICATED',
-}
+// All the possible Prospect types for filtering
+export const prospectFilters: DropdownOption[] = [
+  { code: 'all', name: 'All Sources' },
+  { code: ProspectType.Global, name: 'Global' },
+  { code: ProspectType.OrganicTimespent, name: 'Time Spent' },
+  { code: ProspectType.Syndicated, name: 'Syndicated' },
+];
 
 // New Tab as it exists on Prospect API.
 export type NewTab = {
@@ -47,16 +52,16 @@ export const newTabs: NewTab[] = [
     guid: 'EN_US',
     utcOffset: -4000,
     prospectTypes: [
-      ProspectType.GLOBAL,
-      ProspectType.TIMESPENT,
-      ProspectType.SYNDICATED,
+      ProspectType.Global,
+      ProspectType.OrganicTimespent,
+      ProspectType.Syndicated,
     ],
   },
   {
     name: 'de-DE',
     guid: 'DE_DE',
     utcOffset: 1000,
-    prospectTypes: [ProspectType.GLOBAL],
+    prospectTypes: [ProspectType.Global],
   },
 ];
 
@@ -68,6 +73,6 @@ export const languages: DropdownOption[] = [
 
 // This maps to the status (CuratedStatus type) field in DB for an ApprovedItem
 export const curationStatusOptions: DropdownOption[] = [
-  { code: 'RECOMMENDATION', name: 'Recommendation' },
-  { code: 'CORPUS', name: 'Corpus' },
+  { code: CuratedStatus.Recommendation, name: 'Recommendation' },
+  { code: CuratedStatus.Corpus, name: 'Corpus' },
 ];
