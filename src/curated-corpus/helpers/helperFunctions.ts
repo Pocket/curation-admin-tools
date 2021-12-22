@@ -66,18 +66,21 @@ export const downloadAndUploadApprovedItemImageToS3 = async (
     'https://pocket-image-cache.com/x/filters:no_upscale():format(jpg)/' +
       encodeURIComponent(imageUrl)
   );
+
+  if (!image) {
+    throw new Error('Failed to download image from source for saving to s3');
+  }
   // upload downloaded image to s3
-  const data = await uploadApprovedItemMutation({
+  const { data, errors } = await uploadApprovedItemMutation({
     variables: {
       image: image,
     },
   });
 
-  const s3ImageUrl: string =
-    data.data?.uploadApprovedCuratedCorpusItemImage.url;
-  if (!s3ImageUrl) {
-    throw new Error('Could not upload image to s3');
+  // check for graphQL errors. Throw the first one
+  if (errors) {
+    throw new Error(errors[0].message);
   }
 
-  return s3ImageUrl;
+  return data?.uploadApprovedCuratedCorpusItemImage.url;
 };

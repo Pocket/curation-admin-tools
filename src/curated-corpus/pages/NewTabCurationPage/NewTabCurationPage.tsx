@@ -184,6 +184,10 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
   // The toast notification hook
   const { showNotification } = useNotifications();
 
+  // state variable to store s3 image url when user uploads a new image
+  const [userUploadedS3ImageUrl, setUserUploadedS3ImageUrl] =
+    useState<string>();
+
   /**
    *
    * This function gets called by the onCuratedItemSave function
@@ -215,20 +219,17 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
       isSyndicated: values.syndicated,
     };
 
-    try {
-      // call the create approved item mutation
-      const data = await createApprovedItem({
-        variables: {
-          data: { ...approvedItem },
-        },
-      });
-
-      // if approved item is created then mark prospect as curated
-      if (data.data?.createApprovedCuratedCorpusItem) {
+    // call the create approved item mutation
+    runMutation(
+      createApprovedItem,
+      { variables: { data: { ...approvedItem } }, client },
+      'Item successfully added to the curated corpus.',
+      () => {
+        // call the mutation to mark prospect as approved
         runMutation(
           updateProspectAsCurated,
-          { variables: { prospectId: currentItem?.id }, client },
-          'Item successfully added to the curated corpus.',
+          { variables: { prospectId: currentItem?.id } },
+          undefined,
           () => {
             toggleApprovedItemModal();
 
@@ -244,11 +245,8 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
             formikHelpers.setSubmitting(false);
           }
         );
-        formikHelpers.setSubmitting(false);
       }
-    } catch (error: any) {
-      showNotification(error.message, 'error');
-    }
+    );
   };
 
   /**
@@ -259,17 +257,25 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ) => {
-    let s3ImageUrl: string;
     try {
-      // We download the image from source using the imageUrl field from the form
-      // and then we upload the image to s3 and store the s3 url in the variable below
-      s3ImageUrl = await downloadAndUploadApprovedItemImageToS3(
-        values.imageUrl,
-        uploadApprovedItemImage
-      );
+      // set s3ImageUrl variable to the user uploaded s3 image url
+      let s3ImageUrl = userUploadedS3ImageUrl;
 
-      // create approved item and mark it with our s3 image url
-      createApprovedItemAndMarkAsCurated(s3ImageUrl, values, formikHelpers);
+      // if user uploaded s3 url does not exist
+      // download the image from the publisher and upload it to s3
+      if (!s3ImageUrl) {
+        s3ImageUrl = await downloadAndUploadApprovedItemImageToS3(
+          values.imageUrl,
+          uploadApprovedItemImage
+        );
+      }
+
+      // create an approved item and mark the prospect as curated
+      await createApprovedItemAndMarkAsCurated(
+        s3ImageUrl,
+        values,
+        formikHelpers
+      );
     } catch (error: any) {
       showNotification(error.message, 'error');
       return;
@@ -296,6 +302,7 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
             isOpen={approvedItemModalOpen}
             onSave={onCuratedItemSave}
             toggleModal={toggleApprovedItemModal}
+            onImageSave={setUserUploadedS3ImageUrl}
           />
         </>
       )}
