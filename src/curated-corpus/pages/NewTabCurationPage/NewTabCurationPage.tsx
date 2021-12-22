@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 import { Box, Button, Grid, Hidden, Typography } from '@material-ui/core';
-import CachedIcon from '@material-ui/icons/Cached';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import FilterListIcon from '@material-ui/icons/FilterList';
 import { HandleApiResponse } from '../../../_shared/components';
 import {
   ApprovedItemModal,
@@ -9,6 +10,7 @@ import {
   ProspectListCard,
   RefreshProspectsModal,
   RejectItemModal,
+  SplitButton,
 } from '../../components';
 import { client } from '../../api/prospect-api/client';
 import {
@@ -34,7 +36,9 @@ import {
   downloadAndUploadApprovedItemImageToS3,
   transformProspectToApprovedItem,
 } from '../../helpers/helperFunctions';
+
 import { FormikHelpers, FormikValues } from 'formik';
+import { DropdownOption, prospectFilters } from '../../helpers/definitions';
 
 export const NewTabCurationPage: React.FC = (): JSX.Element => {
   // TODO: remove hardcoded value when New Tab selector is added to the page
@@ -113,6 +117,31 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
   useEffect(() => {
     setProspects(data?.getProspects!);
   }, [data]);
+
+  // For filtering on prospects, we can pass additional variables to the `refetch()`
+  // function.
+  // Initially, set the filters to fetch prospects from all available sources.
+  const [filterProspectsBy, setFilterProspectsBy] = useState<{
+    prospectType?: string;
+  }>({});
+
+  /**
+   * This is passed to the SplitButton component to execute on choosing a menu item
+   * from the dropdown.
+   *
+   * @param filter
+   */
+  const updateFilters = (option: DropdownOption) => {
+    setFilterProspectsBy(
+      // Need to pass undefined when NOT filtering prospects here so that the filter
+      // variable on prospect types resets;
+      // otherwise the refetch() function is run with previously set filters
+      // when users update filters from, for example, "Syndicated" to "All Sources".
+      option.code === 'all'
+        ? { prospectType: undefined }
+        : { prospectType: option.code }
+    );
+  };
 
   /**
    * Add the prospect to the rejected corpus.
@@ -310,7 +339,7 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
       <RefreshProspectsModal
         isOpen={refreshProspectsModalOpen}
         onConfirm={() => {
-          refetch();
+          refetch(filterProspectsBy);
           toggleRefreshProspectsModal();
         }}
         toggleModal={toggleRefreshProspectsModal}
@@ -336,11 +365,16 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
                     // let's just fetch a new batch of prospects.
                     prospects && prospects.length > 0
                       ? toggleRefreshProspectsModal()
-                      : refetch();
+                      : refetch(filterProspectsBy);
                   }}
                 >
-                  <CachedIcon fontSize="large" />
+                  <RefreshIcon fontSize="large" />
                 </Button>
+                <SplitButton
+                  icon={<FilterListIcon fontSize="large" />}
+                  onMenuOptionClick={updateFilters}
+                  options={prospectFilters}
+                />
               </Box>
             </Grid>
           </Grid>

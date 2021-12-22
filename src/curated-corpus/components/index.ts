@@ -1,5 +1,6 @@
 export { ApprovedItemCardWrapper } from './ApprovedItemCardWrapper/ApprovedItemCardWrapper';
 export { ApprovedItemListCard } from './ApprovedItemListCard/ApprovedItemListCard';
+export { ApprovedItemModal } from './ApprovedItemModal/ApprovedItemModal';
 export { ApprovedItemSearchForm } from './ApprovedItemSearchForm/ApprovedItemSearchForm';
 export { LoadExtraButton } from './LoadExtraButton/LoadExtraButton';
 export { MiniNewTabScheduleCard } from './MiniNewTabScheduleCard/MiniNewTabScheduleCard';
@@ -16,4 +17,4 @@ export { RemoveItemFromNewTabForm } from './RemoveItemFromNewTabForm/RemoveItemF
 export { RemoveItemFromNewTabModal } from './RemoveItemFromNewTabModal/RemoveItemFromNewTabModal';
 export { ScheduleItemForm } from './ScheduleItemForm/ScheduleItemForm';
 export { ScheduleItemModal } from './ScheduleItemModal/ScheduleItemModal';
-export { ApprovedItemModal } from './ApprovedItemModal/ApprovedItemModal';
+export { SplitButton } from './SplitButton/SplitButton';
