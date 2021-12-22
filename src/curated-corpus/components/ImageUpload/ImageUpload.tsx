@@ -52,7 +52,7 @@ interface ImageUploadProps {
    *
    * @param url
    */
-  onImageSave: (url: string) => void;
+  onImageSave?: (url: string) => void;
 
   /**
    * Called when the image has been changed (successfully uploaded to S3) for an approved item.
@@ -163,7 +163,8 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
 
           // This calls the updateApprovedItem mutation to map the new image url
           // to the current item that is being edited
-          onImageSave(data.data.uploadApprovedCuratedCorpusItemImage.url);
+          onImageSave &&
+            onImageSave(data.data.uploadApprovedCuratedCorpusItemImage.url);
           // This changes the state variable in the direct parent, ApprovedItemForm
           // to enable/disable the save button on the form
           onImageChanged &&

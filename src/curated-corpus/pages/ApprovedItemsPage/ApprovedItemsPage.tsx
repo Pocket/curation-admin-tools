@@ -309,6 +309,8 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
           />
           <ApprovedItemModal
             approvedItem={currentItem}
+            heading="Edit Item"
+            showItemTitle={true}
             isOpen={editModalOpen}
             onSave={onEditItemSave}
             toggleModal={toggleEditModal}

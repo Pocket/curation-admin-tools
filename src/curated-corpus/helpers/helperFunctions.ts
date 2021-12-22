@@ -41,3 +41,46 @@ export const transformProspectToApprovedItem = (
     updatedAt: 0,
   };
 };
+
+// downloads image from source url
+export const fetchFileFromUrl = async (
+  url: string
+): Promise<Blob | undefined> => {
+  const response = await fetch(url);
+
+  if (response.ok) return response.blob();
+};
+
+/**
+ *
+ * `uploadApprovedItemMutation` parameter type is set to `any`
+ * because we can't pull the upload mutation hook outside of the functional component
+ * hence we have to pass it in as a parameter
+ */
+export const downloadAndUploadApprovedItemImageToS3 = async (
+  imageUrl: string,
+  uploadApprovedItemMutation: any
+): Promise<string> => {
+  // bypassing CORS and downloading
+  const image = await fetchFileFromUrl(
+    'https://pocket-image-cache.com/x/filters:no_upscale():format(jpg)/' +
+      encodeURIComponent(imageUrl)
+  );
+
+  if (!image) {
+    throw new Error('Failed to download image from source for saving to s3');
+  }
+  // upload downloaded image to s3
+  const { data, errors } = await uploadApprovedItemMutation({
+    variables: {
+      image: image,
+    },
+  });
+
+  // check for graphQL errors. Throw the first one
+  if (errors) {
+    throw new Error(errors[0].message);
+  }
+
+  return data?.uploadApprovedCuratedCorpusItemImage.url;
+};
