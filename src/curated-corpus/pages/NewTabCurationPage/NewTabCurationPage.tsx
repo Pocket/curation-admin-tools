@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
-import { Box, Button, Grid, Hidden, Typography } from '@material-ui/core';
+import { Box, Button, Grid, Hidden } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { HandleApiResponse } from '../../../_shared/components';
@@ -22,6 +22,7 @@ import {
   RejectProspectMutationVariables,
   ScheduledCuratedCorpusItemsResult,
   useCreateApprovedCuratedCorpusItemMutation,
+  useGetNewTabsForUserQuery,
   useGetScheduledItemsQuery,
   useRejectProspectMutation,
   useUploadApprovedCuratedCorpusItemImageMutation,
@@ -32,12 +33,77 @@ import {
   useToggle,
 } from '../../../_shared/hooks';
 import { transformProspectToApprovedItem } from '../../helpers/helperFunctions';
+import { getProspectFilterOptions } from '../../helpers/getProspectFilterOptions';
 import { FormikHelpers, FormikValues } from 'formik';
-import { DropdownOption, prospectFilters } from '../../helpers/definitions';
+import { DropdownOption } from '../../helpers/definitions';
 
 export const NewTabCurationPage: React.FC = (): JSX.Element => {
-  // TODO: remove hardcoded value when New Tab selector is added to the page
-  const newTabGuid = 'EN_US';
+  // set up the initial new tab guid value (nothing at this point)
+  const [currentNewTabGuid, setCurrentNewTabGuid] = useState('');
+
+  // Why not set up the options we'll feed to the New Tab dropdown as well
+  // at the same time?
+  const [newTabOptions, setNewTabOptions] = useState<DropdownOption[]>([]);
+
+  // Ditto for the prospect filters dropdown - it depends on which New Tab you're on.
+  const [prospectFilters, setProspectFilters] = useState<DropdownOption[]>([]);
+
+  // Get the list of New Tabs the currently logged-in user has access to.
+  const { data: newTabData } = useGetNewTabsForUserQuery();
+
+  // Once the data is ready, populate the values for current New Tab Guid
+  // and the dropdown options.
+  useEffect(() => {
+    if (newTabData) {
+      const options = newTabData.getNewTabsForUser.map((newTab) => {
+        return { code: newTab.guid, name: newTab.name };
+      });
+      setCurrentNewTabGuid(options[0].code);
+      setNewTabOptions(options);
+
+      // Populate the Prospect Type filtering dropdown with values
+      // relevant to this New Tab.
+      const filters = getProspectFilterOptions(
+        newTabData.getNewTabsForUser[0].prospectTypes
+      );
+      setProspectFilters(filters);
+    }
+  }, [newTabData]);
+
+  // set up initial start/end dates for the query
+  const startDate = DateTime.local().toFormat('yyyy-MM-dd');
+  const endDate = DateTime.local().plus({ days: 1 }).toFormat('yyyy-MM-dd');
+
+  /**
+   * When the user selects another New Tab from the "I am curating for..." dropdown,
+   * refetch all the data on the page for that New Tab. That includes relevant
+   * prospects, prospect types, and the scheduled items on the sidebar.
+   */
+  const updateNewTab = (option: DropdownOption) => {
+    // fetch prospects for the selected New Tab
+    refetch({ newTab: option.code });
+
+    // fetch scheduled items for the selected New Tab
+    refetchScheduled({
+      filters: { newTabGuid: currentNewTabGuid, endDate, startDate },
+    });
+
+    // Update the split button to reflect which New Tab the user is now on.
+    setCurrentNewTabGuid(option.code);
+
+    // Get the relevant New Tab object out of the list of all new tabs
+    // we fetched earlier for the user.
+    const currentNewTab = newTabData?.getNewTabsForUser.filter(
+      (newTab) => newTab.guid === option.code
+    )[0];
+
+    // Update the Prospect Type dropdown with values available
+    // for the current New Tab.
+    const filterOptions = getProspectFilterOptions(
+      currentNewTab?.prospectTypes!
+    );
+    setProspectFilters(filterOptions);
+  };
 
   // Get a list of prospects on the page
   const { loading, error, data, refetch } = useGetProspectsQuery({
@@ -45,7 +111,7 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
     // card from the screen manually once the prospect has been curated.
     fetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
-    variables: { newTab: newTabGuid },
+    variables: { newTab: currentNewTabGuid },
     client,
   });
 
@@ -54,13 +120,14 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
     loading: loadingScheduled,
     error: errorScheduled,
     data: dataScheduled,
+    refetch: refetchScheduled,
   } = useGetScheduledItemsQuery({
     notifyOnNetworkStatusChange: true,
     variables: {
       filters: {
-        newTabGuid,
-        startDate: DateTime.local().toFormat('yyyy-MM-dd'),
-        endDate: DateTime.local().plus({ days: 1 }).toFormat('yyyy-MM-dd'),
+        newTabGuid: currentNewTabGuid,
+        startDate,
+        endDate,
       },
     },
   });
@@ -123,8 +190,6 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
   /**
    * This is passed to the SplitButton component to execute on choosing a menu item
    * from the dropdown.
-   *
-   * @param filter
    */
   const updateFilters = (option: DropdownOption) => {
     setFilterProspectsBy(
@@ -132,9 +197,7 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
       // variable on prospect types resets;
       // otherwise the refetch() function is run with previously set filters
       // when users update filters from, for example, "Syndicated" to "All Sources".
-      option.code === 'all'
-        ? { prospectType: undefined }
-        : { prospectType: option.code }
+      option.code ? { prospectType: option.code } : { prospectType: undefined }
     );
   };
 
@@ -410,10 +473,16 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
         <Grid item xs={12} sm={9}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
-              <Typography>
-                I am curating for <strong>{newTabGuid}</strong> (temporarily
-                hardcoded)
-              </Typography>
+              {newTabOptions.length > 0 && (
+                <>
+                  I am curating for
+                  <SplitButton
+                    onMenuOptionClick={updateNewTab}
+                    options={newTabOptions}
+                    size="small"
+                  />
+                </>
+              )}
             </Grid>
             <Grid item xs={12} sm={6}>
               <Box display="flex" justifyContent="flex-end" mb={2}>
@@ -430,11 +499,14 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
                 >
                   <RefreshIcon fontSize="large" />
                 </Button>
-                <SplitButton
-                  icon={<FilterListIcon fontSize="large" />}
-                  onMenuOptionClick={updateFilters}
-                  options={prospectFilters}
-                />
+                {prospectFilters.length > 0 && (
+                  <SplitButton
+                    icon={<FilterListIcon fontSize="large" />}
+                    onMenuOptionClick={updateFilters}
+                    options={prospectFilters}
+                    size="medium"
+                  />
+                )}
               </Box>
             </Grid>
           </Grid>

@@ -250,6 +250,19 @@ export type MutationUploadApprovedCuratedCorpusItemImageArgs = {
   data: Scalars['Upload'];
 };
 
+/** A New Tab, including its associated Prospect Types. */
+export type NewTab = {
+  __typename?: 'NewTab';
+  /** The GUID of the New Tab. Example: 'EN_US'. */
+  guid: Scalars['String'];
+  /** The display name of the New Tab. Example 'en-US'. */
+  name: Scalars['String'];
+  /** An array of associated ProspectTypes. */
+  prospectTypes: Array<ProspectType>;
+  /** The UTC offset of the New Tab's scheduling day, represented in HMM numeric format. */
+  utcOffset: Scalars['Int'];
+};
+
 /** Options for returning items sorted by the supplied field. */
 export enum OrderBy {
   /** Return items in ascending order. */
@@ -313,12 +326,20 @@ export enum ProspectType {
 
 export type Query = {
   __typename?: 'Query';
+  /** Retrieves an approved curated item with the given URL. */
+  getApprovedCuratedCorpusItemByUrl: ApprovedCuratedCorpusItem;
   /** Retrieves a paginated, filterable list of ApprovedCuratedCorpusItems. */
   getApprovedCuratedCorpusItems: ApprovedCuratedCorpusItemConnection;
+  /** Retrieves all NewTabs available to the given SSO user. Requires an Authorization header. */
+  getNewTabsForUser: Array<NewTab>;
   /** Retrieves a paginated, filterable list of RejectedCuratedCorpusItems. */
   getRejectedCuratedCorpusItems: RejectedCuratedCorpusItemConnection;
-  /** Retrieves a list of Approved Items that are scheduled to appear on New Tab */
+  /** Retrieves a list of Approved Items that are scheduled to appear on New Tab. */
   getScheduledCuratedCorpusItems: Array<ScheduledCuratedCorpusItemsResult>;
+};
+
+export type QueryGetApprovedCuratedCorpusItemByUrlArgs = {
+  url: Scalars['String'];
 };
 
 export type QueryGetApprovedCuratedCorpusItemsArgs = {
@@ -798,6 +819,19 @@ export type GetApprovedItemsQuery = {
       };
     }>;
   };
+};
+
+export type GetNewTabsForUserQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetNewTabsForUserQuery = {
+  __typename?: 'Query';
+  getNewTabsForUser: Array<{
+    __typename?: 'NewTab';
+    guid: string;
+    name: string;
+    utcOffset: number;
+    prospectTypes: Array<ProspectType>;
+  }>;
 };
 
 export type GetRejectedItemsQueryVariables = Exact<{
@@ -1383,6 +1417,66 @@ export type GetApprovedItemsLazyQueryHookResult = ReturnType<
 export type GetApprovedItemsQueryResult = Apollo.QueryResult<
   GetApprovedItemsQuery,
   GetApprovedItemsQueryVariables
+>;
+export const GetNewTabsForUserDocument = gql`
+  query getNewTabsForUser {
+    getNewTabsForUser {
+      guid
+      name
+      utcOffset
+      prospectTypes
+    }
+  }
+`;
+
+/**
+ * __useGetNewTabsForUserQuery__
+ *
+ * To run a query within a React component, call `useGetNewTabsForUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetNewTabsForUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetNewTabsForUserQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetNewTabsForUserQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetNewTabsForUserQuery,
+    GetNewTabsForUserQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetNewTabsForUserQuery,
+    GetNewTabsForUserQueryVariables
+  >(GetNewTabsForUserDocument, options);
+}
+export function useGetNewTabsForUserLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetNewTabsForUserQuery,
+    GetNewTabsForUserQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetNewTabsForUserQuery,
+    GetNewTabsForUserQueryVariables
+  >(GetNewTabsForUserDocument, options);
+}
+export type GetNewTabsForUserQueryHookResult = ReturnType<
+  typeof useGetNewTabsForUserQuery
+>;
+export type GetNewTabsForUserLazyQueryHookResult = ReturnType<
+  typeof useGetNewTabsForUserLazyQuery
+>;
+export type GetNewTabsForUserQueryResult = Apollo.QueryResult<
+  GetNewTabsForUserQuery,
+  GetNewTabsForUserQueryVariables
 >;
 export const GetRejectedItemsDocument = gql`
   query getRejectedItems(
