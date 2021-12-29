@@ -1,3 +1,4 @@
+import { FileWithPath } from 'react-dropzone';
 import {
   ApprovedCuratedCorpusItem,
   CuratedStatus,
@@ -83,4 +84,28 @@ export const downloadAndUploadApprovedItemImageToS3 = async (
   }
 
   return data?.uploadApprovedCuratedCorpusItemImage.url;
+};
+
+//TODO: add comments
+export const readImageFileFromDisk = (
+  file: FileWithPath,
+  onloadCallBack?: VoidFunction
+) => {
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+
+  // Load it
+  reader.onloadend = (e) => {
+    const contents = e.target?.result;
+
+    // Load the contents of this file to an image element
+    const image = new Image() as HTMLImageElement;
+    if (typeof contents === 'string') {
+      image.src = contents;
+
+      if (onloadCallBack) {
+        image.onload = onloadCallBack;
+      }
+    }
+  };
 };
