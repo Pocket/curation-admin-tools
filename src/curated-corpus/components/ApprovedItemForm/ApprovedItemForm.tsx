@@ -99,7 +99,7 @@ export const ApprovedItemForm: React.FC<
 
   // This function calls the onImageSave function sent as a prop from the
   // direct parent and then updates the imageUrl field in the form to pass the form validation
-  const updateFormImageUrlField = (url: string) => {
+  const onImageSave = (url: string) => {
     onImageSaveFromParent && onImageSaveFromParent(url);
     formik.setFieldValue('imageUrl', url);
   };
@@ -146,7 +146,7 @@ export const ApprovedItemForm: React.FC<
             <Grid item md={3}>
               <ImageUpload
                 entity={approvedItem}
-                onImageSave={updateFormImageUrlField}
+                onImageSave={onImageSave}
                 placeholder="/placeholders/story.svg"
               />
               <Hidden xsUp>

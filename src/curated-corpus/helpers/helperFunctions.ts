@@ -86,12 +86,16 @@ export const downloadAndUploadApprovedItemImageToS3 = async (
   return data?.uploadApprovedCuratedCorpusItemImage.url;
 };
 
-//TODO: add comments
+/**
+ * This helper function reads a file, creates an HTML image and
+ * assigns the onLoadCallBack function to its onLoad property
+ */
 export const readImageFileFromDisk = (
   file: FileWithPath,
   onloadCallBack?: VoidFunction
 ) => {
   const reader = new FileReader();
+  //read file as a blob
   reader.readAsDataURL(file);
 
   // Load it
@@ -100,7 +104,8 @@ export const readImageFileFromDisk = (
 
     // Load the contents of this file to an image element
     const image = new Image() as HTMLImageElement;
-    if (typeof contents === 'string') {
+    // make sure file is an image
+    if (typeof contents === 'string' && contents.includes('image/')) {
       image.src = contents;
 
       if (onloadCallBack) {
