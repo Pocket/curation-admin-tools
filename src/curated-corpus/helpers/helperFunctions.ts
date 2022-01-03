@@ -1,3 +1,4 @@
+import { FileWithPath } from 'react-dropzone';
 import {
   ApprovedCuratedCorpusItem,
   CuratedStatus,
@@ -83,4 +84,33 @@ export const downloadAndUploadApprovedItemImageToS3 = async (
   }
 
   return data?.uploadApprovedCuratedCorpusItemImage.url;
+};
+
+/**
+ * This helper function reads a file, creates an HTML image and
+ * assigns the onLoadCallBack function to its onLoad property
+ */
+export const readImageFileFromDisk = (
+  file: FileWithPath,
+  onloadCallBack?: VoidFunction
+) => {
+  const reader = new FileReader();
+  //read file as a blob
+  reader.readAsDataURL(file);
+
+  // Load it
+  reader.onloadend = (e) => {
+    const contents = e.target?.result;
+
+    // Load the contents of this file to an image element
+    const image = new Image() as HTMLImageElement;
+    // make sure file is an image
+    if (typeof contents === 'string' && contents.includes('image/')) {
+      image.src = contents;
+
+      if (onloadCallBack) {
+        image.onload = onloadCallBack;
+      }
+    }
+  };
 };

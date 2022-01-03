@@ -232,7 +232,7 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
         status: curationStatus,
         language: languageCode,
         publisher: values.publisher,
-        imageUrl: currentItem?.imageUrl,
+        imageUrl: values.imageUrl,
         topic: topic,
         isCollection: values.collection,
         isShortLived: values.shortLived,
@@ -259,39 +259,6 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
     );
   };
 
-  /**
-   * This function is executed by the ImageUpload component after it uploads an image to S3,
-   * it runs the mutation to update the current item's ImageUrl
-   */
-  const onApprovedItemImageSave = (url: string): void => {
-    // update the approved item with new image url
-
-    const variables = {
-      data: {
-        externalId: currentItem?.externalId,
-        prospectId: currentItem?.prospectId,
-        url: currentItem?.url,
-        title: currentItem?.title,
-        excerpt: currentItem?.excerpt,
-        status: currentItem?.status,
-        language: currentItem?.language,
-        publisher: currentItem?.publisher,
-        imageUrl: url,
-        topic: currentItem?.topic,
-        isCollection: currentItem?.isCollection,
-        isShortLived: currentItem?.isShortLived,
-        isSyndicated: currentItem?.isSyndicated,
-      },
-    };
-
-    // Run the mutation to update item with new image url
-    runMutation(updateApprovedItem, { variables });
-
-    if (currentItem) {
-      setCurrentItem({ ...currentItem, imageUrl: url });
-    }
-  };
-
   return (
     <>
       <h1>Live Corpus</h1>
@@ -314,7 +281,6 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
             isOpen={editModalOpen}
             onSave={onEditItemSave}
             toggleModal={toggleEditModal}
-            onImageSave={onApprovedItemImageSave}
           />
           <RejectItemModal
             prospect={currentItem}
