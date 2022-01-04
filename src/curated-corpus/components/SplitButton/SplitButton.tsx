@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Button,
   ButtonGroup,
@@ -29,6 +29,11 @@ interface SplitButtonProps {
    * A list of options to display in the dropdown.
    */
   options: DropdownOption[];
+
+  /**
+   * The approximate width of the button. "Small" is 4 rem and "Medium" is 9 rem.
+   */
+  size?: 'small' | 'medium';
 }
 
 /**
@@ -41,10 +46,15 @@ interface SplitButtonProps {
  */
 export const SplitButton: React.FC<SplitButtonProps> = (props) => {
   const classes = useStyles();
-  const { icon, onMenuOptionClick, options } = props;
+  const { icon, onMenuOptionClick, options, size = 'medium' } = props;
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef<HTMLDivElement>(null);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
+
+  // If options have been updated, reset the selected value to the first one.
+  useEffect(() => {
+    setSelectedIndex(0);
+  }, [options]);
 
   const handleMenuItemClick = (
     event: React.MouseEvent<HTMLLIElement, MouseEvent>,
@@ -81,8 +91,20 @@ export const SplitButton: React.FC<SplitButtonProps> = (props) => {
         ref={anchorRef}
         aria-label="split button"
       >
-        <Button className={classes.optionName}>
-          {icon} {options[selectedIndex].name}
+        <Button
+          className={
+            size === 'small'
+              ? classes.optionNameSmall
+              : classes.optionNameMedium
+          }
+        >
+          {icon}{' '}
+          {/* If the selected option no longer exists after the split button
+           was reloaded with different data, show the default option instead
+           as the button label */}
+          {options[selectedIndex]
+            ? options[selectedIndex].name
+            : options[0].name}
         </Button>
         <Button
           color="default"

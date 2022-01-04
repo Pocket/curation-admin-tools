@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Grid, Typography } from '@material-ui/core';
 import { DateTime } from 'luxon';
 import { ApolloError } from '@apollo/client';
@@ -8,12 +8,14 @@ import {
   LoadExtraButton,
   RemoveItemFromNewTabModal,
   ScheduledItemCardWrapper,
+  SplitButton,
 } from '../../components';
 import {
   ScheduledCuratedCorpusItem,
   ScheduledCuratedCorpusItemsFilterInput,
   ScheduledCuratedCorpusItemsResult,
   useDeleteScheduledItemMutation,
+  useGetNewTabsForUserQuery,
   useGetScheduledItemsQuery,
 } from '../../api/curated-corpus-api/generatedTypes';
 import {
@@ -22,19 +24,54 @@ import {
   useToggle,
 } from '../../../_shared/hooks';
 import { useStyles } from './SchedulePage.styles';
+import { DropdownOption } from '../../helpers/definitions';
 
 export const SchedulePage: React.FC = (): JSX.Element => {
   const { showNotification } = useNotifications();
   const classes = useStyles();
 
-  // TODO: remove hardcoded value when New Tab selector is added to the page
-  const newTabGuid = 'EN_US';
-
-  // set up initial start/end dates
+  // set up initial start/end dates for the query
   const [startDate, setStartDate] = useState<DateTime>(DateTime.local());
   const [endDate, setEndDate] = useState<DateTime>(
     DateTime.local().plus({ days: 1 })
   );
+
+  // set up the initial new tab guid value (nothing at this point)
+  const [currentNewTabGuid, setCurrentNewTabGuid] = useState('');
+
+  // Why not set up the options we'll feed to the New Tab dropdown as well
+  // at the same time?
+  const [newTabOptions, setNewTabOptions] = useState<DropdownOption[]>([]);
+
+  // Get the list of New Tabs the currently logged-in user has access to.
+  const { data: newTabData } = useGetNewTabsForUserQuery();
+
+  // Once the data is ready, populate the values for current New Tab Guid
+  // and the dropdown options.
+  useEffect(() => {
+    if (newTabData) {
+      const options = newTabData.getNewTabsForUser.map((newTab) => {
+        return { code: newTab.guid, name: newTab.name };
+      });
+      setCurrentNewTabGuid(options[0].code);
+      setNewTabOptions(options);
+    }
+  }, [newTabData]);
+
+  /**
+   * When the user selects another New Tab from the "I am curating for..." dropdown,
+   * refetch all the data on the page for that New Tab.
+   */
+  const updateNewTab = (option: DropdownOption) => {
+    refetch({
+      filters: {
+        newTabGuid: option.code,
+        startDate: startDate.toFormat('yyyy-MM-dd'),
+        endDate: endDate.toFormat('yyyy-MM-dd'),
+      },
+    });
+    setCurrentNewTabGuid(option.code);
+  };
 
   // By default, load today and tomorrow's items that are already scheduled
   // for this New Tab
@@ -43,7 +80,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
       notifyOnNetworkStatusChange: true,
       variables: {
         filters: {
-          newTabGuid,
+          newTabGuid: currentNewTabGuid,
           startDate: startDate.toFormat('yyyy-MM-dd'),
           endDate: endDate.toFormat('yyyy-MM-dd'),
         },
@@ -61,14 +98,14 @@ export const SchedulePage: React.FC = (): JSX.Element => {
     if (direction === 'future') {
       // shift the dates two days into the future
       filters = {
-        newTabGuid,
+        newTabGuid: currentNewTabGuid,
         startDate: startDate.plus({ days: 2 }).toFormat('yyyy-MM-dd'),
         endDate: endDate.plus({ days: 2 }).toFormat('yyyy-MM-dd'),
       };
     } else {
       // shift the dates two days into the past
       filters = {
-        newTabGuid,
+        newTabGuid: currentNewTabGuid,
         startDate: startDate.minus({ days: 2 }).toFormat('yyyy-MM-dd'),
         endDate: endDate.minus({ days: 2 }).toFormat('yyyy-MM-dd'),
       };
@@ -156,12 +193,16 @@ export const SchedulePage: React.FC = (): JSX.Element => {
         />
       )}
 
-      <Box mb={3}>
-        <Typography>
-          I am curating for <strong>{newTabGuid}</strong> (temporarily
-          hardcoded)
-        </Typography>
-      </Box>
+      {newTabOptions.length > 0 && (
+        <Box mb={3}>
+          I am curating for
+          <SplitButton
+            onMenuOptionClick={updateNewTab}
+            options={newTabOptions}
+            size="small"
+          />
+        </Box>
+      )}
       <Grid container spacing={3}>
         <Grid item xs={12}>
           {!data && <HandleApiResponse loading={loading} error={error} />}

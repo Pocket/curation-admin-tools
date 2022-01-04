@@ -29,8 +29,8 @@ export const topics: DropdownOption[] = [
 ];
 
 // All the possible Prospect types for filtering
-export const prospectFilters: DropdownOption[] = [
-  { code: 'all', name: 'All Sources' },
+export const prospectFilterOptions: DropdownOption[] = [
+  { code: '', name: 'All Sources' },
   { code: ProspectType.Global, name: 'Global' },
   { code: ProspectType.OrganicTimespent, name: 'Time Spent' },
   { code: ProspectType.Syndicated, name: 'Syndicated' },
