@@ -46,7 +46,7 @@ interface ApprovedItemFormProps {
    * This function is called by the ImageUpload component after it
    * successfully uploads an image to the S3 Bucket.
    */
-  onImageSave: (url: string) => void;
+  onImageSave?: (url: string) => void;
 }
 
 /**
@@ -56,7 +56,12 @@ interface ApprovedItemFormProps {
 export const ApprovedItemForm: React.FC<
   ApprovedItemFormProps & SharedFormButtonsProps
 > = (props): JSX.Element => {
-  const { approvedItem, onSubmit, onCancel, onImageSave } = props;
+  const {
+    approvedItem,
+    onSubmit,
+    onCancel,
+    onImageSave: onImageSaveFromParent,
+  } = props;
 
   const approvedItemCorpus = curationStatusOptions.find(
     (item) => item.code === approvedItem.status
@@ -92,9 +97,10 @@ export const ApprovedItemForm: React.FC<
     },
   });
 
-  // Set the hidden imageUrl field once the image upload component
-  // returns an s3 url
-  const setImageUrlField = (url: string) => {
+  // This function calls the onImageSave function sent as a prop from the
+  // direct parent and then updates the imageUrl field in the form to pass the form validation
+  const onImageSave = (url: string) => {
+    onImageSaveFromParent && onImageSaveFromParent(url);
     formik.setFieldValue('imageUrl', url);
   };
 
@@ -142,7 +148,6 @@ export const ApprovedItemForm: React.FC<
                 entity={approvedItem}
                 onImageSave={onImageSave}
                 placeholder="/placeholders/story.svg"
-                onImageChanged={setImageUrlField}
               />
               <Hidden xsUp>
                 <FormikTextField
