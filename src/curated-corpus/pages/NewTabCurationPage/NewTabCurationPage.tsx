@@ -406,14 +406,14 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
         toggleModal={toggleRefreshProspectsModal}
       />
 
-      <h1>New Tab Curation</h1>
+      <h1>Prospecting</h1>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={9}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               {newTabOptions.length > 0 && (
                 <>
-                  I am curating for
+                  I am prospecting for
                   <SplitButton
                     onMenuOptionClick={updateNewTab}
                     options={newTabOptions}

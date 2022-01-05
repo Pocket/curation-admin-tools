@@ -29,6 +29,11 @@ interface HeaderProps {
   productName: string;
 
   /**
+   * The URL path of the Admin UI, e.g. `/curated-corpus`
+   */
+  productLink: string;
+
+  /**
    * A list of links that appear in the mobile Drawer menu
    */
   menuLinks: MenuLink[];
@@ -39,7 +44,7 @@ interface HeaderProps {
  */
 export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
   const classes = useStyles();
-  const { productName, menuLinks } = props;
+  const { productName, productLink, menuLinks } = props;
 
   const [open, setOpen] = useState(false);
 
@@ -113,16 +118,18 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
             </Hidden>
             <Hidden mdUp implementation="css">
               <Grid item xs={1}>
-                <img
-                  className={classes.logoMobile}
-                  src={pocketShield}
-                  alt="Pocket Logo"
-                />
+                <Link to="/">
+                  <img
+                    className={classes.logoMobile}
+                    src={pocketShield}
+                    alt="Pocket Logo"
+                  />
+                </Link>
               </Grid>
             </Hidden>
             <Grid item xs={4} sm={3}>
               <h1 className={classes.product}>
-                <Link to="/" className={classes.productLink}>
+                <Link to={productLink} className={classes.productLink}>
                   {productName}
                 </Link>
               </h1>

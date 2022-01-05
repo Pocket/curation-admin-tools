@@ -260,7 +260,7 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
 
   return (
     <>
-      <h1>Live Corpus</h1>
+      <h1>Corpus</h1>
       <ApprovedItemSearchForm onSubmit={handleSubmit} />
 
       {!data && <HandleApiResponse loading={loading} error={error} />}

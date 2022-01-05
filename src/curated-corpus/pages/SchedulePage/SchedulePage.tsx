@@ -195,7 +195,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
 
       {newTabOptions.length > 0 && (
         <Box mb={3}>
-          I am curating for
+          View schedule for:
           <SplitButton
             onMenuOptionClick={updateNewTab}
             options={newTabOptions}
