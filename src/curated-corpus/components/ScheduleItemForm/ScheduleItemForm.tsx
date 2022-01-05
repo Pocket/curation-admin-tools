@@ -8,9 +8,9 @@ import {
   SharedFormButtons,
   SharedFormButtonsProps,
 } from '../../../_shared/components';
-import { validationSchema } from './ScheduleItemForm.validation';
+import { getValidationSchema } from './ScheduleItemForm.validation';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import { NewTab } from '../../helpers/definitions';
+import { NewTab } from '../../api/curated-corpus-api/generatedTypes';
 
 interface ScheduleItemFormProps {
   /**
@@ -21,7 +21,7 @@ interface ScheduleItemFormProps {
   /**
    * The list of New Tabs the logged-in user has access to.
    */
-  newTabList: NewTab[];
+  newTabs: NewTab[];
 
   /**
    * What do we do with the submitted data?
@@ -35,7 +35,7 @@ interface ScheduleItemFormProps {
 export const ScheduleItemForm: React.FC<
   ScheduleItemFormProps & SharedFormButtonsProps
 > = (props): JSX.Element => {
-  const { approvedItemExternalId, newTabList, onCancel, onSubmit } = props;
+  const { approvedItemExternalId, newTabs, onCancel, onSubmit } = props;
 
   // Set the default scheduled date to tomorrow.
   // Do we need to worry about timezones here? .local() returns the date
@@ -62,7 +62,7 @@ export const ScheduleItemForm: React.FC<
     },
     validateOnBlur: false,
     validateOnChange: false,
-    validationSchema,
+    validationSchema: getValidationSchema(newTabs),
     onSubmit: (values, formikHelpers) => {
       // Make sure the date is the one selected by the user
       // (Without this, Formik passes on the initial date = tomorrow.)
@@ -84,7 +84,7 @@ export const ScheduleItemForm: React.FC<
               fieldMeta={formik.getFieldMeta('newTabGuid')}
             >
               <option aria-label="None" value="" />
-              {newTabList.map((newTab: NewTab) => {
+              {newTabs.map((newTab: NewTab) => {
                 return (
                   <option value={newTab.guid} key={newTab.guid}>
                     {newTab.name}

@@ -15,6 +15,7 @@ export { RejectItemModal } from './RejectItemModal/RejectItemModal';
 export { RejectItemForm } from './RejectItemForm/RejectItemForm';
 export { RemoveItemFromNewTabForm } from './RemoveItemFromNewTabForm/RemoveItemFromNewTabForm';
 export { RemoveItemFromNewTabModal } from './RemoveItemFromNewTabModal/RemoveItemFromNewTabModal';
+export { ScheduleItemFormConnector } from './ScheduleItemFormConnector/ScheduleItemFormConnector';
 export { ScheduleItemForm } from './ScheduleItemForm/ScheduleItemForm';
 export { ScheduleItemModal } from './ScheduleItemModal/ScheduleItemModal';
 export { SplitButton } from './SplitButton/SplitButton';
