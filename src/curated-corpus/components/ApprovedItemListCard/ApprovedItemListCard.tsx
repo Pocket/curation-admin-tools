@@ -116,12 +116,12 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
             <ListItemText secondary={'Collection'} />
           </ListItem>
         )}
-        {item.isShortLived && (
+        {item.isTimeSensitive && (
           <ListItem>
             <ListItemIcon className={classes.listItemIcon}>
               <AlarmIcon fontSize="small" />
             </ListItemIcon>
-            <ListItemText secondary={'Short-lived'} />
+            <ListItemText secondary={'Time Sensitive'} />
           </ListItem>
         )}
       </List>
