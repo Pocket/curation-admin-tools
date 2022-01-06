@@ -32,7 +32,7 @@ describe('The ScheduledItemCardWrapper component', () => {
         status: CuratedStatus.Recommendation,
         isCollection: false,
         isSyndicated: false,
-        isShortLived: false,
+        isTimeSensitive: false,
         createdAt: 1635014926,
         createdBy: 'Amy',
         updatedAt: 1635114926,

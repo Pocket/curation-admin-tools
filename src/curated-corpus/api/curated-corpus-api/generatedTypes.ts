@@ -1,6 +1,5 @@
-import * as Apollo from '@apollo/client';
 import { gql } from '@apollo/client';
-
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -54,13 +53,13 @@ export type ApprovedCuratedCorpusItem = {
   imageUrl: Scalars['Url'];
   /** Whether this story is a Pocket Collection. */
   isCollection: Scalars['Boolean'];
-  /**
-   * A flag to ML to not recommend this item long term after it is added to the corpus.
-   * Example: a story covering an election.
-   */
-  isShortLived: Scalars['Boolean'];
   /** Whether this item is a syndicated article. */
   isSyndicated: Scalars['Boolean'];
+  /**
+   * A flag to ML to not recommend this item long term after it is added to the corpus.
+   * Example: a story covering an election, or "The best of 202x" collection.
+   */
+  isTimeSensitive: Scalars['Boolean'];
   /** What language this story is in. This is a two-letter code, for example, 'en' for English. */
   language: Scalars['String'];
   /** The GUID of the corresponding Prospect ID. */
@@ -129,13 +128,13 @@ export type CreateApprovedCuratedCorpusItemInput = {
   imageUrl: Scalars['Url'];
   /** Whether this story is a Pocket Collection. */
   isCollection: Scalars['Boolean'];
-  /**
-   * A flag to ML to not recommend this item long term after it is added to the corpus.
-   * Example: a story covering an election.
-   */
-  isShortLived: Scalars['Boolean'];
   /** Whether this item is a syndicated article. */
   isSyndicated: Scalars['Boolean'];
+  /**
+   * A flag to ML to not recommend this item long term after it is added to the corpus.
+   * Example: a story covering an election, or "The best of 202x" collection.
+   */
+  isTimeSensitive: Scalars['Boolean'];
   /** What language this item is in. This is a two-letter code, for example, 'en' for English. */
   language: Scalars['String'];
   /** Optionally, specify the GUID of the New Tab this item should be scheduled for. */
@@ -523,13 +522,13 @@ export type UpdateApprovedCuratedCorpusItemInput = {
   imageUrl: Scalars['Url'];
   /** Whether this story is a Pocket Collection. */
   isCollection: Scalars['Boolean'];
-  /**
-   * A flag to ML to not recommend this item long term after it is added to the corpus.
-   * Example: a story covering an election.
-   */
-  isShortLived: Scalars['Boolean'];
   /** Whether this item is a syndicated article. */
   isSyndicated: Scalars['Boolean'];
+  /**
+   * A flag to ML to not recommend this item long term after it is added to the corpus.
+   * Example: a story covering an election, or "The best of 202x" collection.
+   */
+  isTimeSensitive: Scalars['Boolean'];
   /** What language this item is in. This is a two-letter code, for example, 'en' for English. */
   language: Scalars['String'];
   /** The GUID of the corresponding Prospect ID. */
@@ -545,8 +544,6 @@ export type UpdateApprovedCuratedCorpusItemInput = {
    * Temporarily a string value that will be provided by Prospect API, possibly an enum in the future.
    */
   topic: Scalars['String'];
-  /** The URL of the Approved Item. */
-  url: Scalars['Url'];
 };
 
 export type CuratedItemDataFragment = {
@@ -562,7 +559,7 @@ export type CuratedItemDataFragment = {
   status: CuratedStatus;
   topic: string;
   isCollection: boolean;
-  isShortLived: boolean;
+  isTimeSensitive: boolean;
   isSyndicated: boolean;
   createdBy: string;
   createdAt: number;
@@ -603,7 +600,7 @@ export type CreateApprovedCuratedCorpusItemMutation = {
     status: CuratedStatus;
     topic: string;
     isCollection: boolean;
-    isShortLived: boolean;
+    isTimeSensitive: boolean;
     isSyndicated: boolean;
     createdBy: string;
     createdAt: number;
@@ -641,7 +638,7 @@ export type CreateNewTabFeedScheduledItemMutation = {
       status: CuratedStatus;
       topic: string;
       isCollection: boolean;
-      isShortLived: boolean;
+      isTimeSensitive: boolean;
       isSyndicated: boolean;
       createdBy: string;
       createdAt: number;
@@ -678,7 +675,7 @@ export type DeleteScheduledItemMutation = {
       status: CuratedStatus;
       topic: string;
       isCollection: boolean;
-      isShortLived: boolean;
+      isTimeSensitive: boolean;
       isSyndicated: boolean;
       createdBy: string;
       createdAt: number;
@@ -707,7 +704,7 @@ export type RejectApprovedItemMutation = {
     status: CuratedStatus;
     topic: string;
     isCollection: boolean;
-    isShortLived: boolean;
+    isTimeSensitive: boolean;
     isSyndicated: boolean;
     createdBy: string;
     createdAt: number;
@@ -756,7 +753,7 @@ export type UpdateApprovedCuratedCorpusItemMutation = {
     status: CuratedStatus;
     topic: string;
     isCollection: boolean;
-    isShortLived: boolean;
+    isTimeSensitive: boolean;
     isSyndicated: boolean;
     createdBy: string;
     createdAt: number;
@@ -810,7 +807,7 @@ export type GetApprovedItemsQuery = {
         status: CuratedStatus;
         topic: string;
         isCollection: boolean;
-        isShortLived: boolean;
+        isTimeSensitive: boolean;
         isSyndicated: boolean;
         createdBy: string;
         createdAt: number;
@@ -904,7 +901,7 @@ export type GetScheduledItemsQuery = {
         status: CuratedStatus;
         topic: string;
         isCollection: boolean;
-        isShortLived: boolean;
+        isTimeSensitive: boolean;
         isSyndicated: boolean;
         createdBy: string;
         createdAt: number;
@@ -928,7 +925,7 @@ export const CuratedItemDataFragmentDoc = gql`
     status
     topic
     isCollection
-    isShortLived
+    isTimeSensitive
     isSyndicated
     createdBy
     createdAt

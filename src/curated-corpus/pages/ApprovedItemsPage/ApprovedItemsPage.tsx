@@ -226,7 +226,6 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
       data: {
         externalId: currentItem?.externalId,
         prospectId: currentItem?.prospectId,
-        url: values.url,
         title: values.title,
         excerpt: values.excerpt,
         status: curationStatus,
@@ -235,7 +234,7 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
         imageUrl: values.imageUrl,
         topic: topic,
         isCollection: values.collection,
-        isShortLived: values.shortLived,
+        isTimeSensitive: values.timeSensitive,
         isSyndicated: values.syndicated,
       },
     };

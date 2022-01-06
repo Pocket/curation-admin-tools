@@ -31,7 +31,7 @@ describe('The ApprovedItemForm component', () => {
       status: CuratedStatus.Recommendation,
       isCollection: false,
       isSyndicated: false,
-      isShortLived: false,
+      isTimeSensitive: false,
       createdAt: 1635014926,
       createdBy: 'Amy',
       updatedAt: 1635114926,
@@ -80,9 +80,9 @@ describe('The ApprovedItemForm component', () => {
     expect(curationStatus).toBeInTheDocument();
     expect(curationStatus).toHaveValue('Recommendation');
 
-    const shortLived = screen.getByLabelText(/Short Lived/);
-    expect(shortLived).toBeInTheDocument();
-    expect(shortLived).toHaveProperty('checked', item.isShortLived);
+    const timeSensitive = screen.getByLabelText(/Time Sensitive/);
+    expect(timeSensitive).toBeInTheDocument();
+    expect(timeSensitive).toHaveProperty('checked', item.isTimeSensitive);
 
     const collection = screen.getByLabelText(/Collection/);
     expect(collection).toBeInTheDocument();

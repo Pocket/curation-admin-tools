@@ -33,7 +33,7 @@ export const transformProspectToApprovedItem = (
     status: isRecommendation
       ? CuratedStatus.Recommendation
       : CuratedStatus.Corpus,
-    isShortLived: false,
+    isTimeSensitive: false,
     isSyndicated: prospect.isSyndicated ?? false,
     isCollection: prospect.isCollection ?? false,
     excerpt: prospect.excerpt ?? '',

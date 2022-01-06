@@ -83,7 +83,7 @@ export const ApprovedItemForm: React.FC<
       language: approvedItemLanguage ?? '',
       topic: approvedItemTopic ?? '',
       curationStatus: approvedItemCorpus ?? '',
-      shortLived: approvedItem.isShortLived,
+      timeSensitive: approvedItem.isTimeSensitive,
       syndicated: approvedItem.isSyndicated,
       collection: approvedItem.isCollection,
       excerpt: approvedItem.excerpt,
@@ -225,11 +225,11 @@ export const ApprovedItemForm: React.FC<
                         control={
                           <Switch
                             color="primary"
-                            checked={formik.values.shortLived}
-                            {...formik.getFieldProps('shortLived')}
+                            checked={formik.values.timeSensitive}
+                            {...formik.getFieldProps('timeSensitive')}
                           />
                         }
-                        label={'Short Lived'}
+                        label={'Time Sensitive'}
                         labelPlacement="end"
                       />
                     </Grid>

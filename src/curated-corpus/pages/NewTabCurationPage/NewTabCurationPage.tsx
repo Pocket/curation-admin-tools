@@ -305,7 +305,7 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
       imageUrl: imageUrl,
       topic: topic,
       isCollection: values.collection,
-      isShortLived: values.shortLived,
+      isTimeSensitive: values.timeSensitive,
       isSyndicated: values.syndicated,
     };
 
