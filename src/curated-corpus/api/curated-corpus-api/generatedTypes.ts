@@ -520,10 +520,6 @@ export type UpdateApprovedCuratedCorpusItemInput = {
   externalId: Scalars['ID'];
   /** The image URL for this item's accompanying picture. */
   imageUrl: Scalars['Url'];
-  /** Whether this story is a Pocket Collection. */
-  isCollection: Scalars['Boolean'];
-  /** Whether this item is a syndicated article. */
-  isSyndicated: Scalars['Boolean'];
   /**
    * A flag to ML to not recommend this item long term after it is added to the corpus.
    * Example: a story covering an election, or "The best of 202x" collection.

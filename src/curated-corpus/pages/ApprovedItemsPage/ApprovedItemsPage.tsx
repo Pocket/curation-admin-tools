@@ -233,9 +233,7 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
         publisher: values.publisher,
         imageUrl: values.imageUrl,
         topic: topic,
-        isCollection: values.collection,
         isTimeSensitive: values.timeSensitive,
-        isSyndicated: values.syndicated,
       },
     };
 
