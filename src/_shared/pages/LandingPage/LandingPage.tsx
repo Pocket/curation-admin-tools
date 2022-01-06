@@ -11,7 +11,7 @@ export const LandingPage = (): JSX.Element => {
 
   return (
     <>
-      <Header productName="Curation Tools" menuLinks={[]} />
+      <Header productName="Curation Tools" productLink="" menuLinks={[]} />
       <MainContentWrapper>
         <Grid container spacing={2} className={classes.root}>
           <Grid item xs={12} sm={6}>

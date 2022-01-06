@@ -115,7 +115,7 @@ export const RejectedItemsPage: React.FC = (): JSX.Element => {
   return (
     <>
       <h1>
-        Rejected Corpus{' '}
+        Rejected{' '}
         <Typography variant="caption" title="© 2021 Alex D">
           🦨 Ew Tab
         </Typography>
