@@ -77,6 +77,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
   // for this New Tab
   const { loading, error, data, fetchMore, refetch } =
     useGetScheduledItemsQuery({
+      fetchPolicy: 'no-cache',
       notifyOnNetworkStatusChange: true,
       variables: {
         filters: {
