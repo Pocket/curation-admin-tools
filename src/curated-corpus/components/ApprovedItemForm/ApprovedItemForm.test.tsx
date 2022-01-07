@@ -189,7 +189,7 @@ describe('The ApprovedItemForm component', () => {
       expect(onCancel).toHaveBeenCalled();
     });
 
-    it.only('should submit the form if a new image is uploaded', async () => {
+    it.only('should set imageUrl field when a new image is uploaded', async () => {
       const file = new File(['hello'], 'hello.png', { type: 'image/png' });
 
       await act(async () => {
@@ -218,27 +218,34 @@ describe('The ApprovedItemForm component', () => {
         //   /drag and drop an image here, or click to select one/i
         // );
 
+        // get the input html element
         const imageUploadInput = await screen.findByTestId(
           'curated-corpus-image-upload-input'
         );
 
+        // upload the test file
         await waitFor(() => {
           userEvent.upload(imageUploadInput, file);
         });
 
+        // this gets the save button on the image upload not on the form
         const saveButton = await screen.findByRole('button', {
           name: /save/i,
         });
+
+        // save the image
         await waitFor(() => {
           userEvent.click(saveButton);
         });
 
+        // fetch the form field
         const imageUrlField = (await screen.findByLabelText(
           'imageUrl'
         )) as HTMLInputElement;
 
         screen.debug(imageUrlField);
 
+        // this onImageSave callback should be called but this assertion fails
         expect(onImageSave).toHaveBeenCalled();
 
         expect(imageUrlField.value).toEqual(file.name);
