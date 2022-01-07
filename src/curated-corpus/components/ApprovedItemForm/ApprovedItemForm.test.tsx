@@ -1,14 +1,15 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { act } from 'react-dom/test-utils';
+import { ApolloProvider } from '@apollo/client';
+import { SnackbarProvider } from 'notistack';
 import {
   ApprovedCuratedCorpusItem,
   CuratedStatus,
 } from '../../api/curated-corpus-api/generatedTypes';
-import { SnackbarProvider } from 'notistack';
-import { ApolloProvider } from '@apollo/client';
 import { client } from '../../api/curated-corpus-api/client';
 import { ApprovedItemForm } from './ApprovedItemForm';
-import userEvent from '@testing-library/user-event';
 
 describe('The ApprovedItemForm component', () => {
   let item: ApprovedCuratedCorpusItem;
@@ -186,6 +187,62 @@ describe('The ApprovedItemForm component', () => {
         userEvent.click(cancelButton);
       });
       expect(onCancel).toHaveBeenCalled();
+    });
+
+    it.only('should submit the form if a new image is uploaded', async () => {
+      const file = new File(['hello'], 'hello.png', { type: 'image/png' });
+
+      await act(async () => {
+        render(
+          <ApolloProvider client={client}>
+            <SnackbarProvider maxSnack={3}>
+              <ApprovedItemForm
+                approvedItem={item}
+                onSubmit={onSubmit}
+                onCancel={onCancel}
+                onImageSave={onImageSave}
+              />
+            </SnackbarProvider>
+          </ApolloProvider>
+        );
+
+        const updateImageButton = screen.getByRole('button', {
+          name: /update image/i,
+        });
+
+        await waitFor(() => {
+          userEvent.click(updateImageButton);
+        });
+
+        // const text = await screen.findByText(
+        //   /drag and drop an image here, or click to select one/i
+        // );
+
+        const imageUploadInput = await screen.findByTestId(
+          'curated-corpus-image-upload-input'
+        );
+
+        await waitFor(() => {
+          userEvent.upload(imageUploadInput, file);
+        });
+
+        const saveButton = await screen.findByRole('button', {
+          name: /save/i,
+        });
+        await waitFor(() => {
+          userEvent.click(saveButton);
+        });
+
+        const imageUrlField = (await screen.findByLabelText(
+          'imageUrl'
+        )) as HTMLInputElement;
+
+        screen.debug(imageUrlField);
+
+        expect(onImageSave).toHaveBeenCalled();
+
+        expect(imageUrlField.value).toEqual(file.name);
+      });
     });
   });
 

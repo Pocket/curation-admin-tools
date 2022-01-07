@@ -14,7 +14,7 @@ import {
   Grid,
   FormControlLabel,
   Switch,
-  Hidden,
+  //Hidden,
   FormHelperText,
 } from '@material-ui/core';
 import {
@@ -149,14 +149,14 @@ export const ApprovedItemForm: React.FC<
                 onImageSave={onImageSave}
                 placeholder="/placeholders/story.svg"
               />
-              <Hidden xsUp>
-                <FormikTextField
-                  id="imageUrl"
-                  label="imageUrl"
-                  fieldProps={formik.getFieldProps('imageUrl')}
-                  fieldMeta={formik.getFieldMeta('imageUrl')}
-                ></FormikTextField>
-              </Hidden>
+
+              <FormikTextField
+                id="imageUrl"
+                label="imageUrl"
+                fieldProps={formik.getFieldProps('imageUrl')}
+                fieldMeta={formik.getFieldMeta('imageUrl')}
+              ></FormikTextField>
+
               <FormHelperText error>
                 {formik.getFieldMeta('imageUrl').error
                   ? formik.getFieldMeta('imageUrl').error

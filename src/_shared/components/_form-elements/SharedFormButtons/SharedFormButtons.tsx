@@ -19,6 +19,9 @@ export interface SharedFormButtonsProps {
    */
 
   saveButtonLabel?: string;
+
+  saveButtonDataTestId?: string;
+
   /**
    * What to do if the user clicks on the Cancel button
    */
