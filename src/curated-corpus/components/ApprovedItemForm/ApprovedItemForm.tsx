@@ -1,7 +1,5 @@
 import React from 'react';
-
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
-
 import { validationSchema } from './ApprovedItemForm.validation';
 import { ApprovedCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
 import {
@@ -9,12 +7,10 @@ import {
   languages,
   curationStatusOptions,
 } from '../../helpers/definitions';
-
 import {
   Grid,
   FormControlLabel,
   Switch,
-  Hidden,
   FormHelperText,
 } from '@material-ui/core';
 import {
@@ -149,14 +145,15 @@ export const ApprovedItemForm: React.FC<
                 onImageSave={onImageSave}
                 placeholder="/placeholders/story.svg"
               />
-              <Hidden xsUp>
-                <FormikTextField
-                  id="imageUrl"
-                  label="imageUrl"
-                  fieldProps={formik.getFieldProps('imageUrl')}
-                  fieldMeta={formik.getFieldMeta('imageUrl')}
-                ></FormikTextField>
-              </Hidden>
+
+              <FormikTextField
+                id="imageUrl"
+                label="imageUrl"
+                style={{ visibility: 'hidden' }}
+                fieldProps={formik.getFieldProps('imageUrl')}
+                fieldMeta={formik.getFieldMeta('imageUrl')}
+              ></FormikTextField>
+
               <FormHelperText error>
                 {formik.getFieldMeta('imageUrl').error
                   ? formik.getFieldMeta('imageUrl').error

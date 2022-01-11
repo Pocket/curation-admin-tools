@@ -168,7 +168,11 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
                   })}
                   pt={2}
                 >
-                  <input {...getInputProps()} />
+                  <input
+                    {...getInputProps()}
+                    data-testid="curated-corpus-image-upload-input"
+                    type="file"
+                  />
                   <Typography align="center">
                     Drag and drop an image here, or click to select one
                   </Typography>
