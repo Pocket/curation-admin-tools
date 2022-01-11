@@ -4,7 +4,10 @@ import {
   ProspectType,
 } from '../api/curated-corpus-api/generatedTypes';
 import { Prospect } from '../api/prospect-api/generatedTypes';
-import { transformProspectToApprovedItem } from './helperFunctions';
+import {
+  fetchFileFromUrl,
+  transformProspectToApprovedItem,
+} from './helperFunctions';
 //import
 
 describe('helperFunctions ', () => {
@@ -88,16 +91,48 @@ describe('helperFunctions ', () => {
   });
 
   describe('fetchFileFromUrl', () => {
-    beforeEach(() => {
-      // jest.spyOn(global, 'fetch').mockResolvedValue({
-      //   json: jest.fn().mockResolvedValue(mockResponse),
-      // });
-    });
+    const mockBlob = new Blob(['test'], { type: 'image/png' });
+    const originalFetch = global.fetch;
+    const mockResponse = new Response();
 
+    // reset the global fetch to the original one
     afterEach(() => {
-      jest.restoreAllMocks();
+      global.fetch = originalFetch;
     });
 
-    //it('does the test', async () => {});
+    it('should return the correct blob when fetch response is OK', async () => {
+      // mocking the fetch response
+      // this is replacing the global object's fetch with a jest mock function
+      global.fetch = jest.fn(() => {
+        return Promise.resolve({
+          ...mockResponse,
+          blob: () => {
+            return Promise.resolve(mockBlob);
+          },
+        });
+      });
+
+      const responseBlob = await fetchFileFromUrl('www.test.com/image');
+
+      // assert blob has correct file type
+      expect(responseBlob?.type).toEqual('image/png');
+    });
+
+    it('should return undefined when fetch response is NOT OK', async () => {
+      global.fetch = jest.fn(() => {
+        return Promise.resolve({
+          ...mockResponse,
+          ok: false,
+          blob: () => {
+            return Promise.resolve(mockBlob);
+          },
+        });
+      });
+
+      const responseBlob = await fetchFileFromUrl('www.test.com/image');
+
+      // assert blob has correct file type
+      expect(responseBlob).toEqual(undefined);
+    });
   });
 });
