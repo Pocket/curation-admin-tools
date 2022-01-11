@@ -7,7 +7,6 @@ import {
   fetchFileFromUrl,
   transformProspectToApprovedItem,
 } from './helperFunctions';
-//import
 
 describe('helperFunctions ', () => {
   describe('transformProspectToApprovedItem function', () => {
