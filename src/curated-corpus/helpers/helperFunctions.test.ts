@@ -1,5 +1,4 @@
 import {
-  //ApprovedCuratedCorpusItem,
   CuratedStatus,
   ProspectType,
 } from '../api/curated-corpus-api/generatedTypes';
@@ -90,7 +89,7 @@ describe('helperFunctions ', () => {
     });
   });
 
-  describe('fetchFileFromUrl', () => {
+  describe('fetchFileFromUrl function', () => {
     const mockBlob = new Blob(['test'], { type: 'image/png' });
     const originalFetch = global.fetch;
     const mockResponse = new Response();
@@ -131,7 +130,7 @@ describe('helperFunctions ', () => {
 
       const responseBlob = await fetchFileFromUrl('www.test.com/image');
 
-      // assert blob has correct file type
+      // assert blob has is undefined
       expect(responseBlob).toEqual(undefined);
     });
   });
