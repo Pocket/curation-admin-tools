@@ -1,11 +1,10 @@
 import React from 'react';
-import { Modal } from '../../../_shared/components';
-import { Box, Grid, Typography } from '@material-ui/core';
-import { ScheduleItemForm } from '..';
-import { newTabs } from '../../helpers/definitions';
-import { ApprovedCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
+import { Box, Grid, Typography } from '@material-ui/core';
+import { ApprovedCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
+import { Modal } from '../../../_shared/components';
+import { ScheduleItemFormConnector } from '../';
 
 interface ScheduleItemModalProps {
   approvedItem: ApprovedCuratedCorpusItem;
@@ -39,9 +38,8 @@ export const ScheduleItemModal: React.FC<ScheduleItemModalProps> = (
           </Box>
         </Grid>
         <Grid item xs={12}>
-          <ScheduleItemForm
+          <ScheduleItemFormConnector
             approvedItemExternalId={approvedItem.externalId}
-            newTabList={newTabs}
             onSubmit={onSave}
             onCancel={() => {
               toggleModal();

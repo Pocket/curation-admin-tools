@@ -37,35 +37,6 @@ export const prospectFilterOptions: DropdownOption[] = [
   { code: ProspectType.Syndicated, name: 'Syndicated' },
 ];
 
-// New Tab as it exists on Prospect API.
-export type NewTab = {
-  name: string;
-  guid: string;
-  utcOffset: number;
-  prospectTypes: ProspectType[];
-};
-
-// And this can be used for New Tab scheduling dropdowns.
-// 'name' as a display value and 'guid' as actual value sent to the API
-export const newTabs: NewTab[] = [
-  {
-    name: 'en-US',
-    guid: 'EN_US',
-    utcOffset: -4000,
-    prospectTypes: [
-      ProspectType.Global,
-      ProspectType.OrganicTimespent,
-      ProspectType.Syndicated,
-    ],
-  },
-  {
-    name: 'de-DE',
-    guid: 'DE_DE',
-    utcOffset: 1000,
-    prospectTypes: [ProspectType.Global],
-  },
-];
-
 // Language codes. Currently only English and German are needed.
 export const languages: DropdownOption[] = [
   { code: 'EN', name: 'English' },
