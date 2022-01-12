@@ -125,6 +125,7 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
     data: dataScheduled,
     refetch: refetchScheduled,
   } = useGetScheduledItemsQuery({
+    fetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
     variables: {
       filters: {
