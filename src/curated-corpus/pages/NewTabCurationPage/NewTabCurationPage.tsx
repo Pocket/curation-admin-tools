@@ -39,6 +39,7 @@ import {
 import { getProspectFilterOptions } from '../../helpers/getProspectFilterOptions';
 import { FormikHelpers, FormikValues } from 'formik';
 import { DropdownOption } from '../../helpers/definitions';
+import { EmptyState } from './EmptyState';
 
 export const NewTabCurationPage: React.FC = (): JSX.Element => {
   // set up the initial new tab guid value (nothing at this point)
@@ -373,6 +374,9 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
     }
   };
 
+  // check if no prospects are returned in the api call
+  const showEmptyState = prospects && !loading && prospects.length === 0;
+
   return (
     <>
       {currentItem && (
@@ -451,6 +455,7 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
           </Grid>
 
           {!prospects && <HandleApiResponse loading={loading} error={error} />}
+          {showEmptyState && <EmptyState />}
 
           {prospects &&
             prospects.map((prospect) => {
