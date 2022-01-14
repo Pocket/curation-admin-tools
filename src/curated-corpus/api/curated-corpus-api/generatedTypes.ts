@@ -770,6 +770,34 @@ export type UploadApprovedCuratedCorpusItemImageMutation = {
   };
 };
 
+export type GetApprovedItemByUrlQueryVariables = Exact<{
+  url: Scalars['String'];
+}>;
+
+export type GetApprovedItemByUrlQuery = {
+  __typename?: 'Query';
+  getApprovedCuratedCorpusItemByUrl: {
+    __typename?: 'ApprovedCuratedCorpusItem';
+    externalId: string;
+    prospectId: string;
+    title: string;
+    language: string;
+    publisher: string;
+    url: any;
+    imageUrl: any;
+    excerpt: string;
+    status: CuratedStatus;
+    topic: string;
+    isCollection: boolean;
+    isTimeSensitive: boolean;
+    isSyndicated: boolean;
+    createdBy: string;
+    createdAt: number;
+    updatedBy?: string | null | undefined;
+    updatedAt: number;
+  };
+};
+
 export type GetApprovedItemsQueryVariables = Exact<{
   filters?: InputMaybe<ApprovedCuratedCorpusItemFilter>;
   pagination?: InputMaybe<PaginationInput>;
@@ -1336,6 +1364,65 @@ export type UploadApprovedCuratedCorpusItemImageMutationOptions =
     UploadApprovedCuratedCorpusItemImageMutation,
     UploadApprovedCuratedCorpusItemImageMutationVariables
   >;
+export const GetApprovedItemByUrlDocument = gql`
+  query getApprovedItemByUrl($url: String!) {
+    getApprovedCuratedCorpusItemByUrl(url: $url) {
+      ...CuratedItemData
+    }
+  }
+  ${CuratedItemDataFragmentDoc}
+`;
+
+/**
+ * __useGetApprovedItemByUrlQuery__
+ *
+ * To run a query within a React component, call `useGetApprovedItemByUrlQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetApprovedItemByUrlQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetApprovedItemByUrlQuery({
+ *   variables: {
+ *      url: // value for 'url'
+ *   },
+ * });
+ */
+export function useGetApprovedItemByUrlQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetApprovedItemByUrlQuery,
+    GetApprovedItemByUrlQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetApprovedItemByUrlQuery,
+    GetApprovedItemByUrlQueryVariables
+  >(GetApprovedItemByUrlDocument, options);
+}
+export function useGetApprovedItemByUrlLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetApprovedItemByUrlQuery,
+    GetApprovedItemByUrlQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetApprovedItemByUrlQuery,
+    GetApprovedItemByUrlQueryVariables
+  >(GetApprovedItemByUrlDocument, options);
+}
+export type GetApprovedItemByUrlQueryHookResult = ReturnType<
+  typeof useGetApprovedItemByUrlQuery
+>;
+export type GetApprovedItemByUrlLazyQueryHookResult = ReturnType<
+  typeof useGetApprovedItemByUrlLazyQuery
+>;
+export type GetApprovedItemByUrlQueryResult = Apollo.QueryResult<
+  GetApprovedItemByUrlQuery,
+  GetApprovedItemByUrlQueryVariables
+>;
 export const GetApprovedItemsDocument = gql`
   query getApprovedItems(
     $filters: ApprovedCuratedCorpusItemFilter

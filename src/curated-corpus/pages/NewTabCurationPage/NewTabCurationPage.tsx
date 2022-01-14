@@ -3,9 +3,11 @@ import { DateTime } from 'luxon';
 import { Box, Button, Grid, Hidden } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import LibraryAddIcon from '@material-ui/icons/LibraryAdd';
 import { HandleApiResponse } from '../../../_shared/components';
 import {
   ApprovedItemModal,
+  AddProspectModal,
   NewTabGroupedList,
   ProspectListCard,
   RefreshProspectsModal,
@@ -161,6 +163,12 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
    */
   const [refreshProspectsModalOpen, toggleRefreshProspectsModal] =
     useToggle(false);
+
+  //TODO: fix this
+  /**
+   * does the thing
+   */
+  const [addProspectModalOpen, toggleAddProspectModal] = useToggle(false);
 
   // Get a helper function that will execute each mutation, show standard notifications
   // and execute any additional actions in a callback
@@ -410,6 +418,10 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
         }}
         toggleModal={toggleRefreshProspectsModal}
       />
+      <AddProspectModal
+        isOpen={addProspectModalOpen}
+        toggleModal={toggleAddProspectModal}
+      />
 
       <h1>Prospecting</h1>
       <Grid container spacing={3}>
@@ -432,6 +444,15 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
                 <Button
                   color="default"
                   onClick={() => {
+                    // toggle the add prospect modal
+                    toggleAddProspectModal();
+                  }}
+                >
+                  <LibraryAddIcon fontSize="large" />
+                </Button>
+                <Button
+                  color="default"
+                  onClick={() => {
                     // If all the prospects have been processed already,
                     // there is no need for a confirmation dialogue here,
                     // let's just fetch a new batch of prospects.
@@ -442,6 +463,7 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
                 >
                   <RefreshIcon fontSize="large" />
                 </Button>
+
                 {prospectFilters.length > 0 && (
                   <SplitButton
                     icon={<FilterListIcon fontSize="large" />}
