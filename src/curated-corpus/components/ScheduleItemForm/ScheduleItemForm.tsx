@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Grid, TextField } from '@material-ui/core';
+import { Box, Grid, LinearProgress, TextField } from '@material-ui/core';
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import { DateTime } from 'luxon';
 import { DatePicker } from '@material-ui/pickers';
@@ -111,8 +111,15 @@ export const ScheduleItemForm: React.FC<
               fullWidth
             />
           </Grid>
+
+          {formik.isSubmitting && (
+            <Grid item xs={12}>
+              <Box mb={3}>
+                <LinearProgress />
+              </Box>
+            </Grid>
+          )}
         </Grid>
-        <SharedFormButtons onCancel={onCancel} />
         <Box display="none">
           <TextField
             type="hidden"
@@ -121,6 +128,8 @@ export const ScheduleItemForm: React.FC<
             {...formik.getFieldProps('approvedItemExternalId')}
           />
         </Box>
+
+        <SharedFormButtons onCancel={onCancel} />
       </form>
     </>
   );
