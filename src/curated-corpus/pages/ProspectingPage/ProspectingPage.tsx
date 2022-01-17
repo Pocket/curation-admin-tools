@@ -10,6 +10,7 @@ import {
   ProspectListCard,
   RefreshProspectsModal,
   RejectItemModal,
+  ScheduleItemModal,
   SplitButton,
 } from '../../components';
 import { client } from '../../api/prospect-api/client';
@@ -19,9 +20,12 @@ import {
   useUpdateProspectAsCuratedMutation,
 } from '../../api/prospect-api/generatedTypes';
 import {
+  ApprovedCuratedCorpusItem,
+  CuratedStatus,
   RejectProspectMutationVariables,
   ScheduledCuratedCorpusItemsResult,
   useCreateApprovedCuratedCorpusItemMutation,
+  useCreateNewTabFeedScheduledItemMutation,
   useGetNewTabsForUserQuery,
   useGetScheduledItemsQuery,
   useRejectProspectMutation,
@@ -41,7 +45,7 @@ import { FormikHelpers, FormikValues } from 'formik';
 import { DropdownOption } from '../../helpers/definitions';
 import { EmptyState } from './EmptyState';
 
-export const NewTabCurationPage: React.FC = (): JSX.Element => {
+export const ProspectingPage: React.FC = (): JSX.Element => {
   // set up the initial new tab guid value (nothing at this point)
   const [currentNewTabGuid, setCurrentNewTabGuid] = useState('');
 
@@ -144,6 +148,13 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
     undefined
   );
 
+  /**
+   * Set the current Curated Item to be worked on (e.g., to add to New Tab optionally).
+   */
+  const [approvedItem, setApprovedItem] = useState<
+    ApprovedCuratedCorpusItem | undefined
+  >(undefined);
+
   const [isRecommendation, setIsRecommendation] = useState<boolean>(false);
 
   /**
@@ -161,6 +172,11 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
    */
   const [refreshProspectsModalOpen, toggleRefreshProspectsModal] =
     useToggle(false);
+
+  /**
+   * Keep track of whether the "Schedule this item for New Tab" modal is open or not.
+   */
+  const [scheduleModalOpen, toggleScheduleModal] = useToggle(false);
 
   // Get a helper function that will execute each mutation, show standard notifications
   // and execute any additional actions in a callback
@@ -304,8 +320,8 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
       status: curationStatus,
       language: languageCode,
       publisher: values.publisher,
-      imageUrl: imageUrl,
-      topic: topic,
+      imageUrl,
+      topic,
       isCollection: values.collection,
       isTimeSensitive: values.timeSensitive,
       isSyndicated: values.syndicated,
@@ -316,7 +332,7 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
       createApprovedItem,
       { variables: { data: { ...approvedItem } }, client },
       'Item successfully added to the curated corpus.',
-      () => {
+      (approvedItemData) => {
         // call the mutation to mark prospect as approved
         runMutation(
           updateProspectAsCurated,
@@ -324,6 +340,11 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
           undefined,
           () => {
             toggleApprovedItemModal();
+
+            if (approvedItem.status === CuratedStatus.Recommendation) {
+              setApprovedItem(approvedItemData.createApprovedCuratedCorpusItem);
+              toggleScheduleModal();
+            }
 
             // Remove the newly curated item from the list of prospects displayed
             // on the page.
@@ -374,6 +395,37 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
     }
   };
 
+  // 1. Prepare the "schedule curated item" mutation
+  const [scheduleCuratedItem] = useCreateNewTabFeedScheduledItemMutation();
+  // 2. Schedule the curated item when the user saves a scheduling request
+  const onScheduleSave = (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ): void => {
+    // Set out all the variables we need to pass to the mutation
+    const variables = {
+      approvedItemExternalId: approvedItem?.externalId,
+      newTabGuid: values.newTabGuid,
+      scheduledDate: values.scheduledDate.toISODate(),
+    };
+
+    // Run the mutation
+    runMutation(
+      scheduleCuratedItem,
+      { variables },
+      `Item scheduled successfully for ${values.scheduledDate.toLocaleString(
+        DateTime.DATE_FULL
+      )}`,
+      () => {
+        toggleScheduleModal();
+        formikHelpers.setSubmitting(false);
+      },
+      () => {
+        formikHelpers.setSubmitting(false);
+      }
+    );
+  };
+
   // check if no prospects are returned in the api call
   const showEmptyState = prospects && !loading && prospects.length === 0;
 
@@ -410,6 +462,16 @@ export const NewTabCurationPage: React.FC = (): JSX.Element => {
         }}
         toggleModal={toggleRefreshProspectsModal}
       />
+
+      {approvedItem && (
+        <ScheduleItemModal
+          approvedItem={approvedItem}
+          headingCopy="Optional: schedule this item for New Tab"
+          isOpen={scheduleModalOpen}
+          onSave={onScheduleSave}
+          toggleModal={toggleScheduleModal}
+        />
+      )}
 
       <h1>Prospecting</h1>
       <Grid container spacing={3}>

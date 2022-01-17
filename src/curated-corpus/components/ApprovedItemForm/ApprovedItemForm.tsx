@@ -3,24 +3,26 @@ import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import { validationSchema } from './ApprovedItemForm.validation';
 import { ApprovedCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
 import {
-  topics,
-  languages,
   curationStatusOptions,
+  DropdownOption,
+  languages,
+  topics,
 } from '../../helpers/definitions';
 import {
-  Grid,
+  Box,
   FormControlLabel,
-  Switch,
   FormHelperText,
+  Grid,
+  LinearProgress,
+  Switch,
 } from '@material-ui/core';
 import {
+  FormikSelectField,
   FormikTextField,
+  ImageUpload,
   SharedFormButtons,
   SharedFormButtonsProps,
-  ImageUpload,
-  FormikSelectField,
 } from '../../../_shared/components';
-import { DropdownOption } from '../../helpers/definitions';
 
 interface ApprovedItemFormProps {
   /**
@@ -110,7 +112,7 @@ export const ApprovedItemForm: React.FC<
             fieldProps={formik.getFieldProps('url')}
             fieldMeta={formik.getFieldMeta('url')}
             disabled
-          ></FormikTextField>
+          />
         </Grid>
         <Grid item xs={12}>
           <FormikTextField
@@ -118,7 +120,7 @@ export const ApprovedItemForm: React.FC<
             label="Title"
             fieldProps={formik.getFieldProps('title')}
             fieldMeta={formik.getFieldMeta('title')}
-          ></FormikTextField>
+          />
         </Grid>
         <Grid item md={12} xs={12}>
           <FormikTextField
@@ -126,7 +128,7 @@ export const ApprovedItemForm: React.FC<
             label="Publisher"
             fieldProps={formik.getFieldProps('publisher')}
             fieldMeta={formik.getFieldMeta('publisher')}
-          ></FormikTextField>
+          />
         </Grid>
         <Grid item md={12} xs={12}>
           <FormikTextField
@@ -135,7 +137,7 @@ export const ApprovedItemForm: React.FC<
             multiline
             fieldProps={formik.getFieldProps('excerpt')}
             fieldMeta={formik.getFieldMeta('excerpt')}
-          ></FormikTextField>
+          />
         </Grid>
         <Grid item xs={12}>
           <Grid container direction="row" spacing={3}>
@@ -152,7 +154,7 @@ export const ApprovedItemForm: React.FC<
                 style={{ visibility: 'hidden' }}
                 fieldProps={formik.getFieldProps('imageUrl')}
                 fieldMeta={formik.getFieldMeta('imageUrl')}
-              ></FormikTextField>
+              />
 
               <FormHelperText error>
                 {formik.getFieldMeta('imageUrl').error
@@ -263,6 +265,15 @@ export const ApprovedItemForm: React.FC<
           </Grid>
         </Grid>
       </Grid>
+
+      {formik.isSubmitting && (
+        <Grid item xs={12}>
+          <Box mb={3}>
+            <LinearProgress />
+          </Box>
+        </Grid>
+      )}
+
       <SharedFormButtons onCancel={onCancel} />
     </form>
   );

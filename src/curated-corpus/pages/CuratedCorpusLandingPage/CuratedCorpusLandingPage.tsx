@@ -11,7 +11,7 @@ import {
 } from '../../../_shared/components';
 import {
   ApprovedItemsPage,
-  NewTabCurationPage,
+  ProspectingPage,
   RejectedItemsPage,
   SchedulePage,
 } from '../';
@@ -87,7 +87,7 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
               </List>
             </Route>
             <Route exact path={`${path}/prospecting/`}>
-              <NewTabCurationPage />
+              <ProspectingPage />
             </Route>
             <Route exact path={`${path}/schedule/`}>
               <SchedulePage />

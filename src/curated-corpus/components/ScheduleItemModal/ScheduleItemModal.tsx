@@ -8,6 +8,7 @@ import { ScheduleItemFormConnector } from '../';
 
 interface ScheduleItemModalProps {
   approvedItem: ApprovedCuratedCorpusItem;
+  headingCopy?: string;
   isOpen: boolean;
   onSave: (
     values: FormikValues,
@@ -19,7 +20,13 @@ interface ScheduleItemModalProps {
 export const ScheduleItemModal: React.FC<ScheduleItemModalProps> = (
   props
 ): JSX.Element => {
-  const { approvedItem, isOpen, onSave, toggleModal } = props;
+  const {
+    approvedItem,
+    headingCopy = 'Schedule this item for New Tab',
+    isOpen,
+    onSave,
+    toggleModal,
+  } = props;
 
   return (
     <Modal
@@ -30,7 +37,7 @@ export const ScheduleItemModal: React.FC<ScheduleItemModalProps> = (
     >
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <h2>Schedule this item for New Tab</h2>
+          <h2>{headingCopy}</h2>
           <Box mb={3}>
             <Typography variant="subtitle1">
               <em>Title</em>: {approvedItem.title}
