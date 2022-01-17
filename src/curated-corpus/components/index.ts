@@ -6,7 +6,6 @@ export { LoadExtraButton } from './LoadExtraButton/LoadExtraButton';
 export { MiniNewTabScheduleCard } from './MiniNewTabScheduleCard/MiniNewTabScheduleCard';
 export { NewTabGroupedList } from './NewTabGroupedList/NewTabGroupedList';
 export { NextPrevPagination } from './NextPrevPagination/NextPrevPagination';
-export { ProceedToScheduleModal } from './ProceedToScheduleModal/ProceedToScheduleModal';
 export { ProspectListCard } from './ProspectListCard/ProspectListCard';
 export { RejectedItemListCard } from './RejectedItemListCard/RejectedItemListCard';
 export { RejectedItemSearchForm } from './RejectedItemSearchForm/RejectedItemSearchForm';

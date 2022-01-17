@@ -7,7 +7,6 @@ import { HandleApiResponse } from '../../../_shared/components';
 import {
   ApprovedItemModal,
   NewTabGroupedList,
-  ProceedToScheduleModal,
   ProspectListCard,
   RefreshProspectsModal,
   RejectItemModal,
@@ -26,6 +25,7 @@ import {
   RejectProspectMutationVariables,
   ScheduledCuratedCorpusItemsResult,
   useCreateApprovedCuratedCorpusItemMutation,
+  useCreateNewTabFeedScheduledItemMutation,
   useGetNewTabsForUserQuery,
   useGetScheduledItemsQuery,
   useRejectProspectMutation,
@@ -170,12 +170,6 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
    * Keep track of whether the "Refresh Prospects" modal is open or not.
    */
   const [refreshProspectsModalOpen, toggleRefreshProspectsModal] =
-    useToggle(false);
-
-  /**
-   * Keep track of whether the "Schedule on New Tab?" modal is open or not.
-   */
-  const [proceedToScheduleModalOpen, toggleProceedToScheduleModal] =
     useToggle(false);
 
   /**
@@ -347,8 +341,8 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
             toggleApprovedItemModal();
 
             if (approvedItem.status === CuratedStatus.Recommendation) {
-              toggleProceedToScheduleModal();
               setApprovedItem(approvedItemData.createApprovedCuratedCorpusItem);
+              toggleScheduleModal();
             }
 
             // Remove the newly curated item from the list of prospects displayed
@@ -400,6 +394,37 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     }
   };
 
+  // 1. Prepare the "schedule curated item" mutation
+  const [scheduleCuratedItem] = useCreateNewTabFeedScheduledItemMutation();
+  // 2. Schedule the curated item when the user saves a scheduling request
+  const onScheduleSave = (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ): void => {
+    // Set out all the variables we need to pass to the mutation
+    const variables = {
+      approvedItemExternalId: approvedItem?.externalId,
+      newTabGuid: values.newTabGuid,
+      scheduledDate: values.scheduledDate.toISODate(),
+    };
+
+    // Run the mutation
+    runMutation(
+      scheduleCuratedItem,
+      { variables },
+      `Item scheduled successfully for ${values.scheduledDate.toLocaleString(
+        DateTime.DATE_FULL
+      )}`,
+      () => {
+        toggleScheduleModal();
+        formikHelpers.setSubmitting(false);
+      },
+      () => {
+        formikHelpers.setSubmitting(false);
+      }
+    );
+  };
+
   return (
     <>
       {currentItem && (
@@ -434,24 +459,12 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         toggleModal={toggleRefreshProspectsModal}
       />
 
-      <ProceedToScheduleModal
-        isOpen={proceedToScheduleModalOpen}
-        onConfirm={() => {
-          // Show the Schedule Item form
-          toggleScheduleModal();
-          // Get rid of the interim confirmation screen
-          toggleProceedToScheduleModal();
-        }}
-        toggleModal={toggleProceedToScheduleModal}
-      />
-
       {approvedItem && (
         <ScheduleItemModal
           approvedItem={approvedItem}
+          headingCopy="Optional: schedule this item for New Tab"
           isOpen={scheduleModalOpen}
-          onSave={() => {
-            console.log('do nothing');
-          }}
+          onSave={onScheduleSave}
           toggleModal={toggleScheduleModal}
         />
       )}
