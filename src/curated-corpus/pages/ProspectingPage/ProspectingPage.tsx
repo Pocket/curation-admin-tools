@@ -417,10 +417,23 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         DateTime.DATE_FULL
       )}`,
       () => {
-        toggleScheduleModal();
+        // Hide the loading indicator
         formikHelpers.setSubmitting(false);
+
+        // Hide the Schedule Item Form modal
+        toggleScheduleModal();
+
+        // Refresh the sidebar if the story was scheduled for today or tomorrow
+        if (
+          [startDate, endDate].includes(
+            values.scheduledDate.toFormat('yyyy-MM-dd')
+          )
+        ) {
+          refetchScheduled();
+        }
       },
       () => {
+        // Hide the loading indicator
         formikHelpers.setSubmitting(false);
       }
     );
