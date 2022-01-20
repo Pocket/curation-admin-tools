@@ -206,6 +206,8 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   // processed.
   useEffect(() => {
     setProspects(data?.getProspects!);
+
+    console.log('**** incoming prospects:', data);
   }, [data]);
 
   // For filtering on prospects, we can pass additional variables to the `refetch()`
