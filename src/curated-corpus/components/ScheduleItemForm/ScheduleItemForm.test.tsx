@@ -7,6 +7,7 @@ import {
   NewTab,
   ProspectType,
 } from '../../api/curated-corpus-api/generatedTypes';
+import { DateTime } from 'luxon';
 
 describe('The ScheduleItemForm component', () => {
   const handleSubmit = jest.fn();
@@ -35,6 +36,9 @@ describe('The ScheduleItemForm component', () => {
     render(
       <MuiPickersUtilsProvider utils={LuxonUtils}>
         <ScheduleItemForm
+          handleDateChange={jest.fn()}
+          lookupCopy=""
+          selectedDate={DateTime.local()}
           onSubmit={handleSubmit}
           newTabs={newTabs}
           approvedItemExternalId={'123abc'}
@@ -51,6 +55,9 @@ describe('The ScheduleItemForm component', () => {
     render(
       <MuiPickersUtilsProvider utils={LuxonUtils}>
         <ScheduleItemForm
+          handleDateChange={jest.fn()}
+          lookupCopy=""
+          selectedDate={DateTime.local()}
           onSubmit={handleSubmit}
           newTabs={newTabs}
           approvedItemExternalId={'123abc'}

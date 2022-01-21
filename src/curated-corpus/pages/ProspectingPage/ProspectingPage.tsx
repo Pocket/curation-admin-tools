@@ -481,6 +481,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
           approvedItem={approvedItem}
           headingCopy="Optional: schedule this item for New Tab"
           isOpen={scheduleModalOpen}
+          newTabGuid={currentNewTabGuid}
           onSave={onScheduleSave}
           toggleModal={toggleScheduleModal}
         />
