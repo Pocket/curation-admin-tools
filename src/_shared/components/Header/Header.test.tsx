@@ -26,7 +26,11 @@ describe('The Header component', () => {
   it('renders successfully', () => {
     render(
       <MemoryRouter>
-        <Header productName="Collections" menuLinks={menuLinks} />
+        <Header
+          productName="Collections"
+          menuLinks={menuLinks}
+          productLink="/something"
+        />
       </MemoryRouter>
     );
 
@@ -45,7 +49,11 @@ describe('The Header component', () => {
   it('shows navigation links', () => {
     render(
       <MemoryRouter>
-        <Header productName="Collections" menuLinks={menuLinks} />
+        <Header
+          productName="Collections"
+          menuLinks={menuLinks}
+          productLink="/something"
+        />
       </MemoryRouter>
     );
     const links = screen.getAllByRole('button');

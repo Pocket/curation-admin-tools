@@ -11,7 +11,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>;
 };
-const defaultOptions = {};
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -892,6 +892,20 @@ export type GetRejectedItemsQuery = {
   };
 };
 
+export type GetScheduledItemCountsQueryVariables = Exact<{
+  filters: ScheduledCuratedCorpusItemsFilterInput;
+}>;
+
+export type GetScheduledItemCountsQuery = {
+  __typename?: 'Query';
+  getScheduledCuratedCorpusItems: Array<{
+    __typename?: 'ScheduledCuratedCorpusItemsResult';
+    collectionCount: number;
+    syndicatedCount: number;
+    totalCount: number;
+  }>;
+};
+
 export type GetScheduledItemsQueryVariables = Exact<{
   filters: ScheduledCuratedCorpusItemsFilterInput;
 }>;
@@ -1632,6 +1646,68 @@ export type GetRejectedItemsLazyQueryHookResult = ReturnType<
 export type GetRejectedItemsQueryResult = Apollo.QueryResult<
   GetRejectedItemsQuery,
   GetRejectedItemsQueryVariables
+>;
+export const GetScheduledItemCountsDocument = gql`
+  query getScheduledItemCounts(
+    $filters: ScheduledCuratedCorpusItemsFilterInput!
+  ) {
+    getScheduledCuratedCorpusItems(filters: $filters) {
+      collectionCount
+      syndicatedCount
+      totalCount
+    }
+  }
+`;
+
+/**
+ * __useGetScheduledItemCountsQuery__
+ *
+ * To run a query within a React component, call `useGetScheduledItemCountsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetScheduledItemCountsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetScheduledItemCountsQuery({
+ *   variables: {
+ *      filters: // value for 'filters'
+ *   },
+ * });
+ */
+export function useGetScheduledItemCountsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetScheduledItemCountsQuery,
+    GetScheduledItemCountsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetScheduledItemCountsQuery,
+    GetScheduledItemCountsQueryVariables
+  >(GetScheduledItemCountsDocument, options);
+}
+export function useGetScheduledItemCountsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetScheduledItemCountsQuery,
+    GetScheduledItemCountsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetScheduledItemCountsQuery,
+    GetScheduledItemCountsQueryVariables
+  >(GetScheduledItemCountsDocument, options);
+}
+export type GetScheduledItemCountsQueryHookResult = ReturnType<
+  typeof useGetScheduledItemCountsQuery
+>;
+export type GetScheduledItemCountsLazyQueryHookResult = ReturnType<
+  typeof useGetScheduledItemCountsLazyQuery
+>;
+export type GetScheduledItemCountsQueryResult = Apollo.QueryResult<
+  GetScheduledItemCountsQuery,
+  GetScheduledItemCountsQueryVariables
 >;
 export const GetScheduledItemsDocument = gql`
   query getScheduledItems($filters: ScheduledCuratedCorpusItemsFilterInput!) {
