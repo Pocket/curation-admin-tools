@@ -3,7 +3,7 @@ import { DateTime } from 'luxon';
 import { Box, Button, Grid, Hidden } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import FilterListIcon from '@material-ui/icons/FilterList';
-import LibraryAddIcon from '@material-ui/icons/LibraryAdd';
+import AddIcon from '@material-ui/icons/Add';
 import { HandleApiResponse } from '../../../_shared/components';
 import {
   ApprovedItemModal,
@@ -206,8 +206,6 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   // processed.
   useEffect(() => {
     setProspects(data?.getProspects!);
-
-    console.log('**** incoming prospects:', data);
   }, [data]);
 
   // For filtering on prospects, we can pass additional variables to the `refetch()`
@@ -525,7 +523,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                     toggleAddProspectModal();
                   }}
                 >
-                  <LibraryAddIcon fontSize="large" />
+                  <AddIcon fontSize="large" />
                 </Button>
                 <Button
                   color="default"

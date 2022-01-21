@@ -17,7 +17,6 @@ interface AddProspectModalProps {
 export const AddProspectModal: React.FC<
   AddProspectModalProps & SharedFormButtonsProps
 > = (props): JSX.Element => {
-  //const [itemUrl] = useState<string>('');
   const { isOpen, toggleModal } = props;
 
   return (
@@ -27,7 +26,10 @@ export const AddProspectModal: React.FC<
           <h2>Add a new prospect</h2>
         </Grid>
         <Grid item>
-          <AddProspectForm onCancel={toggleModal} />
+          <AddProspectForm
+            onCancel={toggleModal}
+            toggleAddProspectModal={toggleModal}
+          />
         </Grid>
       </Grid>
     </Modal>

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { useFormik } from 'formik';
-import { Grid } from '@material-ui/core';
+import { Box, Grid, LinearProgress } from '@material-ui/core';
+import { v5 as uuidv5 } from 'uuid';
 
+import { useFormik } from 'formik';
 import {
   FormikTextField,
   SharedFormButtons,
@@ -12,37 +13,46 @@ import { validationSchema } from './AddProspectForm.validation';
 import { client } from '../../api/prospect-api/client';
 import {
   ApprovedCuratedCorpusItem,
+  CreateApprovedCuratedCorpusItemInput,
   CuratedStatus,
   useGetApprovedItemByUrlLazyQuery,
 } from '../../api/curated-corpus-api/generatedTypes';
 import { useGetUrlMetadataLazyQuery } from '../../api/prospect-api/generatedTypes';
-import { useNotifications } from '../../../_shared/hooks';
+import {
+  useNotifications,
+  //useRunMutation,
+  useToggle,
+} from '../../../_shared/hooks';
 import { ApprovedItemModal } from '..';
 
 interface AddProspectFormProps {
   onCancel: VoidFunction;
+  toggleAddProspectModal: VoidFunction;
 }
 
 export const AddProspectForm: React.FC<
   AddProspectFormProps & SharedFormButtonsProps
 > = (props) => {
-  const { onCancel } = props;
+  const { onCancel, toggleAddProspectModal } = props;
 
-  // const { runMutation } = useRunMutation();
+  //TODO: figure out logic for how to send the mutation function down to the form
+  //const { runMutation } = useRunMutation();
 
-  // TODO: implement below logic:
-  // check if url exists --> yes --> show error (done)
-  // call getUrlMetadata query for the url --> show ApprovedItemForm component with data returned
-  // call create approved item mutation
+  const [itemUrl, setItemUrl] = useState<string>('');
+  const [createApprovedItemInput, setCreateApprovedItemInput] =
+    useState<CreateApprovedCuratedCorpusItemInput>();
 
-  const [approvedItem, setApprovedItem] = useState<ApprovedCuratedCorpusItem>();
+  const { showNotification } = useNotifications();
+  const [approvedItemModalOpen, toggleApprovedItemModal] = useToggle(false);
 
-  //TODO: fix this abomination
-  const [getUrlMetadata, { data }] = useGetUrlMetadataLazyQuery({
+  // call parser for metadata
+  const [getUrlMetadata] = useGetUrlMetadataLazyQuery({
     client: client,
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'no-cache',
     onCompleted: (data) => {
       const approvedItem = {
-        prospectId: '',
+        prospectId: uuidv5(data.getUrlMetadata.url, 'manual'),
         url: data.getUrlMetadata.url,
         title: data.getUrlMetadata.title ?? '',
         excerpt: data.getUrlMetadata.excerpt ?? '',
@@ -54,19 +64,16 @@ export const AddProspectForm: React.FC<
         isCollection: data.getUrlMetadata.isCollection ?? false,
         isSyndicated: data.getUrlMetadata.isSyndicated ?? false,
         isTimeSensitive: false,
-        createdAt: 0,
-        createdBy: '',
-        externalId: '',
-        updatedAt: 0,
       };
-      console.log(approvedItem);
-      setApprovedItem(approvedItem);
+      setCreateApprovedItemInput(approvedItem);
+      toggleApprovedItemModal();
     },
   });
 
-  const [itemUrl, setItemUrl] = useState<string>('');
-
+  // query to check if url already exists in the corpus
   const [getApprovedItemByUrl] = useGetApprovedItemByUrlLazyQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'no-cache',
     onCompleted: (data) => {
       const approvedItem = data?.getApprovedCuratedCorpusItemByUrl;
       if (approvedItem) {
@@ -83,8 +90,6 @@ export const AddProspectForm: React.FC<
     },
   });
 
-  const { showNotification } = useNotifications();
-
   const formik = useFormik({
     initialValues: {
       itemUrl: '',
@@ -99,6 +104,8 @@ export const AddProspectForm: React.FC<
           url: values.itemUrl,
         },
       });
+
+      formikHelpers.resetForm();
     },
   });
 
@@ -118,18 +125,34 @@ export const AddProspectForm: React.FC<
           </Grid>
         </Grid>
       </form>
-      {data && (
-        <ApprovedItemModal
-          isOpen={true}
-          onSave={() => {
-            alert('form submitted');
-          }}
-          toggleModal={() => {
-            return;
-          }}
-          approvedItem={approvedItem!}
-        />
+
+      {formik.isSubmitting && (
+        <Grid item xs={12}>
+          <Box mb={3}>
+            <LinearProgress />
+          </Box>
+        </Grid>
       )}
+
+      <ApprovedItemModal
+        isOpen={approvedItemModalOpen}
+        onSave={() => {
+          alert('form submitted');
+        }}
+        toggleModal={() => {
+          toggleApprovedItemModal();
+          toggleAddProspectModal();
+        }}
+        approvedItem={
+          {
+            ...createApprovedItemInput,
+            externalId: '',
+            createdAt: 0,
+            createdBy: 'sso-user',
+            updatedAt: 0,
+          } as ApprovedCuratedCorpusItem
+        }
+      />
     </>
   );
 };
