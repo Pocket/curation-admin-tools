@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Grid, LinearProgress } from '@material-ui/core';
 import { v5 as uuidv5 } from 'uuid';
 
-import { useFormik } from 'formik';
+import { useFormik, FormikHelpers, FormikValues } from 'formik';
 import {
   FormikTextField,
   SharedFormButtons,
@@ -15,12 +15,13 @@ import {
   ApprovedCuratedCorpusItem,
   CreateApprovedCuratedCorpusItemInput,
   CuratedStatus,
+  useCreateApprovedCuratedCorpusItemMutation,
   useGetApprovedItemByUrlLazyQuery,
 } from '../../api/curated-corpus-api/generatedTypes';
 import { useGetUrlMetadataLazyQuery } from '../../api/prospect-api/generatedTypes';
 import {
   useNotifications,
-  //useRunMutation,
+  useRunMutation,
   useToggle,
 } from '../../../_shared/hooks';
 import { ApprovedItemModal } from '..';
@@ -36,7 +37,7 @@ export const AddProspectForm: React.FC<
   const { onCancel, toggleAddProspectModal } = props;
 
   //TODO: figure out logic for how to send the mutation function down to the form
-  //const { runMutation } = useRunMutation();
+  const { runMutation } = useRunMutation();
 
   const [itemUrl, setItemUrl] = useState<string>('');
   const [createApprovedItemInput, setCreateApprovedItemInput] =
@@ -46,13 +47,16 @@ export const AddProspectForm: React.FC<
   const [approvedItemModalOpen, toggleApprovedItemModal] = useToggle(false);
 
   // call parser for metadata
-  const [getUrlMetadata] = useGetUrlMetadataLazyQuery({
+  const [getUrlMetadata, { data: urlMetadata }] = useGetUrlMetadataLazyQuery({
     client: client,
     notifyOnNetworkStatusChange: true,
     fetchPolicy: 'no-cache',
     onCompleted: (data) => {
       const approvedItem = {
-        prospectId: uuidv5(data.getUrlMetadata.url, 'manual'),
+        prospectId: uuidv5(
+          data.getUrlMetadata.url,
+          '9edace02-b9c6-4705-a0d6-16476438557b'
+        ),
         url: data.getUrlMetadata.url,
         title: data.getUrlMetadata.title ?? '',
         excerpt: data.getUrlMetadata.excerpt ?? '',
@@ -109,6 +113,46 @@ export const AddProspectForm: React.FC<
     },
   });
 
+  const [createApprovedItemMutation] =
+    useCreateApprovedCuratedCorpusItemMutation();
+
+  const createApprovedItem = async (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ): Promise<void> => {
+    //build an approved item
+    const languageCode: string = values.language === 'English' ? 'en' : 'de';
+    const curationStatus = values.curationStatus.toUpperCase();
+    const topic: string = values.topic.toUpperCase();
+    const imageUrl: string = urlMetadata?.getUrlMetadata.imageUrl!;
+
+    const approvedItem = {
+      prospectId: uuidv5(values.url, '9edace02-b9c6-4705-a0d6-16476438557b'),
+      url: values.url,
+      title: values.title,
+      excerpt: values.excerpt,
+      status: curationStatus,
+      language: languageCode,
+      publisher: values.publisher,
+      imageUrl,
+      topic,
+      isCollection: values.collection,
+      isTimeSensitive: values.timeSensitive,
+      isSyndicated: values.syndicated,
+    };
+
+    // call the create approved item mutation
+    runMutation(
+      createApprovedItemMutation,
+      { variables: { data: { ...approvedItem } } },
+      'Item successfully added to the curated corpus.',
+      () => {
+        console.log('item created');
+        formikHelpers.setSubmitting(false);
+      }
+    );
+  };
+
   return (
     <>
       <form name="add-prospect-form" onSubmit={formik.handleSubmit}>
@@ -136,9 +180,7 @@ export const AddProspectForm: React.FC<
 
       <ApprovedItemModal
         isOpen={approvedItemModalOpen}
-        onSave={() => {
-          alert('form submitted');
-        }}
+        onSave={createApprovedItem}
         toggleModal={() => {
           toggleApprovedItemModal();
           toggleAddProspectModal();
