@@ -17,6 +17,7 @@ import {
   CuratedStatus,
   useCreateApprovedCuratedCorpusItemMutation,
   useGetApprovedItemByUrlLazyQuery,
+  useUploadApprovedCuratedCorpusItemImageMutation,
 } from '../../api/curated-corpus-api/generatedTypes';
 import { useGetUrlMetadataLazyQuery } from '../../api/prospect-api/generatedTypes';
 import {
@@ -25,6 +26,7 @@ import {
   useToggle,
 } from '../../../_shared/hooks';
 import { ApprovedItemModal } from '..';
+import { downloadAndUploadApprovedItemImageToS3 } from '../../helpers/helperFunctions';
 
 interface AddProspectFormProps {
   onCancel: VoidFunction;
@@ -36,7 +38,6 @@ export const AddProspectForm: React.FC<
 > = (props) => {
   const { onCancel, toggleAddProspectModal } = props;
 
-  //TODO: figure out logic for how to send the mutation function down to the form
   const { runMutation } = useRunMutation();
 
   const [itemUrl, setItemUrl] = useState<string>('');
@@ -113,19 +114,37 @@ export const AddProspectForm: React.FC<
     },
   });
 
+  const closeBothModals = () => {
+    toggleApprovedItemModal();
+    toggleAddProspectModal();
+  };
+
+  // prepare create approved item mutation
   const [createApprovedItemMutation] =
     useCreateApprovedCuratedCorpusItemMutation();
 
+  const [uploadApprovedItemImage] =
+    useUploadApprovedCuratedCorpusItemImageMutation();
+
+  // call back which will be called after clicking save on the edit form
   const createApprovedItem = async (
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ): Promise<void> => {
     //build an approved item
-    const languageCode: string = values.language === 'English' ? 'en' : 'de';
+    const languageCode = values.language === 'English' ? 'en' : 'de';
     const curationStatus = values.curationStatus.toUpperCase();
-    const topic: string = values.topic.toUpperCase();
-    const imageUrl: string = urlMetadata?.getUrlMetadata.imageUrl!;
+    const topic = values.topic.toUpperCase();
+    const imageUrl = urlMetadata?.getUrlMetadata.imageUrl!;
+    //TODO: use download and upload image helper function
 
+    // upload item image to s3
+    const s3ImageUrl = await downloadAndUploadApprovedItemImageToS3(
+      imageUrl,
+      uploadApprovedItemImage
+    );
+
+    // build approved item
     const approvedItem = {
       prospectId: uuidv5(values.url, '9edace02-b9c6-4705-a0d6-16476438557b'),
       url: values.url,
@@ -134,7 +153,7 @@ export const AddProspectForm: React.FC<
       status: curationStatus,
       language: languageCode,
       publisher: values.publisher,
-      imageUrl,
+      imageUrl: s3ImageUrl,
       topic,
       isCollection: values.collection,
       isTimeSensitive: values.timeSensitive,
@@ -148,6 +167,7 @@ export const AddProspectForm: React.FC<
       'Item successfully added to the curated corpus.',
       () => {
         console.log('item created');
+        closeBothModals();
         formikHelpers.setSubmitting(false);
       }
     );
@@ -179,12 +199,10 @@ export const AddProspectForm: React.FC<
       )}
 
       <ApprovedItemModal
+        heading="Review prospect"
         isOpen={approvedItemModalOpen}
         onSave={createApprovedItem}
-        toggleModal={() => {
-          toggleApprovedItemModal();
-          toggleAddProspectModal();
-        }}
+        toggleModal={closeBothModals}
         approvedItem={
           {
             ...createApprovedItemInput,
