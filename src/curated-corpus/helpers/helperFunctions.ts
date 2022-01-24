@@ -47,7 +47,7 @@ export const transformProspectToApprovedItem = (
 };
 
 /**
- * Transforms the UrlMetaData object to an ApprovedCuratedCorpusItem type object to be used for the ApprovedItemForm
+ * Transforms the UrlMetaData object to an ApprovedCuratedCorpusItem type object to be consumed by ApprovedItemForm component
  *
  * @param metadata
  * @param isRecommendation
@@ -79,6 +79,15 @@ export const transformUrlMetaDataToApprovedItem = (
   };
 };
 
+/**
+ * Transforms formik input values from the ApprovedItemForm component into
+ * CreateApprovedCuratedCorpusItemInput type object to be used for
+ * CreateApprovedCuratedCorpusItem mutation
+ *
+ * @param values
+ * @param prospectId
+ * @returns CreateApprovedCuratedCorpusItemInput
+ */
 export const transformFormInputToCreateApprovedItemInput = (
   values: FormikValues,
   prospectId?: string
@@ -87,7 +96,6 @@ export const transformFormInputToCreateApprovedItemInput = (
   const curationStatus = values.curationStatus.toUpperCase();
   const topic = values.topic.toUpperCase();
 
-  // build approved item
   return {
     prospectId:
       prospectId || uuidv5(values.url, '9edace02-b9c6-4705-a0d6-16476438557b'),

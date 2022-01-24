@@ -11,9 +11,8 @@ interface AddProspectModalProps {
 }
 
 /**
- * This component houses all the logic and data that will be used in this form.
+ * Parent component for the AddProspectForm component
  */
-
 export const AddProspectModal: React.FC<
   AddProspectModalProps & SharedFormButtonsProps
 > = (props): JSX.Element => {
