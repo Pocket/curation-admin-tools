@@ -175,9 +175,8 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   const [refreshProspectsModalOpen, toggleRefreshProspectsModal] =
     useToggle(false);
 
-  //TODO: fix this
   /**
-   * does the thing
+   * Keeps track of whether the "Add a New Prospect" modal is open or not.
    */
   const [addProspectModalOpen, toggleAddProspectModal] = useToggle(false);
   /**
