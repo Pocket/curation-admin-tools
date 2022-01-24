@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Box, Grid, LinearProgress } from '@material-ui/core';
-import { v5 as uuidv5 } from 'uuid';
 
 import { useFormik, FormikHelpers, FormikValues } from 'formik';
 import {
@@ -14,7 +13,6 @@ import { client } from '../../api/prospect-api/client';
 import {
   ApprovedCuratedCorpusItem,
   CreateApprovedCuratedCorpusItemInput,
-  CuratedStatus,
   useCreateApprovedCuratedCorpusItemMutation,
   useGetApprovedItemByUrlLazyQuery,
   useUploadApprovedCuratedCorpusItemImageMutation,
@@ -26,7 +24,11 @@ import {
   useToggle,
 } from '../../../_shared/hooks';
 import { ApprovedItemModal } from '..';
-import { downloadAndUploadApprovedItemImageToS3 } from '../../helpers/helperFunctions';
+import {
+  downloadAndUploadApprovedItemImageToS3,
+  transformUrlMetaDataToApprovedItem,
+  transformFormInputToCreateApprovedItemInput,
+} from '../../helpers/helperFunctions';
 
 interface AddProspectFormProps {
   onCancel: VoidFunction;
@@ -36,41 +38,46 @@ interface AddProspectFormProps {
 export const AddProspectForm: React.FC<
   AddProspectFormProps & SharedFormButtonsProps
 > = (props) => {
+  //de-structure props
   const { onCancel, toggleAddProspectModal } = props;
 
-  const { runMutation } = useRunMutation();
-
+  //set up state variables
   const [itemUrl, setItemUrl] = useState<string>('');
-  const [createApprovedItemInput, setCreateApprovedItemInput] =
-    useState<CreateApprovedCuratedCorpusItemInput>();
+  const [approvedItem, setApprovedItem] = useState<ApprovedCuratedCorpusItem>();
 
+  // set up some hooks
   const { showNotification } = useNotifications();
   const [approvedItemModalOpen, toggleApprovedItemModal] = useToggle(false);
 
-  // call parser for metadata
-  const [getUrlMetadata, { data: urlMetadata }] = useGetUrlMetadataLazyQuery({
+  // function to toggle both modals
+  const closeBothModals = () => {
+    toggleApprovedItemModal();
+    toggleAddProspectModal();
+  };
+
+  // prepare mutation hook
+  const { runMutation } = useRunMutation();
+
+  // prepare upload image to s3 mutation
+  const [uploadApprovedItemImage] =
+    useUploadApprovedCuratedCorpusItemImageMutation();
+
+  // prepare create approved item mutation
+  const [createApprovedItemMutation] =
+    useCreateApprovedCuratedCorpusItemMutation();
+
+  // Lazy query to get metadata for an url.
+  const [getUrlMetadata] = useGetUrlMetadataLazyQuery({
     client: client,
     notifyOnNetworkStatusChange: true,
     fetchPolicy: 'no-cache',
     onCompleted: (data) => {
-      const approvedItem = {
-        prospectId: uuidv5(
-          data.getUrlMetadata.url,
-          '9edace02-b9c6-4705-a0d6-16476438557b'
-        ),
-        url: data.getUrlMetadata.url,
-        title: data.getUrlMetadata.title ?? '',
-        excerpt: data.getUrlMetadata.excerpt ?? '',
-        status: CuratedStatus.Corpus,
-        language: data.getUrlMetadata.language ?? '',
-        publisher: data.getUrlMetadata.publisher ?? '',
-        imageUrl: data.getUrlMetadata.imageUrl ?? '',
-        topic: '',
-        isCollection: data.getUrlMetadata.isCollection ?? false,
-        isSyndicated: data.getUrlMetadata.isSyndicated ?? false,
-        isTimeSensitive: false,
-      };
-      setCreateApprovedItemInput(approvedItem);
+      const approvedItem = transformUrlMetaDataToApprovedItem(
+        data.getUrlMetadata,
+        false
+      );
+
+      setApprovedItem(approvedItem);
       toggleApprovedItemModal();
     },
   });
@@ -95,6 +102,36 @@ export const AddProspectForm: React.FC<
     },
   });
 
+  // call back which will be called after clicking save on the edit form
+  const createApprovedItem = async (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ): Promise<void> => {
+    // upload item image to s3
+    const s3ImageUrl = await downloadAndUploadApprovedItemImageToS3(
+      values.imageUrl,
+      uploadApprovedItemImage
+    );
+
+    //build an approved item and replace the imageUrl with the s3ImageUrl
+    const createApprovedItemInput: CreateApprovedCuratedCorpusItemInput = {
+      ...transformFormInputToCreateApprovedItemInput(values),
+      imageUrl: s3ImageUrl,
+    };
+    // call the create approved item mutation
+    runMutation(
+      createApprovedItemMutation,
+      { variables: { data: { ...createApprovedItemInput } } },
+      'Item successfully added to the curated corpus.',
+      () => {
+        console.log('item created');
+        closeBothModals();
+        formikHelpers.setSubmitting(false);
+      }
+    );
+  };
+
+  // set up formik object for this form
   const formik = useFormik({
     initialValues: {
       itemUrl: '',
@@ -113,65 +150,6 @@ export const AddProspectForm: React.FC<
       formikHelpers.resetForm();
     },
   });
-
-  const closeBothModals = () => {
-    toggleApprovedItemModal();
-    toggleAddProspectModal();
-  };
-
-  // prepare create approved item mutation
-  const [createApprovedItemMutation] =
-    useCreateApprovedCuratedCorpusItemMutation();
-
-  const [uploadApprovedItemImage] =
-    useUploadApprovedCuratedCorpusItemImageMutation();
-
-  // call back which will be called after clicking save on the edit form
-  const createApprovedItem = async (
-    values: FormikValues,
-    formikHelpers: FormikHelpers<any>
-  ): Promise<void> => {
-    //build an approved item
-    const languageCode = values.language === 'English' ? 'en' : 'de';
-    const curationStatus = values.curationStatus.toUpperCase();
-    const topic = values.topic.toUpperCase();
-    const imageUrl = urlMetadata?.getUrlMetadata.imageUrl!;
-    //TODO: use download and upload image helper function
-
-    // upload item image to s3
-    const s3ImageUrl = await downloadAndUploadApprovedItemImageToS3(
-      imageUrl,
-      uploadApprovedItemImage
-    );
-
-    // build approved item
-    const approvedItem = {
-      prospectId: uuidv5(values.url, '9edace02-b9c6-4705-a0d6-16476438557b'),
-      url: values.url,
-      title: values.title,
-      excerpt: values.excerpt,
-      status: curationStatus,
-      language: languageCode,
-      publisher: values.publisher,
-      imageUrl: s3ImageUrl,
-      topic,
-      isCollection: values.collection,
-      isTimeSensitive: values.timeSensitive,
-      isSyndicated: values.syndicated,
-    };
-
-    // call the create approved item mutation
-    runMutation(
-      createApprovedItemMutation,
-      { variables: { data: { ...approvedItem } } },
-      'Item successfully added to the curated corpus.',
-      () => {
-        console.log('item created');
-        closeBothModals();
-        formikHelpers.setSubmitting(false);
-      }
-    );
-  };
 
   return (
     <>
@@ -203,15 +181,7 @@ export const AddProspectForm: React.FC<
         isOpen={approvedItemModalOpen}
         onSave={createApprovedItem}
         toggleModal={closeBothModals}
-        approvedItem={
-          {
-            ...createApprovedItemInput,
-            externalId: '',
-            createdAt: 0,
-            createdBy: 'sso-user',
-            updatedAt: 0,
-          } as ApprovedCuratedCorpusItem
-        }
+        approvedItem={approvedItem!}
       />
     </>
   );

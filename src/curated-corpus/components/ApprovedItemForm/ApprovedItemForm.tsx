@@ -102,6 +102,8 @@ export const ApprovedItemForm: React.FC<
     formik.setFieldValue('imageUrl', url);
   };
 
+  console.log(formik.getFieldProps('imageUrl').value);
+
   return (
     <form name="approved-item-edit-form" onSubmit={formik.handleSubmit}>
       <Grid container spacing={3}>
