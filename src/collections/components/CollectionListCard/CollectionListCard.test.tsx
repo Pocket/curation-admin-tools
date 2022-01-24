@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter, Router } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { CollectionListCard } from './CollectionListCard';
 import {
   Collection,
@@ -146,9 +146,9 @@ describe('The CollectionListCard component', () => {
 
     render(
       <MockedProvider>
-        <Router history={history}>
+        <MemoryRouter initialEntries={['/collections/collections/']}>
           <CollectionListCard collection={collection} />
-        </Router>
+        </MemoryRouter>
       </MockedProvider>
     );
 
@@ -160,7 +160,7 @@ describe('The CollectionListCard component', () => {
     );
 
     // Let's go back to the Collections page
-    history.goBack();
+    history.back();
     expect(history.location.pathname).toEqual('/collections/collections/');
 
     // And click on the image this time

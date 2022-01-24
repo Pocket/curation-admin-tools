@@ -41,12 +41,16 @@ export const AuthorPage = (): JSX.Element => {
    * If an Author object was passed to the page from one of the other app pages,
    * let's extract it from the routing.
    */
-  const location = useLocation<AuthorPageProps>();
+  const location = useLocation();
+  /**
+   * This is how React Router 6 lets us add type safety to location state.
+   */
+  const locationState = location.state as AuthorPageProps;
 
   const [author, setAuthor] = useState<CollectionAuthor | undefined>(
-    location.state?.author
+    locationState.author
       ? // Deep clone a read-only object that comes from the routing
-        JSON.parse(JSON.stringify(location.state?.author))
+        JSON.parse(JSON.stringify(locationState.author))
       : undefined
   );
 
@@ -57,7 +61,7 @@ export const AuthorPage = (): JSX.Element => {
   const params = useParams<{ id: string }>();
   const { loading, error, data } = useGetAuthorByIdQuery({
     variables: {
-      id: params.id,
+      id: params.id!,
     },
     // Skip query if author object was delivered via the routing
     // This is needed because hooks can only be called at the top level

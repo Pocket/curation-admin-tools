@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Box, Paper } from '@material-ui/core';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
@@ -18,7 +18,7 @@ export const AddPartnerPage: React.FC = (): JSX.Element => {
 
   // This is used to redirect the user to the full author page once
   // the record is added successfully
-  const history = useHistory();
+  const navigate = useNavigate();
 
   // Provide a default collection partner object for the form
   const partner: CollectionPartner = {
@@ -57,10 +57,12 @@ export const AddPartnerPage: React.FC = (): JSX.Element => {
     })
       .then(({ data }) => {
         // Success! Move on to the author page to be able to upload a photo, etc.
-        history.push(
+        navigate(
           `/collections/partners/${data?.createCollectionPartner?.externalId}/`,
           {
-            partner: data?.createCollectionPartner,
+            state: {
+              partner: data?.createCollectionPartner,
+            },
           }
         );
       })

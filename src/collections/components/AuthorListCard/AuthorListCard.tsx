@@ -27,8 +27,8 @@ export const AuthorListCard: React.FC<AuthorListCardProps> = (props) => {
     <Link
       to={{
         pathname: `/collections/authors/${author.externalId}/`,
-        state: { author },
       }}
+      state={{ author }}
       className={classes.link}
     >
       <Card variant="outlined" square className={classes.root}>

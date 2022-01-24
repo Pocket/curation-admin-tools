@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/core/styles';
 import { SnackbarProvider } from 'notistack';
 import theme from './theme';
@@ -13,19 +13,14 @@ function App(): JSX.Element {
     <ThemeProvider theme={theme}>
       <SnackbarProvider maxSnack={3}>
         <BrowserRouter>
-          <>
-            <Switch>
-              <Route exact path="/">
-                <LandingPage />
-              </Route>
-              <Route path="/collections">
-                <CollectionsLandingPage />
-              </Route>
-              <Route path="/curated-corpus">
-                <CuratedCorpusLandingPage />
-              </Route>
-            </Switch>
-          </>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/collections" element={<CollectionsLandingPage />} />
+            <Route
+              path="/curated-corpus"
+              element={<CuratedCorpusLandingPage />}
+            />
+          </Routes>
         </BrowserRouter>
       </SnackbarProvider>
     </ThemeProvider>

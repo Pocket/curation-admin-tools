@@ -1,6 +1,6 @@
 import React from 'react';
 import { ApolloProvider } from '@apollo/client';
-import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Link, Route, Routes, useLocation } from 'react-router-dom';
 import { List, ListItem, ListItemText } from '@material-ui/core';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import LuxonUtils from '@date-io/luxon';
@@ -22,7 +22,9 @@ import { client } from '../../api/curated-corpus-api/client';
  */
 export const CuratedCorpusLandingPage = (): JSX.Element => {
   // Get the base path (/curated-corpus)
-  const { path } = useRouteMatch();
+  const { pathname } = useLocation();
+  const path = pathname;
+  console.log(path);
 
   const menuLinks: MenuLink[] = [
     {
@@ -52,8 +54,8 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
           menuLinks={menuLinks}
         />
         <MainContentWrapper>
-          <Switch>
-            <Route exact path={`${path}/`}>
+          <Routes>
+            <Route path={`${path}/`}>
               <h2>Welcome to Pocket&apos;s Curated Corpus management tool.</h2>
 
               <p>Use the menu above to nagivate:</p>
@@ -86,19 +88,19 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
                 </ListItem>
               </List>
             </Route>
-            <Route exact path={`${path}/prospecting/`}>
+            <Route path={`${path}/prospecting/`}>
               <ProspectingPage />
             </Route>
-            <Route exact path={`${path}/schedule/`}>
+            <Route path={`${path}/schedule/`}>
               <SchedulePage />
             </Route>
-            <Route exact path={`${path}/corpus/`}>
+            <Route path={`${path}/corpus/`}>
               <ApprovedItemsPage />
             </Route>
-            <Route exact path={`${path}/rejected/`}>
+            <Route path={`${path}/rejected/`}>
               <RejectedItemsPage />
             </Route>
-          </Switch>
+          </Routes>
         </MainContentWrapper>
       </MuiPickersUtilsProvider>
     </ApolloProvider>

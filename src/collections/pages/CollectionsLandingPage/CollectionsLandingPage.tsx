@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 import { client } from '../../api/collection-api/client';
 import {
@@ -26,24 +26,24 @@ import {
  */
 export const CollectionsLandingPage = (): JSX.Element => {
   // Get the base path (/collections)
-  const { path } = useRouteMatch();
+  const { pathname } = useLocation();
 
   const menuLinks: MenuLink[] = [
     {
       text: 'Collections',
-      url: `${path}/collections/drafts/`,
+      url: `${pathname}/collections/drafts/`,
     },
     {
       text: 'Authors',
-      url: `${path}/authors/`,
+      url: `${pathname}/authors/`,
     },
     {
       text: 'Partners',
-      url: `${path}/partners/`,
+      url: `${pathname}/partners/`,
     },
     {
       text: 'Search',
-      url: `${path}/search/`,
+      url: `${pathname}/search/`,
     },
   ];
 
@@ -55,43 +55,43 @@ export const CollectionsLandingPage = (): JSX.Element => {
         menuLinks={menuLinks}
       />
       <MainContentWrapper>
-        <Switch>
-          <Route exact path={path}>
+        <Routes>
+          <Route path={pathname}>
             <CollectionsHomePage />
           </Route>
-          <Route exact path={`${path}/authors/`}>
+          <Route path={`${pathname}/authors/`}>
             <AuthorListPage />
           </Route>
-          <Route exact path={`${path}/authors/add/`}>
+          <Route path={`${pathname}/authors/add/`}>
             <AddAuthorPage />
           </Route>
-          <Route exact path={`${path}/authors/:id/`}>
+          <Route path={`${pathname}/authors/:id/`}>
             <AuthorPage />
           </Route>
-          <Route exact path={`${path}/collections/add/`}>
+          <Route path={`${pathname}/collections/add/`}>
             <AddCollectionPage />
           </Route>
           <Route
-            path={`${path}/collections/:status(drafts|review|published|archived)/`}
+            path={`${pathname}/collections/:status(drafts|review|published|archived)/`}
           >
             <CollectionListPage />
           </Route>
-          <Route exact path={`${path}/collections/:id/`}>
+          <Route path={`${pathname}/collections/:id/`}>
             <CollectionPage />
           </Route>
-          <Route exact path={`${path}/partners/`}>
+          <Route path={`${pathname}/partners/`}>
             <PartnerListPage />
           </Route>
-          <Route exact path={`${path}/partners/add/`}>
+          <Route path={`${pathname}/partners/add/`}>
             <AddPartnerPage />
           </Route>
-          <Route exact path={`${path}/partners/:id`}>
+          <Route path={`${pathname}/partners/:id`}>
             <PartnerPage />
           </Route>
-          <Route exact path={`${path}/search/`}>
+          <Route path={`${pathname}/search/`}>
             <CollectionSearchPage />
           </Route>
-        </Switch>
+        </Routes>
       </MainContentWrapper>
     </ApolloProvider>
   );

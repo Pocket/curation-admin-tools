@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Box, Paper } from '@material-ui/core';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
@@ -21,7 +21,7 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
 
   // This is used to redirect the user to the full collection page once
   // the record is added successfully
-  const history = useHistory();
+  const navigate = useNavigate();
 
   // Provide a default collection object for the form
   const collection: Collection = {
@@ -81,10 +81,12 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
     })
       .then(({ data }) => {
         // Success! Move on to the author page to be able to upload a photo, etc.
-        history.push(
+        navigate(
           `/collections/collections/${data?.createCollection?.externalId}/`,
           {
-            collection: data?.createCollection,
+            state: {
+              collection: data?.createCollection,
+            },
           }
         );
       })

@@ -88,14 +88,18 @@ export const CollectionPage = (): JSX.Element => {
    * If a Collection object was passed to the page from one of the other app pages,
    * let's extract it from the routing.
    */
-  const location = useLocation<CollectionPageProps>();
+  const location = useLocation();
+  /**
+   * This is how React Router 6 lets us add type safety to location state.
+   */
+  const locationState = location.state as CollectionPageProps;
 
   const [collection, setCollection] = useState<
     Omit<Collection, 'stories'> | undefined
   >(
-    location.state?.collection
+    locationState.collection
       ? // Deep clone a read-only object that comes from the routing
-        JSON.parse(JSON.stringify(location.state?.collection))
+        JSON.parse(JSON.stringify(locationState.collection))
       : undefined
   );
 
@@ -106,7 +110,7 @@ export const CollectionPage = (): JSX.Element => {
   const params = useParams<{ id: string }>();
   const { loading, error, data } = useGetCollectionByExternalIdQuery({
     variables: {
-      externalId: params.id,
+      externalId: params.id!,
     },
     // Skip query if collection object was delivered via the routing
     // This is needed because hooks can only be called at the top level
@@ -137,7 +141,7 @@ export const CollectionPage = (): JSX.Element => {
     refetch: refetchStories,
   } = useGetCollectionStoriesQuery({
     variables: {
-      id: params.id,
+      id: params.id!,
     },
     // This setting lets us switch this query to manual cache updates only
     // so that on reordering stories they (stories) don't snap back
@@ -340,7 +344,7 @@ export const CollectionPage = (): JSX.Element => {
     // Save the new story with the S3 URL
     createStory({
       variables: {
-        collectionExternalId: params.id,
+        collectionExternalId: params.id!,
         url: values.url,
         title: values.title,
         excerpt: values.excerpt,

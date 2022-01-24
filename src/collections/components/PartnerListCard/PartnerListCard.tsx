@@ -27,8 +27,8 @@ export const PartnerListCard: React.FC<PartnerListCardProps> = (props) => {
     <Link
       to={{
         pathname: `/collections/partners/${partner.externalId}/`,
-        state: { partner },
       }}
+      state={{ partner }}
       className={classes.link}
     >
       <Card variant="outlined" square className={classes.root}>

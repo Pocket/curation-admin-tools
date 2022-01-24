@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter, Router } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { PartnerListCard } from './PartnerListCard';
 import { CollectionPartner } from '../../api/collection-api/generatedTypes';
 import { MockedProvider } from '@apollo/client/testing';
@@ -56,9 +56,9 @@ describe('The PartnerListCard component', () => {
 
     render(
       <MockedProvider>
-        <Router history={history}>
+        <MemoryRouter initialEntries={['/collections/partners/']}>
           <PartnerListCard partner={partner} />
-        </Router>
+        </MemoryRouter>
       </MockedProvider>
     );
 
@@ -70,7 +70,7 @@ describe('The PartnerListCard component', () => {
     );
 
     // Let's go back to the Partners page
-    history.goBack();
+    history.back();
     expect(history.location.pathname).toEqual('/collections/partners/');
 
     // And click on the image this time

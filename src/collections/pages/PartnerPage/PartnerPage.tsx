@@ -35,30 +35,34 @@ export const PartnerPage = (): JSX.Element => {
   // has to be done at the top level of the component because it's a hook
   const [updateCollectionPartner] = useUpdateCollectionPartnerMutation();
 
-  // And this one is only used to set the image url once the we know the S3 link
+  // And this one is only used to set the image url once we know the S3 link
   const [updatePartnerImageUrl] = useUpdateCollectionPartnerImageUrlMutation();
 
   /**
    * If a Collection Partner object was passed to the page from one of the other app pages,
    * let's extract it from the routing.
    */
-  const location = useLocation<PartnerPageProps>();
+  const location = useLocation();
+  /**
+   * This is how React Router 6 lets us add type safety to location state.
+   */
+  const locationState = location.state as PartnerPageProps;
 
   const [partner, setPartner] = useState<CollectionPartner | undefined>(
-    location.state?.partner
+    locationState.partner
       ? // Deep clone a read-only object that comes from the routing
-        JSON.parse(JSON.stringify(location.state?.partner))
+        JSON.parse(JSON.stringify(locationState.partner))
       : undefined
   );
 
   /**
    * If the user came directly to this page (i.e., via a bookmarked page),
-   * fetch the partner info from the the API.
+   * fetch the partner info from the API.
    */
   const params = useParams<{ id: string }>();
   const { loading, error, data } = useGetCollectionPartnerQuery({
     variables: {
-      id: params.id,
+      id: params.id!,
     },
     // Skip query if partner object was delivered via the routing
     // This is needed because hooks can only be called at the top level

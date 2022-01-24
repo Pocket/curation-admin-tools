@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { Router } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { ScrollToTop } from './ScrollToTop';
 
@@ -11,9 +11,9 @@ describe('The ScrollToTop component', () => {
     window.scrollTo = jest.fn();
 
     render(
-      <Router history={history}>
+      <MemoryRouter initialEntries={[`/en-US/newtab/`]}>
         <ScrollToTop />
-      </Router>
+      </MemoryRouter>
     );
 
     // move to another page

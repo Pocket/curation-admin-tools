@@ -39,8 +39,8 @@ export const CollectionListCard: React.FC<CollectionListCardProps> = (
     <Link
       to={{
         pathname: `/collections/collections/${collection.externalId}/`,
-        state: { collection },
       }}
+      state={{ collection }}
       className={classes.link}
     >
       <Card variant="outlined" square className={classes.root}>

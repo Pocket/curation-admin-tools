@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { MemoryRouter, Router } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 import { AuthorListCard } from './AuthorListCard';
 import { CollectionAuthor } from '../../api/collection-api/generatedTypes';
 import { MockedProvider } from '@apollo/client/testing';
@@ -91,9 +91,9 @@ describe('The AuthorListCard component', () => {
 
     render(
       <MockedProvider>
-        <Router history={history}>
+        <MemoryRouter initialEntries={['/collections/authors/']}>
           <AuthorListCard author={author} />
-        </Router>
+        </MemoryRouter>
       </MockedProvider>
     );
 
@@ -105,7 +105,7 @@ describe('The AuthorListCard component', () => {
     );
 
     // Let's go back to the Authors page
-    history.goBack();
+    history.back();
     expect(history.location.pathname).toEqual('/collections/authors/');
 
     // And click on the image this time
