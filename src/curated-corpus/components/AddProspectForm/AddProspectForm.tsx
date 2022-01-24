@@ -9,6 +9,8 @@ import {
 } from '../../../_shared/components';
 
 import { validationSchema } from './AddProspectForm.validation';
+import { useStyles } from './AddProspectForm.styles';
+
 import { client as prospectApiClient } from '../../api/prospect-api/client';
 import {
   ApprovedCuratedCorpusItem,
@@ -41,6 +43,9 @@ interface AddProspectFormProps {
 export const AddProspectForm: React.FC<
   AddProspectFormProps & SharedFormButtonsProps
 > = (props) => {
+  // get styles
+  const classes = useStyles();
+
   // de-structure props
   const { onCancel, toggleAddProspectModal } = props;
 
@@ -167,9 +172,13 @@ export const AddProspectForm: React.FC<
 
   return (
     <>
-      <form name="add-prospect-form" onSubmit={formik.handleSubmit}>
+      <form
+        name="add-prospect-form"
+        onSubmit={formik.handleSubmit}
+        className={classes.root}
+      >
         <Grid container spacing={3}>
-          <Grid item xs={12} style={{ width: '800px' }}>
+          <Grid item xs={12}>
             <FormikTextField
               id="itemUrl"
               label="Item URL"
