@@ -1,9 +1,12 @@
+import { FormikValues } from 'formik';
 import { FileWithPath } from 'react-dropzone';
+import { v5 as uuidv5 } from 'uuid';
 import {
   ApprovedCuratedCorpusItem,
   CuratedStatus,
+  CreateApprovedCuratedCorpusItemInput,
 } from '../api/curated-corpus-api/generatedTypes';
-import { Prospect } from '../api/prospect-api/generatedTypes';
+import { Prospect, UrlMetadata } from '../api/prospect-api/generatedTypes';
 /**
  *
  * This is a helper file that contains some helper functions. Right now
@@ -40,6 +43,73 @@ export const transformProspectToApprovedItem = (
     createdAt: prospect.createdAt ?? 0,
     createdBy: '',
     updatedAt: 0,
+  };
+};
+
+/**
+ * Transforms the UrlMetaData object to an ApprovedCuratedCorpusItem type object to be consumed by ApprovedItemForm component
+ *
+ * @param metadata
+ * @param isRecommendation
+ * @returns ApprovedCuratedCorpusItem
+ */
+export const transformUrlMetaDataToApprovedItem = (
+  metadata: UrlMetadata,
+  isRecommendation?: boolean
+): ApprovedCuratedCorpusItem => {
+  return {
+    externalId: '',
+    prospectId: uuidv5(metadata.url, '9edace02-b9c6-4705-a0d6-16476438557b'),
+    url: metadata.url,
+    title: metadata.title ?? '',
+    imageUrl: metadata.imageUrl ?? '',
+    publisher: metadata.publisher ?? '',
+    language: metadata.language ?? '',
+    topic: '',
+    status: isRecommendation
+      ? CuratedStatus.Recommendation
+      : CuratedStatus.Corpus,
+    isTimeSensitive: false,
+    isSyndicated: metadata.isSyndicated ?? false,
+    isCollection: metadata.isCollection ?? false,
+    excerpt: metadata.excerpt ?? '',
+    createdAt: 0,
+    createdBy: '',
+    updatedAt: 0,
+  };
+};
+
+/**
+ * Transforms formik input values from the ApprovedItemForm component into
+ * CreateApprovedCuratedCorpusItemInput type object to be used for
+ * CreateApprovedCuratedCorpusItem mutation
+ *
+ * @param values
+ * @param prospectId
+ * @returns CreateApprovedCuratedCorpusItemInput
+ */
+export const transformFormInputToCreateApprovedItemInput = (
+  values: FormikValues,
+  prospectId?: string
+): CreateApprovedCuratedCorpusItemInput => {
+  const languageCode = values.language === 'English' ? 'en' : 'de';
+  const curationStatus = values.curationStatus.toUpperCase();
+  const topic = values.topic.toUpperCase();
+
+  return {
+    prospectId:
+      prospectId || uuidv5(values.url, '9edace02-b9c6-4705-a0d6-16476438557b'),
+    url: values.url,
+    title: values.title,
+    excerpt: values.excerpt,
+    status: curationStatus,
+    language: languageCode,
+    publisher: values.publisher,
+    imageUrl: values.imageUrl,
+    topic,
+    isCollection: values.collection,
+    isTimeSensitive: values.timeSensitive,
+    isSyndicated: values.syndicated,
   };
 };
 

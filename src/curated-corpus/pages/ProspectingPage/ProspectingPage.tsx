@@ -3,9 +3,11 @@ import { DateTime } from 'luxon';
 import { Box, Button, Grid, Hidden } from '@material-ui/core';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import AddIcon from '@material-ui/icons/Add';
 import { HandleApiResponse } from '../../../_shared/components';
 import {
   ApprovedItemModal,
+  AddProspectModal,
   NewTabGroupedList,
   ProspectListCard,
   RefreshProspectsModal,
@@ -173,6 +175,10 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   const [refreshProspectsModalOpen, toggleRefreshProspectsModal] =
     useToggle(false);
 
+  /**
+   * Keeps track of whether the "Add a New Prospect" modal is open or not.
+   */
+  const [addProspectModalOpen, toggleAddProspectModal] = useToggle(false);
   /**
    * Keep track of whether the "Schedule this item for New Tab" modal is open or not.
    */
@@ -475,6 +481,10 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         }}
         toggleModal={toggleRefreshProspectsModal}
       />
+      <AddProspectModal
+        isOpen={addProspectModalOpen}
+        toggleModal={toggleAddProspectModal}
+      />
 
       {approvedItem && (
         <ScheduleItemModal
@@ -508,6 +518,15 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                 <Button
                   color="default"
                   onClick={() => {
+                    // toggle the add prospect modal
+                    toggleAddProspectModal();
+                  }}
+                >
+                  <AddIcon fontSize="large" />
+                </Button>
+                <Button
+                  color="default"
+                  onClick={() => {
                     // If all the prospects have been processed already,
                     // there is no need for a confirmation dialogue here,
                     // let's just fetch a new batch of prospects.
@@ -518,6 +537,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                 >
                   <RefreshIcon fontSize="large" />
                 </Button>
+
                 {prospectFilters.length > 0 && (
                   <SplitButton
                     icon={<FilterListIcon fontSize="large" />}
