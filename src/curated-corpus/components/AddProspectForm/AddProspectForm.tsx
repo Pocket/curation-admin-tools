@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Grid, LinearProgress } from '@material-ui/core';
+import { DateTime } from 'luxon';
 
 import { useFormik, FormikHelpers, FormikValues } from 'formik';
 import {
@@ -16,6 +17,7 @@ import {
   ApprovedCuratedCorpusItem,
   CreateApprovedCuratedCorpusItemInput,
   useCreateApprovedCuratedCorpusItemMutation,
+  useCreateNewTabFeedScheduledItemMutation,
   useGetApprovedItemByUrlLazyQuery,
   useUploadApprovedCuratedCorpusItemImageMutation,
 } from '../../api/curated-corpus-api/generatedTypes';
@@ -25,7 +27,7 @@ import {
   useRunMutation,
   useToggle,
 } from '../../../_shared/hooks';
-import { ApprovedItemModal } from '..';
+import { ApprovedItemModal, ScheduleItemModal } from '..';
 import {
   downloadAndUploadApprovedItemImageToS3,
   transformUrlMetaDataToApprovedItem,
@@ -58,7 +60,11 @@ export const AddProspectForm: React.FC<
 
   // set up some hooks
   const { showNotification } = useNotifications();
+
+  // Keep track of whether the "Approve Item" modal is open or not
   const [approvedItemModalOpen, toggleApprovedItemModal] = useToggle(false);
+  //Keep track of whether the "Schedule this item for New Tab" modal is open or not.
+  const [scheduleModalOpen, toggleScheduleModal] = useToggle(false);
 
   // function to toggle both modals
   const toggleApprovedItemAndProspectModal = () => {
@@ -76,6 +82,9 @@ export const AddProspectForm: React.FC<
   // prepare mutation hook to create approved item
   const [createApprovedItemMutation] =
     useCreateApprovedCuratedCorpusItemMutation();
+
+  // prepare mutation hook to schedule the approved item
+  const [scheduleCuratedItem] = useCreateNewTabFeedScheduledItemMutation();
 
   // lazy query to check if url already exists in the corpus
   const [getApprovedItemByUrl] = useGetApprovedItemByUrlLazyQuery({
@@ -145,6 +154,37 @@ export const AddProspectForm: React.FC<
       'Item successfully added to the curated corpus.',
       () => {
         toggleApprovedItemAndProspectModal();
+        toggleScheduleModal();
+        formikHelpers.setSubmitting(false);
+      }
+    );
+  };
+
+  // callback which will be passed to the ScheduleItem modal and will execute
+  // the mutation to schedule an approved item
+  const onScheduleSave = (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ): void => {
+    // Set out all the variables we need to pass to the mutation
+    const variables = {
+      approvedItemExternalId: approvedItem?.externalId,
+      newTabGuid: values.newTabGuid,
+      scheduledDate: values.scheduledDate.toISODate(),
+    };
+
+    // Run the mutation
+    runMutation(
+      scheduleCuratedItem,
+      { variables },
+      `Item scheduled successfully for ${values.scheduledDate.toLocaleString(
+        DateTime.DATE_FULL
+      )}`,
+      () => {
+        toggleScheduleModal();
+        formikHelpers.setSubmitting(false);
+      },
+      () => {
         formikHelpers.setSubmitting(false);
       }
     );
@@ -170,6 +210,8 @@ export const AddProspectForm: React.FC<
     },
   });
 
+  console.log(scheduleModalOpen);
+
   return (
     <>
       <form
@@ -177,7 +219,7 @@ export const AddProspectForm: React.FC<
         onSubmit={formik.handleSubmit}
         className={classes.root}
       >
-        <Grid container spacing={3}>
+        <Grid container>
           <Grid item xs={12}>
             <FormikTextField
               id="itemUrl"
@@ -199,13 +241,23 @@ export const AddProspectForm: React.FC<
         </Grid>
       )}
 
-      <ApprovedItemModal
-        heading="Review prospect"
-        isOpen={approvedItemModalOpen}
-        onSave={createApprovedItem}
-        toggleModal={toggleApprovedItemAndProspectModal}
-        approvedItem={approvedItem!}
-      />
+      {approvedItem && (
+        <>
+          <ApprovedItemModal
+            heading="Review Item"
+            isOpen={approvedItemModalOpen}
+            onSave={createApprovedItem}
+            toggleModal={toggleApprovedItemAndProspectModal}
+            approvedItem={approvedItem}
+          />
+          <ScheduleItemModal
+            approvedItem={approvedItem}
+            isOpen={scheduleModalOpen}
+            toggleModal={toggleScheduleModal}
+            onSave={onScheduleSave}
+          />
+        </>
+      )}
     </>
   );
 };
