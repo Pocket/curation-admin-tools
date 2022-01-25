@@ -242,7 +242,6 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     // Set out all the variables we need to pass to the first mutation
     const variables: RejectProspectMutationVariables = {
       data: {
-        prospectId: currentItem?.id!,
         url: currentItem?.url,
         title: currentItem?.title,
         topic: currentItem?.topic ?? '',
