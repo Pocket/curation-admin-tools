@@ -62,8 +62,8 @@ export type ApprovedCuratedCorpusItem = {
   isTimeSensitive: Scalars['Boolean'];
   /** What language this story is in. This is a two-letter code, for example, 'en' for English. */
   language: Scalars['String'];
-  /** The GUID of the corresponding Prospect ID. */
-  prospectId: Scalars['ID'];
+  /** The GUID of the corresponding Prospect ID. Will be empty if the item was manually added. */
+  prospectId?: Maybe<Scalars['ID']>;
   /** The name of the online publication that published this story. */
   publisher: Scalars['String'];
   /** The outcome of the curators' review. */
@@ -139,8 +139,8 @@ export type CreateApprovedCuratedCorpusItemInput = {
   language: Scalars['String'];
   /** Optionally, specify the GUID of the New Tab this item should be scheduled for. */
   newTabGuid?: InputMaybe<Scalars['ID']>;
-  /** The GUID of the corresponding Prospect ID. */
-  prospectId: Scalars['ID'];
+  /** The GUID of the corresponding Prospect ID. Will be empty for manually added items. */
+  prospectId?: InputMaybe<Scalars['ID']>;
   /** The name of the online publication that published this story. */
   publisher: Scalars['String'];
   /** Optionally, specify the date this item should be appearing on New Tab. Format: YYYY-MM-DD */
@@ -162,8 +162,8 @@ export type CreateApprovedCuratedCorpusItemInput = {
 export type CreateRejectedCuratedCorpusItemInput = {
   /** What language this item is in. This is a two-letter code, for example, 'en' for English. */
   language?: InputMaybe<Scalars['String']>;
-  /** The GUID of the corresponding Prospect ID. */
-  prospectId: Scalars['ID'];
+  /** The GUID of the corresponding Prospect ID. Will be empty for manually added item. */
+  prospectId?: InputMaybe<Scalars['ID']>;
   /** The name of the online publication that published this story. */
   publisher?: InputMaybe<Scalars['String']>;
   /** A comma-separated list of rejection reasons. */
@@ -326,7 +326,7 @@ export enum ProspectType {
 export type Query = {
   __typename?: 'Query';
   /** Retrieves an approved curated item with the given URL. */
-  getApprovedCuratedCorpusItemByUrl: ApprovedCuratedCorpusItem;
+  getApprovedCuratedCorpusItemByUrl?: Maybe<ApprovedCuratedCorpusItem>;
   /** Retrieves a paginated, filterable list of ApprovedCuratedCorpusItems. */
   getApprovedCuratedCorpusItems: ApprovedCuratedCorpusItemConnection;
   /** Retrieves all NewTabs available to the given SSO user. Requires an Authorization header. */
@@ -374,8 +374,8 @@ export type RejectedCuratedCorpusItem = {
   externalId: Scalars['ID'];
   /** What language this story is in. This is a two-letter code, for example, 'en' for English. */
   language: Scalars['String'];
-  /** The GUID of the corresponding Prospect ID. */
-  prospectId: Scalars['ID'];
+  /** The GUID of the corresponding Prospect ID. Will be empty if the item was manually added. */
+  prospectId?: Maybe<Scalars['ID']>;
   /** The name of the online publication that published this story. */
   publisher: Scalars['String'];
   /** Reason why it was rejected. Can be multiple reasons. Will likely be stored either as comma-separated values or JSON. */
@@ -527,8 +527,6 @@ export type UpdateApprovedCuratedCorpusItemInput = {
   isTimeSensitive: Scalars['Boolean'];
   /** What language this item is in. This is a two-letter code, for example, 'en' for English. */
   language: Scalars['String'];
-  /** The GUID of the corresponding Prospect ID. */
-  prospectId: Scalars['ID'];
   /** The name of the online publication that published this story. */
   publisher: Scalars['String'];
   /** The outcome of the curators' review of the Approved Item. */
@@ -545,7 +543,7 @@ export type UpdateApprovedCuratedCorpusItemInput = {
 export type CuratedItemDataFragment = {
   __typename?: 'ApprovedCuratedCorpusItem';
   externalId: string;
-  prospectId: string;
+  prospectId?: string | null | undefined;
   title: string;
   language: string;
   publisher: string;
@@ -566,7 +564,7 @@ export type CuratedItemDataFragment = {
 export type RejectedItemDataFragment = {
   __typename?: 'RejectedCuratedCorpusItem';
   externalId: string;
-  prospectId: string;
+  prospectId?: string | null | undefined;
   url: any;
   title: string;
   topic: string;
@@ -586,7 +584,7 @@ export type CreateApprovedCuratedCorpusItemMutation = {
   createApprovedCuratedCorpusItem: {
     __typename?: 'ApprovedCuratedCorpusItem';
     externalId: string;
-    prospectId: string;
+    prospectId?: string | null | undefined;
     title: string;
     language: string;
     publisher: string;
@@ -624,7 +622,7 @@ export type CreateNewTabFeedScheduledItemMutation = {
     approvedItem: {
       __typename?: 'ApprovedCuratedCorpusItem';
       externalId: string;
-      prospectId: string;
+      prospectId?: string | null | undefined;
       title: string;
       language: string;
       publisher: string;
@@ -661,7 +659,7 @@ export type DeleteScheduledItemMutation = {
     approvedItem: {
       __typename?: 'ApprovedCuratedCorpusItem';
       externalId: string;
-      prospectId: string;
+      prospectId?: string | null | undefined;
       title: string;
       language: string;
       publisher: string;
@@ -690,7 +688,7 @@ export type RejectApprovedItemMutation = {
   rejectApprovedCuratedCorpusItem: {
     __typename?: 'ApprovedCuratedCorpusItem';
     externalId: string;
-    prospectId: string;
+    prospectId?: string | null | undefined;
     title: string;
     language: string;
     publisher: string;
@@ -718,7 +716,7 @@ export type RejectProspectMutation = {
   createRejectedCuratedCorpusItem: {
     __typename?: 'RejectedCuratedCorpusItem';
     externalId: string;
-    prospectId: string;
+    prospectId?: string | null | undefined;
     url: any;
     title: string;
     topic: string;
@@ -739,7 +737,7 @@ export type UpdateApprovedCuratedCorpusItemMutation = {
   updateApprovedCuratedCorpusItem: {
     __typename?: 'ApprovedCuratedCorpusItem';
     externalId: string;
-    prospectId: string;
+    prospectId?: string | null | undefined;
     title: string;
     language: string;
     publisher: string;
@@ -776,26 +774,29 @@ export type GetApprovedItemByUrlQueryVariables = Exact<{
 
 export type GetApprovedItemByUrlQuery = {
   __typename?: 'Query';
-  getApprovedCuratedCorpusItemByUrl: {
-    __typename?: 'ApprovedCuratedCorpusItem';
-    externalId: string;
-    prospectId: string;
-    title: string;
-    language: string;
-    publisher: string;
-    url: any;
-    imageUrl: any;
-    excerpt: string;
-    status: CuratedStatus;
-    topic: string;
-    isCollection: boolean;
-    isTimeSensitive: boolean;
-    isSyndicated: boolean;
-    createdBy: string;
-    createdAt: number;
-    updatedBy?: string | null | undefined;
-    updatedAt: number;
-  };
+  getApprovedCuratedCorpusItemByUrl?:
+    | {
+        __typename?: 'ApprovedCuratedCorpusItem';
+        externalId: string;
+        prospectId?: string | null | undefined;
+        title: string;
+        language: string;
+        publisher: string;
+        url: any;
+        imageUrl: any;
+        excerpt: string;
+        status: CuratedStatus;
+        topic: string;
+        isCollection: boolean;
+        isTimeSensitive: boolean;
+        isSyndicated: boolean;
+        createdBy: string;
+        createdAt: number;
+        updatedBy?: string | null | undefined;
+        updatedAt: number;
+      }
+    | null
+    | undefined;
 };
 
 export type GetApprovedItemsQueryVariables = Exact<{
@@ -821,7 +822,7 @@ export type GetApprovedItemsQuery = {
       node: {
         __typename?: 'ApprovedCuratedCorpusItem';
         externalId: string;
-        prospectId: string;
+        prospectId?: string | null | undefined;
         title: string;
         language: string;
         publisher: string;
@@ -878,7 +879,7 @@ export type GetRejectedItemsQuery = {
       node: {
         __typename?: 'RejectedCuratedCorpusItem';
         externalId: string;
-        prospectId: string;
+        prospectId?: string | null | undefined;
         url: any;
         title: string;
         topic: string;
@@ -929,7 +930,7 @@ export type GetScheduledItemsQuery = {
       approvedItem: {
         __typename?: 'ApprovedCuratedCorpusItem';
         externalId: string;
-        prospectId: string;
+        prospectId?: string | null | undefined;
         title: string;
         language: string;
         publisher: string;

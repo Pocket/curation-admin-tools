@@ -225,7 +225,6 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
     const variables = {
       data: {
         externalId: currentItem?.externalId,
-        prospectId: currentItem?.prospectId,
         title: values.title,
         excerpt: values.excerpt,
         status: curationStatus,
