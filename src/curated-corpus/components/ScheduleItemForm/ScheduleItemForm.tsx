@@ -94,6 +94,7 @@ export const ScheduleItemForm: React.FC<
       // Make sure the date is the one selected by the user
       // (Without this, Formik passes on the initial date = tomorrow.)
       values.scheduledDate = selectedDate;
+      console.log('here');
 
       onSubmit(values, formikHelpers);
     },

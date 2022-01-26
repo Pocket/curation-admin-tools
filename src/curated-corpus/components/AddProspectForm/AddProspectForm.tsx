@@ -153,7 +153,7 @@ export const AddProspectForm: React.FC<
       { variables: { data: { ...createApprovedItemInput } } },
       'Item successfully added to the curated corpus.',
       () => {
-        toggleApprovedItemAndProspectModal();
+        toggleApprovedItemModal();
         toggleScheduleModal();
         formikHelpers.setSubmitting(false);
       }
@@ -166,6 +166,8 @@ export const AddProspectForm: React.FC<
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ): void => {
+    console.log('on schedule save');
+
     // Set out all the variables we need to pass to the mutation
     const variables = {
       approvedItemExternalId: approvedItem?.externalId,
