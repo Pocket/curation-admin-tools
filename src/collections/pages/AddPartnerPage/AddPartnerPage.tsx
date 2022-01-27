@@ -9,7 +9,7 @@ import {
   CollectionPartner,
   GetCollectionPartnersDocument,
   useCreateCollectionPartnerMutation,
-} from '../../api/collection-api/generatedTypes';
+} from '../../../api/generatedTypes';
 import { config } from '../../../config';
 
 export const AddPartnerPage: React.FC = (): JSX.Element => {

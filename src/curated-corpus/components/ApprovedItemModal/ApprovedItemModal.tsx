@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal } from '../../../_shared/components';
 import { Box, Grid, Typography } from '@material-ui/core';
-import { ApprovedCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
+import { ApprovedCuratedCorpusItem } from '../../../api/generatedTypes';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import { ApprovedItemForm } from '../ApprovedItemForm/ApprovedItemForm';

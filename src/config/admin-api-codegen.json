@@ -1,11 +1,13 @@
 {
   "overwrite": true,
-  "schema": ["${REACT_APP_CLIENT_API_ENDPOINT}"],
+  "schema": ["${REACT_APP_ADMIN_API_ENDPOINT}"],
   "documents": [
-    "src/collections/api/client-api/queries/*.ts"
+    "src/api/queries/*.ts",
+    "src/api/mutations/*.ts",
+    "src/api/fragments/*.ts"
   ],
   "generates": {
-    "src/collections/api/client-api/generatedTypes.ts": {
+    "src/api/generatedTypes.ts": {
       "plugins": [
         "typescript",
         "typescript-operations",
@@ -18,7 +20,7 @@
   },
   "hooks": {
     "afterAllFileWrite": [
-      "prettier -w src/collections/api/client-api/generatedTypes.ts"
+      "prettier -w src/api/generatedTypes.ts"
     ]
   }
 }

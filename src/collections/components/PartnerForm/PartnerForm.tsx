@@ -9,7 +9,7 @@ import {
   SharedFormButtonsProps,
 } from '../../../_shared/components';
 import { validationSchema } from './PartnerForm.validation';
-import { CollectionPartner } from '../../api/collection-api/generatedTypes';
+import { CollectionPartner } from '../../../api/generatedTypes';
 
 interface PartnerFormProps {
   /**

@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import { Grid } from '@material-ui/core';
-import { CuratedStatus } from '../../api/curated-corpus-api/generatedTypes';
+import { CuratedStatus } from '../../../api/generatedTypes';
 import {
   Button,
   FormikSelectField,

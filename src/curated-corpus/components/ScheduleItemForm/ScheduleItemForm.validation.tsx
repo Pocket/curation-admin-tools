@@ -1,6 +1,6 @@
 import * as yup from 'yup';
 import { DateTime } from 'luxon';
-import { NewTab } from '../../api/curated-corpus-api/generatedTypes';
+import { NewTab } from '../../../api/generatedTypes';
 
 /**
  * Generate the validation schema with the given New Tabs

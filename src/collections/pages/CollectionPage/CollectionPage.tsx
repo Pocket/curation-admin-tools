@@ -44,7 +44,7 @@ import {
   useUpdateCollectionMutation,
   useUpdateCollectionStoryImageUrlMutation,
   useUpdateCollectionStorySortOrderMutation,
-} from '../../api/collection-api/generatedTypes';
+} from '../../../api/generatedTypes';
 import {
   useNotifications,
   useRunMutation,

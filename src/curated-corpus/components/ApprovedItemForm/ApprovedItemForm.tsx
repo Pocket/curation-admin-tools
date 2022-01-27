@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import { validationSchema } from './ApprovedItemForm.validation';
-import { ApprovedCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
+import { ApprovedCuratedCorpusItem } from '../../../api/generatedTypes';
 import {
   curationStatusOptions,
   DropdownOption,

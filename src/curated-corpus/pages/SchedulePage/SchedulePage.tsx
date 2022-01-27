@@ -17,7 +17,7 @@ import {
   useDeleteScheduledItemMutation,
   useGetNewTabsForUserQuery,
   useGetScheduledItemsQuery,
-} from '../../api/curated-corpus-api/generatedTypes';
+} from '../../../api/generatedTypes';
 import {
   useNotifications,
   useRunMutation,

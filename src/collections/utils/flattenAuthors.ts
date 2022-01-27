@@ -1,7 +1,7 @@
 import {
   CollectionAuthor,
   CollectionStoryAuthor,
-} from '../api/collection-api/generatedTypes';
+} from '../../api/generatedTypes';
 
 /**
  * A helper function that takes in an array of collection [story] authors

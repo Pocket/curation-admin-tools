@@ -10,7 +10,7 @@ import { AuthorListCard } from '../../components';
 import {
   CollectionAuthor,
   useGetAuthorsQuery,
-} from '../../api/collection-api/generatedTypes';
+} from '../../../api/generatedTypes';
 import { useFetchMoreResults } from '../../../_shared/hooks';
 import { config } from '../../../config';
 

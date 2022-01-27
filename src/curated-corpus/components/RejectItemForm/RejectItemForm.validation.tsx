@@ -1,5 +1,5 @@
 import * as yup from 'yup';
-import { RejectionReason } from '../../api/curated-corpus-api/generatedTypes';
+import { RejectionReason } from '../../../api/generatedTypes';
 
 export const validationSchema = yup
   .object({

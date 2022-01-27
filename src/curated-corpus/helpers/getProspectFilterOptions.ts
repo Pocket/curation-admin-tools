@@ -1,5 +1,5 @@
 import { DropdownOption, prospectFilterOptions } from './definitions';
-import { ProspectType } from '../api/curated-corpus-api/generatedTypes';
+import { ProspectType } from '../../api/generatedTypes';
 
 /**
  * This helper function takes all possible prospect filter options for the filtering

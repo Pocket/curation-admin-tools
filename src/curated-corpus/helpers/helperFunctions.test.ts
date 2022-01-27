@@ -1,8 +1,8 @@
 import {
   CuratedStatus,
+  Prospect,
   ProspectType,
-} from '../api/curated-corpus-api/generatedTypes';
-import { Prospect } from '../api/prospect-api/generatedTypes';
+} from '../../api/generatedTypes';
 import {
   fetchFileFromUrl,
   transformProspectToApprovedItem,

@@ -21,7 +21,7 @@ import {
   useDeleteCollectionStoryMutation,
   useUpdateCollectionStoryImageUrlMutation,
   useUpdateCollectionStoryMutation,
-} from '../../api/collection-api/generatedTypes';
+} from '../../../api/generatedTypes';
 
 interface StoryListCardProps {
   /**

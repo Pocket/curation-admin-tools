@@ -1,5 +1,5 @@
 import * as yup from 'yup';
-import { CuratedStatus } from '../../api/curated-corpus-api/generatedTypes';
+import { CuratedStatus } from '../../../api/generatedTypes';
 import { languages, topics } from '../../helpers/definitions';
 
 const languageCodes = languages.map((l) => l.code);

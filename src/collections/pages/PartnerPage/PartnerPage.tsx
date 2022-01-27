@@ -20,7 +20,7 @@ import {
   useGetCollectionPartnerQuery,
   useUpdateCollectionPartnerImageUrlMutation,
   useUpdateCollectionPartnerMutation,
-} from '../../api/collection-api/generatedTypes';
+} from '../../../api/generatedTypes';
 import { config } from '../../../config';
 
 interface PartnerPageProps {

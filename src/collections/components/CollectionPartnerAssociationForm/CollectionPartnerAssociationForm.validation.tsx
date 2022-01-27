@@ -1,5 +1,5 @@
 import * as yup from 'yup';
-import { CollectionPartnershipType } from '../../api/collection-api/generatedTypes';
+import { CollectionPartnershipType } from '../../../api/generatedTypes';
 
 /**
  * Validation schema for the CollectionPartnerAssociation add/edit form

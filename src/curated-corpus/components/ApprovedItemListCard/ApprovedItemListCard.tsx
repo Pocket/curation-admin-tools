@@ -17,7 +17,7 @@ import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import LanguageIcon from '@material-ui/icons/Language';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import { useStyles } from './ApprovedItemListCard.styles';
-import { ApprovedCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
+import { ApprovedCuratedCorpusItem } from '../../../api/generatedTypes';
 import { topics } from '../../helpers/definitions';
 
 interface ApprovedItemListCardProps {

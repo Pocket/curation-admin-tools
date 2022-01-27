@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { Prospect } from '../../api/prospect-api/generatedTypes';
+import { Prospect } from '../../../api/generatedTypes';
 import { ProspectListCard } from './ProspectListCard';
 
 describe('The ProspectListCard component', () => {

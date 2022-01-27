@@ -10,15 +10,15 @@ import {
   useGetApprovedItemsLazyQuery,
   useRejectApprovedItemMutation,
   useUpdateApprovedCuratedCorpusItemMutation,
-} from '../../api/curated-corpus-api/generatedTypes';
+} from '../../../api/generatedTypes';
 import { HandleApiResponse } from '../../../_shared/components';
 import {
   ApprovedItemCardWrapper,
+  ApprovedItemModal,
   ApprovedItemSearchForm,
   NextPrevPagination,
   RejectItemModal,
   ScheduleItemModal,
-  ApprovedItemModal,
 } from '../../components';
 import { useRunMutation, useToggle } from '../../../_shared/hooks';
 import { DateTime } from 'luxon';

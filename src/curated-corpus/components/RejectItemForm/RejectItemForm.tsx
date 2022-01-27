@@ -14,7 +14,7 @@ import {
   SharedFormButtonsProps,
 } from '../../../_shared/components';
 import { validationSchema } from './RejectItemForm.validation';
-import { RejectionReason } from '../../api/curated-corpus-api/generatedTypes';
+import { RejectionReason } from '../../../api/generatedTypes';
 
 interface RejectItemFormProps {
   /**

@@ -1,4 +1,4 @@
-import { CollectionStoryAuthor } from '../api/collection-api/generatedTypes';
+import { CollectionStoryAuthor } from '../../api/generatedTypes';
 
 /**
  * A helper function that transforms a comma-separated string of names

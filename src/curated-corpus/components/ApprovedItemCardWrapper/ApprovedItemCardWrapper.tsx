@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardActions } from '@material-ui/core';
 import { useStyles } from './ApprovedItemCardWrapper.styles';
-import { ApprovedCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
+import { ApprovedCuratedCorpusItem } from '../../../api/generatedTypes';
 import { Button } from '../../../_shared/components';
 import { ApprovedItemListCard } from '../ApprovedItemListCard/ApprovedItemListCard';
 
