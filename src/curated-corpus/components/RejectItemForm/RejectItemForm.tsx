@@ -7,6 +7,7 @@ import {
   FormGroup,
   FormHelperText,
   Grid,
+  LinearProgress,
 } from '@material-ui/core';
 import {
   SharedFormButtons,
@@ -135,12 +136,21 @@ export const RejectItemForm: React.FC<
             />
           </FormGroup>
         </Grid>
+
+        {formik.isSubmitting && (
+          <Grid item xs={12}>
+            <Box mb={3}>
+              <LinearProgress />
+            </Box>
+          </Grid>
+        )}
       </Grid>
       <Box mb={2}>
         {formik.errors && formik.errors.reason && (
           <FormHelperText error>{formik.errors.reason}</FormHelperText>
         )}
       </Box>
+
       <SharedFormButtons onCancel={onCancel} />
     </form>
   );
