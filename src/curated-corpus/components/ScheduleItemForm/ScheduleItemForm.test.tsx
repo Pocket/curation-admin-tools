@@ -3,18 +3,44 @@ import LuxonUtils from '@date-io/luxon';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { render, screen } from '@testing-library/react';
 import { ScheduleItemForm } from './ScheduleItemForm';
-import { newTabs } from '../../helpers/definitions';
+import {
+  NewTab,
+  ProspectType,
+} from '../../api/curated-corpus-api/generatedTypes';
+import { DateTime } from 'luxon';
 
 describe('The ScheduleItemForm component', () => {
   const handleSubmit = jest.fn();
-  const newTabList = newTabs;
+
+  // This is the shape of the data the form receives via the `getNewTabsForUser` query
+  const newTabs: NewTab[] = [
+    {
+      name: 'en-US',
+      guid: 'EN_US',
+      utcOffset: -4000,
+      prospectTypes: [
+        ProspectType.Global,
+        ProspectType.OrganicTimespent,
+        ProspectType.Syndicated,
+      ],
+    },
+    {
+      name: 'de-DE',
+      guid: 'DE_DE',
+      utcOffset: 1000,
+      prospectTypes: [ProspectType.Global],
+    },
+  ];
 
   it('renders successfully', () => {
     render(
       <MuiPickersUtilsProvider utils={LuxonUtils}>
         <ScheduleItemForm
+          handleDateChange={jest.fn()}
+          lookupCopy=""
+          selectedDate={DateTime.local()}
           onSubmit={handleSubmit}
-          newTabList={newTabList}
+          newTabs={newTabs}
           approvedItemExternalId={'123abc'}
         />
       </MuiPickersUtilsProvider>
@@ -29,8 +55,11 @@ describe('The ScheduleItemForm component', () => {
     render(
       <MuiPickersUtilsProvider utils={LuxonUtils}>
         <ScheduleItemForm
+          handleDateChange={jest.fn()}
+          lookupCopy=""
+          selectedDate={DateTime.local()}
           onSubmit={handleSubmit}
-          newTabList={newTabList}
+          newTabs={newTabs}
           approvedItemExternalId={'123abc'}
         />
       </MuiPickersUtilsProvider>

@@ -1,14 +1,14 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { MockedProvider } from '@apollo/client/testing';
+import { SnackbarProvider } from 'notistack';
 import {
   ApprovedCuratedCorpusItem,
   CuratedStatus,
 } from '../../api/curated-corpus-api/generatedTypes';
-import { SnackbarProvider } from 'notistack';
-import { ApolloProvider } from '@apollo/client';
-import { client } from '../../api/curated-corpus-api/client';
 import { ApprovedItemForm } from './ApprovedItemForm';
-import userEvent from '@testing-library/user-event';
+import { uploadApprovedItemImage } from '../../api/curated-corpus-api/mutations/uploadApprovedItemImage';
 
 describe('The ApprovedItemForm component', () => {
   let item: ApprovedCuratedCorpusItem;
@@ -31,7 +31,7 @@ describe('The ApprovedItemForm component', () => {
       status: CuratedStatus.Recommendation,
       isCollection: false,
       isSyndicated: false,
-      isShortLived: false,
+      isTimeSensitive: false,
       createdAt: 1635014926,
       createdBy: 'Amy',
       updatedAt: 1635114926,
@@ -40,7 +40,7 @@ describe('The ApprovedItemForm component', () => {
 
   it('should render all the form fields with correct initial values', () => {
     render(
-      <ApolloProvider client={client}>
+      <MockedProvider>
         <SnackbarProvider maxSnack={3}>
           <ApprovedItemForm
             approvedItem={item}
@@ -49,7 +49,7 @@ describe('The ApprovedItemForm component', () => {
             onImageSave={onImageSave}
           />
         </SnackbarProvider>
-      </ApolloProvider>
+      </MockedProvider>
     );
 
     const url = screen.getByLabelText(/Item URL/);
@@ -80,9 +80,9 @@ describe('The ApprovedItemForm component', () => {
     expect(curationStatus).toBeInTheDocument();
     expect(curationStatus).toHaveValue('Recommendation');
 
-    const shortLived = screen.getByLabelText(/Short Lived/);
-    expect(shortLived).toBeInTheDocument();
-    expect(shortLived).toHaveProperty('checked', item.isShortLived);
+    const timeSensitive = screen.getByLabelText(/Time Sensitive/);
+    expect(timeSensitive).toBeInTheDocument();
+    expect(timeSensitive).toHaveProperty('checked', item.isTimeSensitive);
 
     const collection = screen.getByLabelText(/Collection/);
     expect(collection).toBeInTheDocument();
@@ -95,7 +95,7 @@ describe('The ApprovedItemForm component', () => {
 
   it('should render the ImageUpload component', () => {
     render(
-      <ApolloProvider client={client}>
+      <MockedProvider>
         <SnackbarProvider maxSnack={3}>
           <ApprovedItemForm
             approvedItem={item}
@@ -104,7 +104,7 @@ describe('The ApprovedItemForm component', () => {
             onImageSave={onImageSave}
           />
         </SnackbarProvider>
-      </ApolloProvider>
+      </MockedProvider>
     );
 
     //This is fetching the 'Update Image' text in the ImageUpload component
@@ -115,7 +115,7 @@ describe('The ApprovedItemForm component', () => {
 
   it('should render form buttons', () => {
     render(
-      <ApolloProvider client={client}>
+      <MockedProvider>
         <SnackbarProvider maxSnack={3}>
           <ApprovedItemForm
             approvedItem={item}
@@ -124,7 +124,7 @@ describe('The ApprovedItemForm component', () => {
             onImageSave={onImageSave}
           />
         </SnackbarProvider>
-      </ApolloProvider>
+      </MockedProvider>
     );
 
     const saveButton = screen.getByText(/Save/);
@@ -138,7 +138,7 @@ describe('The ApprovedItemForm component', () => {
   describe('When the form fields are edited', () => {
     it('should call the onSave callback for the save button ', async () => {
       render(
-        <ApolloProvider client={client}>
+        <MockedProvider>
           <SnackbarProvider maxSnack={3}>
             <ApprovedItemForm
               approvedItem={item}
@@ -147,7 +147,7 @@ describe('The ApprovedItemForm component', () => {
               onImageSave={onImageSave}
             />
           </SnackbarProvider>
-        </ApolloProvider>
+        </MockedProvider>
       );
 
       const title = screen.getByLabelText(/Title/);
@@ -164,7 +164,7 @@ describe('The ApprovedItemForm component', () => {
 
     it('should call the onCancel callback for the cancel button ', async () => {
       render(
-        <ApolloProvider client={client}>
+        <MockedProvider>
           <SnackbarProvider maxSnack={3}>
             <ApprovedItemForm
               approvedItem={item}
@@ -173,7 +173,7 @@ describe('The ApprovedItemForm component', () => {
               onImageSave={onImageSave}
             />
           </SnackbarProvider>
-        </ApolloProvider>
+        </MockedProvider>
       );
 
       const title = screen.getByLabelText(/Title/);
@@ -187,12 +187,34 @@ describe('The ApprovedItemForm component', () => {
       });
       expect(onCancel).toHaveBeenCalled();
     });
-  });
 
-  describe('When the form fields are NOT edited', () => {
-    it('should call the onSave callback for the save button ', async () => {
+    it('should set imageUrl field when a new image is uploaded', async () => {
+      // create a test file
+      const file = new File(['hello'], 'hello.png', { type: 'image/png' });
+
+      // mock request and response for the image upload mutation
+      // variables and result field has to match how we send/receive
+      // variables/data for the real mutation
+      const mocks = [
+        {
+          request: {
+            query: uploadApprovedItemImage,
+            variables: {
+              image: undefined,
+            },
+          },
+          result: {
+            data: {
+              uploadApprovedCuratedCorpusItemImage: {
+                url: file.name,
+              },
+            },
+          },
+        },
+      ];
+
       render(
-        <ApolloProvider client={client}>
+        <MockedProvider mocks={mocks}>
           <SnackbarProvider maxSnack={3}>
             <ApprovedItemForm
               approvedItem={item}
@@ -201,7 +223,62 @@ describe('The ApprovedItemForm component', () => {
               onImageSave={onImageSave}
             />
           </SnackbarProvider>
-        </ApolloProvider>
+        </MockedProvider>
+      );
+
+      // fetch the update image button
+      const updateImageButton = screen.getByRole('button', {
+        name: /update image/i,
+      });
+
+      userEvent.click(updateImageButton);
+
+      // get the input html element for us to upload the file
+      const imageUploadInput = await screen.findByTestId(
+        'curated-corpus-image-upload-input'
+      );
+
+      // upload the test file by executing an upload event
+      await waitFor(() => {
+        userEvent.upload(imageUploadInput, file);
+      });
+
+      // this gets the save button on the image upload component and not on the form
+      const saveButton = await screen.findByRole('button', {
+        name: /save/i,
+      });
+
+      // This executes the upload mutation and the subsequent callback
+      await waitFor(() => {
+        userEvent.click(saveButton);
+      });
+
+      // fetch the imageUrl field that is on the form
+      const imageUrlField = (await screen.findByLabelText(
+        'imageUrl'
+      )) as HTMLInputElement;
+
+      await waitFor(() => {
+        expect(onImageSave).toHaveBeenCalled();
+      });
+
+      expect(imageUrlField.value).toEqual(file.name);
+    });
+  });
+
+  describe('When the form fields are NOT edited', () => {
+    it('should call the onSave callback for the save button ', async () => {
+      render(
+        <MockedProvider>
+          <SnackbarProvider maxSnack={3}>
+            <ApprovedItemForm
+              approvedItem={item}
+              onSubmit={onSubmit}
+              onCancel={onCancel}
+              onImageSave={onImageSave}
+            />
+          </SnackbarProvider>
+        </MockedProvider>
       );
 
       const saveButton = screen.getByRole('button', {
@@ -218,7 +295,7 @@ describe('The ApprovedItemForm component', () => {
       const itemWithoutImage = { ...item, imageUrl: '' };
 
       render(
-        <ApolloProvider client={client}>
+        <MockedProvider>
           <SnackbarProvider maxSnack={3}>
             <ApprovedItemForm
               approvedItem={itemWithoutImage}
@@ -227,7 +304,7 @@ describe('The ApprovedItemForm component', () => {
               onImageSave={onImageSave}
             />
           </SnackbarProvider>
-        </ApolloProvider>
+        </MockedProvider>
       );
 
       const saveButton = screen.getByRole('button', {

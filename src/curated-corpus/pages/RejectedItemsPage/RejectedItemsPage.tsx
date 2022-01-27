@@ -114,7 +114,12 @@ export const RejectedItemsPage: React.FC = (): JSX.Element => {
 
   return (
     <>
-      <h1>Rejected Corpus</h1>
+      <h1>
+        Rejected{' '}
+        <Typography variant="caption" title="© 2021 Alex D">
+          🦨 Ew Tab
+        </Typography>
+      </h1>
       <RejectedItemSearchForm onSubmit={handleSubmit} />
 
       {!data && <HandleApiResponse loading={loading} error={error} />}

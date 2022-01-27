@@ -17,29 +17,17 @@ import { FileUploadInfo } from '../../../_shared/components/FileUploadInfo/FileU
 import { useStyles } from './ImageUpload.styles';
 import { useNotifications } from '../../../_shared/hooks';
 import {
-  Collection,
-  CollectionAuthor,
-  CollectionPartner,
-  CollectionPartnerAssociation,
-  CollectionStory,
-} from '../../../collections/api/collection-api/generatedTypes';
-import {
   ApprovedCuratedCorpusItem,
-  MutationUploadApprovedCuratedCorpusItemImageArgs,
   useUploadApprovedCuratedCorpusItemImageMutation,
+  MutationUploadApprovedCuratedCorpusItemImageArgs,
 } from '../../api/curated-corpus-api/generatedTypes';
+import { readImageFileFromDisk } from '../../helpers/helperFunctions';
 
 interface ImageUploadProps {
   /**
-   * Any entity with a customizable image
+   * Approved item entity
    */
-  entity:
-    | Omit<Collection, 'stories'>
-    | CollectionAuthor
-    | CollectionPartner
-    | CollectionPartnerAssociation
-    | CollectionStory
-    | ApprovedCuratedCorpusItem;
+  entity: ApprovedCuratedCorpusItem;
 
   /**
    * A path to a placeholder image to show if no image is available
@@ -52,15 +40,7 @@ interface ImageUploadProps {
    *
    * @param url
    */
-  onImageSave: (url: string) => void;
-
-  /**
-   * Called when the image has been changed (successfully uploaded to S3) for an approved item.
-   * This only toggles the boolean state variable in its direct parent ApprovedItemForm
-   * OnImageSave is also doing the same thing but it's being drilled down by 3 levels above
-   * TODO: @Herraj - need to do some refactoring here
-   */
-  onImageChanged?: (value: string) => void;
+  onImageSave?: (url: string) => void;
 }
 
 /**
@@ -74,17 +54,9 @@ interface ImageUploadProps {
  * @constructor
  */
 
-/**
- *
- * TODO: @Herraj - Try to make this a re-usable component
- * I copied this to the shared components directory thinking it could be
- * use as a re-usable component. It was tightly coupled with Collection API mutations,
- * where this is copied from
- */
-
 export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
   const classes = useStyles();
-  const { entity, placeholder, onImageSave, onImageChanged } = props;
+  const { entity, placeholder, onImageSave } = props;
   const { showNotification } = useNotifications();
 
   // These state vars are used to show/hide the file upload modal and progress bar
@@ -92,17 +64,15 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
   const [uploadInfo, setUploadInfo] = useState<JSX.Element[] | null>(null);
   const [uploadInProgress, setUploadInProgress] = useState<boolean>(false);
 
-  // This one is for the uploaded file itself
+  // This state variable stores the image/file data read from the disk
   const [imageData, setImageData] = useState<
     MutationUploadApprovedCuratedCorpusItemImageArgs | undefined
   >(undefined);
 
-  // And these ones are for figuring out whether to show the uploaded image
-  // or a placeholder
+  // This state variable stores the image url. Default/initial value is
+  // of the image on the entity. If the entity doesn't have one, the placeholder
+  // string is used. This is set to the s3 url if the user uploads a new image
   const [imageSrc, setImageSrc] = useState<string>(entity.imageUrl);
-  const [hasImage, setHasImage] = useState<boolean>(
-    !!(imageSrc && imageSrc.length > 0)
-  );
 
   // Close the image upload modal when user clicks away or presses the "Cancel" button
   const handleClose = () => {
@@ -117,27 +87,11 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
   // show file info to the user and set data to use in upload mutation
   const onDrop = (acceptedFiles: FileWithPath[]) => {
     const uploads = acceptedFiles.map((file: FileWithPath, index: number) => {
-      // Get the actual file
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-
-      // Load it
-      reader.onloadend = (e) => {
-        const contents = e.target?.result;
-
-        // Load the contents of this file to an image element
-        const image = new Image() as HTMLImageElement;
-        if (typeof contents === 'string') {
-          image.src = contents;
-
-          // Set the variables we'll use later when saving the file to S3
-          image.onload = function () {
-            setImageData({
-              data: file,
-            });
-          };
-        }
-      };
+      readImageFileFromDisk(file, () => {
+        setImageData({
+          data: file,
+        });
+      });
 
       // Generate the output to show to the user
       return <FileUploadInfo key={index} file={file} />;
@@ -148,26 +102,25 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
 
   const onSave = () => {
     setUploadInProgress(true);
-    // Let's upload this thing to S3!
+
+    // call the mutation function to upload image to s3
     uploadApprovedItemImage({
       variables: { image: imageData?.data },
     })
       .then((data) => {
         setUploadInProgress(false);
 
-        if (data.data && data.data.uploadApprovedCuratedCorpusItemImage) {
-          setImageSrc(data.data.uploadApprovedCuratedCorpusItemImage.url);
+        // pull the returned s3 image url into a variable
+        const s3ImageUrl = data.data?.uploadApprovedCuratedCorpusItemImage.url;
+
+        // if the image upload to s3 was successful
+        if (s3ImageUrl) {
+          setImageSrc(s3ImageUrl);
           setImageUploadOpen(false);
-          setHasImage(true);
           showNotification('Image successfully uploaded to S3', 'success');
 
-          // This calls the updateApprovedItem mutation to map the new image url
-          // to the current item that is being edited
-          onImageSave(data.data.uploadApprovedCuratedCorpusItemImage.url);
-          // This changes the state variable in the direct parent, ApprovedItemForm
-          // to enable/disable the save button on the form
-          onImageChanged &&
-            onImageChanged(data.data.uploadApprovedCuratedCorpusItemImage.url);
+          //Execute the onImageSave callback if provided by parent
+          onImageSave && onImageSave(s3ImageUrl);
         }
       })
       .catch((error) => {
@@ -182,8 +135,8 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
       <Card>
         <CardMedia
           component="img"
-          src={hasImage ? imageSrc : placeholder}
-          className={hasImage ? classes.image : classes.placeholder}
+          src={imageSrc || placeholder}
+          className={imageSrc ? classes.image : classes.placeholder}
           onClick={() => {
             setImageUploadOpen(true);
           }}
@@ -215,7 +168,11 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
                   })}
                   pt={2}
                 >
-                  <input {...getInputProps()} />
+                  <input
+                    {...getInputProps()}
+                    data-testid="curated-corpus-image-upload-input"
+                    type="file"
+                  />
                   <Typography align="center">
                     Drag and drop an image here, or click to select one
                   </Typography>

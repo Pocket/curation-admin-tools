@@ -1,6 +1,5 @@
-import * as Apollo from '@apollo/client';
 import { gql } from '@apollo/client';
-
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -12,7 +11,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & {
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & {
   [SubKey in K]: Maybe<T[SubKey]>;
 };
-const defaultOptions = {};
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -54,17 +53,17 @@ export type ApprovedCuratedCorpusItem = {
   imageUrl: Scalars['Url'];
   /** Whether this story is a Pocket Collection. */
   isCollection: Scalars['Boolean'];
-  /**
-   * A flag to ML to not recommend this item long term after it is added to the corpus.
-   * Example: a story covering an election.
-   */
-  isShortLived: Scalars['Boolean'];
   /** Whether this item is a syndicated article. */
   isSyndicated: Scalars['Boolean'];
+  /**
+   * A flag to ML to not recommend this item long term after it is added to the corpus.
+   * Example: a story covering an election, or "The best of 202x" collection.
+   */
+  isTimeSensitive: Scalars['Boolean'];
   /** What language this story is in. This is a two-letter code, for example, 'en' for English. */
   language: Scalars['String'];
-  /** The GUID of the corresponding Prospect ID. */
-  prospectId: Scalars['ID'];
+  /** The GUID of the corresponding Prospect ID. Will be empty if the item was manually added. */
+  prospectId?: Maybe<Scalars['ID']>;
   /** The name of the online publication that published this story. */
   publisher: Scalars['String'];
   /** The outcome of the curators' review. */
@@ -129,19 +128,19 @@ export type CreateApprovedCuratedCorpusItemInput = {
   imageUrl: Scalars['Url'];
   /** Whether this story is a Pocket Collection. */
   isCollection: Scalars['Boolean'];
-  /**
-   * A flag to ML to not recommend this item long term after it is added to the corpus.
-   * Example: a story covering an election.
-   */
-  isShortLived: Scalars['Boolean'];
   /** Whether this item is a syndicated article. */
   isSyndicated: Scalars['Boolean'];
+  /**
+   * A flag to ML to not recommend this item long term after it is added to the corpus.
+   * Example: a story covering an election, or "The best of 202x" collection.
+   */
+  isTimeSensitive: Scalars['Boolean'];
   /** What language this item is in. This is a two-letter code, for example, 'en' for English. */
   language: Scalars['String'];
   /** Optionally, specify the GUID of the New Tab this item should be scheduled for. */
   newTabGuid?: InputMaybe<Scalars['ID']>;
-  /** The GUID of the corresponding Prospect ID. */
-  prospectId: Scalars['ID'];
+  /** The GUID of the corresponding Prospect ID. Will be empty for manually added items. */
+  prospectId?: InputMaybe<Scalars['ID']>;
   /** The name of the online publication that published this story. */
   publisher: Scalars['String'];
   /** Optionally, specify the date this item should be appearing on New Tab. Format: YYYY-MM-DD */
@@ -163,8 +162,8 @@ export type CreateApprovedCuratedCorpusItemInput = {
 export type CreateRejectedCuratedCorpusItemInput = {
   /** What language this item is in. This is a two-letter code, for example, 'en' for English. */
   language?: InputMaybe<Scalars['String']>;
-  /** The GUID of the corresponding Prospect ID. */
-  prospectId: Scalars['ID'];
+  /** The GUID of the corresponding Prospect ID. Will be empty for manually added item. */
+  prospectId?: InputMaybe<Scalars['ID']>;
   /** The name of the online publication that published this story. */
   publisher?: InputMaybe<Scalars['String']>;
   /** A comma-separated list of rejection reasons. */
@@ -250,6 +249,19 @@ export type MutationUploadApprovedCuratedCorpusItemImageArgs = {
   data: Scalars['Upload'];
 };
 
+/** A New Tab, including its associated Prospect Types. */
+export type NewTab = {
+  __typename?: 'NewTab';
+  /** The GUID of the New Tab. Example: 'EN_US'. */
+  guid: Scalars['String'];
+  /** The display name of the New Tab. Example 'en-US'. */
+  name: Scalars['String'];
+  /** An array of associated ProspectTypes. */
+  prospectTypes: Array<ProspectType>;
+  /** The UTC offset of the New Tab's scheduling day, represented in HMM numeric format. */
+  utcOffset: Scalars['Int'];
+};
+
 /** Options for returning items sorted by the supplied field. */
 export enum OrderBy {
   /** Return items in ascending order. */
@@ -313,12 +325,20 @@ export enum ProspectType {
 
 export type Query = {
   __typename?: 'Query';
+  /** Retrieves an approved curated item with the given URL. */
+  getApprovedCuratedCorpusItemByUrl?: Maybe<ApprovedCuratedCorpusItem>;
   /** Retrieves a paginated, filterable list of ApprovedCuratedCorpusItems. */
   getApprovedCuratedCorpusItems: ApprovedCuratedCorpusItemConnection;
+  /** Retrieves all NewTabs available to the given SSO user. Requires an Authorization header. */
+  getNewTabsForUser: Array<NewTab>;
   /** Retrieves a paginated, filterable list of RejectedCuratedCorpusItems. */
   getRejectedCuratedCorpusItems: RejectedCuratedCorpusItemConnection;
-  /** Retrieves a list of Approved Items that are scheduled to appear on New Tab */
+  /** Retrieves a list of Approved Items that are scheduled to appear on New Tab. */
   getScheduledCuratedCorpusItems: Array<ScheduledCuratedCorpusItemsResult>;
+};
+
+export type QueryGetApprovedCuratedCorpusItemByUrlArgs = {
+  url: Scalars['String'];
 };
 
 export type QueryGetApprovedCuratedCorpusItemsArgs = {
@@ -354,8 +374,8 @@ export type RejectedCuratedCorpusItem = {
   externalId: Scalars['ID'];
   /** What language this story is in. This is a two-letter code, for example, 'en' for English. */
   language: Scalars['String'];
-  /** The GUID of the corresponding Prospect ID. */
-  prospectId: Scalars['ID'];
+  /** The GUID of the corresponding Prospect ID. Will be empty if the item was manually added. */
+  prospectId?: Maybe<Scalars['ID']>;
   /** The name of the online publication that published this story. */
   publisher: Scalars['String'];
   /** Reason why it was rejected. Can be multiple reasons. Will likely be stored either as comma-separated values or JSON. */
@@ -500,19 +520,13 @@ export type UpdateApprovedCuratedCorpusItemInput = {
   externalId: Scalars['ID'];
   /** The image URL for this item's accompanying picture. */
   imageUrl: Scalars['Url'];
-  /** Whether this story is a Pocket Collection. */
-  isCollection: Scalars['Boolean'];
   /**
    * A flag to ML to not recommend this item long term after it is added to the corpus.
-   * Example: a story covering an election.
+   * Example: a story covering an election, or "The best of 202x" collection.
    */
-  isShortLived: Scalars['Boolean'];
-  /** Whether this item is a syndicated article. */
-  isSyndicated: Scalars['Boolean'];
+  isTimeSensitive: Scalars['Boolean'];
   /** What language this item is in. This is a two-letter code, for example, 'en' for English. */
   language: Scalars['String'];
-  /** The GUID of the corresponding Prospect ID. */
-  prospectId: Scalars['ID'];
   /** The name of the online publication that published this story. */
   publisher: Scalars['String'];
   /** The outcome of the curators' review of the Approved Item. */
@@ -524,14 +538,12 @@ export type UpdateApprovedCuratedCorpusItemInput = {
    * Temporarily a string value that will be provided by Prospect API, possibly an enum in the future.
    */
   topic: Scalars['String'];
-  /** The URL of the Approved Item. */
-  url: Scalars['Url'];
 };
 
 export type CuratedItemDataFragment = {
   __typename?: 'ApprovedCuratedCorpusItem';
   externalId: string;
-  prospectId: string;
+  prospectId?: string | null | undefined;
   title: string;
   language: string;
   publisher: string;
@@ -541,7 +553,7 @@ export type CuratedItemDataFragment = {
   status: CuratedStatus;
   topic: string;
   isCollection: boolean;
-  isShortLived: boolean;
+  isTimeSensitive: boolean;
   isSyndicated: boolean;
   createdBy: string;
   createdAt: number;
@@ -552,7 +564,7 @@ export type CuratedItemDataFragment = {
 export type RejectedItemDataFragment = {
   __typename?: 'RejectedCuratedCorpusItem';
   externalId: string;
-  prospectId: string;
+  prospectId?: string | null | undefined;
   url: any;
   title: string;
   topic: string;
@@ -572,7 +584,7 @@ export type CreateApprovedCuratedCorpusItemMutation = {
   createApprovedCuratedCorpusItem: {
     __typename?: 'ApprovedCuratedCorpusItem';
     externalId: string;
-    prospectId: string;
+    prospectId?: string | null | undefined;
     title: string;
     language: string;
     publisher: string;
@@ -582,7 +594,7 @@ export type CreateApprovedCuratedCorpusItemMutation = {
     status: CuratedStatus;
     topic: string;
     isCollection: boolean;
-    isShortLived: boolean;
+    isTimeSensitive: boolean;
     isSyndicated: boolean;
     createdBy: string;
     createdAt: number;
@@ -610,7 +622,7 @@ export type CreateNewTabFeedScheduledItemMutation = {
     approvedItem: {
       __typename?: 'ApprovedCuratedCorpusItem';
       externalId: string;
-      prospectId: string;
+      prospectId?: string | null | undefined;
       title: string;
       language: string;
       publisher: string;
@@ -620,7 +632,7 @@ export type CreateNewTabFeedScheduledItemMutation = {
       status: CuratedStatus;
       topic: string;
       isCollection: boolean;
-      isShortLived: boolean;
+      isTimeSensitive: boolean;
       isSyndicated: boolean;
       createdBy: string;
       createdAt: number;
@@ -647,7 +659,7 @@ export type DeleteScheduledItemMutation = {
     approvedItem: {
       __typename?: 'ApprovedCuratedCorpusItem';
       externalId: string;
-      prospectId: string;
+      prospectId?: string | null | undefined;
       title: string;
       language: string;
       publisher: string;
@@ -657,7 +669,7 @@ export type DeleteScheduledItemMutation = {
       status: CuratedStatus;
       topic: string;
       isCollection: boolean;
-      isShortLived: boolean;
+      isTimeSensitive: boolean;
       isSyndicated: boolean;
       createdBy: string;
       createdAt: number;
@@ -676,7 +688,7 @@ export type RejectApprovedItemMutation = {
   rejectApprovedCuratedCorpusItem: {
     __typename?: 'ApprovedCuratedCorpusItem';
     externalId: string;
-    prospectId: string;
+    prospectId?: string | null | undefined;
     title: string;
     language: string;
     publisher: string;
@@ -686,7 +698,7 @@ export type RejectApprovedItemMutation = {
     status: CuratedStatus;
     topic: string;
     isCollection: boolean;
-    isShortLived: boolean;
+    isTimeSensitive: boolean;
     isSyndicated: boolean;
     createdBy: string;
     createdAt: number;
@@ -704,7 +716,7 @@ export type RejectProspectMutation = {
   createRejectedCuratedCorpusItem: {
     __typename?: 'RejectedCuratedCorpusItem';
     externalId: string;
-    prospectId: string;
+    prospectId?: string | null | undefined;
     url: any;
     title: string;
     topic: string;
@@ -725,7 +737,7 @@ export type UpdateApprovedCuratedCorpusItemMutation = {
   updateApprovedCuratedCorpusItem: {
     __typename?: 'ApprovedCuratedCorpusItem';
     externalId: string;
-    prospectId: string;
+    prospectId?: string | null | undefined;
     title: string;
     language: string;
     publisher: string;
@@ -735,7 +747,7 @@ export type UpdateApprovedCuratedCorpusItemMutation = {
     status: CuratedStatus;
     topic: string;
     isCollection: boolean;
-    isShortLived: boolean;
+    isTimeSensitive: boolean;
     isSyndicated: boolean;
     createdBy: string;
     createdAt: number;
@@ -754,6 +766,37 @@ export type UploadApprovedCuratedCorpusItemImageMutation = {
     __typename?: 'ApprovedCuratedCorpusImageUrl';
     url: string;
   };
+};
+
+export type GetApprovedItemByUrlQueryVariables = Exact<{
+  url: Scalars['String'];
+}>;
+
+export type GetApprovedItemByUrlQuery = {
+  __typename?: 'Query';
+  getApprovedCuratedCorpusItemByUrl?:
+    | {
+        __typename?: 'ApprovedCuratedCorpusItem';
+        externalId: string;
+        prospectId?: string | null | undefined;
+        title: string;
+        language: string;
+        publisher: string;
+        url: any;
+        imageUrl: any;
+        excerpt: string;
+        status: CuratedStatus;
+        topic: string;
+        isCollection: boolean;
+        isTimeSensitive: boolean;
+        isSyndicated: boolean;
+        createdBy: string;
+        createdAt: number;
+        updatedBy?: string | null | undefined;
+        updatedAt: number;
+      }
+    | null
+    | undefined;
 };
 
 export type GetApprovedItemsQueryVariables = Exact<{
@@ -779,7 +822,7 @@ export type GetApprovedItemsQuery = {
       node: {
         __typename?: 'ApprovedCuratedCorpusItem';
         externalId: string;
-        prospectId: string;
+        prospectId?: string | null | undefined;
         title: string;
         language: string;
         publisher: string;
@@ -789,7 +832,7 @@ export type GetApprovedItemsQuery = {
         status: CuratedStatus;
         topic: string;
         isCollection: boolean;
-        isShortLived: boolean;
+        isTimeSensitive: boolean;
         isSyndicated: boolean;
         createdBy: string;
         createdAt: number;
@@ -798,6 +841,19 @@ export type GetApprovedItemsQuery = {
       };
     }>;
   };
+};
+
+export type GetNewTabsForUserQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetNewTabsForUserQuery = {
+  __typename?: 'Query';
+  getNewTabsForUser: Array<{
+    __typename?: 'NewTab';
+    guid: string;
+    name: string;
+    utcOffset: number;
+    prospectTypes: Array<ProspectType>;
+  }>;
 };
 
 export type GetRejectedItemsQueryVariables = Exact<{
@@ -823,7 +879,7 @@ export type GetRejectedItemsQuery = {
       node: {
         __typename?: 'RejectedCuratedCorpusItem';
         externalId: string;
-        prospectId: string;
+        prospectId?: string | null | undefined;
         url: any;
         title: string;
         topic: string;
@@ -835,6 +891,20 @@ export type GetRejectedItemsQuery = {
       };
     }>;
   };
+};
+
+export type GetScheduledItemCountsQueryVariables = Exact<{
+  filters: ScheduledCuratedCorpusItemsFilterInput;
+}>;
+
+export type GetScheduledItemCountsQuery = {
+  __typename?: 'Query';
+  getScheduledCuratedCorpusItems: Array<{
+    __typename?: 'ScheduledCuratedCorpusItemsResult';
+    collectionCount: number;
+    syndicatedCount: number;
+    totalCount: number;
+  }>;
 };
 
 export type GetScheduledItemsQueryVariables = Exact<{
@@ -860,7 +930,7 @@ export type GetScheduledItemsQuery = {
       approvedItem: {
         __typename?: 'ApprovedCuratedCorpusItem';
         externalId: string;
-        prospectId: string;
+        prospectId?: string | null | undefined;
         title: string;
         language: string;
         publisher: string;
@@ -870,7 +940,7 @@ export type GetScheduledItemsQuery = {
         status: CuratedStatus;
         topic: string;
         isCollection: boolean;
-        isShortLived: boolean;
+        isTimeSensitive: boolean;
         isSyndicated: boolean;
         createdBy: string;
         createdAt: number;
@@ -894,7 +964,7 @@ export const CuratedItemDataFragmentDoc = gql`
     status
     topic
     isCollection
-    isShortLived
+    isTimeSensitive
     isSyndicated
     createdBy
     createdAt
@@ -1309,6 +1379,65 @@ export type UploadApprovedCuratedCorpusItemImageMutationOptions =
     UploadApprovedCuratedCorpusItemImageMutation,
     UploadApprovedCuratedCorpusItemImageMutationVariables
   >;
+export const GetApprovedItemByUrlDocument = gql`
+  query getApprovedItemByUrl($url: String!) {
+    getApprovedCuratedCorpusItemByUrl(url: $url) {
+      ...CuratedItemData
+    }
+  }
+  ${CuratedItemDataFragmentDoc}
+`;
+
+/**
+ * __useGetApprovedItemByUrlQuery__
+ *
+ * To run a query within a React component, call `useGetApprovedItemByUrlQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetApprovedItemByUrlQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetApprovedItemByUrlQuery({
+ *   variables: {
+ *      url: // value for 'url'
+ *   },
+ * });
+ */
+export function useGetApprovedItemByUrlQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetApprovedItemByUrlQuery,
+    GetApprovedItemByUrlQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetApprovedItemByUrlQuery,
+    GetApprovedItemByUrlQueryVariables
+  >(GetApprovedItemByUrlDocument, options);
+}
+export function useGetApprovedItemByUrlLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetApprovedItemByUrlQuery,
+    GetApprovedItemByUrlQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetApprovedItemByUrlQuery,
+    GetApprovedItemByUrlQueryVariables
+  >(GetApprovedItemByUrlDocument, options);
+}
+export type GetApprovedItemByUrlQueryHookResult = ReturnType<
+  typeof useGetApprovedItemByUrlQuery
+>;
+export type GetApprovedItemByUrlLazyQueryHookResult = ReturnType<
+  typeof useGetApprovedItemByUrlLazyQuery
+>;
+export type GetApprovedItemByUrlQueryResult = Apollo.QueryResult<
+  GetApprovedItemByUrlQuery,
+  GetApprovedItemByUrlQueryVariables
+>;
 export const GetApprovedItemsDocument = gql`
   query getApprovedItems(
     $filters: ApprovedCuratedCorpusItemFilter
@@ -1384,6 +1513,66 @@ export type GetApprovedItemsQueryResult = Apollo.QueryResult<
   GetApprovedItemsQuery,
   GetApprovedItemsQueryVariables
 >;
+export const GetNewTabsForUserDocument = gql`
+  query getNewTabsForUser {
+    getNewTabsForUser {
+      guid
+      name
+      utcOffset
+      prospectTypes
+    }
+  }
+`;
+
+/**
+ * __useGetNewTabsForUserQuery__
+ *
+ * To run a query within a React component, call `useGetNewTabsForUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetNewTabsForUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetNewTabsForUserQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetNewTabsForUserQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetNewTabsForUserQuery,
+    GetNewTabsForUserQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetNewTabsForUserQuery,
+    GetNewTabsForUserQueryVariables
+  >(GetNewTabsForUserDocument, options);
+}
+export function useGetNewTabsForUserLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetNewTabsForUserQuery,
+    GetNewTabsForUserQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetNewTabsForUserQuery,
+    GetNewTabsForUserQueryVariables
+  >(GetNewTabsForUserDocument, options);
+}
+export type GetNewTabsForUserQueryHookResult = ReturnType<
+  typeof useGetNewTabsForUserQuery
+>;
+export type GetNewTabsForUserLazyQueryHookResult = ReturnType<
+  typeof useGetNewTabsForUserLazyQuery
+>;
+export type GetNewTabsForUserQueryResult = Apollo.QueryResult<
+  GetNewTabsForUserQuery,
+  GetNewTabsForUserQueryVariables
+>;
 export const GetRejectedItemsDocument = gql`
   query getRejectedItems(
     $filters: RejectedCuratedCorpusItemFilter
@@ -1458,6 +1647,68 @@ export type GetRejectedItemsLazyQueryHookResult = ReturnType<
 export type GetRejectedItemsQueryResult = Apollo.QueryResult<
   GetRejectedItemsQuery,
   GetRejectedItemsQueryVariables
+>;
+export const GetScheduledItemCountsDocument = gql`
+  query getScheduledItemCounts(
+    $filters: ScheduledCuratedCorpusItemsFilterInput!
+  ) {
+    getScheduledCuratedCorpusItems(filters: $filters) {
+      collectionCount
+      syndicatedCount
+      totalCount
+    }
+  }
+`;
+
+/**
+ * __useGetScheduledItemCountsQuery__
+ *
+ * To run a query within a React component, call `useGetScheduledItemCountsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetScheduledItemCountsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetScheduledItemCountsQuery({
+ *   variables: {
+ *      filters: // value for 'filters'
+ *   },
+ * });
+ */
+export function useGetScheduledItemCountsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetScheduledItemCountsQuery,
+    GetScheduledItemCountsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetScheduledItemCountsQuery,
+    GetScheduledItemCountsQueryVariables
+  >(GetScheduledItemCountsDocument, options);
+}
+export function useGetScheduledItemCountsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetScheduledItemCountsQuery,
+    GetScheduledItemCountsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetScheduledItemCountsQuery,
+    GetScheduledItemCountsQueryVariables
+  >(GetScheduledItemCountsDocument, options);
+}
+export type GetScheduledItemCountsQueryHookResult = ReturnType<
+  typeof useGetScheduledItemCountsQuery
+>;
+export type GetScheduledItemCountsLazyQueryHookResult = ReturnType<
+  typeof useGetScheduledItemCountsLazyQuery
+>;
+export type GetScheduledItemCountsQueryResult = Apollo.QueryResult<
+  GetScheduledItemCountsQuery,
+  GetScheduledItemCountsQueryVariables
 >;
 export const GetScheduledItemsDocument = gql`
   query getScheduledItems($filters: ScheduledCuratedCorpusItemsFilterInput!) {

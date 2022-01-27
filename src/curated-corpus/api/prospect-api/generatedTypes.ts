@@ -57,7 +57,7 @@ export type Prospect = {
   publisher?: Maybe<Scalars['String']>;
   saveCount?: Maybe<Scalars['Int']>;
   title?: Maybe<Scalars['String']>;
-  topic: Scalars['String'];
+  topic?: Maybe<Scalars['String']>;
   url: Scalars['String'];
 };
 
@@ -65,17 +65,36 @@ export type Query = {
   __typename?: 'Query';
   /** returns a set of at most 20 prospects (number may be smaller depending on available data) */
   getProspects: Array<Prospect>;
+  /** returns parser meta data for a given url */
+  getUrlMetadata: UrlMetadata;
 };
 
 export type QueryGetProspectsArgs = {
   filters: GetProspectsFilters;
 };
 
+export type QueryGetUrlMetadataArgs = {
+  url: Scalars['String'];
+};
+
+export type UrlMetadata = {
+  __typename?: 'UrlMetadata';
+  domain?: Maybe<Scalars['String']>;
+  excerpt?: Maybe<Scalars['String']>;
+  imageUrl?: Maybe<Scalars['String']>;
+  isCollection?: Maybe<Scalars['Boolean']>;
+  isSyndicated?: Maybe<Scalars['Boolean']>;
+  language?: Maybe<Scalars['String']>;
+  publisher?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  url: Scalars['String'];
+};
+
 export type ProspectDataFragment = {
   __typename?: 'Prospect';
   id: string;
   newTab: string;
-  topic: string;
+  topic?: string | null | undefined;
   prospectType: string;
   url: string;
   createdAt?: number | null | undefined;
@@ -86,6 +105,19 @@ export type ProspectDataFragment = {
   excerpt?: string | null | undefined;
   language?: string | null | undefined;
   saveCount?: number | null | undefined;
+  isSyndicated?: boolean | null | undefined;
+  isCollection?: boolean | null | undefined;
+};
+
+export type UrlMetadataFragment = {
+  __typename?: 'UrlMetadata';
+  url: string;
+  imageUrl?: string | null | undefined;
+  publisher?: string | null | undefined;
+  domain?: string | null | undefined;
+  title?: string | null | undefined;
+  excerpt?: string | null | undefined;
+  language?: string | null | undefined;
   isSyndicated?: boolean | null | undefined;
   isCollection?: boolean | null | undefined;
 };
@@ -101,7 +133,7 @@ export type UpdateProspectAsCuratedMutation = {
         __typename?: 'Prospect';
         id: string;
         newTab: string;
-        topic: string;
+        topic?: string | null | undefined;
         prospectType: string;
         url: string;
         createdAt?: number | null | undefined;
@@ -130,7 +162,7 @@ export type GetProspectsQuery = {
     __typename?: 'Prospect';
     id: string;
     newTab: string;
-    topic: string;
+    topic?: string | null | undefined;
     prospectType: string;
     url: string;
     createdAt?: number | null | undefined;
@@ -144,6 +176,26 @@ export type GetProspectsQuery = {
     isSyndicated?: boolean | null | undefined;
     isCollection?: boolean | null | undefined;
   }>;
+};
+
+export type GetUrlMetadataQueryVariables = Exact<{
+  url: Scalars['String'];
+}>;
+
+export type GetUrlMetadataQuery = {
+  __typename?: 'Query';
+  getUrlMetadata: {
+    __typename?: 'UrlMetadata';
+    url: string;
+    imageUrl?: string | null | undefined;
+    publisher?: string | null | undefined;
+    domain?: string | null | undefined;
+    title?: string | null | undefined;
+    excerpt?: string | null | undefined;
+    language?: string | null | undefined;
+    isSyndicated?: boolean | null | undefined;
+    isCollection?: boolean | null | undefined;
+  };
 };
 
 export const ProspectDataFragmentDoc = gql`
@@ -161,6 +213,19 @@ export const ProspectDataFragmentDoc = gql`
     excerpt
     language
     saveCount
+    isSyndicated
+    isCollection
+  }
+`;
+export const UrlMetadataFragmentDoc = gql`
+  fragment urlMetadata on UrlMetadata {
+    url
+    imageUrl
+    publisher
+    domain
+    title
+    excerpt
+    language
     isSyndicated
     isCollection
   }
@@ -275,4 +340,63 @@ export type GetProspectsLazyQueryHookResult = ReturnType<
 export type GetProspectsQueryResult = Apollo.QueryResult<
   GetProspectsQuery,
   GetProspectsQueryVariables
+>;
+export const GetUrlMetadataDocument = gql`
+  query getUrlMetadata($url: String!) {
+    getUrlMetadata(url: $url) {
+      ...urlMetadata
+    }
+  }
+  ${UrlMetadataFragmentDoc}
+`;
+
+/**
+ * __useGetUrlMetadataQuery__
+ *
+ * To run a query within a React component, call `useGetUrlMetadataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUrlMetadataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUrlMetadataQuery({
+ *   variables: {
+ *      url: // value for 'url'
+ *   },
+ * });
+ */
+export function useGetUrlMetadataQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetUrlMetadataQuery,
+    GetUrlMetadataQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetUrlMetadataQuery, GetUrlMetadataQueryVariables>(
+    GetUrlMetadataDocument,
+    options
+  );
+}
+export function useGetUrlMetadataLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetUrlMetadataQuery,
+    GetUrlMetadataQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetUrlMetadataQuery, GetUrlMetadataQueryVariables>(
+    GetUrlMetadataDocument,
+    options
+  );
+}
+export type GetUrlMetadataQueryHookResult = ReturnType<
+  typeof useGetUrlMetadataQuery
+>;
+export type GetUrlMetadataLazyQueryHookResult = ReturnType<
+  typeof useGetUrlMetadataLazyQuery
+>;
+export type GetUrlMetadataQueryResult = Apollo.QueryResult<
+  GetUrlMetadataQuery,
+  GetUrlMetadataQueryVariables
 >;

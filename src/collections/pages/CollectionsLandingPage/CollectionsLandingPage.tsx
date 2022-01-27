@@ -49,7 +49,11 @@ export const CollectionsLandingPage = (): JSX.Element => {
 
   return (
     <ApolloProvider client={client}>
-      <Header productName="Collections" menuLinks={menuLinks} />
+      <Header
+        productName="Collections"
+        productLink="/collections"
+        menuLinks={menuLinks}
+      />
       <MainContentWrapper>
         <Switch>
           <Route exact path={path}>

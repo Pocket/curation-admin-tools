@@ -9,8 +9,6 @@ import { ApprovedItemListCard } from './ApprovedItemListCard';
 
 describe('The ApprovedItemListCard component', () => {
   let item: ApprovedCuratedCorpusItem;
-  const onSchedule = jest.fn();
-  const onReject = jest.fn();
 
   beforeEach(() => {
     item = {
@@ -27,7 +25,7 @@ describe('The ApprovedItemListCard component', () => {
       status: CuratedStatus.Recommendation,
       isCollection: false,
       isSyndicated: false,
-      isShortLived: false,
+      isTimeSensitive: false,
       createdAt: 1635014926,
       createdBy: 'Amy',
       updatedAt: 1635114926,
@@ -111,14 +109,14 @@ describe('The ApprovedItemListCard component', () => {
 
     expect(screen.queryByText(/collection/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/syndicated/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/short lived/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/time sensitive/i)).not.toBeInTheDocument();
   });
 
   it('should render any extra flags if item has these props set', () => {
     item = {
       ...item,
       isCollection: true,
-      isShortLived: true,
+      isTimeSensitive: true,
       isSyndicated: true,
     };
 
@@ -130,6 +128,6 @@ describe('The ApprovedItemListCard component', () => {
 
     expect(screen.getByText(/collection/i)).toBeInTheDocument();
     expect(screen.getByText(/syndicated/i)).toBeInTheDocument();
-    expect(screen.getByText(/short-lived/i)).toBeInTheDocument();
+    expect(screen.getByText(/time sensitive/i)).toBeInTheDocument();
   });
 });

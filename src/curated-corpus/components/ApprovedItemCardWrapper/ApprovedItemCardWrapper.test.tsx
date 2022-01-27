@@ -25,7 +25,7 @@ describe('The ApprovedItemCardWrapper component', () => {
       status: CuratedStatus.Recommendation,
       isCollection: false,
       isSyndicated: false,
-      isShortLived: false,
+      isTimeSensitive: false,
       createdAt: 1635014926,
       createdBy: 'Amy',
       updatedAt: 1635114926,
@@ -35,7 +35,12 @@ describe('The ApprovedItemCardWrapper component', () => {
   it('should render an approved item card', () => {
     render(
       <MemoryRouter>
-        <ApprovedItemCardWrapper item={item} onSchedule={jest.fn()} />
+        <ApprovedItemCardWrapper
+          item={item}
+          onEdit={jest.fn()}
+          onReject={jest.fn()}
+          onSchedule={jest.fn()}
+        />
       </MemoryRouter>
     );
 
@@ -48,7 +53,12 @@ describe('The ApprovedItemCardWrapper component', () => {
   it('should render action buttons', () => {
     render(
       <MemoryRouter>
-        <ApprovedItemCardWrapper item={item} onSchedule={jest.fn()} />
+        <ApprovedItemCardWrapper
+          item={item}
+          onEdit={jest.fn()}
+          onReject={jest.fn()}
+          onSchedule={jest.fn()}
+        />
       </MemoryRouter>
     );
 

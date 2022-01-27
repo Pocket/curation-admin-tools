@@ -1,15 +1,16 @@
 import React from 'react';
-import { Modal } from '../../../_shared/components';
-import { Box, Grid, Typography } from '@material-ui/core';
-import { ScheduleItemForm } from '..';
-import { newTabs } from '../../helpers/definitions';
-import { ApprovedCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
+import { Box, Grid, Typography } from '@material-ui/core';
+import { ApprovedCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
+import { Modal } from '../../../_shared/components';
+import { ScheduleItemFormConnector } from '../';
 
 interface ScheduleItemModalProps {
   approvedItem: ApprovedCuratedCorpusItem;
+  headingCopy?: string;
   isOpen: boolean;
+  newTabGuid?: string;
   onSave: (
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
@@ -20,7 +21,14 @@ interface ScheduleItemModalProps {
 export const ScheduleItemModal: React.FC<ScheduleItemModalProps> = (
   props
 ): JSX.Element => {
-  const { approvedItem, isOpen, onSave, toggleModal } = props;
+  const {
+    approvedItem,
+    headingCopy = 'Schedule this item for New Tab',
+    isOpen,
+    newTabGuid,
+    onSave,
+    toggleModal,
+  } = props;
 
   return (
     <Modal
@@ -31,7 +39,7 @@ export const ScheduleItemModal: React.FC<ScheduleItemModalProps> = (
     >
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <h2>Schedule this item for New Tab</h2>
+          <h2>{headingCopy}</h2>
           <Box mb={3}>
             <Typography variant="subtitle1">
               <em>Title</em>: {approvedItem.title}
@@ -39,9 +47,9 @@ export const ScheduleItemModal: React.FC<ScheduleItemModalProps> = (
           </Box>
         </Grid>
         <Grid item xs={12}>
-          <ScheduleItemForm
+          <ScheduleItemFormConnector
             approvedItemExternalId={approvedItem.externalId}
-            newTabList={newTabs}
+            newTabGuid={newTabGuid}
             onSubmit={onSave}
             onCancel={() => {
               toggleModal();

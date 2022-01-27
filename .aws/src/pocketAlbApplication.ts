@@ -8,10 +8,10 @@ import { Construct } from 'constructs';
 import { DataTerraformRemoteState } from 'cdktf';
 import {
   DataAwsCallerIdentity,
-  DataAwsKmsAlias,
   DataAwsRegion,
-  DataAwsSnsTopic,
-} from '@cdktf/provider-aws';
+} from '@cdktf/provider-aws/lib/datasources';
+import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/sns';
+import { DataAwsKmsAlias } from '@cdktf/provider-aws/lib/kms';
 
 /**
  * @param scope

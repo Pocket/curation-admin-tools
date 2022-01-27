@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
-import { Box, Grid, TextField } from '@material-ui/core';
+import React from 'react';
+import { Box, Grid, LinearProgress, TextField } from '@material-ui/core';
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
-import { DateTime } from 'luxon';
 import { DatePicker } from '@material-ui/pickers';
 import {
   FormikSelectField,
   SharedFormButtons,
   SharedFormButtonsProps,
 } from '../../../_shared/components';
-import { validationSchema } from './ScheduleItemForm.validation';
+import { getValidationSchema } from './ScheduleItemForm.validation';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import { NewTab } from '../../helpers/definitions';
+import { NewTab } from '../../api/curated-corpus-api/generatedTypes';
+import { DateTime } from 'luxon';
 
 interface ScheduleItemFormProps {
   /**
@@ -19,9 +19,41 @@ interface ScheduleItemFormProps {
   approvedItemExternalId: string;
 
   /**
+   * What to do when the user picks a date.
+   */
+  handleDateChange: (
+    date: MaterialUiPickersDate,
+    value?: string | null | undefined
+  ) => void;
+
+  /**
+   * The copy/JSX to show underneath the form when the user picks a date
+   * and a call to the API is triggered to look up whether any other
+   * items have been scheduled for this date.
+   */
+  lookupCopy: JSX.Element | string;
+
+  /**
    * The list of New Tabs the logged-in user has access to.
    */
-  newTabList: NewTab[];
+  newTabs: NewTab[];
+
+  /**
+   * If a default value for the New Tab dropdown needs to be set,
+   * here is the place to specify it.
+   */
+  newTabGuid?: string;
+
+  /**
+   *
+   */
+  disableNewTab?: boolean;
+
+  /**
+   *
+   * Note that null is an option here to keep MUI types happy, nothing else.
+   */
+  selectedDate: DateTime | null;
 
   /**
    * What do we do with the submitted data?
@@ -35,34 +67,29 @@ interface ScheduleItemFormProps {
 export const ScheduleItemForm: React.FC<
   ScheduleItemFormProps & SharedFormButtonsProps
 > = (props): JSX.Element => {
-  const { approvedItemExternalId, newTabList, onCancel, onSubmit } = props;
+  const {
+    approvedItemExternalId,
+    handleDateChange,
+    lookupCopy,
+    newTabs,
+    newTabGuid,
+    disableNewTab = false,
+    selectedDate,
+    onCancel,
+    onSubmit,
+  } = props;
 
-  // Set the default scheduled date to tomorrow.
-  // Do we need to worry about timezones here? .local() returns the date
-  // in the user locale, not the UTC date.
   const tomorrow = DateTime.local().plus({ days: 1 });
-
-  // Save the date in a state var as the submitted form will contain
-  // a formatted string instead of a luxon object. Would like to work with the luxon
-  // object instead of parsing the date from string.
-  const [selectedDate, setSelectedDate] = useState<DateTime | null>(tomorrow);
-
-  const handleDateChange = (
-    date: MaterialUiPickersDate,
-    value?: string | null | undefined
-  ) => {
-    setSelectedDate(date);
-  };
 
   const formik = useFormik({
     initialValues: {
-      newTabGuid: '',
+      newTabGuid,
       approvedItemExternalId,
       scheduledDate: selectedDate,
     },
     validateOnBlur: false,
     validateOnChange: false,
-    validationSchema,
+    validationSchema: getValidationSchema(newTabs),
     onSubmit: (values, formikHelpers) => {
       // Make sure the date is the one selected by the user
       // (Without this, Formik passes on the initial date = tomorrow.)
@@ -80,11 +107,12 @@ export const ScheduleItemForm: React.FC<
             <FormikSelectField
               id="newTabGuid"
               label="Choose a New Tab"
+              disabled={disableNewTab}
               fieldProps={formik.getFieldProps('newTabGuid')}
               fieldMeta={formik.getFieldMeta('newTabGuid')}
             >
               <option aria-label="None" value="" />
-              {newTabList.map((newTab: NewTab) => {
+              {newTabs.map((newTab: NewTab) => {
                 return (
                   <option value={newTab.guid} key={newTab.guid}>
                     {newTab.name}
@@ -111,8 +139,15 @@ export const ScheduleItemForm: React.FC<
               fullWidth
             />
           </Grid>
+
+          {formik.isSubmitting && (
+            <Grid item xs={12}>
+              <Box mb={3}>
+                <LinearProgress />
+              </Box>
+            </Grid>
+          )}
         </Grid>
-        <SharedFormButtons onCancel={onCancel} />
         <Box display="none">
           <TextField
             type="hidden"
@@ -121,7 +156,16 @@ export const ScheduleItemForm: React.FC<
             {...formik.getFieldProps('approvedItemExternalId')}
           />
         </Box>
+
+        <SharedFormButtons onCancel={onCancel} />
       </form>
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <Box display="flex" justifyContent="center" mt={2} mb={1}>
+            <h3>{lookupCopy}</h3>
+          </Box>
+        </Grid>
+      </Grid>
     </>
   );
 };
