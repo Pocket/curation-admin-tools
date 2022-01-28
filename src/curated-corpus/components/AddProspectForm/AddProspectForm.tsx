@@ -150,8 +150,17 @@ export const AddProspectForm: React.FC<
       createApprovedItemMutation,
       { variables: { data: { ...createApprovedItemInput } } },
       'Item successfully added to the curated corpus.',
-      () => {
+      (data) => {
+        // set the state variable approvedItem to the newly created approved item
+        // that will be used by the schedule modal
+        data.createApprovedCuratedCorpusItem &&
+          setApprovedItem({
+            ...data.createApprovedCuratedCorpusItem,
+          });
+
+        //close approved item modal
         toggleApprovedItemModal();
+        // open schedule modal
         toggleScheduleModal();
         formikHelpers.setSubmitting(false);
       }
@@ -164,8 +173,6 @@ export const AddProspectForm: React.FC<
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ): void => {
-    console.log('on schedule save');
-
     // Set out all the variables we need to pass to the mutation
     const variables = {
       approvedItemExternalId: approvedItem?.externalId,
@@ -181,7 +188,10 @@ export const AddProspectForm: React.FC<
         DateTime.DATE_FULL
       )}`,
       () => {
+        // close schedule modal
         toggleScheduleModal();
+        // close add prospect modal
+        toggleAddProspectModal();
         formikHelpers.setSubmitting(false);
       },
       () => {
@@ -209,8 +219,6 @@ export const AddProspectForm: React.FC<
       formikHelpers.resetForm();
     },
   });
-
-  console.log(scheduleModalOpen);
 
   return (
     <>
@@ -245,15 +253,20 @@ export const AddProspectForm: React.FC<
         <>
           <ApprovedItemModal
             heading="Review Item"
+            isRecommendation={true}
             isOpen={approvedItemModalOpen}
             onSave={createApprovedItem}
             toggleModal={toggleApprovedItemAndProspectModal}
             approvedItem={approvedItem}
           />
           <ScheduleItemModal
+            headingCopy="Optional: schedule this item for New Tab"
             approvedItem={approvedItem}
             isOpen={scheduleModalOpen}
-            toggleModal={toggleScheduleModal}
+            toggleModal={() => {
+              toggleScheduleModal();
+              toggleAddProspectModal();
+            }}
             onSave={onScheduleSave}
           />
         </>
