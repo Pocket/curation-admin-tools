@@ -6,7 +6,7 @@ export const config = {
   adminApiEndpoint: `${
     process.env.REACT_APP_ADMIN_API_ENDPOINT ??
     (isProduction
-      ? 'https://admin-api.readitlater.com'
+      ? 'https://admin-api.getpocket.com'
       : 'https://admin-api.getpocket.dev')
   }`,
 
