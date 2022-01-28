@@ -22,7 +22,7 @@ export const AddProspectModal: React.FC<
     <Modal open={isOpen} handleClose={toggleModal}>
       <Grid container direction="column">
         <Grid item>
-          <h2>Add a New Prospect</h2>
+          <h2>Add a New Curated Item</h2>
         </Grid>
         <Grid item>
           <AddProspectForm
