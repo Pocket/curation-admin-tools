@@ -5,7 +5,7 @@ import {
   Collection,
   CollectionStatus,
   useGetCollectionsQuery,
-} from '../../api/collection-api/generatedTypes';
+} from '../../../api/generatedTypes';
 import { HandleApiResponse } from '../../../_shared/components';
 import { CollectionListCard } from '../../components';
 

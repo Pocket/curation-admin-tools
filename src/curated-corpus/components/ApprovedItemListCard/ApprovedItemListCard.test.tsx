@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import {
   ApprovedCuratedCorpusItem,
   CuratedStatus,
-} from '../../api/curated-corpus-api/generatedTypes';
+} from '../../../api/generatedTypes';
 import { ApprovedItemListCard } from './ApprovedItemListCard';
 
 describe('The ApprovedItemListCard component', () => {

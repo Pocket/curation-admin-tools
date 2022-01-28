@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { StoryCard } from './StoryCard';
-import { CollectionStory } from '../../api/collection-api/generatedTypes';
+import { CollectionStory } from '../../../api/generatedTypes';
 import { flattenAuthors } from '../../utils/flattenAuthors';
 
 describe('The StoryCard component', () => {

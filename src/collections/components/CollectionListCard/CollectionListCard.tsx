@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 import ReactMarkdown from 'react-markdown';
 import { useStyles } from './CollectionListCard.styles';
-import { Collection } from '../../api/collection-api/generatedTypes';
+import { Collection } from '../../../api/generatedTypes';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import { flattenAuthors } from '../../utils/flattenAuthors';
 import LanguageIcon from '@material-ui/icons/Language';

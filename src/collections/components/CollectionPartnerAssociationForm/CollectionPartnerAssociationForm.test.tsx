@@ -5,7 +5,7 @@ import {
   CollectionPartner,
   CollectionPartnerAssociation,
   CollectionPartnershipType,
-} from '../../api/collection-api/generatedTypes';
+} from '../../../api/generatedTypes';
 import { CollectionPartnerAssociationForm } from './CollectionPartnerAssociationForm';
 
 describe('The CollectionPartnerAssociationForm component', () => {

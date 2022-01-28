@@ -20,7 +20,7 @@ import {
   ApprovedCuratedCorpusItem,
   useUploadApprovedCuratedCorpusItemImageMutation,
   MutationUploadApprovedCuratedCorpusItemImageArgs,
-} from '../../api/curated-corpus-api/generatedTypes';
+} from '../../../api/generatedTypes';
 import { readImageFileFromDisk } from '../../helpers/helperFunctions';
 
 interface ImageUploadProps {

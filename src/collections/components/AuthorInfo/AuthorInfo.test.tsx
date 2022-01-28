@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { AuthorInfo } from './AuthorInfo';
-import { CollectionAuthor } from '../../api/collection-api/generatedTypes';
+import { CollectionAuthor } from '../../../api/generatedTypes';
 import { MockedProvider } from '@apollo/client/testing';
 
 describe('The AuthorInfo component', () => {

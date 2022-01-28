@@ -22,7 +22,7 @@ import {
   IabCategory,
   IabParentCategory,
   Language,
-} from '../../api/collection-api/generatedTypes';
+} from '../../../api/generatedTypes';
 
 interface CollectionFormProps {
   /**

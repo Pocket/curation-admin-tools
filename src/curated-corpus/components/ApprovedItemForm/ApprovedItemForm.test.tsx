@@ -6,9 +6,9 @@ import { SnackbarProvider } from 'notistack';
 import {
   ApprovedCuratedCorpusItem,
   CuratedStatus,
-} from '../../api/curated-corpus-api/generatedTypes';
+} from '../../../api/generatedTypes';
 import { ApprovedItemForm } from './ApprovedItemForm';
-import { uploadApprovedItemImage } from '../../api/curated-corpus-api/mutations/uploadApprovedItemImage';
+import { uploadApprovedItemImage } from '../../../api/mutations/uploadApprovedItemImage';
 
 describe('The ApprovedItemForm component', () => {
   let item: ApprovedCuratedCorpusItem;

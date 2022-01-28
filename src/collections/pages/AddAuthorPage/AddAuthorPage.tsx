@@ -9,7 +9,7 @@ import {
   CollectionAuthor,
   GetInitialCollectionFormDataDocument,
   useCreateCollectionAuthorMutation,
-} from '../../api/collection-api/generatedTypes';
+} from '../../../api/generatedTypes';
 
 export const AddAuthorPage: React.FC = (): JSX.Element => {
   // Prepare state vars and helper methods for API notifications

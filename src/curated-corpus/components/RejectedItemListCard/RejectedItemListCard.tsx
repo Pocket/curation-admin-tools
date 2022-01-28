@@ -15,7 +15,7 @@ import FaceIcon from '@material-ui/icons/Face';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 
 import { useStyles } from './RejectedItemListCard.styles';
-import { RejectedCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
+import { RejectedCuratedCorpusItem } from '../../../api/generatedTypes';
 
 interface RejectedItemListCardProps {
   /**

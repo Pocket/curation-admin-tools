@@ -20,7 +20,7 @@ import {
   useGetCollectionPartnersQuery,
   useUpdateCollectionPartnerAssociationImageUrlMutation,
   useUpdateCollectionPartnerAssociationMutation,
-} from '../../api/collection-api/generatedTypes';
+} from '../../../api/generatedTypes';
 import { HandleApiResponse } from '../../../_shared/components';
 import { CollectionPartnerAssociationForm, ImageUpload } from '../';
 import { useRunMutation, useToggle } from '../../../_shared/hooks';

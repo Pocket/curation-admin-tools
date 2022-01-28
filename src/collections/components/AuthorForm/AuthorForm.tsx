@@ -18,7 +18,7 @@ import {
 } from '../../../_shared/components';
 import { validationSchema } from './AuthorForm.validation';
 import { config } from '../../../config';
-import { CollectionAuthor } from '../../api/collection-api/generatedTypes';
+import { CollectionAuthor } from '../../../api/generatedTypes';
 
 interface AuthorFormProps {
   /**

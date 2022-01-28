@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScheduledCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
+import { ScheduledCuratedCorpusItem } from '../../../api/generatedTypes';
 import {
   Card,
   CardContent,

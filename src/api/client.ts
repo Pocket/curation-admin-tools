@@ -1,6 +1,6 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { createUploadLink } from 'apollo-upload-client';
-import { config } from '../../../config';
+import { config } from '../config';
 import {
   getCollectionAuthorsFieldPolicy,
   getCollectionPartnersFieldPolicy,
@@ -19,6 +19,18 @@ const apolloOptions = {
       Collection: {
         keyFields: ['externalId'],
       },
+      ApprovedCuratedCorpusItem: {
+        keyFields: ['externalId'],
+      },
+      RejectedCuratedCorpusItem: {
+        keyFields: ['externalId'],
+      },
+      ScheduledCuratedCorpusItem: {
+        keyFields: ['externalId'],
+      },
+      ScheduledCuratedCorpusItemsResult: {
+        keyFields: ['scheduledDate'],
+      },
       Query: {
         fields: {
           getCollectionAuthors: getCollectionAuthorsFieldPolicy,
@@ -33,6 +45,6 @@ const apolloOptions = {
 };
 
 export const client = new ApolloClient({
-  link: createUploadLink({ uri: config.collectionApiEndpoint }),
+  link: createUploadLink({ uri: config.adminApiEndpoint }),
   ...apolloOptions,
 });

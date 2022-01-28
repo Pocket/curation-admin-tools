@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardActions, Grid } from '@material-ui/core';
 import { useStyles } from './ScheduledItemCardWrapper.styles';
-import { ScheduledCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
+import { ScheduledCuratedCorpusItem } from '../../../api/generatedTypes';
 import { Button } from '../../../_shared/components';
 import { ApprovedItemListCard } from '../ApprovedItemListCard/ApprovedItemListCard';
 

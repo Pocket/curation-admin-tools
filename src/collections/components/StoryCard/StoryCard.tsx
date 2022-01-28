@@ -3,7 +3,7 @@ import { Grid, Hidden, Typography } from '@material-ui/core';
 import CheckIcon from '@material-ui/icons/Check';
 import ReactMarkdown from 'react-markdown';
 import { useStyles } from './StoryCard.styles';
-import { CollectionStory } from '../../api/collection-api/generatedTypes';
+import { CollectionStory } from '../../../api/generatedTypes';
 import { flattenAuthors } from '../../utils/flattenAuthors';
 
 interface StoryCardProps {

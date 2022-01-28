@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { Card, CardMedia, Grid, Typography } from '@material-ui/core';
 import { useStyles } from './AuthorListCard.styles';
-import { CollectionAuthor } from '../../api/collection-api/generatedTypes';
+import { CollectionAuthor } from '../../../api/generatedTypes';
 
 interface AuthorListCardProps {
   /**

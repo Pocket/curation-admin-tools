@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, Grid, LinearProgress } from '@material-ui/core';
 import { DateTime } from 'luxon';
 
-import { useFormik, FormikHelpers, FormikValues } from 'formik';
+import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import {
   FormikTextField,
   SharedFormButtons,
@@ -12,7 +12,6 @@ import {
 import { validationSchema } from './AddProspectForm.validation';
 import { useStyles } from './AddProspectForm.styles';
 
-import { client as prospectApiClient } from '../../api/prospect-api/client';
 import {
   ApprovedCuratedCorpusItem,
   CreateApprovedCuratedCorpusItemInput,
@@ -20,8 +19,8 @@ import {
   useCreateNewTabFeedScheduledItemMutation,
   useGetApprovedItemByUrlLazyQuery,
   useUploadApprovedCuratedCorpusItemImageMutation,
-} from '../../api/curated-corpus-api/generatedTypes';
-import { useGetUrlMetadataLazyQuery } from '../../api/prospect-api/generatedTypes';
+} from '../../../api/generatedTypes';
+import { useGetUrlMetadataLazyQuery } from '../../../api/generatedTypes';
 import {
   useNotifications,
   useRunMutation,
@@ -30,8 +29,8 @@ import {
 import { ApprovedItemModal, ScheduleItemModal } from '..';
 import {
   downloadAndUploadApprovedItemImageToS3,
-  transformUrlMetaDataToApprovedItem,
   transformFormInputToCreateApprovedItemInput,
+  transformUrlMetaDataToApprovedItem,
 } from '../../helpers/helperFunctions';
 
 interface AddProspectFormProps {
@@ -112,7 +111,6 @@ export const AddProspectForm: React.FC<
 
   // lazy query to get metadata for an url
   const [getUrlMetadata] = useGetUrlMetadataLazyQuery({
-    client: prospectApiClient,
     notifyOnNetworkStatusChange: true,
     fetchPolicy: 'no-cache',
     onCompleted: (data) => {

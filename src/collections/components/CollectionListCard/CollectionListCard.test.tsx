@@ -2,10 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Router } from 'react-router-dom';
 import { CollectionListCard } from './CollectionListCard';
-import {
-  Collection,
-  CollectionStatus,
-} from '../../api/collection-api/generatedTypes';
+import { Collection, CollectionStatus } from '../../../api/generatedTypes';
 import { createMemoryHistory } from 'history';
 import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';

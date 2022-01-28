@@ -9,7 +9,7 @@ import {
   CurationCategory,
   IabParentCategory,
   Language,
-} from '../../api/collection-api/generatedTypes';
+} from '../../../api/generatedTypes';
 
 describe('The CollectionForm component', () => {
   let collection: Omit<Collection, 'stories'>;

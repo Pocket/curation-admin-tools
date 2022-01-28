@@ -1,11 +1,13 @@
 import React from 'react';
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import {
+  Box,
   Checkbox,
   FormControlLabel,
   FormGroup,
   FormHelperText,
   Grid,
+  LinearProgress,
   Typography,
 } from '@material-ui/core';
 import {
@@ -76,6 +78,14 @@ export const RemoveItemFromNewTabForm: React.FC<
             </FormHelperText>
           </FormGroup>
         </Grid>
+
+        {formik.isSubmitting && (
+          <Grid item xs={12}>
+            <Box mb={3}>
+              <LinearProgress />
+            </Box>
+          </Grid>
+        )}
       </Grid>
       <SharedFormButtons onCancel={onCancel} />
     </form>
