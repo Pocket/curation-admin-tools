@@ -15,7 +15,7 @@ import {
   RejectedItemsPage,
   SchedulePage,
 } from '../';
-import { client } from '../../api/curated-corpus-api/client';
+import { client } from '../../../api/client';
 
 /**
  * Curated Corpus landing page

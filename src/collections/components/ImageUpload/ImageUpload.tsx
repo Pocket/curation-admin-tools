@@ -24,7 +24,7 @@ import {
   CollectionPartnerAssociation,
   CollectionStory,
   useImageUploadMutation,
-} from '../../api/collection-api/generatedTypes';
+} from '../../../api/generatedTypes';
 
 interface ImageUploadProps {
   /**

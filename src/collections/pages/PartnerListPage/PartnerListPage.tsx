@@ -10,7 +10,7 @@ import { PartnerListCard } from '../../components';
 import {
   CollectionPartner,
   useGetCollectionPartnersQuery,
-} from '../../api/collection-api/generatedTypes';
+} from '../../../api/generatedTypes';
 import { config } from '../../../config';
 import { useFetchMoreResults } from '../../../_shared/hooks';
 

@@ -5,7 +5,7 @@ import { MiniNewTabScheduleCard } from '../';
 import {
   ScheduledCuratedCorpusItem,
   ScheduledCuratedCorpusItemsResult,
-} from '../../api/curated-corpus-api/generatedTypes';
+} from '../../../api/generatedTypes';
 import { useStyles } from './NewTabGroupedList.styles';
 
 interface NewTabGroupedListProps {

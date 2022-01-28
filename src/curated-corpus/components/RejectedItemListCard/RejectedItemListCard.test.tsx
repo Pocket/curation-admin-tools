@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { RejectedCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
+import { RejectedCuratedCorpusItem } from '../../../api/generatedTypes';
 import { RejectedItemListCard } from './RejectedItemListCard';
 
 describe('The RejectedItemListCard component', () => {

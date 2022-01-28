@@ -1,5 +1,5 @@
 import * as yup from 'yup';
-import { CollectionStatus } from '../../api/collection-api/generatedTypes';
+import { CollectionStatus } from '../../../api/generatedTypes';
 
 export const validationSchema = yup.object({
   title: yup.string().min(3),

@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Router } from 'react-router-dom';
 import { AuthorListCard } from './AuthorListCard';
-import { CollectionAuthor } from '../../api/collection-api/generatedTypes';
+import { CollectionAuthor } from '../../../api/generatedTypes';
 import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';
 import { createMemoryHistory } from 'history';

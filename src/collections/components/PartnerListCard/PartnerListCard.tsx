@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { Card, CardMedia, Grid, Typography } from '@material-ui/core';
 import { useStyles } from './PartnerListCard.styles';
-import { CollectionPartner } from '../../api/collection-api/generatedTypes';
+import { CollectionPartner } from '../../../api/generatedTypes';
 
 interface PartnerListCardProps {
   /**

@@ -1,5 +1,5 @@
 import * as yup from 'yup';
-import { CollectionStatus } from '../../api/collection-api/generatedTypes';
+import { CollectionStatus } from '../../../api/generatedTypes';
 
 export const getValidationSchema = (
   authorIds: string[],

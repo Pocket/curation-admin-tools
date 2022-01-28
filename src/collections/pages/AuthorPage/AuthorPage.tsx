@@ -20,7 +20,7 @@ import {
   useGetAuthorByIdQuery,
   useUpdateCollectionAuthorImageUrlMutation,
   useUpdateCollectionAuthorMutation,
-} from '../../api/collection-api/generatedTypes';
+} from '../../../api/generatedTypes';
 
 interface AuthorPageProps {
   author?: CollectionAuthor;

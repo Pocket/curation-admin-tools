@@ -14,7 +14,7 @@ import {
   Collection,
   CollectionStatus,
   useGetCollectionsQuery,
-} from '../../api/collection-api/generatedTypes';
+} from '../../../api/generatedTypes';
 import { config } from '../../../config';
 import { useFetchMoreResults } from '../../../_shared/hooks';
 

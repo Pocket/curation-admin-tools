@@ -2,7 +2,7 @@ import React from 'react';
 import { Typography } from '@material-ui/core';
 import ReactMarkdown from 'react-markdown';
 import { useStyles } from './AuthorInfo.styles';
-import { CollectionAuthor } from '../../api/collection-api/generatedTypes';
+import { CollectionAuthor } from '../../../api/generatedTypes';
 
 interface AuthorInfoProps {
   /**

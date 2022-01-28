@@ -7,7 +7,7 @@ import {
   DropResult,
 } from 'react-beautiful-dnd';
 import { StoryListCard } from '../';
-import { CollectionStory } from '../../api/collection-api/generatedTypes';
+import { CollectionStory } from '../../../api/generatedTypes';
 
 interface CollectionStoryListProps {
   /**

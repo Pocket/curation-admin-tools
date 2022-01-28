@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { PartnerForm } from './PartnerForm';
-import { CollectionPartner } from '../../api/collection-api/generatedTypes';
+import { CollectionPartner } from '../../../api/generatedTypes';
 
 describe('The PartnerForm component', () => {
   let partner: CollectionPartner;

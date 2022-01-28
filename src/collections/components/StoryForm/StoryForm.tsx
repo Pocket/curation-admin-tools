@@ -23,9 +23,10 @@ import {
 import { useNotifications } from '../../../_shared/hooks';
 import { useStyles } from './StoryForm.styles';
 import { validationSchema } from './StoryForm.validation';
-import { client } from '../../api/client-api/client';
-import { useGetStoryFromParserLazyQuery } from '../../api/client-api/generatedTypes';
-import { CollectionStory } from '../../api/collection-api/generatedTypes';
+import {
+  CollectionStory,
+  useGetStoryFromParserLazyQuery,
+} from '../../../api/generatedTypes';
 import { flattenAuthors } from '../../utils/flattenAuthors';
 
 interface StoryFormProps {
@@ -121,7 +122,6 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
   });
 
   const [getStory, { loading }] = useGetStoryFromParserLazyQuery({
-    client,
     fetchPolicy: 'no-cache',
     onCompleted: (data) => {
       // Rather than return errors if it can't parse a URL, the parser

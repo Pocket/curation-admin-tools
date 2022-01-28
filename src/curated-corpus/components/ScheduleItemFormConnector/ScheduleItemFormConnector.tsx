@@ -9,7 +9,7 @@ import {
   ScheduledCuratedCorpusItemsFilterInput,
   useGetNewTabsForUserQuery,
   useGetScheduledItemCountsLazyQuery,
-} from '../../api/curated-corpus-api/generatedTypes';
+} from '../../../api/generatedTypes';
 import { DateTime } from 'luxon';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { ApolloError } from '@apollo/client';

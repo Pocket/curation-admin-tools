@@ -4,10 +4,7 @@ import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import LanguageIcon from '@material-ui/icons/Language';
 import ReactMarkdown from 'react-markdown';
 import { useStyles } from './CollectionInfo.styles';
-import {
-  Collection,
-  CollectionStatus,
-} from '../../api/collection-api/generatedTypes';
+import { Collection, CollectionStatus } from '../../../api/generatedTypes';
 import { flattenAuthors } from '../../utils/flattenAuthors';
 
 interface CollectionInfoProps {
