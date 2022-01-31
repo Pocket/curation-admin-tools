@@ -71,107 +71,128 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
   return (
     <>
       <AppBar className={classes.appBar} position="absolute">
-        <Container maxWidth="md" disableGutters>
+        <Container maxWidth="lg" disableGutters>
           <Grid
             container
             direction="row"
-            justifyContent="flex-start"
+            justifyContent="space-between"
             alignItems="center"
           >
-            <Hidden smDown implementation="css">
-              <Grid item sm={2}>
-                <Link to="/">
-                  <img
-                    className={classes.logo}
-                    src={pocketLogo}
-                    alt="Home Page"
-                  />
-                </Link>
-              </Grid>
-            </Hidden>
+            <Grid item xs={6}>
+              <Grid
+                container
+                direction="row"
+                justifyContent="flex-start"
+                alignItems="center"
+              >
+                <Hidden smDown implementation="css">
+                  <Grid item sm={4}>
+                    <Link to="/">
+                      <img
+                        className={classes.logo}
+                        src={pocketLogo}
+                        alt="Home Page"
+                      />
+                    </Link>
+                  </Grid>
+                </Hidden>
 
-            <Hidden mdUp implementation="css">
-              <Grid item xs={1}>
-                <IconButton aria-label="menu" onClick={handleDrawerOpen}>
-                  <MenuIcon fontSize="large" />
-                </IconButton>
-                <Drawer
-                  className={classes.drawer}
-                  anchor="left"
-                  open={open}
-                  variant="temporary"
-                  classes={{
-                    paper: classes.drawerPaper,
-                  }}
-                >
-                  <div className={classes.drawerHeader}>
-                    <IconButton onClick={handleDrawerClose}>
-                      <CloseIcon />
+                <Hidden mdUp implementation="css">
+                  <Grid item xs={1}>
+                    <IconButton aria-label="menu" onClick={handleDrawerOpen}>
+                      <MenuIcon fontSize="large" />
                     </IconButton>
-                  </div>
-                  <List className={classes.menuList}>
-                    {menuLinks.map((link: MenuLink) => {
-                      return (
-                        <ListItem
-                          className={classes.menuLink}
-                          button
-                          component={Link}
-                          to={link.url}
-                          key={link.url}
-                          onClick={handleDrawerClose}
-                        >
-                          <ListItemText primary={link.text} />
-                        </ListItem>
-                      );
-                    })}
-                  </List>
-                </Drawer>
+                    <Drawer
+                      className={classes.drawer}
+                      anchor="left"
+                      open={open}
+                      variant="temporary"
+                      classes={{
+                        paper: classes.drawerPaper,
+                      }}
+                    >
+                      <div className={classes.drawerHeader}>
+                        <IconButton onClick={handleDrawerClose}>
+                          <CloseIcon />
+                        </IconButton>
+                      </div>
+                      <List className={classes.menuList}>
+                        {menuLinks.map((link: MenuLink) => {
+                          return (
+                            <ListItem
+                              className={classes.menuLink}
+                              button
+                              component={Link}
+                              to={link.url}
+                              key={link.url}
+                              onClick={handleDrawerClose}
+                            >
+                              <ListItemText primary={link.text} />
+                            </ListItem>
+                          );
+                        })}
+                      </List>
+                    </Drawer>
+                  </Grid>
+                </Hidden>
+                <Hidden mdUp implementation="css">
+                  <Grid item xs={1}>
+                    <Link to="/">
+                      <img
+                        className={classes.logoMobile}
+                        src={pocketShield}
+                        alt="Pocket Logo"
+                      />
+                    </Link>
+                  </Grid>
+                </Hidden>
+
+                <Grid item xs={8} sm={6}>
+                  <h1 className={classes.product}>
+                    <Link to={productLink} className={classes.productLink}>
+                      {productName}
+                    </Link>
+                  </h1>
+                </Grid>
               </Grid>
-            </Hidden>
-            <Hidden mdUp implementation="css">
-              <Grid item xs={1}>
-                <Link to="/">
-                  <img
-                    className={classes.logoMobile}
-                    src={pocketShield}
-                    alt="Pocket Logo"
-                  />
-                </Link>
-              </Grid>
-            </Hidden>
-            <Grid item xs={4} sm={3}>
-              <h1 className={classes.product}>
-                <Link to={productLink} className={classes.productLink}>
-                  {productName}
-                </Link>
-              </h1>
             </Grid>
+            <Grid item xs={6}>
+              <Grid
+                container
+                direction="row"
+                justifyContent="flex-end"
+                alignItems="center"
+              >
+                <Hidden smDown implementation="css">
+                  <Grid item sm={8}>
+                    <List className={classes.appBarList}>
+                      {menuLinks.map((link: MenuLink) => {
+                        return (
+                          <ListItem
+                            className={classes.appBarLink}
+                            button
+                            component={Link}
+                            to={link.url}
+                            key={link.url}
+                          >
+                            <ListItemText primary={link.text} />
+                          </ListItem>
+                        );
+                      })}
+                    </List>
+                  </Grid>
+                </Hidden>
 
-            <Hidden smDown implementation="css">
-              <Grid item>
-                <List className={classes.appBarList}>
-                  {menuLinks.map((link: MenuLink) => {
-                    return (
-                      <ListItem
-                        className={classes.appBarLink}
-                        button
-                        component={Link}
-                        to={link.url}
-                        key={link.url}
-                      >
-                        <ListItemText primary={link.text} />
-                      </ListItem>
-                    );
-                  })}
-                </List>
+                {hasUser && parsedIdToken && (
+                  <Grid item sm={1}>
+                    <Avatar
+                      alt={parsedIdToken.name}
+                      src={parsedIdToken.picture}
+                    />
+                  </Grid>
+                )}
               </Grid>
-            </Hidden>
-
-            {hasUser && parsedIdToken && (
-              <Grid item>
-                <Avatar alt={parsedIdToken.name} src={parsedIdToken.picture} />
-              </Grid>
-            )}
+            </Grid>
           </Grid>
         </Container>
       </AppBar>

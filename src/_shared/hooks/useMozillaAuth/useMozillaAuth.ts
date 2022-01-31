@@ -30,8 +30,12 @@ export const useMozillaAuth = (): {
 } => {
   const { authService } = pkceUseAuth();
   const parsedIdToken = authService.getUser() as IDToken;
-  //We need to custom parse out groups
-  parsedIdToken.groups = JSON.parse(parsedIdToken['custom:groups']);
+
+  //We need to custom parse out groups if they exist
+  parsedIdToken.groups =
+    'custom:groups' in parsedIdToken
+      ? JSON.parse(parsedIdToken['custom:groups'])
+      : [];
 
   return {
     authService,
