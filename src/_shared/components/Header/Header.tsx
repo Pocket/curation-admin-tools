@@ -17,7 +17,7 @@ import { Link } from 'react-router-dom';
 import pocketLogo from '../../assets/PKTLogoRounded_RGB.png';
 import pocketShield from '../../assets/pocket-shield.svg';
 import { useStyles } from './Header.styles';
-import { useAuth } from '../../hooks';
+import { IDToken } from '../../hooks';
 
 export interface MenuLink {
   text: string;
@@ -26,9 +26,19 @@ export interface MenuLink {
 
 interface HeaderProps {
   /**
-   * The name of the Admin UI, i.e. 'Collections'
+   * Whether there is a valid logged-in user
    */
-  productName: string;
+  hasUser: boolean;
+
+  /**
+   * A list of links that appear in the mobile Drawer menu
+   */
+  menuLinks: MenuLink[];
+
+  /**
+   * The logged-in user info we have available
+   */
+  parsedIdToken: IDToken | null;
 
   /**
    * The URL path of the Admin UI, e.g. `/curated-corpus`
@@ -36,9 +46,9 @@ interface HeaderProps {
   productLink: string;
 
   /**
-   * A list of links that appear in the mobile Drawer menu
+   * The name of the Admin UI, i.e. 'Collections'
    */
-  menuLinks: MenuLink[];
+  productName: string;
 }
 
 /**
@@ -46,10 +56,9 @@ interface HeaderProps {
  */
 export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
   const classes = useStyles();
-  const { productName, productLink, menuLinks } = props;
+  const { hasUser, parsedIdToken, productName, productLink, menuLinks } = props;
 
   const [open, setOpen] = useState(false);
-  const { authService, parsedIdToken } = useAuth();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -158,7 +167,7 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
               </Grid>
             </Hidden>
 
-            {authService.getUser() != null && (
+            {hasUser && parsedIdToken && (
               <Grid item>
                 <Avatar alt={parsedIdToken.name} src={parsedIdToken.picture} />
               </Grid>

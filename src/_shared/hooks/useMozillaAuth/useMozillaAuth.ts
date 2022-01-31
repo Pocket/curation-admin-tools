@@ -1,9 +1,9 @@
-import { useAuth as pkceUseAuth, AuthService } from 'react-oauth2-pkce';
+import { AuthService, useAuth as pkceUseAuth } from 'react-oauth2-pkce';
 
 /**
  * A helper interface that contains what is available to us to use in the application
  */
-interface IDToken {
+export interface IDToken {
   given_name: string;
   family_name: string;
   name: string;
@@ -22,7 +22,7 @@ interface IDToken {
  * A handy hook to expand on the pkce auth hook to include some Pocket specific helpers
  *
  */
-export const useAuth = (): {
+export const useMozillaAuth = (): {
   authService: AuthService;
   parsedIdToken: IDToken;
   canAccessCollections: boolean;

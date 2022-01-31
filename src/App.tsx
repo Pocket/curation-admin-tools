@@ -7,10 +7,10 @@ import theme from './theme';
 import { LandingPage } from './_shared/pages';
 import { CollectionsLandingPage } from './collections/pages';
 import { CuratedCorpusLandingPage } from './curated-corpus/pages';
-import { useAuth } from './_shared/hooks';
+import { useMozillaAuth } from './_shared/hooks';
 
 function App(): JSX.Element {
-  const { canAccessCuration, canAccessCollections } = useAuth();
+  const { canAccessCuration, canAccessCollections } = useMozillaAuth();
 
   return (
     <ThemeProvider theme={theme}>

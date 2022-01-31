@@ -1,19 +1,23 @@
 import React from 'react';
-import { Header, MainContentWrapper } from '../../components';
+import { HeaderConnector, MainContentWrapper } from '../../components';
 import { Grid, Paper, Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { useStyles } from './LandingPage.styles';
 import CollectionsBookmarkIcon from '@material-ui/icons/CollectionsBookmark';
 import LibraryAddCheckIcon from '@material-ui/icons/LibraryAddCheck';
-import { useAuth } from '../../hooks';
+import { useMozillaAuth } from '../../hooks';
 
 export const LandingPage = (): JSX.Element => {
   const classes = useStyles();
-  const { canAccessCuration, canAccessCollections } = useAuth();
+  const { canAccessCuration, canAccessCollections } = useMozillaAuth();
 
   return (
     <>
-      <Header productName="Curation Tools" productLink="" menuLinks={[]} />
+      <HeaderConnector
+        productName="Curation Tools"
+        productLink=""
+        menuLinks={[]}
+      />
       <MainContentWrapper>
         <Grid container spacing={2} className={classes.root}>
           {canAccessCollections && (
