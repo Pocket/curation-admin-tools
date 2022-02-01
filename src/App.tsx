@@ -7,11 +7,8 @@ import theme from './theme';
 import { LandingPage } from './_shared/pages';
 import { CollectionsLandingPage } from './collections/pages';
 import { CuratedCorpusLandingPage } from './curated-corpus/pages';
-import { useMozillaAuth } from './_shared/hooks';
 
 function App(): JSX.Element {
-  const { canAccessCuration, canAccessCollections } = useMozillaAuth();
-
   return (
     <ThemeProvider theme={theme}>
       <SnackbarProvider maxSnack={3}>
@@ -21,16 +18,12 @@ function App(): JSX.Element {
               <Route exact path="/">
                 <LandingPage />
               </Route>
-              {canAccessCollections && (
-                <Route path="/collections">
-                  <CollectionsLandingPage />
-                </Route>
-              )}
-              {canAccessCuration && (
-                <Route path="/curated-corpus">
-                  <CuratedCorpusLandingPage />
-                </Route>
-              )}
+              <Route path="/collections">
+                <CollectionsLandingPage />
+              </Route>
+              <Route path="/curated-corpus">
+                <CuratedCorpusLandingPage />
+              </Route>
             </Switch>
           </>
         </BrowserRouter>

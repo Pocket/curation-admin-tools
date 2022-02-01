@@ -5,7 +5,6 @@ export { FormikSelectField } from './_form-elements/FormikSelectField/FormikSele
 export { HandleApiResponse } from './HandleApiResponse/HandleApiResponse';
 export { Header } from './Header/Header';
 export type { MenuLink } from './Header/Header';
-export { HeaderConnector } from './HeaderConnector/HeaderConnector';
 export { LoadMore } from './LoadMore/LoadMore';
 export { MainContentWrapper } from './MainContentWrapper/MainContentWrapper';
 export { MarkdownPreview } from './MarkdownPreview/MarkdownPreview';

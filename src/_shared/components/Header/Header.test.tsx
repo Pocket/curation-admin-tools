@@ -27,11 +27,9 @@ describe('The Header component', () => {
     render(
       <MemoryRouter>
         <Header
-          hasUser={false}
-          menuLinks={menuLinks}
-          parsedIdToken={null}
-          productLink="/something"
           productName="Collections"
+          menuLinks={menuLinks}
+          productLink="/something"
         />
       </MemoryRouter>
     );
@@ -52,11 +50,9 @@ describe('The Header component', () => {
     render(
       <MemoryRouter>
         <Header
-          hasUser={false}
-          menuLinks={menuLinks}
-          parsedIdToken={null}
-          productLink="/something"
           productName="Collections"
+          menuLinks={menuLinks}
+          productLink="/something"
         />
       </MemoryRouter>
     );
