@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { config } from './config';
+import SecuredApp from './SecuredApp';
 
 Sentry.init({
   dsn: config.sentryDSN,
@@ -17,7 +17,7 @@ Sentry.init({
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <SecuredApp />
   </React.StrictMode>,
   document.getElementById('root')
 );
