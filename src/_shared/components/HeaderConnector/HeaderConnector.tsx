@@ -29,10 +29,13 @@ export const HeaderConnector: React.FC<HeaderConnectorProps> = (
   return (
     <Header
       hasUser={authService.getUser() != null}
+      onLogout={() => {
+        authService.logout(true);
+      }}
+      menuLinks={menuLinks}
       parsedIdToken={parsedIdToken}
       productName={productName}
       productLink={productLink}
-      menuLinks={menuLinks}
     />
   );
 };

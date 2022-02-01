@@ -10,6 +10,8 @@ import {
   List,
   ListItem,
   ListItemText,
+  Menu,
+  MenuItem,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import CloseIcon from '@material-ui/icons/Close';
@@ -36,6 +38,11 @@ interface HeaderProps {
   menuLinks: MenuLink[];
 
   /**
+   * What to do when the user clicks the "Log out" button
+   */
+  onLogout: VoidFunction;
+
+  /**
    * The logged-in user info we have available
    */
   parsedIdToken: IDToken | null;
@@ -56,7 +63,14 @@ interface HeaderProps {
  */
 export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
   const classes = useStyles();
-  const { hasUser, parsedIdToken, productName, productLink, menuLinks } = props;
+  const {
+    hasUser,
+    onLogout,
+    menuLinks,
+    parsedIdToken,
+    productName,
+    productLink,
+  } = props;
 
   const [open, setOpen] = useState(false);
 
@@ -66,6 +80,16 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+
+  const [userMenuEl, setUserMenuEl] = React.useState<null | HTMLElement>(null);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setUserMenuEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setUserMenuEl(null);
   };
 
   return (
@@ -185,10 +209,25 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
 
                 {hasUser && parsedIdToken && (
                   <Grid item sm={1}>
-                    <Avatar
-                      alt={parsedIdToken.name}
-                      src={parsedIdToken.picture}
-                    />
+                    <IconButton
+                      aria-controls="user-menu"
+                      aria-haspopup="true"
+                      onClick={handleClick}
+                    >
+                      <Avatar
+                        alt={parsedIdToken.name}
+                        src={parsedIdToken.picture}
+                      />
+                    </IconButton>
+                    <Menu
+                      id="user-menu"
+                      anchorEl={userMenuEl}
+                      keepMounted
+                      open={Boolean(userMenuEl)}
+                      onClose={handleClose}
+                    >
+                      <MenuItem onClick={onLogout}>Log Out</MenuItem>
+                    </Menu>
                   </Grid>
                 )}
               </Grid>
