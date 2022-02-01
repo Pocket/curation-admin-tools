@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   AppBar,
-  Avatar,
   Container,
   Drawer,
   Grid,
@@ -10,8 +9,6 @@ import {
   List,
   ListItem,
   ListItemText,
-  Menu,
-  MenuItem,
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import CloseIcon from '@material-ui/icons/Close';
@@ -19,7 +16,6 @@ import { Link } from 'react-router-dom';
 import pocketLogo from '../../assets/PKTLogoRounded_RGB.png';
 import pocketShield from '../../assets/pocket-shield.svg';
 import { useStyles } from './Header.styles';
-import { IDToken } from '../../hooks';
 
 export interface MenuLink {
   text: string;
@@ -28,24 +24,9 @@ export interface MenuLink {
 
 interface HeaderProps {
   /**
-   * Whether there is a valid logged-in user
+   * The name of the Admin UI, i.e. 'Collections'
    */
-  hasUser: boolean;
-
-  /**
-   * A list of links that appear in the mobile Drawer menu
-   */
-  menuLinks: MenuLink[];
-
-  /**
-   * What to do when the user clicks the "Log out" button
-   */
-  onLogout: VoidFunction;
-
-  /**
-   * The logged-in user info we have available
-   */
-  parsedIdToken: IDToken | null;
+  productName: string;
 
   /**
    * The URL path of the Admin UI, e.g. `/curated-corpus`
@@ -53,9 +34,9 @@ interface HeaderProps {
   productLink: string;
 
   /**
-   * The name of the Admin UI, i.e. 'Collections'
+   * A list of links that appear in the mobile Drawer menu
    */
-  productName: string;
+  menuLinks: MenuLink[];
 }
 
 /**
@@ -63,14 +44,7 @@ interface HeaderProps {
  */
 export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
   const classes = useStyles();
-  const {
-    hasUser,
-    onLogout,
-    menuLinks,
-    parsedIdToken,
-    productName,
-    productLink,
-  } = props;
+  const { productName, productLink, menuLinks } = props;
 
   const [open, setOpen] = useState(false);
 
@@ -82,156 +56,104 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
     setOpen(false);
   };
 
-  const [userMenuEl, setUserMenuEl] = React.useState<null | HTMLElement>(null);
-
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setUserMenuEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setUserMenuEl(null);
-  };
-
   return (
     <>
       <AppBar className={classes.appBar} position="absolute">
-        <Container maxWidth="lg" disableGutters>
+        <Container maxWidth="md" disableGutters>
           <Grid
             container
             direction="row"
-            justifyContent="space-between"
+            justifyContent="flex-start"
             alignItems="center"
           >
-            <Grid item xs={6}>
-              <Grid
-                container
-                direction="row"
-                justifyContent="flex-start"
-                alignItems="center"
-              >
-                <Hidden smDown implementation="css">
-                  <Grid item sm={4}>
-                    <Link to="/">
-                      <img
-                        className={classes.logo}
-                        src={pocketLogo}
-                        alt="Home Page"
-                      />
-                    </Link>
-                  </Grid>
-                </Hidden>
-
-                <Hidden mdUp implementation="css">
-                  <Grid item xs={1}>
-                    <IconButton aria-label="menu" onClick={handleDrawerOpen}>
-                      <MenuIcon fontSize="large" />
-                    </IconButton>
-                    <Drawer
-                      className={classes.drawer}
-                      anchor="left"
-                      open={open}
-                      variant="temporary"
-                      classes={{
-                        paper: classes.drawerPaper,
-                      }}
-                    >
-                      <div className={classes.drawerHeader}>
-                        <IconButton onClick={handleDrawerClose}>
-                          <CloseIcon />
-                        </IconButton>
-                      </div>
-                      <List className={classes.menuList}>
-                        {menuLinks.map((link: MenuLink) => {
-                          return (
-                            <ListItem
-                              className={classes.menuLink}
-                              button
-                              component={Link}
-                              to={link.url}
-                              key={link.url}
-                              onClick={handleDrawerClose}
-                            >
-                              <ListItemText primary={link.text} />
-                            </ListItem>
-                          );
-                        })}
-                      </List>
-                    </Drawer>
-                  </Grid>
-                </Hidden>
-                <Hidden mdUp implementation="css">
-                  <Grid item xs={1}>
-                    <Link to="/">
-                      <img
-                        className={classes.logoMobile}
-                        src={pocketShield}
-                        alt="Pocket Logo"
-                      />
-                    </Link>
-                  </Grid>
-                </Hidden>
-
-                <Grid item xs={8} sm={6}>
-                  <h1 className={classes.product}>
-                    <Link to={productLink} className={classes.productLink}>
-                      {productName}
-                    </Link>
-                  </h1>
-                </Grid>
+            <Hidden smDown implementation="css">
+              <Grid item sm={2}>
+                <Link to="/">
+                  <img
+                    className={classes.logo}
+                    src={pocketLogo}
+                    alt="Home Page"
+                  />
+                </Link>
               </Grid>
-            </Grid>
-            <Grid item xs={6}>
-              <Grid
-                container
-                direction="row"
-                justifyContent="flex-end"
-                alignItems="center"
-              >
-                <Hidden smDown implementation="css">
-                  <Grid item sm={8}>
-                    <List className={classes.appBarList}>
-                      {menuLinks.map((link: MenuLink) => {
-                        return (
-                          <ListItem
-                            className={classes.appBarLink}
-                            button
-                            component={Link}
-                            to={link.url}
-                            key={link.url}
-                          >
-                            <ListItemText primary={link.text} />
-                          </ListItem>
-                        );
-                      })}
-                    </List>
-                  </Grid>
-                </Hidden>
+            </Hidden>
 
-                {hasUser && parsedIdToken && (
-                  <Grid item sm={1}>
-                    <IconButton
-                      aria-controls="user-menu"
-                      aria-haspopup="true"
-                      onClick={handleClick}
-                    >
-                      <Avatar
-                        alt={parsedIdToken.name}
-                        src={parsedIdToken.picture}
-                      />
+            <Hidden mdUp implementation="css">
+              <Grid item xs={1}>
+                <IconButton aria-label="menu" onClick={handleDrawerOpen}>
+                  <MenuIcon fontSize="large" />
+                </IconButton>
+                <Drawer
+                  className={classes.drawer}
+                  anchor="left"
+                  open={open}
+                  variant="temporary"
+                  classes={{
+                    paper: classes.drawerPaper,
+                  }}
+                >
+                  <div className={classes.drawerHeader}>
+                    <IconButton onClick={handleDrawerClose}>
+                      <CloseIcon />
                     </IconButton>
-                    <Menu
-                      id="user-menu"
-                      anchorEl={userMenuEl}
-                      keepMounted
-                      open={Boolean(userMenuEl)}
-                      onClose={handleClose}
-                    >
-                      <MenuItem onClick={onLogout}>Log Out</MenuItem>
-                    </Menu>
-                  </Grid>
-                )}
+                  </div>
+                  <List className={classes.menuList}>
+                    {menuLinks.map((link: MenuLink) => {
+                      return (
+                        <ListItem
+                          className={classes.menuLink}
+                          button
+                          component={Link}
+                          to={link.url}
+                          key={link.url}
+                          onClick={handleDrawerClose}
+                        >
+                          <ListItemText primary={link.text} />
+                        </ListItem>
+                      );
+                    })}
+                  </List>
+                </Drawer>
               </Grid>
+            </Hidden>
+            <Hidden mdUp implementation="css">
+              <Grid item xs={1}>
+                <Link to="/">
+                  <img
+                    className={classes.logoMobile}
+                    src={pocketShield}
+                    alt="Pocket Logo"
+                  />
+                </Link>
+              </Grid>
+            </Hidden>
+            <Grid item xs={4} sm={3}>
+              <h1 className={classes.product}>
+                <Link to={productLink} className={classes.productLink}>
+                  {productName}
+                </Link>
+              </h1>
             </Grid>
+
+            <Hidden smDown implementation="css">
+              <Grid item>
+                <List className={classes.appBarList}>
+                  {menuLinks.map((link: MenuLink) => {
+                    return (
+                      <ListItem
+                        className={classes.appBarLink}
+                        button
+                        component={Link}
+                        to={link.url}
+                        key={link.url}
+                      >
+                        <ListItemText primary={link.text} />
+                      </ListItem>
+                    );
+                  })}
+                </List>
+              </Grid>
+            </Hidden>
           </Grid>
         </Container>
       </AppBar>

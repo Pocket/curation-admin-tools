@@ -3,7 +3,7 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
 import { client } from '../../../api/client';
 import {
-  HeaderConnector,
+  Header,
   MainContentWrapper,
   MenuLink,
 } from '../../../_shared/components';
@@ -49,7 +49,7 @@ export const CollectionsLandingPage = (): JSX.Element => {
 
   return (
     <ApolloProvider client={client}>
-      <HeaderConnector
+      <Header
         productName="Collections"
         productLink="/collections"
         menuLinks={menuLinks}

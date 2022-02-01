@@ -34,19 +34,6 @@ export const config = {
     process.env.REACT_APP_CLIENT_API_ENDPOINT ??
     'https://client-api.getpocket.com'
   }`,
-  oauth2: {
-    provider: `${
-      process.env.REACT_APP_OAUTH2_PROVIDER ??
-      'https://pocket-admin-prod.auth.us-east-1.amazoncognito.com/oauth2'
-    }`,
-    clientId: `${
-      process.env.REACT_APP_OAUTH2_CLIENT_ID ?? '2jliat5ne5043psrlbhur2unlr'
-    }`,
-    redirectUri: `${
-      process.env.REACT_APP_OAUTH2_REDIRECT_URI ??
-      'http://localhost:3000/oauth/callback'
-    }`,
-  },
   environment: process.env.NODE_ENV,
   pagination: {
     authorsPerPage: 200,
