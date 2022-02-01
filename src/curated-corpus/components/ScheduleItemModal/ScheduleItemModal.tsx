@@ -2,7 +2,7 @@ import React from 'react';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import { Box, Grid, Typography } from '@material-ui/core';
-import { ApprovedCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
+import { ApprovedCuratedCorpusItem } from '../../../api/generatedTypes';
 import { Modal } from '../../../_shared/components';
 import { ScheduleItemFormConnector } from '../';
 

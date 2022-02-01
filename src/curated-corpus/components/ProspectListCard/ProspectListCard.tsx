@@ -1,5 +1,5 @@
 import React from 'react';
-import { Prospect } from '../../api/prospect-api/generatedTypes';
+import { Prospect } from '../../../api/generatedTypes';
 import {
   Box,
   Card,

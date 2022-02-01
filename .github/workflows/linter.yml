@@ -89,6 +89,3 @@ jobs:
 
           # Flag to enable or disable the linting process of the TypeScript language. (Utilizing: eslint)
           VALIDATE_TYPESCRIPT_ES: true
-
-          # Flag to enable or disable the linting process of the YAML language.
-          VALIDATE_YAML: true

@@ -1,8 +1,15 @@
 const isProduction = process.env.REACT_APP_ENV === 'production';
 
 export const config = {
-  apolloClientName: `CurationAdminToolsCollections`,
+  apolloClientName: `CurationAdminTools`,
   version: `${process.env.REACT_APP_GIT_SHA ?? 'local'}`,
+  adminApiEndpoint: `${
+    process.env.REACT_APP_ADMIN_API_ENDPOINT ??
+    (isProduction
+      ? 'https://admin-api.getpocket.com'
+      : 'https://admin-api.getpocket.dev')
+  }`,
+
   //If we have an env variable set, lets use it. Otherwise if we are production, lets you the prod api, otherwise use the dev api
   collectionApiEndpoint: `${
     process.env.REACT_APP_COLLECTION_API_ENDPOINT ??

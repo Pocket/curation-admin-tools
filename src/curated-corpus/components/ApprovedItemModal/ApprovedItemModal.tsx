@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal } from '../../../_shared/components';
 import { Box, Grid, Typography } from '@material-ui/core';
-import { ApprovedCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
+import { ApprovedCuratedCorpusItem } from '../../../api/generatedTypes';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import { ApprovedItemForm } from '../ApprovedItemForm/ApprovedItemForm';
@@ -16,6 +16,7 @@ interface ApprovedItemModalProps {
     formikHelpers: FormikHelpers<any>
   ) => void | Promise<any>;
   toggleModal: () => void;
+  isRecommendation?: boolean;
   onImageSave?: (url: string) => void;
 }
 
@@ -26,6 +27,7 @@ export const ApprovedItemModal: React.FC<ApprovedItemModalProps> = (
     approvedItem,
     showItemTitle,
     heading,
+    isRecommendation,
     isOpen,
     onSave,
     toggleModal,
@@ -55,6 +57,7 @@ export const ApprovedItemModal: React.FC<ApprovedItemModalProps> = (
         <Grid item xs={12}>
           <ApprovedItemForm
             approvedItem={approvedItem}
+            isRecommendation={isRecommendation}
             onSubmit={onSave}
             onCancel={toggleModal}
             onImageSave={onImageSave}

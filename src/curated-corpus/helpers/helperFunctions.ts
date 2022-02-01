@@ -3,10 +3,21 @@ import { FileWithPath } from 'react-dropzone';
 import { v5 as uuidv5 } from 'uuid';
 import {
   ApprovedCuratedCorpusItem,
-  CuratedStatus,
   CreateApprovedCuratedCorpusItemInput,
-} from '../api/curated-corpus-api/generatedTypes';
-import { Prospect, UrlMetadata } from '../api/prospect-api/generatedTypes';
+  CuratedStatus,
+  Prospect,
+  UrlMetadata,
+} from '../../api/generatedTypes';
+/**
+ *
+ * This is a helper file that contains some helper functions. Right now
+ * it only has one but we could add more to it
+ */
+/**
+ *
+ * This is a helper file that contains some helper functions. Right now
+ * it only has one but we could add more to it
+ */
 /**
  *
  * This is a helper file that contains some helper functions. Right now

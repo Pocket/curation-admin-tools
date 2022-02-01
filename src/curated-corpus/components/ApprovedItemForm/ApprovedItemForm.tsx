@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import { validationSchema } from './ApprovedItemForm.validation';
-import { ApprovedCuratedCorpusItem } from '../../api/curated-corpus-api/generatedTypes';
+import { ApprovedCuratedCorpusItem } from '../../../api/generatedTypes';
 import {
   curationStatusOptions,
   DropdownOption,
@@ -41,6 +41,11 @@ interface ApprovedItemFormProps {
   onCancel: VoidFunction;
 
   /**
+   * Optional prop to set curation status as Recommendation
+   */
+  isRecommendation?: boolean;
+
+  /**
    * This function is called by the ImageUpload component after it
    * successfully uploads an image to the S3 Bucket.
    */
@@ -56,6 +61,7 @@ export const ApprovedItemForm: React.FC<
 > = (props): JSX.Element => {
   const {
     approvedItem,
+    isRecommendation,
     onSubmit,
     onCancel,
     onImageSave: onImageSaveFromParent,
@@ -80,7 +86,9 @@ export const ApprovedItemForm: React.FC<
       publisher: approvedItem.publisher,
       language: approvedItemLanguage ?? '',
       topic: approvedItemTopic ?? '',
-      curationStatus: approvedItemCorpus ?? '',
+      curationStatus: isRecommendation
+        ? 'Recommendation'
+        : approvedItemCorpus ?? '',
       timeSensitive: approvedItem.isTimeSensitive,
       syndicated: approvedItem.isSyndicated,
       collection: approvedItem.isCollection,

@@ -3,7 +3,7 @@ import { Box, Paper } from '@material-ui/core';
 import { FormikValues } from 'formik';
 import { HandleApiResponse, ScrollToTop } from '../../../_shared/components';
 import { CollectionListCard, CollectionSearchForm } from '../../components';
-import { useGetSearchCollectionsLazyQuery } from '../../api/collection-api/generatedTypes';
+import { useGetSearchCollectionsLazyQuery } from '../../../api/generatedTypes';
 
 export const CollectionSearchPage: React.FC = (): JSX.Element => {
   // prepare the query for executing in the handleSubmit callback below

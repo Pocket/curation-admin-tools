@@ -6,8 +6,8 @@ import FilterListIcon from '@material-ui/icons/FilterList';
 import AddIcon from '@material-ui/icons/Add';
 import { HandleApiResponse } from '../../../_shared/components';
 import {
-  ApprovedItemModal,
   AddProspectModal,
+  ApprovedItemModal,
   NewTabGroupedList,
   ProspectListCard,
   RefreshProspectsModal,
@@ -15,24 +15,21 @@ import {
   ScheduleItemModal,
   SplitButton,
 } from '../../components';
-import { client } from '../../api/prospect-api/client';
-import {
-  Prospect,
-  useGetProspectsQuery,
-  useUpdateProspectAsCuratedMutation,
-} from '../../api/prospect-api/generatedTypes';
 import {
   ApprovedCuratedCorpusItem,
   CuratedStatus,
+  Prospect,
   RejectProspectMutationVariables,
   ScheduledCuratedCorpusItemsResult,
   useCreateApprovedCuratedCorpusItemMutation,
   useCreateNewTabFeedScheduledItemMutation,
   useGetNewTabsForUserQuery,
+  useGetProspectsQuery,
   useGetScheduledItemsQuery,
   useRejectProspectMutation,
+  useUpdateProspectAsCuratedMutation,
   useUploadApprovedCuratedCorpusItemImageMutation,
-} from '../../api/curated-corpus-api/generatedTypes';
+} from '../../../api/generatedTypes';
 import {
   useNotifications,
   useRunMutation,
@@ -122,7 +119,6 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     fetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
     variables: { newTab: currentNewTabGuid },
-    client,
   });
 
   // Get today and tomorrow's items that are already scheduled for this New Tab
@@ -191,9 +187,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   // Prepare the "reject prospect" mutation
   const [rejectProspect] = useRejectProspectMutation();
   // Prepare the "update prospect as curated" mutation
-  const [updateProspectAsCurated] = useUpdateProspectAsCuratedMutation({
-    client,
-  });
+  const [updateProspectAsCurated] = useUpdateProspectAsCuratedMutation();
 
   // Instead of working off Apollo Client's cache for the `getProspects` query
   // let's set up another variable for the prospect card list.
@@ -254,7 +248,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     // Mark the prospect as processed in the Prospect API datastore.
     runMutation(
       updateProspectAsCurated,
-      { variables: { prospectId: currentItem?.id }, client },
+      { variables: { prospectId: currentItem?.id } },
       undefined,
       () => {
         formikHelpers.setSubmitting(false);
@@ -335,7 +329,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     // call the create approved item mutation
     runMutation(
       createApprovedItem,
-      { variables: { data: { ...approvedItem } }, client },
+      { variables: { data: { ...approvedItem } } },
       'Item successfully added to the curated corpus.',
       (approvedItemData) => {
         // call the mutation to mark prospect as approved

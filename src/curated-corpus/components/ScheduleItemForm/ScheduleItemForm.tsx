@@ -9,7 +9,7 @@ import {
 } from '../../../_shared/components';
 import { getValidationSchema } from './ScheduleItemForm.validation';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import { NewTab } from '../../api/curated-corpus-api/generatedTypes';
+import { NewTab } from '../../../api/generatedTypes';
 import { DateTime } from 'luxon';
 
 interface ScheduleItemFormProps {

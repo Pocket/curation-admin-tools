@@ -6,13 +6,13 @@ import {
   RejectedCuratedCorpusItemEdge,
   RejectedCuratedCorpusItemFilter,
   useGetRejectedItemsLazyQuery,
-} from '../../api/curated-corpus-api/generatedTypes';
+} from '../../../api/generatedTypes';
 
 import { HandleApiResponse } from '../../../_shared/components';
 import {
+  NextPrevPagination,
   RejectedItemListCard,
   RejectedItemSearchForm,
-  NextPrevPagination,
 } from '../../components';
 
 //This page is to display all the Rejected Curated Corpus Items

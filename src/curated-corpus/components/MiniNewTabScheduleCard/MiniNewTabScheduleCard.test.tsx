@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import {
   CuratedStatus,
   ScheduledCuratedCorpusItem,
-} from '../../api/curated-corpus-api/generatedTypes';
+} from '../../../api/generatedTypes';
 
 import { MiniNewTabScheduleCard } from './MiniNewTabScheduleCard';
 

@@ -1,9 +1,5 @@
 // Here we keep sets of options for curating items
-import {
-  CuratedStatus,
-  ProspectType,
-  Topics,
-} from '../api/curated-corpus-api/generatedTypes';
+import { CuratedStatus, ProspectType, Topics } from '../../api/generatedTypes';
 
 export interface DropdownOption {
   code: string;

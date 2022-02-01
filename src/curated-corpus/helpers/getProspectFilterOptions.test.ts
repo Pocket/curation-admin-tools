@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { getProspectFilterOptions } from './getProspectFilterOptions';
-import { ProspectType } from '../api/curated-corpus-api/generatedTypes';
+import { ProspectType } from '../../api/generatedTypes';
 
 describe('getProspectFilterOptions', () => {
   it('returns just the "All Sources" option if no prospect types are available', () => {

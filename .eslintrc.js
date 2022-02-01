@@ -6,10 +6,7 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:prettier/recommended',
   ],
-  ignorePatterns: [
-    'src/collections/api/collection-api/generatedTypes.ts',
-    'src/collections/api/client-api/generatedTypes.ts',
-  ],
+  ignorePatterns: ['src/api/generatedTypes.ts'],
   parserOptions: {
     ecmaFeatures: {
       jsx: true,

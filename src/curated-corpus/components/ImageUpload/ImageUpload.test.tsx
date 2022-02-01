@@ -5,7 +5,7 @@ import { ImageUpload } from './ImageUpload';
 import {
   ApprovedCuratedCorpusItem,
   CuratedStatus,
-} from '../../api/curated-corpus-api/generatedTypes';
+} from '../../../api/generatedTypes';
 import { SnackbarProvider } from 'notistack';
 import { MockedProvider } from '@apollo/client/testing';
 import { formatFileSize } from '../../../_shared/utils/formatFileSize';

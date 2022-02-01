@@ -3,10 +3,7 @@ import LuxonUtils from '@date-io/luxon';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { render, screen } from '@testing-library/react';
 import { ScheduleItemForm } from './ScheduleItemForm';
-import {
-  NewTab,
-  ProspectType,
-} from '../../api/curated-corpus-api/generatedTypes';
+import { NewTab, ProspectType } from '../../../api/generatedTypes';
 import { DateTime } from 'luxon';
 
 describe('The ScheduleItemForm component', () => {

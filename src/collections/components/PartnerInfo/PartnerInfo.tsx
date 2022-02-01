@@ -1,7 +1,7 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
 import ReactMarkdown from 'react-markdown';
-import { CollectionPartner } from '../../api/collection-api/generatedTypes';
+import { CollectionPartner } from '../../../api/generatedTypes';
 
 interface PartnerInfoProps {
   /**

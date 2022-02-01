@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
-import { client } from '../../api/collection-api/client';
+import { client } from '../../../api/client';
 import {
   HeaderConnector,
   MainContentWrapper,
