@@ -5,7 +5,7 @@ import { List, ListItem, ListItemText } from '@material-ui/core';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import LuxonUtils from '@date-io/luxon';
 import {
-  Header,
+  HeaderConnector,
   MainContentWrapper,
   MenuLink,
 } from '../../../_shared/components';
@@ -46,7 +46,7 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
   return (
     <ApolloProvider client={client}>
       <MuiPickersUtilsProvider utils={LuxonUtils}>
-        <Header
+        <HeaderConnector
           productName="Curated Corpus"
           productLink="/curated-corpus"
           menuLinks={menuLinks}

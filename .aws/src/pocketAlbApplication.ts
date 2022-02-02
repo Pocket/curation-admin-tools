@@ -114,6 +114,18 @@ export function createPocketAlbApplication(
             name: 'REACT_APP_CLIENT_API_ENDPOINT',
             value: config.envVars.clientApiEndpoint,
           },
+          {
+            name: 'REACT_APP_OAUTH2_CLIENT_ID',
+            value: config.envVars.oauth2ClientId,
+          },
+          {
+            name: 'REACT_APP_OAUTH2_PROVIDER',
+            value: config.envVars.oauth2Provider,
+          },
+          {
+            name: 'REACT_APP_OAUTH2_REDIRECT_URI',
+            value: config.envVars.oauth2RedirectUri,
+          },
         ],
         secretEnvVars: [
           {
