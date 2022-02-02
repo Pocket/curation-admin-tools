@@ -14,6 +14,7 @@ const authService = new AuthService({
   clientId: config.oauth2.clientId,
   provider: config.oauth2.provider,
   redirectUri: config.oauth2.redirectUri,
+  logoutEndpoint: config.oauth2.logoutEndpoint,
   autoRefresh: true,
   scopes: ['openid', 'profile'],
 });

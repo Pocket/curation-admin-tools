@@ -3,48 +3,33 @@ const isProduction = process.env.REACT_APP_ENV === 'production';
 export const config = {
   apolloClientName: `CurationAdminTools`,
   version: `${process.env.REACT_APP_GIT_SHA ?? 'local'}`,
+  // If we have an env variable set, let's use it. Otherwise, if we are production,
+  // let's use the production API, otherwise use the dev API.
   adminApiEndpoint: `${
     process.env.REACT_APP_ADMIN_API_ENDPOINT ??
     (isProduction
       ? 'https://admin-api.getpocket.com'
       : 'https://admin-api.getpocket.dev')
   }`,
-
-  //If we have an env variable set, lets use it. Otherwise if we are production, lets you the prod api, otherwise use the dev api
-  collectionApiEndpoint: `${
-    process.env.REACT_APP_COLLECTION_API_ENDPOINT ??
-    (isProduction
-      ? 'https://collection-api.readitlater.com/admin'
-      : 'https://collection-api.getpocket.dev/admin')
-  }`,
-  curatedCorpusApiEndpoint: `${
-    process.env.REACT_APP_CURATED_CORPUS_API_ENDPOINT ??
-    (isProduction
-      ? 'https://curated-corpus-api.readitlater.com/admin'
-      : 'https://curated-corpus-api.getpocket.dev/admin')
-  }`,
-  prospectApiEndpoint: `${
-    process.env.REACT_APP_PROSPECT_API_ENDPOINT ??
-    (isProduction
-      ? 'https://prospect-api.readitlater.com/admin'
-      : 'https://prospect-api.getpocket.dev/admin')
-  }`,
-  //Client api only exists on production
-  clientApiEndpoint: `${
-    process.env.REACT_APP_CLIENT_API_ENDPOINT ??
-    'https://client-api.getpocket.com'
-  }`,
+  // The OAuth provider is the same for both dev and production environments.
   oauth2: {
     provider: `${
       process.env.REACT_APP_OAUTH2_PROVIDER ??
       'https://pocket-admin-prod.auth.us-east-1.amazoncognito.com/oauth2'
     }`,
+    // So is the client ID.
     clientId: `${
-      process.env.REACT_APP_OAUTH2_CLIENT_ID ?? '2jliat5ne5043psrlbhur2unlr'
+      process.env.REACT_APP_OAUTH2_CLIENT_ID ?? '6qt94s9d651k24mvul9q2lbrcv'
+    }`,
+    logoutEndpoint: `${
+      process.env.REACT_APP_OAUTH2_LOGOUT_ENDPOINT ??
+      'https://pocket-admin-prod.auth.us-east-1.amazoncognito.com/logout'
     }`,
     redirectUri: `${
       process.env.REACT_APP_OAUTH2_REDIRECT_URI ??
-      'http://localhost:3000/oauth/callback'
+      (isProduction
+        ? 'https://curation-admin-tools.readitlater.com/oauth/callback'
+        : 'https://curation-admin-tools.getpocket.dev/oauth/callback')
     }`,
   },
   environment: process.env.NODE_ENV,
