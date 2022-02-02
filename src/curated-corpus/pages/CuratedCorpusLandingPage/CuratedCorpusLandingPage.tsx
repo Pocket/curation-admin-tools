@@ -1,5 +1,6 @@
 import React from 'react';
 import { ApolloProvider } from '@apollo/client';
+import { setContext } from '@apollo/client/link/context';
 import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
 import { List, ListItem, ListItemText } from '@material-ui/core';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -9,6 +10,7 @@ import {
   MainContentWrapper,
   MenuLink,
 } from '../../../_shared/components';
+import { useMozillaAuth } from '../../../_shared/hooks';
 import {
   ApprovedItemsPage,
   ProspectingPage,
@@ -42,6 +44,26 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
       url: `${path}/rejected/`,
     },
   ];
+
+  // we fetch the JWT hook
+  const { parsedIdToken } = useMozillaAuth();
+
+  // create an ApolloLink that adds the authorization header
+  const authLink = setContext((_, { headers }) => {
+    return {
+      headers: {
+        ...headers,
+        authorization: parsedIdToken
+          ? `Bearer ${JSON.stringify(parsedIdToken)}`
+          : '',
+      },
+    };
+  });
+
+  // concat the existing client link with our new authorization header link
+  // this will attach the auth header to all the requests that will be made
+  // that are wrapped by the ApolloProvider
+  client.setLink(authLink.concat(client.link));
 
   return (
     <ApolloProvider client={client}>
