@@ -1,14 +1,14 @@
 import React from 'react';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { ApolloProvider } from '@apollo/client';
-import { setContext } from '@apollo/client/link/context';
+
 import { client } from '../../../api/client';
 import {
   HeaderConnector,
   MainContentWrapper,
   MenuLink,
 } from '../../../_shared/components';
-import { useMozillaAuth } from '../../../_shared/hooks';
+
 import {
   AddAuthorPage,
   AddCollectionPage,
@@ -48,26 +48,6 @@ export const CollectionsLandingPage = (): JSX.Element => {
       url: `${path}/search/`,
     },
   ];
-
-  // we fetch the JWT hook
-  const { parsedIdToken } = useMozillaAuth();
-
-  // create an ApolloLink that adds the authorization header
-  const authLink = setContext((_, { headers }) => {
-    return {
-      headers: {
-        ...headers,
-        authorization: parsedIdToken
-          ? `Bearer ${JSON.stringify(parsedIdToken)}`
-          : '',
-      },
-    };
-  });
-
-  // concat the existing client link with our new authorization header link
-  // this will attach the auth header to all the requests that will be made
-  // that are wrapped by the ApolloProvider
-  client.setLink(authLink.concat(client.link));
 
   return (
     <ApolloProvider client={client}>
