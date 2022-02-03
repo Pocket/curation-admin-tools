@@ -13,7 +13,7 @@ import { useMozillaAuth } from './_shared/hooks';
 import { client } from '../src/api/client';
 
 function App(): JSX.Element {
-  const { canAccessCuration, canAccessCollections, accessToken } =
+  const { canAccessCuration, canAccessCollections, jwtIdToken } =
     useMozillaAuth();
 
   // create an ApolloLink that adds the authorization header
@@ -21,7 +21,7 @@ function App(): JSX.Element {
     return {
       headers: {
         ...headers,
-        authorization: accessToken ? `Bearer ${accessToken}` : '',
+        authorization: jwtIdToken ? `Bearer ${jwtIdToken}` : '',
       },
     };
   });
