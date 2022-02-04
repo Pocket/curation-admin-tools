@@ -25,6 +25,7 @@ export interface IDToken {
 export const useMozillaAuth = (): {
   authService: AuthService;
   parsedIdToken: IDToken;
+  jwtIdToken: string;
   canAccessCollections: boolean;
   canAccessCuration: boolean;
 } => {
@@ -37,9 +38,14 @@ export const useMozillaAuth = (): {
       ? JSON.parse(parsedIdToken['custom:groups'])
       : [];
 
+  // This pulls out the id_token string which is what we need
+  // to provide cognito for validation
+  const jwtIdToken = authService.getAuthTokens().id_token;
+
   return {
     authService,
     parsedIdToken,
+    jwtIdToken,
     //TODO: Setup mozillians.org groups
     canAccessCollections: true, //parsedIdToken.groups.includes('asd'),
     canAccessCuration: true, //parsedIdToken.groups.includes('asd'),

@@ -124,7 +124,6 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
         }
       })
       .catch((error) => {
-        console.log(error);
         setUploadInProgress(false);
         showNotification(error.message, 'error');
       });
