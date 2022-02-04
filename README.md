@@ -21,7 +21,14 @@ cd curation-admin-tools
 npm ci
 ```
 
-You're almost there! By default, the app will connect to the production Admin API. To point to the  Pocket Development or locally spun up API, you will need to override the default endpoint value in an `.env` file. Create one the root of the project and comment out the endpoint you do not need:
+Next, to enable SSO auth, create an `.env` file in the project root, and add the following:
+
+```
+REACT_APP_OAUTH2_REDIRECT_URI=http://localhost:3000/oauth/callback
+REACT_APP_OAUTH2_CLIENT_ID=2jliat5ne5043psrlbhur2unlr
+```
+
+You're almost there! By default, the app will connect to the production Admin API. To point to the Pocket Development or locally spun up API, you will need to override the default endpoint value in your `.env` file. Add the following to your `.env` file and comment out the endpoint you do not need:
 
 ```dotenv
 #This is the dev version of the federated graph
