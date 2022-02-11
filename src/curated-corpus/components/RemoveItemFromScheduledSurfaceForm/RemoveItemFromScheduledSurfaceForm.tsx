@@ -14,9 +14,9 @@ import {
   SharedFormButtons,
   SharedFormButtonsProps,
 } from '../../../_shared/components';
-import { validationSchema } from './RemoveItemFromNewTabForm.validation';
+import { validationSchema } from './RemoveItemFromScheduledSurface.validation';
 
-interface RemoveItemFromNewTabFormProps {
+interface RemoveItemFromScheduledSurfaceProps {
   /**
    * What do we do with the submitted data?
    */
@@ -30,8 +30,8 @@ interface RemoveItemFromNewTabFormProps {
   title: string;
 }
 
-export const RemoveItemFromNewTabForm: React.FC<
-  RemoveItemFromNewTabFormProps & SharedFormButtonsProps
+export const RemoveItemFromScheduledSurfaceForm: React.FC<
+  RemoveItemFromScheduledSurfaceProps & SharedFormButtonsProps
 > = (props): JSX.Element => {
   const { onCancel, onSubmit, title } = props;
 
@@ -67,7 +67,7 @@ export const RemoveItemFromNewTabForm: React.FC<
                   <Typography color="primary" component="span">
                     {title}
                   </Typography>{' '}
-                  from New Tab
+                  from this scheduled surface
                 </>
               }
             />

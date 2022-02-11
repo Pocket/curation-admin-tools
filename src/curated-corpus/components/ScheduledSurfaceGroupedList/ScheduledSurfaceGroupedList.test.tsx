@@ -6,9 +6,9 @@ import {
   ScheduledCuratedCorpusItemsResult,
 } from '../../../api/generatedTypes';
 
-import { NewTabGroupedList } from './NewTabGroupedList';
+import { ScheduledSurfaceGroupedList } from './ScheduledSurfaceGroupedList';
 
-describe('The NewTabGroupedList component', () => {
+describe('The ScheduledSurfaceGroupedList component', () => {
   let data: ScheduledCuratedCorpusItemsResult;
 
   beforeEach(() => {
@@ -59,7 +59,7 @@ describe('The NewTabGroupedList component', () => {
   it('shows the list heading correctly', () => {
     render(
       <MemoryRouter>
-        <NewTabGroupedList data={data} />
+        <ScheduledSurfaceGroupedList data={data} />
       </MemoryRouter>
     );
 
@@ -75,7 +75,7 @@ describe('The NewTabGroupedList component', () => {
   it('shows a card for each item in the list', () => {
     render(
       <MemoryRouter>
-        <NewTabGroupedList data={data} />
+        <ScheduledSurfaceGroupedList data={data} />
       </MemoryRouter>
     );
 

@@ -5,8 +5,8 @@ export { ApprovedItemListCard } from './ApprovedItemListCard/ApprovedItemListCar
 export { ApprovedItemModal } from './ApprovedItemModal/ApprovedItemModal';
 export { ApprovedItemSearchForm } from './ApprovedItemSearchForm/ApprovedItemSearchForm';
 export { LoadExtraButton } from './LoadExtraButton/LoadExtraButton';
-export { MiniNewTabScheduleCard } from './MiniNewTabScheduleCard/MiniNewTabScheduleCard';
-export { NewTabGroupedList } from './NewTabGroupedList/NewTabGroupedList';
+export { MiniScheduleCard } from './MiniScheduleCard/MiniScheduleCard';
+export { ScheduledSurfaceGroupedList } from './ScheduledSurfaceGroupedList/ScheduledSurfaceGroupedList';
 export { NextPrevPagination } from './NextPrevPagination/NextPrevPagination';
 export { ProspectListCard } from './ProspectListCard/ProspectListCard';
 export { RejectedItemListCard } from './RejectedItemListCard/RejectedItemListCard';
@@ -14,8 +14,8 @@ export { RejectedItemSearchForm } from './RejectedItemSearchForm/RejectedItemSea
 export { RefreshProspectsModal } from './RefreshProspectsModal/RefreshProspectsModal';
 export { RejectItemModal } from './RejectItemModal/RejectItemModal';
 export { RejectItemForm } from './RejectItemForm/RejectItemForm';
-export { RemoveItemFromNewTabForm } from './RemoveItemFromNewTabForm/RemoveItemFromNewTabForm';
-export { RemoveItemFromNewTabModal } from './RemoveItemFromNewTabModal/RemoveItemFromNewTabModal';
+export { RemoveItemFromScheduledSurfaceForm } from './RemoveItemFromScheduledSurfaceForm/RemoveItemFromScheduledSurfaceForm';
+export { RemoveItemFromScheduledSurfaceModal } from './RemoveItemFromScheduledSurfaceModal/RemoveItemFromScheduledSurfaceModal';
 export { ScheduledItemCardWrapper } from './ScheduledItemCardWrapper/ScheduledItemCardWrapper';
 export { ScheduleItemFormConnector } from './ScheduleItemFormConnector/ScheduleItemFormConnector';
 export { ScheduleItemForm } from './ScheduleItemForm/ScheduleItemForm';

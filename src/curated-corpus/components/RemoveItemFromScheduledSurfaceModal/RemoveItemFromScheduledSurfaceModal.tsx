@@ -4,9 +4,9 @@ import { Grid } from '@material-ui/core';
 import { ScheduledCuratedCorpusItem } from '../../../api/generatedTypes';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
-import { RemoveItemFromNewTabForm } from '../';
+import { RemoveItemFromScheduledSurfaceForm } from '../';
 
-interface RemoveItemFromNewTabModalProps {
+interface RemoveItemFromScheduledSurfaceModalProps {
   item: ScheduledCuratedCorpusItem;
   isOpen: boolean;
   onSave: (
@@ -16,8 +16,8 @@ interface RemoveItemFromNewTabModalProps {
   toggleModal: VoidFunction;
 }
 
-export const RemoveItemFromNewTabModal: React.FC<
-  RemoveItemFromNewTabModalProps
+export const RemoveItemFromScheduledSurfaceModal: React.FC<
+  RemoveItemFromScheduledSurfaceModalProps
 > = (props): JSX.Element => {
   const { item, isOpen, onSave, toggleModal } = props;
 
@@ -30,10 +30,10 @@ export const RemoveItemFromNewTabModal: React.FC<
     >
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <h2>Remove this item from New Tab</h2>
+          <h2>Remove this item from this scheduled surface</h2>
         </Grid>
         <Grid item xs={12}>
-          <RemoveItemFromNewTabForm
+          <RemoveItemFromScheduledSurfaceForm
             onSubmit={onSave}
             onCancel={() => {
               toggleModal();

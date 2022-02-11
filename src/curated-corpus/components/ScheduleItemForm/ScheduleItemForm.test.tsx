@@ -3,14 +3,14 @@ import LuxonUtils from '@date-io/luxon';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { render, screen } from '@testing-library/react';
 import { ScheduleItemForm } from './ScheduleItemForm';
-import { NewTab, ProspectType } from '../../../api/generatedTypes';
+import { ProspectType, ScheduledSurface } from '../../../api/generatedTypes';
 import { DateTime } from 'luxon';
 
 describe('The ScheduleItemForm component', () => {
   const handleSubmit = jest.fn();
 
-  // This is the shape of the data the form receives via the `getNewTabsForUser` query
-  const newTabs: NewTab[] = [
+  // This is the shape of the data the form receives via the `getScheduledSurfacesForUser` query
+  const scheduledSurfaces: ScheduledSurface[] = [
     {
       name: 'en-US',
       guid: 'EN_US',
@@ -37,7 +37,7 @@ describe('The ScheduleItemForm component', () => {
           lookupCopy=""
           selectedDate={DateTime.local()}
           onSubmit={handleSubmit}
-          newTabs={newTabs}
+          scheduledSurfaces={scheduledSurfaces}
           approvedItemExternalId={'123abc'}
         />
       </MuiPickersUtilsProvider>
@@ -56,7 +56,7 @@ describe('The ScheduleItemForm component', () => {
           lookupCopy=""
           selectedDate={DateTime.local()}
           onSubmit={handleSubmit}
-          newTabs={newTabs}
+          scheduledSurfaces={scheduledSurfaces}
           approvedItemExternalId={'123abc'}
         />
       </MuiPickersUtilsProvider>

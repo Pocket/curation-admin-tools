@@ -7,8 +7,8 @@ import {
 } from '../../../_shared/components';
 import {
   ScheduledCuratedCorpusItemsFilterInput,
-  useGetNewTabsForUserQuery,
   useGetScheduledItemCountsLazyQuery,
+  useGetScheduledSurfacesForUserQuery,
 } from '../../../api/generatedTypes';
 import { DateTime } from 'luxon';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
@@ -23,9 +23,9 @@ interface ScheduleItemFormConnectorProps {
   approvedItemExternalId: string;
 
   /**
-   * The GUID of the New Tab if one's been sent through.
+   * The GUID of the Scheduled Surface if one's been sent through.
    */
-  newTabGuid?: string;
+  scheduledSurfaceGuid?: string;
 
   /**
    * What do we do with the submitted data?
@@ -39,10 +39,11 @@ interface ScheduleItemFormConnectorProps {
 export const ScheduleItemFormConnector: React.FC<
   ScheduleItemFormConnectorProps & SharedFormButtonsProps
 > = (props) => {
-  const { approvedItemExternalId, newTabGuid, onCancel, onSubmit } = props;
+  const { approvedItemExternalId, scheduledSurfaceGuid, onCancel, onSubmit } =
+    props;
 
-  // Get the list of New Tabs the currently logged-in user has access to.
-  const { data, loading, error } = useGetNewTabsForUserQuery();
+  // Get the list of Scheduled Surfaces the currently logged-in user has access to.
+  const { data, loading, error } = useGetScheduledSurfacesForUserQuery();
 
   // Set the default scheduled date to tomorrow.
   // Do we need to worry about timezones here? .local() returns the date
@@ -98,15 +99,15 @@ export const ScheduleItemFormConnector: React.FC<
     // Keep track of the chosen date.
     setSelectedDate(date);
 
-    // If the New Tab has been specified, run a lookup query.
+    // If the Scheduled Surface has been specified, run a lookup query.
     // Realistically, this means that the lookup will be available on the Prospecting
     // page but not on the Corpus page.
-    if (newTabGuid) {
-      // Look up any other scheduled items for this date + new tab combination.
+    if (scheduledSurfaceGuid) {
+      // Look up any other scheduled items for this date + scheduled surface combination.
       // Start with the filters. Note `startDate` and `endDate` is the same as we're
       // interested in single day data only.
       const filters: ScheduledCuratedCorpusItemsFilterInput = {
-        newTabGuid,
+        scheduledSurfaceGuid,
         startDate: date?.toFormat('yyyy-MM-dd'),
         endDate: date?.toFormat('yyyy-MM-dd'),
       };
@@ -135,9 +136,9 @@ export const ScheduleItemFormConnector: React.FC<
           approvedItemExternalId={approvedItemExternalId}
           handleDateChange={handleDateChange}
           lookupCopy={lookupCopy}
-          newTabs={data?.getNewTabsForUser}
-          newTabGuid={newTabGuid}
-          disableNewTab={!!newTabGuid}
+          scheduledSurfaces={data?.getScheduledSurfacesForUser}
+          scheduledSurfaceGuid={scheduledSurfaceGuid}
+          disableScheduledSurface={!!scheduledSurfaceGuid}
           selectedDate={selectedDate}
           onSubmit={onSubmit}
           onCancel={onCancel}

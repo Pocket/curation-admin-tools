@@ -9,7 +9,7 @@ import {
 } from '../../../_shared/components';
 import { getValidationSchema } from './ScheduleItemForm.validation';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import { NewTab } from '../../../api/generatedTypes';
+import { ScheduledSurface } from '../../../api/generatedTypes';
 import { DateTime } from 'luxon';
 
 interface ScheduleItemFormProps {
@@ -34,20 +34,20 @@ interface ScheduleItemFormProps {
   lookupCopy: JSX.Element | string;
 
   /**
-   * The list of New Tabs the logged-in user has access to.
+   * The list of Scheduled Surfaces the logged-in user has access to.
    */
-  newTabs: NewTab[];
+  scheduledSurfaces: ScheduledSurface[];
 
   /**
-   * If a default value for the New Tab dropdown needs to be set,
+   * If a default value for the Scheduled Surface dropdown needs to be set,
    * here is the place to specify it.
    */
-  newTabGuid?: string;
+  scheduledSurfaceGuid?: string;
 
   /**
    *
    */
-  disableNewTab?: boolean;
+  disableScheduledSurface?: boolean;
 
   /**
    *
@@ -71,9 +71,9 @@ export const ScheduleItemForm: React.FC<
     approvedItemExternalId,
     handleDateChange,
     lookupCopy,
-    newTabs,
-    newTabGuid,
-    disableNewTab = false,
+    scheduledSurfaces,
+    scheduledSurfaceGuid,
+    disableScheduledSurface = false,
     selectedDate,
     onCancel,
     onSubmit,
@@ -83,13 +83,13 @@ export const ScheduleItemForm: React.FC<
 
   const formik = useFormik({
     initialValues: {
-      newTabGuid,
+      scheduledSurfaceGuid,
       approvedItemExternalId,
       scheduledDate: selectedDate,
     },
     validateOnBlur: false,
     validateOnChange: false,
-    validationSchema: getValidationSchema(newTabs),
+    validationSchema: getValidationSchema(scheduledSurfaces),
     onSubmit: (values, formikHelpers) => {
       // Make sure the date is the one selected by the user
       // (Without this, Formik passes on the initial date = tomorrow.)
@@ -105,17 +105,20 @@ export const ScheduleItemForm: React.FC<
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <FormikSelectField
-              id="newTabGuid"
-              label="Choose a New Tab"
-              disabled={disableNewTab}
-              fieldProps={formik.getFieldProps('newTabGuid')}
-              fieldMeta={formik.getFieldMeta('newTabGuid')}
+              id="scheduledSurfaceGuid"
+              label="Choose a Scheduled Surface"
+              disabled={disableScheduledSurface}
+              fieldProps={formik.getFieldProps('scheduledSurfaceGuid')}
+              fieldMeta={formik.getFieldMeta('scheduledSurfaceGuid')}
             >
               <option aria-label="None" value="" />
-              {newTabs.map((newTab: NewTab) => {
+              {scheduledSurfaces.map((scheduledSurface: ScheduledSurface) => {
                 return (
-                  <option value={newTab.guid} key={newTab.guid}>
-                    {newTab.name}
+                  <option
+                    value={scheduledSurface.guid}
+                    key={scheduledSurface.guid}
+                  >
+                    {scheduledSurface.name}
                   </option>
                 );
               })}

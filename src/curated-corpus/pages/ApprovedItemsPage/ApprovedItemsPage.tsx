@@ -6,7 +6,8 @@ import {
   ApprovedCuratedCorpusItem,
   ApprovedCuratedCorpusItemEdge,
   ApprovedCuratedCorpusItemFilter,
-  useCreateNewTabFeedScheduledItemMutation,
+  CreateScheduledCuratedCorpusItemInput,
+  useCreateScheduledCuratedCorpusItemMutation,
   useGetApprovedItemsLazyQuery,
   useRejectApprovedItemMutation,
   useUpdateApprovedCuratedCorpusItemMutation,
@@ -124,7 +125,7 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
   };
 
   /**
-   * Keep track of whether the "Schedule this item for New Tab" modal is open or not.
+   * Keep track of whether the "Schedule this item" modal is open or not.
    */
   const [scheduleModalOpen, toggleScheduleModal] = useToggle(false);
   /**
@@ -138,7 +139,7 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
   const [editModalOpen, toggleEditModal] = useToggle(false);
 
   /**
-   * Set the current Approved Item to be worked on (e.g., scheduled for New Tab).
+   * Set the current Approved Item to be worked on (e.g., edited or scheduled).
    */
   const [currentItem, setCurrentItem] = useState<
     Omit<ApprovedCuratedCorpusItem, '__typename'> | undefined
@@ -177,16 +178,16 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
   };
 
   // 1. Prepare the "schedule curated item" mutation
-  const [scheduleCuratedItem] = useCreateNewTabFeedScheduledItemMutation();
+  const [scheduleCuratedItem] = useCreateScheduledCuratedCorpusItemMutation();
   // 2. Schedule the curated item when the user saves a scheduling request
   const onScheduleSave = (
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ): void => {
     // Set out all the variables we need to pass to the mutation
-    const variables = {
-      approvedItemExternalId: currentItem?.externalId,
-      newTabGuid: values.newTabGuid,
+    const variables: CreateScheduledCuratedCorpusItemInput = {
+      approvedItemExternalId: currentItem?.externalId!,
+      scheduledSurfaceGuid: values.scheduledSurfaceGuid,
       scheduledDate: values.scheduledDate.toISODate(),
     };
 

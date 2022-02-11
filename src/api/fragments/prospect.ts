@@ -6,7 +6,7 @@ import { gql } from '@apollo/client';
 export const ProspectData = gql`
   fragment ProspectData on Prospect {
     id
-    newTab
+    scheduledSurfaceGuid
     topic
     prospectType
     url

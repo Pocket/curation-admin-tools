@@ -1,27 +1,29 @@
 import * as yup from 'yup';
 import { DateTime } from 'luxon';
-import { NewTab } from '../../../api/generatedTypes';
+import { ScheduledSurface } from '../../../api/generatedTypes';
 
 /**
- * Generate the validation schema with the given New Tabs
- * that come from the `getNewTabsForUser` query.
+ * Generate the validation schema with the given Scheduled Surfaces
+ * that come from the `getScheduledSurfacesForUser` query.
  *
- * @param newTabs
+ * @param scheduledSurfaces
  */
-export const getValidationSchema = (newTabs: NewTab[]) => {
-  const newTabAllowedValues = newTabs.map((newTab: NewTab) => {
-    return newTab.guid;
-  });
+export const getValidationSchema = (scheduledSurfaces: ScheduledSurface[]) => {
+  const accessibleScheduledSurfaces = scheduledSurfaces.map(
+    (surface: ScheduledSurface) => {
+      return surface.guid;
+    }
+  );
 
   return yup.object({
     // This is a hidden field that we pass along
     approvedItemExternalId: yup.string().trim().required(),
 
-    newTabGuid: yup
+    scheduledSurfaceGuid: yup
       .string()
-      .oneOf(newTabAllowedValues)
+      .oneOf(accessibleScheduledSurfaces)
       .trim()
-      .required('Please choose a New Tab.'),
+      .required('Please choose a Scheduled Surface.'),
 
     scheduledDate: yup
       .date()

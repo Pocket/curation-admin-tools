@@ -24,8 +24,6 @@ export type Scalars = {
   Date: any;
   DateString: any;
   Markdown: any;
-  /** This is a temporary return type for a test query on the public API. */
-  PCTest: any;
   Upload: any;
   /** These are all just renamed strings right now */
   Url: any;
@@ -308,7 +306,7 @@ export type CollectionsResult = {
   pagination: Pagination;
 };
 
-/** Input data for creating an Approved Item and optionally scheduling this item to appear on New Tab. */
+/** Input data for creating an Approved Item and optionally scheduling this item to appear on a Scheduled Surface. */
 export type CreateApprovedCuratedCorpusItemInput = {
   /** The excerpt of the Approved Item. */
   excerpt: Scalars['String'];
@@ -325,14 +323,14 @@ export type CreateApprovedCuratedCorpusItemInput = {
   isTimeSensitive: Scalars['Boolean'];
   /** What language this item is in. This is a two-letter code, for example, 'en' for English. */
   language: Scalars['String'];
-  /** Optionally, specify the GUID of the New Tab this item should be scheduled for. */
-  newTabGuid?: InputMaybe<Scalars['ID']>;
   /** The GUID of the corresponding Prospect ID. Will be empty for manually added items. */
   prospectId?: InputMaybe<Scalars['ID']>;
   /** The name of the online publication that published this story. */
   publisher: Scalars['String'];
-  /** Optionally, specify the date this item should be appearing on New Tab. Format: YYYY-MM-DD */
+  /** Optionally, specify the date this item should be appearing on a Scheduled Surface. Format: YYYY-MM-DD */
   scheduledDate?: InputMaybe<Scalars['Date']>;
+  /** Optionally, specify the GUID of the Scheduled Surface this item should be scheduled for. */
+  scheduledSurfaceGuid?: InputMaybe<Scalars['ID']>;
   /** The outcome of the curators' review of the Approved Item. */
   status: CuratedStatus;
   /** The title of the Approved Item. */
@@ -418,14 +416,14 @@ export type CreateRejectedCuratedCorpusItemInput = {
   url: Scalars['Url'];
 };
 
-/** Input data for creating a scheduled entry for an Approved Item on a New Tab Feed. */
+/** Input data for creating a scheduled entry for an Approved Item on a Scheduled Surface. */
 export type CreateScheduledCuratedCorpusItemInput = {
   /** The ID of the Approved Item that needs to be scheduled. */
   approvedItemExternalId: Scalars['ID'];
-  /** The GUID of the New Tab Feed the Approved Item is going to appear on. Example: 'EN_US'. */
-  newTabGuid: Scalars['ID'];
-  /** The date the associated Approved Item is scheduled to appear on New Tab. Format: YYYY-MM-DD. */
+  /** The date the associated Approved Item is scheduled to appear on a Scheduled Surface. Format: YYYY-MM-DD. */
   scheduledDate: Scalars['Date'];
+  /** The GUID of the Scheduled Surface the Approved Item is going to appear on. Example: 'NEW_TAB_EN_US'. */
+  scheduledSurfaceGuid: Scalars['ID'];
 };
 
 /** The outcome of the curators reviewing a prospective story. */
@@ -447,7 +445,7 @@ export type DeleteCollectionPartnerAssociationInput = {
   externalId: Scalars['String'];
 };
 
-/** Input data for deleting a scheduled item for a New Tab Feed. */
+/** Input data for deleting a scheduled item for a Scheduled Surface. */
 export type DeleteScheduledCuratedCorpusItemInput = {
   /** ID of the scheduled item. A string in UUID format. */
   externalId: Scalars['ID'];
@@ -465,10 +463,10 @@ export type DomainMetadata = {
 };
 
 export type GetProspectsFilters = {
-  /** string GUID of the new tab being prospected, e.g. 'EN_US' or 'DE_DE' */
-  newTab: Scalars['String'];
   /** string GUID of the prospect type to further filter prospects, e.g. 'GLOBAL' or 'ORGANIC_TIMESPENT' */
   prospectType?: InputMaybe<Scalars['String']>;
+  /** string GUID of the scheduled surface being prospected, e.g. 'NEW_TAB_EN_US' or 'POCKET_HITS_DE_DE' */
+  scheduledSurfaceGuid: Scalars['String'];
 };
 
 /** Interactive Advertising Bureau Category - these are used on clients to serve relevant ads */
@@ -737,7 +735,7 @@ export type Mutation = {
    * (CollectionAuthor/Collection/CollectionStory).
    */
   collectionImageUpload: CollectionImageUrl;
-  /** Creates an Approved Item and optionally schedules it to appear on New Tab. */
+  /** Creates an Approved Item and optionally schedules it to appear on a Scheduled Surface. */
   createApprovedCuratedCorpusItem: ApprovedCuratedCorpusItem;
   /** Creates a Collection. */
   createCollection: Collection;
@@ -751,13 +749,13 @@ export type Mutation = {
   createCollectionStory: CollectionStory;
   /** Creates a Rejected Item. */
   createRejectedCuratedCorpusItem: RejectedCuratedCorpusItem;
-  /** Creates a New Tab Scheduled Item. */
+  /** Creates a Scheduled Surface Scheduled Item. */
   createScheduledCuratedCorpusItem: ScheduledCuratedCorpusItem;
   /** Deletes a CollectionPartnerAssociation. */
   deleteCollectionPartnerAssociation: CollectionPartnerAssociation;
   /** Deletes a CollectionStory. Also deletes all the related CollectionStoryAuthor records. */
   deleteCollectionStory: CollectionStory;
-  /** Deletes an item from New Tab Schedule. */
+  /** Deletes an item from a Scheduled Surface. */
   deleteScheduledCuratedCorpusItem: ScheduledCuratedCorpusItem;
   /** Refresh an {Item}'s article content. */
   refreshItemArticle: Item;
@@ -926,19 +924,6 @@ export type MutationUploadApprovedCuratedCorpusItemImageArgs = {
   data: Scalars['Upload'];
 };
 
-/** A New Tab, including its associated Prospect Types. */
-export type NewTab = {
-  __typename?: 'NewTab';
-  /** The GUID of the New Tab. Example: 'EN_US'. */
-  guid: Scalars['String'];
-  /** The display name of the New Tab. Example 'en-US'. */
-  name: Scalars['String'];
-  /** An array of associated ProspectTypes. */
-  prospectTypes: Array<ProspectType>;
-  /** The UTC offset of the New Tab's scheduling day, represented in HMM numeric format. */
-  utcOffset: Scalars['Int'];
-};
-
 export type NumberedListElement = ListElement & {
   __typename?: 'NumberedListElement';
   /** Row in a list */
@@ -1018,10 +1003,10 @@ export type Prospect = {
   isCollection?: Maybe<Scalars['Boolean']>;
   isSyndicated?: Maybe<Scalars['Boolean']>;
   language?: Maybe<Scalars['String']>;
-  newTab: Scalars['String'];
   prospectType: Scalars['String'];
   publisher?: Maybe<Scalars['String']>;
   saveCount?: Maybe<Scalars['Int']>;
+  scheduledSurfaceGuid: Scalars['String'];
   title?: Maybe<Scalars['String']>;
   topic?: Maybe<Scalars['String']>;
   url: Scalars['String'];
@@ -1035,6 +1020,7 @@ export enum ProspectType {
   Global = 'GLOBAL',
   OrganicTimespent = 'ORGANIC_TIMESPENT',
   Syndicated = 'SYNDICATED',
+  TopSaved = 'TOP_SAVED',
 }
 
 export type Query = {
@@ -1072,14 +1058,14 @@ export type Query = {
   getItemByUrl?: Maybe<Item>;
   /** Retrieves the languages currently supported. */
   getLanguages: Array<Language>;
-  /** Retrieves all NewTabs available to the given SSO user. Requires an Authorization header. */
-  getNewTabsForUser: Array<NewTab>;
   /** returns a set of at most 20 prospects (number may be smaller depending on available data) */
   getProspects: Array<Prospect>;
   /** Retrieves a paginated, filterable list of RejectedCuratedCorpusItems. */
   getRejectedCuratedCorpusItems: RejectedCuratedCorpusItemConnection;
-  /** Retrieves a list of Approved Items that are scheduled to appear on New Tab. */
+  /** Retrieves a list of Approved Items that are scheduled to appear on a Scheduled Surface. */
   getScheduledCuratedCorpusItems: Array<ScheduledCuratedCorpusItemsResult>;
+  /** Retrieves all ScheduledSurfaces available to the given SSO user. Requires an Authorization header. */
+  getScheduledSurfacesForUser: Array<ScheduledSurface>;
   /** returns parser meta data for a given url */
   getUrlMetadata: UrlMetadata;
   searchCollections: CollectionsResult;
@@ -1244,7 +1230,7 @@ export enum RejectionReason {
 }
 
 /**
- * A scheduled entry for an Approved Item to appear on a New Tab Feed.
+ * A scheduled entry for an Approved Item to appear on a Scheduled Surface.
  * For example, a story that is scheduled to appear on December 31st, 2021 on the New Tab in Firefox for the US audience.
  */
 export type ScheduledCuratedCorpusItem = {
@@ -1258,8 +1244,8 @@ export type ScheduledCuratedCorpusItem = {
   /** An alternative primary key in UUID format that is generated on creation. */
   externalId: Scalars['ID'];
   /**
-   * The date the associated Approved Item is scheduled to appear on New Tab.
-   * This date is relative to the time zone of the New Tab. Format: YYYY-MM-DD.
+   * The date the associated Approved Item is scheduled to appear on a Scheduled Surface.
+   * This date is relative to the time zone of the Scheduled Surface. Format: YYYY-MM-DD.
    */
   scheduledDate: Scalars['Date'];
   /** A Unix timestamp of when the entity was last updated. */
@@ -1268,12 +1254,12 @@ export type ScheduledCuratedCorpusItem = {
   updatedBy?: Maybe<Scalars['String']>;
 };
 
-/** Available fields for filtering scheduled items for a given New Tab. */
+/** Available fields for filtering scheduled items for a given Scheduled Surface. */
 export type ScheduledCuratedCorpusItemsFilterInput = {
   /** To what day to show scheduled items to, inclusive. Expects a date in YYYY-MM-DD format. */
   endDate: Scalars['Date'];
-  /** The GUID of the New Tab. Example: 'EN_US'. */
-  newTabGuid: Scalars['ID'];
+  /** The GUID of the Scheduled Surface. Example: 'NEW_TAB_EN_US'. */
+  scheduledSurfaceGuid: Scalars['ID'];
   /** Which day to show scheduled items from. Expects a date in YYYY-MM-DD format. */
   startDate: Scalars['Date'];
 };
@@ -1283,7 +1269,7 @@ export type ScheduledCuratedCorpusItemsResult = {
   __typename?: 'ScheduledCuratedCorpusItemsResult';
   /** The number of curated items that are collections for the scheduled date. */
   collectionCount: Scalars['Int'];
-  /** An array of items for a given New Tab Feed */
+  /** An array of items for a given Scheduled Surface */
   items: Array<ScheduledCuratedCorpusItem>;
   /** The date items are scheduled for, in YYYY-MM-DD format. */
   scheduledDate: Scalars['Date'];
@@ -1291,6 +1277,19 @@ export type ScheduledCuratedCorpusItemsResult = {
   syndicatedCount: Scalars['Int'];
   /** The total number of items for the scheduled date. */
   totalCount: Scalars['Int'];
+};
+
+/** A Scheduled Surface, including its associated Prospect Types. */
+export type ScheduledSurface = {
+  __typename?: 'ScheduledSurface';
+  /** The GUID of the Scheduled Surface. Example: 'NEW_TAB_EN_US'. */
+  guid: Scalars['String'];
+  /** The display name of the Scheduled Surface. Example 'New Tab (en-US)'. */
+  name: Scalars['String'];
+  /** An array of associated ProspectTypes. */
+  prospectTypes: Array<ProspectType>;
+  /** The UTC offset of the Scheduled Surface's scheduling day, represented in HMM numeric format. */
+  utcOffset: Scalars['Int'];
 };
 
 /** available filters for searching collections */
@@ -1506,9 +1505,9 @@ export type CollectionAuthorDataFragment = {
   __typename?: 'CollectionAuthor';
   externalId: string;
   name: string;
-  slug?: string | null | undefined;
-  bio?: any | null | undefined;
-  imageUrl?: any | null | undefined;
+  slug?: string | null;
+  bio?: any | null;
+  imageUrl?: any | null;
   active: boolean;
 };
 
@@ -1517,69 +1516,57 @@ export type CollectionDataFragment = {
   externalId: string;
   title: string;
   slug: string;
-  excerpt?: any | null | undefined;
-  intro?: any | null | undefined;
-  imageUrl?: any | null | undefined;
+  excerpt?: any | null;
+  intro?: any | null;
+  imageUrl?: any | null;
   language: string;
   status: CollectionStatus;
   authors: Array<{
     __typename?: 'CollectionAuthor';
     externalId: string;
     name: string;
-    slug?: string | null | undefined;
-    bio?: any | null | undefined;
-    imageUrl?: any | null | undefined;
+    slug?: string | null;
+    bio?: any | null;
+    imageUrl?: any | null;
     active: boolean;
   }>;
-  curationCategory?:
-    | {
-        __typename?: 'CurationCategory';
-        externalId: string;
-        name: string;
-        slug: string;
-      }
-    | null
-    | undefined;
-  IABParentCategory?:
-    | {
-        __typename?: 'IABCategory';
-        externalId: string;
-        name: string;
-        slug: string;
-      }
-    | null
-    | undefined;
-  IABChildCategory?:
-    | {
-        __typename?: 'IABCategory';
-        externalId: string;
-        name: string;
-        slug: string;
-      }
-    | null
-    | undefined;
-  partnership?:
-    | {
-        __typename?: 'CollectionPartnership';
-        externalId: string;
-        type: CollectionPartnershipType;
-        name: string;
-        url: any;
-        imageUrl: any;
-        blurb: any;
-      }
-    | null
-    | undefined;
+  curationCategory?: {
+    __typename?: 'CurationCategory';
+    externalId: string;
+    name: string;
+    slug: string;
+  } | null;
+  IABParentCategory?: {
+    __typename?: 'IABCategory';
+    externalId: string;
+    name: string;
+    slug: string;
+  } | null;
+  IABChildCategory?: {
+    __typename?: 'IABCategory';
+    externalId: string;
+    name: string;
+    slug: string;
+  } | null;
+  partnership?: {
+    __typename?: 'CollectionPartnership';
+    externalId: string;
+    type: CollectionPartnershipType;
+    name: string;
+    url: any;
+    imageUrl: any;
+    blurb: any;
+  } | null;
 };
 
 export type CollectionPartnerAssociationDataFragment = {
   __typename?: 'CollectionPartnerAssociation';
   externalId: string;
   type: CollectionPartnershipType;
-  name?: string | null | undefined;
-  url?: any | null | undefined;
-  imageUrl?: any | null | undefined;
-  blurb?: any | null | undefined;
+  name?: string | null;
+  url?: any | null;
+  imageUrl?: any | null;
+  blurb?: any | null;
   partner: {
     __typename?: 'CollectionPartner';
     externalId: string;
@@ -1605,10 +1592,10 @@ export type CollectionStoryDataFragment = {
   url: any;
   title: string;
   excerpt: any;
-  imageUrl?: any | null | undefined;
-  publisher?: string | null | undefined;
+  imageUrl?: any | null;
+  publisher?: string | null;
   fromPartner: boolean;
-  sortOrder?: number | null | undefined;
+  sortOrder?: number | null;
   authors: Array<{
     __typename?: 'CollectionStoryAuthor';
     name: string;
@@ -1619,7 +1606,7 @@ export type CollectionStoryDataFragment = {
 export type CuratedItemDataFragment = {
   __typename?: 'ApprovedCuratedCorpusItem';
   externalId: string;
-  prospectId?: string | null | undefined;
+  prospectId?: string | null;
   title: string;
   language: string;
   publisher: string;
@@ -1633,33 +1620,33 @@ export type CuratedItemDataFragment = {
   isSyndicated: boolean;
   createdBy: string;
   createdAt: number;
-  updatedBy?: string | null | undefined;
+  updatedBy?: string | null;
   updatedAt: number;
 };
 
 export type ProspectDataFragment = {
   __typename?: 'Prospect';
   id: string;
-  newTab: string;
-  topic?: string | null | undefined;
+  scheduledSurfaceGuid: string;
+  topic?: string | null;
   prospectType: string;
   url: string;
-  createdAt?: number | null | undefined;
-  imageUrl?: string | null | undefined;
-  publisher?: string | null | undefined;
-  domain?: string | null | undefined;
-  title?: string | null | undefined;
-  excerpt?: string | null | undefined;
-  language?: string | null | undefined;
-  saveCount?: number | null | undefined;
-  isSyndicated?: boolean | null | undefined;
-  isCollection?: boolean | null | undefined;
+  createdAt?: number | null;
+  imageUrl?: string | null;
+  publisher?: string | null;
+  domain?: string | null;
+  title?: string | null;
+  excerpt?: string | null;
+  language?: string | null;
+  saveCount?: number | null;
+  isSyndicated?: boolean | null;
+  isCollection?: boolean | null;
 };
 
 export type RejectedItemDataFragment = {
   __typename?: 'RejectedCuratedCorpusItem';
   externalId: string;
-  prospectId?: string | null | undefined;
+  prospectId?: string | null;
   url: any;
   title: string;
   topic: string;
@@ -1673,14 +1660,14 @@ export type RejectedItemDataFragment = {
 export type UrlMetadataFragment = {
   __typename?: 'UrlMetadata';
   url: string;
-  imageUrl?: string | null | undefined;
-  publisher?: string | null | undefined;
-  domain?: string | null | undefined;
-  title?: string | null | undefined;
-  excerpt?: string | null | undefined;
-  language?: string | null | undefined;
-  isSyndicated?: boolean | null | undefined;
-  isCollection?: boolean | null | undefined;
+  imageUrl?: string | null;
+  publisher?: string | null;
+  domain?: string | null;
+  title?: string | null;
+  excerpt?: string | null;
+  language?: string | null;
+  isSyndicated?: boolean | null;
+  isCollection?: boolean | null;
 };
 
 export type CreateApprovedCuratedCorpusItemMutationVariables = Exact<{
@@ -1692,7 +1679,7 @@ export type CreateApprovedCuratedCorpusItemMutation = {
   createApprovedCuratedCorpusItem: {
     __typename?: 'ApprovedCuratedCorpusItem';
     externalId: string;
-    prospectId?: string | null | undefined;
+    prospectId?: string | null;
     title: string;
     language: string;
     publisher: string;
@@ -1706,7 +1693,7 @@ export type CreateApprovedCuratedCorpusItemMutation = {
     isSyndicated: boolean;
     createdBy: string;
     createdAt: number;
-    updatedBy?: string | null | undefined;
+    updatedBy?: string | null;
     updatedAt: number;
   };
 };
@@ -1731,59 +1718,47 @@ export type CreateCollectionMutation = {
     externalId: string;
     title: string;
     slug: string;
-    excerpt?: any | null | undefined;
-    intro?: any | null | undefined;
-    imageUrl?: any | null | undefined;
+    excerpt?: any | null;
+    intro?: any | null;
+    imageUrl?: any | null;
     language: string;
     status: CollectionStatus;
     authors: Array<{
       __typename?: 'CollectionAuthor';
       externalId: string;
       name: string;
-      slug?: string | null | undefined;
-      bio?: any | null | undefined;
-      imageUrl?: any | null | undefined;
+      slug?: string | null;
+      bio?: any | null;
+      imageUrl?: any | null;
       active: boolean;
     }>;
-    curationCategory?:
-      | {
-          __typename?: 'CurationCategory';
-          externalId: string;
-          name: string;
-          slug: string;
-        }
-      | null
-      | undefined;
-    IABParentCategory?:
-      | {
-          __typename?: 'IABCategory';
-          externalId: string;
-          name: string;
-          slug: string;
-        }
-      | null
-      | undefined;
-    IABChildCategory?:
-      | {
-          __typename?: 'IABCategory';
-          externalId: string;
-          name: string;
-          slug: string;
-        }
-      | null
-      | undefined;
-    partnership?:
-      | {
-          __typename?: 'CollectionPartnership';
-          externalId: string;
-          type: CollectionPartnershipType;
-          name: string;
-          url: any;
-          imageUrl: any;
-          blurb: any;
-        }
-      | null
-      | undefined;
+    curationCategory?: {
+      __typename?: 'CurationCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    } | null;
+    IABParentCategory?: {
+      __typename?: 'IABCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    } | null;
+    IABChildCategory?: {
+      __typename?: 'IABCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    } | null;
+    partnership?: {
+      __typename?: 'CollectionPartnership';
+      externalId: string;
+      type: CollectionPartnershipType;
+      name: string;
+      url: any;
+      imageUrl: any;
+      blurb: any;
+    } | null;
   };
 };
 
@@ -1801,9 +1776,9 @@ export type CreateCollectionAuthorMutation = {
     __typename?: 'CollectionAuthor';
     externalId: string;
     name: string;
-    slug?: string | null | undefined;
-    bio?: any | null | undefined;
-    imageUrl?: any | null | undefined;
+    slug?: string | null;
+    bio?: any | null;
+    imageUrl?: any | null;
     active: boolean;
   };
 };
@@ -1843,10 +1818,10 @@ export type CreateCollectionPartnerAssociationMutation = {
     __typename?: 'CollectionPartnerAssociation';
     externalId: string;
     type: CollectionPartnershipType;
-    name?: string | null | undefined;
-    url?: any | null | undefined;
-    imageUrl?: any | null | undefined;
-    blurb?: any | null | undefined;
+    name?: string | null;
+    url?: any | null;
+    imageUrl?: any | null;
+    blurb?: any | null;
     partner: {
       __typename?: 'CollectionPartner';
       externalId: string;
@@ -1878,10 +1853,10 @@ export type CreateCollectionStoryMutation = {
     url: any;
     title: string;
     excerpt: any;
-    imageUrl?: any | null | undefined;
-    publisher?: string | null | undefined;
+    imageUrl?: any | null;
+    publisher?: string | null;
     fromPartner: boolean;
-    sortOrder?: number | null | undefined;
+    sortOrder?: number | null;
     authors: Array<{
       __typename?: 'CollectionStoryAuthor';
       name: string;
@@ -1890,13 +1865,13 @@ export type CreateCollectionStoryMutation = {
   };
 };
 
-export type CreateNewTabFeedScheduledItemMutationVariables = Exact<{
+export type CreateScheduledCuratedCorpusItemMutationVariables = Exact<{
   approvedItemExternalId: Scalars['ID'];
-  newTabGuid: Scalars['ID'];
+  scheduledSurfaceGuid: Scalars['ID'];
   scheduledDate: Scalars['Date'];
 }>;
 
-export type CreateNewTabFeedScheduledItemMutation = {
+export type CreateScheduledCuratedCorpusItemMutation = {
   __typename?: 'Mutation';
   createScheduledCuratedCorpusItem: {
     __typename?: 'ScheduledCuratedCorpusItem';
@@ -1904,12 +1879,12 @@ export type CreateNewTabFeedScheduledItemMutation = {
     createdAt: number;
     createdBy: string;
     updatedAt: number;
-    updatedBy?: string | null | undefined;
+    updatedBy?: string | null;
     scheduledDate: any;
     approvedItem: {
       __typename?: 'ApprovedCuratedCorpusItem';
       externalId: string;
-      prospectId?: string | null | undefined;
+      prospectId?: string | null;
       title: string;
       language: string;
       publisher: string;
@@ -1923,7 +1898,7 @@ export type CreateNewTabFeedScheduledItemMutation = {
       isSyndicated: boolean;
       createdBy: string;
       createdAt: number;
-      updatedBy?: string | null | undefined;
+      updatedBy?: string | null;
       updatedAt: number;
     };
   };
@@ -1939,10 +1914,10 @@ export type DeleteCollectionPartnerAssociationMutation = {
     __typename?: 'CollectionPartnerAssociation';
     externalId: string;
     type: CollectionPartnershipType;
-    name?: string | null | undefined;
-    url?: any | null | undefined;
-    imageUrl?: any | null | undefined;
-    blurb?: any | null | undefined;
+    name?: string | null;
+    url?: any | null;
+    imageUrl?: any | null;
+    blurb?: any | null;
     partner: {
       __typename?: 'CollectionPartner';
       externalId: string;
@@ -1966,10 +1941,10 @@ export type DeleteCollectionStoryMutation = {
     url: any;
     title: string;
     excerpt: any;
-    imageUrl?: any | null | undefined;
-    publisher?: string | null | undefined;
+    imageUrl?: any | null;
+    publisher?: string | null;
     fromPartner: boolean;
-    sortOrder?: number | null | undefined;
+    sortOrder?: number | null;
     authors: Array<{
       __typename?: 'CollectionStoryAuthor';
       name: string;
@@ -1990,12 +1965,12 @@ export type DeleteScheduledItemMutation = {
     createdAt: number;
     createdBy: string;
     updatedAt: number;
-    updatedBy?: string | null | undefined;
+    updatedBy?: string | null;
     scheduledDate: any;
     approvedItem: {
       __typename?: 'ApprovedCuratedCorpusItem';
       externalId: string;
-      prospectId?: string | null | undefined;
+      prospectId?: string | null;
       title: string;
       language: string;
       publisher: string;
@@ -2009,7 +1984,7 @@ export type DeleteScheduledItemMutation = {
       isSyndicated: boolean;
       createdBy: string;
       createdAt: number;
-      updatedBy?: string | null | undefined;
+      updatedBy?: string | null;
       updatedAt: number;
     };
   };
@@ -2036,7 +2011,7 @@ export type RejectApprovedItemMutation = {
   rejectApprovedCuratedCorpusItem: {
     __typename?: 'ApprovedCuratedCorpusItem';
     externalId: string;
-    prospectId?: string | null | undefined;
+    prospectId?: string | null;
     title: string;
     language: string;
     publisher: string;
@@ -2050,7 +2025,7 @@ export type RejectApprovedItemMutation = {
     isSyndicated: boolean;
     createdBy: string;
     createdAt: number;
-    updatedBy?: string | null | undefined;
+    updatedBy?: string | null;
     updatedAt: number;
   };
 };
@@ -2064,7 +2039,7 @@ export type RejectProspectMutation = {
   createRejectedCuratedCorpusItem: {
     __typename?: 'RejectedCuratedCorpusItem';
     externalId: string;
-    prospectId?: string | null | undefined;
+    prospectId?: string | null;
     url: any;
     title: string;
     topic: string;
@@ -2085,7 +2060,7 @@ export type UpdateApprovedCuratedCorpusItemMutation = {
   updateApprovedCuratedCorpusItem: {
     __typename?: 'ApprovedCuratedCorpusItem';
     externalId: string;
-    prospectId?: string | null | undefined;
+    prospectId?: string | null;
     title: string;
     language: string;
     publisher: string;
@@ -2099,7 +2074,7 @@ export type UpdateApprovedCuratedCorpusItemMutation = {
     isSyndicated: boolean;
     createdBy: string;
     createdAt: number;
-    updatedBy?: string | null | undefined;
+    updatedBy?: string | null;
     updatedAt: number;
   };
 };
@@ -2126,59 +2101,47 @@ export type UpdateCollectionMutation = {
     externalId: string;
     title: string;
     slug: string;
-    excerpt?: any | null | undefined;
-    intro?: any | null | undefined;
-    imageUrl?: any | null | undefined;
+    excerpt?: any | null;
+    intro?: any | null;
+    imageUrl?: any | null;
     language: string;
     status: CollectionStatus;
     authors: Array<{
       __typename?: 'CollectionAuthor';
       externalId: string;
       name: string;
-      slug?: string | null | undefined;
-      bio?: any | null | undefined;
-      imageUrl?: any | null | undefined;
+      slug?: string | null;
+      bio?: any | null;
+      imageUrl?: any | null;
       active: boolean;
     }>;
-    curationCategory?:
-      | {
-          __typename?: 'CurationCategory';
-          externalId: string;
-          name: string;
-          slug: string;
-        }
-      | null
-      | undefined;
-    IABParentCategory?:
-      | {
-          __typename?: 'IABCategory';
-          externalId: string;
-          name: string;
-          slug: string;
-        }
-      | null
-      | undefined;
-    IABChildCategory?:
-      | {
-          __typename?: 'IABCategory';
-          externalId: string;
-          name: string;
-          slug: string;
-        }
-      | null
-      | undefined;
-    partnership?:
-      | {
-          __typename?: 'CollectionPartnership';
-          externalId: string;
-          type: CollectionPartnershipType;
-          name: string;
-          url: any;
-          imageUrl: any;
-          blurb: any;
-        }
-      | null
-      | undefined;
+    curationCategory?: {
+      __typename?: 'CurationCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    } | null;
+    IABParentCategory?: {
+      __typename?: 'IABCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    } | null;
+    IABChildCategory?: {
+      __typename?: 'IABCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    } | null;
+    partnership?: {
+      __typename?: 'CollectionPartnership';
+      externalId: string;
+      type: CollectionPartnershipType;
+      name: string;
+      url: any;
+      imageUrl: any;
+      blurb: any;
+    } | null;
   };
 };
 
@@ -2197,9 +2160,9 @@ export type UpdateCollectionAuthorMutation = {
     __typename?: 'CollectionAuthor';
     externalId: string;
     name: string;
-    slug?: string | null | undefined;
-    bio?: any | null | undefined;
-    imageUrl?: any | null | undefined;
+    slug?: string | null;
+    bio?: any | null;
+    imageUrl?: any | null;
     active: boolean;
   };
 };
@@ -2215,9 +2178,9 @@ export type UpdateCollectionAuthorImageUrlMutation = {
     __typename?: 'CollectionAuthor';
     externalId: string;
     name: string;
-    slug?: string | null | undefined;
-    bio?: any | null | undefined;
-    imageUrl?: any | null | undefined;
+    slug?: string | null;
+    bio?: any | null;
+    imageUrl?: any | null;
     active: boolean;
   };
 };
@@ -2234,59 +2197,47 @@ export type UpdateCollectionImageUrlMutation = {
     externalId: string;
     title: string;
     slug: string;
-    excerpt?: any | null | undefined;
-    intro?: any | null | undefined;
-    imageUrl?: any | null | undefined;
+    excerpt?: any | null;
+    intro?: any | null;
+    imageUrl?: any | null;
     language: string;
     status: CollectionStatus;
     authors: Array<{
       __typename?: 'CollectionAuthor';
       externalId: string;
       name: string;
-      slug?: string | null | undefined;
-      bio?: any | null | undefined;
-      imageUrl?: any | null | undefined;
+      slug?: string | null;
+      bio?: any | null;
+      imageUrl?: any | null;
       active: boolean;
     }>;
-    curationCategory?:
-      | {
-          __typename?: 'CurationCategory';
-          externalId: string;
-          name: string;
-          slug: string;
-        }
-      | null
-      | undefined;
-    IABParentCategory?:
-      | {
-          __typename?: 'IABCategory';
-          externalId: string;
-          name: string;
-          slug: string;
-        }
-      | null
-      | undefined;
-    IABChildCategory?:
-      | {
-          __typename?: 'IABCategory';
-          externalId: string;
-          name: string;
-          slug: string;
-        }
-      | null
-      | undefined;
-    partnership?:
-      | {
-          __typename?: 'CollectionPartnership';
-          externalId: string;
-          type: CollectionPartnershipType;
-          name: string;
-          url: any;
-          imageUrl: any;
-          blurb: any;
-        }
-      | null
-      | undefined;
+    curationCategory?: {
+      __typename?: 'CurationCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    } | null;
+    IABParentCategory?: {
+      __typename?: 'IABCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    } | null;
+    IABChildCategory?: {
+      __typename?: 'IABCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    } | null;
+    partnership?: {
+      __typename?: 'CollectionPartnership';
+      externalId: string;
+      type: CollectionPartnershipType;
+      name: string;
+      url: any;
+      imageUrl: any;
+      blurb: any;
+    } | null;
   };
 };
 
@@ -2326,10 +2277,10 @@ export type UpdateCollectionPartnerAssociationMutation = {
     __typename?: 'CollectionPartnerAssociation';
     externalId: string;
     type: CollectionPartnershipType;
-    name?: string | null | undefined;
-    url?: any | null | undefined;
-    imageUrl?: any | null | undefined;
-    blurb?: any | null | undefined;
+    name?: string | null;
+    url?: any | null;
+    imageUrl?: any | null;
+    blurb?: any | null;
     partner: {
       __typename?: 'CollectionPartner';
       externalId: string;
@@ -2353,10 +2304,10 @@ export type UpdateCollectionPartnerAssociationImageUrlMutation = {
     __typename?: 'CollectionPartnerAssociation';
     externalId: string;
     type: CollectionPartnershipType;
-    name?: string | null | undefined;
-    url?: any | null | undefined;
-    imageUrl?: any | null | undefined;
-    blurb?: any | null | undefined;
+    name?: string | null;
+    url?: any | null;
+    imageUrl?: any | null;
+    blurb?: any | null;
     partner: {
       __typename?: 'CollectionPartner';
       externalId: string;
@@ -2405,10 +2356,10 @@ export type UpdateCollectionStoryMutation = {
     url: any;
     title: string;
     excerpt: any;
-    imageUrl?: any | null | undefined;
-    publisher?: string | null | undefined;
+    imageUrl?: any | null;
+    publisher?: string | null;
     fromPartner: boolean;
-    sortOrder?: number | null | undefined;
+    sortOrder?: number | null;
     authors: Array<{
       __typename?: 'CollectionStoryAuthor';
       name: string;
@@ -2430,10 +2381,10 @@ export type UpdateCollectionStoryImageUrlMutation = {
     url: any;
     title: string;
     excerpt: any;
-    imageUrl?: any | null | undefined;
-    publisher?: string | null | undefined;
+    imageUrl?: any | null;
+    publisher?: string | null;
     fromPartner: boolean;
-    sortOrder?: number | null | undefined;
+    sortOrder?: number | null;
     authors: Array<{
       __typename?: 'CollectionStoryAuthor';
       name: string;
@@ -2455,10 +2406,10 @@ export type UpdateCollectionStorySortOrderMutation = {
     url: any;
     title: string;
     excerpt: any;
-    imageUrl?: any | null | undefined;
-    publisher?: string | null | undefined;
+    imageUrl?: any | null;
+    publisher?: string | null;
     fromPartner: boolean;
-    sortOrder?: number | null | undefined;
+    sortOrder?: number | null;
     authors: Array<{
       __typename?: 'CollectionStoryAuthor';
       name: string;
@@ -2473,27 +2424,24 @@ export type UpdateProspectAsCuratedMutationVariables = Exact<{
 
 export type UpdateProspectAsCuratedMutation = {
   __typename?: 'Mutation';
-  updateProspectAsCurated?:
-    | {
-        __typename?: 'Prospect';
-        id: string;
-        newTab: string;
-        topic?: string | null | undefined;
-        prospectType: string;
-        url: string;
-        createdAt?: number | null | undefined;
-        imageUrl?: string | null | undefined;
-        publisher?: string | null | undefined;
-        domain?: string | null | undefined;
-        title?: string | null | undefined;
-        excerpt?: string | null | undefined;
-        language?: string | null | undefined;
-        saveCount?: number | null | undefined;
-        isSyndicated?: boolean | null | undefined;
-        isCollection?: boolean | null | undefined;
-      }
-    | null
-    | undefined;
+  updateProspectAsCurated?: {
+    __typename?: 'Prospect';
+    id: string;
+    scheduledSurfaceGuid: string;
+    topic?: string | null;
+    prospectType: string;
+    url: string;
+    createdAt?: number | null;
+    imageUrl?: string | null;
+    publisher?: string | null;
+    domain?: string | null;
+    title?: string | null;
+    excerpt?: string | null;
+    language?: string | null;
+    saveCount?: number | null;
+    isSyndicated?: boolean | null;
+    isCollection?: boolean | null;
+  } | null;
 };
 
 export type UploadApprovedCuratedCorpusItemImageMutationVariables = Exact<{
@@ -2514,29 +2462,26 @@ export type GetApprovedItemByUrlQueryVariables = Exact<{
 
 export type GetApprovedItemByUrlQuery = {
   __typename?: 'Query';
-  getApprovedCuratedCorpusItemByUrl?:
-    | {
-        __typename?: 'ApprovedCuratedCorpusItem';
-        externalId: string;
-        prospectId?: string | null | undefined;
-        title: string;
-        language: string;
-        publisher: string;
-        url: any;
-        imageUrl: any;
-        excerpt: string;
-        status: CuratedStatus;
-        topic: string;
-        isCollection: boolean;
-        isTimeSensitive: boolean;
-        isSyndicated: boolean;
-        createdBy: string;
-        createdAt: number;
-        updatedBy?: string | null | undefined;
-        updatedAt: number;
-      }
-    | null
-    | undefined;
+  getApprovedCuratedCorpusItemByUrl?: {
+    __typename?: 'ApprovedCuratedCorpusItem';
+    externalId: string;
+    prospectId?: string | null;
+    title: string;
+    language: string;
+    publisher: string;
+    url: any;
+    imageUrl: any;
+    excerpt: string;
+    status: CuratedStatus;
+    topic: string;
+    isCollection: boolean;
+    isTimeSensitive: boolean;
+    isSyndicated: boolean;
+    createdBy: string;
+    createdAt: number;
+    updatedBy?: string | null;
+    updatedAt: number;
+  } | null;
 };
 
 export type GetApprovedItemsQueryVariables = Exact<{
@@ -2553,8 +2498,8 @@ export type GetApprovedItemsQuery = {
       __typename?: 'PageInfo';
       hasNextPage: boolean;
       hasPreviousPage: boolean;
-      startCursor?: string | null | undefined;
-      endCursor?: string | null | undefined;
+      startCursor?: string | null;
+      endCursor?: string | null;
     };
     edges: Array<{
       __typename?: 'ApprovedCuratedCorpusItemEdge';
@@ -2562,7 +2507,7 @@ export type GetApprovedItemsQuery = {
       node: {
         __typename?: 'ApprovedCuratedCorpusItem';
         externalId: string;
-        prospectId?: string | null | undefined;
+        prospectId?: string | null;
         title: string;
         language: string;
         publisher: string;
@@ -2576,7 +2521,7 @@ export type GetApprovedItemsQuery = {
         isSyndicated: boolean;
         createdBy: string;
         createdAt: number;
-        updatedBy?: string | null | undefined;
+        updatedBy?: string | null;
         updatedAt: number;
       };
     }>;
@@ -2589,18 +2534,15 @@ export type GetAuthorByIdQueryVariables = Exact<{
 
 export type GetAuthorByIdQuery = {
   __typename?: 'Query';
-  getCollectionAuthor?:
-    | {
-        __typename?: 'CollectionAuthor';
-        externalId: string;
-        name: string;
-        slug?: string | null | undefined;
-        bio?: any | null | undefined;
-        imageUrl?: any | null | undefined;
-        active: boolean;
-      }
-    | null
-    | undefined;
+  getCollectionAuthor?: {
+    __typename?: 'CollectionAuthor';
+    externalId: string;
+    name: string;
+    slug?: string | null;
+    bio?: any | null;
+    imageUrl?: any | null;
+    active: boolean;
+  } | null;
 };
 
 export type GetAuthorsQueryVariables = Exact<{
@@ -2616,20 +2558,17 @@ export type GetAuthorsQuery = {
       __typename?: 'CollectionAuthor';
       externalId: string;
       name: string;
-      slug?: string | null | undefined;
-      bio?: any | null | undefined;
-      imageUrl?: any | null | undefined;
+      slug?: string | null;
+      bio?: any | null;
+      imageUrl?: any | null;
       active: boolean;
     }>;
-    pagination?:
-      | {
-          __typename?: 'Pagination';
-          currentPage: number;
-          totalPages: number;
-          totalResults: number;
-        }
-      | null
-      | undefined;
+    pagination?: {
+      __typename?: 'Pagination';
+      currentPage: number;
+      totalPages: number;
+      totalResults: number;
+    } | null;
   };
 };
 
@@ -2639,68 +2578,53 @@ export type GetCollectionByExternalIdQueryVariables = Exact<{
 
 export type GetCollectionByExternalIdQuery = {
   __typename?: 'Query';
-  getCollection?:
-    | {
-        __typename?: 'Collection';
-        externalId: string;
-        title: string;
-        slug: string;
-        excerpt?: any | null | undefined;
-        intro?: any | null | undefined;
-        imageUrl?: any | null | undefined;
-        language: string;
-        status: CollectionStatus;
-        authors: Array<{
-          __typename?: 'CollectionAuthor';
-          externalId: string;
-          name: string;
-          slug?: string | null | undefined;
-          bio?: any | null | undefined;
-          imageUrl?: any | null | undefined;
-          active: boolean;
-        }>;
-        curationCategory?:
-          | {
-              __typename?: 'CurationCategory';
-              externalId: string;
-              name: string;
-              slug: string;
-            }
-          | null
-          | undefined;
-        IABParentCategory?:
-          | {
-              __typename?: 'IABCategory';
-              externalId: string;
-              name: string;
-              slug: string;
-            }
-          | null
-          | undefined;
-        IABChildCategory?:
-          | {
-              __typename?: 'IABCategory';
-              externalId: string;
-              name: string;
-              slug: string;
-            }
-          | null
-          | undefined;
-        partnership?:
-          | {
-              __typename?: 'CollectionPartnership';
-              externalId: string;
-              type: CollectionPartnershipType;
-              name: string;
-              url: any;
-              imageUrl: any;
-              blurb: any;
-            }
-          | null
-          | undefined;
-      }
-    | null
-    | undefined;
+  getCollection?: {
+    __typename?: 'Collection';
+    externalId: string;
+    title: string;
+    slug: string;
+    excerpt?: any | null;
+    intro?: any | null;
+    imageUrl?: any | null;
+    language: string;
+    status: CollectionStatus;
+    authors: Array<{
+      __typename?: 'CollectionAuthor';
+      externalId: string;
+      name: string;
+      slug?: string | null;
+      bio?: any | null;
+      imageUrl?: any | null;
+      active: boolean;
+    }>;
+    curationCategory?: {
+      __typename?: 'CurationCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    } | null;
+    IABParentCategory?: {
+      __typename?: 'IABCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    } | null;
+    IABChildCategory?: {
+      __typename?: 'IABCategory';
+      externalId: string;
+      name: string;
+      slug: string;
+    } | null;
+    partnership?: {
+      __typename?: 'CollectionPartnership';
+      externalId: string;
+      type: CollectionPartnershipType;
+      name: string;
+      url: any;
+      imageUrl: any;
+      blurb: any;
+    } | null;
+  } | null;
 };
 
 export type GetCollectionPartnerQueryVariables = Exact<{
@@ -2709,17 +2633,14 @@ export type GetCollectionPartnerQueryVariables = Exact<{
 
 export type GetCollectionPartnerQuery = {
   __typename?: 'Query';
-  getCollectionPartner?:
-    | {
-        __typename?: 'CollectionPartner';
-        externalId: string;
-        name: string;
-        url: any;
-        imageUrl: any;
-        blurb: any;
-      }
-    | null
-    | undefined;
+  getCollectionPartner?: {
+    __typename?: 'CollectionPartner';
+    externalId: string;
+    name: string;
+    url: any;
+    imageUrl: any;
+    blurb: any;
+  } | null;
 };
 
 export type GetCollectionPartnerAssociationQueryVariables = Exact<{
@@ -2728,26 +2649,23 @@ export type GetCollectionPartnerAssociationQueryVariables = Exact<{
 
 export type GetCollectionPartnerAssociationQuery = {
   __typename?: 'Query';
-  getCollectionPartnerAssociationForCollection?:
-    | {
-        __typename?: 'CollectionPartnerAssociation';
-        externalId: string;
-        type: CollectionPartnershipType;
-        name?: string | null | undefined;
-        url?: any | null | undefined;
-        imageUrl?: any | null | undefined;
-        blurb?: any | null | undefined;
-        partner: {
-          __typename?: 'CollectionPartner';
-          externalId: string;
-          name: string;
-          url: any;
-          imageUrl: any;
-          blurb: any;
-        };
-      }
-    | null
-    | undefined;
+  getCollectionPartnerAssociationForCollection?: {
+    __typename?: 'CollectionPartnerAssociation';
+    externalId: string;
+    type: CollectionPartnershipType;
+    name?: string | null;
+    url?: any | null;
+    imageUrl?: any | null;
+    blurb?: any | null;
+    partner: {
+      __typename?: 'CollectionPartner';
+      externalId: string;
+      name: string;
+      url: any;
+      imageUrl: any;
+      blurb: any;
+    };
+  } | null;
 };
 
 export type GetCollectionPartnersQueryVariables = Exact<{
@@ -2767,15 +2685,12 @@ export type GetCollectionPartnersQuery = {
       imageUrl: any;
       blurb: any;
     }>;
-    pagination?:
-      | {
-          __typename?: 'Pagination';
-          currentPage: number;
-          totalPages: number;
-          totalResults: number;
-        }
-      | null
-      | undefined;
+    pagination?: {
+      __typename?: 'Pagination';
+      currentPage: number;
+      totalPages: number;
+      totalResults: number;
+    } | null;
   };
 };
 
@@ -2785,29 +2700,26 @@ export type GetCollectionStoriesQueryVariables = Exact<{
 
 export type GetCollectionStoriesQuery = {
   __typename?: 'Query';
-  getCollection?:
-    | {
-        __typename?: 'Collection';
-        externalId: string;
-        stories: Array<{
-          __typename?: 'CollectionStory';
-          externalId: string;
-          url: any;
-          title: string;
-          excerpt: any;
-          imageUrl?: any | null | undefined;
-          publisher?: string | null | undefined;
-          fromPartner: boolean;
-          sortOrder?: number | null | undefined;
-          authors: Array<{
-            __typename?: 'CollectionStoryAuthor';
-            name: string;
-            sortOrder: number;
-          }>;
-        }>;
-      }
-    | null
-    | undefined;
+  getCollection?: {
+    __typename?: 'Collection';
+    externalId: string;
+    stories: Array<{
+      __typename?: 'CollectionStory';
+      externalId: string;
+      url: any;
+      title: string;
+      excerpt: any;
+      imageUrl?: any | null;
+      publisher?: string | null;
+      fromPartner: boolean;
+      sortOrder?: number | null;
+      authors: Array<{
+        __typename?: 'CollectionStoryAuthor';
+        name: string;
+        sortOrder: number;
+      }>;
+    }>;
+  } | null;
 };
 
 export type GetCollectionsQueryVariables = Exact<{
@@ -2825,59 +2737,47 @@ export type GetCollectionsQuery = {
       externalId: string;
       title: string;
       slug: string;
-      excerpt?: any | null | undefined;
-      intro?: any | null | undefined;
-      imageUrl?: any | null | undefined;
+      excerpt?: any | null;
+      intro?: any | null;
+      imageUrl?: any | null;
       language: string;
       status: CollectionStatus;
       authors: Array<{
         __typename?: 'CollectionAuthor';
         externalId: string;
         name: string;
-        slug?: string | null | undefined;
-        bio?: any | null | undefined;
-        imageUrl?: any | null | undefined;
+        slug?: string | null;
+        bio?: any | null;
+        imageUrl?: any | null;
         active: boolean;
       }>;
-      curationCategory?:
-        | {
-            __typename?: 'CurationCategory';
-            externalId: string;
-            name: string;
-            slug: string;
-          }
-        | null
-        | undefined;
-      IABParentCategory?:
-        | {
-            __typename?: 'IABCategory';
-            externalId: string;
-            name: string;
-            slug: string;
-          }
-        | null
-        | undefined;
-      IABChildCategory?:
-        | {
-            __typename?: 'IABCategory';
-            externalId: string;
-            name: string;
-            slug: string;
-          }
-        | null
-        | undefined;
-      partnership?:
-        | {
-            __typename?: 'CollectionPartnership';
-            externalId: string;
-            type: CollectionPartnershipType;
-            name: string;
-            url: any;
-            imageUrl: any;
-            blurb: any;
-          }
-        | null
-        | undefined;
+      curationCategory?: {
+        __typename?: 'CurationCategory';
+        externalId: string;
+        name: string;
+        slug: string;
+      } | null;
+      IABParentCategory?: {
+        __typename?: 'IABCategory';
+        externalId: string;
+        name: string;
+        slug: string;
+      } | null;
+      IABChildCategory?: {
+        __typename?: 'IABCategory';
+        externalId: string;
+        name: string;
+        slug: string;
+      } | null;
+      partnership?: {
+        __typename?: 'CollectionPartnership';
+        externalId: string;
+        type: CollectionPartnershipType;
+        name: string;
+        url: any;
+        imageUrl: any;
+        blurb: any;
+      } | null;
     }>;
     pagination: {
       __typename?: 'Pagination';
@@ -2901,9 +2801,9 @@ export type GetInitialCollectionFormDataQuery = {
       __typename?: 'CollectionAuthor';
       externalId: string;
       name: string;
-      slug?: string | null | undefined;
-      bio?: any | null | undefined;
-      imageUrl?: any | null | undefined;
+      slug?: string | null;
+      bio?: any | null;
+      imageUrl?: any | null;
       active: boolean;
     }>;
   };
@@ -2928,21 +2828,8 @@ export type GetInitialCollectionFormDataQuery = {
   }>;
 };
 
-export type GetNewTabsForUserQueryVariables = Exact<{ [key: string]: never }>;
-
-export type GetNewTabsForUserQuery = {
-  __typename?: 'Query';
-  getNewTabsForUser: Array<{
-    __typename?: 'NewTab';
-    guid: string;
-    name: string;
-    utcOffset: number;
-    prospectTypes: Array<ProspectType>;
-  }>;
-};
-
 export type GetProspectsQueryVariables = Exact<{
-  newTab: Scalars['String'];
+  scheduledSurfaceGuid: Scalars['String'];
   prospectType?: InputMaybe<Scalars['String']>;
 }>;
 
@@ -2951,20 +2838,20 @@ export type GetProspectsQuery = {
   getProspects: Array<{
     __typename?: 'Prospect';
     id: string;
-    newTab: string;
-    topic?: string | null | undefined;
+    scheduledSurfaceGuid: string;
+    topic?: string | null;
     prospectType: string;
     url: string;
-    createdAt?: number | null | undefined;
-    imageUrl?: string | null | undefined;
-    publisher?: string | null | undefined;
-    domain?: string | null | undefined;
-    title?: string | null | undefined;
-    excerpt?: string | null | undefined;
-    language?: string | null | undefined;
-    saveCount?: number | null | undefined;
-    isSyndicated?: boolean | null | undefined;
-    isCollection?: boolean | null | undefined;
+    createdAt?: number | null;
+    imageUrl?: string | null;
+    publisher?: string | null;
+    domain?: string | null;
+    title?: string | null;
+    excerpt?: string | null;
+    language?: string | null;
+    saveCount?: number | null;
+    isSyndicated?: boolean | null;
+    isCollection?: boolean | null;
   }>;
 };
 
@@ -2982,8 +2869,8 @@ export type GetRejectedItemsQuery = {
       __typename?: 'PageInfo';
       hasNextPage: boolean;
       hasPreviousPage: boolean;
-      startCursor?: string | null | undefined;
-      endCursor?: string | null | undefined;
+      startCursor?: string | null;
+      endCursor?: string | null;
     };
     edges: Array<{
       __typename?: 'RejectedCuratedCorpusItemEdge';
@@ -2991,7 +2878,7 @@ export type GetRejectedItemsQuery = {
       node: {
         __typename?: 'RejectedCuratedCorpusItem';
         externalId: string;
-        prospectId?: string | null | undefined;
+        prospectId?: string | null;
         url: any;
         title: string;
         topic: string;
@@ -3037,12 +2924,12 @@ export type GetScheduledItemsQuery = {
       createdAt: number;
       createdBy: string;
       updatedAt: number;
-      updatedBy?: string | null | undefined;
+      updatedBy?: string | null;
       scheduledDate: any;
       approvedItem: {
         __typename?: 'ApprovedCuratedCorpusItem';
         externalId: string;
-        prospectId?: string | null | undefined;
+        prospectId?: string | null;
         title: string;
         language: string;
         publisher: string;
@@ -3056,10 +2943,25 @@ export type GetScheduledItemsQuery = {
         isSyndicated: boolean;
         createdBy: string;
         createdAt: number;
-        updatedBy?: string | null | undefined;
+        updatedBy?: string | null;
         updatedAt: number;
       };
     }>;
+  }>;
+};
+
+export type GetScheduledSurfacesForUserQueryVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type GetScheduledSurfacesForUserQuery = {
+  __typename?: 'Query';
+  getScheduledSurfacesForUser: Array<{
+    __typename?: 'ScheduledSurface';
+    guid: string;
+    name: string;
+    prospectTypes: Array<ProspectType>;
+    utcOffset: number;
   }>;
 };
 
@@ -3080,59 +2982,47 @@ export type GetSearchCollectionsQuery = {
       externalId: string;
       title: string;
       slug: string;
-      excerpt?: any | null | undefined;
-      intro?: any | null | undefined;
-      imageUrl?: any | null | undefined;
+      excerpt?: any | null;
+      intro?: any | null;
+      imageUrl?: any | null;
       language: string;
       status: CollectionStatus;
       authors: Array<{
         __typename?: 'CollectionAuthor';
         externalId: string;
         name: string;
-        slug?: string | null | undefined;
-        bio?: any | null | undefined;
-        imageUrl?: any | null | undefined;
+        slug?: string | null;
+        bio?: any | null;
+        imageUrl?: any | null;
         active: boolean;
       }>;
-      curationCategory?:
-        | {
-            __typename?: 'CurationCategory';
-            externalId: string;
-            name: string;
-            slug: string;
-          }
-        | null
-        | undefined;
-      IABParentCategory?:
-        | {
-            __typename?: 'IABCategory';
-            externalId: string;
-            name: string;
-            slug: string;
-          }
-        | null
-        | undefined;
-      IABChildCategory?:
-        | {
-            __typename?: 'IABCategory';
-            externalId: string;
-            name: string;
-            slug: string;
-          }
-        | null
-        | undefined;
-      partnership?:
-        | {
-            __typename?: 'CollectionPartnership';
-            externalId: string;
-            type: CollectionPartnershipType;
-            name: string;
-            url: any;
-            imageUrl: any;
-            blurb: any;
-          }
-        | null
-        | undefined;
+      curationCategory?: {
+        __typename?: 'CurationCategory';
+        externalId: string;
+        name: string;
+        slug: string;
+      } | null;
+      IABParentCategory?: {
+        __typename?: 'IABCategory';
+        externalId: string;
+        name: string;
+        slug: string;
+      } | null;
+      IABChildCategory?: {
+        __typename?: 'IABCategory';
+        externalId: string;
+        name: string;
+        slug: string;
+      } | null;
+      partnership?: {
+        __typename?: 'CollectionPartnership';
+        externalId: string;
+        type: CollectionPartnershipType;
+        name: string;
+        url: any;
+        imageUrl: any;
+        blurb: any;
+      } | null;
     }>;
     pagination: { __typename?: 'Pagination'; totalResults: number };
   };
@@ -3144,41 +3034,27 @@ export type GetStoryFromParserQueryVariables = Exact<{
 
 export type GetStoryFromParserQuery = {
   __typename?: 'Query';
-  getItemByUrl?:
-    | {
-        __typename?: 'Item';
-        resolvedUrl?: any | null | undefined;
-        title?: string | null | undefined;
-        excerpt?: string | null | undefined;
-        topImageUrl?: any | null | undefined;
-        images?:
-          | Array<
-              | {
-                  __typename?: 'Image';
-                  src: string;
-                  width?: number | null | undefined;
-                  height?: number | null | undefined;
-                }
-              | null
-              | undefined
-            >
-          | null
-          | undefined;
-        authors?:
-          | Array<
-              | { __typename?: 'Author'; name?: string | null | undefined }
-              | null
-              | undefined
-            >
-          | null
-          | undefined;
-        domainMetadata?:
-          | { __typename?: 'DomainMetadata'; name?: string | null | undefined }
-          | null
-          | undefined;
-      }
-    | null
-    | undefined;
+  getItemByUrl?: {
+    __typename?: 'Item';
+    resolvedUrl?: any | null;
+    title?: string | null;
+    excerpt?: string | null;
+    topImageUrl?: any | null;
+    images?: Array<{
+      __typename?: 'Image';
+      src: string;
+      width?: number | null;
+      height?: number | null;
+    } | null> | null;
+    authors?: Array<{
+      __typename?: 'Author';
+      name?: string | null;
+    } | null> | null;
+    domainMetadata?: {
+      __typename?: 'DomainMetadata';
+      name?: string | null;
+    } | null;
+  } | null;
 };
 
 export type GetUrlMetadataQueryVariables = Exact<{
@@ -3190,14 +3066,14 @@ export type GetUrlMetadataQuery = {
   getUrlMetadata: {
     __typename?: 'UrlMetadata';
     url: string;
-    imageUrl?: string | null | undefined;
-    publisher?: string | null | undefined;
-    domain?: string | null | undefined;
-    title?: string | null | undefined;
-    excerpt?: string | null | undefined;
-    language?: string | null | undefined;
-    isSyndicated?: boolean | null | undefined;
-    isCollection?: boolean | null | undefined;
+    imageUrl?: string | null;
+    publisher?: string | null;
+    domain?: string | null;
+    title?: string | null;
+    excerpt?: string | null;
+    language?: string | null;
+    isSyndicated?: boolean | null;
+    isCollection?: boolean | null;
   };
 };
 
@@ -3313,7 +3189,7 @@ export const CuratedItemDataFragmentDoc = gql`
 export const ProspectDataFragmentDoc = gql`
   fragment ProspectData on Prospect {
     id
-    newTab
+    scheduledSurfaceGuid
     topic
     prospectType
     url
@@ -3782,16 +3658,16 @@ export type CreateCollectionStoryMutationOptions = Apollo.BaseMutationOptions<
   CreateCollectionStoryMutation,
   CreateCollectionStoryMutationVariables
 >;
-export const CreateNewTabFeedScheduledItemDocument = gql`
-  mutation createNewTabFeedScheduledItem(
+export const CreateScheduledCuratedCorpusItemDocument = gql`
+  mutation createScheduledCuratedCorpusItem(
     $approvedItemExternalId: ID!
-    $newTabGuid: ID!
+    $scheduledSurfaceGuid: ID!
     $scheduledDate: Date!
   ) {
     createScheduledCuratedCorpusItem(
       data: {
         approvedItemExternalId: $approvedItemExternalId
-        newTabGuid: $newTabGuid
+        scheduledSurfaceGuid: $scheduledSurfaceGuid
         scheduledDate: $scheduledDate
       }
     ) {
@@ -3808,51 +3684,52 @@ export const CreateNewTabFeedScheduledItemDocument = gql`
   }
   ${CuratedItemDataFragmentDoc}
 `;
-export type CreateNewTabFeedScheduledItemMutationFn = Apollo.MutationFunction<
-  CreateNewTabFeedScheduledItemMutation,
-  CreateNewTabFeedScheduledItemMutationVariables
->;
+export type CreateScheduledCuratedCorpusItemMutationFn =
+  Apollo.MutationFunction<
+    CreateScheduledCuratedCorpusItemMutation,
+    CreateScheduledCuratedCorpusItemMutationVariables
+  >;
 
 /**
- * __useCreateNewTabFeedScheduledItemMutation__
+ * __useCreateScheduledCuratedCorpusItemMutation__
  *
- * To run a mutation, you first call `useCreateNewTabFeedScheduledItemMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateNewTabFeedScheduledItemMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateScheduledCuratedCorpusItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateScheduledCuratedCorpusItemMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createNewTabFeedScheduledItemMutation, { data, loading, error }] = useCreateNewTabFeedScheduledItemMutation({
+ * const [createScheduledCuratedCorpusItemMutation, { data, loading, error }] = useCreateScheduledCuratedCorpusItemMutation({
  *   variables: {
  *      approvedItemExternalId: // value for 'approvedItemExternalId'
- *      newTabGuid: // value for 'newTabGuid'
+ *      scheduledSurfaceGuid: // value for 'scheduledSurfaceGuid'
  *      scheduledDate: // value for 'scheduledDate'
  *   },
  * });
  */
-export function useCreateNewTabFeedScheduledItemMutation(
+export function useCreateScheduledCuratedCorpusItemMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    CreateNewTabFeedScheduledItemMutation,
-    CreateNewTabFeedScheduledItemMutationVariables
+    CreateScheduledCuratedCorpusItemMutation,
+    CreateScheduledCuratedCorpusItemMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    CreateNewTabFeedScheduledItemMutation,
-    CreateNewTabFeedScheduledItemMutationVariables
-  >(CreateNewTabFeedScheduledItemDocument, options);
+    CreateScheduledCuratedCorpusItemMutation,
+    CreateScheduledCuratedCorpusItemMutationVariables
+  >(CreateScheduledCuratedCorpusItemDocument, options);
 }
-export type CreateNewTabFeedScheduledItemMutationHookResult = ReturnType<
-  typeof useCreateNewTabFeedScheduledItemMutation
+export type CreateScheduledCuratedCorpusItemMutationHookResult = ReturnType<
+  typeof useCreateScheduledCuratedCorpusItemMutation
 >;
-export type CreateNewTabFeedScheduledItemMutationResult =
-  Apollo.MutationResult<CreateNewTabFeedScheduledItemMutation>;
-export type CreateNewTabFeedScheduledItemMutationOptions =
+export type CreateScheduledCuratedCorpusItemMutationResult =
+  Apollo.MutationResult<CreateScheduledCuratedCorpusItemMutation>;
+export type CreateScheduledCuratedCorpusItemMutationOptions =
   Apollo.BaseMutationOptions<
-    CreateNewTabFeedScheduledItemMutation,
-    CreateNewTabFeedScheduledItemMutationVariables
+    CreateScheduledCuratedCorpusItemMutation,
+    CreateScheduledCuratedCorpusItemMutationVariables
   >;
 export const DeleteCollectionPartnerAssociationDocument = gql`
   mutation deleteCollectionPartnerAssociation($externalId: String!) {
@@ -5795,69 +5672,14 @@ export type GetInitialCollectionFormDataQueryResult = Apollo.QueryResult<
   GetInitialCollectionFormDataQuery,
   GetInitialCollectionFormDataQueryVariables
 >;
-export const GetNewTabsForUserDocument = gql`
-  query getNewTabsForUser {
-    getNewTabsForUser {
-      guid
-      name
-      utcOffset
-      prospectTypes
-    }
-  }
-`;
-
-/**
- * __useGetNewTabsForUserQuery__
- *
- * To run a query within a React component, call `useGetNewTabsForUserQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetNewTabsForUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetNewTabsForUserQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetNewTabsForUserQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    GetNewTabsForUserQuery,
-    GetNewTabsForUserQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    GetNewTabsForUserQuery,
-    GetNewTabsForUserQueryVariables
-  >(GetNewTabsForUserDocument, options);
-}
-export function useGetNewTabsForUserLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    GetNewTabsForUserQuery,
-    GetNewTabsForUserQueryVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    GetNewTabsForUserQuery,
-    GetNewTabsForUserQueryVariables
-  >(GetNewTabsForUserDocument, options);
-}
-export type GetNewTabsForUserQueryHookResult = ReturnType<
-  typeof useGetNewTabsForUserQuery
->;
-export type GetNewTabsForUserLazyQueryHookResult = ReturnType<
-  typeof useGetNewTabsForUserLazyQuery
->;
-export type GetNewTabsForUserQueryResult = Apollo.QueryResult<
-  GetNewTabsForUserQuery,
-  GetNewTabsForUserQueryVariables
->;
 export const GetProspectsDocument = gql`
-  query getProspects($newTab: String!, $prospectType: String) {
-    getProspects(filters: { newTab: $newTab, prospectType: $prospectType }) {
+  query getProspects($scheduledSurfaceGuid: String!, $prospectType: String) {
+    getProspects(
+      filters: {
+        scheduledSurfaceGuid: $scheduledSurfaceGuid
+        prospectType: $prospectType
+      }
+    ) {
       ...ProspectData
     }
   }
@@ -5876,7 +5698,7 @@ export const GetProspectsDocument = gql`
  * @example
  * const { data, loading, error } = useGetProspectsQuery({
  *   variables: {
- *      newTab: // value for 'newTab'
+ *      scheduledSurfaceGuid: // value for 'scheduledSurfaceGuid'
  *      prospectType: // value for 'prospectType'
  *   },
  * });
@@ -6124,6 +5946,66 @@ export type GetScheduledItemsLazyQueryHookResult = ReturnType<
 export type GetScheduledItemsQueryResult = Apollo.QueryResult<
   GetScheduledItemsQuery,
   GetScheduledItemsQueryVariables
+>;
+export const GetScheduledSurfacesForUserDocument = gql`
+  query getScheduledSurfacesForUser {
+    getScheduledSurfacesForUser {
+      guid
+      name
+      prospectTypes
+      utcOffset
+    }
+  }
+`;
+
+/**
+ * __useGetScheduledSurfacesForUserQuery__
+ *
+ * To run a query within a React component, call `useGetScheduledSurfacesForUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetScheduledSurfacesForUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetScheduledSurfacesForUserQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetScheduledSurfacesForUserQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetScheduledSurfacesForUserQuery,
+    GetScheduledSurfacesForUserQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetScheduledSurfacesForUserQuery,
+    GetScheduledSurfacesForUserQueryVariables
+  >(GetScheduledSurfacesForUserDocument, options);
+}
+export function useGetScheduledSurfacesForUserLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetScheduledSurfacesForUserQuery,
+    GetScheduledSurfacesForUserQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetScheduledSurfacesForUserQuery,
+    GetScheduledSurfacesForUserQueryVariables
+  >(GetScheduledSurfacesForUserDocument, options);
+}
+export type GetScheduledSurfacesForUserQueryHookResult = ReturnType<
+  typeof useGetScheduledSurfacesForUserQuery
+>;
+export type GetScheduledSurfacesForUserLazyQueryHookResult = ReturnType<
+  typeof useGetScheduledSurfacesForUserLazyQuery
+>;
+export type GetScheduledSurfacesForUserQueryResult = Apollo.QueryResult<
+  GetScheduledSurfacesForUserQuery,
+  GetScheduledSurfacesForUserQueryVariables
 >;
 export const GetSearchCollectionsDocument = gql`
   query getSearchCollections(

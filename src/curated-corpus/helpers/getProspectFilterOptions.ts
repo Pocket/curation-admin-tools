@@ -4,7 +4,7 @@ import { ProspectType } from '../../api/generatedTypes';
 /**
  * This helper function takes all possible prospect filter options for the filtering
  * dropdown on the Prospecting page and cuts the list down to the ones available for
- * a given New Tab.
+ * a given Scheduled Surface.
  */
 export const getProspectFilterOptions = (
   data: ProspectType[]

@@ -6,12 +6,12 @@ import { Tab } from './Tab';
 describe('The Tab component', () => {
   it('renders successfully', () => {
     render(
-      <MemoryRouter initialEntries={[`/en-US/newtab/`]}>
+      <MemoryRouter initialEntries={[`/en-US/`]}>
         <Tab
           label="Live"
           count={22}
-          value="/en-US/newtab/live/"
-          to="/en-US/newtab/live"
+          value="/en-US/live/"
+          to="/en-US/live"
           hasLink={true}
         />
       </MemoryRouter>
