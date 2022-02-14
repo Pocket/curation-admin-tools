@@ -419,7 +419,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     // Set out all the variables we need to pass to the mutation
     const variables = {
       approvedItemExternalId: approvedItem?.externalId,
-      scheduledSurfaceGuid: (values.scheduledSurfaceGuid = {}),
+      scheduledSurfaceGuid: values.scheduledSurfaceGuid,
       scheduledDate: values.scheduledDate.toISODate(),
     };
 
