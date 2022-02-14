@@ -10,7 +10,7 @@ interface ScheduleItemModalProps {
   approvedItem: ApprovedCuratedCorpusItem;
   headingCopy?: string;
   isOpen: boolean;
-  newTabGuid?: string;
+  scheduledSurfaceGuid?: string;
   onSave: (
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
@@ -23,9 +23,9 @@ export const ScheduleItemModal: React.FC<ScheduleItemModalProps> = (
 ): JSX.Element => {
   const {
     approvedItem,
-    headingCopy = 'Schedule this item for New Tab',
+    headingCopy = 'Schedule this item',
     isOpen,
-    newTabGuid,
+    scheduledSurfaceGuid,
     onSave,
     toggleModal,
   } = props;
@@ -49,7 +49,7 @@ export const ScheduleItemModal: React.FC<ScheduleItemModalProps> = (
         <Grid item xs={12}>
           <ScheduleItemFormConnector
             approvedItemExternalId={approvedItem.externalId}
-            newTabGuid={newTabGuid}
+            scheduledSurfaceGuid={scheduledSurfaceGuid}
             onSubmit={onSave}
             onCancel={() => {
               toggleModal();

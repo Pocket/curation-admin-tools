@@ -6,9 +6,9 @@ import {
   ScheduledCuratedCorpusItem,
 } from '../../../api/generatedTypes';
 
-import { MiniNewTabScheduleCard } from './MiniNewTabScheduleCard';
+import { MiniScheduleCard } from './MiniScheduleCard';
 
-describe('The MiniNewTabScheduleCard component', () => {
+describe('The MiniScheduleCard component', () => {
   let item: ScheduledCuratedCorpusItem;
 
   beforeEach(() => {
@@ -44,7 +44,7 @@ describe('The MiniNewTabScheduleCard component', () => {
   it('shows basic scheduled item information', () => {
     render(
       <MemoryRouter>
-        <MiniNewTabScheduleCard item={item} />
+        <MiniScheduleCard item={item} />
       </MemoryRouter>
     );
 
@@ -72,7 +72,7 @@ describe('The MiniNewTabScheduleCard component', () => {
   it('does not show "Collection" or "Syndicated" tags if story does not have these properties', () => {
     render(
       <MemoryRouter>
-        <MiniNewTabScheduleCard item={item} />
+        <MiniScheduleCard item={item} />
       </MemoryRouter>
     );
 
@@ -88,7 +88,7 @@ describe('The MiniNewTabScheduleCard component', () => {
 
     render(
       <MemoryRouter>
-        <MiniNewTabScheduleCard item={item} />
+        <MiniScheduleCard item={item} />
       </MemoryRouter>
     );
 
@@ -101,7 +101,7 @@ describe('The MiniNewTabScheduleCard component', () => {
 
     render(
       <MemoryRouter>
-        <MiniNewTabScheduleCard item={item} />
+        <MiniScheduleCard item={item} />
       </MemoryRouter>
     );
 

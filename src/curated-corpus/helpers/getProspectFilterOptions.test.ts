@@ -13,7 +13,7 @@ describe('getProspectFilterOptions', () => {
     expect(options[0].name).to.equal('All Sources');
   });
 
-  it('returns all available options if all are present for given New Tab', () => {
+  it('returns all available options if all are present for given Scheduled Surface', () => {
     const types: ProspectType[] = [
       ProspectType.Global,
       ProspectType.OrganicTimespent,
@@ -38,7 +38,7 @@ describe('getProspectFilterOptions', () => {
     expect(options[3].name).to.equal('Syndicated');
   });
 
-  it('returns a cut-down list of prospect types if only some are available for given New Tab', () => {
+  it('returns a cut-down list of prospect types if only some are available for given Scheduled Surface', () => {
     const types: ProspectType[] = [ProspectType.Syndicated];
 
     const options = getProspectFilterOptions(types);

@@ -13,23 +13,23 @@ import {
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import BookmarksIcon from '@material-ui/icons/Bookmarks';
-import { useStyles } from './MiniNewTabScheduleCard.styles';
+import { useStyles } from './MiniScheduleCard.styles';
 
-interface MiniScheduledItemListCardProps {
+interface MiniScheduleCardProps {
   item: ScheduledCuratedCorpusItem;
 }
 
 /**
  * This component renders a small card for each scheduled item passed to it.
- * It is used to display today & tomorrow's New Tab entries in the sidebar
- * of the New Tab Curation page.
+ * It is used to display today & tomorrow's Scheduled Surface entries
+ * in the sidebar of the Prospecting page.
  *
  * @param props
  * @constructor
  */
-export const MiniNewTabScheduleCard: React.FC<
-  MiniScheduledItemListCardProps
-> = (props): JSX.Element => {
+export const MiniScheduleCard: React.FC<MiniScheduleCardProps> = (
+  props
+): JSX.Element => {
   const classes = useStyles();
   const { item } = props;
 

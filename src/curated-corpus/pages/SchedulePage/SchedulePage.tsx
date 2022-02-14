@@ -6,7 +6,7 @@ import { FormikHelpers, FormikValues } from 'formik';
 import { HandleApiResponse } from '../../../_shared/components';
 import {
   LoadExtraButton,
-  RemoveItemFromNewTabModal,
+  RemoveItemFromScheduledSurfaceModal,
   ScheduledItemCardWrapper,
   SplitButton,
 } from '../../components';
@@ -15,8 +15,8 @@ import {
   ScheduledCuratedCorpusItemsFilterInput,
   ScheduledCuratedCorpusItemsResult,
   useDeleteScheduledItemMutation,
-  useGetNewTabsForUserQuery,
   useGetScheduledItemsQuery,
+  useGetScheduledSurfacesForUserQuery,
 } from '../../../api/generatedTypes';
 import {
   useNotifications,
@@ -36,52 +36,59 @@ export const SchedulePage: React.FC = (): JSX.Element => {
     DateTime.local().plus({ days: 1 })
   );
 
-  // set up the initial new tab guid value (nothing at this point)
-  const [currentNewTabGuid, setCurrentNewTabGuid] = useState('');
+  // set up the initial Scheduled Surface GUID value (nothing at this point)
+  const [currentScheduledSurfaceGuid, setCurrentScheduledSurfaceGuid] =
+    useState('');
 
-  // Why not set up the options we'll feed to the New Tab dropdown as well
+  // Why not set up the options we'll feed to the Scheduled Surface dropdown as well
   // at the same time?
-  const [newTabOptions, setNewTabOptions] = useState<DropdownOption[]>([]);
+  const [scheduledSurfaceOptions, setScheduledSurfaceOptions] = useState<
+    DropdownOption[]
+  >([]);
 
-  // Get the list of New Tabs the currently logged-in user has access to.
-  const { data: newTabData } = useGetNewTabsForUserQuery();
+  // Get the list of Scheduled Surfaces the currently logged-in user has access to.
+  const { data: scheduledSurfaceData } = useGetScheduledSurfacesForUserQuery();
 
-  // Once the data is ready, populate the values for current New Tab Guid
+  // Once the data is ready, populate the values for current Scheduled Surface GUID
   // and the dropdown options.
   useEffect(() => {
-    if (newTabData) {
-      const options = newTabData.getNewTabsForUser.map((newTab) => {
-        return { code: newTab.guid, name: newTab.name };
-      });
-      setCurrentNewTabGuid(options[0].code);
-      setNewTabOptions(options);
+    if (scheduledSurfaceData) {
+      const options = scheduledSurfaceData.getScheduledSurfacesForUser.map(
+        (surface) => {
+          return { code: surface.guid, name: surface.name };
+        }
+      );
+      if (options.length > 0) {
+        setCurrentScheduledSurfaceGuid(options[0].code);
+        setScheduledSurfaceOptions(options);
+      }
     }
-  }, [newTabData]);
+  }, [scheduledSurfaceData]);
 
   /**
-   * When the user selects another New Tab from the "I am curating for..." dropdown,
-   * refetch all the data on the page for that New Tab.
+   * When the user selects another Scheduled Surface from the "I am curating for..." dropdown,
+   * refetch all the data on the page for that Scheduled Surface.
    */
-  const updateNewTab = (option: DropdownOption) => {
+  const updateScheduledSurface = (option: DropdownOption) => {
     refetch({
       filters: {
-        newTabGuid: option.code,
+        scheduledSurfaceGuid: option.code,
         startDate: startDate.toFormat('yyyy-MM-dd'),
         endDate: endDate.toFormat('yyyy-MM-dd'),
       },
     });
-    setCurrentNewTabGuid(option.code);
+    setCurrentScheduledSurfaceGuid(option.code);
   };
 
   // By default, load today and tomorrow's items that are already scheduled
-  // for this New Tab
+  // for this Scheduled Surface
   const { loading, error, data, fetchMore, refetch } =
     useGetScheduledItemsQuery({
       fetchPolicy: 'no-cache',
       notifyOnNetworkStatusChange: true,
       variables: {
         filters: {
-          newTabGuid: currentNewTabGuid,
+          scheduledSurfaceGuid: currentScheduledSurfaceGuid,
           startDate: startDate.toFormat('yyyy-MM-dd'),
           endDate: endDate.toFormat('yyyy-MM-dd'),
         },
@@ -99,14 +106,14 @@ export const SchedulePage: React.FC = (): JSX.Element => {
     if (direction === 'future') {
       // shift the dates two days into the future
       filters = {
-        newTabGuid: currentNewTabGuid,
+        scheduledSurfaceGuid: currentScheduledSurfaceGuid,
         startDate: startDate.plus({ days: 2 }).toFormat('yyyy-MM-dd'),
         endDate: endDate.plus({ days: 2 }).toFormat('yyyy-MM-dd'),
       };
     } else {
       // shift the dates two days into the past
       filters = {
-        newTabGuid: currentNewTabGuid,
+        scheduledSurfaceGuid: currentScheduledSurfaceGuid,
         startDate: startDate.minus({ days: 2 }).toFormat('yyyy-MM-dd'),
         endDate: endDate.minus({ days: 2 }).toFormat('yyyy-MM-dd'),
       };
@@ -151,7 +158,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
   const [deleteScheduledItem] = useDeleteScheduledItemMutation();
 
   /**
-   * Remove item from New Tab Schedule.
+   * Remove item from Scheduled Surface.
    *
    * @param values
    * @param formikHelpers
@@ -186,7 +193,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
       <h1>Schedule</h1>
 
       {currentItem && (
-        <RemoveItemFromNewTabModal
+        <RemoveItemFromScheduledSurfaceModal
           item={currentItem}
           isOpen={removeModalOpen}
           onSave={onRemoveSave}
@@ -194,12 +201,12 @@ export const SchedulePage: React.FC = (): JSX.Element => {
         />
       )}
 
-      {newTabOptions.length > 0 && (
+      {scheduledSurfaceOptions.length > 0 && (
         <Box mb={3}>
           View schedule for:
           <SplitButton
-            onMenuOptionClick={updateNewTab}
-            options={newTabOptions}
+            onMenuOptionClick={updateScheduledSurface}
+            options={scheduledSurfaceOptions}
             size="small"
           />
         </Box>

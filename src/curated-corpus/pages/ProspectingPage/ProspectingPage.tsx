@@ -8,10 +8,10 @@ import { HandleApiResponse } from '../../../_shared/components';
 import {
   AddProspectModal,
   ApprovedItemModal,
-  NewTabGroupedList,
   ProspectListCard,
   RefreshProspectsModal,
   RejectItemModal,
+  ScheduledSurfaceGroupedList,
   ScheduleItemModal,
   SplitButton,
 } from '../../components';
@@ -22,10 +22,10 @@ import {
   RejectProspectMutationVariables,
   ScheduledCuratedCorpusItemsResult,
   useCreateApprovedCuratedCorpusItemMutation,
-  useCreateNewTabFeedScheduledItemMutation,
-  useGetNewTabsForUserQuery,
+  useCreateScheduledCuratedCorpusItemMutation,
   useGetProspectsQuery,
   useGetScheduledItemsQuery,
+  useGetScheduledSurfacesForUserQuery,
   useRejectProspectMutation,
   useUpdateProspectAsCuratedMutation,
   useUploadApprovedCuratedCorpusItemImageMutation,
@@ -45,69 +45,84 @@ import { DropdownOption } from '../../helpers/definitions';
 import { EmptyState } from './EmptyState';
 
 export const ProspectingPage: React.FC = (): JSX.Element => {
-  // set up the initial new tab guid value (nothing at this point)
-  const [currentNewTabGuid, setCurrentNewTabGuid] = useState('');
+  // set up the initial scheduled surface guid value (nothing at this point)
+  const [currentScheduledSurfaceGuid, setCurrentScheduledSurfaceGuid] =
+    useState('');
 
-  // Why not set up the options we'll feed to the New Tab dropdown as well
+  // Why not set up the options we'll feed to the Scheduled Surface dropdown as well
   // at the same time?
-  const [newTabOptions, setNewTabOptions] = useState<DropdownOption[]>([]);
+  const [scheduledSurfaceOptions, setScheduledSurfaceOptions] = useState<
+    DropdownOption[]
+  >([]);
 
-  // Ditto for the prospect filters dropdown - it depends on which New Tab you're on.
+  // Ditto for the prospect filters dropdown - it depends on which Scheduled Surface you're on.
   const [prospectFilters, setProspectFilters] = useState<DropdownOption[]>([]);
 
-  // Get the list of New Tabs the currently logged-in user has access to.
-  const { data: newTabData } = useGetNewTabsForUserQuery();
+  // Get the list of Scheduled Surfaces the currently logged-in user has access to.
+  const { data: scheduledSurfaceData } = useGetScheduledSurfacesForUserQuery();
 
-  // Once the data is ready, populate the values for current New Tab Guid
+  // Once the data is ready, populate the values for current Scheduled Surface GUID
   // and the dropdown options.
   useEffect(() => {
-    if (newTabData) {
-      const options = newTabData.getNewTabsForUser.map((newTab) => {
-        return { code: newTab.guid, name: newTab.name };
-      });
-      setCurrentNewTabGuid(options[0].code);
-      setNewTabOptions(options);
+    if (scheduledSurfaceData) {
+      const options = scheduledSurfaceData.getScheduledSurfacesForUser.map(
+        (scheduledSurface) => {
+          return { code: scheduledSurface.guid, name: scheduledSurface.name };
+        }
+      );
+      if (options.length > 0) {
+        setCurrentScheduledSurfaceGuid(options[0].code);
+        setScheduledSurfaceOptions(options);
+      }
 
       // Populate the Prospect Type filtering dropdown with values
-      // relevant to this New Tab.
-      const filters = getProspectFilterOptions(
-        newTabData.getNewTabsForUser[0].prospectTypes
-      );
-      setProspectFilters(filters);
+      // relevant to this Scheduled Surface.
+      if (scheduledSurfaceData.getScheduledSurfacesForUser[0]) {
+        const filters = getProspectFilterOptions(
+          scheduledSurfaceData.getScheduledSurfacesForUser[0].prospectTypes
+        );
+        setProspectFilters(filters);
+      }
     }
-  }, [newTabData]);
+  }, [scheduledSurfaceData]);
 
   // set up initial start/end dates for the query
   const startDate = DateTime.local().toFormat('yyyy-MM-dd');
   const endDate = DateTime.local().plus({ days: 1 }).toFormat('yyyy-MM-dd');
 
   /**
-   * When the user selects another New Tab from the "I am curating for..." dropdown,
-   * refetch all the data on the page for that New Tab. That includes relevant
-   * prospects, prospect types, and the scheduled items on the sidebar.
+   * When the user selects another Scheduled Surface from the "I am curating for..."
+   * dropdown, refetch all the data on the page for that surface.
+   * This includes relevant prospects, prospect types, and the scheduled items
+   * on the sidebar.
    */
-  const updateNewTab = (option: DropdownOption) => {
-    // fetch prospects for the selected New Tab
-    refetch({ newTab: option.code });
+  const updateScheduledSurface = (option: DropdownOption) => {
+    // fetch prospects for the selected Scheduled Surface
+    refetch({ scheduledSurfaceGuid: option.code });
 
-    // fetch scheduled items for the selected New Tab
+    // fetch scheduled items for the selected Scheduled Surface
     refetchScheduled({
-      filters: { newTabGuid: currentNewTabGuid, endDate, startDate },
+      filters: {
+        scheduledSurfaceGuid: currentScheduledSurfaceGuid,
+        endDate,
+        startDate,
+      },
     });
 
-    // Update the split button to reflect which New Tab the user is now on.
-    setCurrentNewTabGuid(option.code);
+    // Update the split button to reflect which ScheduledSurface the user is now on.
+    setCurrentScheduledSurfaceGuid(option.code);
 
-    // Get the relevant New Tab object out of the list of all new tabs
+    // Get the relevant Scheduled Surface object out of the list of all surfaces
     // we fetched earlier for the user.
-    const currentNewTab = newTabData?.getNewTabsForUser.filter(
-      (newTab) => newTab.guid === option.code
-    )[0];
+    const currentScheduledSurface =
+      scheduledSurfaceData?.getScheduledSurfacesForUser.filter(
+        (surface) => surface.guid === option.code
+      )[0];
 
     // Update the Prospect Type dropdown with values available
-    // for the current New Tab.
+    // for the current Scheduled Surface
     const filterOptions = getProspectFilterOptions(
-      currentNewTab?.prospectTypes!
+      currentScheduledSurface?.prospectTypes!
     );
     setProspectFilters(filterOptions);
   };
@@ -118,10 +133,10 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     // card from the screen manually once the prospect has been curated.
     fetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
-    variables: { newTab: currentNewTabGuid },
+    variables: { scheduledSurfaceGuid: currentScheduledSurfaceGuid },
   });
 
-  // Get today and tomorrow's items that are already scheduled for this New Tab
+  // Get today and tomorrow's items that are already scheduled for this Scheduled Surface
   const {
     loading: loadingScheduled,
     error: errorScheduled,
@@ -132,7 +147,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     notifyOnNetworkStatusChange: true,
     variables: {
       filters: {
-        newTabGuid: currentNewTabGuid,
+        scheduledSurfaceGuid: currentScheduledSurfaceGuid,
         startDate,
         endDate,
       },
@@ -147,7 +162,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   );
 
   /**
-   * Set the current Curated Item to be worked on (e.g., to add to New Tab optionally).
+   * Set the current Curated Item to be worked on (e.g., to add to Scheduled Surface optionally).
    */
   const [approvedItem, setApprovedItem] = useState<
     ApprovedCuratedCorpusItem | undefined
@@ -176,7 +191,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
    */
   const [addProspectModalOpen, toggleAddProspectModal] = useToggle(false);
   /**
-   * Keep track of whether the "Schedule this item for New Tab" modal is open or not.
+   * Keep track of whether the "Schedule this item" modal is open or not.
    */
   const [scheduleModalOpen, toggleScheduleModal] = useToggle(false);
 
@@ -395,7 +410,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   };
 
   // 1. Prepare the "schedule curated item" mutation
-  const [scheduleCuratedItem] = useCreateNewTabFeedScheduledItemMutation();
+  const [scheduleCuratedItem] = useCreateScheduledCuratedCorpusItemMutation();
   // 2. Schedule the curated item when the user saves a scheduling request
   const onScheduleSave = (
     values: FormikValues,
@@ -404,7 +419,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     // Set out all the variables we need to pass to the mutation
     const variables = {
       approvedItemExternalId: approvedItem?.externalId,
-      newTabGuid: values.newTabGuid,
+      scheduledSurfaceGuid: values.scheduledSurfaceGuid,
       scheduledDate: values.scheduledDate.toISODate(),
     };
 
@@ -482,9 +497,9 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       {approvedItem && (
         <ScheduleItemModal
           approvedItem={approvedItem}
-          headingCopy="Optional: schedule this item for New Tab"
+          headingCopy="Optional: schedule this item"
           isOpen={scheduleModalOpen}
-          newTabGuid={currentNewTabGuid}
+          scheduledSurfaceGuid={currentScheduledSurfaceGuid}
           onSave={onScheduleSave}
           toggleModal={toggleScheduleModal}
         />
@@ -495,12 +510,12 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         <Grid item xs={12} sm={9}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
-              {newTabOptions.length > 0 && (
+              {scheduledSurfaceOptions.length > 0 && (
                 <>
                   I am prospecting for
                   <SplitButton
-                    onMenuOptionClick={updateNewTab}
-                    options={newTabOptions}
+                    onMenuOptionClick={updateScheduledSurface}
+                    options={scheduledSurfaceOptions}
                     size="small"
                   />
                 </>
@@ -572,7 +587,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         </Grid>
         <Hidden xsDown>
           <Grid item sm={3}>
-            <h4>Scheduled for New Tab</h4>
+            <h4>Scheduled for today and tomorrow</h4>
             {!dataScheduled && (
               <HandleApiResponse
                 loading={loadingScheduled}
@@ -582,7 +597,10 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
             {dataScheduled &&
               dataScheduled.getScheduledCuratedCorpusItems.map(
                 (data: ScheduledCuratedCorpusItemsResult) => (
-                  <NewTabGroupedList key={data.scheduledDate} data={data} />
+                  <ScheduledSurfaceGroupedList
+                    key={data.scheduledDate}
+                    data={data}
+                  />
                 )
               )}
           </Grid>

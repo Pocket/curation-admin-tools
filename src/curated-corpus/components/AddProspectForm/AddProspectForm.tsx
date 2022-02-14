@@ -15,12 +15,13 @@ import { useStyles } from './AddProspectForm.styles';
 import {
   ApprovedCuratedCorpusItem,
   CreateApprovedCuratedCorpusItemInput,
+  CreateScheduledCuratedCorpusItemInput,
   useCreateApprovedCuratedCorpusItemMutation,
-  useCreateNewTabFeedScheduledItemMutation,
+  useCreateScheduledCuratedCorpusItemMutation,
   useGetApprovedItemByUrlLazyQuery,
+  useGetUrlMetadataLazyQuery,
   useUploadApprovedCuratedCorpusItemImageMutation,
 } from '../../../api/generatedTypes';
-import { useGetUrlMetadataLazyQuery } from '../../../api/generatedTypes';
 import {
   useNotifications,
   useRunMutation,
@@ -62,7 +63,7 @@ export const AddProspectForm: React.FC<
 
   // Keep track of whether the "Approve Item" modal is open or not
   const [approvedItemModalOpen, toggleApprovedItemModal] = useToggle(false);
-  //Keep track of whether the "Schedule this item for New Tab" modal is open or not.
+  //Keep track of whether the "Schedule this item" modal is open or not.
   const [scheduleModalOpen, toggleScheduleModal] = useToggle(false);
 
   // function to toggle both modals
@@ -83,7 +84,7 @@ export const AddProspectForm: React.FC<
     useCreateApprovedCuratedCorpusItemMutation();
 
   // prepare mutation hook to schedule the approved item
-  const [scheduleCuratedItem] = useCreateNewTabFeedScheduledItemMutation();
+  const [scheduleCuratedItem] = useCreateScheduledCuratedCorpusItemMutation();
 
   // lazy query to check if url already exists in the corpus
   const [getApprovedItemByUrl] = useGetApprovedItemByUrlLazyQuery({
@@ -174,9 +175,9 @@ export const AddProspectForm: React.FC<
     formikHelpers: FormikHelpers<any>
   ): void => {
     // Set out all the variables we need to pass to the mutation
-    const variables = {
-      approvedItemExternalId: approvedItem?.externalId,
-      newTabGuid: values.newTabGuid,
+    const variables: CreateScheduledCuratedCorpusItemInput = {
+      approvedItemExternalId: approvedItem?.externalId!,
+      scheduledSurfaceGuid: values.scheduledSurfaceGuid,
       scheduledDate: values.scheduledDate.toISODate(),
     };
 
@@ -234,7 +235,7 @@ export const AddProspectForm: React.FC<
               label="Item URL"
               fieldProps={formik.getFieldProps('itemUrl')}
               fieldMeta={formik.getFieldMeta('itemUrl')}
-            ></FormikTextField>
+            />
 
             <SharedFormButtons onCancel={onCancel} />
           </Grid>
@@ -260,7 +261,7 @@ export const AddProspectForm: React.FC<
             approvedItem={approvedItem}
           />
           <ScheduleItemModal
-            headingCopy="Optional: schedule this item for New Tab"
+            headingCopy="Optional: schedule this item"
             approvedItem={approvedItem}
             isOpen={scheduleModalOpen}
             toggleModal={() => {

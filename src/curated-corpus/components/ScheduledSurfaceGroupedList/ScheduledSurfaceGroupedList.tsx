@@ -1,14 +1,14 @@
 import React from 'react';
 import { DateTime } from 'luxon';
 import { Grid, Typography } from '@material-ui/core';
-import { MiniNewTabScheduleCard } from '../';
+import { MiniScheduleCard } from '../';
 import {
   ScheduledCuratedCorpusItem,
   ScheduledCuratedCorpusItemsResult,
 } from '../../../api/generatedTypes';
-import { useStyles } from './NewTabGroupedList.styles';
+import { useStyles } from './ScheduledSurfaceGroupedList.styles';
 
-interface NewTabGroupedListProps {
+interface ScheduledSurfaceGroupedListProps {
   /**
    * A list of Scheduled items to display with accompanying data
    * such as the scheduled date.
@@ -17,16 +17,15 @@ interface NewTabGroupedListProps {
 }
 
 /**
- * This component renders a heading with a human-readable date that is also
- * relative to today (e.g., "today", "tomorrow") and a list of items scheduled
- * for New Tab for that day.
+ * This component renders a heading with a human-readable date
+ * and a list of items scheduled for a scheduled surface for that day.
  *
  * @param props
  * @constructor
  */
-export const NewTabGroupedList: React.FC<NewTabGroupedListProps> = (
-  props
-): JSX.Element => {
+export const ScheduledSurfaceGroupedList: React.FC<
+  ScheduledSurfaceGroupedListProps
+> = (props): JSX.Element => {
   const classes = useStyles();
   const { data } = props;
 
@@ -42,7 +41,7 @@ export const NewTabGroupedList: React.FC<NewTabGroupedListProps> = (
         </Typography>
       </Grid>
       {data.items.map((item: ScheduledCuratedCorpusItem) => {
-        return <MiniNewTabScheduleCard key={item.externalId} item={item} />;
+        return <MiniScheduleCard key={item.externalId} item={item} />;
       })}
     </>
   );

@@ -13,7 +13,7 @@ describe('helperFunctions ', () => {
     it('should create an ApprovedCuratedCorpusItem with all the provided fields', () => {
       const prospect: Prospect = {
         id: 'test-prospect-id',
-        newTab: 'en-us',
+        scheduledSurfaceGuid: 'en-us',
         prospectType: ProspectType.Syndicated,
         url: 'test-prospect-url',
         createdAt: 20220110,
@@ -58,7 +58,7 @@ describe('helperFunctions ', () => {
       const prospect: Prospect = {
         id: 'test-prospect-id',
         url: 'test-prospect-url',
-        newTab: 'en-us',
+        scheduledSurfaceGuid: 'en-us',
         prospectType: ProspectType.Global,
       };
 

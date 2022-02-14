@@ -1,7 +1,7 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 /**
- * Styles for the MiniNewTabScheduleCard component.
+ * Styles for the MiniScheduleCard component.
  */
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({

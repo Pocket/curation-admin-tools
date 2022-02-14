@@ -1,14 +1,14 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
-import { RemoveItemFromNewTabForm } from './RemoveItemFromNewTabForm';
+import { RemoveItemFromScheduledSurfaceForm } from './RemoveItemFromScheduledSurfaceForm';
 import userEvent from '@testing-library/user-event';
 
-describe('The RemoveItemFromNewTabForm component', () => {
+describe('The RemoveItemFromScheduledSurfaceForm component', () => {
   const handleSubmit = jest.fn();
 
   it('renders successfully', () => {
     render(
-      <RemoveItemFromNewTabForm
+      <RemoveItemFromScheduledSurfaceForm
         onSubmit={handleSubmit}
         title="This is a test"
       />
@@ -21,7 +21,7 @@ describe('The RemoveItemFromNewTabForm component', () => {
 
   it('has the requisite fields and buttons', () => {
     render(
-      <RemoveItemFromNewTabForm
+      <RemoveItemFromScheduledSurfaceForm
         onSubmit={handleSubmit}
         title="This is a test"
       />
@@ -39,7 +39,7 @@ describe('The RemoveItemFromNewTabForm component', () => {
 
   it('displays an error message if no checkboxes have been selected', async () => {
     render(
-      <RemoveItemFromNewTabForm
+      <RemoveItemFromScheduledSurfaceForm
         onSubmit={handleSubmit}
         title="This is a test"
       />
@@ -58,7 +58,7 @@ describe('The RemoveItemFromNewTabForm component', () => {
 
   it('submits the form if the checkbox was selected', async () => {
     render(
-      <RemoveItemFromNewTabForm
+      <RemoveItemFromScheduledSurfaceForm
         onSubmit={handleSubmit}
         title="This is a test"
       />
