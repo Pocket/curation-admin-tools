@@ -20,3 +20,4 @@ export { TabPanel } from './TabPanel/TabPanel';
 export { TabSet } from './TabSet/TabSet';
 export type { CustomTabType } from './TabSet/TabSet';
 export { ImageUpload } from '../../curated-corpus/components/ImageUpload/ImageUpload';
+export { PageNotFound } from '../components/PageNotFound/PageNotFound';

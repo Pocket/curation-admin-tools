@@ -24,7 +24,6 @@ const SecuredApp = (): JSX.Element => {
   const { authService } = useAuth();
 
   const login = async () => authService.authorize();
-  const logout = async () => authService.logout();
 
   if (authService.isPending()) {
     return <div>Loading...</div>;
@@ -63,7 +62,6 @@ const SecuredApp = (): JSX.Element => {
 
   return (
     <div>
-      <button onClick={logout}>Logout</button>
       <App />
     </div>
   );
