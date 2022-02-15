@@ -30,7 +30,7 @@ export const HeaderConnector: React.FC<HeaderConnectorProps> = (
     <Header
       hasUser={authService.getUser() != null}
       onLogout={() => {
-        authService.logout(true);
+        authService.logout();
       }}
       menuLinks={menuLinks}
       parsedIdToken={parsedIdToken}

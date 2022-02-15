@@ -7,6 +7,7 @@ import { SnackbarProvider } from 'notistack';
 import theme from './theme';
 
 import { LandingPage } from './_shared/pages';
+import { PageNotFound } from './_shared/components/';
 import { CollectionsLandingPage } from './collections/pages';
 import { CuratedCorpusLandingPage } from './curated-corpus/pages';
 import { useMozillaAuth } from './_shared/hooks';
@@ -51,6 +52,7 @@ function App(): JSX.Element {
                     <CuratedCorpusLandingPage />
                   </Route>
                 )}
+                <Route path="*" component={PageNotFound} />
               </Switch>
             </>
           </BrowserRouter>
