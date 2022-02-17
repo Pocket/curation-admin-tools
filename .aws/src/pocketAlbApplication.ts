@@ -31,12 +31,12 @@ function createPagerDuty(scope: Construct) {
   return new PocketPagerDuty(scope, 'pagerduty_policies', {
     prefix: config.prefix,
     service: {
-      criticalEscalationPolicyId: incidentManagement.get(
-        'policy_backend_product_critical_id'
-      ),
-      nonCriticalEscalationPolicyId: incidentManagement.get(
-        'policy_backend_product_non_critical_id'
-      ),
+      criticalEscalationPolicyId: incidentManagement
+        .get('policy_backend_product_critical_id')
+        .toString(),
+      nonCriticalEscalationPolicyId: incidentManagement
+        .get('policy_backend_product_non_critical_id')
+        .toString(),
     },
   });
 }

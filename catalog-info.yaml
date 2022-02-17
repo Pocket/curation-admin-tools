@@ -1,0 +1,23 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: curation-admin-tools
+  description: A suite of internal tools for Pocket curators developed with React and TypeScript.
+  annotations:
+    github.com/project-slug: pocket/curation-admin-tools
+    github.com/team-slug: Pocket/backend
+    circleci.com/project-slug: github/pocket/curation-admin-tools
+    sentry.io/project-slug: curation-admin-tools
+  links:
+    - url: https://curation-admin-tools.readitlater.com/
+      title: Curation Admin Tools (Production)
+      icon: collections
+    - url: https://curation-admin-tools.getpocket.dev/
+      title: Curation Admin Tools (Dev)
+      icon: collections
+spec:
+  type: service
+  owner: backend
+  lifecycle: production
+  consumesApis:
+    - admin-api
