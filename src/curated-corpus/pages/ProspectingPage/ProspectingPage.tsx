@@ -321,9 +321,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     formikHelpers: FormikHelpers<any>
   ): Promise<void> => {
     //build an approved item
-    const languageCode: string = values.language === 'English' ? 'en' : 'de';
-    const curationStatus = values.curationStatus.toUpperCase();
-    const topic: string = values.topic.toUpperCase();
+
     const imageUrl: string = s3ImageUrl;
 
     const approvedItem = {
@@ -331,11 +329,11 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       url: values.url,
       title: values.title,
       excerpt: values.excerpt,
-      status: curationStatus,
-      language: languageCode,
+      status: values.curationStatus,
+      language: values.language,
       publisher: values.publisher,
       imageUrl,
-      topic,
+      topic: values.topic,
       isCollection: values.collection,
       isTimeSensitive: values.timeSensitive,
       isSyndicated: values.syndicated,
