@@ -1,7 +1,10 @@
 import React from 'react';
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import { validationSchema } from './ApprovedItemForm.validation';
-import { ApprovedCuratedCorpusItem } from '../../../api/generatedTypes';
+import {
+  ApprovedCuratedCorpusItem,
+  CuratedStatus,
+} from '../../../api/generatedTypes';
 import {
   curationStatusOptions,
   DropdownOption,
@@ -67,28 +70,18 @@ export const ApprovedItemForm: React.FC<
     onImageSave: onImageSaveFromParent,
   } = props;
 
-  const approvedItemCorpus = curationStatusOptions.find(
-    (item) => item.code === approvedItem.status
-  )?.name;
-
-  const approvedItemTopic = topics.find(
-    (item) => item.code === approvedItem.topic
-  )?.name;
-
-  const approvedItemLanguage = languages.find(
-    (item) => item.code.toLowerCase() === approvedItem.language
-  )?.name;
-
   const formik = useFormik({
     initialValues: {
       url: approvedItem.url,
       title: approvedItem.title,
       publisher: approvedItem.publisher,
-      language: approvedItemLanguage ?? '',
-      topic: approvedItemTopic ?? '',
+      // The language code may be coming in pre-filled from the prospect in this form
+      // and there it's in lower case, e.g. "en" rather than "EN".
+      language: approvedItem.language.toUpperCase() ?? '',
+      topic: approvedItem.topic ?? '',
       curationStatus: isRecommendation
-        ? 'Recommendation'
-        : approvedItemCorpus ?? '',
+        ? CuratedStatus.Recommendation
+        : approvedItem.status ?? '',
       timeSensitive: approvedItem.isTimeSensitive,
       syndicated: approvedItem.isSyndicated,
       collection: approvedItem.isCollection,
@@ -184,7 +177,7 @@ export const ApprovedItemForm: React.FC<
                         <option aria-label="None" />
                         {languages.map((language: DropdownOption) => {
                           return (
-                            <option value={language.name} key={language.code}>
+                            <option value={language.code} key={language.code}>
                               {language.name}
                             </option>
                           );
@@ -201,7 +194,7 @@ export const ApprovedItemForm: React.FC<
                         <option aria-label="None" value="" />
                         {topics.map((topic: DropdownOption) => {
                           return (
-                            <option value={topic.name} key={topic.code}>
+                            <option value={topic.code} key={topic.code}>
                               {topic.name}
                             </option>
                           );
@@ -218,7 +211,7 @@ export const ApprovedItemForm: React.FC<
                         <option aria-label="None" value="" />
                         {curationStatusOptions.map((corpus: DropdownOption) => {
                           return (
-                            <option value={corpus.name} key={corpus.code}>
+                            <option value={corpus.code} key={corpus.code}>
                               {corpus.name}
                             </option>
                           );

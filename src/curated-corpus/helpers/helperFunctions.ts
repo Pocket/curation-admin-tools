@@ -8,21 +8,6 @@ import {
   Prospect,
   UrlMetadata,
 } from '../../api/generatedTypes';
-/**
- *
- * This is a helper file that contains some helper functions. Right now
- * it only has one but we could add more to it
- */
-/**
- *
- * This is a helper file that contains some helper functions. Right now
- * it only has one but we could add more to it
- */
-/**
- *
- * This is a helper file that contains some helper functions. Right now
- * it only has one but we could add more to it
- */
 
 /**
  *
@@ -103,21 +88,17 @@ export const transformFormInputToCreateApprovedItemInput = (
   values: FormikValues,
   prospectId?: string
 ): CreateApprovedCuratedCorpusItemInput => {
-  const languageCode = values.language === 'English' ? 'en' : 'de';
-  const curationStatus = values.curationStatus.toUpperCase();
-  const topic = values.topic.toUpperCase();
-
   return {
     prospectId:
       prospectId || uuidv5(values.url, '9edace02-b9c6-4705-a0d6-16476438557b'),
     url: values.url,
     title: values.title,
     excerpt: values.excerpt,
-    status: curationStatus,
-    language: languageCode,
+    status: values.curationStatus,
+    language: values.language,
     publisher: values.publisher,
     imageUrl: values.imageUrl,
-    topic,
+    topic: values.topic,
     isCollection: values.collection,
     isTimeSensitive: values.timeSensitive,
     isSyndicated: values.syndicated,

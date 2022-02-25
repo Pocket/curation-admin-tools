@@ -6,6 +6,7 @@ import { SnackbarProvider } from 'notistack';
 import {
   ApprovedCuratedCorpusItem,
   CuratedStatus,
+  Topics,
 } from '../../../api/generatedTypes';
 import { ApprovedItemForm } from './ApprovedItemForm';
 import { uploadApprovedItemImage } from '../../../api/mutations/uploadApprovedItemImage';
@@ -25,9 +26,9 @@ describe('The ApprovedItemForm component', () => {
       imageUrl: 'https://placeimg.com/640/480/people?random=494',
       excerpt:
         'Everything You Wanted to Know About React and Were Afraid To Ask',
-      language: 'de',
+      language: 'DE',
       publisher: 'Amazing Inventions',
-      topic: 'TECHNOLOGY',
+      topic: Topics.HealthFitness,
       status: CuratedStatus.Recommendation,
       isCollection: false,
       isSyndicated: false,
@@ -68,17 +69,31 @@ describe('The ApprovedItemForm component', () => {
     expect(excerpt).toBeInTheDocument();
     expect(excerpt).toHaveValue(item.excerpt);
 
+    // Check for the value we send to the API ("DE" here)
     const language = screen.getByLabelText(/Language/);
     expect(language).toBeInTheDocument();
-    expect(language).toHaveValue('German');
+    expect(language).toHaveValue(item.language);
 
+    // Make sure the display name for this language is correct, too ("German")
+    // (need to check both for a select field!)
+    const displayLanguage = screen.getByDisplayValue(/German/);
+    expect(displayLanguage).toBeInTheDocument();
+
+    // Check for the value we send to the API ("HEALTH_FITNESS" here)
     const topic = screen.getByLabelText(/Topic/);
     expect(topic).toBeInTheDocument();
-    expect(topic).toHaveValue('Technology');
+    expect(topic).toHaveValue(Topics.HealthFitness);
+    // Make sure the display name for this topic is correct, too ("Health & Fitness")
+    const displayTopic = screen.getByDisplayValue(/Health & Fitness/);
+    expect(displayTopic).toBeInTheDocument();
 
+    // Check for the field value ("RECOMMENDATION" here)
     const curationStatus = screen.getByLabelText(/Curation Status/);
     expect(curationStatus).toBeInTheDocument();
-    expect(curationStatus).toHaveValue('Recommendation');
+    expect(curationStatus).toHaveValue(CuratedStatus.Recommendation);
+    // Make sure the display name is correct, too ("Recommendation")
+    const displayStatus = screen.getByDisplayValue(/Recommendation/);
+    expect(displayStatus).toBeInTheDocument();
 
     const timeSensitive = screen.getByLabelText(/Time Sensitive/);
     expect(timeSensitive).toBeInTheDocument();
