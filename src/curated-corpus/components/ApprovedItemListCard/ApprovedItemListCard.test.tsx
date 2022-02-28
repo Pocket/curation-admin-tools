@@ -82,15 +82,6 @@ describe('The ApprovedItemListCard component', () => {
 
     expect(screen.getByText(/^de$/i)).toBeInTheDocument();
   });
-  it('should render approved item card with createdBy', () => {
-    render(
-      <MemoryRouter>
-        <ApprovedItemListCard item={item} />
-      </MemoryRouter>
-    );
-
-    expect(screen.getByText(item.createdBy)).toBeInTheDocument();
-  });
 
   it('should render approved item card with excerpt', () => {
     render(
