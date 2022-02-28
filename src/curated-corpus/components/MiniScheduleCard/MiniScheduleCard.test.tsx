@@ -59,6 +59,8 @@ describe('The MiniScheduleCard component', () => {
       'href',
       expect.stringContaining(item.approvedItem.url)
     );
+    // The link also opens in a new tab
+    expect(link).toHaveAttribute('target', expect.stringContaining('_blank'));
 
     // There is a publisher on the page
     const publisher = screen.getByText(item.approvedItem.publisher);

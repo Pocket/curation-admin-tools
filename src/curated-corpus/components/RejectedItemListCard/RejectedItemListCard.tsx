@@ -42,7 +42,7 @@ export const RejectedItemListCard: React.FC<RejectedItemListCardProps> = (
           align="left"
           gutterBottom
         >
-          <Link href={item.url} className={classes.link}>
+          <Link href={item.url} target="_blank" className={classes.link}>
             {item.title}
           </Link>
         </Typography>

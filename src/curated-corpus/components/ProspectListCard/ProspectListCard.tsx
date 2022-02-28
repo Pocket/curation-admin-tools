@@ -63,7 +63,7 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
           </Typography>
         </Grid>
         <Grid item xs={12} sm={9}>
-          <Link href={prospect.url} className={classes.link}>
+          <Link href={prospect.url} target="_blank" className={classes.link}>
             <Typography
               className={classes.title}
               variant="h3"

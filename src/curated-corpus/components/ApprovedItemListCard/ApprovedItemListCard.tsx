@@ -60,7 +60,7 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
           align="left"
           gutterBottom
         >
-          <Link href={item.url} className={classes.link}>
+          <Link href={item.url} target="_blank" className={classes.link}>
             {item.title}
           </Link>
         </Typography>

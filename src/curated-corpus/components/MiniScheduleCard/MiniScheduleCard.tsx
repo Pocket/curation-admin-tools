@@ -42,7 +42,11 @@ export const MiniScheduleCard: React.FC<MiniScheduleCardProps> = (
           align="left"
           gutterBottom
         >
-          <Link href={item.approvedItem.url} className={classes.link}>
+          <Link
+            href={item.approvedItem.url}
+            target="_blank"
+            className={classes.link}
+          >
             {item.approvedItem.title}
           </Link>
         </Typography>
