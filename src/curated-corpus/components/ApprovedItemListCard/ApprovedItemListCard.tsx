@@ -12,7 +12,6 @@ import {
 import AlarmIcon from '@material-ui/icons/Alarm';
 import BookmarksIcon from '@material-ui/icons/Bookmarks';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
-import FaceIcon from '@material-ui/icons/Face';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import LanguageIcon from '@material-ui/icons/Language';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
@@ -81,12 +80,6 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
             className={classes.status}
             primary={item.status.toLowerCase()}
           />
-        </ListItem>
-        <ListItem>
-          <ListItemIcon className={classes.listItemIcon}>
-            <FaceIcon />
-          </ListItemIcon>
-          <ListItemText className={classes.topic} primary={item.createdBy} />
         </ListItem>
         <ListItem>
           <ListItemIcon className={classes.listItemIcon}>
