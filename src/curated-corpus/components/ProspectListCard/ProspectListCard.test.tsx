@@ -46,6 +46,8 @@ describe('The ProspectListCard component', () => {
     const link = screen.getByRole('link');
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute('href', expect.stringContaining(prospect.url));
+    // The link also opens in a new tab
+    expect(link).toHaveAttribute('target', expect.stringContaining('_blank'));
 
     // The excerpt is also present
     const excerpt = screen.getByText(/wanted to know about dynamo/i);

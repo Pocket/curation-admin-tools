@@ -36,6 +36,8 @@ describe('The RejectedItemListCard component', () => {
       'href',
       expect.stringContaining(rejectedItem.url)
     );
+    // The link also opens in a new tab
+    expect(link).toHaveAttribute('target', expect.stringContaining('_blank'));
   });
 
   it('should render rejected item card with language', () => {
