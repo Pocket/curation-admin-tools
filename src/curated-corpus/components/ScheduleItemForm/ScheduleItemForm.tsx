@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Grid, LinearProgress, TextField } from '@material-ui/core';
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import { DatePicker } from '@material-ui/pickers';
@@ -80,6 +80,13 @@ export const ScheduleItemForm: React.FC<
   } = props;
 
   const tomorrow = DateTime.local().plus({ days: 1 });
+
+  // Run the lookup query for scheduled items on loading the component,
+  // so that users can see straight away how many stories have already
+  // been scheduled for the default date (tomorrow).
+  useEffect(() => {
+    handleDateChange(tomorrow);
+  }, []);
 
   const formik = useFormik({
     initialValues: {
