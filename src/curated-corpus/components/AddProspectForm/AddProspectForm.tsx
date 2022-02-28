@@ -235,6 +235,7 @@ export const AddProspectForm: React.FC<
               label="Item URL"
               fieldProps={formik.getFieldProps('itemUrl')}
               fieldMeta={formik.getFieldMeta('itemUrl')}
+              autoFocus
             />
 
             <SharedFormButtons onCancel={onCancel} />
