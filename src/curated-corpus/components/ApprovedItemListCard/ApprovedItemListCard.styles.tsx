@@ -37,5 +37,15 @@ export const useStyles = makeStyles((theme: Theme) =>
     status: {
       textTransform: 'capitalize',
     },
+    imageOverlay: {
+      position: 'absolute',
+      top: 0,
+      right: 0,
+      color: '#FFFFFF',
+      backgroundColor: '#555555',
+      opacity: '0.8',
+      borderRadius: '0.125rem',
+      padding: '0.25rem',
+    },
   })
 );
