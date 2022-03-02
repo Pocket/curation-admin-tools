@@ -53,7 +53,7 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
       />
 
       {item.status === CuratedStatus.Recommendation && (
-        <div className={classes.imageOverlay}>Rec.</div>
+        <div className={classes.imageOverlay}>Rec</div>
       )}
 
       <CardContent className={classes.content}>
