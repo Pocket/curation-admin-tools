@@ -9,6 +9,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       height: '100%',
       display: 'flex',
       flexDirection: 'column',
+      position: 'relative',
     },
     actions: {
       margin: 'auto',

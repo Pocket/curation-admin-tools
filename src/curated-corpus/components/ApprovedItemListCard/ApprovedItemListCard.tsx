@@ -14,9 +14,11 @@ import BookmarksIcon from '@material-ui/icons/Bookmarks';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import LanguageIcon from '@material-ui/icons/Language';
-import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import { useStyles } from './ApprovedItemListCard.styles';
-import { ApprovedCuratedCorpusItem } from '../../../api/generatedTypes';
+import {
+  ApprovedCuratedCorpusItem,
+  CuratedStatus,
+} from '../../../api/generatedTypes';
 import { topics } from '../../helpers/definitions';
 
 interface ApprovedItemListCardProps {
@@ -49,6 +51,11 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
         }
         alt={item.title}
       />
+
+      {item.status === CuratedStatus.Recommendation && (
+        <div className={classes.imageOverlay}>Rec</div>
+      )}
+
       <CardContent className={classes.content}>
         <Typography className={classes.publisher} gutterBottom>
           {item.publisher}
@@ -72,33 +79,12 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
       <div className={classes.flexGrow} />
 
       <List dense className={classes.list}>
-        <ListItem>
-          <ListItemIcon className={classes.listItemIcon}>
-            <ThumbUpIcon />
-          </ListItemIcon>
-          <ListItemText
-            className={classes.status}
-            primary={item.status.toLowerCase()}
-          />
-        </ListItem>
-        <ListItem>
-          <ListItemIcon className={classes.listItemIcon}>
-            <LabelOutlinedIcon />
-          </ListItemIcon>
-          <ListItemText className={classes.topic} primary={displayTopic} />
-        </ListItem>
-        <ListItem divider>
-          <ListItemIcon className={classes.listItemIcon}>
-            <LanguageIcon />
-          </ListItemIcon>
-          <ListItemText primary={item.language.toUpperCase()} />
-        </ListItem>
         {item.isSyndicated && (
           <ListItem>
             <ListItemIcon className={classes.listItemIcon}>
               <CheckCircleOutlineIcon fontSize="small" />
             </ListItemIcon>
-            <ListItemText secondary={'Syndicated'} />
+            <ListItemText primary={'Syndicated'} />
           </ListItem>
         )}
         {item.isCollection && (
@@ -106,7 +92,7 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
             <ListItemIcon className={classes.listItemIcon}>
               <BookmarksIcon fontSize="small" />
             </ListItemIcon>
-            <ListItemText secondary={'Collection'} />
+            <ListItemText primary={'Collection'} />
           </ListItem>
         )}
         {item.isTimeSensitive && (
@@ -114,9 +100,21 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
             <ListItemIcon className={classes.listItemIcon}>
               <AlarmIcon fontSize="small" />
             </ListItemIcon>
-            <ListItemText secondary={'Time Sensitive'} />
+            <ListItemText primary={'Time Sensitive'} />
           </ListItem>
         )}
+        <ListItem>
+          <ListItemIcon className={classes.listItemIcon}>
+            <LabelOutlinedIcon />
+          </ListItemIcon>
+          <ListItemText className={classes.topic} primary={displayTopic} />
+        </ListItem>
+        <ListItem>
+          <ListItemIcon className={classes.listItemIcon}>
+            <LanguageIcon />
+          </ListItemIcon>
+          <ListItemText primary={item.language.toUpperCase()} />
+        </ListItem>
       </List>
     </>
   );

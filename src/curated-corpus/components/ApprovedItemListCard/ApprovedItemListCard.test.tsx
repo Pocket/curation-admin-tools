@@ -62,8 +62,9 @@ describe('The ApprovedItemListCard component', () => {
       </MemoryRouter>
     );
 
-    // Shows 'Recommendation' status for a recommended story
-    const recommendation = screen.getByText(/^recommendation/i);
+    // Shows 'Recommendation' status for a recommended story -
+    // shortened to just "Rec" in the UI
+    const recommendation = screen.getByText(/^Rec/i);
     expect(recommendation).toBeInTheDocument();
 
     // Doesn't show the other two possible curated item states
