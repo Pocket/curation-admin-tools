@@ -79,7 +79,7 @@ export function createPocketAlbApplication(
   });
 
   return new PocketALBApplication(scope, 'application', {
-    internal: true,
+    internal: false, //set to true to put it inside our vpc
     prefix: config.prefix,
     alb6CharacterPrefix: config.shortName,
     tags: config.tags,
