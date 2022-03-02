@@ -490,6 +490,8 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       <AddProspectModal
         isOpen={addProspectModalOpen}
         toggleModal={toggleAddProspectModal}
+        approvedItem={approvedItem}
+        setApprovedItem={setApprovedItem}
       />
 
       {approvedItem && (

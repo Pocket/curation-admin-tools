@@ -3,11 +3,22 @@ import React from 'react';
 import { AddProspectFormConnector } from '..';
 
 import { Modal, SharedFormButtonsProps } from '../../../_shared/components';
+import { ApprovedCuratedCorpusItem } from '../../../api/generatedTypes';
 
 interface AddProspectModalProps {
   isOpen: boolean;
 
   toggleModal: VoidFunction;
+
+  /**
+   *
+   */
+  approvedItem: ApprovedCuratedCorpusItem | undefined;
+
+  /**
+   *
+   */
+  setApprovedItem: (approvedItem: ApprovedCuratedCorpusItem) => void;
 }
 
 /**
@@ -16,7 +27,7 @@ interface AddProspectModalProps {
 export const AddProspectModal: React.FC<
   AddProspectModalProps & SharedFormButtonsProps
 > = (props): JSX.Element => {
-  const { isOpen, toggleModal } = props;
+  const { isOpen, toggleModal, approvedItem, setApprovedItem } = props;
 
   return (
     <Modal open={isOpen} handleClose={toggleModal}>
@@ -26,8 +37,9 @@ export const AddProspectModal: React.FC<
         </Grid>
         <Grid item>
           <AddProspectFormConnector
-            onCancel={toggleModal}
             toggleModal={toggleModal}
+            approvedItem={approvedItem}
+            setApprovedItem={setApprovedItem}
           />
         </Grid>
       </Grid>

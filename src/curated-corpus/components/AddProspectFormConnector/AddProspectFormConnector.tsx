@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { SharedFormButtonsProps } from '../../../_shared/components';
 import {
   ApprovedCuratedCorpusItem,
   CreateApprovedCuratedCorpusItemInput,
@@ -27,20 +26,33 @@ import { ScheduleItemModal } from '../ScheduleItemModal/ScheduleItemModal';
 import { AddProspectForm } from '../AddProspectForm/AddProspectForm';
 
 interface AddProspectFormConnectorProps {
+  /**
+   *
+   */
   toggleModal: VoidFunction;
+
+  /**
+   *
+   */
+  approvedItem: ApprovedCuratedCorpusItem | undefined;
+
+  /**
+   *
+   */
+  setApprovedItem: (approvedItem: ApprovedCuratedCorpusItem) => void;
 }
 
 export const AddProspectFormConnector: React.FC<
-  AddProspectFormConnectorProps & SharedFormButtonsProps
+  AddProspectFormConnectorProps
 > = (props) => {
-  const { onCancel, toggleModal } = props;
+  const { toggleModal, approvedItem, setApprovedItem } = props;
 
   // state variable to store the itemUrl field from the form
   const [itemUrl, setItemUrl] = useState<string>('');
 
   // state variable to store the approved item built after
   // getting the item metadata
-  const [approvedItem, setApprovedItem] = useState<ApprovedCuratedCorpusItem>();
+  // const [approvedItem, setApprovedItem] = useState<ApprovedCuratedCorpusItem>();
 
   // set up some hooks
   const { showNotification } = useNotifications();
@@ -201,7 +213,7 @@ export const AddProspectFormConnector: React.FC<
 
   return (
     <>
-      <AddProspectForm onCancel={onCancel} onSubmit={onSubmit} />
+      <AddProspectForm onCancel={toggleModal} onSubmit={onSubmit} />
       {approvedItem && (
         <>
           <ApprovedItemModal
