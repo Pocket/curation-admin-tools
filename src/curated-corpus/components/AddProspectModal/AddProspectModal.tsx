@@ -1,8 +1,8 @@
 import { Grid } from '@material-ui/core';
 import React from 'react';
-import { AddProspectForm } from '..';
+import { AddProspectFormConnector } from '..';
 
-import { SharedFormButtonsProps, Modal } from '../../../_shared/components';
+import { Modal, SharedFormButtonsProps } from '../../../_shared/components';
 
 interface AddProspectModalProps {
   isOpen: boolean;
@@ -25,9 +25,9 @@ export const AddProspectModal: React.FC<
           <h2>Add a New Curated Item</h2>
         </Grid>
         <Grid item>
-          <AddProspectForm
+          <AddProspectFormConnector
             onCancel={toggleModal}
-            toggleAddProspectModal={toggleModal}
+            toggleModal={toggleModal}
           />
         </Grid>
       </Grid>

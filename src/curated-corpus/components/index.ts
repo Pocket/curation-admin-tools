@@ -1,5 +1,6 @@
 export { AddProspectModal } from './AddProspectModal/AddProspectModal';
 export { AddProspectForm } from './AddProspectForm/AddProspectForm';
+export { AddProspectFormConnector } from './AddProspectFormConnector/AddProspectFormConnector';
 export { ApprovedItemCardWrapper } from './ApprovedItemCardWrapper/ApprovedItemCardWrapper';
 export { ApprovedItemListCard } from './ApprovedItemListCard/ApprovedItemListCard';
 export { ApprovedItemModal } from './ApprovedItemModal/ApprovedItemModal';
