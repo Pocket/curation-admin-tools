@@ -42,6 +42,10 @@ describe('The StoryCard component', () => {
       'href',
       expect.stringMatching(story.url)
     );
+    expect(linkToStory).toHaveAttribute(
+      'target',
+      expect.stringMatching('_blank')
+    );
 
     // the title is present
     const title = screen.getByText(story.title);

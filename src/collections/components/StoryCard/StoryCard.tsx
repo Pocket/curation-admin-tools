@@ -37,7 +37,9 @@ export const StoryCard: React.FC<StoryCardProps> = (props): JSX.Element => {
         align="left"
         gutterBottom
       >
-        <a href={story.url}>{story.title}</a>
+        <a href={story.url} target="_blank" rel="noreferrer">
+          {story.title}
+        </a>
       </Typography>
 
       <Typography
