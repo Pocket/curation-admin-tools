@@ -21,6 +21,7 @@ import {
   Prospect,
   RejectProspectMutationVariables,
   ScheduledCuratedCorpusItemsResult,
+  CreateApprovedCuratedCorpusItemMutation,
   useCreateApprovedCuratedCorpusItemMutation,
   useCreateScheduledCuratedCorpusItemMutation,
   useGetProspectsQuery,
@@ -344,36 +345,66 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       createApprovedItem,
       { variables: { data: { ...approvedItem } } },
       'Item successfully added to the curated corpus.',
-      (approvedItemData) => {
-        // call the mutation to mark prospect as approved
-        runMutation(
-          updateProspectAsCurated,
-          { variables: { prospectId: currentProspect?.id } },
-          undefined,
-          () => {
-            toggleApprovedItemModal();
+      (approvedItemData: CreateApprovedCuratedCorpusItemMutation) => {
+        // if we have a prospect id, we need to tell prospect api that this
+        // prospect has been curated
+        if (currentProspect?.id !== '') {
+          // call the mutation to mark prospect as approved
+          runMutation(
+            updateProspectAsCurated,
+            { variables: { prospectId: currentProspect?.id } },
+            undefined,
+            () => {
+              postCreateApprovedItem(
+                approvedItemData.createApprovedCuratedCorpusItem,
+                true
+              );
 
-            if (approvedItem.status === CuratedStatus.Recommendation) {
-              setApprovedItem(approvedItemData.createApprovedCuratedCorpusItem);
-              toggleScheduleModal();
+              formikHelpers.setSubmitting(false);
+            },
+            () => {
+              formikHelpers.setSubmitting(false);
             }
+          );
+        } else {
+          // if we don't have a prospect id, this was a manually added prospect
+          // and we don't need to call prospect api at all
+          postCreateApprovedItem(
+            approvedItemData.createApprovedCuratedCorpusItem,
+            false
+          );
 
-            // Remove the newly curated item from the list of prospects displayed
-            // on the page.
-            setProspects(
-              prospects.filter(
-                (prospect) => prospect.id !== currentProspect?.id!
-              )
-            );
-
-            formikHelpers.setSubmitting(false);
-          },
-          () => {
-            formikHelpers.setSubmitting(false);
-          }
-        );
+          formikHelpers.setSubmitting(false);
+        }
       }
     );
+  };
+
+  /**
+   * common stuff we (may) need to do after creating an approved item
+   *
+   * @param approvedItemStatus (CuratedStatus): the status of the approved item
+   * @param approvedItemData (any): the data we get back from the createApprovedItem mutation
+   * @param filterProspects (boolean): whether or not we need to filter the list of prospects on the screen
+   */
+  const postCreateApprovedItem = (
+    approvedItem: ApprovedCuratedCorpusItem,
+    filterProspects: boolean
+  ): void => {
+    toggleApprovedItemModal();
+
+    if (approvedItem.status === CuratedStatus.Recommendation) {
+      setApprovedItem(approvedItem);
+      toggleScheduleModal();
+    }
+
+    if (filterProspects) {
+      // Remove the newly curated item from the list of prospects displayed
+      // on the page.
+      setProspects(
+        prospects.filter((prospect) => prospect.id !== currentProspect?.id!)
+      );
+    }
   };
 
   /**
@@ -501,7 +532,11 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
           approvedItem={approvedItem}
           headingCopy="Optional: schedule this item"
           isOpen={scheduleModalOpen}
-          scheduledSurfaceGuid={currentScheduledSurfaceGuid}
+          // only pre-select the sheduled surface if the item came from a prospect
+          // if it was manually added, allow the user to select the surface
+          scheduledSurfaceGuid={
+            approvedItem.prospectId ? currentScheduledSurfaceGuid : undefined
+          }
           onSave={onScheduleSave}
           toggleModal={toggleScheduleModal}
         />

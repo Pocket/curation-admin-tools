@@ -13,7 +13,7 @@ describe('The ScheduleItemForm component', () => {
   const scheduledSurfaces: ScheduledSurface[] = [
     {
       name: 'en-US',
-      guid: 'EN_US',
+      guid: 'NEW_TAB_EN_US',
       utcOffset: -4000,
       prospectTypes: [
         ProspectType.Global,
@@ -23,7 +23,7 @@ describe('The ScheduleItemForm component', () => {
     },
     {
       name: 'de-DE',
-      guid: 'DE_DE',
+      guid: 'NEW_TAB_DE_DE',
       utcOffset: 1000,
       prospectTypes: [ProspectType.Global],
     },
@@ -65,5 +65,85 @@ describe('The ScheduleItemForm component', () => {
     const buttons = screen.getAllByRole('button');
     // "Save" and "Cancel" buttons.
     expect(buttons).toHaveLength(2);
+  });
+
+  it('does not pre-select a scheduled surface if none was passed in and the user has access to many', () => {
+    render(
+      <MuiPickersUtilsProvider utils={LuxonUtils}>
+        <ScheduleItemForm
+          data-testId="surface-selector"
+          handleDateChange={jest.fn()}
+          lookupCopy=""
+          selectedDate={DateTime.local()}
+          onSubmit={handleSubmit}
+          scheduledSurfaces={scheduledSurfaces}
+          approvedItemExternalId={'123abc'}
+        />
+      </MuiPickersUtilsProvider>
+    );
+
+    const select = screen.getByLabelText(
+      'Choose a Scheduled Surface'
+    ) as HTMLSelectElement;
+
+    // there should be an empty option and a single scheduled surface option
+    expect(select.options.length).toEqual(scheduledSurfaces.length + 1);
+
+    // the empty option should be selected
+    expect(select.options[0].selected).toBeTruthy();
+  });
+
+  it('pre-selects the passed in scheduled surface', () => {
+    render(
+      <MuiPickersUtilsProvider utils={LuxonUtils}>
+        <ScheduleItemForm
+          data-testId="surface-selector"
+          handleDateChange={jest.fn()}
+          lookupCopy=""
+          selectedDate={DateTime.local()}
+          onSubmit={handleSubmit}
+          scheduledSurfaces={scheduledSurfaces}
+          scheduledSurfaceGuid="NEW_TAB_EN_US"
+          approvedItemExternalId={'123abc'}
+        />
+      </MuiPickersUtilsProvider>
+    );
+
+    const select = screen.getByLabelText(
+      'Choose a Scheduled Surface'
+    ) as HTMLSelectElement;
+
+    // there should be an empty option and a single scheduled surface option
+    expect(select.options.length).toEqual(scheduledSurfaces.length + 1);
+
+    // the `NEW_TAB_EN_US` option should be selected
+    expect(select.options[1].selected).toBeTruthy();
+    expect(select.options[1].value).toEqual('NEW_TAB_EN_US');
+  });
+
+  it('pre-selects the only available scheduled surface if none was specified and the user only has access to a single one', () => {
+    render(
+      <MuiPickersUtilsProvider utils={LuxonUtils}>
+        <ScheduleItemForm
+          data-testId="surface-selector"
+          handleDateChange={jest.fn()}
+          lookupCopy=""
+          selectedDate={DateTime.local()}
+          onSubmit={handleSubmit}
+          scheduledSurfaces={[scheduledSurfaces[0]]}
+          approvedItemExternalId={'123abc'}
+        />
+      </MuiPickersUtilsProvider>
+    );
+
+    const select = screen.getByLabelText(
+      'Choose a Scheduled Surface'
+    ) as HTMLSelectElement;
+
+    // there should be an empty option and a single scheduled surface option
+    expect(select.options.length).toEqual(2);
+
+    // the scheduled surface should be selected
+    expect(select.options[1].selected).toBeTruthy();
   });
 });

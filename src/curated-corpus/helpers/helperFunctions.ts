@@ -54,10 +54,8 @@ export const transformUrlMetaDataToProspect = (
   metadata: UrlMetadata
 ): Prospect => {
   return {
-    // Encode some sort of id that will be used by the backend to send
-    // in a Snowplow event
-    id: uuidv5(metadata.url, '9edace02-b9c6-4705-a0d6-16476438557b'),
-
+    // manually added items don't have a prospect id!
+    id: '',
     // Set whatever properties the Parser could retrieve for us
     url: metadata.url,
     title: metadata.title ?? '',
