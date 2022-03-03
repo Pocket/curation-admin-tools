@@ -5,9 +5,11 @@ import {
   ApprovedCuratedCorpusItem,
   CreateApprovedCuratedCorpusItemInput,
   CuratedStatus,
+  Maybe,
   Prospect,
   UrlMetadata,
 } from '../../api/generatedTypes';
+import { topics } from './definitions';
 
 /**
  *
@@ -175,4 +177,21 @@ export const readImageFileFromDisk = (
       }
     }
   };
+};
+
+/**
+ * This function transforms topic names as recorded in the database
+ * into more easily readable names, e.g. `TECHNOLOGY` -> `Technology`
+ * or `HEALTH_FITNESS` -> `Health & Fitness`.
+ *
+ * Returns `N/A` if there is no topic match from the known list of topics.
+ */
+export const getDisplayTopic = (
+  topicCode: Maybe<string> | string | undefined
+): string => {
+  const displayTopic = topics.find((topic) => {
+    return topic.code === topicCode;
+  })?.name;
+
+  return displayTopic ? displayTopic : 'N/A';
 };

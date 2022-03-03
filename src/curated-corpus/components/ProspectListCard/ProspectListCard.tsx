@@ -14,6 +14,7 @@ import { useStyles } from './ProspectListCard.styles';
 import LanguageIcon from '@material-ui/icons/Language';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import { Button } from '../../../_shared/components';
+import { getDisplayTopic } from '../../helpers/helperFunctions';
 
 interface ProspectListCardProps {
   /**
@@ -93,7 +94,7 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
             <Chip
               variant="outlined"
               color="primary"
-              label={prospect.topic ?? 'N/A'}
+              label={getDisplayTopic(prospect.topic)}
               icon={<LabelOutlinedIcon />}
             />
           </Box>

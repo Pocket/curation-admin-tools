@@ -19,7 +19,7 @@ import {
   ApprovedCuratedCorpusItem,
   CuratedStatus,
 } from '../../../api/generatedTypes';
-import { topics } from '../../helpers/definitions';
+import { getDisplayTopic } from '../../helpers/helperFunctions';
 
 interface ApprovedItemListCardProps {
   /**
@@ -33,12 +33,6 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
 ): JSX.Element => {
   const classes = useStyles();
   const { item } = props;
-
-  // This finds the corresponding display name topic from the
-  // Topics enum
-  const displayTopic = topics.find((topic) => {
-    return topic.code === item.topic;
-  })?.name;
 
   return (
     <>
@@ -107,7 +101,10 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
           <ListItemIcon className={classes.listItemIcon}>
             <LabelOutlinedIcon />
           </ListItemIcon>
-          <ListItemText className={classes.topic} primary={displayTopic} />
+          <ListItemText
+            className={classes.topic}
+            primary={getDisplayTopic(item.topic)}
+          />
         </ListItem>
         <ListItem>
           <ListItemIcon className={classes.listItemIcon}>

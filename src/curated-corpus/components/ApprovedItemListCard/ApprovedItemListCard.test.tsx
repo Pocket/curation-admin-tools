@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import {
   ApprovedCuratedCorpusItem,
   CuratedStatus,
+  Topics,
 } from '../../../api/generatedTypes';
 import { ApprovedItemListCard } from './ApprovedItemListCard';
 
@@ -21,7 +22,7 @@ describe('The ApprovedItemListCard component', () => {
         'Everything You Wanted to Know About React and Were Afraid To Ask',
       language: 'de',
       publisher: 'Amazing Inventions',
-      topic: 'Technology',
+      topic: Topics.SelfImprovement,
       status: CuratedStatus.Recommendation,
       isCollection: false,
       isSyndicated: false,
@@ -82,6 +83,16 @@ describe('The ApprovedItemListCard component', () => {
     );
 
     expect(screen.getByText(/^de$/i)).toBeInTheDocument();
+  });
+
+  it('shows topic correctly', () => {
+    render(
+      <MemoryRouter>
+        <ApprovedItemListCard item={item} />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('Self Improvement')).toBeInTheDocument();
   });
 
   it('should render approved item card with excerpt', () => {

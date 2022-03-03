@@ -14,6 +14,7 @@ import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import BookmarksIcon from '@material-ui/icons/Bookmarks';
 import { useStyles } from './MiniScheduleCard.styles';
+import { getDisplayTopic } from '../../helpers/helperFunctions';
 
 interface MiniScheduleCardProps {
   item: ScheduledCuratedCorpusItem;
@@ -59,8 +60,7 @@ export const MiniScheduleCard: React.FC<MiniScheduleCardProps> = (
               <LabelOutlinedIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText
-              className={classes.listItemText}
-              secondary={item.approvedItem.topic.toLowerCase()}
+              secondary={getDisplayTopic(item.approvedItem.topic)}
             />
           </ListItem>
           {item.approvedItem.isSyndicated && (
@@ -68,10 +68,7 @@ export const MiniScheduleCard: React.FC<MiniScheduleCardProps> = (
               <ListItemIcon className={classes.listItemIcon}>
                 <CheckCircleOutlineIcon fontSize="small" />
               </ListItemIcon>
-              <ListItemText
-                className={classes.listItemText}
-                secondary={'Syndicated'}
-              />
+              <ListItemText secondary={'Syndicated'} />
             </ListItem>
           )}
           {item.approvedItem.isCollection && (
@@ -79,10 +76,7 @@ export const MiniScheduleCard: React.FC<MiniScheduleCardProps> = (
               <ListItemIcon className={classes.listItemIcon}>
                 <BookmarksIcon fontSize="small" />
               </ListItemIcon>
-              <ListItemText
-                className={classes.listItemText}
-                secondary={'Collection'}
-              />
+              <ListItemText secondary={'Collection'} />
             </ListItem>
           )}
         </List>
