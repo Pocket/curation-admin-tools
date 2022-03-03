@@ -1,78 +1,64 @@
 import React, { useState } from 'react';
+import { FormikHelpers, FormikValues } from 'formik';
 import {
-  ApprovedCuratedCorpusItem,
-  CreateApprovedCuratedCorpusItemInput,
-  CreateScheduledCuratedCorpusItemInput,
-  useCreateApprovedCuratedCorpusItemMutation,
-  useCreateScheduledCuratedCorpusItemMutation,
+  Prospect,
   useGetApprovedItemByUrlLazyQuery,
   useGetUrlMetadataLazyQuery,
-  useUploadApprovedCuratedCorpusItemImageMutation,
 } from '../../../api/generatedTypes';
-import {
-  useNotifications,
-  useRunMutation,
-  useToggle,
-} from '../../../_shared/hooks';
-import {
-  downloadAndUploadApprovedItemImageToS3,
-  transformFormInputToCreateApprovedItemInput,
-  transformUrlMetaDataToApprovedItem,
-} from '../../helpers/helperFunctions';
-import { FormikHelpers, FormikValues } from 'formik';
-import { DateTime } from 'luxon';
-import { ApprovedItemModal } from '../ApprovedItemModal/ApprovedItemModal';
-import { ScheduleItemModal } from '../ScheduleItemModal/ScheduleItemModal';
-import { AddProspectForm } from '../AddProspectForm/AddProspectForm';
+import { AddProspectForm } from '../';
+import { useNotifications } from '../../../_shared/hooks';
+import { transformUrlMetaDataToProspect } from '../../helpers/helperFunctions';
 
 interface AddProspectFormConnectorProps {
   /**
-   *
+   * Toggle the AddProspectModal to show/hide as necessary.
    */
   toggleModal: VoidFunction;
 
   /**
-   *
+   * Toggle the modal that contains the ApprovedItem form as necessary.
    */
-  approvedItem: ApprovedCuratedCorpusItem | undefined;
+  toggleApprovedItemModal: VoidFunction;
 
   /**
-   *
+   * The Prospecting page holds the prospect under consideration (its data being
+   * fed to either ApprovedItem or RejectedItem forms while the curator is editing)
+   * in the `currentProspect` state variable. We get the setter for this state
+   * variable from the page-level component to be able to update it
+   * when the manually added prospect is ready to be saved.
    */
-  setApprovedItem: (approvedItem: ApprovedCuratedCorpusItem) => void;
+  setCurrentProspect: (currentProspect: Prospect) => void;
 }
 
+/**
+ * This component contains all the business logic for the AddProspectForm workflow.
+ *
+ * @param props
+ * @constructor
+ */
 export const AddProspectFormConnector: React.FC<
   AddProspectFormConnectorProps
 > = (props) => {
-  const { toggleModal, approvedItem, setApprovedItem } = props;
+  const { toggleModal, toggleApprovedItemModal, setCurrentProspect } = props;
 
   // state variable to store the itemUrl field from the form
   const [itemUrl, setItemUrl] = useState<string>('');
 
-  // state variable to store the approved item built after
-  // getting the item metadata
-  // const [approvedItem, setApprovedItem] = useState<ApprovedCuratedCorpusItem>();
-
   // set up some hooks
   const { showNotification } = useNotifications();
 
-  // Keep track of whether the "Approve Item" modal is open or not
-  const [approvedItemModalOpen, toggleApprovedItemModal] = useToggle(false);
-  //Keep track of whether the "Schedule this item" modal is open or not.
-  const [scheduleModalOpen, toggleScheduleModal] = useToggle(false);
-
-  // function to toggle both modals
-  const toggleApprovedItemAndProspectModal = () => {
-    toggleApprovedItemModal();
-    toggleModal();
-  };
-
+  /**
+   * Run through a series of steps when a Prospect is submitted manually
+   *
+   * @param values
+   * @param formikHelpers
+   */
   const onSubmit = (
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ) => {
     setItemUrl(values.itemUrl);
+    // This kicks off Step 1 below.
     getApprovedItemByUrl({
       variables: {
         url: values.itemUrl,
@@ -82,21 +68,7 @@ export const AddProspectFormConnector: React.FC<
     formikHelpers.resetForm();
   };
 
-  // prepare the runMutation helper hook
-  const { runMutation } = useRunMutation();
-
-  // prepare mutation hook to upload image to s3
-  const [uploadApprovedItemImage] =
-    useUploadApprovedCuratedCorpusItemImageMutation();
-
-  // prepare mutation hook to create approved item
-  const [createApprovedItemMutation] =
-    useCreateApprovedCuratedCorpusItemMutation();
-
-  // prepare mutation hook to schedule the approved item
-  const [scheduleCuratedItem] = useCreateScheduledCuratedCorpusItemMutation();
-
-  // lazy query to check if url already exists in the corpus
+  // Step 1: when a URL is submitted, the first step is to check if it is already in the corpus.
   const [getApprovedItemByUrl] = useGetApprovedItemByUrlLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: 'no-cache',
@@ -111,6 +83,7 @@ export const AddProspectFormConnector: React.FC<
 
       // fetch metadata for url if it doesn't exist in the corpus
       if (approvedItem === null) {
+        // This leads us to Step 2 below.
         getUrlMetadata({
           variables: {
             url: itemUrl,
@@ -120,122 +93,26 @@ export const AddProspectFormConnector: React.FC<
     },
   });
 
-  // lazy query to get metadata for an url
+  // Step 2: If the item is not yet in the corpus, get available metadata from it
+  // from the Parser.
   const [getUrlMetadata] = useGetUrlMetadataLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: 'no-cache',
     onCompleted: (data) => {
-      // create an approved item object from the url metadata to be consumed by the edit form
-      const approvedItem = transformUrlMetaDataToApprovedItem(
-        data.getUrlMetadata,
-        false
-      );
+      // create a Prospect object from the URL metadata to be consumed by
+      // the ApprovedItem form
+      const prospect = transformUrlMetaDataToProspect(data.getUrlMetadata);
 
-      // set state variable so that it can be used by the edit form
-      setApprovedItem(approvedItem);
-      // show edit form
+      // set state variable so that it can be used by the ApprovedItem form
+      setCurrentProspect(prospect);
+
+      // Hide the AddProspect form
+      toggleModal();
+      // Show the ApprovedItem form and delegate back to the Prospecting page
+      // from this point onwards
       toggleApprovedItemModal();
     },
   });
 
-  // callback which will be called after clicking save on the edit form
-  // it uploads the item's image to S3 first and then calls the mutation to
-  // create a new approved item with s3 image url
-  const createApprovedItem = async (
-    values: FormikValues,
-    formikHelpers: FormikHelpers<any>
-  ): Promise<void> => {
-    // upload item image to s3
-    const s3ImageUrl = await downloadAndUploadApprovedItemImageToS3(
-      values.imageUrl,
-      uploadApprovedItemImage
-    );
-
-    // build an approved item using the helper and replace the imageUrl with the s3ImageUrl
-    const createApprovedItemInput: CreateApprovedCuratedCorpusItemInput = {
-      ...transformFormInputToCreateApprovedItemInput(values),
-      imageUrl: s3ImageUrl,
-    };
-    // call the create approved item mutation
-    runMutation(
-      createApprovedItemMutation,
-      { variables: { data: { ...createApprovedItemInput } } },
-      'Item successfully added to the curated corpus.',
-      (data) => {
-        // set the state variable approvedItem to the newly created approved item
-        // that will be used by the schedule modal
-        data.createApprovedCuratedCorpusItem &&
-          setApprovedItem({
-            ...data.createApprovedCuratedCorpusItem,
-          });
-
-        //close approved item modal
-        toggleApprovedItemModal();
-        // open schedule modal
-        toggleScheduleModal();
-        formikHelpers.setSubmitting(false);
-      }
-    );
-  };
-
-  // callback which will be passed to the ScheduleItem modal and will execute
-  // the mutation to schedule an approved item
-  const onScheduleSave = (
-    values: FormikValues,
-    formikHelpers: FormikHelpers<any>
-  ): void => {
-    // Set out all the variables we need to pass to the mutation
-    const variables: CreateScheduledCuratedCorpusItemInput = {
-      approvedItemExternalId: approvedItem?.externalId!,
-      scheduledSurfaceGuid: values.scheduledSurfaceGuid,
-      scheduledDate: values.scheduledDate.toISODate(),
-    };
-
-    // Run the mutation
-    runMutation(
-      scheduleCuratedItem,
-      { variables },
-      `Item scheduled successfully for ${values.scheduledDate.toLocaleString(
-        DateTime.DATE_FULL
-      )}`,
-      () => {
-        // close schedule modal
-        toggleScheduleModal();
-        // close add prospect modal
-        toggleModal();
-        formikHelpers.setSubmitting(false);
-      },
-      () => {
-        formikHelpers.setSubmitting(false);
-      }
-    );
-  };
-
-  return (
-    <>
-      <AddProspectForm onCancel={toggleModal} onSubmit={onSubmit} />
-      {approvedItem && (
-        <>
-          <ApprovedItemModal
-            heading="Review Item"
-            isRecommendation={true}
-            isOpen={approvedItemModalOpen}
-            onSave={createApprovedItem}
-            toggleModal={toggleApprovedItemAndProspectModal}
-            approvedItem={approvedItem}
-          />
-          <ScheduleItemModal
-            headingCopy="Optional: schedule this item"
-            approvedItem={approvedItem}
-            isOpen={scheduleModalOpen}
-            toggleModal={() => {
-              toggleScheduleModal();
-              toggleModal();
-            }}
-            onSave={onScheduleSave}
-          />
-        </>
-      )}
-    </>
-  );
+  return <AddProspectForm onCancel={toggleModal} onSubmit={onSubmit} />;
 };

@@ -1,33 +1,41 @@
-import { Grid } from '@material-ui/core';
 import React from 'react';
+import { Grid } from '@material-ui/core';
+import { Prospect } from '../../../api/generatedTypes';
 import { AddProspectFormConnector } from '..';
-
-import { Modal, SharedFormButtonsProps } from '../../../_shared/components';
-import { ApprovedCuratedCorpusItem } from '../../../api/generatedTypes';
+import { Modal } from '../../../_shared/components';
 
 interface AddProspectModalProps {
+  /**
+   * Whether the modal is visible on the screen or not.
+   */
   isOpen: boolean;
 
+  /**
+   * Toggle the AddProspectModal to show/hide as necessary.
+   */
   toggleModal: VoidFunction;
 
   /**
-   *
+   * Toggle the modal that contains the ApprovedItem form as necessary.
    */
-  approvedItem: ApprovedCuratedCorpusItem | undefined;
+  toggleApprovedItemModal: VoidFunction;
 
   /**
-   *
+   * A setter for the current prospect to be worked on. This is passed
+   * through straight to the AddProspectFormConnector component where you will
+   * find a detailed explanation why it's needed there.
    */
-  setApprovedItem: (approvedItem: ApprovedCuratedCorpusItem) => void;
+  setCurrentProspect: (currentProspect: Prospect) => void;
 }
 
 /**
- * Parent component for the AddProspectForm component
+ * Parent component for the AddProspectFormConnector component
  */
-export const AddProspectModal: React.FC<
-  AddProspectModalProps & SharedFormButtonsProps
-> = (props): JSX.Element => {
-  const { isOpen, toggleModal, approvedItem, setApprovedItem } = props;
+export const AddProspectModal: React.FC<AddProspectModalProps> = (
+  props
+): JSX.Element => {
+  const { isOpen, toggleModal, setCurrentProspect, toggleApprovedItemModal } =
+    props;
 
   return (
     <Modal open={isOpen} handleClose={toggleModal}>
@@ -38,8 +46,8 @@ export const AddProspectModal: React.FC<
         <Grid item>
           <AddProspectFormConnector
             toggleModal={toggleModal}
-            approvedItem={approvedItem}
-            setApprovedItem={setApprovedItem}
+            toggleApprovedItemModal={toggleApprovedItemModal}
+            setCurrentProspect={setCurrentProspect}
           />
         </Grid>
       </Grid>

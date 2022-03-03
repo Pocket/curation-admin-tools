@@ -157,7 +157,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   /**
    * Set the current Prospect to be worked on (e.g., to be approved or rejected).
    */
-  const [currentItem, setCurrentItem] = useState<Prospect | undefined>(
+  const [currentProspect, setCurrentProspect] = useState<Prospect | undefined>(
     undefined
   );
 
@@ -251,11 +251,11 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     // Set out all the variables we need to pass to the first mutation
     const variables: RejectProspectMutationVariables = {
       data: {
-        url: currentItem?.url,
-        title: currentItem?.title,
-        topic: currentItem?.topic ?? '',
-        language: currentItem?.language,
-        publisher: currentItem?.publisher,
+        url: currentProspect?.url,
+        title: currentProspect?.title,
+        topic: currentProspect?.topic ?? '',
+        language: currentProspect?.language,
+        publisher: currentProspect?.publisher,
         reason: values.reason,
       },
     };
@@ -263,7 +263,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     // Mark the prospect as processed in the Prospect API datastore.
     runMutation(
       updateProspectAsCurated,
-      { variables: { prospectId: currentItem?.id } },
+      { variables: { prospectId: currentProspect?.id } },
       undefined,
       () => {
         formikHelpers.setSubmitting(false);
@@ -285,7 +285,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         // Remove the newly rejected item from the list of prospects displayed
         // on the page.
         setProspects(
-          prospects.filter((prospect) => prospect.id !== currentItem?.id!)
+          prospects.filter((prospect) => prospect.id !== currentProspect?.id!)
         );
 
         formikHelpers.setSubmitting(false);
@@ -325,7 +325,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     const imageUrl: string = s3ImageUrl;
 
     const approvedItem = {
-      prospectId: currentItem?.id!,
+      prospectId: currentProspect?.id!,
       url: values.url,
       title: values.title,
       excerpt: values.excerpt,
@@ -348,7 +348,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         // call the mutation to mark prospect as approved
         runMutation(
           updateProspectAsCurated,
-          { variables: { prospectId: currentItem?.id } },
+          { variables: { prospectId: currentProspect?.id } },
           undefined,
           () => {
             toggleApprovedItemModal();
@@ -361,7 +361,9 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
             // Remove the newly curated item from the list of prospects displayed
             // on the page.
             setProspects(
-              prospects.filter((prospect) => prospect.id !== currentItem?.id!)
+              prospects.filter(
+                (prospect) => prospect.id !== currentProspect?.id!
+              )
             );
 
             formikHelpers.setSubmitting(false);
@@ -456,10 +458,10 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
 
   return (
     <>
-      {currentItem && (
+      {currentProspect && (
         <>
           <RejectItemModal
-            prospect={currentItem}
+            prospect={currentProspect}
             isOpen={rejectModalOpen}
             onSave={onRejectSave}
             toggleModal={toggleRejectModal}
@@ -467,7 +469,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
 
           <ApprovedItemModal
             approvedItem={transformProspectToApprovedItem(
-              currentItem,
+              currentProspect,
               isRecommendation
             )}
             heading={isRecommendation ? 'Recommend' : 'Add to Corpus'}
@@ -490,8 +492,8 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       <AddProspectModal
         isOpen={addProspectModalOpen}
         toggleModal={toggleAddProspectModal}
-        approvedItem={approvedItem}
-        setApprovedItem={setApprovedItem}
+        toggleApprovedItemModal={toggleApprovedItemModal}
+        setCurrentProspect={setCurrentProspect}
       />
 
       {approvedItem && (
@@ -568,17 +570,17 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                   key={prospect.id}
                   prospect={prospect}
                   onAddToCorpus={() => {
-                    setCurrentItem(prospect);
+                    setCurrentProspect(prospect);
                     setIsRecommendation(false);
                     toggleApprovedItemModal();
                   }}
                   onRecommend={() => {
-                    setCurrentItem(prospect);
+                    setCurrentProspect(prospect);
                     setIsRecommendation(true);
                     toggleApprovedItemModal();
                   }}
                   onReject={() => {
-                    setCurrentItem(prospect);
+                    setCurrentProspect(prospect);
                     toggleRejectModal();
                   }}
                 />

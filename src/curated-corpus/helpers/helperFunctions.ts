@@ -43,35 +43,36 @@ export const transformProspectToApprovedItem = (
 };
 
 /**
- * Transforms the UrlMetaData object to an ApprovedCuratedCorpusItem type object to be consumed by ApprovedItemForm component
+ * Transforms the UrlMetaData object into a Prospect
  *
  * @param metadata
- * @param isRecommendation
- * @returns ApprovedCuratedCorpusItem
+ * @returns Prospect
  */
-export const transformUrlMetaDataToApprovedItem = (
-  metadata: UrlMetadata,
-  isRecommendation?: boolean
-): ApprovedCuratedCorpusItem => {
+export const transformUrlMetaDataToProspect = (
+  metadata: UrlMetadata
+): Prospect => {
   return {
-    externalId: '',
-    prospectId: uuidv5(metadata.url, '9edace02-b9c6-4705-a0d6-16476438557b'),
+    // Encode some sort of id that will be used by the backend to send
+    // in a Snowplow event
+    id: uuidv5(metadata.url, '9edace02-b9c6-4705-a0d6-16476438557b'),
+
+    // Set whatever properties the Parser could retrieve for us
     url: metadata.url,
     title: metadata.title ?? '',
     imageUrl: metadata.imageUrl ?? '',
     publisher: metadata.publisher ?? '',
     language: metadata.language ?? '',
-    topic: '',
-    status: isRecommendation
-      ? CuratedStatus.Recommendation
-      : CuratedStatus.Corpus,
-    isTimeSensitive: false,
     isSyndicated: metadata.isSyndicated ?? false,
     isCollection: metadata.isCollection ?? false,
     excerpt: metadata.excerpt ?? '',
-    createdAt: 0,
-    createdBy: '',
-    updatedAt: 0,
+
+    // The curators will have to choose a topic manually
+    topic: '',
+
+    // These two properties are ok to set to empty strings
+    // as they won't be recorded anywhere on the backend.
+    prospectType: '',
+    scheduledSurfaceGuid: '',
   };
 };
 
