@@ -298,7 +298,7 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
         {data && (
           <Grid item xs={12}>
             <Typography>
-              Found {data.getApprovedCuratedCorpusItems.totalCount} results.
+              Found {data.getApprovedCuratedCorpusItems.totalCount} result(s).
             </Typography>
           </Grid>
         )}

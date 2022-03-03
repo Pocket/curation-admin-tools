@@ -26,6 +26,13 @@ interface AddProspectModalProps {
    * find a detailed explanation why it's needed there.
    */
   setCurrentProspect: (currentProspect: Prospect) => void;
+
+  /**
+   * Passing in the setter for the state variable isRecommendation in this component's parent:
+   * ProspectingPage. We need to pass this down to the AddProspectFormConnector where this will be
+   * called with `true` to set the Curation Status field to Recommendation in the approved item form
+   */
+  setIsRecommendation: (isRecommendation: boolean) => void;
 }
 
 /**
@@ -34,8 +41,13 @@ interface AddProspectModalProps {
 export const AddProspectModal: React.FC<AddProspectModalProps> = (
   props
 ): JSX.Element => {
-  const { isOpen, toggleModal, setCurrentProspect, toggleApprovedItemModal } =
-    props;
+  const {
+    isOpen,
+    toggleModal,
+    setCurrentProspect,
+    setIsRecommendation,
+    toggleApprovedItemModal,
+  } = props;
 
   return (
     <Modal open={isOpen} handleClose={toggleModal}>
@@ -48,6 +60,7 @@ export const AddProspectModal: React.FC<AddProspectModalProps> = (
             toggleModal={toggleModal}
             toggleApprovedItemModal={toggleApprovedItemModal}
             setCurrentProspect={setCurrentProspect}
+            setIsRecommendation={setIsRecommendation}
           />
         </Grid>
       </Grid>

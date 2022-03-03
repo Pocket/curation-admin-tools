@@ -118,9 +118,21 @@ export const ApprovedItemSearchForm: React.FC<ApprovedItemSearchFormProps> = (
             })}
           </FormikSelectField>
         </Grid>
-        <Grid item xs={12}>
+      </Grid>
+      <Grid container spacing={1}>
+        <Grid item xs={12} md={10}>
           <Button buttonType="positive" type="submit" fullWidth>
             Search
+          </Button>
+        </Grid>
+        <Grid item xs={12} md={2}>
+          <Button
+            buttonType="hollow-neutral"
+            type="reset"
+            fullWidth
+            onClick={() => formik.resetForm()}
+          >
+            Reset Filters
           </Button>
         </Grid>
       </Grid>
