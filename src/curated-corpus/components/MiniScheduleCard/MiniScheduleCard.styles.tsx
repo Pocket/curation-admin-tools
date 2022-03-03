@@ -26,9 +26,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       fontSize: '0.875rem',
       fontWeight: 500,
     },
-    listItemText: {
-      textTransform: 'capitalize',
-    },
     listItemIcon: {
       minWidth: '2rem',
     },

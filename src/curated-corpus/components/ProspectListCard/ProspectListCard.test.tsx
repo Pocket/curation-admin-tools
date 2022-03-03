@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { Prospect } from '../../../api/generatedTypes';
+import { Prospect, Topics } from '../../../api/generatedTypes';
 import { ProspectListCard } from './ProspectListCard';
 
 describe('The ProspectListCard component', () => {
@@ -22,7 +22,7 @@ describe('The ProspectListCard component', () => {
         'Everything You Wanted to Know About DynamoDB and Were Afraid To Ask',
       language: 'de',
       publisher: 'Amazing Inventions',
-      topic: 'Technology',
+      topic: Topics.Technology,
     };
   });
 

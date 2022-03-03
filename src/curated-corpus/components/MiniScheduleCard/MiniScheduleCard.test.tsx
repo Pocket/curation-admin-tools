@@ -4,9 +4,11 @@ import { MemoryRouter } from 'react-router-dom';
 import {
   CuratedStatus,
   ScheduledCuratedCorpusItem,
+  Topics,
 } from '../../../api/generatedTypes';
 
 import { MiniScheduleCard } from './MiniScheduleCard';
+import { getDisplayTopic } from '../../helpers/helperFunctions';
 
 describe('The MiniScheduleCard component', () => {
   let item: ScheduledCuratedCorpusItem;
@@ -29,7 +31,7 @@ describe('The MiniScheduleCard component', () => {
           'Everything You Wanted to Know About React and Were Afraid To Ask',
         language: 'de',
         publisher: 'Amazing Inventions',
-        topic: 'Technology',
+        topic: Topics.Technology,
         status: CuratedStatus.Recommendation,
         isCollection: false,
         isSyndicated: false,
@@ -67,7 +69,8 @@ describe('The MiniScheduleCard component', () => {
     expect(publisher).toBeInTheDocument();
 
     // The topic is also present
-    const topic = screen.getByText(item.approvedItem.topic.toLowerCase());
+    const displayTopic = getDisplayTopic(item.approvedItem.topic);
+    const topic = screen.getByText(displayTopic);
     expect(topic).toBeInTheDocument();
   });
 
