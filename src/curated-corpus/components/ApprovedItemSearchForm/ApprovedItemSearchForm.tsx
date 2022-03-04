@@ -130,7 +130,10 @@ export const ApprovedItemSearchForm: React.FC<ApprovedItemSearchFormProps> = (
             buttonType="hollow-neutral"
             type="reset"
             fullWidth
-            onClick={() => formik.resetForm()}
+            onClick={() => {
+              formik.resetForm();
+              formik.handleSubmit();
+            }}
           >
             Reset Filters
           </Button>
