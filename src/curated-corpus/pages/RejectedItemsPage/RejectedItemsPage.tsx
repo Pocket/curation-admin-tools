@@ -134,7 +134,7 @@ export const RejectedItemsPage: React.FC = (): JSX.Element => {
         {data && (
           <Grid item xs={12}>
             <Typography>
-              Found {data.getRejectedCuratedCorpusItems.totalCount} results.
+              Found {data.getRejectedCuratedCorpusItems.totalCount} result(s).
             </Typography>
           </Grid>
         )}

@@ -14,11 +14,20 @@ describe('The RejectedItemSearchForm component', () => {
     expect(form).toBeInTheDocument();
   });
 
-  it('should render with a single "Search" button', () => {
+  it('should render with a "Search" button', () => {
     render(<RejectedItemSearchForm onSubmit={handleSubmit} />);
 
     const button = screen.getByRole('button', {
       name: /search/i,
+    });
+    expect(button).toBeInTheDocument();
+  });
+
+  it('should render with a "Reset Filters" button', () => {
+    render(<RejectedItemSearchForm onSubmit={handleSubmit} />);
+
+    const button = screen.getByRole('button', {
+      name: /reset filters/i,
     });
     expect(button).toBeInTheDocument();
   });
@@ -42,11 +51,12 @@ describe('The RejectedItemSearchForm component', () => {
   it('should allow users to search without any filters', async () => {
     render(<RejectedItemSearchForm onSubmit={handleSubmit} />);
 
-    const button = screen.getByRole('button');
-
+    const searchButton = screen.getByRole('button', {
+      name: /search/i,
+    });
     // All filters are optional, so the form should submit without anything in it.
     await waitFor(() => {
-      userEvent.click(button);
+      userEvent.click(searchButton);
     });
     expect(handleSubmit).toHaveBeenCalled();
   });
@@ -56,12 +66,13 @@ describe('The RejectedItemSearchForm component', () => {
 
     const titleField = screen.getByLabelText(/filter by title/i);
     const urlField = screen.getByLabelText(/filter by url/i);
-    const button = screen.getByRole('button');
-
+    const searchButton = screen.getByRole('button', {
+      name: /search/i,
+    });
     // When filtering by title, we expect the user to provide at least two characters.
     userEvent.type(titleField, '1');
     await waitFor(() => {
-      userEvent.click(button);
+      userEvent.click(searchButton);
     });
     expect(
       screen.getByText('Please enter at least two characters.')
@@ -73,7 +84,7 @@ describe('The RejectedItemSearchForm component', () => {
     // We have the same expectations for the URL filter
     userEvent.type(urlField, 'a');
     await waitFor(() => {
-      userEvent.click(button);
+      userEvent.click(searchButton);
     });
 
     expect(
@@ -85,9 +96,35 @@ describe('The RejectedItemSearchForm component', () => {
     userEvent.clear(urlField);
     userEvent.type(urlField, 'abc');
     await waitFor(() => {
-      userEvent.click(button);
+      userEvent.click(searchButton);
     });
 
     expect(handleSubmit).toHaveBeenCalled();
+  });
+
+  it('resets all form filters when Reset Filters button is clicked', async () => {
+    render(<RejectedItemSearchForm onSubmit={handleSubmit} />);
+
+    // get text input fields
+    const titleField = screen.getByLabelText(/filter by title/i);
+    const urlField = screen.getByLabelText(/filter by url/i);
+
+    // get the reset filters button
+    const resetButton = screen.getByRole('button', {
+      name: /reset filters/i,
+    });
+
+    // type something in the text fields
+    userEvent.type(titleField, 'test title');
+    userEvent.type(urlField, 'test url');
+
+    // reset the filters by clicking on the reset filters button
+    await waitFor(() => {
+      userEvent.click(resetButton);
+    });
+
+    // assert that the filters have been reset
+    expect(titleField).toHaveValue('');
+    expect(urlField).toHaveValue('');
   });
 });

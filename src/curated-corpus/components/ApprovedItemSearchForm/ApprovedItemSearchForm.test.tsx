@@ -1,7 +1,8 @@
-import { render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
-import { ApprovedItemSearchForm } from './ApprovedItemSearchForm';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+
+import { ApprovedItemSearchForm } from './ApprovedItemSearchForm';
 
 describe('The CuratedItemSearchForm component', () => {
   const handleSubmit = jest.fn();
@@ -14,10 +15,21 @@ describe('The CuratedItemSearchForm component', () => {
     expect(form).toBeInTheDocument();
   });
 
-  it('has a single "Search" button', () => {
+  it('has a "Search" button', () => {
     render(<ApprovedItemSearchForm onSubmit={handleSubmit} />);
 
-    const button = screen.getByRole('button');
+    const button = screen.getByRole('button', {
+      name: /search/i,
+    });
+    expect(button).toBeInTheDocument();
+  });
+
+  it('has a "Reset Filters" button', () => {
+    render(<ApprovedItemSearchForm onSubmit={handleSubmit} />);
+
+    const button = screen.getByRole('button', {
+      name: /reset filters/i,
+    });
     expect(button).toBeInTheDocument();
   });
 
@@ -43,11 +55,13 @@ describe('The CuratedItemSearchForm component', () => {
   it('allows users to search without any filters', async () => {
     render(<ApprovedItemSearchForm onSubmit={handleSubmit} />);
 
-    const button = screen.getByRole('button');
+    const searchButton = screen.getByRole('button', {
+      name: /search/i,
+    });
 
     // All filters are optional, so the form should submit without anything in it.
     await waitFor(() => {
-      userEvent.click(button);
+      userEvent.click(searchButton);
     });
     expect(handleSubmit).toHaveBeenCalled();
   });
@@ -57,12 +71,14 @@ describe('The CuratedItemSearchForm component', () => {
 
     const titleField = screen.getByLabelText(/filter by title/i);
     const urlField = screen.getByLabelText(/filter by url/i);
-    const button = screen.getByRole('button');
+    const searchButton = screen.getByRole('button', {
+      name: /search/i,
+    });
 
     // When filtering by title, we expect the user to provide at least two characters.
     userEvent.type(titleField, '1');
     await waitFor(() => {
-      userEvent.click(button);
+      userEvent.click(searchButton);
     });
     expect(
       screen.getByText('Please enter at least two characters.')
@@ -74,7 +90,7 @@ describe('The CuratedItemSearchForm component', () => {
     // We have the same expectations for the URL filter
     userEvent.type(urlField, 'a');
     await waitFor(() => {
-      userEvent.click(button);
+      userEvent.click(searchButton);
     });
 
     expect(
@@ -86,9 +102,35 @@ describe('The CuratedItemSearchForm component', () => {
     userEvent.clear(urlField);
     userEvent.type(urlField, 'abc');
     await waitFor(() => {
-      userEvent.click(button);
+      userEvent.click(searchButton);
     });
 
     expect(handleSubmit).toHaveBeenCalled();
+  });
+
+  it('resets all form filters when Reset Filters button is clicked', async () => {
+    render(<ApprovedItemSearchForm onSubmit={handleSubmit} />);
+
+    // get text input fields
+    const titleField = screen.getByLabelText(/filter by title/i);
+    const urlField = screen.getByLabelText(/filter by url/i);
+
+    // get the reset filters button
+    const resetButton = screen.getByRole('button', {
+      name: /reset filters/i,
+    });
+
+    // type something in the text fields
+    userEvent.type(titleField, 'test title');
+    userEvent.type(urlField, 'test url');
+
+    // reset the filters by clicking on the reset filters button
+    await waitFor(() => {
+      userEvent.click(resetButton);
+    });
+
+    // assert that the filters have been reset
+    expect(titleField).toHaveValue('');
+    expect(urlField).toHaveValue('');
   });
 });

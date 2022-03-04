@@ -477,6 +477,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
             onSave={onCuratedItemSave}
             toggleModal={toggleApprovedItemModal}
             onImageSave={setUserUploadedS3ImageUrl}
+            isRecommendation={isRecommendation}
           />
         </>
       )}
@@ -494,6 +495,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         toggleModal={toggleAddProspectModal}
         toggleApprovedItemModal={toggleApprovedItemModal}
         setCurrentProspect={setCurrentProspect}
+        setIsRecommendation={setIsRecommendation}
       />
 
       {approvedItem && (
