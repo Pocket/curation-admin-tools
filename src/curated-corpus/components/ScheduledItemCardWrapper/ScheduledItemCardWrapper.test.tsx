@@ -53,7 +53,7 @@ describe('The ScheduledItemCardWrapper component', () => {
     expect(title).toBeInTheDocument();
   });
 
-  it('should render action buttons', () => {
+  it('should render remove button', () => {
     render(
       <MemoryRouter>
         <ScheduledItemCardWrapper item={item} />
@@ -65,5 +65,19 @@ describe('The ScheduledItemCardWrapper component', () => {
     });
 
     expect(removeButton).toBeInTheDocument();
+  });
+
+  it('should render reschedule button', () => {
+    render(
+      <MemoryRouter>
+        <ScheduledItemCardWrapper item={item} />
+      </MemoryRouter>
+    );
+
+    const rescheduleButton = screen.getByRole('button', {
+      name: /Reschedule/i,
+    });
+
+    expect(rescheduleButton).toBeInTheDocument();
   });
 });

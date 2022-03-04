@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 import { CuratedItemData } from './curatedItemData';
 
 /**
- * TODO: fix comment
+ * All the fields for a Scheduled Curated Corpus Item
  */
 export const ScheduledItemData = gql`
   fragment ScheduledItemData on ScheduledCuratedCorpusItem {

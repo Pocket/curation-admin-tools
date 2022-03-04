@@ -16,7 +16,7 @@ interface ScheduledItemCardWrapperProps {
   onRemove?: VoidFunction;
 
   /**
-   * schedule comment fix later
+   * Callback for the "Reschedule" button
    */
   onReschedule?: VoidFunction;
 }

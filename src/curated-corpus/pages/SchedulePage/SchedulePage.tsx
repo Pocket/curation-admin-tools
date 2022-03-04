@@ -164,6 +164,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
   // Prepare the "delete scheduled item" mutation
   const [deleteScheduledItem] = useDeleteScheduledItemMutation();
 
+  // Prepare the "reschedule scheduled curated corpus item" mutation
   const [rescheduleItem] = useRescheduleScheduledCuratedCorpusItemMutation();
 
   /**
