@@ -132,7 +132,9 @@ export const downloadAndUploadApprovedItemImageToS3 = async (
   );
 
   if (!image) {
-    throw new Error('Failed to download image from source for saving to s3');
+    throw new Error(
+      'Failed to download image, please upload a new image manually'
+    );
   }
   // upload downloaded image to s3
   const { data, errors } = await uploadApprovedItemMutation({
@@ -141,9 +143,9 @@ export const downloadAndUploadApprovedItemImageToS3 = async (
     },
   });
 
-  // check for graphQL errors. Throw the first one
+  // check for graphQL errors. Show an user friendly error message
   if (errors) {
-    throw new Error(errors[0].message);
+    throw new Error('Failed to upload image, please try again');
   }
 
   return data?.uploadApprovedCuratedCorpusItemImage.url;
