@@ -117,7 +117,11 @@ export const RejectedItemSearchForm: React.FC<RejectedItemSearchFormProps> = (
             buttonType="hollow-neutral"
             type="reset"
             fullWidth
-            onClick={() => formik.resetForm()}
+            onClick={() => {
+              // Reset form filters and get new results with no filters
+              formik.resetForm();
+              formik.handleSubmit();
+            }}
           >
             Reset Filters
           </Button>

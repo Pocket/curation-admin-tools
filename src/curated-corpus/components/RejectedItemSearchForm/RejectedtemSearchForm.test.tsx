@@ -105,9 +105,11 @@ describe('The RejectedItemSearchForm component', () => {
   it('resets all form filters when Reset Filters button is clicked', async () => {
     render(<RejectedItemSearchForm onSubmit={handleSubmit} />);
 
-    // get text input fields
+    // get all the search from input fields
     const titleField = screen.getByLabelText(/filter by title/i);
     const urlField = screen.getByLabelText(/filter by url/i);
+    const topicField = screen.getByLabelText(/topic/i);
+    const languageField = screen.getByLabelText(/language/i);
 
     // get the reset filters button
     const resetButton = screen.getByRole('button', {
@@ -117,6 +119,8 @@ describe('The RejectedItemSearchForm component', () => {
     // type something in the text fields
     userEvent.type(titleField, 'test title');
     userEvent.type(urlField, 'test url');
+    userEvent.selectOptions(topicField, 'BUSINESS');
+    userEvent.selectOptions(languageField, 'EN');
 
     // reset the filters by clicking on the reset filters button
     await waitFor(() => {
@@ -126,5 +130,7 @@ describe('The RejectedItemSearchForm component', () => {
     // assert that the filters have been reset
     expect(titleField).toHaveValue('');
     expect(urlField).toHaveValue('');
+    expect(topicField).toHaveValue('');
+    expect(languageField).toHaveValue('');
   });
 });
