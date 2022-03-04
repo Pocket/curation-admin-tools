@@ -132,7 +132,7 @@ export const downloadAndUploadApprovedItemImageToS3 = async (
   );
 
   if (!image) {
-    throw new Error('Failed to download image from source for saving to s3');
+    throw new Error('Failed to save image, please upload a new image manually');
   }
   // upload downloaded image to s3
   const { data, errors } = await uploadApprovedItemMutation({
