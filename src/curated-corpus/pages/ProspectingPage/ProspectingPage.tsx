@@ -17,11 +17,11 @@ import {
 } from '../../components';
 import {
   ApprovedCuratedCorpusItem,
+  CreateApprovedCuratedCorpusItemMutation,
   CuratedStatus,
   Prospect,
   RejectProspectMutationVariables,
   ScheduledCuratedCorpusItemsResult,
-  CreateApprovedCuratedCorpusItemMutation,
   useCreateApprovedCuratedCorpusItemMutation,
   useCreateScheduledCuratedCorpusItemMutation,
   useGetProspectsQuery,
@@ -525,7 +525,9 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         isOpen={addProspectModalOpen}
         toggleModal={toggleAddProspectModal}
         toggleApprovedItemModal={toggleApprovedItemModal}
+        toggleScheduleItemModal={toggleScheduleModal}
         setCurrentProspect={setCurrentProspect}
+        setApprovedItem={setApprovedItem}
         setIsRecommendation={setIsRecommendation}
       />
 

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { FormikHelpers, FormikValues } from 'formik';
 import {
+  ApprovedCuratedCorpusItem,
   Prospect,
   useGetApprovedItemByUrlLazyQuery,
   useGetUrlMetadataLazyQuery,
 } from '../../../api/generatedTypes';
 import { AddProspectForm } from '../';
-import { useNotifications } from '../../../_shared/hooks';
 import { transformUrlMetaDataToProspect } from '../../helpers/helperFunctions';
 
 interface AddProspectFormConnectorProps {
@@ -21,6 +21,11 @@ interface AddProspectFormConnectorProps {
   toggleApprovedItemModal: VoidFunction;
 
   /**
+   * Toggle the modal that contains the optional scheduling form as necessary.
+   */
+  toggleScheduleItemModal: VoidFunction;
+
+  /**
    * The Prospecting page holds the prospect under consideration (its data being
    * fed to either ApprovedItem or RejectedItem forms while the curator is editing)
    * in the `currentProspect` state variable. We get the setter for this state
@@ -28,6 +33,12 @@ interface AddProspectFormConnectorProps {
    * when the manually added prospect is ready to be saved.
    */
   setCurrentProspect: (currentProspect: Prospect) => void;
+
+  /**
+   * Another setter from the Prospecting page that holds the approved item that's
+   * just been saved and is hanging around for optional scheduling.
+   */
+  setApprovedItem: (item: ApprovedCuratedCorpusItem) => void;
 
   /**
    * Sets the state variable isRecommendation in the ProspectingPage component
@@ -48,15 +59,14 @@ export const AddProspectFormConnector: React.FC<
   const {
     toggleModal,
     toggleApprovedItemModal,
+    toggleScheduleItemModal,
     setCurrentProspect,
+    setApprovedItem,
     setIsRecommendation,
   } = props;
 
   // state variable to store the itemUrl field from the form
   const [itemUrl, setItemUrl] = useState<string>('');
-
-  // set up some hooks
-  const { showNotification } = useNotifications();
 
   /**
    * Run through a series of steps when a Prospect is submitted manually
@@ -86,9 +96,19 @@ export const AddProspectFormConnector: React.FC<
     onCompleted: (data) => {
       const approvedItem = data?.getApprovedCuratedCorpusItemByUrl;
 
-      // show error toast if the url exists already
+      // Let the curators skip straight to the scheduling screen if the manually added
+      // prospect is in the corpus already.
       if (approvedItem) {
-        showNotification('This URL already exists in the Corpus', 'error');
+        // Update the approved item to be worked on on the Prospecting page
+        setApprovedItem(approvedItem);
+
+        // Hide the Add Prospect form
+        toggleModal();
+
+        // Show the optional scheduling modal
+        toggleScheduleItemModal();
+
+        // Nothing else to do here - we can do an early exit
         return;
       }
 
