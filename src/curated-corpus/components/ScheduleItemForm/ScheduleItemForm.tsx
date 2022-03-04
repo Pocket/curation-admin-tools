@@ -88,9 +88,18 @@ export const ScheduleItemForm: React.FC<
     handleDateChange(tomorrow);
   }, []);
 
+  // if a scheduledSurfaceGuid was not supplied (meaning this is a manually
+  // added item), check to see if the user only has access to a single
+  // scheduled surface. if so, auto-select that one. if they have access to
+  // multiple, the default value should be an empty string (as react does *not*
+  // like `null` or `undefined` in this case).
+  const selectedScheduledSurfaceGuid =
+    scheduledSurfaceGuid ||
+    (scheduledSurfaces.length === 1 ? scheduledSurfaces[0].guid : '');
+
   const formik = useFormik({
     initialValues: {
-      scheduledSurfaceGuid,
+      scheduledSurfaceGuid: selectedScheduledSurfaceGuid,
       approvedItemExternalId,
       scheduledDate: selectedDate,
     },
