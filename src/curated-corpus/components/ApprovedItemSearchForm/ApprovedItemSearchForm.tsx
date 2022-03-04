@@ -131,6 +131,7 @@ export const ApprovedItemSearchForm: React.FC<ApprovedItemSearchFormProps> = (
             type="reset"
             fullWidth
             onClick={() => {
+              // Reset form filters and get new results with no filters
               formik.resetForm();
               formik.handleSubmit();
             }}
