@@ -308,8 +308,9 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   const { showNotification } = useNotifications();
 
   // state variable to store s3 image url when user uploads a new image
-  const [userUploadedS3ImageUrl, setUserUploadedS3ImageUrl] =
-    useState<string>();
+  const [userUploadedS3ImageUrl, setUserUploadedS3ImageUrl] = useState<
+    undefined | string
+  >();
 
   /**
    *
@@ -434,6 +435,10 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         values,
         formikHelpers
       );
+
+      // reset the userUploadedS3ImageUrl state variable so that the
+      // manually uploaded image from a previous prospect does not persist
+      setUserUploadedS3ImageUrl(undefined);
     } catch (error: any) {
       showNotification(error.message, 'error');
       return;
