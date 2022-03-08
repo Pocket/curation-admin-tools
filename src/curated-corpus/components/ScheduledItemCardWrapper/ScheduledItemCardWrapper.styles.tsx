@@ -10,7 +10,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       flexDirection: 'column',
       position: 'relative',
-      zIndex: -1,
     },
     actions: {
       margin: 'auto',

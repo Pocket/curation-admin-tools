@@ -119,6 +119,7 @@ export const SplitButton: React.FC<SplitButtonProps> = (props) => {
         </Button>
       </ButtonGroup>
       <Popper
+        className={classes.popper}
         open={open}
         anchorEl={anchorRef.current}
         role={undefined}
