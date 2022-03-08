@@ -761,6 +761,8 @@ export type Mutation = {
   refreshItemArticle: Item;
   /** Rejects an Approved Item: deletes it from the corpus and creates a Rejected Item instead. */
   rejectApprovedCuratedCorpusItem: ApprovedCuratedCorpusItem;
+  /** Updates the scheduled date of a Scheduled Surface Scheduled Item. */
+  rescheduleScheduledCuratedCorpusItem: ScheduledCuratedCorpusItem;
   /** Updates an Approved Item. */
   updateApprovedCuratedCorpusItem: ApprovedCuratedCorpusItem;
   /** Updates a Collection. */
@@ -866,6 +868,10 @@ export type MutationRefreshItemArticleArgs = {
 
 export type MutationRejectApprovedCuratedCorpusItemArgs = {
   data: RejectApprovedCuratedCorpusItemInput;
+};
+
+export type MutationRescheduleScheduledCuratedCorpusItemArgs = {
+  data: RescheduleScheduledCuratedCorpusItemInput;
 };
 
 export type MutationUpdateApprovedCuratedCorpusItemArgs = {
@@ -1017,6 +1023,7 @@ export type Prospect = {
  * by the Curation Admin Tools frontend to filter prospects.
  */
 export enum ProspectType {
+  DomainAllowlist = 'DOMAIN_ALLOWLIST',
   Global = 'GLOBAL',
   OrganicTimespent = 'ORGANIC_TIMESPENT',
   Syndicated = 'SYNDICATED',
@@ -1228,6 +1235,14 @@ export enum RejectionReason {
   PoliticalOpinion = 'POLITICAL_OPINION',
   TimeSensitive = 'TIME_SENSITIVE',
 }
+
+/** Input data for rescheduling a scheduled item for a Scheduled Surface. */
+export type RescheduleScheduledCuratedCorpusItemInput = {
+  /** ID of the scheduled item. A string in UUID format. */
+  externalId: Scalars['ID'];
+  /** The new scheduled date for the scheduled item to appear on a Scheduled Surface. Format: YYYY-MM-DD. */
+  scheduledDate: Scalars['Date'];
+};
 
 /**
  * A scheduled entry for an Approved Item to appear on a Scheduled Surface.
@@ -1657,6 +1672,36 @@ export type RejectedItemDataFragment = {
   createdAt: number;
 };
 
+export type ScheduledItemDataFragment = {
+  __typename?: 'ScheduledCuratedCorpusItem';
+  createdAt: number;
+  createdBy: string;
+  externalId: string;
+  scheduledDate: any;
+  updatedAt: number;
+  updatedBy?: string | null;
+  approvedItem: {
+    __typename?: 'ApprovedCuratedCorpusItem';
+    externalId: string;
+    prospectId?: string | null;
+    title: string;
+    language: string;
+    publisher: string;
+    url: any;
+    imageUrl: any;
+    excerpt: string;
+    status: CuratedStatus;
+    topic: string;
+    isCollection: boolean;
+    isTimeSensitive: boolean;
+    isSyndicated: boolean;
+    createdBy: string;
+    createdAt: number;
+    updatedBy?: string | null;
+    updatedAt: number;
+  };
+};
+
 export type UrlMetadataFragment = {
   __typename?: 'UrlMetadata';
   url: string;
@@ -2048,6 +2093,44 @@ export type RejectProspectMutation = {
     reason: string;
     createdBy: string;
     createdAt: number;
+  };
+};
+
+export type RescheduleScheduledCuratedCorpusItemMutationVariables = Exact<{
+  externalId: Scalars['ID'];
+  scheduledDate: Scalars['Date'];
+}>;
+
+export type RescheduleScheduledCuratedCorpusItemMutation = {
+  __typename?: 'Mutation';
+  rescheduleScheduledCuratedCorpusItem: {
+    __typename?: 'ScheduledCuratedCorpusItem';
+    createdAt: number;
+    createdBy: string;
+    externalId: string;
+    scheduledDate: any;
+    updatedAt: number;
+    updatedBy?: string | null;
+    approvedItem: {
+      __typename?: 'ApprovedCuratedCorpusItem';
+      externalId: string;
+      prospectId?: string | null;
+      title: string;
+      language: string;
+      publisher: string;
+      url: any;
+      imageUrl: any;
+      excerpt: string;
+      status: CuratedStatus;
+      topic: string;
+      isCollection: boolean;
+      isTimeSensitive: boolean;
+      isSyndicated: boolean;
+      createdBy: string;
+      createdAt: number;
+      updatedBy?: string | null;
+      updatedAt: number;
+    };
   };
 };
 
@@ -3165,27 +3248,6 @@ export const CollectionStoryDataFragmentDoc = gql`
     sortOrder
   }
 `;
-export const CuratedItemDataFragmentDoc = gql`
-  fragment CuratedItemData on ApprovedCuratedCorpusItem {
-    externalId
-    prospectId
-    title
-    language
-    publisher
-    url
-    imageUrl
-    excerpt
-    status
-    topic
-    isCollection
-    isTimeSensitive
-    isSyndicated
-    createdBy
-    createdAt
-    updatedBy
-    updatedAt
-  }
-`;
 export const ProspectDataFragmentDoc = gql`
   fragment ProspectData on Prospect {
     id
@@ -3218,6 +3280,41 @@ export const RejectedItemDataFragmentDoc = gql`
     createdBy
     createdAt
   }
+`;
+export const CuratedItemDataFragmentDoc = gql`
+  fragment CuratedItemData on ApprovedCuratedCorpusItem {
+    externalId
+    prospectId
+    title
+    language
+    publisher
+    url
+    imageUrl
+    excerpt
+    status
+    topic
+    isCollection
+    isTimeSensitive
+    isSyndicated
+    createdBy
+    createdAt
+    updatedBy
+    updatedAt
+  }
+`;
+export const ScheduledItemDataFragmentDoc = gql`
+  fragment ScheduledItemData on ScheduledCuratedCorpusItem {
+    approvedItem {
+      ...CuratedItemData
+    }
+    createdAt
+    createdBy
+    externalId
+    scheduledDate
+    updatedAt
+    updatedBy
+  }
+  ${CuratedItemDataFragmentDoc}
 `;
 export const UrlMetadataFragmentDoc = gql`
   fragment urlMetadata on UrlMetadata {
@@ -4061,6 +4158,65 @@ export type RejectProspectMutationOptions = Apollo.BaseMutationOptions<
   RejectProspectMutation,
   RejectProspectMutationVariables
 >;
+export const RescheduleScheduledCuratedCorpusItemDocument = gql`
+  mutation rescheduleScheduledCuratedCorpusItem(
+    $externalId: ID!
+    $scheduledDate: Date!
+  ) {
+    rescheduleScheduledCuratedCorpusItem(
+      data: { externalId: $externalId, scheduledDate: $scheduledDate }
+    ) {
+      ...ScheduledItemData
+    }
+  }
+  ${ScheduledItemDataFragmentDoc}
+`;
+export type RescheduleScheduledCuratedCorpusItemMutationFn =
+  Apollo.MutationFunction<
+    RescheduleScheduledCuratedCorpusItemMutation,
+    RescheduleScheduledCuratedCorpusItemMutationVariables
+  >;
+
+/**
+ * __useRescheduleScheduledCuratedCorpusItemMutation__
+ *
+ * To run a mutation, you first call `useRescheduleScheduledCuratedCorpusItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRescheduleScheduledCuratedCorpusItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [rescheduleScheduledCuratedCorpusItemMutation, { data, loading, error }] = useRescheduleScheduledCuratedCorpusItemMutation({
+ *   variables: {
+ *      externalId: // value for 'externalId'
+ *      scheduledDate: // value for 'scheduledDate'
+ *   },
+ * });
+ */
+export function useRescheduleScheduledCuratedCorpusItemMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    RescheduleScheduledCuratedCorpusItemMutation,
+    RescheduleScheduledCuratedCorpusItemMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    RescheduleScheduledCuratedCorpusItemMutation,
+    RescheduleScheduledCuratedCorpusItemMutationVariables
+  >(RescheduleScheduledCuratedCorpusItemDocument, options);
+}
+export type RescheduleScheduledCuratedCorpusItemMutationHookResult = ReturnType<
+  typeof useRescheduleScheduledCuratedCorpusItemMutation
+>;
+export type RescheduleScheduledCuratedCorpusItemMutationResult =
+  Apollo.MutationResult<RescheduleScheduledCuratedCorpusItemMutation>;
+export type RescheduleScheduledCuratedCorpusItemMutationOptions =
+  Apollo.BaseMutationOptions<
+    RescheduleScheduledCuratedCorpusItemMutation,
+    RescheduleScheduledCuratedCorpusItemMutationVariables
+  >;
 export const UpdateApprovedCuratedCorpusItemDocument = gql`
   mutation updateApprovedCuratedCorpusItem(
     $data: UpdateApprovedCuratedCorpusItemInput!

@@ -14,13 +14,18 @@ interface ScheduledItemCardWrapperProps {
    * What to do when the "Remove" button is clicked.
    */
   onRemove?: VoidFunction;
+
+  /**
+   * Callback for the "Reschedule" button
+   */
+  onReschedule?: VoidFunction;
 }
 
 export const ScheduledItemCardWrapper: React.FC<
   ScheduledItemCardWrapperProps
 > = (props): JSX.Element => {
   const classes = useStyles();
-  const { item, onRemove } = props;
+  const { item, onRemove, onReschedule } = props;
 
   return (
     <Grid item xs={12} sm={6} md={3}>
@@ -28,6 +33,9 @@ export const ScheduledItemCardWrapper: React.FC<
         <ApprovedItemListCard item={item.approvedItem} />
 
         <CardActions className={classes.actions}>
+          <Button buttonType="positive" variant="text" onClick={onReschedule}>
+            Reschedule
+          </Button>
           <Button buttonType="negative" variant="text" onClick={onRemove}>
             Remove
           </Button>

@@ -9,6 +9,7 @@ import {
   RemoveItemFromScheduledSurfaceModal,
   ScheduledItemCardWrapper,
   SplitButton,
+  ScheduleItemModal,
 } from '../../components';
 import {
   ScheduledCuratedCorpusItem,
@@ -17,6 +18,7 @@ import {
   useDeleteScheduledItemMutation,
   useGetScheduledItemsQuery,
   useGetScheduledSurfacesForUserQuery,
+  useRescheduleScheduledCuratedCorpusItemMutation,
 } from '../../../api/generatedTypes';
 import {
   useNotifications,
@@ -144,6 +146,11 @@ export const SchedulePage: React.FC = (): JSX.Element => {
   const [removeModalOpen, toggleRemoveModal] = useToggle(false);
 
   /**
+   * Keep track of whether the "Schedule Item Modal" is open or not
+   */
+  const [scheduleItemModalOpen, toggleScheduleItemModal] = useToggle(false);
+
+  /**
    * Set the current Scheduled Item to be worked on.
    */
   const [currentItem, setCurrentItem] = useState<
@@ -156,6 +163,41 @@ export const SchedulePage: React.FC = (): JSX.Element => {
 
   // Prepare the "delete scheduled item" mutation
   const [deleteScheduledItem] = useDeleteScheduledItemMutation();
+
+  // Prepare the "reschedule scheduled curated corpus item" mutation
+  const [rescheduleItem] = useRescheduleScheduledCuratedCorpusItemMutation();
+
+  /**
+   * Reschedule item
+   *
+   * @param values
+   * @param formikHelpers
+   */
+  const onRescheduleItem = (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ): void => {
+    // Set out all the variables we need to pass to the mutation
+    const variables = {
+      externalId: currentItem?.externalId,
+      scheduledDate: values.scheduledDate.toISODate(),
+    };
+
+    // Run the mutation
+    runMutation(
+      rescheduleItem,
+      { variables },
+      `Item rescheduled successfully.`,
+      () => {
+        toggleScheduleItemModal();
+        formikHelpers.setSubmitting(false);
+      },
+      () => {
+        formikHelpers.setSubmitting(false);
+      },
+      refetch
+    );
+  };
 
   /**
    * Remove item from Scheduled Surface.
@@ -198,6 +240,17 @@ export const SchedulePage: React.FC = (): JSX.Element => {
           isOpen={removeModalOpen}
           onSave={onRemoveSave}
           toggleModal={toggleRemoveModal}
+        />
+      )}
+
+      {currentItem && (
+        <ScheduleItemModal
+          approvedItem={currentItem.approvedItem}
+          headingCopy={'Reschedule Item'}
+          isOpen={scheduleItemModalOpen}
+          toggleModal={toggleScheduleItemModal}
+          onSave={onRescheduleItem}
+          scheduledSurfaceGuid={currentScheduledSurfaceGuid}
         />
       )}
 
@@ -253,6 +306,10 @@ export const SchedulePage: React.FC = (): JSX.Element => {
                           onRemove={() => {
                             setCurrentItem(item);
                             toggleRemoveModal();
+                          }}
+                          onReschedule={() => {
+                            setCurrentItem(item);
+                            toggleScheduleItemModal();
                           }}
                         />
                       );
