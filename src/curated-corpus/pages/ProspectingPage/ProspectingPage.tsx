@@ -24,6 +24,7 @@ import {
   ScheduledCuratedCorpusItemsResult,
   useCreateApprovedCuratedCorpusItemMutation,
   useCreateScheduledCuratedCorpusItemMutation,
+  useGetApprovedItemByUrlLazyQuery,
   useGetProspectsQuery,
   useGetScheduledItemsQuery,
   useGetScheduledSurfacesForUserQuery,
@@ -383,15 +384,18 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   /**
    * common stuff we (may) need to do after creating an approved item
    *
-   * @param approvedItemStatus (CuratedStatus): the status of the approved item
-   * @param approvedItemData (any): the data we get back from the createApprovedItem mutation
+   * @param approvedItem
    * @param filterProspects (boolean): whether or not we need to filter the list of prospects on the screen
+   * @param toggleEditForm (boolean): whether the approved item modal needs to be hidden
    */
   const postCreateApprovedItem = (
     approvedItem: ApprovedCuratedCorpusItem,
-    filterProspects: boolean
+    filterProspects: boolean,
+    toggleEditForm = true
   ): void => {
-    toggleApprovedItemModal();
+    if (toggleEditForm) {
+      toggleApprovedItemModal();
+    }
 
     if (approvedItem.status === CuratedStatus.Recommendation) {
       setApprovedItem(approvedItem);
@@ -484,6 +488,38 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     );
   };
 
+  const [getApprovedItemByUrl] = useGetApprovedItemByUrlLazyQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'no-cache',
+    onCompleted: (data) => {
+      const approvedItem = data?.getApprovedCuratedCorpusItemByUrl;
+
+      if (approvedItem) {
+        // Update the approved item to be worked on on the Prospecting page
+        setApprovedItem(approvedItem);
+
+        runMutation(
+          updateProspectAsCurated,
+          { variables: { prospectId: currentProspect?.id } },
+          undefined,
+          () => {
+            postCreateApprovedItem(approvedItem, true, false);
+          }
+        );
+      } else {
+        toggleApprovedItemModal();
+      }
+    },
+  });
+
+  const verifyProspect = (prospect: Prospect) => {
+    getApprovedItemByUrl({
+      variables: {
+        url: prospect.url,
+      },
+    });
+  };
+
   // check if no prospects are returned in the api call
   const showEmptyState = prospects && !loading && prospects.length === 0;
 
@@ -536,7 +572,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
           approvedItem={approvedItem}
           headingCopy="Optional: schedule this item"
           isOpen={scheduleModalOpen}
-          // only pre-select the sheduled surface if the item came from a prospect
+          // only pre-select the scheduled surface if the item came from a prospect
           // if it was manually added, allow the user to select the surface
           scheduledSurfaceGuid={
             approvedItem.prospectId ? currentScheduledSurfaceGuid : undefined
@@ -616,7 +652,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                   onRecommend={() => {
                     setCurrentProspect(prospect);
                     setIsRecommendation(true);
-                    toggleApprovedItemModal();
+                    verifyProspect(prospect);
                   }}
                   onReject={() => {
                     setCurrentProspect(prospect);
