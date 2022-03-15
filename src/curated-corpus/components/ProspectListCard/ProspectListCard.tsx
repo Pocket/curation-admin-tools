@@ -14,7 +14,10 @@ import { useStyles } from './ProspectListCard.styles';
 import LanguageIcon from '@material-ui/icons/Language';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import { Button } from '../../../_shared/components';
-import { getDisplayTopic } from '../../helpers/helperFunctions';
+import {
+  getDisplayImage,
+  getDisplayTopic,
+} from '../../helpers/helperFunctions';
 
 interface ProspectListCardProps {
   /**
@@ -49,11 +52,7 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
         <Grid item xs={12} sm={3}>
           <CardMedia
             component="img"
-            src={
-              prospect.imageUrl && prospect.imageUrl.length > 0
-                ? prospect.imageUrl
-                : '/placeholders/collectionSmall.svg'
-            }
+            src={getDisplayImage(prospect.imageUrl)}
             alt={prospect.title ?? 'No title supplied'}
             className={classes.image}
           />

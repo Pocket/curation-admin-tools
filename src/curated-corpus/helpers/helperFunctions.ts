@@ -196,3 +196,17 @@ export const getDisplayTopic = (
 
   return displayTopic ? displayTopic : 'N/A';
 };
+
+/**
+ * This function gets a display version of an image (or a placeholder) ran through our Image Cache the same way that New Tab will display the image.
+ */
+export const getDisplayImage = (
+  imageUrl: Maybe<string> | string | undefined
+): string => {
+  return imageUrl && imageUrl.length > 0
+    ? // This is the same URL format that we use on New Tab, the only difference is we set the quality to 100 instead of 60.
+      `https://pocket-image-cache.com/296x148/filters:format(jpeg):quality(100):no_upscale():strip_exif()/${encodeURI(
+        imageUrl
+      )}`
+    : '/placeholders/collectionSmall.svg';
+};

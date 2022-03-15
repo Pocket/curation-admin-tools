@@ -19,7 +19,10 @@ import {
   ApprovedCuratedCorpusItem,
   CuratedStatus,
 } from '../../../api/generatedTypes';
-import { getDisplayTopic } from '../../helpers/helperFunctions';
+import {
+  getDisplayImage,
+  getDisplayTopic,
+} from '../../helpers/helperFunctions';
 
 interface ApprovedItemListCardProps {
   /**
@@ -38,11 +41,7 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
     <>
       <CardMedia
         component="img"
-        src={
-          item.imageUrl && item.imageUrl.length > 0
-            ? item.imageUrl
-            : '/placeholders/collectionSmall.svg'
-        }
+        src={getDisplayImage(item.imageUrl)}
         alt={item.title}
       />
 
