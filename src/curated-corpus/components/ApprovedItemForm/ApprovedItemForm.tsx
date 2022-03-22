@@ -18,6 +18,7 @@ import {
   Grid,
   LinearProgress,
   Switch,
+  TextField,
 } from '@material-ui/core';
 import {
   FormikSelectField,
@@ -87,6 +88,7 @@ export const ApprovedItemForm: React.FC<
       collection: approvedItem.isCollection,
       excerpt: approvedItem.excerpt,
       imageUrl: approvedItem.imageUrl,
+      source: approvedItem.source,
     },
     validateOnBlur: false,
     validateOnChange: false,
@@ -266,6 +268,14 @@ export const ApprovedItemForm: React.FC<
           </Grid>
         </Grid>
       </Grid>
+      <Box display="none">
+        <TextField
+          type="hidden"
+          id="source"
+          label="source"
+          {...formik.getFieldProps('source')}
+        />
+      </Box>
 
       {formik.isSubmitting && (
         <Grid item xs={12}>

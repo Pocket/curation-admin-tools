@@ -14,6 +14,7 @@ export const CuratedItemData = gql`
     imageUrl
     excerpt
     status
+    source
     topic
     isCollection
     isTimeSensitive

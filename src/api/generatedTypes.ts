@@ -60,12 +60,14 @@ export type ApprovedCuratedCorpusItem = {
    * Example: a story covering an election, or "The best of 202x" collection.
    */
   isTimeSensitive: Scalars['Boolean'];
-  /** What language this story is in. This is a two-letter code, for example, 'en' for English. */
-  language: Scalars['String'];
+  /** What language this story is in. This is a two-letter code, for example, 'EN' for English. */
+  language: CorpusLanguage;
   /** The GUID of the corresponding Prospect ID. Will be empty if the item was manually added. */
   prospectId?: Maybe<Scalars['ID']>;
   /** The name of the online publication that published this story. */
   publisher: Scalars['String'];
+  /** The source of the corpus item. */
+  source: CorpusItemSource;
   /** The outcome of the curators' review. */
   status: CuratedStatus;
   /** The title of the story. */
@@ -107,9 +109,9 @@ export type ApprovedCuratedCorpusItemEdge = {
 export type ApprovedCuratedCorpusItemFilter = {
   /**
    * Optional filter on the language Approved Items have been classified as.
-   * This is a two-letter string, e.g. 'en' for English or 'de' for 'German'.
+   * This is a two-letter string, e.g. 'EN' for English or 'DE' for 'German'.
    */
-  language?: InputMaybe<Scalars['String']>;
+  language?: InputMaybe<CorpusLanguage>;
   /** Optional filter on the status of Approved Items. */
   status?: InputMaybe<CuratedStatus>;
   /** Optional filter on the title field. Returns partial matches. */
@@ -306,6 +308,24 @@ export type CollectionsResult = {
   pagination: Pagination;
 };
 
+/** The source of the corpus item */
+export enum CorpusItemSource {
+  /** Imported from the legacy database */
+  Backfill = 'BACKFILL',
+  /** Manually entered through the curation admin tool */
+  Manual = 'MANUAL',
+  /** Originated as a prospect in the curation admin tool */
+  Prospect = 'PROSPECT',
+}
+
+/** Valid language codes for curated corpus items. */
+export enum CorpusLanguage {
+  /** German */
+  De = 'DE',
+  /** English */
+  En = 'EN',
+}
+
 /** Input data for creating an Approved Item and optionally scheduling this item to appear on a Scheduled Surface. */
 export type CreateApprovedCuratedCorpusItemInput = {
   /** The excerpt of the Approved Item. */
@@ -321,8 +341,8 @@ export type CreateApprovedCuratedCorpusItemInput = {
    * Example: a story covering an election, or "The best of 202x" collection.
    */
   isTimeSensitive: Scalars['Boolean'];
-  /** What language this item is in. This is a two-letter code, for example, 'en' for English. */
-  language: Scalars['String'];
+  /** What language this item is in. This is a two-letter code, for example, 'EN' for English. */
+  language: CorpusLanguage;
   /** The GUID of the corresponding Prospect ID. Will be empty for manually added items. */
   prospectId?: InputMaybe<Scalars['ID']>;
   /** The name of the online publication that published this story. */
@@ -331,6 +351,8 @@ export type CreateApprovedCuratedCorpusItemInput = {
   scheduledDate?: InputMaybe<Scalars['Date']>;
   /** Optionally, specify the GUID of the Scheduled Surface this item should be scheduled for. */
   scheduledSurfaceGuid?: InputMaybe<Scalars['ID']>;
+  /** The source of the corpus item. */
+  source: CorpusItemSource;
   /** The outcome of the curators' review of the Approved Item. */
   status: CuratedStatus;
   /** The title of the Approved Item. */
@@ -397,8 +419,8 @@ export type CreateCollectionStoryInput = {
 
 /** Input data for creating a Rejected Item. */
 export type CreateRejectedCuratedCorpusItemInput = {
-  /** What language this item is in. This is a two-letter code, for example, 'en' for English. */
-  language?: InputMaybe<Scalars['String']>;
+  /** What language this item is in. This is a two-letter code, for example, 'EN' for English. */
+  language?: InputMaybe<CorpusLanguage>;
   /** The GUID of the corresponding Prospect ID. Will be empty for manually added item. */
   prospectId?: InputMaybe<Scalars['ID']>;
   /** The name of the online publication that published this story. */
@@ -514,6 +536,56 @@ export enum Imageness {
 }
 
 /**
+ * Input data for loading an Approved Item via an automated process and optionally scheduling
+ * this item to appear on a Scheduled Surface.
+ */
+export type ImportApprovedCuratedCorpusItemInput = {
+  /** A Unix timestamp of when the entity was created. */
+  createdAt: Scalars['Int'];
+  /** A single sign-on user identifier of the user who created this entity. */
+  createdBy: Scalars['String'];
+  /** The excerpt of the Approved Item. */
+  excerpt: Scalars['String'];
+  /** The image URL for this item's accompanying picture. */
+  imageUrl: Scalars['Url'];
+  /** Whether this story is a Pocket Collection. */
+  isCollection?: InputMaybe<Scalars['Boolean']>;
+  /** Whether this item is a syndicated article. */
+  isSyndicated?: InputMaybe<Scalars['Boolean']>;
+  /** What language this item is in. This is a two-letter capitalized code, for example, 'EN' for English. */
+  language: CorpusLanguage;
+  /** The name of the online publication that published this story. */
+  publisher: Scalars['String'];
+  /** The date this item should be appearing on a Scheduled Surface. Format: YYYY-MM-DD */
+  scheduledDate: Scalars['Date'];
+  /** The GUID of the Scheduled Surface this item should be scheduled for. */
+  scheduledSurfaceGuid: Scalars['ID'];
+  /** The source of the corpus item. */
+  source: CorpusItemSource;
+  /** The outcome of the curators' review of the Approved Item. */
+  status: CuratedStatus;
+  /** The title of the Approved Item. */
+  title: Scalars['String'];
+  /** A topic this story best fits in. The value will be `null` for migrated items that don't have a topic set. */
+  topic?: InputMaybe<Scalars['String']>;
+  /** A Unix timestamp of when the entity was last updated. */
+  updatedAt: Scalars['Int'];
+  /** A single sign-on user identifier of the user who last updated this entity. */
+  updatedBy: Scalars['String'];
+  /** The URL of the Approved Item. */
+  url: Scalars['Url'];
+};
+
+/** The data that the loadApprovedCuratedCorpusItem mutation returns on success. */
+export type ImportApprovedCuratedCorpusItemPayload = {
+  __typename?: 'ImportApprovedCuratedCorpusItemPayload';
+  /** The approved item, as created by an automated process. */
+  approvedItem: ApprovedCuratedCorpusItem;
+  /** The scheduled entry that is created by an automated process at the same time. */
+  scheduledItem: ScheduledCuratedCorpusItem;
+};
+
+/**
  * The heart of Pocket
  * A url and meta data related to it.
  */
@@ -521,7 +593,12 @@ export type Item = {
   __typename?: 'Item';
   /** If available, the url to an AMP version of this article */
   ampUrl?: Maybe<Scalars['Url']>;
-  /** The pocket HTML string of the article */
+  /**
+   * The pocket HTML string of the article.
+   * Note: Web and Android as of 3/4/2022 use the Article field, any improvements made
+   * within MArticle for parsing will not be reflected in the article field.
+   * When that happens, the clients will work to move to MArticle.
+   */
   article?: Maybe<Scalars['String']>;
   /** List of Authors involved with this article */
   authors?: Maybe<Array<Maybe<Author>>>;
@@ -757,6 +834,11 @@ export type Mutation = {
   deleteCollectionStory: CollectionStory;
   /** Deletes an item from a Scheduled Surface. */
   deleteScheduledCuratedCorpusItem: ScheduledCuratedCorpusItem;
+  /**
+   * Lets an automated process create an Approved Item and optionally schedule it to appear
+   * on a Scheduled Surface.
+   */
+  importApprovedCuratedCorpusItem: ImportApprovedCuratedCorpusItemPayload;
   /** Refresh an {Item}'s article content. */
   refreshItemArticle: Item;
   /** Rejects an Approved Item: deletes it from the corpus and creates a Rejected Item instead. */
@@ -860,6 +942,10 @@ export type MutationDeleteCollectionStoryArgs = {
 
 export type MutationDeleteScheduledCuratedCorpusItemArgs = {
   data: DeleteScheduledCuratedCorpusItemInput;
+};
+
+export type MutationImportApprovedCuratedCorpusItemArgs = {
+  data: ImportApprovedCuratedCorpusItemInput;
 };
 
 export type MutationRefreshItemArticleArgs = {
@@ -1169,8 +1255,8 @@ export type RejectedCuratedCorpusItem = {
   createdBy: Scalars['String'];
   /** An alternative primary key in UUID format that is generated on creation. */
   externalId: Scalars['ID'];
-  /** What language this story is in. This is a two-letter code, for example, 'en' for English. */
-  language: Scalars['String'];
+  /** What language this story is in. This is a two-letter code, for example, 'EN' for English. */
+  language: CorpusLanguage;
   /** The GUID of the corresponding Prospect ID. Will be empty if the item was manually added. */
   prospectId?: Maybe<Scalars['ID']>;
   /** The name of the online publication that published this story. */
@@ -1212,9 +1298,9 @@ export type RejectedCuratedCorpusItemEdge = {
 export type RejectedCuratedCorpusItemFilter = {
   /**
    * Optional filter on the language Rejected Curated Items have been classified as.
-   * This is a two-letter string, e.g. 'en' for English or 'de' for 'German'.
+   * This is a two-letter string, e.g. 'EN' for English or 'DE' for 'German'.
    */
-  language?: InputMaybe<Scalars['String']>;
+  language?: InputMaybe<CorpusLanguage>;
   /** Optional filter on the title field. Returns partial matches. */
   title?: InputMaybe<Scalars['String']>;
   /** Optional filter on the topic field. */
@@ -1357,8 +1443,8 @@ export type UpdateApprovedCuratedCorpusItemInput = {
    * Example: a story covering an election, or "The best of 202x" collection.
    */
   isTimeSensitive: Scalars['Boolean'];
-  /** What language this item is in. This is a two-letter code, for example, 'en' for English. */
-  language: Scalars['String'];
+  /** What language this item is in. This is a two-letter code, for example, 'EN' for English. */
+  language: CorpusLanguage;
   /** The name of the online publication that published this story. */
   publisher: Scalars['String'];
   /** The outcome of the curators' review of the Approved Item. */
@@ -1623,12 +1709,13 @@ export type CuratedItemDataFragment = {
   externalId: string;
   prospectId?: string | null;
   title: string;
-  language: string;
+  language: CorpusLanguage;
   publisher: string;
   url: any;
   imageUrl: any;
   excerpt: string;
   status: CuratedStatus;
+  source: CorpusItemSource;
   topic: string;
   isCollection: boolean;
   isTimeSensitive: boolean;
@@ -1665,7 +1752,7 @@ export type RejectedItemDataFragment = {
   url: any;
   title: string;
   topic: string;
-  language: string;
+  language: CorpusLanguage;
   publisher: string;
   reason: string;
   createdBy: string;
@@ -1685,12 +1772,13 @@ export type ScheduledItemDataFragment = {
     externalId: string;
     prospectId?: string | null;
     title: string;
-    language: string;
+    language: CorpusLanguage;
     publisher: string;
     url: any;
     imageUrl: any;
     excerpt: string;
     status: CuratedStatus;
+    source: CorpusItemSource;
     topic: string;
     isCollection: boolean;
     isTimeSensitive: boolean;
@@ -1726,12 +1814,13 @@ export type CreateApprovedCuratedCorpusItemMutation = {
     externalId: string;
     prospectId?: string | null;
     title: string;
-    language: string;
+    language: CorpusLanguage;
     publisher: string;
     url: any;
     imageUrl: any;
     excerpt: string;
     status: CuratedStatus;
+    source: CorpusItemSource;
     topic: string;
     isCollection: boolean;
     isTimeSensitive: boolean;
@@ -1931,12 +2020,13 @@ export type CreateScheduledCuratedCorpusItemMutation = {
       externalId: string;
       prospectId?: string | null;
       title: string;
-      language: string;
+      language: CorpusLanguage;
       publisher: string;
       url: any;
       imageUrl: any;
       excerpt: string;
       status: CuratedStatus;
+      source: CorpusItemSource;
       topic: string;
       isCollection: boolean;
       isTimeSensitive: boolean;
@@ -2017,12 +2107,13 @@ export type DeleteScheduledItemMutation = {
       externalId: string;
       prospectId?: string | null;
       title: string;
-      language: string;
+      language: CorpusLanguage;
       publisher: string;
       url: any;
       imageUrl: any;
       excerpt: string;
       status: CuratedStatus;
+      source: CorpusItemSource;
       topic: string;
       isCollection: boolean;
       isTimeSensitive: boolean;
@@ -2058,12 +2149,13 @@ export type RejectApprovedItemMutation = {
     externalId: string;
     prospectId?: string | null;
     title: string;
-    language: string;
+    language: CorpusLanguage;
     publisher: string;
     url: any;
     imageUrl: any;
     excerpt: string;
     status: CuratedStatus;
+    source: CorpusItemSource;
     topic: string;
     isCollection: boolean;
     isTimeSensitive: boolean;
@@ -2088,7 +2180,7 @@ export type RejectProspectMutation = {
     url: any;
     title: string;
     topic: string;
-    language: string;
+    language: CorpusLanguage;
     publisher: string;
     reason: string;
     createdBy: string;
@@ -2116,12 +2208,13 @@ export type RescheduleScheduledCuratedCorpusItemMutation = {
       externalId: string;
       prospectId?: string | null;
       title: string;
-      language: string;
+      language: CorpusLanguage;
       publisher: string;
       url: any;
       imageUrl: any;
       excerpt: string;
       status: CuratedStatus;
+      source: CorpusItemSource;
       topic: string;
       isCollection: boolean;
       isTimeSensitive: boolean;
@@ -2145,12 +2238,13 @@ export type UpdateApprovedCuratedCorpusItemMutation = {
     externalId: string;
     prospectId?: string | null;
     title: string;
-    language: string;
+    language: CorpusLanguage;
     publisher: string;
     url: any;
     imageUrl: any;
     excerpt: string;
     status: CuratedStatus;
+    source: CorpusItemSource;
     topic: string;
     isCollection: boolean;
     isTimeSensitive: boolean;
@@ -2550,12 +2644,13 @@ export type GetApprovedItemByUrlQuery = {
     externalId: string;
     prospectId?: string | null;
     title: string;
-    language: string;
+    language: CorpusLanguage;
     publisher: string;
     url: any;
     imageUrl: any;
     excerpt: string;
     status: CuratedStatus;
+    source: CorpusItemSource;
     topic: string;
     isCollection: boolean;
     isTimeSensitive: boolean;
@@ -2592,12 +2687,13 @@ export type GetApprovedItemsQuery = {
         externalId: string;
         prospectId?: string | null;
         title: string;
-        language: string;
+        language: CorpusLanguage;
         publisher: string;
         url: any;
         imageUrl: any;
         excerpt: string;
         status: CuratedStatus;
+        source: CorpusItemSource;
         topic: string;
         isCollection: boolean;
         isTimeSensitive: boolean;
@@ -2965,7 +3061,7 @@ export type GetRejectedItemsQuery = {
         url: any;
         title: string;
         topic: string;
-        language: string;
+        language: CorpusLanguage;
         publisher: string;
         reason: string;
         createdBy: string;
@@ -3014,12 +3110,13 @@ export type GetScheduledItemsQuery = {
         externalId: string;
         prospectId?: string | null;
         title: string;
-        language: string;
+        language: CorpusLanguage;
         publisher: string;
         url: any;
         imageUrl: any;
         excerpt: string;
         status: CuratedStatus;
+        source: CorpusItemSource;
         topic: string;
         isCollection: boolean;
         isTimeSensitive: boolean;
@@ -3292,6 +3389,7 @@ export const CuratedItemDataFragmentDoc = gql`
     imageUrl
     excerpt
     status
+    source
     topic
     isCollection
     isTimeSensitive

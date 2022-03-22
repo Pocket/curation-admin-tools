@@ -33,6 +33,13 @@ interface AddProspectModalProps {
    * called with `true` to set the Curation Status field to Recommendation in the approved item form
    */
   setIsRecommendation: (isRecommendation: boolean) => void;
+
+  /**
+   * Passing in the setter for the state variable isManualSubmission in this component's parent:
+   * ProspectingPage. We need to pass this down to the AddProspectFormConnector where this will be
+   * called with `true` to set the hidden Source field to Manual in the approved item form
+   */
+  setIsManualSubmission: (isManual: boolean) => void;
 }
 
 /**
@@ -46,6 +53,7 @@ export const AddProspectModal: React.FC<AddProspectModalProps> = (
     toggleModal,
     setCurrentProspect,
     setIsRecommendation,
+    setIsManualSubmission,
     toggleApprovedItemModal,
   } = props;
 
@@ -61,6 +69,7 @@ export const AddProspectModal: React.FC<AddProspectModalProps> = (
             toggleApprovedItemModal={toggleApprovedItemModal}
             setCurrentProspect={setCurrentProspect}
             setIsRecommendation={setIsRecommendation}
+            setIsManualSubmission={setIsManualSubmission}
           />
         </Grid>
       </Grid>

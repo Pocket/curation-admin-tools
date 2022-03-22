@@ -30,6 +30,7 @@ import {
   useRejectProspectMutation,
   useUpdateProspectAsCuratedMutation,
   useUploadApprovedCuratedCorpusItemImageMutation,
+  CorpusLanguage,
 } from '../../../api/generatedTypes';
 import {
   useNotifications,
@@ -172,6 +173,11 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   const [isRecommendation, setIsRecommendation] = useState<boolean>(false);
 
   /**
+   * Set the boolean state variable to track if the prospect is manual
+   */
+  const [isManualSubmission, setIsManualSubmission] = useState<boolean>(false);
+
+  /**
    * Keep track of whether the "Reject this prospect" modal is open or not.
    */
   const [rejectModalOpen, toggleRejectModal] = useToggle(false);
@@ -255,7 +261,10 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         url: currentProspect?.url,
         title: currentProspect?.title,
         topic: currentProspect?.topic ?? '',
-        language: currentProspect?.language,
+        language:
+          currentProspect?.language === 'en'
+            ? CorpusLanguage.En
+            : CorpusLanguage.De,
         publisher: currentProspect?.publisher,
         reason: values.reason,
       },
@@ -334,6 +343,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       status: values.curationStatus,
       language: values.language,
       publisher: values.publisher,
+      source: values.source,
       imageUrl,
       topic: values.topic,
       isCollection: values.collection,
@@ -506,7 +516,8 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
           <ApprovedItemModal
             approvedItem={transformProspectToApprovedItem(
               currentProspect,
-              isRecommendation
+              isRecommendation,
+              isManualSubmission
             )}
             heading={isRecommendation ? 'Recommend' : 'Add to Corpus'}
             isOpen={approvedItemModalOpen}
@@ -532,6 +543,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         toggleApprovedItemModal={toggleApprovedItemModal}
         setCurrentProspect={setCurrentProspect}
         setIsRecommendation={setIsRecommendation}
+        setIsManualSubmission={setIsManualSubmission}
       />
 
       {approvedItem && (

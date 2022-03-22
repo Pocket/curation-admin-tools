@@ -34,6 +34,8 @@ interface AddProspectFormConnectorProps {
    * We need to call this to be able to set the Curation Status field to Recommendation in the approved item form
    */
   setIsRecommendation: (isRecommendation: boolean) => void;
+
+  setIsManualSubmission: (isManual: boolean) => void;
 }
 
 /**
@@ -50,6 +52,7 @@ export const AddProspectFormConnector: React.FC<
     toggleApprovedItemModal,
     setCurrentProspect,
     setIsRecommendation,
+    setIsManualSubmission,
   } = props;
 
   // state variable to store the itemUrl field from the form
@@ -119,6 +122,9 @@ export const AddProspectFormConnector: React.FC<
 
       // set the isRecommendation state variable in the ProspectingPage component to true
       setIsRecommendation(true);
+
+      // set isManualSubmission state variable in the ProspectingPage component to true
+      setIsManualSubmission(true);
 
       // Hide the AddProspect form
       toggleModal();
