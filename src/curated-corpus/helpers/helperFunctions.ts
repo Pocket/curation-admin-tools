@@ -1,9 +1,8 @@
-import { FormikValues } from 'formik';
 import { FileWithPath } from 'react-dropzone';
-import { v5 as uuidv5 } from 'uuid';
 import {
   ApprovedCuratedCorpusItem,
-  CreateApprovedCuratedCorpusItemInput,
+  CorpusItemSource,
+  CorpusLanguage,
   CuratedStatus,
   Maybe,
   Prospect,
@@ -20,7 +19,8 @@ import { topics } from './definitions';
  */
 export const transformProspectToApprovedItem = (
   prospect: Prospect,
-  isRecommendation: boolean
+  isRecommendation: boolean,
+  isManual: boolean
 ): ApprovedCuratedCorpusItem => {
   return {
     externalId: '',
@@ -29,7 +29,9 @@ export const transformProspectToApprovedItem = (
     title: prospect.title ?? '',
     imageUrl: prospect.imageUrl ?? '',
     publisher: prospect.publisher ?? '',
-    language: prospect.language ?? '',
+    language:
+      prospect.language === 'en' ? CorpusLanguage.En : CorpusLanguage.De,
+    source: isManual ? CorpusItemSource.Manual : CorpusItemSource.Prospect,
     topic: prospect.topic ?? '',
     status: isRecommendation
       ? CuratedStatus.Recommendation
@@ -73,36 +75,6 @@ export const transformUrlMetaDataToProspect = (
     // as they won't be recorded anywhere on the backend.
     prospectType: '',
     scheduledSurfaceGuid: '',
-  };
-};
-
-/**
- * Transforms formik input values from the ApprovedItemForm component into
- * CreateApprovedCuratedCorpusItemInput type object to be used for
- * CreateApprovedCuratedCorpusItem mutation
- *
- * @param values
- * @param prospectId
- * @returns CreateApprovedCuratedCorpusItemInput
- */
-export const transformFormInputToCreateApprovedItemInput = (
-  values: FormikValues,
-  prospectId?: string
-): CreateApprovedCuratedCorpusItemInput => {
-  return {
-    prospectId:
-      prospectId || uuidv5(values.url, '9edace02-b9c6-4705-a0d6-16476438557b'),
-    url: values.url,
-    title: values.title,
-    excerpt: values.excerpt,
-    status: values.curationStatus,
-    language: values.language,
-    publisher: values.publisher,
-    imageUrl: values.imageUrl,
-    topic: values.topic,
-    isCollection: values.collection,
-    isTimeSensitive: values.timeSensitive,
-    isSyndicated: values.syndicated,
   };
 };
 

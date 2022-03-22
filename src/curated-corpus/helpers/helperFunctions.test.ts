@@ -1,4 +1,6 @@
 import {
+  CorpusItemSource,
+  CorpusLanguage,
   CuratedStatus,
   Prospect,
   ProspectType,
@@ -33,6 +35,7 @@ describe('helperFunctions ', () => {
 
       const approvedItemFromProspect = transformProspectToApprovedItem(
         prospect,
+        true,
         true
       );
 
@@ -43,9 +46,10 @@ describe('helperFunctions ', () => {
         title: prospect.title,
         imageUrl: prospect.imageUrl,
         publisher: prospect.publisher,
-        language: prospect.language,
+        language: CorpusLanguage.En,
         topic: prospect.topic,
         status: CuratedStatus.Recommendation,
+        source: CorpusItemSource.Manual,
         isTimeSensitive: false,
         isSyndicated: prospect.isSyndicated,
         isCollection: prospect.isCollection,
@@ -66,7 +70,8 @@ describe('helperFunctions ', () => {
 
       const approvedItemFromProspect = transformProspectToApprovedItem(
         prospect,
-        false
+        false,
+        true
       );
 
       expect(approvedItemFromProspect).toMatchObject({
@@ -76,9 +81,10 @@ describe('helperFunctions ', () => {
         title: '',
         imageUrl: '',
         publisher: '',
-        language: '',
+        language: CorpusLanguage.De, // in the case where language is not present, it maps it to `DE` by default
         topic: '',
         status: CuratedStatus.Corpus,
+        source: CorpusItemSource.Manual,
         isTimeSensitive: false,
         isSyndicated: false,
         isCollection: false,
