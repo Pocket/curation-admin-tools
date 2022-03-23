@@ -30,7 +30,6 @@ import {
   useRejectProspectMutation,
   useUpdateProspectAsCuratedMutation,
   useUploadApprovedCuratedCorpusItemImageMutation,
-  CorpusLanguage,
 } from '../../../api/generatedTypes';
 import {
   useNotifications,
@@ -261,10 +260,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         url: currentProspect?.url,
         title: currentProspect?.title,
         topic: currentProspect?.topic ?? '',
-        language:
-          currentProspect?.language === 'en'
-            ? CorpusLanguage.En
-            : CorpusLanguage.De,
+        language: currentProspect?.language || undefined,
         publisher: currentProspect?.publisher,
         reason: values.reason,
       },

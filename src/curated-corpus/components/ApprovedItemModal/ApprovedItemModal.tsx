@@ -5,9 +5,10 @@ import { ApprovedCuratedCorpusItem } from '../../../api/generatedTypes';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import { ApprovedItemForm } from '../ApprovedItemForm/ApprovedItemForm';
+import { ApprovedItemFromProspect } from '../../helpers/definitions';
 
 interface ApprovedItemModalProps {
-  approvedItem: ApprovedCuratedCorpusItem;
+  approvedItem: ApprovedCuratedCorpusItem | ApprovedItemFromProspect;
   isOpen: boolean;
   heading?: string;
   showItemTitle?: boolean;
