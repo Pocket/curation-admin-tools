@@ -8,6 +8,7 @@ import { CollectionForm } from '../../components';
 import { useNotifications } from '../../../_shared/hooks';
 import {
   Collection,
+  CollectionLanguage,
   CollectionStatus,
   GetCollectionsDocument,
   useCreateCollectionMutation,
@@ -31,7 +32,7 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
     excerpt: '',
     intro: '',
     imageUrl: '',
-    language: 'en',
+    language: CollectionLanguage.En,
     status: CollectionStatus.Draft,
     authors: [],
     stories: [],

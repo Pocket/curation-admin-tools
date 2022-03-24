@@ -2,7 +2,11 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { CollectionInfo } from './CollectionInfo';
-import { Collection, CollectionStatus } from '../../../api/generatedTypes';
+import {
+  Collection,
+  CollectionLanguage,
+  CollectionStatus,
+} from '../../../api/generatedTypes';
 
 describe('The CollectionInfo component', () => {
   let collection: Omit<Collection, 'stories'>;
@@ -16,7 +20,7 @@ describe('The CollectionInfo component', () => {
       excerpt:
         'There’s a long history of presidential ailments, including George Washington’s near-death encounter with the flu, Grover Cleveland’s secret tumor, and the clandestine suffering of John F. Kennedy. ',
       intro: 'Intro text is generally longer than the excerpt.',
-      language: 'de',
+      language: CollectionLanguage.De,
       status: CollectionStatus.Draft,
       authors: [{ externalId: '123-abc', name: 'Joe Bloggs', active: true }],
     };

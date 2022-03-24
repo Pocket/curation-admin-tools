@@ -17,11 +17,11 @@ import { config } from '../../../config';
 import {
   Collection,
   CollectionAuthor,
+  CollectionLanguage,
   CollectionStatus,
   CurationCategory,
   IabCategory,
   IabParentCategory,
-  Language,
 } from '../../../api/generatedTypes';
 
 interface CollectionFormProps {
@@ -48,7 +48,7 @@ interface CollectionFormProps {
   /**
    * A list of all supported languages
    */
-  languages: Language[];
+  languages: CollectionLanguage[];
 
   /**
    * What do we do with the submitted data?
@@ -83,11 +83,6 @@ export const CollectionForm: React.FC<
     return author.externalId;
   });
 
-  // get a list of supported languages for the validation schema
-  const languageCodes = languages.map((language: Language) => {
-    return language.code;
-  });
-
   // if we're editing, grab the currently assigned author's external id
   const authorExternalId =
     collection.authors.length > 0 ? collection.authors[0].externalId : '';
@@ -101,7 +96,7 @@ export const CollectionForm: React.FC<
       slug: collection.slug ?? '',
       excerpt: collection.excerpt ?? '',
       intro: collection.intro ?? '',
-      language: collection.language ?? 'en',
+      language: collection.language ?? CollectionLanguage.En,
       status: collection.status ?? CollectionStatus.Draft,
       authorExternalId,
       curationCategoryExternalId: collection.curationCategory?.externalId ?? '',
@@ -113,7 +108,7 @@ export const CollectionForm: React.FC<
     // before they actually submit the form
     validateOnBlur: false,
     validateOnChange: false,
-    validationSchema: getValidationSchema(authorIds, languageCodes),
+    validationSchema: getValidationSchema(authorIds, languages),
     onSubmit: (values, formikHelpers) => {
       onSubmit(values, formikHelpers);
     },
@@ -219,10 +214,10 @@ export const CollectionForm: React.FC<
             fieldProps={formik.getFieldProps('language')}
             fieldMeta={formik.getFieldMeta('language')}
           >
-            {languages.map((language: Language) => {
+            {languages.map((language: CollectionLanguage) => {
               return (
-                <option value={language.code} key={language.code}>
-                  {language.code.toUpperCase()}
+                <option value={language} key={language}>
+                  {language}
                 </option>
               );
             })}

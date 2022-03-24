@@ -80,7 +80,7 @@ export const CollectionListCard: React.FC<CollectionListCardProps> = (
               <Chip
                 variant="outlined"
                 color="primary"
-                label={collection.language.toUpperCase()}
+                label={collection.language}
                 icon={<LanguageIcon />}
               />{' '}
               {collection.curationCategory && (
