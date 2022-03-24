@@ -26,7 +26,7 @@ describe('helperFunctions ', () => {
         imageUrl: 'test-prospect-image-url',
         isCollection: true,
         isSyndicated: true,
-        language: 'en',
+        language: CorpusLanguage.En,
         publisher: 'test-prospect-publisher',
         saveCount: 10,
         title: 'test-prospect-title',
@@ -81,7 +81,7 @@ describe('helperFunctions ', () => {
         title: '',
         imageUrl: '',
         publisher: '',
-        language: CorpusLanguage.De, // in the case where language is not present, it maps it to `DE` by default
+        language: undefined,
         topic: '',
         status: CuratedStatus.Corpus,
         source: CorpusItemSource.Manual,

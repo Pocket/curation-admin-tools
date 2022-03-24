@@ -1094,7 +1094,7 @@ export type Prospect = {
   imageUrl?: Maybe<Scalars['String']>;
   isCollection?: Maybe<Scalars['Boolean']>;
   isSyndicated?: Maybe<Scalars['Boolean']>;
-  language?: Maybe<Scalars['String']>;
+  language?: Maybe<CorpusLanguage>;
   prospectType: Scalars['String'];
   publisher?: Maybe<Scalars['String']>;
   saveCount?: Maybe<Scalars['Int']>;
@@ -1349,6 +1349,8 @@ export type ScheduledCuratedCorpusItem = {
    * This date is relative to the time zone of the Scheduled Surface. Format: YYYY-MM-DD.
    */
   scheduledDate: Scalars['Date'];
+  /** The GUID of this schedudedSurface to which this item is scheduled. Example: 'NEW_TAB_EN_US'. */
+  scheduledSurfaceGuid: Scalars['ID'];
   /** A Unix timestamp of when the entity was last updated. */
   updatedAt: Scalars['Int'];
   /** A single sign-on user identifier of the user who last updated this entity. Null on creation. */
@@ -1739,7 +1741,7 @@ export type ProspectDataFragment = {
   domain?: string | null;
   title?: string | null;
   excerpt?: string | null;
-  language?: string | null;
+  language?: CorpusLanguage | null;
   saveCount?: number | null;
   isSyndicated?: boolean | null;
   isCollection?: boolean | null;
@@ -1761,6 +1763,7 @@ export type RejectedItemDataFragment = {
 
 export type ScheduledItemDataFragment = {
   __typename?: 'ScheduledCuratedCorpusItem';
+  scheduledSurfaceGuid: string;
   createdAt: number;
   createdBy: string;
   externalId: string;
@@ -2197,6 +2200,7 @@ export type RescheduleScheduledCuratedCorpusItemMutation = {
   __typename?: 'Mutation';
   rescheduleScheduledCuratedCorpusItem: {
     __typename?: 'ScheduledCuratedCorpusItem';
+    scheduledSurfaceGuid: string;
     createdAt: number;
     createdBy: string;
     externalId: string;
@@ -2614,7 +2618,7 @@ export type UpdateProspectAsCuratedMutation = {
     domain?: string | null;
     title?: string | null;
     excerpt?: string | null;
-    language?: string | null;
+    language?: CorpusLanguage | null;
     saveCount?: number | null;
     isSyndicated?: boolean | null;
     isCollection?: boolean | null;
@@ -3027,7 +3031,7 @@ export type GetProspectsQuery = {
     domain?: string | null;
     title?: string | null;
     excerpt?: string | null;
-    language?: string | null;
+    language?: CorpusLanguage | null;
     saveCount?: number | null;
     isSyndicated?: boolean | null;
     isCollection?: boolean | null;
@@ -3105,6 +3109,7 @@ export type GetScheduledItemsQuery = {
       updatedAt: number;
       updatedBy?: string | null;
       scheduledDate: any;
+      scheduledSurfaceGuid: string;
       approvedItem: {
         __typename?: 'ApprovedCuratedCorpusItem';
         externalId: string;
@@ -3405,6 +3410,7 @@ export const ScheduledItemDataFragmentDoc = gql`
     approvedItem {
       ...CuratedItemData
     }
+    scheduledSurfaceGuid
     createdAt
     createdBy
     externalId
@@ -6142,6 +6148,7 @@ export const GetScheduledItemsDocument = gql`
         updatedAt
         updatedBy
         scheduledDate
+        scheduledSurfaceGuid
         approvedItem {
           ...CuratedItemData
         }

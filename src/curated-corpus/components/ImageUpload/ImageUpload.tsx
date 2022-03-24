@@ -22,12 +22,13 @@ import {
   MutationUploadApprovedCuratedCorpusItemImageArgs,
 } from '../../../api/generatedTypes';
 import { readImageFileFromDisk } from '../../helpers/helperFunctions';
+import { ApprovedItemFromProspect } from '../../helpers/definitions';
 
 interface ImageUploadProps {
   /**
    * Approved item entity
    */
-  entity: ApprovedCuratedCorpusItem;
+  entity: ApprovedCuratedCorpusItem | ApprovedItemFromProspect;
 
   /**
    * A path to a placeholder image to show if no image is available

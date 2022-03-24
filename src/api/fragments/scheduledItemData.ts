@@ -9,6 +9,7 @@ export const ScheduledItemData = gql`
     approvedItem {
       ...CuratedItemData
     }
+    scheduledSurfaceGuid
     createdAt
     createdBy
     externalId

@@ -35,6 +35,10 @@ interface AddProspectFormConnectorProps {
    */
   setIsRecommendation: (isRecommendation: boolean) => void;
 
+  /**
+   * Sets the state variable isManualSubmission in the ProspectingPage component
+   * We need to call this to be able to set the hidden Source field to Manual in the approved item form
+   */
   setIsManualSubmission: (isManual: boolean) => void;
 }
 

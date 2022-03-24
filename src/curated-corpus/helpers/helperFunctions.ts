@@ -1,6 +1,5 @@
 import { FileWithPath } from 'react-dropzone';
 import {
-  ApprovedCuratedCorpusItem,
   CorpusItemSource,
   CorpusLanguage,
   CuratedStatus,
@@ -8,7 +7,7 @@ import {
   Prospect,
   UrlMetadata,
 } from '../../api/generatedTypes';
-import { topics } from './definitions';
+import { topics, ApprovedItemFromProspect } from './definitions';
 
 /**
  *
@@ -21,7 +20,7 @@ export const transformProspectToApprovedItem = (
   prospect: Prospect,
   isRecommendation: boolean,
   isManual: boolean
-): ApprovedCuratedCorpusItem => {
+): ApprovedItemFromProspect => {
   return {
     externalId: '',
     prospectId: prospect.id,
@@ -29,8 +28,7 @@ export const transformProspectToApprovedItem = (
     title: prospect.title ?? '',
     imageUrl: prospect.imageUrl ?? '',
     publisher: prospect.publisher ?? '',
-    language:
-      prospect.language === 'en' ? CorpusLanguage.En : CorpusLanguage.De,
+    language: prospect.language || undefined,
     source: isManual ? CorpusItemSource.Manual : CorpusItemSource.Prospect,
     topic: prospect.topic ?? '',
     status: isRecommendation
@@ -55,6 +53,14 @@ export const transformProspectToApprovedItem = (
 export const transformUrlMetaDataToProspect = (
   metadata: UrlMetadata
 ): Prospect => {
+  // set language to undefined if metadata.language is an empty string or undefined.
+  // if not, then map it from string to its corresponding CorpusLanguage enum value
+  const language = !metadata.language
+    ? undefined
+    : metadata.language === 'en'
+    ? CorpusLanguage.En
+    : CorpusLanguage.De;
+
   return {
     // manually added items don't have a prospect id!
     id: '',
@@ -63,7 +69,7 @@ export const transformUrlMetaDataToProspect = (
     title: metadata.title ?? '',
     imageUrl: metadata.imageUrl ?? '',
     publisher: metadata.publisher ?? '',
-    language: metadata.language ?? '',
+    language,
     isSyndicated: metadata.isSyndicated ?? false,
     isCollection: metadata.isCollection ?? false,
     excerpt: metadata.excerpt ?? '',

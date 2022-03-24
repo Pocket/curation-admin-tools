@@ -1,5 +1,11 @@
 // Here we keep sets of options for curating items
-import { CuratedStatus, ProspectType, Topics } from '../../api/generatedTypes';
+import {
+  ApprovedCuratedCorpusItem,
+  CorpusLanguage,
+  CuratedStatus,
+  ProspectType,
+  Topics,
+} from '../../api/generatedTypes';
 
 export interface DropdownOption {
   code: string;
@@ -44,3 +50,17 @@ export const curationStatusOptions: DropdownOption[] = [
   { code: CuratedStatus.Recommendation, name: 'Recommendation' },
   { code: CuratedStatus.Corpus, name: 'Corpus' },
 ];
+
+/**
+ *  This type is only being used as the return type for the helper function transformProspectToApprovedItem().
+  It is meant to be a bridge between the Prospect and ApprovedCuratedCorpus graphql types.
+  ApprovedCuratedCorpusItem has language as a required field and Prospect has it as a possible undefined.
+  When mapping a Prospect to an ApprovedCuratedCorpusItem type, we need to able to set the language to undefined
+  for when it is undefined on the Prospect, which later will be set in the form before creating an Approved item
+ */
+export type ApprovedItemFromProspect = Omit<
+  ApprovedCuratedCorpusItem,
+  'language'
+> & {
+  language: CorpusLanguage | undefined;
+};

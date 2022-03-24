@@ -6,6 +6,7 @@ import {
   CuratedStatus,
 } from '../../../api/generatedTypes';
 import {
+  ApprovedItemFromProspect,
   curationStatusOptions,
   DropdownOption,
   languages,
@@ -32,7 +33,7 @@ interface ApprovedItemFormProps {
   /**
    * The approved item that needs to be edited.
    */
-  approvedItem: ApprovedCuratedCorpusItem;
+  approvedItem: ApprovedCuratedCorpusItem | ApprovedItemFromProspect;
 
   /**
    * On submit handle function called on the 'Save' button click
@@ -76,9 +77,7 @@ export const ApprovedItemForm: React.FC<
       url: approvedItem.url,
       title: approvedItem.title,
       publisher: approvedItem.publisher,
-      // The language code may be coming in pre-filled from the prospect in this form
-      // and there it's in lower case, e.g. "en" rather than "EN".
-      language: approvedItem.language.toUpperCase() ?? '',
+      language: approvedItem.language ?? '',
       topic: approvedItem.topic ?? '',
       curationStatus: isRecommendation
         ? CuratedStatus.Recommendation
@@ -276,7 +275,6 @@ export const ApprovedItemForm: React.FC<
           {...formik.getFieldProps('source')}
         />
       </Box>
-
       {formik.isSubmitting && (
         <Grid item xs={12}>
           <Box mb={3}>

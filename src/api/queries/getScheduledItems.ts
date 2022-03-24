@@ -15,6 +15,7 @@ export const getScheduledItems = gql`
         updatedAt
         updatedBy
         scheduledDate
+        scheduledSurfaceGuid
         approvedItem {
           ...CuratedItemData
         }
