@@ -8,6 +8,7 @@ import { HandleApiResponse } from '../../../_shared/components';
 import {
   AddProspectModal,
   ApprovedItemModal,
+  ExistingProspectCard,
   ProspectListCard,
   RefreshProspectsModal,
   RejectItemModal,
@@ -17,11 +18,11 @@ import {
 } from '../../components';
 import {
   ApprovedCuratedCorpusItem,
+  CreateApprovedCuratedCorpusItemMutation,
   CuratedStatus,
   Prospect,
   RejectProspectMutationVariables,
   ScheduledCuratedCorpusItemsResult,
-  CreateApprovedCuratedCorpusItemMutation,
   useCreateApprovedCuratedCorpusItemMutation,
   useCreateScheduledCuratedCorpusItemMutation,
   useGetProspectsQuery,
@@ -476,6 +477,20 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         // Hide the loading indicator
         formikHelpers.setSubmitting(false);
 
+        // In case this prospect already existed in the corpus database,
+        // mark it as curated at this point
+        if (approvedItem?.url === currentProspect?.url) {
+          runMutation(updateProspectAsCurated, {
+            variables: { prospectId: currentProspect?.id },
+          });
+        }
+
+        // Remove the previously curated item from the list of prospects displayed
+        // on the page.
+        setProspects(
+          prospects.filter((prospect) => prospect.id !== currentProspect?.id!)
+        );
+
         // Hide the Schedule Item Form modal
         toggleScheduleModal();
 
@@ -537,7 +552,9 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         isOpen={addProspectModalOpen}
         toggleModal={toggleAddProspectModal}
         toggleApprovedItemModal={toggleApprovedItemModal}
+        toggleScheduleItemModal={toggleScheduleModal}
         setCurrentProspect={setCurrentProspect}
+        setApprovedItem={setApprovedItem}
         setIsRecommendation={setIsRecommendation}
         setIsManualSubmission={setIsManualSubmission}
       />
@@ -615,6 +632,19 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
 
           {prospects &&
             prospects.map((prospect) => {
+              if (prospect.approvedCorpusItem) {
+                return (
+                  <ExistingProspectCard
+                    key={prospect.id}
+                    item={prospect.approvedCorpusItem}
+                    onSchedule={() => {
+                      setCurrentProspect(prospect);
+                      setApprovedItem(prospect.approvedCorpusItem!);
+                      toggleScheduleModal();
+                    }}
+                  />
+                );
+              }
               return (
                 <ProspectListCard
                   key={prospect.id}

@@ -61,15 +61,15 @@ export const AddProspectForm: React.FC<
             <SharedFormButtons onCancel={onCancel} />
           </Grid>
         </Grid>
-      </form>
 
-      {formik.isSubmitting && (
-        <Grid item xs={12}>
-          <Box mb={3}>
-            <LinearProgress />
-          </Box>
-        </Grid>
-      )}
+        {formik.isSubmitting && (
+          <Grid item xs={12}>
+            <Box mb={3}>
+              <LinearProgress />
+            </Box>
+          </Grid>
+        )}
+      </form>
     </>
   );
 };

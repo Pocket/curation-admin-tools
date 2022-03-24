@@ -5,6 +5,7 @@ export { ApprovedItemCardWrapper } from './ApprovedItemCardWrapper/ApprovedItemC
 export { ApprovedItemListCard } from './ApprovedItemListCard/ApprovedItemListCard';
 export { ApprovedItemModal } from './ApprovedItemModal/ApprovedItemModal';
 export { ApprovedItemSearchForm } from './ApprovedItemSearchForm/ApprovedItemSearchForm';
+export { ExistingProspectCard } from './ExistingProspectCard/ExistingProspectCard';
 export { LoadExtraButton } from './LoadExtraButton/LoadExtraButton';
 export { MiniScheduleCard } from './MiniScheduleCard/MiniScheduleCard';
 export { ScheduledSurfaceGroupedList } from './ScheduledSurfaceGroupedList/ScheduledSurfaceGroupedList';

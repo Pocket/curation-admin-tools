@@ -1087,6 +1087,7 @@ export type PaginationInput = {
 
 export type Prospect = {
   __typename?: 'Prospect';
+  approvedCorpusItem?: Maybe<ApprovedCuratedCorpusItem>;
   createdAt?: Maybe<Scalars['Int']>;
   domain?: Maybe<Scalars['String']>;
   excerpt?: Maybe<Scalars['String']>;
@@ -1745,6 +1746,27 @@ export type ProspectDataFragment = {
   saveCount?: number | null;
   isSyndicated?: boolean | null;
   isCollection?: boolean | null;
+  approvedCorpusItem?: {
+    __typename?: 'ApprovedCuratedCorpusItem';
+    externalId: string;
+    prospectId?: string | null;
+    title: string;
+    language: CorpusLanguage;
+    publisher: string;
+    url: any;
+    imageUrl: any;
+    excerpt: string;
+    status: CuratedStatus;
+    source: CorpusItemSource;
+    topic: string;
+    isCollection: boolean;
+    isTimeSensitive: boolean;
+    isSyndicated: boolean;
+    createdBy: string;
+    createdAt: number;
+    updatedBy?: string | null;
+    updatedAt: number;
+  } | null;
 };
 
 export type RejectedItemDataFragment = {
@@ -2622,6 +2644,27 @@ export type UpdateProspectAsCuratedMutation = {
     saveCount?: number | null;
     isSyndicated?: boolean | null;
     isCollection?: boolean | null;
+    approvedCorpusItem?: {
+      __typename?: 'ApprovedCuratedCorpusItem';
+      externalId: string;
+      prospectId?: string | null;
+      title: string;
+      language: CorpusLanguage;
+      publisher: string;
+      url: any;
+      imageUrl: any;
+      excerpt: string;
+      status: CuratedStatus;
+      source: CorpusItemSource;
+      topic: string;
+      isCollection: boolean;
+      isTimeSensitive: boolean;
+      isSyndicated: boolean;
+      createdBy: string;
+      createdAt: number;
+      updatedBy?: string | null;
+      updatedAt: number;
+    } | null;
   } | null;
 };
 
@@ -3035,6 +3078,27 @@ export type GetProspectsQuery = {
     saveCount?: number | null;
     isSyndicated?: boolean | null;
     isCollection?: boolean | null;
+    approvedCorpusItem?: {
+      __typename?: 'ApprovedCuratedCorpusItem';
+      externalId: string;
+      prospectId?: string | null;
+      title: string;
+      language: CorpusLanguage;
+      publisher: string;
+      url: any;
+      imageUrl: any;
+      excerpt: string;
+      status: CuratedStatus;
+      source: CorpusItemSource;
+      topic: string;
+      isCollection: boolean;
+      isTimeSensitive: boolean;
+      isSyndicated: boolean;
+      createdBy: string;
+      createdAt: number;
+      updatedBy?: string | null;
+      updatedAt: number;
+    } | null;
   }>;
 };
 
@@ -3350,39 +3414,6 @@ export const CollectionStoryDataFragmentDoc = gql`
     sortOrder
   }
 `;
-export const ProspectDataFragmentDoc = gql`
-  fragment ProspectData on Prospect {
-    id
-    scheduledSurfaceGuid
-    topic
-    prospectType
-    url
-    createdAt
-    imageUrl
-    publisher
-    domain
-    title
-    excerpt
-    language
-    saveCount
-    isSyndicated
-    isCollection
-  }
-`;
-export const RejectedItemDataFragmentDoc = gql`
-  fragment RejectedItemData on RejectedCuratedCorpusItem {
-    externalId
-    prospectId
-    url
-    title
-    topic
-    language
-    publisher
-    reason
-    createdBy
-    createdAt
-  }
-`;
 export const CuratedItemDataFragmentDoc = gql`
   fragment CuratedItemData on ApprovedCuratedCorpusItem {
     externalId
@@ -3403,6 +3434,43 @@ export const CuratedItemDataFragmentDoc = gql`
     createdAt
     updatedBy
     updatedAt
+  }
+`;
+export const ProspectDataFragmentDoc = gql`
+  fragment ProspectData on Prospect {
+    id
+    scheduledSurfaceGuid
+    topic
+    prospectType
+    url
+    createdAt
+    imageUrl
+    publisher
+    domain
+    title
+    excerpt
+    language
+    saveCount
+    isSyndicated
+    isCollection
+    approvedCorpusItem {
+      ...CuratedItemData
+    }
+  }
+  ${CuratedItemDataFragmentDoc}
+`;
+export const RejectedItemDataFragmentDoc = gql`
+  fragment RejectedItemData on RejectedCuratedCorpusItem {
+    externalId
+    prospectId
+    url
+    title
+    topic
+    language
+    publisher
+    reason
+    createdBy
+    createdAt
   }
 `;
 export const ScheduledItemDataFragmentDoc = gql`
