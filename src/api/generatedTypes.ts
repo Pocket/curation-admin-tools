@@ -171,7 +171,7 @@ export type Collection = {
    * note that language is *not* being used as locale - only to specify the
    * language of the collection.
    */
-  language: Scalars['String'];
+  language: CollectionLanguage;
   partnership?: Maybe<CollectionPartnership>;
   publishedAt?: Maybe<Scalars['DateString']>;
   slug: Scalars['String'];
@@ -212,6 +212,14 @@ export type CollectionInput = {
   excerpt: Scalars['String'];
   title: Scalars['String'];
 };
+
+/** valid language codes for collections */
+export enum CollectionLanguage {
+  /** German */
+  De = 'DE',
+  /** English */
+  En = 'EN',
+}
 
 /** Details of a partner company sponsored collections are associated with. */
 export type CollectionPartner = {
@@ -382,7 +390,7 @@ export type CreateCollectionInput = {
   excerpt?: InputMaybe<Scalars['Markdown']>;
   imageUrl?: InputMaybe<Scalars['Url']>;
   intro?: InputMaybe<Scalars['Markdown']>;
-  language: Scalars['String'];
+  language: CollectionLanguage;
   slug: Scalars['String'];
   status?: InputMaybe<CollectionStatus>;
   title: Scalars['String'];
@@ -709,12 +717,6 @@ export type Item = {
   videos?: Maybe<Array<Maybe<Video>>>;
   /** Number of words in the article */
   wordCount?: Maybe<Scalars['Int']>;
-};
-
-/** represents a language supported in the system */
-export type Language = {
-  __typename?: 'Language';
-  code: Scalars['String'];
 };
 
 export type ListElement = {
@@ -1087,6 +1089,7 @@ export type PaginationInput = {
 
 export type Prospect = {
   __typename?: 'Prospect';
+  approvedCorpusItem?: Maybe<ApprovedCuratedCorpusItem>;
   createdAt?: Maybe<Scalars['Int']>;
   domain?: Maybe<Scalars['String']>;
   excerpt?: Maybe<Scalars['String']>;
@@ -1150,7 +1153,7 @@ export type Query = {
   /** Look up {Item} info by a url. */
   getItemByUrl?: Maybe<Item>;
   /** Retrieves the languages currently supported. */
-  getLanguages: Array<Language>;
+  getLanguages: Array<CollectionLanguage>;
   /** returns a set of at most 20 prospects (number may be smaller depending on available data) */
   getProspects: Array<Prospect>;
   /** Retrieves a paginated, filterable list of RejectedCuratedCorpusItems. */
@@ -1488,7 +1491,7 @@ export type UpdateCollectionInput = {
   externalId?: InputMaybe<Scalars['String']>;
   imageUrl?: InputMaybe<Scalars['Url']>;
   intro?: InputMaybe<Scalars['Markdown']>;
-  language: Scalars['String'];
+  language: CollectionLanguage;
   slug: Scalars['String'];
   status: CollectionStatus;
   title: Scalars['String'];
@@ -1622,7 +1625,7 @@ export type CollectionDataFragment = {
   excerpt?: any | null;
   intro?: any | null;
   imageUrl?: any | null;
-  language: string;
+  language: CollectionLanguage;
   status: CollectionStatus;
   authors: Array<{
     __typename?: 'CollectionAuthor';
@@ -1845,7 +1848,7 @@ export type CreateCollectionMutationVariables = Exact<{
   curationCategoryExternalId?: InputMaybe<Scalars['String']>;
   IABParentCategoryExternalId?: InputMaybe<Scalars['String']>;
   IABChildCategoryExternalId?: InputMaybe<Scalars['String']>;
-  language: Scalars['String'];
+  language: CollectionLanguage;
 }>;
 
 export type CreateCollectionMutation = {
@@ -1858,7 +1861,7 @@ export type CreateCollectionMutation = {
     excerpt?: any | null;
     intro?: any | null;
     imageUrl?: any | null;
-    language: string;
+    language: CollectionLanguage;
     status: CollectionStatus;
     authors: Array<{
       __typename?: 'CollectionAuthor';
@@ -2271,7 +2274,7 @@ export type UpdateCollectionMutationVariables = Exact<{
   curationCategoryExternalId?: InputMaybe<Scalars['String']>;
   IABParentCategoryExternalId?: InputMaybe<Scalars['String']>;
   IABChildCategoryExternalId?: InputMaybe<Scalars['String']>;
-  language: Scalars['String'];
+  language: CollectionLanguage;
   imageUrl?: InputMaybe<Scalars['Url']>;
 }>;
 
@@ -2285,7 +2288,7 @@ export type UpdateCollectionMutation = {
     excerpt?: any | null;
     intro?: any | null;
     imageUrl?: any | null;
-    language: string;
+    language: CollectionLanguage;
     status: CollectionStatus;
     authors: Array<{
       __typename?: 'CollectionAuthor';
@@ -2381,7 +2384,7 @@ export type UpdateCollectionImageUrlMutation = {
     excerpt?: any | null;
     intro?: any | null;
     imageUrl?: any | null;
-    language: string;
+    language: CollectionLanguage;
     status: CollectionStatus;
     authors: Array<{
       __typename?: 'CollectionAuthor';
@@ -2769,7 +2772,7 @@ export type GetCollectionByExternalIdQuery = {
     excerpt?: any | null;
     intro?: any | null;
     imageUrl?: any | null;
-    language: string;
+    language: CollectionLanguage;
     status: CollectionStatus;
     authors: Array<{
       __typename?: 'CollectionAuthor';
@@ -2923,7 +2926,7 @@ export type GetCollectionsQuery = {
       excerpt?: any | null;
       intro?: any | null;
       imageUrl?: any | null;
-      language: string;
+      language: CollectionLanguage;
       status: CollectionStatus;
       authors: Array<{
         __typename?: 'CollectionAuthor';
@@ -2978,6 +2981,7 @@ export type GetInitialCollectionFormDataQueryVariables = Exact<{
 
 export type GetInitialCollectionFormDataQuery = {
   __typename?: 'Query';
+  getLanguages: Array<CollectionLanguage>;
   getCollectionAuthors: {
     __typename?: 'CollectionAuthorsResult';
     authors: Array<{
@@ -2990,7 +2994,6 @@ export type GetInitialCollectionFormDataQuery = {
       active: boolean;
     }>;
   };
-  getLanguages: Array<{ __typename?: 'Language'; code: string }>;
   getCurationCategories: Array<{
     __typename?: 'CurationCategory';
     externalId: string;
@@ -3170,7 +3173,7 @@ export type GetSearchCollectionsQuery = {
       excerpt?: any | null;
       intro?: any | null;
       imageUrl?: any | null;
-      language: string;
+      language: CollectionLanguage;
       status: CollectionStatus;
       authors: Array<{
         __typename?: 'CollectionAuthor';
@@ -3498,7 +3501,7 @@ export const CreateCollectionDocument = gql`
     $curationCategoryExternalId: String
     $IABParentCategoryExternalId: String
     $IABChildCategoryExternalId: String
-    $language: String!
+    $language: CollectionLanguage!
   ) {
     createCollection(
       data: {
@@ -4387,7 +4390,7 @@ export const UpdateCollectionDocument = gql`
     $curationCategoryExternalId: String
     $IABParentCategoryExternalId: String
     $IABChildCategoryExternalId: String
-    $language: String!
+    $language: CollectionLanguage!
     $imageUrl: Url
   ) {
     updateCollection(
@@ -5859,9 +5862,7 @@ export const GetInitialCollectionFormDataDocument = gql`
         ...CollectionAuthorData
       }
     }
-    getLanguages {
-      code
-    }
+    getLanguages
     getCurationCategories {
       externalId
       name

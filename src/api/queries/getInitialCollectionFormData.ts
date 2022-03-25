@@ -12,9 +12,7 @@ export const getInitialCollectionFormData = gql`
       }
     }
 
-    getLanguages {
-      code
-    }
+    getLanguages
 
     getCurationCategories {
       externalId
