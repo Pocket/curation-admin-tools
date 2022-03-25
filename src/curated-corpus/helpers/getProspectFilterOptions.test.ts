@@ -14,28 +14,16 @@ describe('getProspectFilterOptions', () => {
   });
 
   it('returns all available options if all are present for given Scheduled Surface', () => {
-    const types: ProspectType[] = [
-      ProspectType.Global,
-      ProspectType.OrganicTimespent,
-      ProspectType.Syndicated,
-    ];
+    const types: ProspectType[] = Object.values(ProspectType);
 
     const options = getProspectFilterOptions(types);
 
-    // 3 prospect types + 1 'All Sources' option
-    expect(options).to.have.lengthOf(4);
+    // all prospect types + 1 'All Sources' option
+    expect(options).to.have.lengthOf(Object.values(ProspectType).length + 1);
 
+    // first option should be 'All Sources'
     expect(options[0].code).to.be.an.empty.string;
     expect(options[0].name).to.equal('All Sources');
-
-    expect(options[1].code).to.equal(ProspectType.Global);
-    expect(options[1].name).to.equal('Global');
-
-    expect(options[2].code).to.equal(ProspectType.OrganicTimespent);
-    expect(options[2].name).to.equal('Time Spent');
-
-    expect(options[3].code).to.equal(ProspectType.Syndicated);
-    expect(options[3].name).to.equal('Syndicated');
   });
 
   it('returns a cut-down list of prospect types if only some are available for given Scheduled Surface', () => {
