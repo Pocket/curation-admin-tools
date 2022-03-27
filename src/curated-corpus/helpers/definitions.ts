@@ -32,12 +32,18 @@ export const topics: DropdownOption[] = [
 ];
 
 // All the possible Prospect types for filtering
-export const prospectFilterOptions: DropdownOption[] = [
-  { code: '', name: 'All Sources' },
-  { code: ProspectType.Global, name: 'Global' },
-  { code: ProspectType.OrganicTimespent, name: 'Time Spent' },
-  { code: ProspectType.Syndicated, name: 'Syndicated' },
-];
+const prospectFilters: DropdownOption[] = [{ code: '', name: 'All Sources' }];
+
+Object.keys(ProspectType).forEach((key, index) => {
+  prospectFilters.push({
+    // this gives us a value like ORGANIC_TIMESPENT
+    code: Object.values(ProspectType)[index],
+    // this gives us a value like OrganicTimespent
+    name: key,
+  });
+});
+
+export const prospectFilterOptions: DropdownOption[] = prospectFilters;
 
 // Language codes. Currently only English and German are needed.
 export const languages: DropdownOption[] = [
