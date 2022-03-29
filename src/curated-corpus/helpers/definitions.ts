@@ -47,8 +47,8 @@ export const prospectFilterOptions: DropdownOption[] = prospectFilters;
 
 // Language codes. Currently only English and German are needed.
 export const languages: DropdownOption[] = [
-  { code: 'EN', name: 'English' },
-  { code: 'DE', name: 'German' },
+  { code: CorpusLanguage.En, name: 'English' },
+  { code: CorpusLanguage.De, name: 'German' },
 ];
 
 // This maps to the status (CuratedStatus type) field in DB for an ApprovedItem
