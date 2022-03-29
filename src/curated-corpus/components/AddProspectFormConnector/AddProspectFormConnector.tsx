@@ -8,6 +8,7 @@ import {
 } from '../../../api/generatedTypes';
 import { AddProspectForm } from '../';
 import { transformUrlMetaDataToProspect } from '../../helpers/helperFunctions';
+import { useNotifications } from '../../../_shared/hooks';
 
 interface AddProspectFormConnectorProps {
   /**
@@ -75,6 +76,8 @@ export const AddProspectFormConnector: React.FC<
   // state variable to store the itemUrl field from the form
   const [itemUrl, setItemUrl] = useState<string>('');
 
+  const { showNotification } = useNotifications();
+
   /**
    * Run through a series of steps when a Prospect is submitted manually
    *
@@ -95,6 +98,9 @@ export const AddProspectFormConnector: React.FC<
       },
     });
 
+    // set isManualSubmission state variable in the ProspectingPage component to true
+    setIsManualSubmission(true);
+
     formikHelpers.resetForm();
   };
 
@@ -113,6 +119,11 @@ export const AddProspectFormConnector: React.FC<
 
         // Hide the Add Prospect form
         toggleModal();
+
+        showNotification(
+          'This story is already in the corpus, opening the optional scheduling modal',
+          'info'
+        );
 
         // Show the optional scheduling modal
         toggleScheduleItemModal();
@@ -148,9 +159,6 @@ export const AddProspectFormConnector: React.FC<
 
       // set the isRecommendation state variable in the ProspectingPage component to true
       setIsRecommendation(true);
-
-      // set isManualSubmission state variable in the ProspectingPage component to true
-      setIsManualSubmission(true);
 
       // Hide the AddProspect form
       toggleModal();

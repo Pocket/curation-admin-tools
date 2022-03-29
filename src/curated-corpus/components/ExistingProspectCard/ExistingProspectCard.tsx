@@ -9,12 +9,13 @@ import {
   Link,
   Typography,
 } from '@material-ui/core';
+import LanguageIcon from '@material-ui/icons/Language';
+import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
+import CheckIcon from '@material-ui/icons/Check';
 import { useStyles } from './ExistingProspectCard.styles';
 import { ApprovedCuratedCorpusItem } from '../../../api/generatedTypes';
 import { Button } from '../../../_shared/components';
-import LanguageIcon from '@material-ui/icons/Language';
 import { getDisplayTopic } from '../../helpers/helperFunctions';
-import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 
 interface ExistingProspectCardProps {
   /**
@@ -61,7 +62,7 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
             align="left"
           >
             <span>{item.publisher}</span>
-          </Typography>{' '}
+          </Typography>
           <Box py={1}>
             <Chip
               variant="outlined"
@@ -74,6 +75,12 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
               color="primary"
               label={getDisplayTopic(item.topic)}
               icon={<LabelOutlinedIcon />}
+            />{' '}
+            <Chip
+              variant="default"
+              color="secondary"
+              label="Already in corpus"
+              icon={<CheckIcon />}
             />
           </Box>
           <Typography component="div">{item.excerpt}</Typography>

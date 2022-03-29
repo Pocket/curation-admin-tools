@@ -11,6 +11,13 @@ interface ScheduleItemModalProps {
   headingCopy?: string;
   isOpen: boolean;
   scheduledSurfaceGuid?: string;
+
+  /**
+   * Whether to lock the scheduled surface dropdown to just the value sent through
+   * in the `scheduledSurfaceGuid` variable.
+   */
+  disableScheduledSurface?: boolean;
+
   onSave: (
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
@@ -23,6 +30,7 @@ export const ScheduleItemModal: React.FC<ScheduleItemModalProps> = (
 ): JSX.Element => {
   const {
     approvedItem,
+    disableScheduledSurface,
     headingCopy = 'Schedule this item',
     isOpen,
     scheduledSurfaceGuid,
@@ -50,6 +58,7 @@ export const ScheduleItemModal: React.FC<ScheduleItemModalProps> = (
           <ScheduleItemFormConnector
             approvedItemExternalId={approvedItem.externalId}
             scheduledSurfaceGuid={scheduledSurfaceGuid}
+            disableScheduledSurface={disableScheduledSurface}
             onSubmit={onSave}
             onCancel={() => {
               toggleModal();

@@ -564,11 +564,12 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
           approvedItem={approvedItem}
           headingCopy="Optional: schedule this item"
           isOpen={scheduleModalOpen}
-          // only pre-select the sheduled surface if the item came from a prospect
+          // only pre-select the scheduled surface if the item came from a prospect
           // if it was manually added, allow the user to select the surface
           scheduledSurfaceGuid={
             approvedItem.prospectId ? currentScheduledSurfaceGuid : undefined
           }
+          disableScheduledSurface={!isManualSubmission}
           onSave={onScheduleSave}
           toggleModal={toggleScheduleModal}
         />
@@ -640,6 +641,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                     onSchedule={() => {
                       setCurrentProspect(prospect);
                       setApprovedItem(prospect.approvedCorpusItem!);
+                      setIsManualSubmission(false);
                       toggleScheduleModal();
                     }}
                   />
