@@ -3,12 +3,12 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import {
   CuratedStatus,
-  ScheduledCuratedCorpusItem,
+  ScheduledCorpusItem,
 } from '../../../api/generatedTypes';
 import { ScheduledItemCardWrapper } from './ScheduledItemCardWrapper';
 
 describe('The ScheduledItemCardWrapper component', () => {
-  let item: ScheduledCuratedCorpusItem;
+  let item: ScheduledCorpusItem;
 
   beforeEach(() => {
     item = {

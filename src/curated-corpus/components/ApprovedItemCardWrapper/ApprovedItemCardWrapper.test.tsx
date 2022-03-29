@@ -1,14 +1,11 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import {
-  ApprovedCuratedCorpusItem,
-  CuratedStatus,
-} from '../../../api/generatedTypes';
+import { ApprovedCorpusItem, CuratedStatus } from '../../../api/generatedTypes';
 import { ApprovedItemCardWrapper } from './ApprovedItemCardWrapper';
 
 describe('The ApprovedItemCardWrapper component', () => {
-  let item: ApprovedCuratedCorpusItem;
+  let item: ApprovedCorpusItem;
 
   beforeEach(() => {
     item = {

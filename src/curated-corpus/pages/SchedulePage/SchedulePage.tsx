@@ -8,17 +8,17 @@ import {
   LoadExtraButton,
   RemoveItemFromScheduledSurfaceModal,
   ScheduledItemCardWrapper,
-  SplitButton,
   ScheduleItemModal,
+  SplitButton,
 } from '../../components';
 import {
-  ScheduledCuratedCorpusItem,
-  ScheduledCuratedCorpusItemsFilterInput,
-  ScheduledCuratedCorpusItemsResult,
+  ScheduledCorpusItem,
+  ScheduledCorpusItemsFilterInput,
+  ScheduledCorpusItemsResult,
   useDeleteScheduledItemMutation,
   useGetScheduledItemsQuery,
   useGetScheduledSurfacesForUserQuery,
-  useRescheduleScheduledCuratedCorpusItemMutation,
+  useRescheduleScheduledCorpusItemMutation,
 } from '../../../api/generatedTypes';
 import {
   useNotifications,
@@ -103,7 +103,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
    * @param direction
    */
   const loadMore = (direction: 'past' | 'future') => {
-    let filters: ScheduledCuratedCorpusItemsFilterInput;
+    let filters: ScheduledCorpusItemsFilterInput;
 
     if (direction === 'future') {
       // shift the dates two days into the future
@@ -154,7 +154,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
    * Set the current Scheduled Item to be worked on.
    */
   const [currentItem, setCurrentItem] = useState<
-    Omit<ScheduledCuratedCorpusItem, '__typename'> | undefined
+    Omit<ScheduledCorpusItem, '__typename'> | undefined
   >(undefined);
 
   // Get a helper function that will execute each mutation, show standard notifications
@@ -165,7 +165,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
   const [deleteScheduledItem] = useDeleteScheduledItemMutation();
 
   // Prepare the "reschedule scheduled curated corpus item" mutation
-  const [rescheduleItem] = useRescheduleScheduledCuratedCorpusItemMutation();
+  const [rescheduleItem] = useRescheduleScheduledCorpusItemMutation();
 
   /**
    * Reschedule item
@@ -279,8 +279,8 @@ export const SchedulePage: React.FC = (): JSX.Element => {
           )}
 
           {data &&
-            data.getScheduledCuratedCorpusItems.map(
-              (data: ScheduledCuratedCorpusItemsResult) => (
+            data.getScheduledCorpusItems.map(
+              (data: ScheduledCorpusItemsResult) => (
                 <Grid
                   container
                   direction="row"
@@ -298,7 +298,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
                         ({data.syndicatedCount}/{data.totalCount} syndicated)
                       </Typography>
                     </Grid>
-                    {data.items.map((item: ScheduledCuratedCorpusItem) => {
+                    {data.items.map((item: ScheduledCorpusItem) => {
                       return (
                         <ScheduledItemCardWrapper
                           key={item.externalId}

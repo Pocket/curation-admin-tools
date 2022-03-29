@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 import { SnackbarProvider } from 'notistack';
 import {
-  ApprovedCuratedCorpusItem,
+  ApprovedCorpusItem,
   CuratedStatus,
   Topics,
 } from '../../../api/generatedTypes';
@@ -12,7 +12,7 @@ import { ApprovedItemForm } from './ApprovedItemForm';
 import { uploadApprovedItemImage } from '../../../api/mutations/uploadApprovedItemImage';
 
 describe('The ApprovedItemForm component', () => {
-  let item: ApprovedCuratedCorpusItem;
+  let item: ApprovedCorpusItem;
   const onSubmit = jest.fn();
   const onCancel = jest.fn();
   const onImageSave = jest.fn();
@@ -220,7 +220,7 @@ describe('The ApprovedItemForm component', () => {
           },
           result: {
             data: {
-              uploadApprovedCuratedCorpusItemImage: {
+              uploadApprovedCorpusItemImage: {
                 url: file.name,
               },
             },

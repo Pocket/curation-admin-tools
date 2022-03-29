@@ -3,8 +3,8 @@ import { DateTime } from 'luxon';
 import { Grid, Typography } from '@material-ui/core';
 import { MiniScheduleCard } from '../';
 import {
-  ScheduledCuratedCorpusItem,
-  ScheduledCuratedCorpusItemsResult,
+  ScheduledCorpusItem,
+  ScheduledCorpusItemsResult,
 } from '../../../api/generatedTypes';
 import { useStyles } from './ScheduledSurfaceGroupedList.styles';
 
@@ -13,7 +13,7 @@ interface ScheduledSurfaceGroupedListProps {
    * A list of Scheduled items to display with accompanying data
    * such as the scheduled date.
    */
-  data: ScheduledCuratedCorpusItemsResult;
+  data: ScheduledCorpusItemsResult;
 }
 
 /**
@@ -40,7 +40,7 @@ export const ScheduledSurfaceGroupedList: React.FC<
           {displayDate} ({data.syndicatedCount}/{data.totalCount} syndicated)
         </Typography>
       </Grid>
-      {data.items.map((item: ScheduledCuratedCorpusItem) => {
+      {data.items.map((item: ScheduledCorpusItem) => {
         return <MiniScheduleCard key={item.externalId} item={item} />;
       })}
     </>

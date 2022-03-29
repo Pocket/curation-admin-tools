@@ -6,10 +6,10 @@ import { CuratedItemData } from '../fragments/curatedItemData';
  */
 export const getApprovedItems = gql`
   query getApprovedItems(
-    $filters: ApprovedCuratedCorpusItemFilter
+    $filters: ApprovedCorpusItemFilter
     $pagination: PaginationInput
   ) {
-    getApprovedCuratedCorpusItems(filters: $filters, pagination: $pagination) {
+    getApprovedCorpusItems(filters: $filters, pagination: $pagination) {
       totalCount
       pageInfo {
         hasNextPage

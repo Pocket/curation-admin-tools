@@ -1,10 +1,10 @@
 import { gql } from '@apollo/client';
 
 /**
- * All the fields for a Rejected Curated Corpus Item
+ * All the fields for a Rejected Corpus Item
  */
 export const RejectedItemData = gql`
-  fragment RejectedItemData on RejectedCuratedCorpusItem {
+  fragment RejectedItemData on RejectedCorpusItem {
     externalId
     prospectId
     url

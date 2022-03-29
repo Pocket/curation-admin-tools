@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardActions, Grid } from '@material-ui/core';
 import { useStyles } from './ScheduledItemCardWrapper.styles';
-import { ScheduledCuratedCorpusItem } from '../../../api/generatedTypes';
+import { ScheduledCorpusItem } from '../../../api/generatedTypes';
 import { Button } from '../../../_shared/components';
 import { ApprovedItemListCard } from '../ApprovedItemListCard/ApprovedItemListCard';
 
@@ -9,7 +9,7 @@ interface ScheduledItemCardWrapperProps {
   /**
    * An object with everything scheduled curated item-related in it.
    */
-  item: ScheduledCuratedCorpusItem;
+  item: ScheduledCorpusItem;
   /**
    * What to do when the "Remove" button is clicked.
    */

@@ -3,12 +3,11 @@ import { Modal } from '../../../_shared/components';
 import { Box, Grid, Typography } from '@material-ui/core';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
-import { Prospect } from '../../../api/generatedTypes';
+import { ApprovedCorpusItem, Prospect } from '../../../api/generatedTypes';
 import { RejectItemForm } from '../RejectItemForm/RejectItemForm';
-import { ApprovedCuratedCorpusItem } from '../../../api/generatedTypes';
 
 interface RejectProspectModalProps {
-  prospect: Prospect | ApprovedCuratedCorpusItem;
+  prospect: Prospect | ApprovedCorpusItem;
   isOpen: boolean;
   onSave: (
     values: FormikValues,

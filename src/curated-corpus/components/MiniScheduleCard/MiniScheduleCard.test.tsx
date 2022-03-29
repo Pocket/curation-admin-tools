@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import {
   CuratedStatus,
-  ScheduledCuratedCorpusItem,
+  ScheduledCorpusItem,
   Topics,
 } from '../../../api/generatedTypes';
 
@@ -11,7 +11,7 @@ import { MiniScheduleCard } from './MiniScheduleCard';
 import { getDisplayTopic } from '../../helpers/helperFunctions';
 
 describe('The MiniScheduleCard component', () => {
-  let item: ScheduledCuratedCorpusItem;
+  let item: ScheduledCorpusItem;
 
   beforeEach(() => {
     item = {

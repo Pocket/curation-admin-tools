@@ -1,13 +1,13 @@
 import React from 'react';
 import { Modal } from '../../../_shared/components';
 import { Grid } from '@material-ui/core';
-import { ScheduledCuratedCorpusItem } from '../../../api/generatedTypes';
+import { ScheduledCorpusItem } from '../../../api/generatedTypes';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import { RemoveItemFromScheduledSurfaceForm } from '../';
 
 interface RemoveItemFromScheduledSurfaceModalProps {
-  item: ScheduledCuratedCorpusItem;
+  item: ScheduledCorpusItem;
   isOpen: boolean;
   onSave: (
     values: FormikValues,
