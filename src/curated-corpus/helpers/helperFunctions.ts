@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import { FileWithPath } from 'react-dropzone';
 import {
   CorpusItemSource,
@@ -173,4 +174,43 @@ export const getDisplayTopic = (
   })?.name;
 
   return displayTopic ? displayTopic : 'N/A';
+};
+
+export const getLocalDateTimeForGuid = (guidCode: string) => {
+  const guidToUtcOffset = [
+    {
+      guid: 'NEW_TAB_EN_US',
+      timeZone: 'America/New_York',
+    },
+    {
+      guid: 'NEW_TAB_DE_DE',
+      timeZone: 'Europe/Berlin',
+    },
+    {
+      guid: 'NEW_TAB_EN_GB',
+      timeZone: 'Europe/London',
+    },
+    {
+      guid: 'NEW_TAB_EN_INTL',
+      timeZone: 'Asia/Kolkata',
+    },
+    {
+      guid: 'POCKET_HITS_EN_US',
+      timeZone: 'America/New_York',
+    },
+    {
+      guid: 'POCKET_HITS_DE_DE',
+      timeZone: 'Europe/Berlin',
+    },
+  ];
+
+  const guid = guidToUtcOffset.find((item) => item.guid === guidCode);
+
+  if (!guid) {
+    return;
+  }
+
+  return DateTime.local()
+    .setZone(guid.timeZone)
+    .toLocaleString(DateTime.DATETIME_MED);
 };
