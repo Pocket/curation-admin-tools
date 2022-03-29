@@ -15,13 +15,13 @@ import FaceIcon from '@material-ui/icons/Face';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 
 import { useStyles } from './RejectedItemListCard.styles';
-import { RejectedCuratedCorpusItem } from '../../../api/generatedTypes';
+import { RejectedCorpusItem } from '../../../api/generatedTypes';
 
 interface RejectedItemListCardProps {
   /**
    * An object with everything rejected curated item-related in it.
    */
-  item: RejectedCuratedCorpusItem;
+  item: RejectedCorpusItem;
 }
 
 export const RejectedItemListCard: React.FC<RejectedItemListCardProps> = (

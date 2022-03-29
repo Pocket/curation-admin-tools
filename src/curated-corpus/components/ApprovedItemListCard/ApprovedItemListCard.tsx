@@ -15,17 +15,14 @@ import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import LanguageIcon from '@material-ui/icons/Language';
 import { useStyles } from './ApprovedItemListCard.styles';
-import {
-  ApprovedCuratedCorpusItem,
-  CuratedStatus,
-} from '../../../api/generatedTypes';
+import { ApprovedCorpusItem, CuratedStatus } from '../../../api/generatedTypes';
 import { getDisplayTopic } from '../../helpers/helperFunctions';
 
 interface ApprovedItemListCardProps {
   /**
    * An object with everything approved curated item-related in it.
    */
-  item: ApprovedCuratedCorpusItem;
+  item: ApprovedCorpusItem;
 }
 
 export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (

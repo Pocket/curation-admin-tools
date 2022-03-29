@@ -1,10 +1,7 @@
 import React from 'react';
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import { validationSchema } from './ApprovedItemForm.validation';
-import {
-  ApprovedCuratedCorpusItem,
-  CuratedStatus,
-} from '../../../api/generatedTypes';
+import { ApprovedCorpusItem, CuratedStatus } from '../../../api/generatedTypes';
 import {
   ApprovedItemFromProspect,
   curationStatusOptions,
@@ -33,7 +30,7 @@ interface ApprovedItemFormProps {
   /**
    * The approved item that needs to be edited.
    */
-  approvedItem: ApprovedCuratedCorpusItem | ApprovedItemFromProspect;
+  approvedItem: ApprovedCorpusItem | ApprovedItemFromProspect;
 
   /**
    * On submit handle function called on the 'Save' button click

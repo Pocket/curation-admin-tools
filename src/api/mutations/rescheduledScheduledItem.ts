@@ -2,11 +2,11 @@ import { gql } from '@apollo/client';
 import { ScheduledItemData } from '../fragments/scheduledItemData';
 
 export const rescheduleScheduledItem = gql`
-  mutation rescheduleScheduledCuratedCorpusItem(
+  mutation rescheduleScheduledCorpusItem(
     $externalId: ID!
     $scheduledDate: Date!
   ) {
-    rescheduleScheduledCuratedCorpusItem(
+    rescheduleScheduledCorpusItem(
       data: { externalId: $externalId, scheduledDate: $scheduledDate }
     ) {
       ...ScheduledItemData

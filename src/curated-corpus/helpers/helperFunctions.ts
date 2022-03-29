@@ -7,7 +7,7 @@ import {
   Prospect,
   UrlMetadata,
 } from '../../api/generatedTypes';
-import { topics, ApprovedItemFromProspect } from './definitions';
+import { ApprovedItemFromProspect, topics } from './definitions';
 
 /**
  *
@@ -126,7 +126,7 @@ export const downloadAndUploadApprovedItemImageToS3 = async (
     throw new Error('Failed to upload image, please try again');
   }
 
-  return data?.uploadApprovedCuratedCorpusItemImage.url;
+  return data?.uploadApprovedCorpusItemImage.url;
 };
 
 /**

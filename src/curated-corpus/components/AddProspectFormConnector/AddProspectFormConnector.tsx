@@ -91,7 +91,7 @@ export const AddProspectFormConnector: React.FC<
     notifyOnNetworkStatusChange: true,
     fetchPolicy: 'no-cache',
     onCompleted: (data) => {
-      const approvedItem = data?.getApprovedCuratedCorpusItemByUrl;
+      const approvedItem = data?.getApprovedCorpusItemByUrl;
 
       // show error toast if the url exists already
       if (approvedItem) {

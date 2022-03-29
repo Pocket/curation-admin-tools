@@ -17,9 +17,9 @@ import { FileUploadInfo } from '../../../_shared/components/FileUploadInfo/FileU
 import { useStyles } from './ImageUpload.styles';
 import { useNotifications } from '../../../_shared/hooks';
 import {
-  ApprovedCuratedCorpusItem,
-  useUploadApprovedCuratedCorpusItemImageMutation,
-  MutationUploadApprovedCuratedCorpusItemImageArgs,
+  ApprovedCorpusItem,
+  MutationUploadApprovedCorpusItemImageArgs,
+  useUploadApprovedCorpusItemImageMutation,
 } from '../../../api/generatedTypes';
 import { readImageFileFromDisk } from '../../helpers/helperFunctions';
 import { ApprovedItemFromProspect } from '../../helpers/definitions';
@@ -28,7 +28,7 @@ interface ImageUploadProps {
   /**
    * Approved item entity
    */
-  entity: ApprovedCuratedCorpusItem | ApprovedItemFromProspect;
+  entity: ApprovedCorpusItem | ApprovedItemFromProspect;
 
   /**
    * A path to a placeholder image to show if no image is available
@@ -67,7 +67,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
 
   // This state variable stores the image/file data read from the disk
   const [imageData, setImageData] = useState<
-    MutationUploadApprovedCuratedCorpusItemImageArgs | undefined
+    MutationUploadApprovedCorpusItemImageArgs | undefined
   >(undefined);
 
   // This state variable stores the image url. Default/initial value is
@@ -81,8 +81,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
   };
 
   // prepare the upload to S3 mutation
-  const [uploadApprovedItemImage] =
-    useUploadApprovedCuratedCorpusItemImageMutation();
+  const [uploadApprovedItemImage] = useUploadApprovedCorpusItemImageMutation();
 
   // Process the file the user chose from their PC/mobile device,
   // show file info to the user and set data to use in upload mutation
@@ -112,7 +111,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
         setUploadInProgress(false);
 
         // pull the returned s3 image url into a variable
-        const s3ImageUrl = data.data?.uploadApprovedCuratedCorpusItemImage.url;
+        const s3ImageUrl = data.data?.uploadApprovedCorpusItemImage.url;
 
         // if the image upload to s3 was successful
         if (s3ImageUrl) {
