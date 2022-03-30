@@ -2,7 +2,11 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Router } from 'react-router-dom';
 import { CollectionListCard } from './CollectionListCard';
-import { Collection, CollectionStatus } from '../../../api/generatedTypes';
+import {
+  Collection,
+  CollectionLanguage,
+  CollectionStatus,
+} from '../../../api/generatedTypes';
 import { createMemoryHistory } from 'history';
 import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';
@@ -20,7 +24,7 @@ describe('The CollectionListCard component', () => {
         'There’s a long history of presidential ailments, including George Washington’s near-death encounter with the flu, Grover Cleveland’s secret tumor, and the clandestine suffering of John F. Kennedy. ',
       intro:
         'There’s a long history of presidential ailments, including George Washington’s near-death encounter with the flu, Grover Cleveland’s secret tumor, and the clandestine suffering of John F. Kennedy. ',
-      language: 'de',
+      language: CollectionLanguage.De,
       status: CollectionStatus.Published,
       authors: [],
     };

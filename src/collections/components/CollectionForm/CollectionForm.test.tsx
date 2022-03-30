@@ -5,10 +5,10 @@ import { CollectionForm } from './CollectionForm';
 import {
   Collection,
   CollectionAuthor,
+  CollectionLanguage,
   CollectionStatus,
   CurationCategory,
   IabParentCategory,
-  Language,
 } from '../../../api/generatedTypes';
 
 describe('The CollectionForm component', () => {
@@ -16,7 +16,7 @@ describe('The CollectionForm component', () => {
   let authors: CollectionAuthor[];
   let curationCategories: CurationCategory[];
   let iabCategories: IabParentCategory[];
-  let languages: Language[];
+  let languages: CollectionLanguage[];
   const handleSubmit = jest.fn();
 
   beforeEach(() => {
@@ -44,7 +44,7 @@ describe('The CollectionForm component', () => {
         ' Praesent hendrerit eros luctus ligula facilisis, non sodales est ' +
         'suscipit. Nunc a lorem a metus venenatis euismod. Praesent id lectus' +
         ' lobortis, ullamcorper ipsum in, eleifend sapien.',
-      language: 'de',
+      language: CollectionLanguage.De,
       status: CollectionStatus.Draft,
       authors: [],
       curationCategory: { externalId: 'cde-234', name: 'Food', slug: 'food' },
@@ -90,14 +90,7 @@ describe('The CollectionForm component', () => {
       },
     ];
 
-    languages = [
-      {
-        code: 'en',
-      },
-      {
-        code: 'de',
-      },
-    ];
+    languages = Object.values(CollectionLanguage);
   });
 
   it('renders successfully', () => {
@@ -107,7 +100,7 @@ describe('The CollectionForm component', () => {
         collection={collection}
         curationCategories={curationCategories}
         iabCategories={iabCategories}
-        languages={languages}
+        languages={Object.values(CollectionLanguage)}
         onSubmit={handleSubmit}
       />
     );

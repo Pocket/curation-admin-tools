@@ -20,12 +20,20 @@ export type Scalars = {
   Int: number;
   Float: number;
   _FieldSet: any;
-  /** A date in the YYYY-MM-DD format. */
+  /** A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   Date: any;
+  /** A String representing a date in the format of `yyyy-MM-dd HH:mm:ss` */
   DateString: any;
+  /**
+   * A string formatted with CommonMark markdown,
+   * plus the strikethrough extension from GFM.
+   * This Scalar is for documentation purposes; otherwise
+   * not treated differently from String in the API.
+   */
   Markdown: any;
+  /** The `Upload` scalar type represents a file upload. */
   Upload: any;
-  /** These are all just renamed strings right now */
+  /** A URL - usually, for an interesting story on the internet that's worth saving to Pocket. */
   Url: any;
 };
 
@@ -332,7 +340,6 @@ export enum CorpusItemSource {
   Prospect = 'PROSPECT',
 }
 
-/** Valid language codes for curated corpus items. */
 export enum CorpusLanguage {
   /** German */
   De = 'DE',

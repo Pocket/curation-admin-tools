@@ -10,11 +10,12 @@ import {
 import {
   RemoveItemFromScheduledSurfaceModal,
   ScheduledItemCardWrapper,
-  SplitButton,
   ScheduleItemModal,
+  SplitButton,
 } from '../../components';
 import {
   ScheduledCorpusItem,
+  ScheduledCorpusItemsFilterInput,
   ScheduledCorpusItemsResult,
   useDeleteScheduledItemMutation,
   useGetScheduledItemsLazyQuery,

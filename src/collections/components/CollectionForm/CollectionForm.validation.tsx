@@ -26,7 +26,7 @@ export const getValidationSchema = (authorIds: string[]) => {
     language: yup
       .mixed<CollectionLanguage>()
       .oneOf(Object.values(CollectionLanguage))
-      .required('Please choose a language code'),
+      .required('Please choose a language'),
     status: yup
       .mixed<CollectionStatus>()
       .oneOf(Object.values(CollectionStatus))

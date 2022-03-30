@@ -17,6 +17,7 @@ import { config } from '../../../config';
 import {
   Collection,
   CollectionAuthor,
+  CollectionLanguage,
   CollectionStatus,
   CurationCategory,
   IabCategory,
@@ -109,6 +110,7 @@ export const CollectionForm: React.FC<
     validateOnBlur: false,
     validateOnChange: false,
     validationSchema: getValidationSchema(authorIds),
+
     onSubmit: (values, formikHelpers) => {
       onSubmit(values, formikHelpers);
     },

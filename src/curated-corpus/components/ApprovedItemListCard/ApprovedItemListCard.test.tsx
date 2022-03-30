@@ -2,14 +2,14 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import {
-  ApprovedCuratedCorpusItem,
+  ApprovedCorpusItem,
   CuratedStatus,
   Topics,
 } from '../../../api/generatedTypes';
 import { ApprovedItemListCard } from './ApprovedItemListCard';
 
 describe('The ApprovedItemListCard component', () => {
-  let item: ApprovedCuratedCorpusItem;
+  let item: ApprovedCorpusItem;
 
   beforeEach(() => {
     item = {

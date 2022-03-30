@@ -2,16 +2,13 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ImageUpload } from './ImageUpload';
-import {
-  ApprovedCuratedCorpusItem,
-  CuratedStatus,
-} from '../../../api/generatedTypes';
+import { ApprovedCorpusItem, CuratedStatus } from '../../../api/generatedTypes';
 import { SnackbarProvider } from 'notistack';
 import { MockedProvider } from '@apollo/client/testing';
 import { formatFileSize } from '../../../_shared/utils/formatFileSize';
 
 describe('The ImageUpload component', () => {
-  let entity: ApprovedCuratedCorpusItem;
+  let entity: ApprovedCorpusItem;
   const placeholder = 'test-placeholder';
   const onImageSave = jest.fn();
 

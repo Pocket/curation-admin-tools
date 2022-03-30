@@ -23,7 +23,7 @@ interface ApprovedItemListCardProps {
    * An object with everything approved curated item-related in it.
    */
   item: ApprovedCorpusItem;
-
+  
   /**
    * Optional boolean prop to show/hide the language icon
    */
@@ -33,6 +33,7 @@ interface ApprovedItemListCardProps {
    * Optional boolean prop to show/hide the "Rec." overlay
    */
   showRecommendedOverlay?: boolean;
+
 }
 
 export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (

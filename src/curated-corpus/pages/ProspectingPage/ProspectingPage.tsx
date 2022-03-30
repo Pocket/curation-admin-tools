@@ -17,11 +17,11 @@ import {
 } from '../../components';
 import {
   ApprovedCorpusItem,
+  CreateApprovedCorpusItemMutation,
   CuratedStatus,
   Prospect,
   RejectProspectMutationVariables,
   ScheduledCorpusItemsResult,
-  CreateApprovedCorpusItemMutation,
   useCreateApprovedCorpusItemMutation,
   useCreateScheduledCorpusItemMutation,
   useGetProspectsQuery,
@@ -389,8 +389,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   /**
    * common stuff we (may) need to do after creating an approved item
    *
-   * @param approvedItemStatus (CuratedStatus): the status of the approved item
-   * @param approvedItemData (any): the data we get back from the createApprovedItem mutation
+   * @param approvedItem
    * @param filterProspects (boolean): whether or not we need to filter the list of prospects on the screen
    */
   const postCreateApprovedItem = (

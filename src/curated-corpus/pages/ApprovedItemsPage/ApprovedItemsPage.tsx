@@ -218,21 +218,16 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ): void => {
-    // Mapping these values to match the format that mutation/DB accepts
-    const languageCode: string = values.language === 'English' ? 'en' : 'de';
-    const curationStatus: string = values.curationStatus.toUpperCase();
-    const topic: string = values.topic.toUpperCase();
-
     const variables = {
       data: {
         externalId: currentItem?.externalId,
         title: values.title,
         excerpt: values.excerpt,
-        status: curationStatus,
-        language: languageCode,
+        status: values.curationStatus,
+        language: values.language,
         publisher: values.publisher,
         imageUrl: values.imageUrl,
-        topic: topic,
+        topic: values.topic,
         isTimeSensitive: values.timeSensitive,
       },
     };
@@ -243,7 +238,7 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
       { variables },
       `Curated item "${currentItem?.title.substring(
         0,
-        50
+        40
       )}..." successfully updated`,
       () => {
         toggleEditModal();
