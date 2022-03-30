@@ -14,12 +14,12 @@ import {
   ScheduleItemModal,
 } from '../../components';
 import {
-  ScheduledCuratedCorpusItem,
-  ScheduledCuratedCorpusItemsResult,
+  ScheduledCorpusItem,
+  ScheduledCorpusItemsResult,
   useDeleteScheduledItemMutation,
   useGetScheduledItemsLazyQuery,
   useGetScheduledSurfacesForUserQuery,
-  useRescheduleScheduledCuratedCorpusItemMutation,
+  useRescheduleScheduledCorpusItemMutation,
 } from '../../../api/generatedTypes';
 import {
   useNotifications,
@@ -64,7 +64,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
    * Set the current Scheduled Item to be worked on.
    */
   const [currentItem, setCurrentItem] = useState<
-    Omit<ScheduledCuratedCorpusItem, '__typename'> | undefined
+    Omit<ScheduledCorpusItem, '__typename'> | undefined
   >(undefined);
 
   // State variable to store the current local time for the currently selected scheduled surface
@@ -102,7 +102,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
   const [deleteScheduledItem] = useDeleteScheduledItemMutation();
 
   // Prepare the "reschedule scheduled curated corpus item" mutation
-  const [rescheduleItem] = useRescheduleScheduledCuratedCorpusItemMutation();
+  const [rescheduleItem] = useRescheduleScheduledCorpusItemMutation();
 
   /**
    * ##########
@@ -265,7 +265,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
    * @returns Formatted day and syndicated count heading
    */
   const getDayAndSyndicatedCountHeading = (
-    data: ScheduledCuratedCorpusItemsResult
+    data: ScheduledCorpusItemsResult
   ): string => {
     return DateTime.fromFormat(data.scheduledDate, 'yyyy-MM-dd')
       .setLocale('en')
@@ -378,8 +378,8 @@ export const SchedulePage: React.FC = (): JSX.Element => {
           {!data && <HandleApiResponse loading={loading} error={error} />}
 
           {data &&
-            data.getScheduledCuratedCorpusItems.map(
-              (data: ScheduledCuratedCorpusItemsResult) => (
+            data.getScheduledCorpusItems.map(
+              (data: ScheduledCorpusItemsResult) => (
                 <Grid
                   container
                   alignItems="stretch"
@@ -393,12 +393,13 @@ export const SchedulePage: React.FC = (): JSX.Element => {
                         <Typography className={classes.heading} variant="h2">
                           {getDayAndSyndicatedCountHeading(data)}
                         </Typography>
+                        <hr />
                       </Grid>
                     </Grid>
                   </Grid>
                   <Grid item xs={12}>
                     <Grid container spacing={2}>
-                      {data.items.map((item: ScheduledCuratedCorpusItem) => {
+                      {data.items.map((item: ScheduledCorpusItem) => {
                         return (
                           <ScheduledItemCardWrapper
                             key={item.externalId}

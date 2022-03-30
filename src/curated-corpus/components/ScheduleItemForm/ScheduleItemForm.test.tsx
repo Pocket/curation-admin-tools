@@ -14,7 +14,7 @@ describe('The ScheduleItemForm component', () => {
     {
       name: 'en-US',
       guid: 'NEW_TAB_EN_US',
-      utcOffset: -4000,
+      ianaTimezone: 'America/New_York',
       prospectTypes: [
         ProspectType.Global,
         ProspectType.OrganicTimespent,
@@ -24,7 +24,7 @@ describe('The ScheduleItemForm component', () => {
     {
       name: 'de-DE',
       guid: 'NEW_TAB_DE_DE',
-      utcOffset: 1000,
+      ianaTimezone: 'Europe/Berlin',
       prospectTypes: [ProspectType.Global],
     },
   ];

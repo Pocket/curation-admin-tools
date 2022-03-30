@@ -2,8 +2,8 @@ import { gql } from '@apollo/client';
 import { RejectedItemData } from '../fragments/rejectedItemData';
 
 export const rejectProspect = gql`
-  mutation rejectProspect($data: CreateRejectedCuratedCorpusItemInput!) {
-    createRejectedCuratedCorpusItem(data: $data) {
+  mutation rejectProspect($data: CreateRejectedCorpusItemInput!) {
+    createRejectedCorpusItem(data: $data) {
       ...RejectedItemData
     }
   }

@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const uploadApprovedItemImage = gql`
-  mutation uploadApprovedCuratedCorpusItemImage($image: Upload!) {
-    uploadApprovedCuratedCorpusItemImage(data: $image) {
+  mutation uploadApprovedCorpusItemImage($image: Upload!) {
+    uploadApprovedCorpusItemImage(data: $image) {
       url
     }
   }

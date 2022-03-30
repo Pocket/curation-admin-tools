@@ -5,7 +5,7 @@ import { CuratedItemData } from './curatedItemData';
  * All the fields for a Scheduled Curated Corpus Item
  */
 export const ScheduledItemData = gql`
-  fragment ScheduledItemData on ScheduledCuratedCorpusItem {
+  fragment ScheduledItemData on ScheduledCorpusItem {
     approvedItem {
       ...CuratedItemData
     }

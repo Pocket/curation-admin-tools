@@ -8,7 +8,11 @@ import {
   Prospect,
   UrlMetadata,
 } from '../../api/generatedTypes';
-import { topics, ApprovedItemFromProspect } from './definitions';
+import {
+  topics,
+  ApprovedItemFromProspect,
+  guidToUtcOffset,
+} from './definitions';
 
 /**
  *
@@ -177,40 +181,18 @@ export const getDisplayTopic = (
 };
 
 export const getLocalDateTimeForGuid = (guidCode: string) => {
-  const guidToUtcOffset = [
-    {
-      guid: 'NEW_TAB_EN_US',
-      timeZone: 'America/New_York',
-    },
-    {
-      guid: 'NEW_TAB_DE_DE',
-      timeZone: 'Europe/Berlin',
-    },
-    {
-      guid: 'NEW_TAB_EN_GB',
-      timeZone: 'Europe/London',
-    },
-    {
-      guid: 'NEW_TAB_EN_INTL',
-      timeZone: 'Asia/Kolkata',
-    },
-    {
-      guid: 'POCKET_HITS_EN_US',
-      timeZone: 'America/New_York',
-    },
-    {
-      guid: 'POCKET_HITS_DE_DE',
-      timeZone: 'Europe/Berlin',
-    },
-  ];
-
   const guid = guidToUtcOffset.find((item) => item.guid === guidCode);
 
   if (!guid) {
     return;
   }
 
-  return DateTime.local()
-    .setZone(guid.timeZone)
-    .toLocaleString(DateTime.DATETIME_MED);
+  const localDateTime = DateTime.local().setZone(guid.timeZone);
+
+  // the Luxon library does not provide us a straightforward way to format the date the way we want
+  // i.e August 28, 2022, 11:59 pm. That is why you can see we are concatenating two different formats
+  // url for reference https://moment.github.io/luxon/#/formatting?id=table-of-tokens
+  return localDateTime
+    .toFormat('DDD')
+    .concat(', ', localDateTime.toFormat('t'));
 };

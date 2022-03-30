@@ -1,10 +1,10 @@
 import * as yup from 'yup';
-import { CollectionStatus } from '../../../api/generatedTypes';
+import {
+  CollectionStatus,
+  CollectionLanguage,
+} from '../../../api/generatedTypes';
 
-export const getValidationSchema = (
-  authorIds: string[],
-  languages: string[]
-) => {
+export const getValidationSchema = (authorIds: string[]) => {
   return yup.object({
     title: yup
       .string()
@@ -24,8 +24,8 @@ export const getValidationSchema = (
     excerpt: yup.string(),
     intro: yup.string(),
     language: yup
-      .string()
-      .oneOf(languages)
+      .mixed<CollectionLanguage>()
+      .oneOf(Object.values(CollectionLanguage))
       .required('Please choose a language code'),
     status: yup
       .mixed<CollectionStatus>()

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Fab, IconButton } from '@material-ui/core';
 import { ArrowUpward } from '@material-ui/icons';
+import { useStyles } from './FloatingActionButton.styles';
 
 /**
  * This is a wrapper component around the Mui FAB component. Right now it doesn't have a lot of props
@@ -18,20 +19,10 @@ export const FloatingActionButton: React.FC<FloatingActionButtonProps> = (
   props
 ): JSX.Element => {
   const { onClick } = props;
+  const classes = useStyles();
 
   return (
-    <Fab
-      color="default"
-      size="medium"
-      style={{
-        margin: 0,
-        top: 'auto',
-        right: 50,
-        bottom: 20,
-        left: 'auto',
-        position: 'fixed',
-      }}
-    >
+    <Fab color="default" size="medium" className={classes.bottomRightFloating}>
       <IconButton title="Scroll to top" onClick={onClick}>
         <ArrowUpward />
       </IconButton>

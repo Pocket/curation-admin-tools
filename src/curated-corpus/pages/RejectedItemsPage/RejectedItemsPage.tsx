@@ -3,8 +3,8 @@ import { Grid, Typography } from '@material-ui/core';
 import { FormikValues } from 'formik';
 import { config } from '../../../config';
 import {
-  RejectedCuratedCorpusItemEdge,
-  RejectedCuratedCorpusItemFilter,
+  RejectedCorpusItemEdge,
+  RejectedCorpusItemFilter,
   useGetRejectedItemsLazyQuery,
 } from '../../../api/generatedTypes';
 
@@ -27,7 +27,7 @@ export const RejectedItemsPage: React.FC = (): JSX.Element => {
 
   // Save the filters in a state variable to be able to use them when paginating
   // through results.
-  const [filters, setFilters] = useState<RejectedCuratedCorpusItemFilter>({});
+  const [filters, setFilters] = useState<RejectedCorpusItemFilter>({});
 
   // Save the cursors returned with every request to be able to use them when
   // paginating through results.
@@ -47,8 +47,8 @@ export const RejectedItemsPage: React.FC = (): JSX.Element => {
   // Set the cursors once data is returned by the API.
   useEffect(() => {
     if (data) {
-      setAfter(data.getRejectedCuratedCorpusItems.pageInfo.endCursor);
-      setBefore(data.getRejectedCuratedCorpusItems.pageInfo.startCursor);
+      setAfter(data.getRejectedCorpusItems.pageInfo.endCursor);
+      setBefore(data.getRejectedCorpusItems.pageInfo.startCursor);
     }
   }, [data]);
 
@@ -134,13 +134,13 @@ export const RejectedItemsPage: React.FC = (): JSX.Element => {
         {data && (
           <Grid item xs={12}>
             <Typography>
-              Found {data.getRejectedCuratedCorpusItems.totalCount} result(s).
+              Found {data.getRejectedCorpusItems.totalCount} result(s).
             </Typography>
           </Grid>
         )}
         {data &&
-          data.getRejectedCuratedCorpusItems.edges.map(
-            (edge: RejectedCuratedCorpusItemEdge) => {
+          data.getRejectedCorpusItems.edges.map(
+            (edge: RejectedCorpusItemEdge) => {
               return (
                 <Grid
                   item
@@ -161,11 +161,9 @@ export const RejectedItemsPage: React.FC = (): JSX.Element => {
 
       {data && (
         <NextPrevPagination
-          hasNextPage={data.getRejectedCuratedCorpusItems.pageInfo.hasNextPage}
+          hasNextPage={data.getRejectedCorpusItems.pageInfo.hasNextPage}
           loadNext={loadNext}
-          hasPreviousPage={
-            data.getRejectedCuratedCorpusItems.pageInfo.hasPreviousPage
-          }
+          hasPreviousPage={data.getRejectedCorpusItems.pageInfo.hasPreviousPage}
           loadPrevious={loadPrevious}
         />
       )}

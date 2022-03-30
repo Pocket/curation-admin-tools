@@ -5,10 +5,10 @@ import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import { Prospect } from '../../../api/generatedTypes';
 import { RejectItemForm } from '../RejectItemForm/RejectItemForm';
-import { ApprovedCuratedCorpusItem } from '../../../api/generatedTypes';
+import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 
 interface RejectProspectModalProps {
-  prospect: Prospect | ApprovedCuratedCorpusItem;
+  prospect: Prospect | ApprovedCorpusItem;
   isOpen: boolean;
   onSave: (
     values: FormikValues,

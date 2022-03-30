@@ -16,20 +16,20 @@ import {
   SplitButton,
 } from '../../components';
 import {
-  ApprovedCuratedCorpusItem,
+  ApprovedCorpusItem,
   CuratedStatus,
   Prospect,
   RejectProspectMutationVariables,
-  ScheduledCuratedCorpusItemsResult,
-  CreateApprovedCuratedCorpusItemMutation,
-  useCreateApprovedCuratedCorpusItemMutation,
-  useCreateScheduledCuratedCorpusItemMutation,
+  ScheduledCorpusItemsResult,
+  CreateApprovedCorpusItemMutation,
+  useCreateApprovedCorpusItemMutation,
+  useCreateScheduledCorpusItemMutation,
   useGetProspectsQuery,
   useGetScheduledItemsQuery,
   useGetScheduledSurfacesForUserQuery,
   useRejectProspectMutation,
   useUpdateProspectAsCuratedMutation,
-  useUploadApprovedCuratedCorpusItemImageMutation,
+  useUploadApprovedCorpusItemImageMutation,
 } from '../../../api/generatedTypes';
 import {
   useNotifications,
@@ -166,7 +166,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
    * Set the current Curated Item to be worked on (e.g., to add to Scheduled Surface optionally).
    */
   const [approvedItem, setApprovedItem] = useState<
-    ApprovedCuratedCorpusItem | undefined
+    ApprovedCorpusItem | undefined
   >(undefined);
 
   const [isRecommendation, setIsRecommendation] = useState<boolean>(false);
@@ -303,11 +303,10 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   };
 
   // Prepare the create approved item mutation
-  const [createApprovedItem] = useCreateApprovedCuratedCorpusItemMutation();
+  const [createApprovedItem] = useCreateApprovedCorpusItemMutation();
 
   // Prepare the upload approved item image mutation
-  const [uploadApprovedItemImage] =
-    useUploadApprovedCuratedCorpusItemImageMutation();
+  const [uploadApprovedItemImage] = useUploadApprovedCorpusItemImageMutation();
 
   // The toast notification hook
   const { showNotification } = useNotifications();
@@ -352,7 +351,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       createApprovedItem,
       { variables: { data: { ...approvedItem } } },
       'Item successfully added to the curated corpus.',
-      (approvedItemData: CreateApprovedCuratedCorpusItemMutation) => {
+      (approvedItemData: CreateApprovedCorpusItemMutation) => {
         // if we have a prospect id, we need to tell prospect api that this
         // prospect has been curated
         if (currentProspect?.id !== '') {
@@ -363,7 +362,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
             undefined,
             () => {
               postCreateApprovedItem(
-                approvedItemData.createApprovedCuratedCorpusItem,
+                approvedItemData.createApprovedCorpusItem,
                 true
               );
 
@@ -377,7 +376,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
           // if we don't have a prospect id, this was a manually added prospect
           // and we don't need to call prospect api at all
           postCreateApprovedItem(
-            approvedItemData.createApprovedCuratedCorpusItem,
+            approvedItemData.createApprovedCorpusItem,
             false
           );
 
@@ -395,7 +394,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
    * @param filterProspects (boolean): whether or not we need to filter the list of prospects on the screen
    */
   const postCreateApprovedItem = (
-    approvedItem: ApprovedCuratedCorpusItem,
+    approvedItem: ApprovedCorpusItem,
     filterProspects: boolean
   ): void => {
     toggleApprovedItemModal();
@@ -452,7 +451,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   };
 
   // 1. Prepare the "schedule curated item" mutation
-  const [scheduleCuratedItem] = useCreateScheduledCuratedCorpusItemMutation();
+  const [scheduleCuratedItem] = useCreateScheduledCorpusItemMutation();
   // 2. Schedule the curated item when the user saves a scheduling request
   const onScheduleSave = (
     values: FormikValues,
@@ -647,8 +646,8 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
               />
             )}
             {dataScheduled &&
-              dataScheduled.getScheduledCuratedCorpusItems.map(
-                (data: ScheduledCuratedCorpusItemsResult) => (
+              dataScheduled.getScheduledCorpusItems.map(
+                (data: ScheduledCorpusItemsResult) => (
                   <ScheduledSurfaceGroupedList
                     key={data.scheduledDate}
                     data={data}

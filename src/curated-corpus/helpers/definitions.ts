@@ -1,6 +1,6 @@
 // Here we keep sets of options for curating items
 import {
-  ApprovedCuratedCorpusItem,
+  ApprovedCorpusItem,
   CorpusLanguage,
   CuratedStatus,
   ProspectType,
@@ -58,9 +58,34 @@ export const curationStatusOptions: DropdownOption[] = [
   When mapping a Prospect to an ApprovedCuratedCorpusItem type, we need to able to set the language to undefined
   for when it is undefined on the Prospect, which later will be set in the form before creating an Approved item
  */
-export type ApprovedItemFromProspect = Omit<
-  ApprovedCuratedCorpusItem,
-  'language'
-> & {
+export type ApprovedItemFromProspect = Omit<ApprovedCorpusItem, 'language'> & {
   language: CorpusLanguage | undefined;
 };
+
+// scheduled surface guid to timezone map
+export const guidToUtcOffset = [
+  {
+    guid: 'NEW_TAB_EN_US',
+    timeZone: 'America/New_York',
+  },
+  {
+    guid: 'NEW_TAB_DE_DE',
+    timeZone: 'Europe/Berlin',
+  },
+  {
+    guid: 'NEW_TAB_EN_GB',
+    timeZone: 'Europe/London',
+  },
+  {
+    guid: 'NEW_TAB_EN_INTL',
+    timeZone: 'Asia/Kolkata',
+  },
+  {
+    guid: 'POCKET_HITS_EN_US',
+    timeZone: 'America/New_York',
+  },
+  {
+    guid: 'POCKET_HITS_DE_DE',
+    timeZone: 'Europe/Berlin',
+  },
+];
