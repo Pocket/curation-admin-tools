@@ -5,8 +5,6 @@ import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import { ApprovedCorpusItem, Prospect } from '../../../api/generatedTypes';
 import { RejectItemForm } from '../RejectItemForm/RejectItemForm';
-import { ApprovedCorpusItem } from '../../../api/generatedTypes';
-
 
 interface RejectProspectModalProps {
   prospect: Prospect | ApprovedCorpusItem;

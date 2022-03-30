@@ -15,7 +15,6 @@ import {
 } from '../../components';
 import {
   ScheduledCorpusItem,
-  ScheduledCorpusItemsFilterInput,
   ScheduledCorpusItemsResult,
   useDeleteScheduledItemMutation,
   useGetScheduledItemsLazyQuery,

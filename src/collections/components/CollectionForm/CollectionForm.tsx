@@ -22,7 +22,6 @@ import {
   CurationCategory,
   IabCategory,
   IabParentCategory,
-  CollectionLanguage,
 } from '../../../api/generatedTypes';
 
 interface CollectionFormProps {

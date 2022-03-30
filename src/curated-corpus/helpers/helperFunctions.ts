@@ -14,7 +14,6 @@ import {
   guidToUtcOffset,
 } from './definitions';
 
-
 /**
  *
  * This function simply transforms a Prospect object type to
