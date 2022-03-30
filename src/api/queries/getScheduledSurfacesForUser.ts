@@ -9,7 +9,7 @@ export const getScheduledSurfacesForUser = gql`
       guid
       name
       prospectTypes
-      utcOffset
+      ianaTimezone
     }
   }
 `;

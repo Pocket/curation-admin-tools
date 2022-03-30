@@ -130,6 +130,12 @@ export type ApprovedCorpusItemFilter = {
   url?: InputMaybe<Scalars['Url']>;
 };
 
+/** Temp type to pacify federation checks */
+export type ApprovedCuratedCorpusItem = {
+  __typename?: 'ApprovedCuratedCorpusItem';
+  url: Scalars['Url'];
+};
+
 export type ArticleMarkdown = {
   __typename?: 'ArticleMarkdown';
   images?: Maybe<Array<MarkdownImagePosition>>;
@@ -1399,12 +1405,12 @@ export type ScheduledSurface = {
   __typename?: 'ScheduledSurface';
   /** The GUID of the Scheduled Surface. Example: 'NEW_TAB_EN_US'. */
   guid: Scalars['String'];
+  /** The IANA timezone of the Scheduled Surface, used to determine the start of a day. */
+  ianaTimezone: Scalars['String'];
   /** The display name of the Scheduled Surface. Example 'New Tab (en-US)'. */
   name: Scalars['String'];
   /** An array of associated ProspectTypes. */
   prospectTypes: Array<ProspectType>;
-  /** The UTC offset of the Scheduled Surface's scheduling day, represented in HMM numeric format. */
-  utcOffset: Scalars['Int'];
 };
 
 /** available filters for searching collections */
@@ -3158,7 +3164,7 @@ export type GetScheduledSurfacesForUserQuery = {
     guid: string;
     name: string;
     prospectTypes: Array<ProspectType>;
-    utcOffset: number;
+    ianaTimezone: string;
   }>;
 };
 
@@ -6215,7 +6221,7 @@ export const GetScheduledSurfacesForUserDocument = gql`
       guid
       name
       prospectTypes
-      utcOffset
+      ianaTimezone
     }
   }
 `;
