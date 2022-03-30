@@ -11,7 +11,7 @@ RUN npm install --silent \
     && REACT_APP_ENV=${APP_ENV} npm run build
 
 # production environment
-FROM nginx:1.21.6@sha256:e48e9d28dd773886b5c4b86db4e411eedf46bb98095f5c03c3f6a167a633dcf0
+FROM nginx:1.21.6@sha256:2275af0f20d71b293916f1958f8497f987b8d8fd8113df54635f2a5915002bf1
 # Copy collections build into nginx html directory for now,
 # collections will be at the root of the server
 COPY --from=builder /usr/src/app/build /usr/share/nginx/html
