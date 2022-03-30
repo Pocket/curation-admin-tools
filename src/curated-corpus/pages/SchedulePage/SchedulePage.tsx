@@ -129,6 +129,9 @@ export const SchedulePage: React.FC = (): JSX.Element => {
   // UseEffect hook that gets the scheduled items for the selected scheduled surface
   // has the currentScheduledSurfaceGuid as the dependency and initial execution is also on page load
   useEffect(() => {
+    // check if the currentScheduledSurfaceGuid state variable is set first
+    // due to non-sequential and async nature of react state updates, it causes the below query
+    // to run with the incorrect value on page load intermittently
     if (currentScheduledSurfaceGuid) {
       executeGetScheduledItemsQuery(
         currentScheduledSurfaceGuid,
@@ -137,6 +140,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
       );
     }
 
+    // show error toast for above query if any
     error && showNotification(error.message, 'error');
 
     // set local time for the scheduled surface on initial page load
