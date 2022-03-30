@@ -393,6 +393,8 @@ export const SchedulePage: React.FC = (): JSX.Element => {
                         <Typography className={classes.heading} variant="h2">
                           {getDayAndSyndicatedCountHeading(data)}
                         </Typography>
+                      </Grid>
+                      <Grid item xs={12}>
                         <hr />
                       </Grid>
                     </Grid>
