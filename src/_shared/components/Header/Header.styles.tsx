@@ -4,7 +4,7 @@ import { config } from '../../../config';
 
 // styles to differentiate the UI when app is running the dev branch version
 const devEnvironmentStyles = {
-  backgroundColor: curationPalette.neutral,
+  backgroundColor: curationPalette.secondary,
   color: curationPalette.white,
 };
 
