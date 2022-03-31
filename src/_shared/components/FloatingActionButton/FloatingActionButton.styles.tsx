@@ -6,12 +6,12 @@ import { createStyles, makeStyles } from '@material-ui/core/styles';
 export const useStyles = makeStyles(() =>
   createStyles({
     bottomRightFloating: {
-      margin: 0,
-      top: 'auto',
-      right: 50,
-      bottom: 20,
-      left: 'auto',
       position: 'fixed',
+      margin: '0rem',
+      top: 'auto',
+      right: '1.5rem',
+      bottom: '1.5rem',
+      left: 'auto',
     },
   })
 );

@@ -108,8 +108,7 @@ export const CollectionForm: React.FC<
     // before they actually submit the form
     validateOnBlur: false,
     validateOnChange: false,
-    validationSchema: getValidationSchema(authorIds),
-
+    validationSchema: getValidationSchema(authorIds, languages),
     onSubmit: (values, formikHelpers) => {
       onSubmit(values, formikHelpers);
     },

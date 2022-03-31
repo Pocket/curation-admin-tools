@@ -18,8 +18,8 @@ import { useStyles } from './ImageUpload.styles';
 import { useNotifications } from '../../../_shared/hooks';
 import {
   ApprovedCorpusItem,
-  useUploadApprovedCorpusItemImageMutation,
   MutationUploadApprovedCorpusItemImageArgs,
+  useUploadApprovedCorpusItemImageMutation,
 } from '../../../api/generatedTypes';
 import { readImageFileFromDisk } from '../../helpers/helperFunctions';
 import { ApprovedItemFromProspect } from '../../helpers/definitions';
