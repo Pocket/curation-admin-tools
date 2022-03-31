@@ -1,5 +1,12 @@
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { curationPalette } from '../../../theme';
+import { config } from '../../../config';
+
+// styles to differentiate the UI when app is running the dev branch version
+const devEnvironmentStyles = {
+  backgroundColor: curationPalette.secondary,
+  color: curationPalette.white,
+};
 
 /**
  * Styles for the Header component
@@ -7,7 +14,9 @@ import { curationPalette } from '../../../theme';
 export const useStyles = makeStyles((theme: Theme) => ({
   appBar: {
     padding: '0.5rem 0 0.25rem 0',
-    backgroundColor: curationPalette.white,
+    backgroundColor: config.isProduction
+      ? curationPalette.white
+      : devEnvironmentStyles.backgroundColor,
     boxShadow: '0px 4px 10px rgba(148, 148, 148, 0.3)',
     [theme.breakpoints.down('sm')]: {
       padding: 0,
@@ -34,7 +43,7 @@ export const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   productLink: {
-    color: '#222222',
+    color: config.isProduction ? '#222222' : devEnvironmentStyles.color,
     textDecoration: 'none',
   },
   drawer: {
@@ -63,6 +72,6 @@ export const useStyles = makeStyles((theme: Theme) => ({
     padding: 0,
   },
   appBarLink: {
-    color: '#000',
+    color: config.isProduction ? '#000' : devEnvironmentStyles.color,
   },
 }));
