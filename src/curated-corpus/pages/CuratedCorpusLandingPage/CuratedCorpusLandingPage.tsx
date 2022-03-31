@@ -8,6 +8,7 @@ import {
   HeaderConnector,
   MainContentWrapper,
   MenuLink,
+  PageNotFound,
 } from '../../../_shared/components';
 import {
   ApprovedItemsPage,
@@ -98,6 +99,7 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
             <Route exact path={`${path}/rejected/`}>
               <RejectedItemsPage />
             </Route>
+            <Route component={PageNotFound} />
           </Switch>
         </MainContentWrapper>
       </MuiPickersUtilsProvider>

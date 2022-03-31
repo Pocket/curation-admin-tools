@@ -7,6 +7,7 @@ import {
   HeaderConnector,
   MainContentWrapper,
   MenuLink,
+  PageNotFound,
 } from '../../../_shared/components';
 
 import {
@@ -93,6 +94,7 @@ export const CollectionsLandingPage = (): JSX.Element => {
           <Route exact path={`${path}/search/`}>
             <CollectionSearchPage />
           </Route>
+          <Route component={PageNotFound} />
         </Switch>
       </MainContentWrapper>
     </ApolloProvider>
