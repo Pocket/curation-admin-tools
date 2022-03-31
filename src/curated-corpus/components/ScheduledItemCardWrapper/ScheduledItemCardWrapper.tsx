@@ -19,18 +19,38 @@ interface ScheduledItemCardWrapperProps {
    * Callback for the "Reschedule" button
    */
   onReschedule?: VoidFunction;
+
+  /**
+   * Optional boolean prop to show/hide the language icon on the ApprovedItemListCard component
+   */
+  showLanguageIcon?: boolean;
+
+  /**
+   * Optional boolean prop to show/hide the "Rec." overlay on the ApprovedItemListCard component
+   */
+  showRecommendedOverlay?: boolean;
 }
 
 export const ScheduledItemCardWrapper: React.FC<
   ScheduledItemCardWrapperProps
 > = (props): JSX.Element => {
   const classes = useStyles();
-  const { item, onRemove, onReschedule } = props;
+  const {
+    item,
+    onRemove,
+    onReschedule,
+    showLanguageIcon,
+    showRecommendedOverlay,
+  } = props;
 
   return (
     <Grid item xs={12} sm={6} md={3}>
       <Card className={classes.root}>
-        <ApprovedItemListCard item={item.approvedItem} />
+        <ApprovedItemListCard
+          item={item.approvedItem}
+          showLanguageIcon={showLanguageIcon}
+          showRecommendedOverlay={showRecommendedOverlay}
+        />
 
         <CardActions className={classes.actions}>
           <Button buttonType="positive" variant="text" onClick={onReschedule}>
