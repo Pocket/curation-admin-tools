@@ -40,6 +40,8 @@ interface AddProspectFormConnectorProps {
    * We need to call this to be able to set the hidden Source field to Manual in the approved item form
    */
   setIsManualSubmission: (isManual: boolean) => void;
+
+  setIsLoaderShowing: (isShowing: boolean) => void;
 }
 
 /**
@@ -57,6 +59,7 @@ export const AddProspectFormConnector: React.FC<
     setCurrentProspect,
     setIsRecommendation,
     setIsManualSubmission,
+    setIsLoaderShowing,
   } = props;
 
   // state variable to store the itemUrl field from the form
@@ -137,6 +140,12 @@ export const AddProspectFormConnector: React.FC<
       toggleApprovedItemModal();
     },
   });
-
-  return <AddProspectForm onCancel={toggleModal} onSubmit={onSubmit} />;
+  console.log('***** CONNECTOR');
+  return (
+    <AddProspectForm
+      onCancel={toggleModal}
+      onSubmit={onSubmit}
+      setIsLoaderShowing={setIsLoaderShowing}
+    />
+  );
 };

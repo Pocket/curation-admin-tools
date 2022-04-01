@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Grid, LinearProgress } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import {
@@ -16,6 +16,8 @@ interface AddProspectFormProps {
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ) => void | Promise<any>;
+
+  setIsLoaderShowing: (isShowing: boolean) => void;
 }
 
 /**
@@ -28,7 +30,7 @@ export const AddProspectForm: React.FC<
   const classes = useStyles();
 
   // de-structure props
-  const { onCancel, onSubmit } = props;
+  const { onCancel, onSubmit, setIsLoaderShowing } = props;
 
   // set up formik object for this form
   const formik = useFormik({
@@ -40,6 +42,8 @@ export const AddProspectForm: React.FC<
     validationSchema,
     onSubmit,
   });
+
+  formik.isSubmitting && setIsLoaderShowing(true);
 
   return (
     <>
@@ -62,14 +66,6 @@ export const AddProspectForm: React.FC<
           </Grid>
         </Grid>
       </form>
-
-      {formik.isSubmitting && (
-        <Grid item xs={12}>
-          <Box mb={3}>
-            <LinearProgress />
-          </Box>
-        </Grid>
-      )}
     </>
   );
 };
