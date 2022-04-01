@@ -144,7 +144,13 @@ export const SchedulePage: React.FC = (): JSX.Element => {
     error && showNotification(error.message, 'error');
 
     // set local time for the scheduled surface on initial page load
-    setGuidLocalDateTime(getLocalDateTimeForGuid(currentScheduledSurfaceGuid));
+    scheduledSurfaceData &&
+      setGuidLocalDateTime(
+        getLocalDateTimeForGuid(
+          currentScheduledSurfaceGuid,
+          scheduledSurfaceData
+        )
+      );
   }, [currentScheduledSurfaceGuid]);
 
   // Setting up the lazy query hook now that we need to execute
@@ -172,8 +178,10 @@ export const SchedulePage: React.FC = (): JSX.Element => {
       });
       setCurrentScheduledSurfaceGuid(option.code);
 
-      getLocalDateTimeForGuid(option.code);
-      setGuidLocalDateTime(getLocalDateTimeForGuid(option.code));
+      scheduledSurfaceData &&
+        setGuidLocalDateTime(
+          getLocalDateTimeForGuid(option.code, scheduledSurfaceData)
+        );
     }
   };
 

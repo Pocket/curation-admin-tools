@@ -67,31 +67,3 @@ export const curationStatusOptions: DropdownOption[] = [
 export type ApprovedItemFromProspect = Omit<ApprovedCorpusItem, 'language'> & {
   language: CorpusLanguage | undefined;
 };
-
-// scheduled surface guid to timezone map
-export const guidToUtcOffset = [
-  {
-    guid: 'NEW_TAB_EN_US',
-    timeZone: 'America/New_York',
-  },
-  {
-    guid: 'NEW_TAB_DE_DE',
-    timeZone: 'Europe/Berlin',
-  },
-  {
-    guid: 'NEW_TAB_EN_GB',
-    timeZone: 'Europe/London',
-  },
-  {
-    guid: 'NEW_TAB_EN_INTL',
-    timeZone: 'Asia/Kolkata',
-  },
-  {
-    guid: 'POCKET_HITS_EN_US',
-    timeZone: 'America/New_York',
-  },
-  {
-    guid: 'POCKET_HITS_DE_DE',
-    timeZone: 'Europe/Berlin',
-  },
-];
