@@ -7,7 +7,8 @@ export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     popper: {
       // this prevents the dropdown from being covered by schedule item card
-      zIndex: 1,
+      // and the label on the date picker
+      zIndex: 2,
     },
 
     optionNameSmall: {

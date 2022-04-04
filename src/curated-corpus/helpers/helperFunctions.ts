@@ -4,15 +4,12 @@ import {
   CorpusItemSource,
   CorpusLanguage,
   CuratedStatus,
+  GetScheduledSurfacesForUserQuery,
   Maybe,
   Prospect,
   UrlMetadata,
 } from '../../api/generatedTypes';
-import {
-  topics,
-  ApprovedItemFromProspect,
-  guidToUtcOffset,
-} from './definitions';
+import { topics, ApprovedItemFromProspect } from './definitions';
 
 /**
  *
@@ -180,14 +177,19 @@ export const getDisplayTopic = (
   return displayTopic ? displayTopic : 'N/A';
 };
 
-export const getLocalDateTimeForGuid = (guidCode: string) => {
-  const guid = guidToUtcOffset.find((item) => item.guid === guidCode);
+export const getLocalDateTimeForGuid = (
+  guidCode: string,
+  scheduledSurfacesForUser: GetScheduledSurfacesForUserQuery
+) => {
+  const guid = scheduledSurfacesForUser.getScheduledSurfacesForUser.find(
+    (item) => item.guid === guidCode
+  );
 
   if (!guid) {
     return;
   }
 
-  const localDateTime = DateTime.local().setZone(guid.timeZone);
+  const localDateTime = DateTime.local().setZone(guid.ianaTimezone);
 
   // the Luxon library does not provide us a straightforward way to format the date the way we want
   // i.e August 28, 2022, 11:59 pm. That is why you can see we are concatenating two different formats
