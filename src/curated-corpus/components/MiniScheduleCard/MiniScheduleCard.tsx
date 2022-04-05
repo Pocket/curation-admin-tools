@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScheduledCuratedCorpusItem } from '../../../api/generatedTypes';
+import { ScheduledCorpusItem } from '../../../api/generatedTypes';
 import {
   Card,
   CardContent,
@@ -17,7 +17,7 @@ import { useStyles } from './MiniScheduleCard.styles';
 import { getDisplayTopic } from '../../helpers/helperFunctions';
 
 interface MiniScheduleCardProps {
-  item: ScheduledCuratedCorpusItem;
+  item: ScheduledCorpusItem;
 }
 
 /**

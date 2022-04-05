@@ -14,7 +14,7 @@ import {
 
 describe('helperFunctions ', () => {
   describe('transformProspectToApprovedItem function', () => {
-    it('should create an ApprovedCuratedCorpusItem with all the provided fields', () => {
+    it('should create an ApprovedCorpusItem with all the provided fields', () => {
       const prospect: Prospect = {
         id: 'test-prospect-id',
         scheduledSurfaceGuid: 'en-us',
@@ -60,7 +60,7 @@ describe('helperFunctions ', () => {
       });
     });
 
-    it('should create an ApprovedCuratedCorpusItem with the default fields when only required fields are provided', () => {
+    it('should create an ApprovedCorpusItem with the default fields when only required fields are provided', () => {
       const prospect: Prospect = {
         id: 'test-prospect-id',
         url: 'test-prospect-url',

@@ -29,15 +29,15 @@ export type Scalars = {
   Url: any;
 };
 
-export type ApprovedCuratedCorpusImageUrl = {
-  __typename?: 'ApprovedCuratedCorpusImageUrl';
+export type ApprovedCorpusImageUrl = {
+  __typename?: 'ApprovedCorpusImageUrl';
   /** The url of the image stored in the s3 bucket */
   url: Scalars['String'];
 };
 
-/** A prospective story that has been reviewed by the curators and saved to the curated corpus. */
-export type ApprovedCuratedCorpusItem = {
-  __typename?: 'ApprovedCuratedCorpusItem';
+/** A prospective story that has been reviewed by the curators and saved to the corpus. */
+export type ApprovedCorpusItem = {
+  __typename?: 'ApprovedCorpusItem';
   /** A Unix timestamp of when the entity was created. */
   createdAt: Scalars['Int'];
   /** A single sign-on user identifier of the user who created this entity. */
@@ -86,10 +86,10 @@ export type ApprovedCuratedCorpusItem = {
 };
 
 /** The connection type for Approved Item. */
-export type ApprovedCuratedCorpusItemConnection = {
-  __typename?: 'ApprovedCuratedCorpusItemConnection';
+export type ApprovedCorpusItemConnection = {
+  __typename?: 'ApprovedCorpusItemConnection';
   /** A list of edges. */
-  edges: Array<ApprovedCuratedCorpusItemEdge>;
+  edges: Array<ApprovedCorpusItemEdge>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** Identifies the total count of Approved Items in the connection. */
@@ -97,16 +97,16 @@ export type ApprovedCuratedCorpusItemConnection = {
 };
 
 /** An edge in a connection. */
-export type ApprovedCuratedCorpusItemEdge = {
-  __typename?: 'ApprovedCuratedCorpusItemEdge';
+export type ApprovedCorpusItemEdge = {
+  __typename?: 'ApprovedCorpusItemEdge';
   /** A cursor for use in pagination. */
   cursor: Scalars['String'];
   /** The Approved Item at the end of the edge. */
-  node: ApprovedCuratedCorpusItem;
+  node: ApprovedCorpusItem;
 };
 
-/** Available fields for filtering ApprovedCuratedCorpusItems. */
-export type ApprovedCuratedCorpusItemFilter = {
+/** Available fields for filtering Approved Items. */
+export type ApprovedCorpusItemFilter = {
   /**
    * Optional filter on the language Approved Items have been classified as.
    * This is a two-letter string, e.g. 'EN' for English or 'DE' for 'German'.
@@ -120,6 +120,12 @@ export type ApprovedCuratedCorpusItemFilter = {
   topic?: InputMaybe<Scalars['String']>;
   /** Optional filter on the URL field. Returns partial matches. */
   url?: InputMaybe<Scalars['Url']>;
+};
+
+/** Temp type to pacify federation checks */
+export type ApprovedCuratedCorpusItem = {
+  __typename?: 'ApprovedCuratedCorpusItem';
+  url: Scalars['Url'];
 };
 
 export type ArticleMarkdown = {
@@ -171,7 +177,7 @@ export type Collection = {
    * note that language is *not* being used as locale - only to specify the
    * language of the collection.
    */
-  language: Scalars['String'];
+  language: CollectionLanguage;
   partnership?: Maybe<CollectionPartnership>;
   publishedAt?: Maybe<Scalars['DateString']>;
   slug: Scalars['String'];
@@ -212,6 +218,14 @@ export type CollectionInput = {
   excerpt: Scalars['String'];
   title: Scalars['String'];
 };
+
+/** valid language codes for collections */
+export enum CollectionLanguage {
+  /** German */
+  De = 'DE',
+  /** English */
+  En = 'EN',
+}
 
 /** Details of a partner company sponsored collections are associated with. */
 export type CollectionPartner = {
@@ -327,7 +341,7 @@ export enum CorpusLanguage {
 }
 
 /** Input data for creating an Approved Item and optionally scheduling this item to appear on a Scheduled Surface. */
-export type CreateApprovedCuratedCorpusItemInput = {
+export type CreateApprovedCorpusItemInput = {
   /** The excerpt of the Approved Item. */
   excerpt: Scalars['String'];
   /** The image URL for this item's accompanying picture. */
@@ -382,7 +396,7 @@ export type CreateCollectionInput = {
   excerpt?: InputMaybe<Scalars['Markdown']>;
   imageUrl?: InputMaybe<Scalars['Url']>;
   intro?: InputMaybe<Scalars['Markdown']>;
-  language: Scalars['String'];
+  language: CollectionLanguage;
   slug: Scalars['String'];
   status?: InputMaybe<CollectionStatus>;
   title: Scalars['String'];
@@ -418,7 +432,7 @@ export type CreateCollectionStoryInput = {
 };
 
 /** Input data for creating a Rejected Item. */
-export type CreateRejectedCuratedCorpusItemInput = {
+export type CreateRejectedCorpusItemInput = {
   /** What language this item is in. This is a two-letter code, for example, 'EN' for English. */
   language?: InputMaybe<CorpusLanguage>;
   /** The GUID of the corresponding Prospect ID. Will be empty for manually added item. */
@@ -439,7 +453,7 @@ export type CreateRejectedCuratedCorpusItemInput = {
 };
 
 /** Input data for creating a scheduled entry for an Approved Item on a Scheduled Surface. */
-export type CreateScheduledCuratedCorpusItemInput = {
+export type CreateScheduledCorpusItemInput = {
   /** The ID of the Approved Item that needs to be scheduled. */
   approvedItemExternalId: Scalars['ID'];
   /** The date the associated Approved Item is scheduled to appear on a Scheduled Surface. Format: YYYY-MM-DD. */
@@ -468,7 +482,7 @@ export type DeleteCollectionPartnerAssociationInput = {
 };
 
 /** Input data for deleting a scheduled item for a Scheduled Surface. */
-export type DeleteScheduledCuratedCorpusItemInput = {
+export type DeleteScheduledCorpusItemInput = {
   /** ID of the scheduled item. A string in UUID format. */
   externalId: Scalars['ID'];
 };
@@ -539,7 +553,7 @@ export enum Imageness {
  * Input data for loading an Approved Item via an automated process and optionally scheduling
  * this item to appear on a Scheduled Surface.
  */
-export type ImportApprovedCuratedCorpusItemInput = {
+export type ImportApprovedCorpusItemInput = {
   /** A Unix timestamp of when the entity was created. */
   createdAt: Scalars['Int'];
   /** A single sign-on user identifier of the user who created this entity. */
@@ -577,12 +591,12 @@ export type ImportApprovedCuratedCorpusItemInput = {
 };
 
 /** The data that the loadApprovedCuratedCorpusItem mutation returns on success. */
-export type ImportApprovedCuratedCorpusItemPayload = {
-  __typename?: 'ImportApprovedCuratedCorpusItemPayload';
+export type ImportApprovedCorpusItemPayload = {
+  __typename?: 'ImportApprovedCorpusItemPayload';
   /** The approved item, as created by an automated process. */
-  approvedItem: ApprovedCuratedCorpusItem;
+  approvedItem: ApprovedCorpusItem;
   /** The scheduled entry that is created by an automated process at the same time. */
-  scheduledItem: ScheduledCuratedCorpusItem;
+  scheduledItem: ScheduledCorpusItem;
 };
 
 /**
@@ -711,12 +725,6 @@ export type Item = {
   wordCount?: Maybe<Scalars['Int']>;
 };
 
-/** represents a language supported in the system */
-export type Language = {
-  __typename?: 'Language';
-  code: Scalars['String'];
-};
-
 export type ListElement = {
   /** Row in a list. */
   content: Scalars['Markdown'];
@@ -813,7 +821,7 @@ export type Mutation = {
    */
   collectionImageUpload: CollectionImageUrl;
   /** Creates an Approved Item and optionally schedules it to appear on a Scheduled Surface. */
-  createApprovedCuratedCorpusItem: ApprovedCuratedCorpusItem;
+  createApprovedCorpusItem: ApprovedCorpusItem;
   /** Creates a Collection. */
   createCollection: Collection;
   /** Creates a CollectionAuthor. */
@@ -825,28 +833,28 @@ export type Mutation = {
   /** Creates a CollectionStory. */
   createCollectionStory: CollectionStory;
   /** Creates a Rejected Item. */
-  createRejectedCuratedCorpusItem: RejectedCuratedCorpusItem;
+  createRejectedCorpusItem: RejectedCorpusItem;
   /** Creates a Scheduled Surface Scheduled Item. */
-  createScheduledCuratedCorpusItem: ScheduledCuratedCorpusItem;
+  createScheduledCorpusItem: ScheduledCorpusItem;
   /** Deletes a CollectionPartnerAssociation. */
   deleteCollectionPartnerAssociation: CollectionPartnerAssociation;
   /** Deletes a CollectionStory. Also deletes all the related CollectionStoryAuthor records. */
   deleteCollectionStory: CollectionStory;
   /** Deletes an item from a Scheduled Surface. */
-  deleteScheduledCuratedCorpusItem: ScheduledCuratedCorpusItem;
+  deleteScheduledCorpusItem: ScheduledCorpusItem;
   /**
    * Lets an automated process create an Approved Item and optionally schedule it to appear
    * on a Scheduled Surface.
    */
-  importApprovedCuratedCorpusItem: ImportApprovedCuratedCorpusItemPayload;
+  importApprovedCorpusItem: ImportApprovedCorpusItemPayload;
   /** Refresh an {Item}'s article content. */
   refreshItemArticle: Item;
   /** Rejects an Approved Item: deletes it from the corpus and creates a Rejected Item instead. */
-  rejectApprovedCuratedCorpusItem: ApprovedCuratedCorpusItem;
+  rejectApprovedCorpusItem: ApprovedCorpusItem;
   /** Updates the scheduled date of a Scheduled Surface Scheduled Item. */
-  rescheduleScheduledCuratedCorpusItem: ScheduledCuratedCorpusItem;
+  rescheduleScheduledCorpusItem: ScheduledCorpusItem;
   /** Updates an Approved Item. */
-  updateApprovedCuratedCorpusItem: ApprovedCuratedCorpusItem;
+  updateApprovedCorpusItem: ApprovedCorpusItem;
   /** Updates a Collection. */
   updateCollection: Collection;
   /** Updates a CollectionAuthor. */
@@ -892,16 +900,16 @@ export type Mutation = {
    * returns true if the operation succeeds, false if not (almost surely due to an incorrect prospectId).
    */
   updateProspectAsCurated?: Maybe<Prospect>;
-  /** Uploads an image to S3 for an Approved Curated Corpus Item */
-  uploadApprovedCuratedCorpusItemImage: ApprovedCuratedCorpusImageUrl;
+  /** Uploads an image to S3 for an Approved Item */
+  uploadApprovedCorpusItemImage: ApprovedCorpusImageUrl;
 };
 
 export type MutationCollectionImageUploadArgs = {
   data: CollectionImageUploadInput;
 };
 
-export type MutationCreateApprovedCuratedCorpusItemArgs = {
-  data: CreateApprovedCuratedCorpusItemInput;
+export type MutationCreateApprovedCorpusItemArgs = {
+  data: CreateApprovedCorpusItemInput;
 };
 
 export type MutationCreateCollectionArgs = {
@@ -924,12 +932,12 @@ export type MutationCreateCollectionStoryArgs = {
   data: CreateCollectionStoryInput;
 };
 
-export type MutationCreateRejectedCuratedCorpusItemArgs = {
-  data: CreateRejectedCuratedCorpusItemInput;
+export type MutationCreateRejectedCorpusItemArgs = {
+  data: CreateRejectedCorpusItemInput;
 };
 
-export type MutationCreateScheduledCuratedCorpusItemArgs = {
-  data: CreateScheduledCuratedCorpusItemInput;
+export type MutationCreateScheduledCorpusItemArgs = {
+  data: CreateScheduledCorpusItemInput;
 };
 
 export type MutationDeleteCollectionPartnerAssociationArgs = {
@@ -940,28 +948,28 @@ export type MutationDeleteCollectionStoryArgs = {
   externalId: Scalars['String'];
 };
 
-export type MutationDeleteScheduledCuratedCorpusItemArgs = {
-  data: DeleteScheduledCuratedCorpusItemInput;
+export type MutationDeleteScheduledCorpusItemArgs = {
+  data: DeleteScheduledCorpusItemInput;
 };
 
-export type MutationImportApprovedCuratedCorpusItemArgs = {
-  data: ImportApprovedCuratedCorpusItemInput;
+export type MutationImportApprovedCorpusItemArgs = {
+  data: ImportApprovedCorpusItemInput;
 };
 
 export type MutationRefreshItemArticleArgs = {
   url: Scalars['String'];
 };
 
-export type MutationRejectApprovedCuratedCorpusItemArgs = {
-  data: RejectApprovedCuratedCorpusItemInput;
+export type MutationRejectApprovedCorpusItemArgs = {
+  data: RejectApprovedCorpusItemInput;
 };
 
-export type MutationRescheduleScheduledCuratedCorpusItemArgs = {
-  data: RescheduleScheduledCuratedCorpusItemInput;
+export type MutationRescheduleScheduledCorpusItemArgs = {
+  data: RescheduleScheduledCorpusItemInput;
 };
 
-export type MutationUpdateApprovedCuratedCorpusItemArgs = {
-  data: UpdateApprovedCuratedCorpusItemInput;
+export type MutationUpdateApprovedCorpusItemArgs = {
+  data: UpdateApprovedCorpusItemInput;
 };
 
 export type MutationUpdateCollectionArgs = {
@@ -1012,7 +1020,7 @@ export type MutationUpdateProspectAsCuratedArgs = {
   prospectId: Scalars['ID'];
 };
 
-export type MutationUploadApprovedCuratedCorpusItemImageArgs = {
+export type MutationUploadApprovedCorpusItemImageArgs = {
   data: Scalars['Upload'];
 };
 
@@ -1087,7 +1095,7 @@ export type PaginationInput = {
 
 export type Prospect = {
   __typename?: 'Prospect';
-  approvedCorpusItem?: Maybe<ApprovedCuratedCorpusItem>;
+  approvedCorpusItem?: Maybe<ApprovedCorpusItem>;
   createdAt?: Maybe<Scalars['Int']>;
   domain?: Maybe<Scalars['String']>;
   excerpt?: Maybe<Scalars['String']>;
@@ -1110,8 +1118,10 @@ export type Prospect = {
  * by the Curation Admin Tools frontend to filter prospects.
  */
 export enum ProspectType {
+  CountsLogisticApproval = 'COUNTS_LOGISTIC_APPROVAL',
   DomainAllowlist = 'DOMAIN_ALLOWLIST',
   Global = 'GLOBAL',
+  HybridLogisticApproval = 'HYBRID_LOGISTIC_APPROVAL',
   OrganicTimespent = 'ORGANIC_TIMESPENT',
   Syndicated = 'SYNDICATED',
   TopSaved = 'TOP_SAVED',
@@ -1119,10 +1129,10 @@ export enum ProspectType {
 
 export type Query = {
   __typename?: 'Query';
-  /** Retrieves an approved curated item with the given URL. */
-  getApprovedCuratedCorpusItemByUrl?: Maybe<ApprovedCuratedCorpusItem>;
-  /** Retrieves a paginated, filterable list of ApprovedCuratedCorpusItems. */
-  getApprovedCuratedCorpusItems: ApprovedCuratedCorpusItemConnection;
+  /** Retrieves an approved item with the given URL. */
+  getApprovedCorpusItemByUrl?: Maybe<ApprovedCorpusItem>;
+  /** Retrieves a paginated, filterable list of Approved Items. */
+  getApprovedCorpusItems: ApprovedCorpusItemConnection;
   /** Retrieves a Collection by externalId. */
   getCollection?: Maybe<Collection>;
   /** Retrieves a CollectionAuthor by externalId. */
@@ -1151,13 +1161,13 @@ export type Query = {
   /** Look up {Item} info by a url. */
   getItemByUrl?: Maybe<Item>;
   /** Retrieves the languages currently supported. */
-  getLanguages: Array<Language>;
+  getLanguages: Array<CollectionLanguage>;
   /** returns a set of at most 20 prospects (number may be smaller depending on available data) */
   getProspects: Array<Prospect>;
-  /** Retrieves a paginated, filterable list of RejectedCuratedCorpusItems. */
-  getRejectedCuratedCorpusItems: RejectedCuratedCorpusItemConnection;
+  /** Retrieves a paginated, filterable list of Rejected Items. */
+  getRejectedCorpusItems: RejectedCorpusItemConnection;
   /** Retrieves a list of Approved Items that are scheduled to appear on a Scheduled Surface. */
-  getScheduledCuratedCorpusItems: Array<ScheduledCuratedCorpusItemsResult>;
+  getScheduledCorpusItems: Array<ScheduledCorpusItemsResult>;
   /** Retrieves all ScheduledSurfaces available to the given SSO user. Requires an Authorization header. */
   getScheduledSurfacesForUser: Array<ScheduledSurface>;
   /** returns parser meta data for a given url */
@@ -1165,12 +1175,12 @@ export type Query = {
   searchCollections: CollectionsResult;
 };
 
-export type QueryGetApprovedCuratedCorpusItemByUrlArgs = {
+export type QueryGetApprovedCorpusItemByUrlArgs = {
   url: Scalars['String'];
 };
 
-export type QueryGetApprovedCuratedCorpusItemsArgs = {
-  filters?: InputMaybe<ApprovedCuratedCorpusItemFilter>;
+export type QueryGetApprovedCorpusItemsArgs = {
+  filters?: InputMaybe<ApprovedCorpusItemFilter>;
   pagination?: InputMaybe<PaginationInput>;
 };
 
@@ -1220,13 +1230,13 @@ export type QueryGetProspectsArgs = {
   filters: GetProspectsFilters;
 };
 
-export type QueryGetRejectedCuratedCorpusItemsArgs = {
-  filters?: InputMaybe<RejectedCuratedCorpusItemFilter>;
+export type QueryGetRejectedCorpusItemsArgs = {
+  filters?: InputMaybe<RejectedCorpusItemFilter>;
   pagination?: InputMaybe<PaginationInput>;
 };
 
-export type QueryGetScheduledCuratedCorpusItemsArgs = {
-  filters: ScheduledCuratedCorpusItemsFilterInput;
+export type QueryGetScheduledCorpusItemsArgs = {
+  filters: ScheduledCorpusItemsFilterInput;
 };
 
 export type QueryGetUrlMetadataArgs = {
@@ -1240,7 +1250,7 @@ export type QuerySearchCollectionsArgs = {
 };
 
 /** Input data for rejecting an Approved Item. */
-export type RejectApprovedCuratedCorpusItemInput = {
+export type RejectApprovedCorpusItemInput = {
   /** Approved Item ID. */
   externalId: Scalars['ID'];
   /** A comma-separated list of rejection reasons. */
@@ -1248,8 +1258,8 @@ export type RejectApprovedCuratedCorpusItemInput = {
 };
 
 /** A prospective story that has been rejected by the curators. */
-export type RejectedCuratedCorpusItem = {
-  __typename?: 'RejectedCuratedCorpusItem';
+export type RejectedCorpusItem = {
+  __typename?: 'RejectedCorpusItem';
   /** A Unix timestamp of when the entity was created. */
   createdAt: Scalars['Int'];
   /** A single sign-on user identifier of the user who created this entity. */
@@ -1275,28 +1285,28 @@ export type RejectedCuratedCorpusItem = {
   url: Scalars['Url'];
 };
 
-/** The connection type for Rejected Curated Item. */
-export type RejectedCuratedCorpusItemConnection = {
-  __typename?: 'RejectedCuratedCorpusItemConnection';
+/** The connection type for Rejected Item. */
+export type RejectedCorpusItemConnection = {
+  __typename?: 'RejectedCorpusItemConnection';
   /** A list of edges. */
-  edges: Array<RejectedCuratedCorpusItemEdge>;
+  edges: Array<RejectedCorpusItemEdge>;
   /** Information to aid in pagination. */
   pageInfo: PageInfo;
   /** Identifies the total count of Rejected Curated Items in the connection. */
   totalCount: Scalars['Int'];
 };
 
-/** An edge in a connection for RejectedCuratedCorpusItem type. */
-export type RejectedCuratedCorpusItemEdge = {
-  __typename?: 'RejectedCuratedCorpusItemEdge';
+/** An edge in a connection for RejectedCorpusItem type. */
+export type RejectedCorpusItemEdge = {
+  __typename?: 'RejectedCorpusItemEdge';
   /** A cursor for use in pagination. */
   cursor: Scalars['String'];
-  /** The Rejected Curated Item at the end of the edge. */
-  node: RejectedCuratedCorpusItem;
+  /** The Rejected Item at the end of the edge. */
+  node: RejectedCorpusItem;
 };
 
-/** Available fields for filtering RejectedCuratedCorpusItems. */
-export type RejectedCuratedCorpusItemFilter = {
+/** Available fields for filtering Rejected Items. */
+export type RejectedCorpusItemFilter = {
   /**
    * Optional filter on the language Rejected Curated Items have been classified as.
    * This is a two-letter string, e.g. 'EN' for English or 'DE' for 'German'.
@@ -1324,7 +1334,7 @@ export enum RejectionReason {
 }
 
 /** Input data for rescheduling a scheduled item for a Scheduled Surface. */
-export type RescheduleScheduledCuratedCorpusItemInput = {
+export type RescheduleScheduledCorpusItemInput = {
   /** ID of the scheduled item. A string in UUID format. */
   externalId: Scalars['ID'];
   /** The new scheduled date for the scheduled item to appear on a Scheduled Surface. Format: YYYY-MM-DD. */
@@ -1335,10 +1345,10 @@ export type RescheduleScheduledCuratedCorpusItemInput = {
  * A scheduled entry for an Approved Item to appear on a Scheduled Surface.
  * For example, a story that is scheduled to appear on December 31st, 2021 on the New Tab in Firefox for the US audience.
  */
-export type ScheduledCuratedCorpusItem = {
-  __typename?: 'ScheduledCuratedCorpusItem';
+export type ScheduledCorpusItem = {
+  __typename?: 'ScheduledCorpusItem';
   /** The associated Approved Item. */
-  approvedItem: ApprovedCuratedCorpusItem;
+  approvedItem: ApprovedCorpusItem;
   /** A Unix timestamp of when the entity was created. */
   createdAt: Scalars['Int'];
   /** A single sign-on user identifier of the user who created this entity. */
@@ -1350,7 +1360,7 @@ export type ScheduledCuratedCorpusItem = {
    * This date is relative to the time zone of the Scheduled Surface. Format: YYYY-MM-DD.
    */
   scheduledDate: Scalars['Date'];
-  /** The GUID of this schedudedSurface to which this item is scheduled. Example: 'NEW_TAB_EN_US'. */
+  /** The GUID of this scheduledSurface to which this item is scheduled. Example: 'NEW_TAB_EN_US'. */
   scheduledSurfaceGuid: Scalars['ID'];
   /** A Unix timestamp of when the entity was last updated. */
   updatedAt: Scalars['Int'];
@@ -1359,7 +1369,7 @@ export type ScheduledCuratedCorpusItem = {
 };
 
 /** Available fields for filtering scheduled items for a given Scheduled Surface. */
-export type ScheduledCuratedCorpusItemsFilterInput = {
+export type ScheduledCorpusItemsFilterInput = {
   /** To what day to show scheduled items to, inclusive. Expects a date in YYYY-MM-DD format. */
   endDate: Scalars['Date'];
   /** The GUID of the Scheduled Surface. Example: 'NEW_TAB_EN_US'. */
@@ -1368,13 +1378,13 @@ export type ScheduledCuratedCorpusItemsFilterInput = {
   startDate: Scalars['Date'];
 };
 
-/** The shape of the result returned by the getScheduledCuratedCorpusItems query. */
-export type ScheduledCuratedCorpusItemsResult = {
-  __typename?: 'ScheduledCuratedCorpusItemsResult';
+/** The shape of the result returned by the getScheduledCorpusItems query. */
+export type ScheduledCorpusItemsResult = {
+  __typename?: 'ScheduledCorpusItemsResult';
   /** The number of curated items that are collections for the scheduled date. */
   collectionCount: Scalars['Int'];
   /** An array of items for a given Scheduled Surface */
-  items: Array<ScheduledCuratedCorpusItem>;
+  items: Array<ScheduledCorpusItem>;
   /** The date items are scheduled for, in YYYY-MM-DD format. */
   scheduledDate: Scalars['Date'];
   /** The number of syndicated articles for the scheduled date. */
@@ -1388,12 +1398,12 @@ export type ScheduledSurface = {
   __typename?: 'ScheduledSurface';
   /** The GUID of the Scheduled Surface. Example: 'NEW_TAB_EN_US'. */
   guid: Scalars['String'];
+  /** The IANA timezone of the Scheduled Surface, used to determine the start of a day. */
+  ianaTimezone: Scalars['String'];
   /** The display name of the Scheduled Surface. Example 'New Tab (en-US)'. */
   name: Scalars['String'];
   /** An array of associated ProspectTypes. */
   prospectTypes: Array<ProspectType>;
-  /** The UTC offset of the Scheduled Surface's scheduling day, represented in HMM numeric format. */
-  utcOffset: Scalars['Int'];
 };
 
 /** available filters for searching collections */
@@ -1434,7 +1444,7 @@ export type UnMarseable = {
 };
 
 /** Input data for updating an Approved Item. */
-export type UpdateApprovedCuratedCorpusItemInput = {
+export type UpdateApprovedCorpusItemInput = {
   /** The excerpt of the Approved Item. */
   excerpt: Scalars['String'];
   /** Approved Item ID. */
@@ -1489,7 +1499,7 @@ export type UpdateCollectionInput = {
   externalId?: InputMaybe<Scalars['String']>;
   imageUrl?: InputMaybe<Scalars['Url']>;
   intro?: InputMaybe<Scalars['Markdown']>;
-  language: Scalars['String'];
+  language: CollectionLanguage;
   slug: Scalars['String'];
   status: CollectionStatus;
   title: Scalars['String'];
@@ -1623,7 +1633,7 @@ export type CollectionDataFragment = {
   excerpt?: any | null;
   intro?: any | null;
   imageUrl?: any | null;
-  language: string;
+  language: CollectionLanguage;
   status: CollectionStatus;
   authors: Array<{
     __typename?: 'CollectionAuthor';
@@ -1708,7 +1718,7 @@ export type CollectionStoryDataFragment = {
 };
 
 export type CuratedItemDataFragment = {
-  __typename?: 'ApprovedCuratedCorpusItem';
+  __typename?: 'ApprovedCorpusItem';
   externalId: string;
   prospectId?: string | null;
   title: string;
@@ -1747,7 +1757,7 @@ export type ProspectDataFragment = {
   isSyndicated?: boolean | null;
   isCollection?: boolean | null;
   approvedCorpusItem?: {
-    __typename?: 'ApprovedCuratedCorpusItem';
+    __typename?: 'ApprovedCorpusItem';
     externalId: string;
     prospectId?: string | null;
     title: string;
@@ -1770,7 +1780,7 @@ export type ProspectDataFragment = {
 };
 
 export type RejectedItemDataFragment = {
-  __typename?: 'RejectedCuratedCorpusItem';
+  __typename?: 'RejectedCorpusItem';
   externalId: string;
   prospectId?: string | null;
   url: any;
@@ -1784,7 +1794,7 @@ export type RejectedItemDataFragment = {
 };
 
 export type ScheduledItemDataFragment = {
-  __typename?: 'ScheduledCuratedCorpusItem';
+  __typename?: 'ScheduledCorpusItem';
   scheduledSurfaceGuid: string;
   createdAt: number;
   createdBy: string;
@@ -1793,7 +1803,7 @@ export type ScheduledItemDataFragment = {
   updatedAt: number;
   updatedBy?: string | null;
   approvedItem: {
-    __typename?: 'ApprovedCuratedCorpusItem';
+    __typename?: 'ApprovedCorpusItem';
     externalId: string;
     prospectId?: string | null;
     title: string;
@@ -1828,14 +1838,14 @@ export type UrlMetadataFragment = {
   isCollection?: boolean | null;
 };
 
-export type CreateApprovedCuratedCorpusItemMutationVariables = Exact<{
-  data: CreateApprovedCuratedCorpusItemInput;
+export type CreateApprovedCorpusItemMutationVariables = Exact<{
+  data: CreateApprovedCorpusItemInput;
 }>;
 
-export type CreateApprovedCuratedCorpusItemMutation = {
+export type CreateApprovedCorpusItemMutation = {
   __typename?: 'Mutation';
-  createApprovedCuratedCorpusItem: {
-    __typename?: 'ApprovedCuratedCorpusItem';
+  createApprovedCorpusItem: {
+    __typename?: 'ApprovedCorpusItem';
     externalId: string;
     prospectId?: string | null;
     title: string;
@@ -1867,7 +1877,7 @@ export type CreateCollectionMutationVariables = Exact<{
   curationCategoryExternalId?: InputMaybe<Scalars['String']>;
   IABParentCategoryExternalId?: InputMaybe<Scalars['String']>;
   IABChildCategoryExternalId?: InputMaybe<Scalars['String']>;
-  language: Scalars['String'];
+  language: CollectionLanguage;
 }>;
 
 export type CreateCollectionMutation = {
@@ -1880,7 +1890,7 @@ export type CreateCollectionMutation = {
     excerpt?: any | null;
     intro?: any | null;
     imageUrl?: any | null;
-    language: string;
+    language: CollectionLanguage;
     status: CollectionStatus;
     authors: Array<{
       __typename?: 'CollectionAuthor';
@@ -2024,16 +2034,16 @@ export type CreateCollectionStoryMutation = {
   };
 };
 
-export type CreateScheduledCuratedCorpusItemMutationVariables = Exact<{
+export type CreateScheduledCorpusItemMutationVariables = Exact<{
   approvedItemExternalId: Scalars['ID'];
   scheduledSurfaceGuid: Scalars['ID'];
   scheduledDate: Scalars['Date'];
 }>;
 
-export type CreateScheduledCuratedCorpusItemMutation = {
+export type CreateScheduledCorpusItemMutation = {
   __typename?: 'Mutation';
-  createScheduledCuratedCorpusItem: {
-    __typename?: 'ScheduledCuratedCorpusItem';
+  createScheduledCorpusItem: {
+    __typename?: 'ScheduledCorpusItem';
     externalId: string;
     createdAt: number;
     createdBy: string;
@@ -2041,7 +2051,7 @@ export type CreateScheduledCuratedCorpusItemMutation = {
     updatedBy?: string | null;
     scheduledDate: any;
     approvedItem: {
-      __typename?: 'ApprovedCuratedCorpusItem';
+      __typename?: 'ApprovedCorpusItem';
       externalId: string;
       prospectId?: string | null;
       title: string;
@@ -2119,8 +2129,8 @@ export type DeleteScheduledItemMutationVariables = Exact<{
 
 export type DeleteScheduledItemMutation = {
   __typename?: 'Mutation';
-  deleteScheduledCuratedCorpusItem: {
-    __typename?: 'ScheduledCuratedCorpusItem';
+  deleteScheduledCorpusItem: {
+    __typename?: 'ScheduledCorpusItem';
     externalId: string;
     createdAt: number;
     createdBy: string;
@@ -2128,7 +2138,7 @@ export type DeleteScheduledItemMutation = {
     updatedBy?: string | null;
     scheduledDate: any;
     approvedItem: {
-      __typename?: 'ApprovedCuratedCorpusItem';
+      __typename?: 'ApprovedCorpusItem';
       externalId: string;
       prospectId?: string | null;
       title: string;
@@ -2164,13 +2174,13 @@ export type ImageUploadMutation = {
 };
 
 export type RejectApprovedItemMutationVariables = Exact<{
-  data: RejectApprovedCuratedCorpusItemInput;
+  data: RejectApprovedCorpusItemInput;
 }>;
 
 export type RejectApprovedItemMutation = {
   __typename?: 'Mutation';
-  rejectApprovedCuratedCorpusItem: {
-    __typename?: 'ApprovedCuratedCorpusItem';
+  rejectApprovedCorpusItem: {
+    __typename?: 'ApprovedCorpusItem';
     externalId: string;
     prospectId?: string | null;
     title: string;
@@ -2193,13 +2203,13 @@ export type RejectApprovedItemMutation = {
 };
 
 export type RejectProspectMutationVariables = Exact<{
-  data: CreateRejectedCuratedCorpusItemInput;
+  data: CreateRejectedCorpusItemInput;
 }>;
 
 export type RejectProspectMutation = {
   __typename?: 'Mutation';
-  createRejectedCuratedCorpusItem: {
-    __typename?: 'RejectedCuratedCorpusItem';
+  createRejectedCorpusItem: {
+    __typename?: 'RejectedCorpusItem';
     externalId: string;
     prospectId?: string | null;
     url: any;
@@ -2213,15 +2223,15 @@ export type RejectProspectMutation = {
   };
 };
 
-export type RescheduleScheduledCuratedCorpusItemMutationVariables = Exact<{
+export type RescheduleScheduledCorpusItemMutationVariables = Exact<{
   externalId: Scalars['ID'];
   scheduledDate: Scalars['Date'];
 }>;
 
-export type RescheduleScheduledCuratedCorpusItemMutation = {
+export type RescheduleScheduledCorpusItemMutation = {
   __typename?: 'Mutation';
-  rescheduleScheduledCuratedCorpusItem: {
-    __typename?: 'ScheduledCuratedCorpusItem';
+  rescheduleScheduledCorpusItem: {
+    __typename?: 'ScheduledCorpusItem';
     scheduledSurfaceGuid: string;
     createdAt: number;
     createdBy: string;
@@ -2230,7 +2240,7 @@ export type RescheduleScheduledCuratedCorpusItemMutation = {
     updatedAt: number;
     updatedBy?: string | null;
     approvedItem: {
-      __typename?: 'ApprovedCuratedCorpusItem';
+      __typename?: 'ApprovedCorpusItem';
       externalId: string;
       prospectId?: string | null;
       title: string;
@@ -2253,14 +2263,14 @@ export type RescheduleScheduledCuratedCorpusItemMutation = {
   };
 };
 
-export type UpdateApprovedCuratedCorpusItemMutationVariables = Exact<{
-  data: UpdateApprovedCuratedCorpusItemInput;
+export type UpdateApprovedCorpusItemMutationVariables = Exact<{
+  data: UpdateApprovedCorpusItemInput;
 }>;
 
-export type UpdateApprovedCuratedCorpusItemMutation = {
+export type UpdateApprovedCorpusItemMutation = {
   __typename?: 'Mutation';
-  updateApprovedCuratedCorpusItem: {
-    __typename?: 'ApprovedCuratedCorpusItem';
+  updateApprovedCorpusItem: {
+    __typename?: 'ApprovedCorpusItem';
     externalId: string;
     prospectId?: string | null;
     title: string;
@@ -2293,7 +2303,7 @@ export type UpdateCollectionMutationVariables = Exact<{
   curationCategoryExternalId?: InputMaybe<Scalars['String']>;
   IABParentCategoryExternalId?: InputMaybe<Scalars['String']>;
   IABChildCategoryExternalId?: InputMaybe<Scalars['String']>;
-  language: Scalars['String'];
+  language: CollectionLanguage;
   imageUrl?: InputMaybe<Scalars['Url']>;
 }>;
 
@@ -2307,7 +2317,7 @@ export type UpdateCollectionMutation = {
     excerpt?: any | null;
     intro?: any | null;
     imageUrl?: any | null;
-    language: string;
+    language: CollectionLanguage;
     status: CollectionStatus;
     authors: Array<{
       __typename?: 'CollectionAuthor';
@@ -2403,7 +2413,7 @@ export type UpdateCollectionImageUrlMutation = {
     excerpt?: any | null;
     intro?: any | null;
     imageUrl?: any | null;
-    language: string;
+    language: CollectionLanguage;
     status: CollectionStatus;
     authors: Array<{
       __typename?: 'CollectionAuthor';
@@ -2645,7 +2655,7 @@ export type UpdateProspectAsCuratedMutation = {
     isSyndicated?: boolean | null;
     isCollection?: boolean | null;
     approvedCorpusItem?: {
-      __typename?: 'ApprovedCuratedCorpusItem';
+      __typename?: 'ApprovedCorpusItem';
       externalId: string;
       prospectId?: string | null;
       title: string;
@@ -2668,14 +2678,14 @@ export type UpdateProspectAsCuratedMutation = {
   } | null;
 };
 
-export type UploadApprovedCuratedCorpusItemImageMutationVariables = Exact<{
+export type UploadApprovedCorpusItemImageMutationVariables = Exact<{
   image: Scalars['Upload'];
 }>;
 
-export type UploadApprovedCuratedCorpusItemImageMutation = {
+export type UploadApprovedCorpusItemImageMutation = {
   __typename?: 'Mutation';
-  uploadApprovedCuratedCorpusItemImage: {
-    __typename?: 'ApprovedCuratedCorpusImageUrl';
+  uploadApprovedCorpusItemImage: {
+    __typename?: 'ApprovedCorpusImageUrl';
     url: string;
   };
 };
@@ -2686,8 +2696,8 @@ export type GetApprovedItemByUrlQueryVariables = Exact<{
 
 export type GetApprovedItemByUrlQuery = {
   __typename?: 'Query';
-  getApprovedCuratedCorpusItemByUrl?: {
-    __typename?: 'ApprovedCuratedCorpusItem';
+  getApprovedCorpusItemByUrl?: {
+    __typename?: 'ApprovedCorpusItem';
     externalId: string;
     prospectId?: string | null;
     title: string;
@@ -2710,14 +2720,14 @@ export type GetApprovedItemByUrlQuery = {
 };
 
 export type GetApprovedItemsQueryVariables = Exact<{
-  filters?: InputMaybe<ApprovedCuratedCorpusItemFilter>;
+  filters?: InputMaybe<ApprovedCorpusItemFilter>;
   pagination?: InputMaybe<PaginationInput>;
 }>;
 
 export type GetApprovedItemsQuery = {
   __typename?: 'Query';
-  getApprovedCuratedCorpusItems: {
-    __typename?: 'ApprovedCuratedCorpusItemConnection';
+  getApprovedCorpusItems: {
+    __typename?: 'ApprovedCorpusItemConnection';
     totalCount: number;
     pageInfo: {
       __typename?: 'PageInfo';
@@ -2727,10 +2737,10 @@ export type GetApprovedItemsQuery = {
       endCursor?: string | null;
     };
     edges: Array<{
-      __typename?: 'ApprovedCuratedCorpusItemEdge';
+      __typename?: 'ApprovedCorpusItemEdge';
       cursor: string;
       node: {
-        __typename?: 'ApprovedCuratedCorpusItem';
+        __typename?: 'ApprovedCorpusItem';
         externalId: string;
         prospectId?: string | null;
         title: string;
@@ -2812,7 +2822,7 @@ export type GetCollectionByExternalIdQuery = {
     excerpt?: any | null;
     intro?: any | null;
     imageUrl?: any | null;
-    language: string;
+    language: CollectionLanguage;
     status: CollectionStatus;
     authors: Array<{
       __typename?: 'CollectionAuthor';
@@ -2966,7 +2976,7 @@ export type GetCollectionsQuery = {
       excerpt?: any | null;
       intro?: any | null;
       imageUrl?: any | null;
-      language: string;
+      language: CollectionLanguage;
       status: CollectionStatus;
       authors: Array<{
         __typename?: 'CollectionAuthor';
@@ -3021,6 +3031,7 @@ export type GetInitialCollectionFormDataQueryVariables = Exact<{
 
 export type GetInitialCollectionFormDataQuery = {
   __typename?: 'Query';
+  getLanguages: Array<CollectionLanguage>;
   getCollectionAuthors: {
     __typename?: 'CollectionAuthorsResult';
     authors: Array<{
@@ -3033,7 +3044,6 @@ export type GetInitialCollectionFormDataQuery = {
       active: boolean;
     }>;
   };
-  getLanguages: Array<{ __typename?: 'Language'; code: string }>;
   getCurationCategories: Array<{
     __typename?: 'CurationCategory';
     externalId: string;
@@ -3079,7 +3089,7 @@ export type GetProspectsQuery = {
     isSyndicated?: boolean | null;
     isCollection?: boolean | null;
     approvedCorpusItem?: {
-      __typename?: 'ApprovedCuratedCorpusItem';
+      __typename?: 'ApprovedCorpusItem';
       externalId: string;
       prospectId?: string | null;
       title: string;
@@ -3103,14 +3113,14 @@ export type GetProspectsQuery = {
 };
 
 export type GetRejectedItemsQueryVariables = Exact<{
-  filters?: InputMaybe<RejectedCuratedCorpusItemFilter>;
+  filters?: InputMaybe<RejectedCorpusItemFilter>;
   pagination?: InputMaybe<PaginationInput>;
 }>;
 
 export type GetRejectedItemsQuery = {
   __typename?: 'Query';
-  getRejectedCuratedCorpusItems: {
-    __typename?: 'RejectedCuratedCorpusItemConnection';
+  getRejectedCorpusItems: {
+    __typename?: 'RejectedCorpusItemConnection';
     totalCount: number;
     pageInfo: {
       __typename?: 'PageInfo';
@@ -3120,10 +3130,10 @@ export type GetRejectedItemsQuery = {
       endCursor?: string | null;
     };
     edges: Array<{
-      __typename?: 'RejectedCuratedCorpusItemEdge';
+      __typename?: 'RejectedCorpusItemEdge';
       cursor: string;
       node: {
-        __typename?: 'RejectedCuratedCorpusItem';
+        __typename?: 'RejectedCorpusItem';
         externalId: string;
         prospectId?: string | null;
         url: any;
@@ -3140,13 +3150,13 @@ export type GetRejectedItemsQuery = {
 };
 
 export type GetScheduledItemCountsQueryVariables = Exact<{
-  filters: ScheduledCuratedCorpusItemsFilterInput;
+  filters: ScheduledCorpusItemsFilterInput;
 }>;
 
 export type GetScheduledItemCountsQuery = {
   __typename?: 'Query';
-  getScheduledCuratedCorpusItems: Array<{
-    __typename?: 'ScheduledCuratedCorpusItemsResult';
+  getScheduledCorpusItems: Array<{
+    __typename?: 'ScheduledCorpusItemsResult';
     collectionCount: number;
     syndicatedCount: number;
     totalCount: number;
@@ -3154,19 +3164,19 @@ export type GetScheduledItemCountsQuery = {
 };
 
 export type GetScheduledItemsQueryVariables = Exact<{
-  filters: ScheduledCuratedCorpusItemsFilterInput;
+  filters: ScheduledCorpusItemsFilterInput;
 }>;
 
 export type GetScheduledItemsQuery = {
   __typename?: 'Query';
-  getScheduledCuratedCorpusItems: Array<{
-    __typename?: 'ScheduledCuratedCorpusItemsResult';
+  getScheduledCorpusItems: Array<{
+    __typename?: 'ScheduledCorpusItemsResult';
     collectionCount: number;
     syndicatedCount: number;
     totalCount: number;
     scheduledDate: any;
     items: Array<{
-      __typename?: 'ScheduledCuratedCorpusItem';
+      __typename?: 'ScheduledCorpusItem';
       externalId: string;
       createdAt: number;
       createdBy: string;
@@ -3175,7 +3185,7 @@ export type GetScheduledItemsQuery = {
       scheduledDate: any;
       scheduledSurfaceGuid: string;
       approvedItem: {
-        __typename?: 'ApprovedCuratedCorpusItem';
+        __typename?: 'ApprovedCorpusItem';
         externalId: string;
         prospectId?: string | null;
         title: string;
@@ -3210,7 +3220,7 @@ export type GetScheduledSurfacesForUserQuery = {
     guid: string;
     name: string;
     prospectTypes: Array<ProspectType>;
-    utcOffset: number;
+    ianaTimezone: string;
   }>;
 };
 
@@ -3234,7 +3244,7 @@ export type GetSearchCollectionsQuery = {
       excerpt?: any | null;
       intro?: any | null;
       imageUrl?: any | null;
-      language: string;
+      language: CollectionLanguage;
       status: CollectionStatus;
       authors: Array<{
         __typename?: 'CollectionAuthor';
@@ -3415,7 +3425,7 @@ export const CollectionStoryDataFragmentDoc = gql`
   }
 `;
 export const CuratedItemDataFragmentDoc = gql`
-  fragment CuratedItemData on ApprovedCuratedCorpusItem {
+  fragment CuratedItemData on ApprovedCorpusItem {
     externalId
     prospectId
     title
@@ -3460,7 +3470,7 @@ export const ProspectDataFragmentDoc = gql`
   ${CuratedItemDataFragmentDoc}
 `;
 export const RejectedItemDataFragmentDoc = gql`
-  fragment RejectedItemData on RejectedCuratedCorpusItem {
+  fragment RejectedItemData on RejectedCorpusItem {
     externalId
     prospectId
     url
@@ -3474,7 +3484,7 @@ export const RejectedItemDataFragmentDoc = gql`
   }
 `;
 export const ScheduledItemDataFragmentDoc = gql`
-  fragment ScheduledItemData on ScheduledCuratedCorpusItem {
+  fragment ScheduledItemData on ScheduledCorpusItem {
     approvedItem {
       ...CuratedItemData
     }
@@ -3501,59 +3511,57 @@ export const UrlMetadataFragmentDoc = gql`
     isCollection
   }
 `;
-export const CreateApprovedCuratedCorpusItemDocument = gql`
-  mutation createApprovedCuratedCorpusItem(
-    $data: CreateApprovedCuratedCorpusItemInput!
-  ) {
-    createApprovedCuratedCorpusItem(data: $data) {
+export const CreateApprovedCorpusItemDocument = gql`
+  mutation createApprovedCorpusItem($data: CreateApprovedCorpusItemInput!) {
+    createApprovedCorpusItem(data: $data) {
       ...CuratedItemData
     }
   }
   ${CuratedItemDataFragmentDoc}
 `;
-export type CreateApprovedCuratedCorpusItemMutationFn = Apollo.MutationFunction<
-  CreateApprovedCuratedCorpusItemMutation,
-  CreateApprovedCuratedCorpusItemMutationVariables
+export type CreateApprovedCorpusItemMutationFn = Apollo.MutationFunction<
+  CreateApprovedCorpusItemMutation,
+  CreateApprovedCorpusItemMutationVariables
 >;
 
 /**
- * __useCreateApprovedCuratedCorpusItemMutation__
+ * __useCreateApprovedCorpusItemMutation__
  *
- * To run a mutation, you first call `useCreateApprovedCuratedCorpusItemMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateApprovedCuratedCorpusItemMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateApprovedCorpusItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateApprovedCorpusItemMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createApprovedCuratedCorpusItemMutation, { data, loading, error }] = useCreateApprovedCuratedCorpusItemMutation({
+ * const [createApprovedCorpusItemMutation, { data, loading, error }] = useCreateApprovedCorpusItemMutation({
  *   variables: {
  *      data: // value for 'data'
  *   },
  * });
  */
-export function useCreateApprovedCuratedCorpusItemMutation(
+export function useCreateApprovedCorpusItemMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    CreateApprovedCuratedCorpusItemMutation,
-    CreateApprovedCuratedCorpusItemMutationVariables
+    CreateApprovedCorpusItemMutation,
+    CreateApprovedCorpusItemMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    CreateApprovedCuratedCorpusItemMutation,
-    CreateApprovedCuratedCorpusItemMutationVariables
-  >(CreateApprovedCuratedCorpusItemDocument, options);
+    CreateApprovedCorpusItemMutation,
+    CreateApprovedCorpusItemMutationVariables
+  >(CreateApprovedCorpusItemDocument, options);
 }
-export type CreateApprovedCuratedCorpusItemMutationHookResult = ReturnType<
-  typeof useCreateApprovedCuratedCorpusItemMutation
+export type CreateApprovedCorpusItemMutationHookResult = ReturnType<
+  typeof useCreateApprovedCorpusItemMutation
 >;
-export type CreateApprovedCuratedCorpusItemMutationResult =
-  Apollo.MutationResult<CreateApprovedCuratedCorpusItemMutation>;
-export type CreateApprovedCuratedCorpusItemMutationOptions =
+export type CreateApprovedCorpusItemMutationResult =
+  Apollo.MutationResult<CreateApprovedCorpusItemMutation>;
+export type CreateApprovedCorpusItemMutationOptions =
   Apollo.BaseMutationOptions<
-    CreateApprovedCuratedCorpusItemMutation,
-    CreateApprovedCuratedCorpusItemMutationVariables
+    CreateApprovedCorpusItemMutation,
+    CreateApprovedCorpusItemMutationVariables
   >;
 export const CreateCollectionDocument = gql`
   mutation createCollection(
@@ -3566,7 +3574,7 @@ export const CreateCollectionDocument = gql`
     $curationCategoryExternalId: String
     $IABParentCategoryExternalId: String
     $IABChildCategoryExternalId: String
-    $language: String!
+    $language: CollectionLanguage!
   ) {
     createCollection(
       data: {
@@ -3927,13 +3935,13 @@ export type CreateCollectionStoryMutationOptions = Apollo.BaseMutationOptions<
   CreateCollectionStoryMutation,
   CreateCollectionStoryMutationVariables
 >;
-export const CreateScheduledCuratedCorpusItemDocument = gql`
-  mutation createScheduledCuratedCorpusItem(
+export const CreateScheduledCorpusItemDocument = gql`
+  mutation createScheduledCorpusItem(
     $approvedItemExternalId: ID!
     $scheduledSurfaceGuid: ID!
     $scheduledDate: Date!
   ) {
-    createScheduledCuratedCorpusItem(
+    createScheduledCorpusItem(
       data: {
         approvedItemExternalId: $approvedItemExternalId
         scheduledSurfaceGuid: $scheduledSurfaceGuid
@@ -3953,24 +3961,23 @@ export const CreateScheduledCuratedCorpusItemDocument = gql`
   }
   ${CuratedItemDataFragmentDoc}
 `;
-export type CreateScheduledCuratedCorpusItemMutationFn =
-  Apollo.MutationFunction<
-    CreateScheduledCuratedCorpusItemMutation,
-    CreateScheduledCuratedCorpusItemMutationVariables
-  >;
+export type CreateScheduledCorpusItemMutationFn = Apollo.MutationFunction<
+  CreateScheduledCorpusItemMutation,
+  CreateScheduledCorpusItemMutationVariables
+>;
 
 /**
- * __useCreateScheduledCuratedCorpusItemMutation__
+ * __useCreateScheduledCorpusItemMutation__
  *
- * To run a mutation, you first call `useCreateScheduledCuratedCorpusItemMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateScheduledCuratedCorpusItemMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateScheduledCorpusItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateScheduledCorpusItemMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createScheduledCuratedCorpusItemMutation, { data, loading, error }] = useCreateScheduledCuratedCorpusItemMutation({
+ * const [createScheduledCorpusItemMutation, { data, loading, error }] = useCreateScheduledCorpusItemMutation({
  *   variables: {
  *      approvedItemExternalId: // value for 'approvedItemExternalId'
  *      scheduledSurfaceGuid: // value for 'scheduledSurfaceGuid'
@@ -3978,27 +3985,27 @@ export type CreateScheduledCuratedCorpusItemMutationFn =
  *   },
  * });
  */
-export function useCreateScheduledCuratedCorpusItemMutation(
+export function useCreateScheduledCorpusItemMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    CreateScheduledCuratedCorpusItemMutation,
-    CreateScheduledCuratedCorpusItemMutationVariables
+    CreateScheduledCorpusItemMutation,
+    CreateScheduledCorpusItemMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    CreateScheduledCuratedCorpusItemMutation,
-    CreateScheduledCuratedCorpusItemMutationVariables
-  >(CreateScheduledCuratedCorpusItemDocument, options);
+    CreateScheduledCorpusItemMutation,
+    CreateScheduledCorpusItemMutationVariables
+  >(CreateScheduledCorpusItemDocument, options);
 }
-export type CreateScheduledCuratedCorpusItemMutationHookResult = ReturnType<
-  typeof useCreateScheduledCuratedCorpusItemMutation
+export type CreateScheduledCorpusItemMutationHookResult = ReturnType<
+  typeof useCreateScheduledCorpusItemMutation
 >;
-export type CreateScheduledCuratedCorpusItemMutationResult =
-  Apollo.MutationResult<CreateScheduledCuratedCorpusItemMutation>;
-export type CreateScheduledCuratedCorpusItemMutationOptions =
+export type CreateScheduledCorpusItemMutationResult =
+  Apollo.MutationResult<CreateScheduledCorpusItemMutation>;
+export type CreateScheduledCorpusItemMutationOptions =
   Apollo.BaseMutationOptions<
-    CreateScheduledCuratedCorpusItemMutation,
-    CreateScheduledCuratedCorpusItemMutationVariables
+    CreateScheduledCorpusItemMutation,
+    CreateScheduledCorpusItemMutationVariables
   >;
 export const DeleteCollectionPartnerAssociationDocument = gql`
   mutation deleteCollectionPartnerAssociation($externalId: String!) {
@@ -4106,7 +4113,7 @@ export type DeleteCollectionStoryMutationOptions = Apollo.BaseMutationOptions<
 >;
 export const DeleteScheduledItemDocument = gql`
   mutation deleteScheduledItem($externalId: ID!) {
-    deleteScheduledCuratedCorpusItem(data: { externalId: $externalId }) {
+    deleteScheduledCorpusItem(data: { externalId: $externalId }) {
       externalId
       createdAt
       createdBy
@@ -4229,8 +4236,8 @@ export type ImageUploadMutationOptions = Apollo.BaseMutationOptions<
   ImageUploadMutationVariables
 >;
 export const RejectApprovedItemDocument = gql`
-  mutation rejectApprovedItem($data: RejectApprovedCuratedCorpusItemInput!) {
-    rejectApprovedCuratedCorpusItem(data: $data) {
+  mutation rejectApprovedItem($data: RejectApprovedCorpusItemInput!) {
+    rejectApprovedCorpusItem(data: $data) {
       ...CuratedItemData
     }
   }
@@ -4280,8 +4287,8 @@ export type RejectApprovedItemMutationOptions = Apollo.BaseMutationOptions<
   RejectApprovedItemMutationVariables
 >;
 export const RejectProspectDocument = gql`
-  mutation rejectProspect($data: CreateRejectedCuratedCorpusItemInput!) {
-    createRejectedCuratedCorpusItem(data: $data) {
+  mutation rejectProspect($data: CreateRejectedCorpusItemInput!) {
+    createRejectedCorpusItem(data: $data) {
       ...RejectedItemData
     }
   }
@@ -4330,12 +4337,12 @@ export type RejectProspectMutationOptions = Apollo.BaseMutationOptions<
   RejectProspectMutation,
   RejectProspectMutationVariables
 >;
-export const RescheduleScheduledCuratedCorpusItemDocument = gql`
-  mutation rescheduleScheduledCuratedCorpusItem(
+export const RescheduleScheduledCorpusItemDocument = gql`
+  mutation rescheduleScheduledCorpusItem(
     $externalId: ID!
     $scheduledDate: Date!
   ) {
-    rescheduleScheduledCuratedCorpusItem(
+    rescheduleScheduledCorpusItem(
       data: { externalId: $externalId, scheduledDate: $scheduledDate }
     ) {
       ...ScheduledItemData
@@ -4343,105 +4350,102 @@ export const RescheduleScheduledCuratedCorpusItemDocument = gql`
   }
   ${ScheduledItemDataFragmentDoc}
 `;
-export type RescheduleScheduledCuratedCorpusItemMutationFn =
-  Apollo.MutationFunction<
-    RescheduleScheduledCuratedCorpusItemMutation,
-    RescheduleScheduledCuratedCorpusItemMutationVariables
-  >;
+export type RescheduleScheduledCorpusItemMutationFn = Apollo.MutationFunction<
+  RescheduleScheduledCorpusItemMutation,
+  RescheduleScheduledCorpusItemMutationVariables
+>;
 
 /**
- * __useRescheduleScheduledCuratedCorpusItemMutation__
+ * __useRescheduleScheduledCorpusItemMutation__
  *
- * To run a mutation, you first call `useRescheduleScheduledCuratedCorpusItemMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRescheduleScheduledCuratedCorpusItemMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useRescheduleScheduledCorpusItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRescheduleScheduledCorpusItemMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [rescheduleScheduledCuratedCorpusItemMutation, { data, loading, error }] = useRescheduleScheduledCuratedCorpusItemMutation({
+ * const [rescheduleScheduledCorpusItemMutation, { data, loading, error }] = useRescheduleScheduledCorpusItemMutation({
  *   variables: {
  *      externalId: // value for 'externalId'
  *      scheduledDate: // value for 'scheduledDate'
  *   },
  * });
  */
-export function useRescheduleScheduledCuratedCorpusItemMutation(
+export function useRescheduleScheduledCorpusItemMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    RescheduleScheduledCuratedCorpusItemMutation,
-    RescheduleScheduledCuratedCorpusItemMutationVariables
+    RescheduleScheduledCorpusItemMutation,
+    RescheduleScheduledCorpusItemMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    RescheduleScheduledCuratedCorpusItemMutation,
-    RescheduleScheduledCuratedCorpusItemMutationVariables
-  >(RescheduleScheduledCuratedCorpusItemDocument, options);
+    RescheduleScheduledCorpusItemMutation,
+    RescheduleScheduledCorpusItemMutationVariables
+  >(RescheduleScheduledCorpusItemDocument, options);
 }
-export type RescheduleScheduledCuratedCorpusItemMutationHookResult = ReturnType<
-  typeof useRescheduleScheduledCuratedCorpusItemMutation
+export type RescheduleScheduledCorpusItemMutationHookResult = ReturnType<
+  typeof useRescheduleScheduledCorpusItemMutation
 >;
-export type RescheduleScheduledCuratedCorpusItemMutationResult =
-  Apollo.MutationResult<RescheduleScheduledCuratedCorpusItemMutation>;
-export type RescheduleScheduledCuratedCorpusItemMutationOptions =
+export type RescheduleScheduledCorpusItemMutationResult =
+  Apollo.MutationResult<RescheduleScheduledCorpusItemMutation>;
+export type RescheduleScheduledCorpusItemMutationOptions =
   Apollo.BaseMutationOptions<
-    RescheduleScheduledCuratedCorpusItemMutation,
-    RescheduleScheduledCuratedCorpusItemMutationVariables
+    RescheduleScheduledCorpusItemMutation,
+    RescheduleScheduledCorpusItemMutationVariables
   >;
-export const UpdateApprovedCuratedCorpusItemDocument = gql`
-  mutation updateApprovedCuratedCorpusItem(
-    $data: UpdateApprovedCuratedCorpusItemInput!
-  ) {
-    updateApprovedCuratedCorpusItem(data: $data) {
+export const UpdateApprovedCorpusItemDocument = gql`
+  mutation updateApprovedCorpusItem($data: UpdateApprovedCorpusItemInput!) {
+    updateApprovedCorpusItem(data: $data) {
       ...CuratedItemData
     }
   }
   ${CuratedItemDataFragmentDoc}
 `;
-export type UpdateApprovedCuratedCorpusItemMutationFn = Apollo.MutationFunction<
-  UpdateApprovedCuratedCorpusItemMutation,
-  UpdateApprovedCuratedCorpusItemMutationVariables
+export type UpdateApprovedCorpusItemMutationFn = Apollo.MutationFunction<
+  UpdateApprovedCorpusItemMutation,
+  UpdateApprovedCorpusItemMutationVariables
 >;
 
 /**
- * __useUpdateApprovedCuratedCorpusItemMutation__
+ * __useUpdateApprovedCorpusItemMutation__
  *
- * To run a mutation, you first call `useUpdateApprovedCuratedCorpusItemMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateApprovedCuratedCorpusItemMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateApprovedCorpusItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateApprovedCorpusItemMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateApprovedCuratedCorpusItemMutation, { data, loading, error }] = useUpdateApprovedCuratedCorpusItemMutation({
+ * const [updateApprovedCorpusItemMutation, { data, loading, error }] = useUpdateApprovedCorpusItemMutation({
  *   variables: {
  *      data: // value for 'data'
  *   },
  * });
  */
-export function useUpdateApprovedCuratedCorpusItemMutation(
+export function useUpdateApprovedCorpusItemMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    UpdateApprovedCuratedCorpusItemMutation,
-    UpdateApprovedCuratedCorpusItemMutationVariables
+    UpdateApprovedCorpusItemMutation,
+    UpdateApprovedCorpusItemMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    UpdateApprovedCuratedCorpusItemMutation,
-    UpdateApprovedCuratedCorpusItemMutationVariables
-  >(UpdateApprovedCuratedCorpusItemDocument, options);
+    UpdateApprovedCorpusItemMutation,
+    UpdateApprovedCorpusItemMutationVariables
+  >(UpdateApprovedCorpusItemDocument, options);
 }
-export type UpdateApprovedCuratedCorpusItemMutationHookResult = ReturnType<
-  typeof useUpdateApprovedCuratedCorpusItemMutation
+export type UpdateApprovedCorpusItemMutationHookResult = ReturnType<
+  typeof useUpdateApprovedCorpusItemMutation
 >;
-export type UpdateApprovedCuratedCorpusItemMutationResult =
-  Apollo.MutationResult<UpdateApprovedCuratedCorpusItemMutation>;
-export type UpdateApprovedCuratedCorpusItemMutationOptions =
+export type UpdateApprovedCorpusItemMutationResult =
+  Apollo.MutationResult<UpdateApprovedCorpusItemMutation>;
+export type UpdateApprovedCorpusItemMutationOptions =
   Apollo.BaseMutationOptions<
-    UpdateApprovedCuratedCorpusItemMutation,
-    UpdateApprovedCuratedCorpusItemMutationVariables
+    UpdateApprovedCorpusItemMutation,
+    UpdateApprovedCorpusItemMutationVariables
   >;
 export const UpdateCollectionDocument = gql`
   mutation updateCollection(
@@ -4455,7 +4459,7 @@ export const UpdateCollectionDocument = gql`
     $curationCategoryExternalId: String
     $IABParentCategoryExternalId: String
     $IABChildCategoryExternalId: String
-    $language: String!
+    $language: CollectionLanguage!
     $imageUrl: Url
   ) {
     updateCollection(
@@ -5228,61 +5232,60 @@ export type UpdateProspectAsCuratedMutationOptions = Apollo.BaseMutationOptions<
   UpdateProspectAsCuratedMutation,
   UpdateProspectAsCuratedMutationVariables
 >;
-export const UploadApprovedCuratedCorpusItemImageDocument = gql`
-  mutation uploadApprovedCuratedCorpusItemImage($image: Upload!) {
-    uploadApprovedCuratedCorpusItemImage(data: $image) {
+export const UploadApprovedCorpusItemImageDocument = gql`
+  mutation uploadApprovedCorpusItemImage($image: Upload!) {
+    uploadApprovedCorpusItemImage(data: $image) {
       url
     }
   }
 `;
-export type UploadApprovedCuratedCorpusItemImageMutationFn =
-  Apollo.MutationFunction<
-    UploadApprovedCuratedCorpusItemImageMutation,
-    UploadApprovedCuratedCorpusItemImageMutationVariables
-  >;
+export type UploadApprovedCorpusItemImageMutationFn = Apollo.MutationFunction<
+  UploadApprovedCorpusItemImageMutation,
+  UploadApprovedCorpusItemImageMutationVariables
+>;
 
 /**
- * __useUploadApprovedCuratedCorpusItemImageMutation__
+ * __useUploadApprovedCorpusItemImageMutation__
  *
- * To run a mutation, you first call `useUploadApprovedCuratedCorpusItemImageMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUploadApprovedCuratedCorpusItemImageMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUploadApprovedCorpusItemImageMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadApprovedCorpusItemImageMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [uploadApprovedCuratedCorpusItemImageMutation, { data, loading, error }] = useUploadApprovedCuratedCorpusItemImageMutation({
+ * const [uploadApprovedCorpusItemImageMutation, { data, loading, error }] = useUploadApprovedCorpusItemImageMutation({
  *   variables: {
  *      image: // value for 'image'
  *   },
  * });
  */
-export function useUploadApprovedCuratedCorpusItemImageMutation(
+export function useUploadApprovedCorpusItemImageMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    UploadApprovedCuratedCorpusItemImageMutation,
-    UploadApprovedCuratedCorpusItemImageMutationVariables
+    UploadApprovedCorpusItemImageMutation,
+    UploadApprovedCorpusItemImageMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    UploadApprovedCuratedCorpusItemImageMutation,
-    UploadApprovedCuratedCorpusItemImageMutationVariables
-  >(UploadApprovedCuratedCorpusItemImageDocument, options);
+    UploadApprovedCorpusItemImageMutation,
+    UploadApprovedCorpusItemImageMutationVariables
+  >(UploadApprovedCorpusItemImageDocument, options);
 }
-export type UploadApprovedCuratedCorpusItemImageMutationHookResult = ReturnType<
-  typeof useUploadApprovedCuratedCorpusItemImageMutation
+export type UploadApprovedCorpusItemImageMutationHookResult = ReturnType<
+  typeof useUploadApprovedCorpusItemImageMutation
 >;
-export type UploadApprovedCuratedCorpusItemImageMutationResult =
-  Apollo.MutationResult<UploadApprovedCuratedCorpusItemImageMutation>;
-export type UploadApprovedCuratedCorpusItemImageMutationOptions =
+export type UploadApprovedCorpusItemImageMutationResult =
+  Apollo.MutationResult<UploadApprovedCorpusItemImageMutation>;
+export type UploadApprovedCorpusItemImageMutationOptions =
   Apollo.BaseMutationOptions<
-    UploadApprovedCuratedCorpusItemImageMutation,
-    UploadApprovedCuratedCorpusItemImageMutationVariables
+    UploadApprovedCorpusItemImageMutation,
+    UploadApprovedCorpusItemImageMutationVariables
   >;
 export const GetApprovedItemByUrlDocument = gql`
   query getApprovedItemByUrl($url: String!) {
-    getApprovedCuratedCorpusItemByUrl(url: $url) {
+    getApprovedCorpusItemByUrl(url: $url) {
       ...CuratedItemData
     }
   }
@@ -5341,10 +5344,10 @@ export type GetApprovedItemByUrlQueryResult = Apollo.QueryResult<
 >;
 export const GetApprovedItemsDocument = gql`
   query getApprovedItems(
-    $filters: ApprovedCuratedCorpusItemFilter
+    $filters: ApprovedCorpusItemFilter
     $pagination: PaginationInput
   ) {
-    getApprovedCuratedCorpusItems(filters: $filters, pagination: $pagination) {
+    getApprovedCorpusItems(filters: $filters, pagination: $pagination) {
       totalCount
       pageInfo {
         hasNextPage
@@ -5927,9 +5930,7 @@ export const GetInitialCollectionFormDataDocument = gql`
         ...CollectionAuthorData
       }
     }
-    getLanguages {
-      code
-    }
+    getLanguages
     getCurationCategories {
       externalId
       name
@@ -6067,10 +6068,10 @@ export type GetProspectsQueryResult = Apollo.QueryResult<
 >;
 export const GetRejectedItemsDocument = gql`
   query getRejectedItems(
-    $filters: RejectedCuratedCorpusItemFilter
+    $filters: RejectedCorpusItemFilter
     $pagination: PaginationInput
   ) {
-    getRejectedCuratedCorpusItems(filters: $filters, pagination: $pagination) {
+    getRejectedCorpusItems(filters: $filters, pagination: $pagination) {
       totalCount
       pageInfo {
         hasNextPage
@@ -6141,10 +6142,8 @@ export type GetRejectedItemsQueryResult = Apollo.QueryResult<
   GetRejectedItemsQueryVariables
 >;
 export const GetScheduledItemCountsDocument = gql`
-  query getScheduledItemCounts(
-    $filters: ScheduledCuratedCorpusItemsFilterInput!
-  ) {
-    getScheduledCuratedCorpusItems(filters: $filters) {
+  query getScheduledItemCounts($filters: ScheduledCorpusItemsFilterInput!) {
+    getScheduledCorpusItems(filters: $filters) {
       collectionCount
       syndicatedCount
       totalCount
@@ -6203,8 +6202,8 @@ export type GetScheduledItemCountsQueryResult = Apollo.QueryResult<
   GetScheduledItemCountsQueryVariables
 >;
 export const GetScheduledItemsDocument = gql`
-  query getScheduledItems($filters: ScheduledCuratedCorpusItemsFilterInput!) {
-    getScheduledCuratedCorpusItems(filters: $filters) {
+  query getScheduledItems($filters: ScheduledCorpusItemsFilterInput!) {
+    getScheduledCorpusItems(filters: $filters) {
       collectionCount
       syndicatedCount
       totalCount
@@ -6282,7 +6281,7 @@ export const GetScheduledSurfacesForUserDocument = gql`
       guid
       name
       prospectTypes
-      utcOffset
+      ianaTimezone
     }
   }
 `;

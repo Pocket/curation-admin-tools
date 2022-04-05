@@ -1,13 +1,13 @@
 import { gql } from '@apollo/client';
 import { CuratedItemData } from '../fragments/curatedItemData';
 
-export const createScheduledCuratedCorpusItem = gql`
-  mutation createScheduledCuratedCorpusItem(
+export const createScheduledCorpusItem = gql`
+  mutation createScheduledCorpusItem(
     $approvedItemExternalId: ID!
     $scheduledSurfaceGuid: ID!
     $scheduledDate: Date!
   ) {
-    createScheduledCuratedCorpusItem(
+    createScheduledCorpusItem(
       data: {
         approvedItemExternalId: $approvedItemExternalId
         scheduledSurfaceGuid: $scheduledSurfaceGuid

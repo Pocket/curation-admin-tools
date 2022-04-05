@@ -1,14 +1,14 @@
 import React from 'react';
 import { Modal } from '../../../_shared/components';
 import { Box, Grid, Typography } from '@material-ui/core';
-import { ApprovedCuratedCorpusItem } from '../../../api/generatedTypes';
+import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import { ApprovedItemForm } from '../ApprovedItemForm/ApprovedItemForm';
 import { ApprovedItemFromProspect } from '../../helpers/definitions';
 
 interface ApprovedItemModalProps {
-  approvedItem: ApprovedCuratedCorpusItem | ApprovedItemFromProspect;
+  approvedItem: ApprovedCorpusItem | ApprovedItemFromProspect;
   isOpen: boolean;
   heading?: string;
   showItemTitle?: boolean;

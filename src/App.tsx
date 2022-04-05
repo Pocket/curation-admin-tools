@@ -52,7 +52,7 @@ function App(): JSX.Element {
                     <CuratedCorpusLandingPage />
                   </Route>
                 )}
-                <Route path="*" component={PageNotFound} />
+                <Route component={PageNotFound} />
               </Switch>
             </>
           </BrowserRouter>

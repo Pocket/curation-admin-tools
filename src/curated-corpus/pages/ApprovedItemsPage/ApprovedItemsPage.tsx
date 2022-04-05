@@ -3,14 +3,14 @@ import { Grid, Typography } from '@material-ui/core';
 import { FormikHelpers, FormikValues } from 'formik';
 import { config } from '../../../config';
 import {
-  ApprovedCuratedCorpusItem,
-  ApprovedCuratedCorpusItemEdge,
-  ApprovedCuratedCorpusItemFilter,
-  CreateScheduledCuratedCorpusItemInput,
-  useCreateScheduledCuratedCorpusItemMutation,
+  ApprovedCorpusItem,
+  ApprovedCorpusItemEdge,
+  ApprovedCorpusItemFilter,
+  CreateScheduledCorpusItemInput,
+  useCreateScheduledCorpusItemMutation,
   useGetApprovedItemsLazyQuery,
   useRejectApprovedItemMutation,
-  useUpdateApprovedCuratedCorpusItemMutation,
+  useUpdateApprovedCorpusItemMutation,
 } from '../../../api/generatedTypes';
 import { HandleApiResponse } from '../../../_shared/components';
 import {
@@ -27,7 +27,7 @@ import { DateTime } from 'luxon';
 export const ApprovedItemsPage: React.FC = (): JSX.Element => {
   // Get the usual API response vars and a helper method to retrieve data
   // that can be used inside hooks.
-  const [getApprovedCuratedCorpusItems, { loading, error, data, refetch }] =
+  const [getApprovedCorpusItems, { loading, error, data, refetch }] =
     useGetApprovedItemsLazyQuery(
       // We need to make sure search results are never served from the cache.
       { fetchPolicy: 'no-cache', notifyOnNetworkStatusChange: true }
@@ -39,7 +39,7 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
 
   // Save the filters in a state variable to be able to use them when paginating
   // through results.
-  const [filters, setFilters] = useState<ApprovedCuratedCorpusItemFilter>({});
+  const [filters, setFilters] = useState<ApprovedCorpusItemFilter>({});
 
   // Save the cursors returned with every request to be able to use them when
   // paginating through results.
@@ -49,7 +49,7 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
   // On the initial page load, load most recently added Curated Items -
   // the first page of results, no filters applied.
   useEffect(() => {
-    getApprovedCuratedCorpusItems({
+    getApprovedCorpusItems({
       variables: {
         pagination: { first: config.pagination.curatedItemsPerPage },
       },
@@ -59,8 +59,8 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
   // Set the cursors once data is returned by the API.
   useEffect(() => {
     if (data) {
-      setAfter(data.getApprovedCuratedCorpusItems.pageInfo.endCursor);
-      setBefore(data.getApprovedCuratedCorpusItems.pageInfo.startCursor);
+      setAfter(data.getApprovedCorpusItems.pageInfo.endCursor);
+      setBefore(data.getApprovedCorpusItems.pageInfo.startCursor);
     }
   }, [data]);
 
@@ -84,7 +84,7 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
     }
 
     // Execute the search.
-    getApprovedCuratedCorpusItems({
+    getApprovedCorpusItems({
       variables: {
         pagination: { first: config.pagination.curatedItemsPerPage },
         filters,
@@ -101,7 +101,7 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
    * Results are always retrieved from the API.
    */
   const loadNext = () => {
-    getApprovedCuratedCorpusItems({
+    getApprovedCorpusItems({
       variables: {
         pagination: { first: config.pagination.curatedItemsPerPage, after },
         filters,
@@ -116,7 +116,7 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
    * Results are always retrieved from the API.
    */
   const loadPrevious = () => {
-    getApprovedCuratedCorpusItems({
+    getApprovedCorpusItems({
       variables: {
         pagination: { last: config.pagination.curatedItemsPerPage, before },
         filters,
@@ -142,7 +142,7 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
    * Set the current Approved Item to be worked on (e.g., edited or scheduled).
    */
   const [currentItem, setCurrentItem] = useState<
-    Omit<ApprovedCuratedCorpusItem, '__typename'> | undefined
+    Omit<ApprovedCorpusItem, '__typename'> | undefined
   >(undefined);
 
   // 1. Prepare the "reject curated item" mutation
@@ -178,14 +178,14 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
   };
 
   // 1. Prepare the "schedule curated item" mutation
-  const [scheduleCuratedItem] = useCreateScheduledCuratedCorpusItemMutation();
+  const [scheduleCuratedItem] = useCreateScheduledCorpusItemMutation();
   // 2. Schedule the curated item when the user saves a scheduling request
   const onScheduleSave = (
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ): void => {
     // Set out all the variables we need to pass to the mutation
-    const variables: CreateScheduledCuratedCorpusItemInput = {
+    const variables: CreateScheduledCorpusItemInput = {
       approvedItemExternalId: currentItem?.externalId!,
       scheduledSurfaceGuid: values.scheduledSurfaceGuid,
       scheduledDate: values.scheduledDate.toISODate(),
@@ -209,7 +209,7 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
   };
 
   // Mutation for updating an approved item
-  const [updateApprovedItem] = useUpdateApprovedCuratedCorpusItemMutation();
+  const [updateApprovedItem] = useUpdateApprovedCorpusItemMutation();
 
   /**
    * Executed on form submission
@@ -218,21 +218,16 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ): void => {
-    // Mapping these values to match the format that mutation/DB accepts
-    const languageCode: string = values.language === 'English' ? 'en' : 'de';
-    const curationStatus: string = values.curationStatus.toUpperCase();
-    const topic: string = values.topic.toUpperCase();
-
     const variables = {
       data: {
         externalId: currentItem?.externalId,
         title: values.title,
         excerpt: values.excerpt,
-        status: curationStatus,
-        language: languageCode,
+        status: values.curationStatus,
+        language: values.language,
         publisher: values.publisher,
         imageUrl: values.imageUrl,
-        topic: topic,
+        topic: values.topic,
         isTimeSensitive: values.timeSensitive,
       },
     };
@@ -243,7 +238,7 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
       { variables },
       `Curated item "${currentItem?.title.substring(
         0,
-        50
+        40
       )}..." successfully updated`,
       () => {
         toggleEditModal();
@@ -298,13 +293,13 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
         {data && (
           <Grid item xs={12}>
             <Typography>
-              Found {data.getApprovedCuratedCorpusItems.totalCount} result(s).
+              Found {data.getApprovedCorpusItems.totalCount} result(s).
             </Typography>
           </Grid>
         )}
         {data &&
-          data.getApprovedCuratedCorpusItems.edges.map(
-            (edge: ApprovedCuratedCorpusItemEdge) => {
+          data.getApprovedCorpusItems.edges.map(
+            (edge: ApprovedCorpusItemEdge) => {
               return (
                 <Grid
                   item
@@ -337,11 +332,9 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
 
       {data && (
         <NextPrevPagination
-          hasNextPage={data.getApprovedCuratedCorpusItems.pageInfo.hasNextPage}
+          hasNextPage={data.getApprovedCorpusItems.pageInfo.hasNextPage}
           loadNext={loadNext}
-          hasPreviousPage={
-            data.getApprovedCuratedCorpusItems.pageInfo.hasPreviousPage
-          }
+          hasPreviousPage={data.getApprovedCorpusItems.pageInfo.hasPreviousPage}
           loadPrevious={loadPrevious}
         />
       )}

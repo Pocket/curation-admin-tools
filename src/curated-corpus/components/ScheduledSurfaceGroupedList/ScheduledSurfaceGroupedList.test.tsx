@@ -3,13 +3,13 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import {
   CuratedStatus,
-  ScheduledCuratedCorpusItemsResult,
+  ScheduledCorpusItemsResult,
 } from '../../../api/generatedTypes';
 
 import { ScheduledSurfaceGroupedList } from './ScheduledSurfaceGroupedList';
 
 describe('The ScheduledSurfaceGroupedList component', () => {
-  let data: ScheduledCuratedCorpusItemsResult;
+  let data: ScheduledCorpusItemsResult;
 
   beforeEach(() => {
     const item = {

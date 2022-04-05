@@ -13,7 +13,7 @@ import LanguageIcon from '@material-ui/icons/Language';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import CheckIcon from '@material-ui/icons/Check';
 import { useStyles } from './ExistingProspectCard.styles';
-import { ApprovedCuratedCorpusItem } from '../../../api/generatedTypes';
+import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { Button } from '../../../_shared/components';
 import { getDisplayTopic } from '../../helpers/helperFunctions';
 
@@ -21,7 +21,7 @@ interface ExistingProspectCardProps {
   /**
    * An object with everything approved curated item-related in it.
    */
-  item: ApprovedCuratedCorpusItem;
+  item: ApprovedCorpusItem;
 
   onSchedule: VoidFunction;
 }

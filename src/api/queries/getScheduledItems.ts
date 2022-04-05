@@ -2,8 +2,8 @@ import { gql } from '@apollo/client';
 import { CuratedItemData } from '../fragments/curatedItemData';
 
 export const getScheduledItems = gql`
-  query getScheduledItems($filters: ScheduledCuratedCorpusItemsFilterInput!) {
-    getScheduledCuratedCorpusItems(filters: $filters) {
+  query getScheduledItems($filters: ScheduledCorpusItemsFilterInput!) {
+    getScheduledCorpusItems(filters: $filters) {
       collectionCount
       syndicatedCount
       totalCount

@@ -1,8 +1,10 @@
+import { DateTime } from 'luxon';
 import { FileWithPath } from 'react-dropzone';
 import {
   CorpusItemSource,
   CorpusLanguage,
   CuratedStatus,
+  GetScheduledSurfacesForUserQuery,
   Maybe,
   Prospect,
   UrlMetadata,
@@ -126,7 +128,7 @@ export const downloadAndUploadApprovedItemImageToS3 = async (
     throw new Error('Failed to upload image, please try again');
   }
 
-  return data?.uploadApprovedCuratedCorpusItemImage.url;
+  return data?.uploadApprovedCorpusItemImage.url;
 };
 
 /**
@@ -173,4 +175,26 @@ export const getDisplayTopic = (
   })?.name;
 
   return displayTopic ? displayTopic : 'N/A';
+};
+
+export const getLocalDateTimeForGuid = (
+  guidCode: string,
+  scheduledSurfacesForUser: GetScheduledSurfacesForUserQuery
+) => {
+  const guid = scheduledSurfacesForUser.getScheduledSurfacesForUser.find(
+    (item) => item.guid === guidCode
+  );
+
+  if (!guid) {
+    return;
+  }
+
+  const localDateTime = DateTime.local().setZone(guid.ianaTimezone);
+
+  // the Luxon library does not provide us a straightforward way to format the date the way we want
+  // i.e August 28, 2022, 11:59 pm. That is why you can see we are concatenating two different formats
+  // url for reference https://moment.github.io/luxon/#/formatting?id=table-of-tokens
+  return localDateTime
+    .toFormat('DDD')
+    .concat(', ', localDateTime.toFormat('t'));
 };

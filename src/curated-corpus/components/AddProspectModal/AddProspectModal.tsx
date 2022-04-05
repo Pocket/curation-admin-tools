@@ -1,9 +1,6 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
-import {
-  ApprovedCuratedCorpusItem,
-  Prospect,
-} from '../../../api/generatedTypes';
+import { ApprovedCorpusItem, Prospect } from '../../../api/generatedTypes';
 import { AddProspectFormConnector } from '..';
 import { Modal } from '../../../_shared/components';
 
@@ -40,7 +37,7 @@ interface AddProspectModalProps {
    *
    * @param item
    */
-  setApprovedItem: (item: ApprovedCuratedCorpusItem) => void;
+  setApprovedItem: (item: ApprovedCorpusItem) => void;
 
   /**
    * Passing in the setter for the state variable isRecommendation in this component's parent:

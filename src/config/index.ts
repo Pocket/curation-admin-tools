@@ -54,4 +54,5 @@ export const config = {
     // (we use the default dash: -)
     strict: true,
   },
+  isProduction,
 };

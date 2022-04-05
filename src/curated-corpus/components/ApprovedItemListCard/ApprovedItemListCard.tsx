@@ -15,24 +15,44 @@ import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import LanguageIcon from '@material-ui/icons/Language';
 import { useStyles } from './ApprovedItemListCard.styles';
-import {
-  ApprovedCuratedCorpusItem,
-  CuratedStatus,
-} from '../../../api/generatedTypes';
+import { ApprovedCorpusItem, CuratedStatus } from '../../../api/generatedTypes';
 import { getDisplayTopic } from '../../helpers/helperFunctions';
 
 interface ApprovedItemListCardProps {
   /**
    * An object with everything approved curated item-related in it.
    */
-  item: ApprovedCuratedCorpusItem;
+  item: ApprovedCorpusItem;
+
+  /**
+   * Optional boolean prop to show/hide the language icon
+   */
+  showLanguageIcon?: boolean;
+
+  /**
+   * Optional boolean prop to show/hide the "Rec." overlay
+   */
+  showRecommendedOverlay?: boolean;
 }
 
 export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
   props
 ): JSX.Element => {
   const classes = useStyles();
-  const { item } = props;
+  const {
+    item,
+    showLanguageIcon = true,
+    showRecommendedOverlay = true,
+  } = props;
+
+  const isRecommendedOverlayVisible =
+    showRecommendedOverlay && item.status === CuratedStatus.Recommendation;
+
+  // prefixing the item's imageUrl with the pocket-image-cache url to format it to a size of 600x300
+  const formattedImageUrl =
+    `https://pocket-image-cache.com/600x300/filters:format(jpg):extract_focal()/`.concat(
+      item.imageUrl
+    );
 
   return (
     <>
@@ -40,13 +60,13 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
         component="img"
         src={
           item.imageUrl && item.imageUrl.length > 0
-            ? item.imageUrl
+            ? formattedImageUrl
             : '/placeholders/collectionSmall.svg'
         }
         alt={item.title}
       />
 
-      {item.status === CuratedStatus.Recommendation && (
+      {isRecommendedOverlayVisible && (
         <div className={classes.imageOverlay}>Rec</div>
       )}
 
@@ -106,12 +126,14 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
             primary={getDisplayTopic(item.topic)}
           />
         </ListItem>
-        <ListItem>
-          <ListItemIcon className={classes.listItemIcon}>
-            <LanguageIcon />
-          </ListItemIcon>
-          <ListItemText primary={item.language.toUpperCase()} />
-        </ListItem>
+        {showLanguageIcon && (
+          <ListItem>
+            <ListItemIcon className={classes.listItemIcon}>
+              <LanguageIcon />
+            </ListItemIcon>
+            <ListItemText primary={item.language.toUpperCase()} />
+          </ListItem>
+        )}
       </List>
     </>
   );

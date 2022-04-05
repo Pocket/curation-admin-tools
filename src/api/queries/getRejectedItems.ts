@@ -6,10 +6,10 @@ import { RejectedItemData } from '../fragments/rejectedItemData';
  */
 export const getRejectedItems = gql`
   query getRejectedItems(
-    $filters: RejectedCuratedCorpusItemFilter
+    $filters: RejectedCorpusItemFilter
     $pagination: PaginationInput
   ) {
-    getRejectedCuratedCorpusItems(filters: $filters, pagination: $pagination) {
+    getRejectedCorpusItems(filters: $filters, pagination: $pagination) {
       totalCount
       pageInfo {
         hasNextPage

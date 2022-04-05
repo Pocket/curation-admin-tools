@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FormikHelpers, FormikValues } from 'formik';
 import {
-  ApprovedCuratedCorpusItem,
+  ApprovedCorpusItem,
   Prospect,
   useGetApprovedItemByUrlLazyQuery,
   useGetUrlMetadataLazyQuery,
@@ -39,7 +39,7 @@ interface AddProspectFormConnectorProps {
    * Another setter from the Prospecting page that holds the approved item that's
    * just been saved and is hanging around for optional scheduling.
    */
-  setApprovedItem: (item: ApprovedCuratedCorpusItem) => void;
+  setApprovedItem: (item: ApprovedCorpusItem) => void;
 
   /**
    * Sets the state variable isRecommendation in the ProspectingPage component
@@ -109,7 +109,7 @@ export const AddProspectFormConnector: React.FC<
     notifyOnNetworkStatusChange: true,
     fetchPolicy: 'no-cache',
     onCompleted: (data) => {
-      const approvedItem = data?.getApprovedCuratedCorpusItemByUrl;
+      const approvedItem = data?.getApprovedCorpusItemByUrl;
 
       // Let the curators skip straight to the scheduling screen if the manually added
       // prospect is in the corpus already.

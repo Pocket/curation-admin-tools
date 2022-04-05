@@ -6,7 +6,7 @@ import {
   SharedFormButtonsProps,
 } from '../../../_shared/components';
 import {
-  ScheduledCuratedCorpusItemsFilterInput,
+  ScheduledCorpusItemsFilterInput,
   useGetScheduledItemCountsLazyQuery,
   useGetScheduledSurfacesForUserQuery,
 } from '../../../api/generatedTypes';
@@ -82,15 +82,14 @@ export const ScheduleItemFormConnector: React.FC<
       onCompleted: (data) => {
         // If there's something already scheduled for the chosen date,
         // let the user know.
-        if (data.getScheduledCuratedCorpusItems.length > 0) {
-          const totalCount = data.getScheduledCuratedCorpusItems[0].totalCount;
+        if (data.getScheduledCorpusItems.length > 0) {
+          const totalCount = data.getScheduledCorpusItems[0].totalCount;
 
           setLookupCopy(
             <>
               Already scheduled: {totalCount}{' '}
               {totalCount === 1 ? 'story' : 'stories'} (
-              {data.getScheduledCuratedCorpusItems[0].syndicatedCount}{' '}
-              syndicated).
+              {data.getScheduledCorpusItems[0].syndicatedCount} syndicated).
             </>
           );
         } else {
@@ -117,7 +116,7 @@ export const ScheduleItemFormConnector: React.FC<
       // Look up any other scheduled items for this date + scheduled surface combination.
       // Start with the filters. Note `startDate` and `endDate` is the same as we're
       // interested in single day data only.
-      const filters: ScheduledCuratedCorpusItemsFilterInput = {
+      const filters: ScheduledCorpusItemsFilterInput = {
         scheduledSurfaceGuid,
         startDate: date?.toFormat('yyyy-MM-dd'),
         endDate: date?.toFormat('yyyy-MM-dd'),

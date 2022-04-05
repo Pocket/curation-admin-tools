@@ -16,7 +16,7 @@ export const updateCollection = gql`
     $curationCategoryExternalId: String
     $IABParentCategoryExternalId: String
     $IABChildCategoryExternalId: String
-    $language: String!
+    $language: CollectionLanguage!
     $imageUrl: Url
   ) {
     updateCollection(

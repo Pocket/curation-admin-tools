@@ -6,7 +6,7 @@ import { CuratedItemData } from '../fragments/curatedItemData';
  */
 export const getApprovedItemByUrl = gql`
   query getApprovedItemByUrl($url: String!) {
-    getApprovedCuratedCorpusItemByUrl(url: $url) {
+    getApprovedCorpusItemByUrl(url: $url) {
       ...CuratedItemData
     }
   }
