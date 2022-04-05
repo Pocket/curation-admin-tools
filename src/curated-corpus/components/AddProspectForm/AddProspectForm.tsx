@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Grid, LinearProgress } from '@material-ui/core';
+import { Grid, LinearProgress } from '@material-ui/core';
 
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import {
@@ -16,6 +16,9 @@ interface AddProspectFormProps {
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ) => void | Promise<any>;
+
+  // show/hide the loading bar on submissions
+  isLoaderShowing: boolean;
 }
 
 /**
@@ -28,7 +31,7 @@ export const AddProspectForm: React.FC<
   const classes = useStyles();
 
   // de-structure props
-  const { onCancel, onSubmit } = props;
+  const { onCancel, onSubmit, isLoaderShowing } = props;
 
   // set up formik object for this form
   const formik = useFormik({
@@ -42,34 +45,26 @@ export const AddProspectForm: React.FC<
   });
 
   return (
-    <>
-      <form
-        name="add-prospect-form"
-        onSubmit={formik.handleSubmit}
-        className={classes.root}
-      >
-        <Grid container>
-          <Grid item xs={12}>
-            <FormikTextField
-              id="itemUrl"
-              label="Item URL"
-              fieldProps={formik.getFieldProps('itemUrl')}
-              fieldMeta={formik.getFieldMeta('itemUrl')}
-              autoFocus
-            />
-
-            <SharedFormButtons onCancel={onCancel} />
-          </Grid>
-        </Grid>
-      </form>
-
-      {formik.isSubmitting && (
+    <form
+      name="add-prospect-form"
+      onSubmit={formik.handleSubmit}
+      className={classes.root}
+    >
+      <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Box mb={3}>
-            <LinearProgress />
-          </Box>
+          <FormikTextField
+            id="itemUrl"
+            label="Item URL"
+            fieldProps={formik.getFieldProps('itemUrl')}
+            fieldMeta={formik.getFieldMeta('itemUrl')}
+            autoFocus
+          />
         </Grid>
-      )}
-    </>
+        <Grid item xs={12}>
+          {isLoaderShowing && <LinearProgress />}
+          <SharedFormButtons onCancel={onCancel} />
+        </Grid>
+      </Grid>
+    </form>
   );
 };
