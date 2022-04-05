@@ -63,6 +63,8 @@ export const AddProspectFormConnector: React.FC<
   const [itemUrl, setItemUrl] = useState<string>('');
 
   // state variable to show/hide the loading bar in the AddProspectForm component when submitting
+  // this is against our current pattern of using the formik.isSubmitting in the form component itself
+  // to show a loading indicator. After a lot of debugging, we can't figure out why that way doesn't work hence resorting to this
   const [isLoaderShowing, setIsLoaderShowing] = useState<boolean>(false);
 
   // set up some hooks
