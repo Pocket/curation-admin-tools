@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid, LinearProgress } from '@material-ui/core';
 
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import {
@@ -17,7 +17,8 @@ interface AddProspectFormProps {
     formikHelpers: FormikHelpers<any>
   ) => void | Promise<any>;
 
-  setIsLoaderShowing: (isShowing: boolean) => void;
+  // show/hide the loading bar on submissions
+  isLoaderShowing: boolean;
 }
 
 /**
@@ -30,7 +31,7 @@ export const AddProspectForm: React.FC<
   const classes = useStyles();
 
   // de-structure props
-  const { onCancel, onSubmit, setIsLoaderShowing } = props;
+  const { onCancel, onSubmit, isLoaderShowing } = props;
 
   // set up formik object for this form
   const formik = useFormik({
@@ -43,29 +44,27 @@ export const AddProspectForm: React.FC<
     onSubmit,
   });
 
-  formik.isSubmitting && setIsLoaderShowing(true);
-
   return (
-    <>
-      <form
-        name="add-prospect-form"
-        onSubmit={formik.handleSubmit}
-        className={classes.root}
-      >
-        <Grid container>
-          <Grid item xs={12}>
-            <FormikTextField
-              id="itemUrl"
-              label="Item URL"
-              fieldProps={formik.getFieldProps('itemUrl')}
-              fieldMeta={formik.getFieldMeta('itemUrl')}
-              autoFocus
-            />
-
-            <SharedFormButtons onCancel={onCancel} />
-          </Grid>
+    <form
+      name="add-prospect-form"
+      onSubmit={formik.handleSubmit}
+      className={classes.root}
+    >
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <FormikTextField
+            id="itemUrl"
+            label="Item URL"
+            fieldProps={formik.getFieldProps('itemUrl')}
+            fieldMeta={formik.getFieldMeta('itemUrl')}
+            autoFocus
+          />
         </Grid>
-      </form>
-    </>
+        <Grid item xs={12}>
+          {isLoaderShowing && <LinearProgress />}
+          <SharedFormButtons onCancel={onCancel} />
+        </Grid>
+      </Grid>
+    </form>
   );
 };

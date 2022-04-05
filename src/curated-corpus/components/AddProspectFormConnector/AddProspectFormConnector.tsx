@@ -40,8 +40,6 @@ interface AddProspectFormConnectorProps {
    * We need to call this to be able to set the hidden Source field to Manual in the approved item form
    */
   setIsManualSubmission: (isManual: boolean) => void;
-
-  setIsLoaderShowing: (isShowing: boolean) => void;
 }
 
 /**
@@ -59,11 +57,13 @@ export const AddProspectFormConnector: React.FC<
     setCurrentProspect,
     setIsRecommendation,
     setIsManualSubmission,
-    setIsLoaderShowing,
   } = props;
 
   // state variable to store the itemUrl field from the form
   const [itemUrl, setItemUrl] = useState<string>('');
+
+  // state variable to show/hide the loading bar in the AddProspectForm component when submitting
+  const [isLoaderShowing, setIsLoaderShowing] = useState<boolean>(false);
 
   // set up some hooks
   const { showNotification } = useNotifications();
@@ -86,6 +86,9 @@ export const AddProspectFormConnector: React.FC<
       },
     });
 
+    // show the loading bar
+    setIsLoaderShowing(true);
+
     formikHelpers.resetForm();
   };
 
@@ -99,6 +102,9 @@ export const AddProspectFormConnector: React.FC<
       // show error toast if the url exists already
       if (approvedItem) {
         showNotification('This URL already exists in the Corpus', 'error');
+
+        // hide the loading bar after this failed submission
+        setIsLoaderShowing(false);
         return;
       }
 
@@ -140,12 +146,12 @@ export const AddProspectFormConnector: React.FC<
       toggleApprovedItemModal();
     },
   });
-  console.log('***** CONNECTOR');
+
   return (
     <AddProspectForm
       onCancel={toggleModal}
       onSubmit={onSubmit}
-      setIsLoaderShowing={setIsLoaderShowing}
+      isLoaderShowing={isLoaderShowing}
     />
   );
 };

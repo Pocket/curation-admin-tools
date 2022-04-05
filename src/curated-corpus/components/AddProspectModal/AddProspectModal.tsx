@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Grid, LinearProgress } from '@material-ui/core';
+import React from 'react';
+import { Grid } from '@material-ui/core';
 import { Prospect } from '../../../api/generatedTypes';
 import { AddProspectFormConnector } from '..';
 import { Modal } from '../../../_shared/components';
@@ -57,8 +57,6 @@ export const AddProspectModal: React.FC<AddProspectModalProps> = (
     toggleApprovedItemModal,
   } = props;
 
-  const [isLoaderShowing, setIsLoaderShowing] = useState<boolean>(false);
-
   return (
     <Modal open={isOpen} handleClose={toggleModal}>
       <Grid container direction="column">
@@ -72,10 +70,8 @@ export const AddProspectModal: React.FC<AddProspectModalProps> = (
             setCurrentProspect={setCurrentProspect}
             setIsRecommendation={setIsRecommendation}
             setIsManualSubmission={setIsManualSubmission}
-            setIsLoaderShowing={setIsLoaderShowing}
           />
         </Grid>
-        {isLoaderShowing && <LinearProgress />}
       </Grid>
     </Modal>
   );
