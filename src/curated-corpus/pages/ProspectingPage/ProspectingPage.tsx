@@ -8,6 +8,7 @@ import { HandleApiResponse } from '../../../_shared/components';
 import {
   AddProspectModal,
   ApprovedItemModal,
+  ExistingProspectCard,
   ProspectListCard,
   RefreshProspectsModal,
   RejectItemModal,
@@ -113,6 +114,10 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     // Update the split button to reflect which ScheduledSurface the user is now on.
     setCurrentScheduledSurfaceGuid(option.code);
 
+    // Reset the `isManualSubmission` state var as the user has moved to a different
+    // scheduled surface
+    setIsManualSubmission(false);
+
     // Get the relevant Scheduled Surface object out of the list of all surfaces
     // we fetched earlier for the user.
     const currentScheduledSurface =
@@ -175,6 +180,14 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
    * Set the boolean state variable to track if the prospect is manual
    */
   const [isManualSubmission, setIsManualSubmission] = useState<boolean>(false);
+
+  /**
+   * Set a state variable to track whether the Scheduled Surface dropdown on the
+   * "Optional: Schedule this prospect" form should be locked to the current
+   * scheduled surface.
+   */
+  const [disableScheduledSurface, setDisableScheduledSurface] =
+    useState<boolean>(false);
 
   /**
    * Keep track of whether the "Reject this prospect" modal is open or not.
@@ -390,20 +403,25 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
    * common stuff we (may) need to do after creating an approved item
    *
    * @param approvedItem
-   * @param filterProspects (boolean): whether or not we need to filter the list of prospects on the screen
+   * @param isRegularProspect
+   * and also
    */
   const postCreateApprovedItem = (
     approvedItem: ApprovedCorpusItem,
-    filterProspects: boolean
+    isRegularProspect: boolean
   ): void => {
     toggleApprovedItemModal();
 
     if (approvedItem.status === CuratedStatus.Recommendation) {
       setApprovedItem(approvedItem);
-      toggleScheduleModal();
+      if (isRegularProspect) {
+        toggleScheduleModalAndDisableScheduledSurface();
+      } else {
+        toggleScheduleModalAndEnableScheduledSurface();
+      }
     }
 
-    if (filterProspects) {
+    if (isRegularProspect) {
       // Remove the newly curated item from the list of prospects displayed
       // on the page.
       setProspects(
@@ -474,6 +492,20 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         // Hide the loading indicator
         formikHelpers.setSubmitting(false);
 
+        // In case this prospect already existed in the corpus database,
+        // mark it as curated at this point
+        if (approvedItem?.url === currentProspect?.url) {
+          runMutation(updateProspectAsCurated, {
+            variables: { prospectId: currentProspect?.id },
+          });
+        }
+
+        // Remove the previously curated item from the list of prospects displayed
+        // on the page.
+        setProspects(
+          prospects.filter((prospect) => prospect.id !== currentProspect?.id!)
+        );
+
         // Hide the Schedule Item Form modal
         toggleScheduleModal();
 
@@ -495,6 +527,14 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
 
   // check if no prospects are returned in the api call
   const showEmptyState = prospects && !loading && prospects.length === 0;
+
+  const toggleScheduleModalAndDisableScheduledSurface = () => {
+    setDisableScheduledSurface(true), toggleScheduleModal();
+  };
+
+  const toggleScheduleModalAndEnableScheduledSurface = () => {
+    setDisableScheduledSurface(false), toggleScheduleModal();
+  };
 
   return (
     <>
@@ -535,7 +575,9 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         isOpen={addProspectModalOpen}
         toggleModal={toggleAddProspectModal}
         toggleApprovedItemModal={toggleApprovedItemModal}
+        toggleScheduleItemModal={toggleScheduleModalAndEnableScheduledSurface}
         setCurrentProspect={setCurrentProspect}
+        setApprovedItem={setApprovedItem}
         setIsRecommendation={setIsRecommendation}
         setIsManualSubmission={setIsManualSubmission}
       />
@@ -545,13 +587,10 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
           approvedItem={approvedItem}
           headingCopy="Optional: schedule this item"
           isOpen={scheduleModalOpen}
-          // only pre-select the sheduled surface if the item came from a prospect
-          // if it was manually added, allow the user to select the surface
-          scheduledSurfaceGuid={
-            approvedItem.prospectId ? currentScheduledSurfaceGuid : undefined
-          }
+          scheduledSurfaceGuid={currentScheduledSurfaceGuid}
+          disableScheduledSurface={disableScheduledSurface}
           onSave={onScheduleSave}
-          toggleModal={toggleScheduleModal}
+          toggleModal={toggleScheduleModalAndDisableScheduledSurface}
         />
       )}
 
@@ -613,6 +652,19 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
 
           {prospects &&
             prospects.map((prospect) => {
+              if (prospect.approvedCorpusItem) {
+                return (
+                  <ExistingProspectCard
+                    key={prospect.id}
+                    item={prospect.approvedCorpusItem}
+                    onSchedule={() => {
+                      setCurrentProspect(prospect);
+                      setApprovedItem(prospect.approvedCorpusItem!);
+                      toggleScheduleModalAndDisableScheduledSurface();
+                    }}
+                  />
+                );
+              }
               return (
                 <ProspectListCard
                   key={prospect.id}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Grid } from '@material-ui/core';
-import { Prospect } from '../../../api/generatedTypes';
+import { ApprovedCorpusItem, Prospect } from '../../../api/generatedTypes';
 import { AddProspectFormConnector } from '..';
 import { Modal } from '../../../_shared/components';
 
@@ -21,11 +21,23 @@ interface AddProspectModalProps {
   toggleApprovedItemModal: VoidFunction;
 
   /**
+   * Toggle the modal that contains the optional scheduling form as necessary.
+   */
+  toggleScheduleItemModal: VoidFunction;
+
+  /**
    * A setter for the current prospect to be worked on. This is passed
    * through straight to the AddProspectFormConnector component where you will
    * find a detailed explanation why it's needed there.
    */
-  setCurrentProspect: (currentProspect: Prospect) => void;
+  setCurrentProspect: (prospect: Prospect) => void;
+
+  /**
+   * A setter for the current approved item to be worked on.
+   *
+   * @param item
+   */
+  setApprovedItem: (item: ApprovedCorpusItem) => void;
 
   /**
    * Passing in the setter for the state variable isRecommendation in this component's parent:
@@ -51,10 +63,12 @@ export const AddProspectModal: React.FC<AddProspectModalProps> = (
   const {
     isOpen,
     toggleModal,
-    setCurrentProspect,
-    setIsRecommendation,
-    setIsManualSubmission,
     toggleApprovedItemModal,
+    toggleScheduleItemModal,
+    setCurrentProspect,
+    setApprovedItem,
+    setIsManualSubmission,
+    setIsRecommendation,
   } = props;
 
   return (
@@ -67,7 +81,9 @@ export const AddProspectModal: React.FC<AddProspectModalProps> = (
           <AddProspectFormConnector
             toggleModal={toggleModal}
             toggleApprovedItemModal={toggleApprovedItemModal}
+            toggleScheduleItemModal={toggleScheduleItemModal}
             setCurrentProspect={setCurrentProspect}
+            setApprovedItem={setApprovedItem}
             setIsRecommendation={setIsRecommendation}
             setIsManualSubmission={setIsManualSubmission}
           />

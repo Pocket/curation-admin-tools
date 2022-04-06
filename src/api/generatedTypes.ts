@@ -20,20 +20,12 @@ export type Scalars = {
   Int: number;
   Float: number;
   _FieldSet: any;
-  /** A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
+  /** A date in the YYYY-MM-DD format. */
   Date: any;
-  /** A String representing a date in the format of `yyyy-MM-dd HH:mm:ss` */
   DateString: any;
-  /**
-   * A string formatted with CommonMark markdown,
-   * plus the strikethrough extension from GFM.
-   * This Scalar is for documentation purposes; otherwise
-   * not treated differently from String in the API.
-   */
   Markdown: any;
-  /** The `Upload` scalar type represents a file upload. */
   Upload: any;
-  /** A URL - usually, for an interesting story on the internet that's worth saving to Pocket. */
+  /** These are all just renamed strings right now */
   Url: any;
 };
 
@@ -340,6 +332,7 @@ export enum CorpusItemSource {
   Prospect = 'PROSPECT',
 }
 
+/** Valid language codes for curated corpus items. */
 export enum CorpusLanguage {
   /** German */
   De = 'DE',
@@ -1763,6 +1756,27 @@ export type ProspectDataFragment = {
   saveCount?: number | null;
   isSyndicated?: boolean | null;
   isCollection?: boolean | null;
+  approvedCorpusItem?: {
+    __typename?: 'ApprovedCorpusItem';
+    externalId: string;
+    prospectId?: string | null;
+    title: string;
+    language: CorpusLanguage;
+    publisher: string;
+    url: any;
+    imageUrl: any;
+    excerpt: string;
+    status: CuratedStatus;
+    source: CorpusItemSource;
+    topic: string;
+    isCollection: boolean;
+    isTimeSensitive: boolean;
+    isSyndicated: boolean;
+    createdBy: string;
+    createdAt: number;
+    updatedBy?: string | null;
+    updatedAt: number;
+  } | null;
 };
 
 export type RejectedItemDataFragment = {
@@ -2640,6 +2654,27 @@ export type UpdateProspectAsCuratedMutation = {
     saveCount?: number | null;
     isSyndicated?: boolean | null;
     isCollection?: boolean | null;
+    approvedCorpusItem?: {
+      __typename?: 'ApprovedCorpusItem';
+      externalId: string;
+      prospectId?: string | null;
+      title: string;
+      language: CorpusLanguage;
+      publisher: string;
+      url: any;
+      imageUrl: any;
+      excerpt: string;
+      status: CuratedStatus;
+      source: CorpusItemSource;
+      topic: string;
+      isCollection: boolean;
+      isTimeSensitive: boolean;
+      isSyndicated: boolean;
+      createdBy: string;
+      createdAt: number;
+      updatedBy?: string | null;
+      updatedAt: number;
+    } | null;
   } | null;
 };
 
@@ -3053,6 +3088,27 @@ export type GetProspectsQuery = {
     saveCount?: number | null;
     isSyndicated?: boolean | null;
     isCollection?: boolean | null;
+    approvedCorpusItem?: {
+      __typename?: 'ApprovedCorpusItem';
+      externalId: string;
+      prospectId?: string | null;
+      title: string;
+      language: CorpusLanguage;
+      publisher: string;
+      url: any;
+      imageUrl: any;
+      excerpt: string;
+      status: CuratedStatus;
+      source: CorpusItemSource;
+      topic: string;
+      isCollection: boolean;
+      isTimeSensitive: boolean;
+      isSyndicated: boolean;
+      createdBy: string;
+      createdAt: number;
+      updatedBy?: string | null;
+      updatedAt: number;
+    } | null;
   }>;
 };
 
@@ -3368,39 +3424,6 @@ export const CollectionStoryDataFragmentDoc = gql`
     sortOrder
   }
 `;
-export const ProspectDataFragmentDoc = gql`
-  fragment ProspectData on Prospect {
-    id
-    scheduledSurfaceGuid
-    topic
-    prospectType
-    url
-    createdAt
-    imageUrl
-    publisher
-    domain
-    title
-    excerpt
-    language
-    saveCount
-    isSyndicated
-    isCollection
-  }
-`;
-export const RejectedItemDataFragmentDoc = gql`
-  fragment RejectedItemData on RejectedCorpusItem {
-    externalId
-    prospectId
-    url
-    title
-    topic
-    language
-    publisher
-    reason
-    createdBy
-    createdAt
-  }
-`;
 export const CuratedItemDataFragmentDoc = gql`
   fragment CuratedItemData on ApprovedCorpusItem {
     externalId
@@ -3421,6 +3444,43 @@ export const CuratedItemDataFragmentDoc = gql`
     createdAt
     updatedBy
     updatedAt
+  }
+`;
+export const ProspectDataFragmentDoc = gql`
+  fragment ProspectData on Prospect {
+    id
+    scheduledSurfaceGuid
+    topic
+    prospectType
+    url
+    createdAt
+    imageUrl
+    publisher
+    domain
+    title
+    excerpt
+    language
+    saveCount
+    isSyndicated
+    isCollection
+    approvedCorpusItem {
+      ...CuratedItemData
+    }
+  }
+  ${CuratedItemDataFragmentDoc}
+`;
+export const RejectedItemDataFragmentDoc = gql`
+  fragment RejectedItemData on RejectedCorpusItem {
+    externalId
+    prospectId
+    url
+    title
+    topic
+    language
+    publisher
+    reason
+    createdBy
+    createdAt
   }
 `;
 export const ScheduledItemDataFragmentDoc = gql`

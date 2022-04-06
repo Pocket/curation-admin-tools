@@ -5,6 +5,8 @@ import { MockedProvider } from '@apollo/client/testing';
 import { SnackbarProvider } from 'notistack';
 import {
   ApprovedCorpusItem,
+  CorpusItemSource,
+  CorpusLanguage,
   CuratedStatus,
   Topics,
 } from '../../../api/generatedTypes';
@@ -26,9 +28,10 @@ describe('The ApprovedItemForm component', () => {
       imageUrl: 'https://placeimg.com/640/480/people?random=494',
       excerpt:
         'Everything You Wanted to Know About React and Were Afraid To Ask',
-      language: 'DE',
+      language: CorpusLanguage.De,
       publisher: 'Amazing Inventions',
       topic: Topics.HealthFitness,
+      source: CorpusItemSource.Prospect,
       status: CuratedStatus.Recommendation,
       isCollection: false,
       isSyndicated: false,

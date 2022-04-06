@@ -45,7 +45,8 @@ interface ScheduleItemFormProps {
   scheduledSurfaceGuid?: string;
 
   /**
-   *
+   * Whether to lock the scheduled surface dropdown to just the value sent through
+   * in the `scheduledSurfaceGuid` variable.
    */
   disableScheduledSurface?: boolean;
 
@@ -123,7 +124,10 @@ export const ScheduleItemForm: React.FC<
             <FormikSelectField
               id="scheduledSurfaceGuid"
               label="Choose a Scheduled Surface"
-              disabled={disableScheduledSurface}
+              disabled={
+                (scheduledSurfaceGuid as unknown as boolean) &&
+                disableScheduledSurface
+              }
               fieldProps={formik.getFieldProps('scheduledSurfaceGuid')}
               fieldMeta={formik.getFieldMeta('scheduledSurfaceGuid')}
             >

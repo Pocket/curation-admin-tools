@@ -28,6 +28,12 @@ interface ScheduleItemFormConnectorProps {
   scheduledSurfaceGuid?: string;
 
   /**
+   * Whether to lock the scheduled surface dropdown to just the value sent through
+   * in the `scheduledSurfaceGuid` variable.
+   */
+  disableScheduledSurface?: boolean;
+
+  /**
    * What do we do with the submitted data?
    */
   onSubmit: (
@@ -39,8 +45,13 @@ interface ScheduleItemFormConnectorProps {
 export const ScheduleItemFormConnector: React.FC<
   ScheduleItemFormConnectorProps & SharedFormButtonsProps
 > = (props) => {
-  const { approvedItemExternalId, scheduledSurfaceGuid, onCancel, onSubmit } =
-    props;
+  const {
+    approvedItemExternalId,
+    disableScheduledSurface,
+    scheduledSurfaceGuid,
+    onCancel,
+    onSubmit,
+  } = props;
 
   // Get the list of Scheduled Surfaces the currently logged-in user has access to.
   const { data, loading, error } = useGetScheduledSurfacesForUserQuery();
@@ -137,7 +148,7 @@ export const ScheduleItemFormConnector: React.FC<
           lookupCopy={lookupCopy}
           scheduledSurfaces={data?.getScheduledSurfacesForUser}
           scheduledSurfaceGuid={scheduledSurfaceGuid}
-          disableScheduledSurface={!!scheduledSurfaceGuid}
+          disableScheduledSurface={disableScheduledSurface}
           selectedDate={selectedDate}
           onSubmit={onSubmit}
           onCancel={onCancel}
