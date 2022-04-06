@@ -76,6 +76,12 @@ export const AddProspectFormConnector: React.FC<
   // state variable to store the itemUrl field from the form
   const [itemUrl, setItemUrl] = useState<string>('');
 
+  // state variable to show/hide the loading bar in the AddProspectForm component when submitting
+  // this is against our current pattern of using the formik.isSubmitting in the form component itself
+  // to show a loading indicator. After a lot of debugging, we can't figure out why that way doesn't work hence resorting to this
+  const [isLoaderShowing, setIsLoaderShowing] = useState<boolean>(false);
+
+  // set up some hooks
   const { showNotification } = useNotifications();
 
   /**
@@ -101,6 +107,9 @@ export const AddProspectFormConnector: React.FC<
     // set isManualSubmission state variable in the ProspectingPage component to true
     setIsManualSubmission(true);
 
+    // show the loading bar
+    setIsLoaderShowing(true);
+
     formikHelpers.resetForm();
   };
 
@@ -110,6 +119,9 @@ export const AddProspectFormConnector: React.FC<
     fetchPolicy: 'no-cache',
     onCompleted: (data) => {
       const approvedItem = data?.getApprovedCorpusItemByUrl;
+
+      // hide the loading bar after this failed submission
+      setIsLoaderShowing(false);
 
       // Let the curators skip straight to the scheduling screen if the manually added
       // prospect is in the corpus already.
@@ -168,5 +180,11 @@ export const AddProspectFormConnector: React.FC<
     },
   });
 
-  return <AddProspectForm onCancel={toggleModal} onSubmit={onSubmit} />;
+  return (
+    <AddProspectForm
+      onCancel={toggleModal}
+      onSubmit={onSubmit}
+      isLoaderShowing={isLoaderShowing}
+    />
+  );
 };
