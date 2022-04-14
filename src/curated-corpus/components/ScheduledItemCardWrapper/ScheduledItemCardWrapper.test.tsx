@@ -43,7 +43,12 @@ describe('The ScheduledItemCardWrapper component', () => {
   it('should render an approved item card from a scheduled item', () => {
     render(
       <MemoryRouter>
-        <ScheduledItemCardWrapper item={item} />
+        <ScheduledItemCardWrapper
+          item={item}
+          onMoveToBottom={jest.fn()}
+          onReschedule={jest.fn()}
+          onRemove={jest.fn()}
+        />
       </MemoryRouter>
     );
 
@@ -56,7 +61,12 @@ describe('The ScheduledItemCardWrapper component', () => {
   it('should render remove button', () => {
     render(
       <MemoryRouter>
-        <ScheduledItemCardWrapper item={item} />
+        <ScheduledItemCardWrapper
+          item={item}
+          onMoveToBottom={jest.fn()}
+          onReschedule={jest.fn()}
+          onRemove={jest.fn()}
+        />
       </MemoryRouter>
     );
 
@@ -70,7 +80,12 @@ describe('The ScheduledItemCardWrapper component', () => {
   it('should render reschedule button', () => {
     render(
       <MemoryRouter>
-        <ScheduledItemCardWrapper item={item} />
+        <ScheduledItemCardWrapper
+          item={item}
+          onMoveToBottom={jest.fn()}
+          onReschedule={jest.fn()}
+          onRemove={jest.fn()}
+        />
       </MemoryRouter>
     );
 
@@ -79,5 +94,24 @@ describe('The ScheduledItemCardWrapper component', () => {
     });
 
     expect(rescheduleButton).toBeInTheDocument();
+  });
+
+  it('should render "move to bottom" button', () => {
+    render(
+      <MemoryRouter>
+        <ScheduledItemCardWrapper
+          item={item}
+          onMoveToBottom={jest.fn()}
+          onReschedule={jest.fn()}
+          onRemove={jest.fn()}
+        />
+      </MemoryRouter>
+    );
+
+    const button = screen.getByRole('button', {
+      name: /move to bottom/i,
+    });
+
+    expect(button).toBeInTheDocument();
   });
 });

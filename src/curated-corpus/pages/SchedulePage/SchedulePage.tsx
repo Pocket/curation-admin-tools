@@ -4,8 +4,8 @@ import { DateTime } from 'luxon';
 import { FormikHelpers, FormikValues } from 'formik';
 import {
   Button,
-  HandleApiResponse,
   FloatingActionButton,
+  HandleApiResponse,
 } from '../../../_shared/components';
 import {
   RemoveItemFromScheduledSurfaceModal,
@@ -218,6 +218,35 @@ export const SchedulePage: React.FC = (): JSX.Element => {
   };
 
   /**
+   * Pocket Hits items need to be returned in a pre-defined order. When the graph
+   * is queried, scheduled items are returned sorted by the `updatedAt` value
+   * in ascending order (most recently updated goes last).
+   *
+   * To enable the curators to rearrange stories in a certain order for a Pocket Hits
+   * email, a "Move to bottom" button has been added that updates the scheduled entry
+   * to bump up the timestamp recorded in the `updatedAt` field.
+   * @param item
+   */
+  const moveItemToBottom = (item: ScheduledCorpusItem): void => {
+    // Run the "reschedule" mutation with the same variables
+    // it already has. All we want from it is to update `updatedAt` timestamp.
+    const variables = {
+      externalId: item.externalId,
+      scheduledDate: item.scheduledDate,
+    };
+
+    // Run the mutation
+    runMutation(
+      rescheduleItem,
+      { variables },
+      `Success! Item moved to the bottom of the list.`,
+      undefined,
+      undefined,
+      refetch
+    );
+  };
+
+  /**
    * Remove item from Scheduled Surface.
    *
    * @param values
@@ -424,6 +453,9 @@ export const SchedulePage: React.FC = (): JSX.Element => {
                             onRemove={() => {
                               setCurrentItem(item);
                               toggleRemoveModal();
+                            }}
+                            onMoveToBottom={() => {
+                              moveItemToBottom(item);
                             }}
                             onReschedule={() => {
                               setCurrentItem(item);
