@@ -10,15 +10,21 @@ interface ScheduledItemCardWrapperProps {
    * An object with everything scheduled curated item-related in it.
    */
   item: ScheduledCorpusItem;
+
+  /**
+   * Callback for the "Move to bottom" button
+   */
+  onMoveToBottom: VoidFunction;
+
   /**
    * What to do when the "Remove" button is clicked.
    */
-  onRemove?: VoidFunction;
+  onRemove: VoidFunction;
 
   /**
    * Callback for the "Reschedule" button
    */
-  onReschedule?: VoidFunction;
+  onReschedule: VoidFunction;
 
   /**
    * Optional boolean prop to show/hide the language icon on the ApprovedItemListCard component
@@ -37,6 +43,7 @@ export const ScheduledItemCardWrapper: React.FC<
   const classes = useStyles();
   const {
     item,
+    onMoveToBottom,
     onRemove,
     onReschedule,
     showLanguageIcon,
@@ -55,6 +62,9 @@ export const ScheduledItemCardWrapper: React.FC<
         <CardActions className={classes.actions}>
           <Button buttonType="positive" variant="text" onClick={onReschedule}>
             Reschedule
+          </Button>
+          <Button buttonType="positive" variant="text" onClick={onMoveToBottom}>
+            Move to bottom
           </Button>
           <Button buttonType="negative" variant="text" onClick={onRemove}>
             Remove
