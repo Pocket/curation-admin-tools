@@ -1118,6 +1118,7 @@ export type Prospect = {
  * by the Curation Admin Tools frontend to filter prospects.
  */
 export enum ProspectType {
+  Approved = 'APPROVED',
   CountsLogisticApproval = 'COUNTS_LOGISTIC_APPROVAL',
   DomainAllowlist = 'DOMAIN_ALLOWLIST',
   Global = 'GLOBAL',
