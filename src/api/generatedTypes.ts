@@ -897,7 +897,7 @@ export type Mutation = {
   updateCollectionStorySortOrder: CollectionStory;
   /**
    * marks a prospect as 'curated' in the database, preventing it from being displayed for prospecting.
-   * returns true if the operation succeeds, false if not (almost surely due to an incorrect prospectId).
+   * returns true if the operation succeeds, false if not (almost surely due to an incorrect id).
    */
   updateProspectAsCurated?: Maybe<Prospect>;
   /** Uploads an image to S3 for an Approved Item */
@@ -1017,7 +1017,7 @@ export type MutationUpdateCollectionStorySortOrderArgs = {
 };
 
 export type MutationUpdateProspectAsCuratedArgs = {
-  prospectId: Scalars['ID'];
+  id: Scalars['ID'];
 };
 
 export type MutationUploadApprovedCorpusItemImageArgs = {
@@ -1104,6 +1104,7 @@ export type Prospect = {
   isCollection?: Maybe<Scalars['Boolean']>;
   isSyndicated?: Maybe<Scalars['Boolean']>;
   language?: Maybe<CorpusLanguage>;
+  prospectId: Scalars['ID'];
   prospectType: Scalars['String'];
   publisher?: Maybe<Scalars['String']>;
   saveCount?: Maybe<Scalars['Int']>;
@@ -1743,6 +1744,7 @@ export type CuratedItemDataFragment = {
 export type ProspectDataFragment = {
   __typename?: 'Prospect';
   id: string;
+  prospectId: string;
   scheduledSurfaceGuid: string;
   topic?: string | null;
   prospectType: string;
@@ -2633,7 +2635,7 @@ export type UpdateCollectionStorySortOrderMutation = {
 };
 
 export type UpdateProspectAsCuratedMutationVariables = Exact<{
-  prospectId: Scalars['ID'];
+  id: Scalars['ID'];
 }>;
 
 export type UpdateProspectAsCuratedMutation = {
@@ -2641,6 +2643,7 @@ export type UpdateProspectAsCuratedMutation = {
   updateProspectAsCurated?: {
     __typename?: 'Prospect';
     id: string;
+    prospectId: string;
     scheduledSurfaceGuid: string;
     topic?: string | null;
     prospectType: string;
@@ -3075,6 +3078,7 @@ export type GetProspectsQuery = {
   getProspects: Array<{
     __typename?: 'Prospect';
     id: string;
+    prospectId: string;
     scheduledSurfaceGuid: string;
     topic?: string | null;
     prospectType: string;
@@ -3450,6 +3454,7 @@ export const CuratedItemDataFragmentDoc = gql`
 export const ProspectDataFragmentDoc = gql`
   fragment ProspectData on Prospect {
     id
+    prospectId
     scheduledSurfaceGuid
     topic
     prospectType
@@ -5183,8 +5188,8 @@ export type UpdateCollectionStorySortOrderMutationOptions =
     UpdateCollectionStorySortOrderMutationVariables
   >;
 export const UpdateProspectAsCuratedDocument = gql`
-  mutation updateProspectAsCurated($prospectId: ID!) {
-    updateProspectAsCurated(prospectId: $prospectId) {
+  mutation updateProspectAsCurated($id: ID!) {
+    updateProspectAsCurated(id: $id) {
       ...ProspectData
     }
   }
@@ -5208,7 +5213,7 @@ export type UpdateProspectAsCuratedMutationFn = Apollo.MutationFunction<
  * @example
  * const [updateProspectAsCuratedMutation, { data, loading, error }] = useUpdateProspectAsCuratedMutation({
  *   variables: {
- *      prospectId: // value for 'prospectId'
+ *      id: // value for 'id'
  *   },
  * });
  */

@@ -8,6 +8,7 @@ import { CuratedItemData } from './curatedItemData';
 export const ProspectData = gql`
   fragment ProspectData on Prospect {
     id
+    prospectId
     scheduledSurfaceGuid
     topic
     prospectType

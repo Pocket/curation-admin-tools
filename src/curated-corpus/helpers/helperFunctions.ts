@@ -23,9 +23,10 @@ export const transformProspectToApprovedItem = (
   isRecommendation: boolean,
   isManual: boolean
 ): ApprovedItemFromProspect => {
+  //TODO: do stuff here
   return {
     externalId: '',
-    prospectId: prospect.id,
+    prospectId: prospect.prospectId,
     url: prospect.url,
     title: prospect.title ?? '',
     imageUrl: prospect.imageUrl ?? '',
@@ -66,6 +67,7 @@ export const transformUrlMetaDataToProspect = (
   return {
     // manually added items don't have a prospect id!
     id: '',
+    prospectId: '',
     // Set whatever properties the Parser could retrieve for us
     url: metadata.url,
     title: metadata.title ?? '',
