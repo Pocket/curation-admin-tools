@@ -344,7 +344,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     const imageUrl: string = s3ImageUrl;
 
     const approvedItem = {
-      prospectId: currentProspect?.id!,
+      prospectId: currentProspect?.prospectId,
       url: values.url,
       title: values.title,
       excerpt: values.excerpt,
@@ -371,7 +371,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
           // call the mutation to mark prospect as approved
           runMutation(
             updateProspectAsCurated,
-            { variables: { prospectId: currentProspect?.id } },
+            { variables: { id: currentProspect?.id } },
             undefined,
             () => {
               postCreateApprovedItem(

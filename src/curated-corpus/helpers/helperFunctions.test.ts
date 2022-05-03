@@ -16,7 +16,8 @@ describe('helperFunctions ', () => {
   describe('transformProspectToApprovedItem function', () => {
     it('should create an ApprovedCorpusItem with all the provided fields', () => {
       const prospect: Prospect = {
-        id: 'test-prospect-id',
+        id: 'test-id',
+        prospectId: 'test-prospect-id',
         scheduledSurfaceGuid: 'en-us',
         prospectType: ProspectType.Syndicated,
         url: 'test-prospect-url',
@@ -41,7 +42,7 @@ describe('helperFunctions ', () => {
 
       expect(approvedItemFromProspect).toMatchObject({
         externalId: '',
-        prospectId: prospect.id,
+        prospectId: prospect.prospectId,
         url: prospect.url,
         title: prospect.title,
         imageUrl: prospect.imageUrl,
@@ -64,6 +65,7 @@ describe('helperFunctions ', () => {
       const prospect: Prospect = {
         id: 'test-prospect-id',
         url: 'test-prospect-url',
+        prospectId: 'test-prospect-id',
         scheduledSurfaceGuid: 'en-us',
         prospectType: ProspectType.Global,
       };
