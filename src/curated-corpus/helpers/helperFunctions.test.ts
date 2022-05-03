@@ -42,7 +42,7 @@ describe('helperFunctions ', () => {
 
       expect(approvedItemFromProspect).toMatchObject({
         externalId: '',
-        prospectId: prospect.id,
+        prospectId: prospect.prospectId,
         url: prospect.url,
         title: prospect.title,
         imageUrl: prospect.imageUrl,
