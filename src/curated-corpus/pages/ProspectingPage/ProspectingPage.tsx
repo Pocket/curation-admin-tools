@@ -282,7 +282,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     // Mark the prospect as processed in the Prospect API datastore.
     runMutation(
       updateProspectAsCurated,
-      { variables: { prospectId: currentProspect?.id } },
+      { variables: { id: currentProspect?.id } },
       undefined,
       () => {
         formikHelpers.setSubmitting(false);
@@ -496,7 +496,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         // mark it as curated at this point
         if (approvedItem?.url === currentProspect?.url) {
           runMutation(updateProspectAsCurated, {
-            variables: { prospectId: currentProspect?.id },
+            variables: { id: currentProspect?.id },
           });
         }
 
