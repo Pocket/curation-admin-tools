@@ -1107,6 +1107,7 @@ export type Prospect = {
   prospectId: Scalars['ID'];
   prospectType: Scalars['String'];
   publisher?: Maybe<Scalars['String']>;
+  rejectedCorpusItem?: Maybe<RejectedCorpusItem>;
   saveCount?: Maybe<Scalars['Int']>;
   scheduledSurfaceGuid: Scalars['String'];
   title?: Maybe<Scalars['String']>;
@@ -1779,6 +1780,19 @@ export type ProspectDataFragment = {
     createdAt: number;
     updatedBy?: string | null;
     updatedAt: number;
+  } | null;
+  rejectedCorpusItem?: {
+    __typename?: 'RejectedCorpusItem';
+    externalId: string;
+    prospectId?: string | null;
+    url: any;
+    title: string;
+    topic: string;
+    language: CorpusLanguage;
+    publisher: string;
+    reason: string;
+    createdBy: string;
+    createdAt: number;
   } | null;
 };
 
@@ -2679,6 +2693,19 @@ export type UpdateProspectAsCuratedMutation = {
       updatedBy?: string | null;
       updatedAt: number;
     } | null;
+    rejectedCorpusItem?: {
+      __typename?: 'RejectedCorpusItem';
+      externalId: string;
+      prospectId?: string | null;
+      url: any;
+      title: string;
+      topic: string;
+      language: CorpusLanguage;
+      publisher: string;
+      reason: string;
+      createdBy: string;
+      createdAt: number;
+    } | null;
   } | null;
 };
 
@@ -3114,6 +3141,19 @@ export type GetProspectsQuery = {
       updatedBy?: string | null;
       updatedAt: number;
     } | null;
+    rejectedCorpusItem?: {
+      __typename?: 'RejectedCorpusItem';
+      externalId: string;
+      prospectId?: string | null;
+      url: any;
+      title: string;
+      topic: string;
+      language: CorpusLanguage;
+      publisher: string;
+      reason: string;
+      createdBy: string;
+      createdAt: number;
+    } | null;
   }>;
 };
 
@@ -3451,6 +3491,20 @@ export const CuratedItemDataFragmentDoc = gql`
     updatedAt
   }
 `;
+export const RejectedItemDataFragmentDoc = gql`
+  fragment RejectedItemData on RejectedCorpusItem {
+    externalId
+    prospectId
+    url
+    title
+    topic
+    language
+    publisher
+    reason
+    createdBy
+    createdAt
+  }
+`;
 export const ProspectDataFragmentDoc = gql`
   fragment ProspectData on Prospect {
     id
@@ -3472,22 +3526,12 @@ export const ProspectDataFragmentDoc = gql`
     approvedCorpusItem {
       ...CuratedItemData
     }
+    rejectedCorpusItem {
+      ...RejectedItemData
+    }
   }
   ${CuratedItemDataFragmentDoc}
-`;
-export const RejectedItemDataFragmentDoc = gql`
-  fragment RejectedItemData on RejectedCorpusItem {
-    externalId
-    prospectId
-    url
-    title
-    topic
-    language
-    publisher
-    reason
-    createdBy
-    createdAt
-  }
+  ${RejectedItemDataFragmentDoc}
 `;
 export const ScheduledItemDataFragmentDoc = gql`
   fragment ScheduledItemData on ScheduledCorpusItem {

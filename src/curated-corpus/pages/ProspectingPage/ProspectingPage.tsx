@@ -652,6 +652,11 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
 
           {prospects &&
             prospects.map((prospect) => {
+              if (prospect.rejectedCorpusItem) {
+                // If an item was rejected, lets just not show it
+                return;
+              }
+
               if (prospect.approvedCorpusItem) {
                 return (
                   <ExistingProspectCard
