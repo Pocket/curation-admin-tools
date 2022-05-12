@@ -474,6 +474,12 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ): void => {
+    // DE items migrated from the old system don't have a topic. This check forces to add a topic before scheduling
+    if (!approvedItem?.topic) {
+      showNotification('Cannot schedule item without topic', 'error');
+      return;
+    }
+
     // Set out all the variables we need to pass to the mutation
     const variables = {
       approvedItemExternalId: approvedItem?.externalId,
