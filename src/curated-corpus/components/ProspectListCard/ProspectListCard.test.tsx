@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { Prospect, Topics } from '../../../api/generatedTypes';
+import { CorpusLanguage, Prospect, Topics } from '../../../api/generatedTypes';
 import { ProspectListCard } from './ProspectListCard';
 
 describe('The ProspectListCard component', () => {
@@ -13,6 +13,7 @@ describe('The ProspectListCard component', () => {
   beforeEach(() => {
     prospect = {
       id: '123-abc',
+      prospectId: '456-dfg',
       title: 'How To Win Friends And Influence People with DynamoDB',
       scheduledSurfaceGuid: 'NEW_TAB_EN_US',
       prospectType: 'organic-timespent',
@@ -20,8 +21,9 @@ describe('The ProspectListCard component', () => {
       imageUrl: 'https://placeimg.com/640/480/people?random=495',
       excerpt:
         'Everything You Wanted to Know About DynamoDB and Were Afraid To Ask',
-      language: 'de',
+      language: CorpusLanguage.De,
       publisher: 'Amazing Inventions',
+      authors: 'Charles Dickens,O. Henry',
       topic: Topics.Technology,
     };
   });
@@ -52,6 +54,14 @@ describe('The ProspectListCard component', () => {
     // The excerpt is also present
     const excerpt = screen.getByText(/wanted to know about dynamo/i);
     expect(excerpt).toBeInTheDocument();
+
+    // And the authors
+    const authors = screen.getByText(prospect.authors!);
+    expect(authors).toBeInTheDocument();
+
+    // And even the publisher
+    const publisher = screen.getByText(prospect.publisher!);
+    expect(publisher).toBeInTheDocument();
   });
 
   it('shows language correctly', () => {

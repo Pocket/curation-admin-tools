@@ -16,6 +16,7 @@ export const ProspectData = gql`
     url
     createdAt
     imageUrl
+    authors
     publisher
     domain
     title
