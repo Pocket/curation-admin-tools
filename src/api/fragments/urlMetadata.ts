@@ -14,5 +14,6 @@ export const urlMetadata = gql`
     language
     isSyndicated
     isCollection
+    authors
   }
 `;

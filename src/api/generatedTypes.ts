@@ -1096,6 +1096,7 @@ export type PaginationInput = {
 export type Prospect = {
   __typename?: 'Prospect';
   approvedCorpusItem?: Maybe<ApprovedCorpusItem>;
+  authors?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['Int']>;
   domain?: Maybe<Scalars['String']>;
   excerpt?: Maybe<Scalars['String']>;
@@ -1560,6 +1561,7 @@ export type UpdateCollectionStorySortOrderInput = {
 
 export type UrlMetadata = {
   __typename?: 'UrlMetadata';
+  authors?: Maybe<Scalars['String']>;
   domain?: Maybe<Scalars['String']>;
   excerpt?: Maybe<Scalars['String']>;
   imageUrl?: Maybe<Scalars['String']>;
@@ -1752,6 +1754,7 @@ export type ProspectDataFragment = {
   url: string;
   createdAt?: number | null;
   imageUrl?: string | null;
+  authors?: string | null;
   publisher?: string | null;
   domain?: string | null;
   title?: string | null;
@@ -1853,6 +1856,7 @@ export type UrlMetadataFragment = {
   language?: string | null;
   isSyndicated?: boolean | null;
   isCollection?: boolean | null;
+  authors?: string | null;
 };
 
 export type CreateApprovedCorpusItemMutationVariables = Exact<{
@@ -2664,6 +2668,7 @@ export type UpdateProspectAsCuratedMutation = {
     url: string;
     createdAt?: number | null;
     imageUrl?: string | null;
+    authors?: string | null;
     publisher?: string | null;
     domain?: string | null;
     title?: string | null;
@@ -3112,6 +3117,7 @@ export type GetProspectsQuery = {
     url: string;
     createdAt?: number | null;
     imageUrl?: string | null;
+    authors?: string | null;
     publisher?: string | null;
     domain?: string | null;
     title?: string | null;
@@ -3378,6 +3384,7 @@ export type GetUrlMetadataQuery = {
     language?: string | null;
     isSyndicated?: boolean | null;
     isCollection?: boolean | null;
+    authors?: string | null;
   };
 };
 
@@ -3515,6 +3522,7 @@ export const ProspectDataFragmentDoc = gql`
     url
     createdAt
     imageUrl
+    authors
     publisher
     domain
     title
@@ -3559,6 +3567,7 @@ export const UrlMetadataFragmentDoc = gql`
     language
     isSyndicated
     isCollection
+    authors
   }
 `;
 export const CreateApprovedCorpusItemDocument = gql`

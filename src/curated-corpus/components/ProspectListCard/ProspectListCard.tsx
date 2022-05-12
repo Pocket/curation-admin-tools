@@ -81,7 +81,8 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
             component="span"
             align="left"
           >
-            <span>{prospect.publisher}</span> &middot;{' '}
+            <span>{prospect.authors ? prospect.authors : 'Authors: N/A'}</span>{' '}
+            &middot; <span>{prospect.publisher}</span> &middot;{' '}
             <span>{prospect.domain}</span>
           </Typography>{' '}
           <Box py={1}>
