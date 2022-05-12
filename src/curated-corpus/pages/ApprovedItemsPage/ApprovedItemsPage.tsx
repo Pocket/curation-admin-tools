@@ -21,7 +21,11 @@ import {
   RejectItemModal,
   ScheduleItemModal,
 } from '../../components';
-import { useRunMutation, useToggle } from '../../../_shared/hooks';
+import {
+  useRunMutation,
+  useToggle,
+  useNotifications,
+} from '../../../_shared/hooks';
 import { DateTime } from 'luxon';
 
 export const ApprovedItemsPage: React.FC = (): JSX.Element => {
@@ -36,6 +40,9 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
   // Get a helper function that will execute each mutation, show standard notifications
   // and execute any additional actions in a callback
   const { runMutation } = useRunMutation();
+
+  // set up the hook for toast notification
+  const { showNotification } = useNotifications();
 
   // Save the filters in a state variable to be able to use them when paginating
   // through results.
@@ -184,6 +191,13 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ): void => {
+    // DE items migrated from the old system don't have a topic. This check forces to add a topic before scheduling
+    // Although for this case, if an item is in the corpus already, we shouldn't run into this since you need to add a Topic before you can save it to the corpus
+    if (!currentItem?.topic) {
+      showNotification('Cannot schedule item without topic', 'error');
+      return;
+    }
+
     // Set out all the variables we need to pass to the mutation
     const variables: CreateScheduledCorpusItemInput = {
       approvedItemExternalId: currentItem?.externalId!,
