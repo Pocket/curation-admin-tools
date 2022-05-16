@@ -12,7 +12,7 @@ import {
 } from '@material-ui/core';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import EditIcon from '@material-ui/icons/Edit';
-import { transformAuthors } from '../../utils/transformAuthors';
+import { transformAuthors } from '../../../_shared/utils/transformAuthors';
 import { ImageUpload, StoryCard, StoryForm } from '../';
 import { useStyles } from './StoryListCard.styles';
 import { useRunMutation, useToggle } from '../../../_shared/hooks';

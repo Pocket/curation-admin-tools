@@ -38,6 +38,8 @@ export type ApprovedCorpusImageUrl = {
 /** A prospective story that has been reviewed by the curators and saved to the corpus. */
 export type ApprovedCorpusItem = {
   __typename?: 'ApprovedCorpusItem';
+  /** The authors associated with this ApprovedCorpusItem. */
+  authors?: Maybe<Array<CorpusItemAuthor>>;
   /** A Unix timestamp of when the entity was created. */
   createdAt: Scalars['Int'];
   /** A single sign-on user identifier of the user who created this entity. */
@@ -322,6 +324,19 @@ export type CollectionsResult = {
   pagination: Pagination;
 };
 
+/** An author associated with a CorpusItem. */
+export type CorpusItemAuthor = {
+  __typename?: 'CorpusItemAuthor';
+  name: Scalars['String'];
+  sortOrder: Scalars['Int'];
+};
+
+/** An author associated with a CorpusItem. */
+export type CorpusItemAuthorInput = {
+  name: Scalars['String'];
+  sortOrder: Scalars['Int'];
+};
+
 /** The source of the corpus item */
 export enum CorpusItemSource {
   /** Imported from the legacy database */
@@ -342,6 +357,8 @@ export enum CorpusLanguage {
 
 /** Input data for creating an Approved Item and optionally scheduling this item to appear on a Scheduled Surface. */
 export type CreateApprovedCorpusItemInput = {
+  /** A name and sort order for each author. */
+  authors: Array<CorpusItemAuthorInput>;
   /** The excerpt of the Approved Item. */
   excerpt: Scalars['String'];
   /** The image URL for this item's accompanying picture. */
@@ -1449,6 +1466,8 @@ export type UnMarseable = {
 
 /** Input data for updating an Approved Item. */
 export type UpdateApprovedCorpusItemInput = {
+  /** A name and sort order for each author. */
+  authors: Array<CorpusItemAuthorInput>;
   /** The excerpt of the Approved Item. */
   excerpt: Scalars['String'];
   /** Approved Item ID. */
@@ -1742,6 +1761,11 @@ export type CuratedItemDataFragment = {
   createdAt: number;
   updatedBy?: string | null;
   updatedAt: number;
+  authors?: Array<{
+    __typename?: 'CorpusItemAuthor';
+    name: string;
+    sortOrder: number;
+  }> | null;
 };
 
 export type ProspectDataFragment = {
@@ -1783,6 +1807,11 @@ export type ProspectDataFragment = {
     createdAt: number;
     updatedBy?: string | null;
     updatedAt: number;
+    authors?: Array<{
+      __typename?: 'CorpusItemAuthor';
+      name: string;
+      sortOrder: number;
+    }> | null;
   } | null;
   rejectedCorpusItem?: {
     __typename?: 'RejectedCorpusItem';
@@ -1842,6 +1871,11 @@ export type ScheduledItemDataFragment = {
     createdAt: number;
     updatedBy?: string | null;
     updatedAt: number;
+    authors?: Array<{
+      __typename?: 'CorpusItemAuthor';
+      name: string;
+      sortOrder: number;
+    }> | null;
   };
 };
 
@@ -1885,6 +1919,11 @@ export type CreateApprovedCorpusItemMutation = {
     createdAt: number;
     updatedBy?: string | null;
     updatedAt: number;
+    authors?: Array<{
+      __typename?: 'CorpusItemAuthor';
+      name: string;
+      sortOrder: number;
+    }> | null;
   };
 };
 
@@ -2091,6 +2130,11 @@ export type CreateScheduledCorpusItemMutation = {
       createdAt: number;
       updatedBy?: string | null;
       updatedAt: number;
+      authors?: Array<{
+        __typename?: 'CorpusItemAuthor';
+        name: string;
+        sortOrder: number;
+      }> | null;
     };
   };
 };
@@ -2178,6 +2222,11 @@ export type DeleteScheduledItemMutation = {
       createdAt: number;
       updatedBy?: string | null;
       updatedAt: number;
+      authors?: Array<{
+        __typename?: 'CorpusItemAuthor';
+        name: string;
+        sortOrder: number;
+      }> | null;
     };
   };
 };
@@ -2220,6 +2269,11 @@ export type RejectApprovedItemMutation = {
     createdAt: number;
     updatedBy?: string | null;
     updatedAt: number;
+    authors?: Array<{
+      __typename?: 'CorpusItemAuthor';
+      name: string;
+      sortOrder: number;
+    }> | null;
   };
 };
 
@@ -2280,6 +2334,11 @@ export type RescheduleScheduledCorpusItemMutation = {
       createdAt: number;
       updatedBy?: string | null;
       updatedAt: number;
+      authors?: Array<{
+        __typename?: 'CorpusItemAuthor';
+        name: string;
+        sortOrder: number;
+      }> | null;
     };
   };
 };
@@ -2310,6 +2369,11 @@ export type UpdateApprovedCorpusItemMutation = {
     createdAt: number;
     updatedBy?: string | null;
     updatedAt: number;
+    authors?: Array<{
+      __typename?: 'CorpusItemAuthor';
+      name: string;
+      sortOrder: number;
+    }> | null;
   };
 };
 
@@ -2697,6 +2761,11 @@ export type UpdateProspectAsCuratedMutation = {
       createdAt: number;
       updatedBy?: string | null;
       updatedAt: number;
+      authors?: Array<{
+        __typename?: 'CorpusItemAuthor';
+        name: string;
+        sortOrder: number;
+      }> | null;
     } | null;
     rejectedCorpusItem?: {
       __typename?: 'RejectedCorpusItem';
@@ -2752,6 +2821,11 @@ export type GetApprovedItemByUrlQuery = {
     createdAt: number;
     updatedBy?: string | null;
     updatedAt: number;
+    authors?: Array<{
+      __typename?: 'CorpusItemAuthor';
+      name: string;
+      sortOrder: number;
+    }> | null;
   } | null;
 };
 
@@ -2795,6 +2869,11 @@ export type GetApprovedItemsQuery = {
         createdAt: number;
         updatedBy?: string | null;
         updatedAt: number;
+        authors?: Array<{
+          __typename?: 'CorpusItemAuthor';
+          name: string;
+          sortOrder: number;
+        }> | null;
       };
     }>;
   };
@@ -3146,6 +3225,11 @@ export type GetProspectsQuery = {
       createdAt: number;
       updatedBy?: string | null;
       updatedAt: number;
+      authors?: Array<{
+        __typename?: 'CorpusItemAuthor';
+        name: string;
+        sortOrder: number;
+      }> | null;
     } | null;
     rejectedCorpusItem?: {
       __typename?: 'RejectedCorpusItem';
@@ -3255,6 +3339,11 @@ export type GetScheduledItemsQuery = {
         createdAt: number;
         updatedBy?: string | null;
         updatedAt: number;
+        authors?: Array<{
+          __typename?: 'CorpusItemAuthor';
+          name: string;
+          sortOrder: number;
+        }> | null;
       };
     }>;
   }>;
@@ -3483,6 +3572,10 @@ export const CuratedItemDataFragmentDoc = gql`
     title
     language
     publisher
+    authors {
+      name
+      sortOrder
+    }
     url
     imageUrl
     excerpt

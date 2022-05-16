@@ -50,7 +50,7 @@ import {
   useRunMutation,
   useToggle,
 } from '../../../_shared/hooks';
-import { transformAuthors } from '../../utils/transformAuthors';
+import { transformAuthors } from '../../../_shared/utils/transformAuthors';
 import { config } from '../../../config';
 
 interface CollectionPageProps {

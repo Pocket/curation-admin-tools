@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { StoryCard } from './StoryCard';
 import { CollectionStory } from '../../../api/generatedTypes';
-import { flattenAuthors } from '../../utils/flattenAuthors';
+import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 
 describe('The StoryCard component', () => {
   let story: CollectionStory;

@@ -12,6 +12,7 @@ import {
 } from '../../../api/generatedTypes';
 import { ApprovedItemForm } from './ApprovedItemForm';
 import { uploadApprovedItemImage } from '../../../api/mutations/uploadApprovedItemImage';
+import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 
 describe('The ApprovedItemForm component', () => {
   let item: ApprovedCorpusItem;
@@ -29,6 +30,10 @@ describe('The ApprovedItemForm component', () => {
       excerpt:
         'Everything You Wanted to Know About React and Were Afraid To Ask',
       language: CorpusLanguage.De,
+      authors: [
+        { name: 'One Author', sortOrder: 1 },
+        { name: 'Two Authors', sortOrder: 2 },
+      ],
       publisher: 'Amazing Inventions',
       topic: Topics.HealthFitness,
       source: CorpusItemSource.Prospect,
@@ -67,6 +72,10 @@ describe('The ApprovedItemForm component', () => {
     const publisher = screen.getByLabelText(/Publisher/);
     expect(publisher).toBeInTheDocument();
     expect(publisher).toHaveValue(item.publisher);
+
+    const authors = screen.getByLabelText(/Authors/);
+    expect(authors).toBeInTheDocument();
+    expect(authors).toHaveValue(flattenAuthors(item.authors));
 
     const excerpt = screen.getByLabelText(/Excerpt/);
     expect(excerpt).toBeInTheDocument();
@@ -154,7 +163,7 @@ describe('The ApprovedItemForm component', () => {
   });
 
   describe('When the form fields are edited', () => {
-    it('should call the onSave callback for the save button ', async () => {
+    it('should call the onSave callback for the save button', async () => {
       render(
         <MockedProvider>
           <SnackbarProvider maxSnack={3}>
@@ -180,7 +189,7 @@ describe('The ApprovedItemForm component', () => {
       expect(onSubmit).toHaveBeenCalled();
     });
 
-    it('should call the onCancel callback for the cancel button ', async () => {
+    it('should call the onCancel callback for the cancel button', async () => {
       render(
         <MockedProvider>
           <SnackbarProvider maxSnack={3}>

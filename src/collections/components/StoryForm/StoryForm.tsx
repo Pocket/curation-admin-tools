@@ -27,7 +27,7 @@ import {
   CollectionStory,
   useGetStoryFromParserLazyQuery,
 } from '../../../api/generatedTypes';
-import { flattenAuthors } from '../../utils/flattenAuthors';
+import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 
 interface StoryFormProps {
   /**

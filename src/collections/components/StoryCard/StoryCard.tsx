@@ -4,7 +4,7 @@ import CheckIcon from '@material-ui/icons/Check';
 import ReactMarkdown from 'react-markdown';
 import { useStyles } from './StoryCard.styles';
 import { CollectionStory } from '../../../api/generatedTypes';
-import { flattenAuthors } from '../../utils/flattenAuthors';
+import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 
 interface StoryCardProps {
   /**
