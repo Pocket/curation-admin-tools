@@ -276,6 +276,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         language: currentProspect?.language || undefined,
         publisher: currentProspect?.publisher,
         reason: values.reason,
+        prospectId: currentProspect?.prospectId,
       },
     };
 
