@@ -45,6 +45,7 @@ import { getProspectFilterOptions } from '../../helpers/getProspectFilterOptions
 import { FormikHelpers, FormikValues } from 'formik';
 import { DropdownOption } from '../../helpers/definitions';
 import { EmptyState } from './EmptyState';
+import { transformAuthors } from '../../../_shared/utils/transformAuthors';
 
 export const ProspectingPage: React.FC = (): JSX.Element => {
   // set up the initial scheduled surface guid value (nothing at this point)
@@ -351,6 +352,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       excerpt: values.excerpt,
       status: values.curationStatus,
       language: values.language,
+      authors: transformAuthors(values.authors),
       publisher: values.publisher,
       source: values.source,
       imageUrl,

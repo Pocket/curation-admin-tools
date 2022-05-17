@@ -3,10 +3,13 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import {
   ApprovedCorpusItem,
+  CorpusItemSource,
+  CorpusLanguage,
   CuratedStatus,
   Topics,
 } from '../../../api/generatedTypes';
 import { ApprovedItemListCard } from './ApprovedItemListCard';
+import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 
 describe('The ApprovedItemListCard component', () => {
   let item: ApprovedCorpusItem;
@@ -20,9 +23,14 @@ describe('The ApprovedItemListCard component', () => {
       imageUrl: 'https://placeimg.com/640/480/people?random=494',
       excerpt:
         'Everything You Wanted to Know About React and Were Afraid To Ask',
-      language: 'de',
+      authors: [
+        { name: 'One Author', sortOrder: 1 },
+        { name: 'Two Authors', sortOrder: 2 },
+      ],
+      language: CorpusLanguage.De,
       publisher: 'Amazing Inventions',
       topic: Topics.SelfImprovement,
+      source: CorpusItemSource.Prospect,
       status: CuratedStatus.Recommendation,
       isCollection: false,
       isSyndicated: false,
@@ -134,5 +142,45 @@ describe('The ApprovedItemListCard component', () => {
     expect(screen.getByText(/collection/i)).toBeInTheDocument();
     expect(screen.getByText(/syndicated/i)).toBeInTheDocument();
     expect(screen.getByText(/time sensitive/i)).toBeInTheDocument();
+  });
+
+  it('should show multiple authors as a comma-separated string', () => {
+    render(
+      <MemoryRouter>
+        <ApprovedItemListCard item={item} />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText(flattenAuthors(item.authors))).toBeInTheDocument();
+  });
+
+  it('should show a single author correctly', () => {
+    item = {
+      ...item,
+      authors: [{ name: 'Agatha Christie', sortOrder: 1 }],
+    };
+
+    render(
+      <MemoryRouter>
+        <ApprovedItemListCard item={item} />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('Agatha Christie')).toBeInTheDocument();
+  });
+
+  it('should show a placeholder string if authors are missing', () => {
+    item = {
+      ...item,
+      authors: [],
+    };
+
+    render(
+      <MemoryRouter>
+        <ApprovedItemListCard item={item} />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('Authors: N/A')).toBeInTheDocument();
   });
 });

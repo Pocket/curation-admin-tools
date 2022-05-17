@@ -17,6 +17,7 @@ import LanguageIcon from '@material-ui/icons/Language';
 import { useStyles } from './ApprovedItemListCard.styles';
 import { ApprovedCorpusItem, CuratedStatus } from '../../../api/generatedTypes';
 import { getDisplayTopic } from '../../helpers/helperFunctions';
+import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 
 interface ApprovedItemListCardProps {
   /**
@@ -72,7 +73,8 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
 
       <CardContent className={classes.content}>
         <Typography className={classes.publisher} gutterBottom>
-          {item.publisher}
+          <span>{item.publisher}</span> &middot;{' '}
+          <span>{flattenAuthors(item.authors) || 'Authors: N/A'}</span>
         </Typography>
         <Typography
           className={classes.title}

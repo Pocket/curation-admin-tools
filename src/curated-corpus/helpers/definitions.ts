@@ -1,6 +1,8 @@
 // Here we keep sets of options for curating items
 import {
   ApprovedCorpusItem,
+  CollectionStoryAuthor,
+  CorpusItemAuthor,
   CorpusLanguage,
   CuratedStatus,
   ProspectType,
@@ -64,6 +66,10 @@ export const curationStatusOptions: DropdownOption[] = [
   When mapping a Prospect to an ApprovedCorpusItem type, we need to able to set the language to undefined
   for when it is undefined on the Prospect, which later will be set in the form before creating an Approved item
  */
-export type ApprovedItemFromProspect = Omit<ApprovedCorpusItem, 'language'> & {
+export type ApprovedItemFromProspect = Omit<
+  ApprovedCorpusItem,
+  'language' | 'authors'
+> & {
   language: CorpusLanguage | undefined;
+  authors: CollectionStoryAuthor[] | CorpusItemAuthor[];
 };

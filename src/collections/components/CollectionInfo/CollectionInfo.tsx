@@ -5,7 +5,7 @@ import LanguageIcon from '@material-ui/icons/Language';
 import ReactMarkdown from 'react-markdown';
 import { useStyles } from './CollectionInfo.styles';
 import { Collection, CollectionStatus } from '../../../api/generatedTypes';
-import { flattenAuthors } from '../../utils/flattenAuthors';
+import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 
 interface CollectionInfoProps {
   /**

@@ -13,7 +13,7 @@ import ReactMarkdown from 'react-markdown';
 import { useStyles } from './CollectionListCard.styles';
 import { Collection } from '../../../api/generatedTypes';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
-import { flattenAuthors } from '../../utils/flattenAuthors';
+import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 import LanguageIcon from '@material-ui/icons/Language';
 
 interface CollectionListCardProps {

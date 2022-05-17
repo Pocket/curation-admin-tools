@@ -25,6 +25,7 @@ import {
   SharedFormButtons,
   SharedFormButtonsProps,
 } from '../../../_shared/components';
+import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 
 interface ApprovedItemFormProps {
   /**
@@ -73,6 +74,7 @@ export const ApprovedItemForm: React.FC<
     initialValues: {
       url: approvedItem.url,
       title: approvedItem.title,
+      authors: flattenAuthors(approvedItem.authors),
       publisher: approvedItem.publisher,
       language: approvedItem.language ?? '',
       topic: approvedItem.topic ?? '',
@@ -119,6 +121,14 @@ export const ApprovedItemForm: React.FC<
             label="Title"
             fieldProps={formik.getFieldProps('title')}
             fieldMeta={formik.getFieldMeta('title')}
+          />
+        </Grid>
+        <Grid item md={12} xs={12}>
+          <FormikTextField
+            id="authors"
+            label="Authors"
+            fieldProps={formik.getFieldProps('authors')}
+            fieldMeta={formik.getFieldMeta('authors')}
           />
         </Grid>
         <Grid item md={12} xs={12}>

@@ -9,7 +9,8 @@ import {
   Prospect,
   UrlMetadata,
 } from '../../api/generatedTypes';
-import { topics, ApprovedItemFromProspect } from './definitions';
+import { ApprovedItemFromProspect, topics } from './definitions';
+import { transformAuthors } from '../../_shared/utils/transformAuthors';
 
 /**
  *
@@ -30,6 +31,7 @@ export const transformProspectToApprovedItem = (
     url: prospect.url,
     title: prospect.title ?? '',
     imageUrl: prospect.imageUrl ?? '',
+    authors: transformAuthors(prospect.authors),
     publisher: prospect.publisher ?? '',
     language: prospect.language || undefined,
     source: isManual ? CorpusItemSource.Manual : CorpusItemSource.Prospect,
@@ -72,6 +74,7 @@ export const transformUrlMetaDataToProspect = (
     url: metadata.url,
     title: metadata.title ?? '',
     imageUrl: metadata.imageUrl ?? '',
+    authors: metadata.authors ?? '',
     publisher: metadata.publisher ?? '',
     language,
     isSyndicated: metadata.isSyndicated ?? false,

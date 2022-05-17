@@ -22,11 +22,12 @@ import {
   ScheduleItemModal,
 } from '../../components';
 import {
+  useNotifications,
   useRunMutation,
   useToggle,
-  useNotifications,
 } from '../../../_shared/hooks';
 import { DateTime } from 'luxon';
+import { transformAuthors } from '../../../_shared/utils/transformAuthors';
 
 export const ApprovedItemsPage: React.FC = (): JSX.Element => {
   // Get the usual API response vars and a helper method to retrieve data
@@ -239,6 +240,7 @@ export const ApprovedItemsPage: React.FC = (): JSX.Element => {
         excerpt: values.excerpt,
         status: values.curationStatus,
         language: values.language,
+        authors: transformAuthors(values.authors),
         publisher: values.publisher,
         imageUrl: values.imageUrl,
         topic: values.topic,
