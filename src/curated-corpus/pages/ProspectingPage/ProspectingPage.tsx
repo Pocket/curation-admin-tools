@@ -682,11 +682,13 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                   prospect={prospect}
                   onAddToCorpus={() => {
                     setCurrentProspect(prospect);
+                    setIsManualSubmission(false);
                     setIsRecommendation(false);
                     toggleApprovedItemModal();
                   }}
                   onRecommend={() => {
                     setCurrentProspect(prospect);
+                    setIsManualSubmission(false);
                     setIsRecommendation(true);
                     toggleApprovedItemModal();
                   }}
