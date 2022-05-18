@@ -24,6 +24,8 @@ export type Scalars = {
   Date: any;
   DateString: any;
   Markdown: any;
+  /** A positive integer number. */
+  NonNegativeInt: any;
   Upload: any;
   /** These are all just renamed strings right now */
   Url: any;
@@ -68,6 +70,8 @@ export type ApprovedCorpusItem = {
   prospectId?: Maybe<Scalars['ID']>;
   /** The name of the online publication that published this story. */
   publisher: Scalars['String'];
+  /** Subquery to get the log of scheduled entries to display for a given Approved Item, most recent first. */
+  scheduledSurfaceHistory: Array<ApprovedCorpusItemScheduledSurfaceHistory>;
   /** The source of the corpus item. */
   source: CorpusItemSource;
   /** The outcome of the curators' review. */
@@ -85,6 +89,11 @@ export type ApprovedCorpusItem = {
   updatedBy?: Maybe<Scalars['String']>;
   /** The URL of the story. */
   url: Scalars['Url'];
+};
+
+/** A prospective story that has been reviewed by the curators and saved to the corpus. */
+export type ApprovedCorpusItemScheduledSurfaceHistoryArgs = {
+  filters?: InputMaybe<ApprovedCorpusItemScheduledSurfaceHistoryFilters>;
 };
 
 /** The connection type for Approved Item. */
@@ -124,10 +133,39 @@ export type ApprovedCorpusItemFilter = {
   url?: InputMaybe<Scalars['Url']>;
 };
 
-/** Temp type to pacify federation checks */
-export type ApprovedCuratedCorpusItem = {
-  __typename?: 'ApprovedCuratedCorpusItem';
-  url: Scalars['Url'];
+export type ApprovedCorpusItemScheduledSurfaceHistory = {
+  __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
+  /** A single sign-on user identifier of the user who created this entry. */
+  createdBy: Scalars['String'];
+  /**
+   * An alternative primary key in UUID format that is generated on creation.
+   * Note: this is the external ID of the scheduled entry, not the approved item.
+   */
+  externalId: Scalars['ID'];
+  /**
+   * The date the associated Approved Item is scheduled to appear on a Scheduled Surface.
+   * This date is relative to the time zone of the Scheduled Surface. Format: YYYY-MM-DD.
+   */
+  scheduledDate: Scalars['Date'];
+  /**
+   * The GUID of the scheduledSurface to which the associated Approved Item is scheduled.
+   * Example: 'NEW_TAB_EN_US'.
+   */
+  scheduledSurfaceGuid: Scalars['ID'];
+};
+
+/**
+ * Available fields for filtering an Approved Item's history of being scheduled onto one or more
+ * scheduled surfaces.
+ */
+export type ApprovedCorpusItemScheduledSurfaceHistoryFilters = {
+  /** The maximum number of results to be returned. Default: 10. */
+  limit?: InputMaybe<Scalars['NonNegativeInt']>;
+  /**
+   * The scheduled surface the results should be filtered to. Omitting this filter will
+   * fetch results from all scheduled surfaces.
+   */
+  scheduledSurfaceGuid?: InputMaybe<Scalars['ID']>;
 };
 
 export type ArticleMarkdown = {
@@ -1766,6 +1804,13 @@ export type CuratedItemDataFragment = {
     name: string;
     sortOrder: number;
   }> | null;
+  scheduledSurfaceHistory: Array<{
+    __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
+    externalId: string;
+    createdBy: string;
+    scheduledDate: any;
+    scheduledSurfaceGuid: string;
+  }>;
 };
 
 export type ProspectDataFragment = {
@@ -1812,6 +1857,13 @@ export type ProspectDataFragment = {
       name: string;
       sortOrder: number;
     }> | null;
+    scheduledSurfaceHistory: Array<{
+      __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
+      externalId: string;
+      createdBy: string;
+      scheduledDate: any;
+      scheduledSurfaceGuid: string;
+    }>;
   } | null;
   rejectedCorpusItem?: {
     __typename?: 'RejectedCorpusItem';
@@ -1876,6 +1928,13 @@ export type ScheduledItemDataFragment = {
       name: string;
       sortOrder: number;
     }> | null;
+    scheduledSurfaceHistory: Array<{
+      __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
+      externalId: string;
+      createdBy: string;
+      scheduledDate: any;
+      scheduledSurfaceGuid: string;
+    }>;
   };
 };
 
@@ -1924,6 +1983,13 @@ export type CreateApprovedCorpusItemMutation = {
       name: string;
       sortOrder: number;
     }> | null;
+    scheduledSurfaceHistory: Array<{
+      __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
+      externalId: string;
+      createdBy: string;
+      scheduledDate: any;
+      scheduledSurfaceGuid: string;
+    }>;
   };
 };
 
@@ -2135,6 +2201,13 @@ export type CreateScheduledCorpusItemMutation = {
         name: string;
         sortOrder: number;
       }> | null;
+      scheduledSurfaceHistory: Array<{
+        __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
+        externalId: string;
+        createdBy: string;
+        scheduledDate: any;
+        scheduledSurfaceGuid: string;
+      }>;
     };
   };
 };
@@ -2227,6 +2300,13 @@ export type DeleteScheduledItemMutation = {
         name: string;
         sortOrder: number;
       }> | null;
+      scheduledSurfaceHistory: Array<{
+        __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
+        externalId: string;
+        createdBy: string;
+        scheduledDate: any;
+        scheduledSurfaceGuid: string;
+      }>;
     };
   };
 };
@@ -2274,6 +2354,13 @@ export type RejectApprovedItemMutation = {
       name: string;
       sortOrder: number;
     }> | null;
+    scheduledSurfaceHistory: Array<{
+      __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
+      externalId: string;
+      createdBy: string;
+      scheduledDate: any;
+      scheduledSurfaceGuid: string;
+    }>;
   };
 };
 
@@ -2339,6 +2426,13 @@ export type RescheduleScheduledCorpusItemMutation = {
         name: string;
         sortOrder: number;
       }> | null;
+      scheduledSurfaceHistory: Array<{
+        __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
+        externalId: string;
+        createdBy: string;
+        scheduledDate: any;
+        scheduledSurfaceGuid: string;
+      }>;
     };
   };
 };
@@ -2374,6 +2468,13 @@ export type UpdateApprovedCorpusItemMutation = {
       name: string;
       sortOrder: number;
     }> | null;
+    scheduledSurfaceHistory: Array<{
+      __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
+      externalId: string;
+      createdBy: string;
+      scheduledDate: any;
+      scheduledSurfaceGuid: string;
+    }>;
   };
 };
 
@@ -2766,6 +2867,13 @@ export type UpdateProspectAsCuratedMutation = {
         name: string;
         sortOrder: number;
       }> | null;
+      scheduledSurfaceHistory: Array<{
+        __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
+        externalId: string;
+        createdBy: string;
+        scheduledDate: any;
+        scheduledSurfaceGuid: string;
+      }>;
     } | null;
     rejectedCorpusItem?: {
       __typename?: 'RejectedCorpusItem';
@@ -2826,6 +2934,13 @@ export type GetApprovedItemByUrlQuery = {
       name: string;
       sortOrder: number;
     }> | null;
+    scheduledSurfaceHistory: Array<{
+      __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
+      externalId: string;
+      createdBy: string;
+      scheduledDate: any;
+      scheduledSurfaceGuid: string;
+    }>;
   } | null;
 };
 
@@ -2874,6 +2989,13 @@ export type GetApprovedItemsQuery = {
           name: string;
           sortOrder: number;
         }> | null;
+        scheduledSurfaceHistory: Array<{
+          __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
+          externalId: string;
+          createdBy: string;
+          scheduledDate: any;
+          scheduledSurfaceGuid: string;
+        }>;
       };
     }>;
   };
@@ -3230,6 +3352,13 @@ export type GetProspectsQuery = {
         name: string;
         sortOrder: number;
       }> | null;
+      scheduledSurfaceHistory: Array<{
+        __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
+        externalId: string;
+        createdBy: string;
+        scheduledDate: any;
+        scheduledSurfaceGuid: string;
+      }>;
     } | null;
     rejectedCorpusItem?: {
       __typename?: 'RejectedCorpusItem';
@@ -3344,6 +3473,13 @@ export type GetScheduledItemsQuery = {
           name: string;
           sortOrder: number;
         }> | null;
+        scheduledSurfaceHistory: Array<{
+          __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
+          externalId: string;
+          createdBy: string;
+          scheduledDate: any;
+          scheduledSurfaceGuid: string;
+        }>;
       };
     }>;
   }>;
@@ -3589,6 +3725,12 @@ export const CuratedItemDataFragmentDoc = gql`
     createdAt
     updatedBy
     updatedAt
+    scheduledSurfaceHistory {
+      externalId
+      createdBy
+      scheduledDate
+      scheduledSurfaceGuid
+    }
   }
 `;
 export const RejectedItemDataFragmentDoc = gql`

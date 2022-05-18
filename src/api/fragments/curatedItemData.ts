@@ -27,5 +27,11 @@ export const CuratedItemData = gql`
     createdAt
     updatedBy
     updatedAt
+    scheduledSurfaceHistory {
+      externalId
+      createdBy
+      scheduledDate
+      scheduledSurfaceGuid
+    }
   }
 `;

@@ -666,7 +666,33 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                 return;
               }
 
+              // if the prospect has an approvedItem meaning it is in the corpus
               if (prospect.approvedCorpusItem) {
+                // check if it has a schedule history
+                if (
+                  prospect.approvedCorpusItem.scheduledSurfaceHistory.length
+                ) {
+                  // Get the most recent scheduled date for the prospect. Note the scheduled dates are returned in descending order by the api
+                  const lastScheduledDate =
+                    prospect.approvedCorpusItem?.scheduledSurfaceHistory[0]
+                      .scheduledDate;
+
+                  // if it hasn't been 14 days since the last schedule date, dont't show the prospect
+                  if (
+                    lastScheduledDate >= DateTime.local().plus({ days: 14 }) &&
+                    lastScheduledDate <= DateTime.local()
+                  ) {
+                    return;
+                  }
+
+                  // if the scheduled date is 14 days or more in the future, don't show the prospect
+                  if (
+                    lastScheduledDate >= DateTime.local().plus({ days: 14 })
+                  ) {
+                    return;
+                  }
+                }
+
                 return (
                   <ExistingProspectCard
                     key={prospect.id}
