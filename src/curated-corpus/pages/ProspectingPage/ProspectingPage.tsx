@@ -673,21 +673,15 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                   prospect.approvedCorpusItem.scheduledSurfaceHistory.length
                 ) {
                   // Get the most recent scheduled date for the prospect. Note the scheduled dates are returned in descending order by the api
-                  const lastScheduledDate =
+                  const lastScheduledDate = DateTime.fromISO(
                     prospect.approvedCorpusItem?.scheduledSurfaceHistory[0]
-                      .scheduledDate;
+                      .scheduledDate
+                  );
 
-                  // if it hasn't been 14 days since the last schedule date, dont't show the prospect
+                  // hide the prospect if the last scheduled date of the prospect is within the 14 days before and after today's date
                   if (
-                    lastScheduledDate >= DateTime.local().plus({ days: 14 }) &&
-                    lastScheduledDate <= DateTime.local()
-                  ) {
-                    return;
-                  }
-
-                  // if the scheduled date is 14 days or more in the future, don't show the prospect
-                  if (
-                    lastScheduledDate >= DateTime.local().plus({ days: 14 })
+                    lastScheduledDate >= DateTime.local().minus({ days: 14 }) &&
+                    lastScheduledDate <= DateTime.local().plus({ days: 14 })
                   ) {
                     return;
                   }
