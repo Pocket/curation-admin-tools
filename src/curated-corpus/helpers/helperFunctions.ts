@@ -46,6 +46,8 @@ export const transformProspectToApprovedItem = (
     createdAt: prospect.createdAt ?? 0,
     createdBy: '',
     updatedAt: 0,
+    scheduledSurfaceHistory:
+      prospect.approvedCorpusItem?.scheduledSurfaceHistory ?? [],
   };
 };
 

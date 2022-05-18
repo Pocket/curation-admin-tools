@@ -3,8 +3,8 @@ import { gql } from '@apollo/client';
 /**
  * Everything we need to fetch for a Curated Item
  */
-export const CuratedItemData = gql`
-  fragment CuratedItemData on ApprovedCorpusItem {
+export const CuratedItemDataWithHistory = gql`
+  fragment CuratedItemDataWithHistory on ApprovedCorpusItem {
     externalId
     prospectId
     title
@@ -27,7 +27,7 @@ export const CuratedItemData = gql`
     createdAt
     updatedBy
     updatedAt
-    scheduledSurfaceHistory {
+    scheduledSurfaceHistory(filters: $historyFilter) {
       externalId
       createdBy
       scheduledDate
