@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { CuratedItemData } from './curatedItemData';
+import { CuratedItemDataWithHistory } from './CuratedItemWithHistory';
 import { RejectedItemData } from './rejectedItemData';
 
 /**
@@ -26,12 +26,12 @@ export const ProspectData = gql`
     isSyndicated
     isCollection
     approvedCorpusItem {
-      ...CuratedItemData
+      ...CuratedItemDataWithHistory
     }
     rejectedCorpusItem {
       ...RejectedItemData
     }
   }
-  ${CuratedItemData}
+  ${CuratedItemDataWithHistory}
   ${RejectedItemData}
 `;

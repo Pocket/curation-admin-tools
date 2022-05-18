@@ -1779,6 +1779,40 @@ export type CollectionStoryDataFragment = {
   }>;
 };
 
+export type CuratedItemDataWithHistoryFragment = {
+  __typename?: 'ApprovedCorpusItem';
+  externalId: string;
+  prospectId?: string | null;
+  title: string;
+  language: CorpusLanguage;
+  publisher: string;
+  url: any;
+  imageUrl: any;
+  excerpt: string;
+  status: CuratedStatus;
+  source: CorpusItemSource;
+  topic: string;
+  isCollection: boolean;
+  isTimeSensitive: boolean;
+  isSyndicated: boolean;
+  createdBy: string;
+  createdAt: number;
+  updatedBy?: string | null;
+  updatedAt: number;
+  authors?: Array<{
+    __typename?: 'CorpusItemAuthor';
+    name: string;
+    sortOrder: number;
+  }> | null;
+  scheduledSurfaceHistory: Array<{
+    __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
+    externalId: string;
+    createdBy: string;
+    scheduledDate: any;
+    scheduledSurfaceGuid: string;
+  }>;
+};
+
 export type CuratedItemDataFragment = {
   __typename?: 'ApprovedCorpusItem';
   externalId: string;
@@ -2819,6 +2853,7 @@ export type UpdateCollectionStorySortOrderMutation = {
 
 export type UpdateProspectAsCuratedMutationVariables = Exact<{
   id: Scalars['ID'];
+  historyFilter?: InputMaybe<ApprovedCorpusItemScheduledSurfaceHistoryFilters>;
 }>;
 
 export type UpdateProspectAsCuratedMutation = {
@@ -3304,6 +3339,7 @@ export type GetInitialCollectionFormDataQuery = {
 export type GetProspectsQueryVariables = Exact<{
   scheduledSurfaceGuid: Scalars['String'];
   prospectType?: InputMaybe<Scalars['String']>;
+  historyFilter?: InputMaybe<ApprovedCorpusItemScheduledSurfaceHistoryFilters>;
 }>;
 
 export type GetProspectsQuery = {
@@ -3701,8 +3737,8 @@ export const CollectionStoryDataFragmentDoc = gql`
     sortOrder
   }
 `;
-export const CuratedItemDataFragmentDoc = gql`
-  fragment CuratedItemData on ApprovedCorpusItem {
+export const CuratedItemDataWithHistoryFragmentDoc = gql`
+  fragment CuratedItemDataWithHistory on ApprovedCorpusItem {
     externalId
     prospectId
     title
@@ -3725,7 +3761,7 @@ export const CuratedItemDataFragmentDoc = gql`
     createdAt
     updatedBy
     updatedAt
-    scheduledSurfaceHistory {
+    scheduledSurfaceHistory(filters: $historyFilter) {
       externalId
       createdBy
       scheduledDate
@@ -3767,14 +3803,46 @@ export const ProspectDataFragmentDoc = gql`
     isSyndicated
     isCollection
     approvedCorpusItem {
-      ...CuratedItemData
+      ...CuratedItemDataWithHistory
     }
     rejectedCorpusItem {
       ...RejectedItemData
     }
   }
-  ${CuratedItemDataFragmentDoc}
+  ${CuratedItemDataWithHistoryFragmentDoc}
   ${RejectedItemDataFragmentDoc}
+`;
+export const CuratedItemDataFragmentDoc = gql`
+  fragment CuratedItemData on ApprovedCorpusItem {
+    externalId
+    prospectId
+    title
+    language
+    publisher
+    authors {
+      name
+      sortOrder
+    }
+    url
+    imageUrl
+    excerpt
+    status
+    source
+    topic
+    isCollection
+    isTimeSensitive
+    isSyndicated
+    createdBy
+    createdAt
+    updatedBy
+    updatedAt
+    scheduledSurfaceHistory {
+      externalId
+      createdBy
+      scheduledDate
+      scheduledSurfaceGuid
+    }
+  }
 `;
 export const ScheduledItemDataFragmentDoc = gql`
   fragment ScheduledItemData on ScheduledCorpusItem {
@@ -5476,7 +5544,10 @@ export type UpdateCollectionStorySortOrderMutationOptions =
     UpdateCollectionStorySortOrderMutationVariables
   >;
 export const UpdateProspectAsCuratedDocument = gql`
-  mutation updateProspectAsCurated($id: ID!) {
+  mutation updateProspectAsCurated(
+    $id: ID!
+    $historyFilter: ApprovedCorpusItemScheduledSurfaceHistoryFilters
+  ) {
     updateProspectAsCurated(id: $id) {
       ...ProspectData
     }
@@ -5502,6 +5573,7 @@ export type UpdateProspectAsCuratedMutationFn = Apollo.MutationFunction<
  * const [updateProspectAsCuratedMutation, { data, loading, error }] = useUpdateProspectAsCuratedMutation({
  *   variables: {
  *      id: // value for 'id'
+ *      historyFilter: // value for 'historyFilter'
  *   },
  * });
  */
@@ -6296,7 +6368,11 @@ export type GetInitialCollectionFormDataQueryResult = Apollo.QueryResult<
   GetInitialCollectionFormDataQueryVariables
 >;
 export const GetProspectsDocument = gql`
-  query getProspects($scheduledSurfaceGuid: String!, $prospectType: String) {
+  query getProspects(
+    $scheduledSurfaceGuid: String!
+    $prospectType: String
+    $historyFilter: ApprovedCorpusItemScheduledSurfaceHistoryFilters
+  ) {
     getProspects(
       filters: {
         scheduledSurfaceGuid: $scheduledSurfaceGuid
@@ -6323,6 +6399,7 @@ export const GetProspectsDocument = gql`
  *   variables: {
  *      scheduledSurfaceGuid: // value for 'scheduledSurfaceGuid'
  *      prospectType: // value for 'prospectType'
+ *      historyFilter: // value for 'historyFilter'
  *   },
  * });
  */

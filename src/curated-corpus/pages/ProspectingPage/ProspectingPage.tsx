@@ -140,7 +140,13 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     // card from the screen manually once the prospect has been curated.
     fetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
-    variables: { scheduledSurfaceGuid: currentScheduledSurfaceGuid },
+    variables: {
+      scheduledSurfaceGuid: currentScheduledSurfaceGuid,
+      historyFilter: {
+        limit: 1,
+        scheduledSurfaceGuid: currentScheduledSurfaceGuid,
+      },
+    },
   });
 
   // Get today and tomorrow's items that are already scheduled for this Scheduled Surface
@@ -284,7 +290,15 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     // Mark the prospect as processed in the Prospect API datastore.
     runMutation(
       updateProspectAsCurated,
-      { variables: { id: currentProspect?.id } },
+      {
+        variables: {
+          id: currentProspect?.id,
+          historyFilter: {
+            limit: 1,
+            scheduledSurfaceGuid: currentScheduledSurfaceGuid,
+          },
+        },
+      },
       undefined,
       () => {
         formikHelpers.setSubmitting(false);
