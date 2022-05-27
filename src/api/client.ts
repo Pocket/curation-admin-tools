@@ -45,6 +45,9 @@ const apolloOptions = {
 };
 
 export const client = new ApolloClient({
-  link: createUploadLink({ uri: config.adminApiEndpoint }),
+  link: createUploadLink({
+    uri: config.adminApiEndpoint,
+    headers: { 'Apollo-Require-Preflight': true },
+  }),
   ...apolloOptions,
 });
