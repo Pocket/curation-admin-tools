@@ -29,7 +29,7 @@ import {
 import { DateTime } from 'luxon';
 import { transformAuthors } from '../../../_shared/utils/transformAuthors';
 
-export const ApprovedItemsPage: React.FC = (): JSX.Element => {
+export const CorpusPage: React.FC = (): JSX.Element => {
   // Get the usual API response vars and a helper method to retrieve data
   // that can be used inside hooks.
   const [getApprovedCorpusItems, { loading, error, data, refetch }] =

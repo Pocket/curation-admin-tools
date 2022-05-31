@@ -16,7 +16,7 @@ import {
 } from '../../components';
 
 //This page is to display all the Rejected Curated Corpus Items
-export const RejectedItemsPage: React.FC = (): JSX.Element => {
+export const RejectedPage: React.FC = (): JSX.Element => {
   // Get the usual API response vars and a helper method to retrieve data
   // that can be used inside hooks.
   const [getRejectedCorpusItems, { loading, error, data }] =

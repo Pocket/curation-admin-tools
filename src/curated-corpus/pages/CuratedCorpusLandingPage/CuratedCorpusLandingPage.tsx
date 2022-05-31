@@ -10,12 +10,7 @@ import {
   MenuLink,
   PageNotFound,
 } from '../../../_shared/components';
-import {
-  ApprovedItemsPage,
-  ProspectingPage,
-  RejectedItemsPage,
-  SchedulePage,
-} from '../';
+import { CorpusPage, ProspectingPage, RejectedPage, SchedulePage } from '../';
 import { client } from '../../../api/client';
 
 /**
@@ -94,10 +89,10 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
               <SchedulePage />
             </Route>
             <Route exact path={`${path}/corpus/`}>
-              <ApprovedItemsPage />
+              <CorpusPage />
             </Route>
             <Route exact path={`${path}/rejected/`}>
-              <RejectedItemsPage />
+              <RejectedPage />
             </Route>
             <Route component={PageNotFound} />
           </Switch>
