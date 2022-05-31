@@ -515,10 +515,10 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         // Hide the loading indicator
         formikHelpers.setSubmitting(false);
 
-        // In case this prospect already existed in the corpus database,
+        // In case this prospect already existed in the corpus database i.e it has an approvedItem on it,
         // mark it as curated at this point
-        // A manually added item (currentProspect) won't have an id so we skip this check and mutation call
-        if (currentProspect?.id && approvedItem?.url === currentProspect?.url) {
+        // A manually added item/currentProspect won't have an approvedItem on it so this check is never hit
+        if (currentProspect?.approvedCorpusItem) {
           runMutation(updateProspectAsCurated, {
             variables: { id: currentProspect?.id },
           });
