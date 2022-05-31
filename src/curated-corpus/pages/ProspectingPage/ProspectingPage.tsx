@@ -517,7 +517,8 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
 
         // In case this prospect already existed in the corpus database,
         // mark it as curated at this point
-        if (approvedItem?.url === currentProspect?.url) {
+        // A manually added item (currentProspect) won't have an id so we skip this check and mutation call
+        if (currentProspect?.id && approvedItem?.url === currentProspect?.url) {
           runMutation(updateProspectAsCurated, {
             variables: { id: currentProspect?.id },
           });
