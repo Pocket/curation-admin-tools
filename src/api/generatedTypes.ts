@@ -1182,7 +1182,8 @@ export enum ProspectType {
   Global = 'GLOBAL',
   HybridLogisticApproval = 'HYBRID_LOGISTIC_APPROVAL',
   OrganicTimespent = 'ORGANIC_TIMESPENT',
-  Syndicated = 'SYNDICATED',
+  SyndicatedNew = 'SYNDICATED_NEW',
+  SyndicatedRerun = 'SYNDICATED_RERUN',
   TopSaved = 'TOP_SAVED',
 }
 
@@ -1215,9 +1216,15 @@ export type Query = {
   getCurationCategories: Array<CurationCategory>;
   /** Retrieves the nested list of IAB top/sub categories. */
   getIABCategories: Array<IabParentCategory>;
-  /** Look up {Item} info by ID. */
+  /**
+   * Look up {Item} info by ID.
+   * @deprecated Use itemById instead
+   */
   getItemByItemId?: Maybe<Item>;
-  /** Look up {Item} info by a url. */
+  /**
+   * Look up {Item} info by a url.
+   * @deprecated Use itemByUrl instead
+   */
   getItemByUrl?: Maybe<Item>;
   /** Retrieves the languages currently supported. */
   getLanguages: Array<CollectionLanguage>;
@@ -1231,6 +1238,10 @@ export type Query = {
   getScheduledSurfacesForUser: Array<ScheduledSurface>;
   /** returns parser meta data for a given url */
   getUrlMetadata: UrlMetadata;
+  /** Look up {Item} info by ID. */
+  itemByItemId?: Maybe<Item>;
+  /** Look up {Item} info by a url. */
+  itemByUrl?: Maybe<Item>;
   searchCollections: CollectionsResult;
 };
 
@@ -1299,6 +1310,14 @@ export type QueryGetScheduledCorpusItemsArgs = {
 };
 
 export type QueryGetUrlMetadataArgs = {
+  url: Scalars['String'];
+};
+
+export type QueryItemByItemIdArgs = {
+  id: Scalars['ID'];
+};
+
+export type QueryItemByUrlArgs = {
   url: Scalars['String'];
 };
 
