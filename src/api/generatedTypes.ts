@@ -910,6 +910,8 @@ export type Mutation = {
   rescheduleScheduledCorpusItem: ScheduledCorpusItem;
   /** Updates an Approved Item. */
   updateApprovedCorpusItem: ApprovedCorpusItem;
+  /** Updates authors for an Approved Item. */
+  updateApprovedCorpusItemAuthors: ApprovedCorpusItem;
   /** Updates a Collection. */
   updateCollection: Collection;
   /** Updates a CollectionAuthor. */
@@ -1025,6 +1027,10 @@ export type MutationRescheduleScheduledCorpusItemArgs = {
 
 export type MutationUpdateApprovedCorpusItemArgs = {
   data: UpdateApprovedCorpusItemInput;
+};
+
+export type MutationUpdateApprovedCorpusItemAuthorsArgs = {
+  data: UpdateApprovedCorpusItemAuthorsInput;
 };
 
 export type MutationUpdateCollectionArgs = {
@@ -1519,6 +1525,14 @@ export type UnMarseable = {
   __typename?: 'UnMarseable';
   /** The html that could not be parsed into a Marticle* component. */
   html: Scalars['String'];
+};
+
+/** Input data for updating an Approved Item's author data. */
+export type UpdateApprovedCorpusItemAuthorsInput = {
+  /** A name and sort order for each author. */
+  authors: Array<CorpusItemAuthorInput>;
+  /** Approved Item ID. */
+  externalId: Scalars['ID'];
 };
 
 /** Input data for updating an Approved Item. */
