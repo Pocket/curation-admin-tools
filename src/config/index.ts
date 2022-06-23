@@ -15,15 +15,15 @@ export const config = {
   oauth2: {
     provider: `${
       process.env.REACT_APP_OAUTH2_PROVIDER ??
-      'https://pocket-admin-prod.auth.us-east-1.amazoncognito.com/oauth2'
+      'https://mozilla-auth-proxy.getpocket.com/oauth2'
     }`,
     // So is the client ID.
     clientId: `${
-      process.env.REACT_APP_OAUTH2_CLIENT_ID ?? '6qt94s9d651k24mvul9q2lbrcv'
+      process.env.REACT_APP_OAUTH2_CLIENT_ID ?? '2acvnpoglouk95t2pks7hucu7p'
     }`,
     logoutEndpoint: `${
       process.env.REACT_APP_OAUTH2_LOGOUT_ENDPOINT ??
-      'https://pocket-admin-prod.auth.us-east-1.amazoncognito.com/logout'
+      'https://mozilla-auth-proxy.getpocket.com/logout'
     }`,
     redirectUri: `${
       process.env.REACT_APP_OAUTH2_REDIRECT_URI ??
