@@ -22,12 +22,19 @@ export type Scalars = {
   _FieldSet: any;
   /** A date in the YYYY-MM-DD format. */
   Date: any;
+  /** A String representing a date in the format of `yyyy-MM-dd HH:mm:ss` */
   DateString: any;
+  /**
+   * A string formatted with CommonMark markdown,
+   * plus the strikethrough extension from GFM.
+   * This Scalar is for documentation purposes; otherwise
+   * not treated differently from String in the API.
+   */
   Markdown: any;
   /** A positive integer number. */
   NonNegativeInt: any;
   Upload: any;
-  /** These are all just renamed strings right now */
+  /** A URL - usually, for an interesting story on the internet that's worth saving to Pocket. */
   Url: any;
 };
 
@@ -695,7 +702,7 @@ export type Item = {
   encoding?: Maybe<Scalars['String']>;
   /** A snippet of text from the article */
   excerpt?: Maybe<Scalars['String']>;
-  /** The url as provided by the user when saving. Only http or https schemes allowed. */
+  /** key field to identify the Item entity in the Parser service */
   givenUrl: Scalars['Url'];
   /** 0=no images, 1=contains images, 2=is an image */
   hasImage?: Maybe<Imageness>;
@@ -1190,6 +1197,7 @@ export enum ProspectType {
   OrganicTimespent = 'ORGANIC_TIMESPENT',
   SyndicatedNew = 'SYNDICATED_NEW',
   SyndicatedRerun = 'SYNDICATED_RERUN',
+  TimespentLogisticApproval = 'TIMESPENT_LOGISTIC_APPROVAL',
   TopSaved = 'TOP_SAVED',
 }
 
