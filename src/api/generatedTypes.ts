@@ -48,7 +48,7 @@ export type ApprovedCorpusImageUrl = {
 export type ApprovedCorpusItem = {
   __typename?: 'ApprovedCorpusItem';
   /** The authors associated with this ApprovedCorpusItem. */
-  authors?: Maybe<Array<CorpusItemAuthor>>;
+  authors: Array<CorpusItemAuthor>;
   /** A Unix timestamp of when the entity was created. */
   createdAt: Scalars['Int'];
   /** A single sign-on user identifier of the user who created this entity. */
@@ -1840,11 +1840,11 @@ export type CuratedItemDataWithHistoryFragment = {
   createdAt: number;
   updatedBy?: string | null;
   updatedAt: number;
-  authors?: Array<{
+  authors: Array<{
     __typename?: 'CorpusItemAuthor';
     name: string;
     sortOrder: number;
-  }> | null;
+  }>;
   scheduledSurfaceHistory: Array<{
     __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
     externalId: string;
@@ -1874,11 +1874,11 @@ export type CuratedItemDataFragment = {
   createdAt: number;
   updatedBy?: string | null;
   updatedAt: number;
-  authors?: Array<{
+  authors: Array<{
     __typename?: 'CorpusItemAuthor';
     name: string;
     sortOrder: number;
-  }> | null;
+  }>;
   scheduledSurfaceHistory: Array<{
     __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
     externalId: string;
@@ -1927,11 +1927,11 @@ export type ProspectDataFragment = {
     createdAt: number;
     updatedBy?: string | null;
     updatedAt: number;
-    authors?: Array<{
+    authors: Array<{
       __typename?: 'CorpusItemAuthor';
       name: string;
       sortOrder: number;
-    }> | null;
+    }>;
     scheduledSurfaceHistory: Array<{
       __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
       externalId: string;
@@ -1998,11 +1998,11 @@ export type ScheduledItemDataFragment = {
     createdAt: number;
     updatedBy?: string | null;
     updatedAt: number;
-    authors?: Array<{
+    authors: Array<{
       __typename?: 'CorpusItemAuthor';
       name: string;
       sortOrder: number;
-    }> | null;
+    }>;
     scheduledSurfaceHistory: Array<{
       __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
       externalId: string;
@@ -2053,11 +2053,11 @@ export type CreateApprovedCorpusItemMutation = {
     createdAt: number;
     updatedBy?: string | null;
     updatedAt: number;
-    authors?: Array<{
+    authors: Array<{
       __typename?: 'CorpusItemAuthor';
       name: string;
       sortOrder: number;
-    }> | null;
+    }>;
     scheduledSurfaceHistory: Array<{
       __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
       externalId: string;
@@ -2271,11 +2271,11 @@ export type CreateScheduledCorpusItemMutation = {
       createdAt: number;
       updatedBy?: string | null;
       updatedAt: number;
-      authors?: Array<{
+      authors: Array<{
         __typename?: 'CorpusItemAuthor';
         name: string;
         sortOrder: number;
-      }> | null;
+      }>;
       scheduledSurfaceHistory: Array<{
         __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
         externalId: string;
@@ -2370,11 +2370,11 @@ export type DeleteScheduledItemMutation = {
       createdAt: number;
       updatedBy?: string | null;
       updatedAt: number;
-      authors?: Array<{
+      authors: Array<{
         __typename?: 'CorpusItemAuthor';
         name: string;
         sortOrder: number;
-      }> | null;
+      }>;
       scheduledSurfaceHistory: Array<{
         __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
         externalId: string;
@@ -2424,11 +2424,11 @@ export type RejectApprovedItemMutation = {
     createdAt: number;
     updatedBy?: string | null;
     updatedAt: number;
-    authors?: Array<{
+    authors: Array<{
       __typename?: 'CorpusItemAuthor';
       name: string;
       sortOrder: number;
-    }> | null;
+    }>;
     scheduledSurfaceHistory: Array<{
       __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
       externalId: string;
@@ -2496,11 +2496,11 @@ export type RescheduleScheduledCorpusItemMutation = {
       createdAt: number;
       updatedBy?: string | null;
       updatedAt: number;
-      authors?: Array<{
+      authors: Array<{
         __typename?: 'CorpusItemAuthor';
         name: string;
         sortOrder: number;
-      }> | null;
+      }>;
       scheduledSurfaceHistory: Array<{
         __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
         externalId: string;
@@ -2538,11 +2538,11 @@ export type UpdateApprovedCorpusItemMutation = {
     createdAt: number;
     updatedBy?: string | null;
     updatedAt: number;
-    authors?: Array<{
+    authors: Array<{
       __typename?: 'CorpusItemAuthor';
       name: string;
       sortOrder: number;
-    }> | null;
+    }>;
     scheduledSurfaceHistory: Array<{
       __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
       externalId: string;
@@ -2938,11 +2938,11 @@ export type UpdateProspectAsCuratedMutation = {
       createdAt: number;
       updatedBy?: string | null;
       updatedAt: number;
-      authors?: Array<{
+      authors: Array<{
         __typename?: 'CorpusItemAuthor';
         name: string;
         sortOrder: number;
-      }> | null;
+      }>;
       scheduledSurfaceHistory: Array<{
         __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
         externalId: string;
@@ -3005,11 +3005,11 @@ export type GetApprovedItemByUrlQuery = {
     createdAt: number;
     updatedBy?: string | null;
     updatedAt: number;
-    authors?: Array<{
+    authors: Array<{
       __typename?: 'CorpusItemAuthor';
       name: string;
       sortOrder: number;
-    }> | null;
+    }>;
     scheduledSurfaceHistory: Array<{
       __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
       externalId: string;
@@ -3060,11 +3060,11 @@ export type GetApprovedItemsQuery = {
         createdAt: number;
         updatedBy?: string | null;
         updatedAt: number;
-        authors?: Array<{
+        authors: Array<{
           __typename?: 'CorpusItemAuthor';
           name: string;
           sortOrder: number;
-        }> | null;
+        }>;
         scheduledSurfaceHistory: Array<{
           __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
           externalId: string;
@@ -3424,11 +3424,11 @@ export type GetProspectsQuery = {
       createdAt: number;
       updatedBy?: string | null;
       updatedAt: number;
-      authors?: Array<{
+      authors: Array<{
         __typename?: 'CorpusItemAuthor';
         name: string;
         sortOrder: number;
-      }> | null;
+      }>;
       scheduledSurfaceHistory: Array<{
         __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
         externalId: string;
@@ -3545,11 +3545,11 @@ export type GetScheduledItemsQuery = {
         createdAt: number;
         updatedBy?: string | null;
         updatedAt: number;
-        authors?: Array<{
+        authors: Array<{
           __typename?: 'CorpusItemAuthor';
           name: string;
           sortOrder: number;
-        }> | null;
+        }>;
         scheduledSurfaceHistory: Array<{
           __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
           externalId: string;
