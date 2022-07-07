@@ -1197,6 +1197,7 @@ export enum ProspectType {
   OrganicTimespent = 'ORGANIC_TIMESPENT',
   SyndicatedNew = 'SYNDICATED_NEW',
   SyndicatedRerun = 'SYNDICATED_RERUN',
+  TimespentLogisticApproval = 'TIMESPENT_LOGISTIC_APPROVAL',
   TopSaved = 'TOP_SAVED',
 }
 
