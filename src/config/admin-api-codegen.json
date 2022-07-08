@@ -16,6 +16,14 @@
       "config": {
         "federation": true
       }
+    },
+    "src/api/introspection.json": {
+      "plugins": [
+        "introspection"
+      ],
+      "config": {
+        "minify": true
+      }
     }
   },
   "hooks": {
