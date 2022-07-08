@@ -10,7 +10,13 @@ describe('The AddProspectForm component', () => {
   const onCancel = jest.fn();
 
   it('should render all the form fields and elements', () => {
-    render(<AddProspectForm onSubmit={onSubmit} onCancel={onCancel} />);
+    render(
+      <AddProspectForm
+        onSubmit={onSubmit}
+        onCancel={onCancel}
+        isLoaderShowing={false}
+      />
+    );
 
     // Check if form input and buttons are rendered
     const urlInputField = screen.getByLabelText(/item url/i);
@@ -27,7 +33,11 @@ describe('The AddProspectForm component', () => {
     render(
       <MockedProvider>
         <SnackbarProvider maxSnack={3}>
-          <AddProspectForm onSubmit={onSubmit} onCancel={onCancel} />
+          <AddProspectForm
+            onSubmit={onSubmit}
+            onCancel={onCancel}
+            isLoaderShowing={false}
+          />
         </SnackbarProvider>
       </MockedProvider>
     );
@@ -44,7 +54,11 @@ describe('The AddProspectForm component', () => {
     render(
       <MockedProvider>
         <SnackbarProvider maxSnack={3}>
-          <AddProspectForm onSubmit={onSubmit} onCancel={onCancel} />
+          <AddProspectForm
+            onSubmit={onSubmit}
+            onCancel={onCancel}
+            isLoaderShowing={false}
+          />
         </SnackbarProvider>
       </MockedProvider>
     );

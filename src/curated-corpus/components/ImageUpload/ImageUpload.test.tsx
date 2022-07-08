@@ -2,7 +2,12 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ImageUpload } from './ImageUpload';
-import { ApprovedCorpusItem, CuratedStatus } from '../../../api/generatedTypes';
+import {
+  ApprovedCorpusItem,
+  CorpusItemSource,
+  CorpusLanguage,
+  CuratedStatus,
+} from '../../../api/generatedTypes';
 import { SnackbarProvider } from 'notistack';
 import { MockedProvider } from '@apollo/client/testing';
 import { formatFileSize } from '../../../_shared/utils/formatFileSize';
@@ -21,7 +26,7 @@ describe('The ImageUpload component', () => {
       imageUrl: 'https://placeimg.com/640/480/people?random=494',
       excerpt:
         'Everything You Wanted to Know About React and Were Afraid To Ask',
-      language: 'de',
+      language: CorpusLanguage.De,
       publisher: 'Amazing Inventions',
       topic: 'TECHNOLOGY',
       status: CuratedStatus.Recommendation,
@@ -31,6 +36,8 @@ describe('The ImageUpload component', () => {
       createdAt: 1635014926,
       createdBy: 'Amy',
       updatedAt: 1635114926,
+      scheduledSurfaceHistory: [],
+      source: CorpusItemSource.Prospect,
     };
   });
 

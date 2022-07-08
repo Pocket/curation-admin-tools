@@ -18,6 +18,7 @@ describe('The ExistingProspectCard component', () => {
   beforeEach(() => {
     prospect = {
       id: '123-abc',
+      prospectId: '123-abc',
       title: 'How To Win Friends And Influence People with DynamoDB',
       scheduledSurfaceGuid: 'NEW_TAB_EN_US',
       prospectType: ProspectType.OrganicTimespent,
@@ -47,6 +48,7 @@ describe('The ExistingProspectCard component', () => {
         isTimeSensitive: false,
         source: CorpusItemSource.Prospect,
         status: CuratedStatus.Recommendation,
+        scheduledSurfaceHistory: [],
       },
     };
   });

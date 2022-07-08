@@ -2,6 +2,8 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import {
+  CorpusLanguage,
+  CorpusItemSource,
   CuratedStatus,
   ScheduledCorpusItem,
   Topics,
@@ -21,6 +23,7 @@ describe('The MiniScheduleCard component', () => {
       createdBy: 'Amy',
       updatedAt: 1635014927,
       updatedBy: 'Amy',
+      scheduledSurfaceGuid: 'NEW_TAB_EN_US',
       approvedItem: {
         externalId: '123-abc',
         prospectId: '123-xyz',
@@ -29,7 +32,7 @@ describe('The MiniScheduleCard component', () => {
         imageUrl: 'https://placeimg.com/640/480/people?random=494',
         excerpt:
           'Everything You Wanted to Know About React and Were Afraid To Ask',
-        language: 'de',
+        language: CorpusLanguage.De,
         publisher: 'Amazing Inventions',
         topic: Topics.Technology,
         status: CuratedStatus.Recommendation,
@@ -39,6 +42,8 @@ describe('The MiniScheduleCard component', () => {
         createdAt: 1635014926,
         createdBy: 'Amy',
         updatedAt: 1635114926,
+        scheduledSurfaceHistory: [],
+        source: CorpusItemSource.Prospect,
       },
     };
   });
