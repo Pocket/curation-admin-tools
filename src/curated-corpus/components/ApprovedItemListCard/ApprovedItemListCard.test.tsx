@@ -169,19 +169,4 @@ describe('The ApprovedItemListCard component', () => {
 
     expect(screen.getByText('Agatha Christie')).toBeInTheDocument();
   });
-
-  it('should show a placeholder string if authors are missing', () => {
-    item = {
-      ...item,
-      authors: [],
-    };
-
-    render(
-      <MemoryRouter>
-        <ApprovedItemListCard item={item} />
-      </MemoryRouter>
-    );
-
-    expect(screen.getByText('Authors: N/A')).toBeInTheDocument();
-  });
 });
