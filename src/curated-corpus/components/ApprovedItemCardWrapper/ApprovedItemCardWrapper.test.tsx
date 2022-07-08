@@ -1,7 +1,12 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { ApprovedCorpusItem, CuratedStatus } from '../../../api/generatedTypes';
+import {
+  ApprovedCorpusItem,
+  CorpusItemSource,
+  CorpusLanguage,
+  CuratedStatus,
+} from '../../../api/generatedTypes';
 import { ApprovedItemCardWrapper } from './ApprovedItemCardWrapper';
 
 describe('The ApprovedItemCardWrapper component', () => {
@@ -16,7 +21,9 @@ describe('The ApprovedItemCardWrapper component', () => {
       imageUrl: 'https://placeimg.com/640/480/people?random=494',
       excerpt:
         'Everything You Wanted to Know About React and Were Afraid To Ask',
-      language: 'de',
+      source: CorpusItemSource.Prospect,
+      language: CorpusLanguage.De,
+      scheduledSurfaceHistory: [],
       publisher: 'Amazing Inventions',
       topic: 'Technology',
       status: CuratedStatus.Recommendation,

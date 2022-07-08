@@ -18,7 +18,7 @@ describe('The ScheduleItemForm component', () => {
       prospectTypes: [
         ProspectType.Global,
         ProspectType.OrganicTimespent,
-        ProspectType.Syndicated,
+        ProspectType.SyndicatedNew,
       ],
     },
     {
