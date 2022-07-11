@@ -41,6 +41,12 @@ describe('The ScheduledItemCardWrapper component', () => {
         updatedAt: 1635114926,
         scheduledSurfaceHistory: [],
         source: CorpusItemSource.Prospect,
+        authors: [
+          {
+            name: 'Octavia Butler',
+            sortOrder: 1,
+          },
+        ],
       },
     };
   });

@@ -74,7 +74,7 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
       <CardContent className={classes.content}>
         <Typography className={classes.publisher} gutterBottom>
           <span>{item.publisher}</span> &middot;{' '}
-          <span>{flattenAuthors(item.authors) || 'Authors: N/A'}</span>
+          <span>{flattenAuthors(item.authors)}</span>
         </Typography>
         <Typography
           className={classes.title}
