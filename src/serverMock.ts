@@ -62,7 +62,7 @@ const mockedSchema = addMocksToSchema({
 });
 
 // Set up a server that reads a GraphQL document and returns the data for it
-setupServer(
+export const server = setupServer(
   rest.post<{ query: string; variables: any }>(
     config.adminApiEndpoint,
     async (req, res, ctx) => {

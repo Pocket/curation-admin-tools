@@ -3,22 +3,33 @@ import { render, screen } from '@testing-library/react';
 import { ApolloProvider } from '@apollo/client';
 import { SnackbarProvider } from 'notistack';
 import { client } from '../../../api/client';
+import { server } from '../../../serverMock';
 import { ScheduleItemFormConnector } from './ScheduleItemFormConnector';
+import LuxonUtils from '@date-io/luxon';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 
 describe('ScheduleItemFormConnector', () => {
-  it('does things', () => {
-    const { debug } = render(
+  beforeAll(() => server.listen());
+  afterEach(() => server.resetHandlers());
+  afterAll(() => server.close());
+
+  it('loads the form with all scheduled surfaces', async () => {
+    render(
       <ApolloProvider client={client}>
         <SnackbarProvider>
-          <ScheduleItemFormConnector
-            approvedItemExternalId="dummyId"
-            onSubmit={jest.fn()}
-          />
+          <MuiPickersUtilsProvider utils={LuxonUtils}>
+            <ScheduleItemFormConnector
+              approvedItemExternalId="dummyId"
+              onSubmit={jest.fn()}
+            />
+          </MuiPickersUtilsProvider>
         </SnackbarProvider>
       </ApolloProvider>
     );
 
-    debug();
+    // Wait for the form to load, as it needs to fetch a list of surfaces
+    // available for the user
+    await screen.findByRole('form');
 
     // TODO: test that all scheduled surfaces available for the user
     // have loaded in the dropdown
