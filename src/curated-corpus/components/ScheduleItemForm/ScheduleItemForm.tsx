@@ -137,7 +137,6 @@ export const ScheduleItemForm: React.FC<
                   <option
                     value={scheduledSurface.guid}
                     key={scheduledSurface.guid}
-                    data-testid={scheduledSurface.guid}
                   >
                     {scheduledSurface.name}
                   </option>
