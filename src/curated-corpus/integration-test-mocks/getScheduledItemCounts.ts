@@ -13,5 +13,6 @@ const scheduledItemCounts = {
 export const mock_ScheduledItemCountsZero = constructMock(
   'getScheduledItems',
   getScheduledItemCounts,
+  undefined,
   scheduledItemCounts
 );

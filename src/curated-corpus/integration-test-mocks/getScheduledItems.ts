@@ -52,5 +52,6 @@ const scheduledItems: ScheduledCorpusItem[] = [
 export const mock_scheduledItems = constructMock(
   'getScheduledItems',
   getScheduledItems,
+  undefined,
   scheduledItems
 );
