@@ -148,7 +148,7 @@ export const CollectionPartnerAssociationForm: React.FC<
               fieldProps={formik.getFieldProps('blurb')}
               fieldMeta={formik.getFieldMeta('blurb')}
               multiline
-              rows={12}
+              minRows={12}
               placeholder={association.partner.blurb}
             />
           </MarkdownPreview>
