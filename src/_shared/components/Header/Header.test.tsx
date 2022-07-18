@@ -29,6 +29,7 @@ describe('The Header component', () => {
         <Header
           hasUser={false}
           menuLinks={menuLinks}
+          onLogout={jest.fn()}
           parsedIdToken={null}
           productLink="/something"
           productName="Collections"
@@ -54,6 +55,7 @@ describe('The Header component', () => {
         <Header
           hasUser={false}
           menuLinks={menuLinks}
+          onLogout={jest.fn()}
           parsedIdToken={null}
           productLink="/something"
           productName="Collections"
