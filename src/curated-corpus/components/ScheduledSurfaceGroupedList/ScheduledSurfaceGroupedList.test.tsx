@@ -2,6 +2,8 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import {
+  CorpusItemSource,
+  CorpusLanguage,
   CuratedStatus,
   ScheduledCorpusItemsResult,
 } from '../../../api/generatedTypes';
@@ -15,6 +17,7 @@ describe('The ScheduledSurfaceGroupedList component', () => {
     const item = {
       externalId: '456-dfg',
       scheduledDate: '2030-01-01',
+      scheduledSurfaceGuid: 'NEW_TAB_EN_US',
       createdAt: 1635014926,
       createdBy: 'Amy',
       updatedAt: 1635014927,
@@ -23,11 +26,11 @@ describe('The ScheduledSurfaceGroupedList component', () => {
         externalId: '123-abc',
         prospectId: '123-xyz',
         title: 'First story',
-        url: 'http://www.test.com/how-to',
+        url: 'https://www.test.com/how-to',
         imageUrl: 'https://placeimg.com/640/480/people?random=494',
         excerpt:
           'Everything You Wanted to Know About React and Were Afraid To Ask',
-        language: 'de',
+        language: CorpusLanguage.De,
         publisher: 'Amazing Inventions',
         topic: 'Technology',
         status: CuratedStatus.Recommendation,
@@ -37,6 +40,9 @@ describe('The ScheduledSurfaceGroupedList component', () => {
         createdAt: 1635014926,
         createdBy: 'Amy',
         updatedAt: 1635114926,
+        authors: [{ name: 'Marie Curie', sortOrder: 1 }],
+        scheduledSurfaceHistory: [],
+        source: CorpusItemSource.Prospect,
       },
     };
 

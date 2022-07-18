@@ -2,8 +2,8 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import {
-  CorpusLanguage,
   CorpusItemSource,
+  CorpusLanguage,
   CuratedStatus,
   ScheduledCorpusItem,
   Topics,
@@ -43,6 +43,7 @@ describe('The MiniScheduleCard component', () => {
         createdBy: 'Amy',
         updatedAt: 1635114926,
         scheduledSurfaceHistory: [],
+        authors: [{ name: 'John Doe', sortOrder: 1 }],
         source: CorpusItemSource.Prospect,
       },
     };
