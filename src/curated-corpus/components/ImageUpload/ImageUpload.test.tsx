@@ -38,6 +38,7 @@ describe('The ImageUpload component', () => {
       updatedAt: 1635114926,
       scheduledSurfaceHistory: [],
       source: CorpusItemSource.Prospect,
+      authors: [{ name: 'Charles Dickens', sortOrder: 1 }],
     };
   });
 

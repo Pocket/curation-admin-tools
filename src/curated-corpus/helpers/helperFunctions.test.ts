@@ -19,7 +19,7 @@ describe('helperFunctions ', () => {
         id: 'test-id',
         prospectId: 'test-prospect-id',
         scheduledSurfaceGuid: 'en-us',
-        prospectType: ProspectType.Syndicated,
+        prospectType: ProspectType.SyndicatedNew,
         url: 'test-prospect-url',
         createdAt: 20220110,
         domain: 'test-prospect-domain',
