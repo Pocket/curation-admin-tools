@@ -6,11 +6,13 @@ import { DocumentNode } from '@apollo/client';
 export const constructMock = (
   queryName: string,
   query: DocumentNode,
+  variables: any,
   data: any
 ) => {
   return {
     request: {
       query,
+      variables,
     },
     result: {
       data: {
