@@ -312,7 +312,7 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
                   fieldProps={formik.getFieldProps('excerpt')}
                   fieldMeta={formik.getFieldMeta('excerpt')}
                   multiline
-                  rows={4}
+                  minRows={4}
                 />
               </MarkdownPreview>
             </Grid>

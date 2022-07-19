@@ -79,7 +79,7 @@ export const PartnerForm: React.FC<
               fieldProps={formik.getFieldProps('blurb')}
               fieldMeta={formik.getFieldMeta('blurb')}
               multiline
-              rows={12}
+              minRows={12}
             />
           </MarkdownPreview>
         </Grid>

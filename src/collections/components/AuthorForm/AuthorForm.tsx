@@ -106,7 +106,7 @@ export const AuthorForm: React.FC<AuthorFormProps & SharedFormButtonsProps> = (
               fieldProps={formik.getFieldProps('bio')}
               fieldMeta={formik.getFieldMeta('bio')}
               multiline
-              rows={12}
+              minRows={12}
             />
           </MarkdownPreview>
         </Grid>
