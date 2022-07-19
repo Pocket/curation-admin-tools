@@ -65,7 +65,7 @@ describe('The FormikTextField component', () => {
         fieldProps={fieldProps}
         fieldMeta={fieldMeta}
         multiline
-        rows={5}
+        minRows={5}
       />
     );
 
