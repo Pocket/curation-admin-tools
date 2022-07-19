@@ -142,12 +142,11 @@ export const CollectionPage = (): JSX.Element => {
     // This setting lets us switch this query to manual cache updates only
     // so that on reordering stories they (stories) don't snap back
     // after the first mutation has run
-    fetchPolicy: 'standby',
+    fetchPolicy: 'no-cache',
   });
 
   if (!storiesData) {
     // We need to fetch these stories if they're absent from the cache
-    // as the query won't run even once with the 'standby' fetch policy
     refetchStories();
   }
 
