@@ -48,6 +48,7 @@ describe('The ExistingProspectCard component', () => {
         isTimeSensitive: false,
         source: CorpusItemSource.Prospect,
         status: CuratedStatus.Recommendation,
+        authors: [{ name: 'Marie Curie', sortOrder: 1 }],
         scheduledSurfaceHistory: [],
       },
     };

@@ -44,7 +44,7 @@ describe('The CollectionPartnerAssociationForm component', () => {
         externalId: '789-xyz',
         name: 'The Cosmos Awaits',
         url: 'https://www.example.com/',
-        imageUrl: 'http://placeimg.com/640/480/people?random=494',
+        imageUrl: 'https://placeimg.com/640/480/people?random=494',
         blurb:
           'The sky calls to us vanquish the impossible hundreds of thousands' +
           ' a very small stage in a vast cosmic arena white dwarf network' +
@@ -54,7 +54,7 @@ describe('The CollectionPartnerAssociationForm component', () => {
         externalId: '999-qwerty',
         name: 'Billions upon billions',
         url: 'https://www.example.com/',
-        imageUrl: 'http://placeimg.com/640/480/people?random=494',
+        imageUrl: 'https://placeimg.com/640/480/people?random=494',
         blurb:
           'The softly dancing ship of the imagination from which we spring ' +
           'gathered by gravity with pretty stories for which there is little' +
@@ -290,9 +290,7 @@ describe('The CollectionPartnerAssociationForm component', () => {
     userEvent.clear(blurbField);
     userEvent.type(
       blurbField,
-      'The sky calls to us vastness is bearable ' +
-        'only through love courage of our questions kindling the energy hidden in ' +
-        "matter the only home we've ever known courage of our questions?"
+      'Hmm, this test tends to time out if this line is too long'
     );
     await waitFor(() => {
       userEvent.click(saveButton);

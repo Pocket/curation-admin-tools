@@ -282,7 +282,7 @@ export const CollectionForm: React.FC<
               fieldProps={formik.getFieldProps('excerpt')}
               fieldMeta={formik.getFieldMeta('excerpt')}
               multiline
-              rows={4}
+              minRows={4}
             />
           </MarkdownPreview>
         </Grid>
@@ -295,7 +295,7 @@ export const CollectionForm: React.FC<
               fieldProps={formik.getFieldProps('intro')}
               fieldMeta={formik.getFieldMeta('intro')}
               multiline
-              rows={12}
+              minRows={12}
             />
           </MarkdownPreview>
         </Grid>

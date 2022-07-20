@@ -1,7 +1,10 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { RejectedCorpusItem } from '../../../api/generatedTypes';
+import {
+  CorpusLanguage,
+  RejectedCorpusItem,
+} from '../../../api/generatedTypes';
 import { RejectedItemListCard } from './RejectedItemListCard';
 
 describe('The RejectedItemListCard component', () => {
@@ -13,7 +16,7 @@ describe('The RejectedItemListCard component', () => {
       prospectId: '123-xyz',
       title: 'How To Win Friends And Influence People with React',
       url: 'http://www.test.com/how-to',
-      language: 'DE',
+      language: CorpusLanguage.De,
       publisher: 'Amazing Inventions',
       topic: 'Technology',
       createdAt: 1635014926,
