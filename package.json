@@ -16,7 +16,7 @@
     "@sentry/react": "6.17.9",
     "@sentry/tracing": "6.17.9",
     "apollo-upload-client": "17.0.0",
-    "@types/apollo-upload-client": "17.0.0",
+    "@types/apollo-upload-client": "17.0.1",
     "formik": "2.2.9",
     "luxon": "1.28.0",
     "@types/luxon": "2.0.9",
