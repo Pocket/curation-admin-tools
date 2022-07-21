@@ -8,13 +8,20 @@ import {
   Chip,
   Grid,
   Link,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
   Typography,
 } from '@material-ui/core';
 import { useStyles } from './ProspectListCard.styles';
 import LanguageIcon from '@material-ui/icons/Language';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import MyLocationIcon from '@material-ui/icons/MyLocation';
 import { Button } from '../../../_shared/components';
 import { getDisplayTopic } from '../../helpers/helperFunctions';
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 
 interface ProspectListCardProps {
   /**
@@ -57,11 +64,31 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
             alt={prospect.title ?? 'No title supplied'}
             className={classes.image}
           />
-          <Typography variant="subtitle2" color="textSecondary">
-            Saves: {prospect.saveCount}
-            <br />
-            Source: {prospect.prospectType.toLowerCase()}
-          </Typography>
+
+          <List dense disablePadding>
+            <ListItem disableGutters>
+              <ListItemIcon className={classes.listItemIcon}>
+                <LanguageIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText
+                secondary={prospect.language?.toUpperCase() ?? 'N/A'}
+              />
+            </ListItem>
+
+            <ListItem disableGutters>
+              <ListItemIcon className={classes.listItemIcon}>
+                <FavoriteBorderIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText secondary={`${prospect.saveCount} saves`} />
+            </ListItem>
+
+            <ListItem disableGutters>
+              <ListItemIcon className={classes.listItemIcon}>
+                <MyLocationIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText secondary={prospect.prospectType.toLowerCase()} />
+            </ListItem>
+          </List>
         </Grid>
         <Grid item xs={12} sm={9}>
           <Link href={prospect.url} target="_blank" className={classes.link}>
@@ -89,15 +116,17 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
             <Chip
               variant="outlined"
               color="primary"
-              label={prospect.language?.toUpperCase() ?? 'N/A'}
-              icon={<LanguageIcon />}
-            />{' '}
-            <Chip
-              variant="outlined"
-              color="primary"
               label={getDisplayTopic(prospect.topic)}
               icon={<LabelOutlinedIcon />}
-            />
+            />{' '}
+            {prospect.isSyndicated && (
+              <Chip
+                variant="outlined"
+                color="primary"
+                label="Syndicated"
+                icon={<CheckCircleOutlineIcon />}
+              />
+            )}
           </Box>
           <Typography component="div">{prospect.excerpt}</Typography>
         </Grid>
