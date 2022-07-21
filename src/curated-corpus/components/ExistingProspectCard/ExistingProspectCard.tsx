@@ -7,11 +7,17 @@ import {
   Chip,
   Grid,
   Link,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
   Typography,
 } from '@material-ui/core';
 import LanguageIcon from '@material-ui/icons/Language';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import CheckIcon from '@material-ui/icons/Check';
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+
 import { useStyles } from './ExistingProspectCard.styles';
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { Button } from '../../../_shared/components';
@@ -26,6 +32,13 @@ interface ExistingProspectCardProps {
   onSchedule: VoidFunction;
 }
 
+/**
+ * This component is used on the Prospecting page to display prospects that are
+ * already in the curated corpus.
+ *
+ * @param props
+ * @constructor
+ */
 export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
   props
 ): JSX.Element => {
@@ -42,6 +55,15 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
             alt={item.title}
             className={classes.image}
           />
+
+          <List dense disablePadding>
+            <ListItem disableGutters>
+              <ListItemIcon className={classes.listItemIcon}>
+                <LanguageIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText secondary={item.language} />
+            </ListItem>
+          </List>
         </Grid>
         <Grid item xs={12} sm={9}>
           <Link href={item.url} target="_blank" className={classes.link}>
@@ -67,15 +89,17 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
             <Chip
               variant="outlined"
               color="primary"
-              label={item.language}
-              icon={<LanguageIcon />}
-            />{' '}
-            <Chip
-              variant="outlined"
-              color="primary"
               label={getDisplayTopic(item.topic)}
               icon={<LabelOutlinedIcon />}
             />{' '}
+            {item.isSyndicated && (
+              <Chip
+                variant="outlined"
+                color="primary"
+                label="Syndicated"
+                icon={<CheckCircleOutlineIcon />}
+              />
+            )}{' '}
             <Chip
               variant="default"
               color="secondary"

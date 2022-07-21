@@ -54,7 +54,7 @@ describe('The ExistingProspectCard component', () => {
     };
   });
 
-  it('shows basic prospect information', () => {
+  it('should show basic prospect metadata', () => {
     render(
       <MemoryRouter>
         <ExistingProspectCard
@@ -80,7 +80,7 @@ describe('The ExistingProspectCard component', () => {
     expect(excerpt).toBeInTheDocument();
   });
 
-  it('shows language correctly', () => {
+  it('should show language correctly', () => {
     render(
       <MemoryRouter>
         <ExistingProspectCard
@@ -93,7 +93,7 @@ describe('The ExistingProspectCard component', () => {
     expect(screen.getByText(/^de$/i)).toBeInTheDocument();
   });
 
-  it('shows topic correctly', () => {
+  it('should show topic correctly', () => {
     render(
       <MemoryRouter>
         <ExistingProspectCard
@@ -109,7 +109,6 @@ describe('The ExistingProspectCard component', () => {
   it('should render card with excerpt', () => {
     render(
       <MemoryRouter>
-        {' '}
         <ExistingProspectCard
           item={prospect.approvedCorpusItem!}
           onSchedule={onSchedule}
@@ -118,6 +117,35 @@ describe('The ExistingProspectCard component', () => {
     );
 
     expect(screen.getByText(prospect.excerpt!)).toBeInTheDocument();
+  });
+
+  it('should not render "syndicated" tag for non-syndicated articles', () => {
+    render(
+      <MemoryRouter>
+        <ExistingProspectCard
+          item={prospect.approvedCorpusItem!}
+          onSchedule={onSchedule}
+        />
+      </MemoryRouter>
+    );
+
+    expect(screen.queryByText('Syndicated')).not.toBeInTheDocument();
+  });
+
+  it('should render "syndicated" tag for syndicated articles', () => {
+    // Update the mock so that it becomes a syndicated article.
+    prospect.approvedCorpusItem!.isSyndicated = true;
+
+    render(
+      <MemoryRouter>
+        <ExistingProspectCard
+          item={prospect.approvedCorpusItem!}
+          onSchedule={onSchedule}
+        />
+      </MemoryRouter>
+    );
+
+    expect(screen.queryByText('Syndicated')).toBeInTheDocument();
   });
 
   it('should render curated item card with the action button', () => {

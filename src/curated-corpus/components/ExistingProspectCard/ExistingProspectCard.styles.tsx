@@ -23,6 +23,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.primary.main,
       padding: '1.25 rem 0',
     },
+    listItemIcon: {
+      minWidth: '1.5rem',
+    },
     title: {
       fontSize: '1.25rem',
       fontWeight: 500,

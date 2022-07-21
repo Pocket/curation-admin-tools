@@ -25,10 +25,12 @@ describe('The ProspectListCard component', () => {
       publisher: 'Amazing Inventions',
       authors: 'Charles Dickens,O. Henry',
       topic: Topics.Technology,
+      saveCount: 111222,
+      isSyndicated: false,
     };
   });
 
-  it('shows basic prospect information', () => {
+  const renderComponent = () => {
     render(
       <MemoryRouter>
         <ProspectListCard
@@ -39,6 +41,10 @@ describe('The ProspectListCard component', () => {
         />
       </MemoryRouter>
     );
+  };
+
+  it('shows basic prospect information', () => {
+    renderComponent();
 
     // The image is present and the alt text is the item title
     const photo = screen.getByAltText(prospect.title!);
@@ -65,50 +71,49 @@ describe('The ProspectListCard component', () => {
   });
 
   it('shows language correctly', () => {
-    render(
-      <MemoryRouter>
-        {' '}
-        <ProspectListCard
-          prospect={prospect}
-          onAddToCorpus={onAddToCorpus}
-          onRecommend={onRecommend}
-          onReject={onReject}
-        />
-      </MemoryRouter>
-    );
+    renderComponent();
 
     expect(screen.getByText(/^de$/i)).toBeInTheDocument();
   });
 
   it('shows topic correctly', () => {
-    render(
-      <MemoryRouter>
-        <ProspectListCard
-          prospect={prospect}
-          onAddToCorpus={onAddToCorpus}
-          onRecommend={onRecommend}
-          onReject={onReject}
-        />
-      </MemoryRouter>
-    );
+    renderComponent();
 
     expect(screen.getByText(/^technology$/i)).toBeInTheDocument();
   });
 
   it('should render prospect card with excerpt', () => {
-    render(
-      <MemoryRouter>
-        {' '}
-        <ProspectListCard
-          prospect={prospect}
-          onAddToCorpus={onAddToCorpus}
-          onRecommend={onRecommend}
-          onReject={onReject}
-        />
-      </MemoryRouter>
-    );
+    renderComponent();
 
     expect(screen.getByText(prospect.excerpt!)).toBeInTheDocument();
+  });
+
+  it('should show the number of saves', () => {
+    renderComponent();
+
+    expect(screen.getByText(`${prospect.saveCount} saves`)).toBeInTheDocument();
+  });
+
+  it("should show the prospect's source", () => {
+    renderComponent();
+
+    expect(
+      screen.getByText(prospect.prospectType.toLowerCase())
+    ).toBeInTheDocument();
+  });
+
+  it("should hide 'Syndicated' tag if prospect is not syndicated", () => {
+    renderComponent();
+
+    expect(screen.queryByText('Syndicated')).not.toBeInTheDocument();
+  });
+
+  it('should show "Syndicated" tag if displaying a syndicated article', () => {
+    prospect.isSyndicated = true;
+
+    renderComponent();
+
+    expect(screen.getByText('Syndicated')).toBeInTheDocument();
   });
 
   it('should render curated item card with the action buttons', () => {
