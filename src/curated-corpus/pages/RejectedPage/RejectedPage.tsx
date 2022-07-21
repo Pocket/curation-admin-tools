@@ -53,10 +53,8 @@ export const RejectedPage: React.FC = (): JSX.Element => {
   }, [data]);
 
   /**
-   * Process search form values and convert them into a RejectedCorpusItem
-   *Filter
-   * object that will be accepted as a variable by the getRejectedCorpusItem
-   *s query.
+   * Process search form values and convert them into a RejectedCorpusItemFilter
+   * object that will be accepted as a variable by the getRejectedCorpusItems query.
    * @param values
    */
   const handleSubmit = (values: FormikValues): void => {
