@@ -12,8 +12,8 @@ import {
   ProspectListCard,
   RefreshProspectsModal,
   RejectItemModal,
-  ScheduledSurfaceGroupedList,
   ScheduleItemModal,
+  ScheduleSummaryConnector,
   SplitButton,
 } from '../../components';
 import {
@@ -22,11 +22,9 @@ import {
   CuratedStatus,
   Prospect,
   RejectProspectMutationVariables,
-  ScheduledCorpusItemsResult,
   useCreateApprovedCorpusItemMutation,
   useCreateScheduledCorpusItemMutation,
   useGetProspectsQuery,
-  useGetScheduledItemsQuery,
   useGetScheduledSurfacesForUserQuery,
   useRejectProspectMutation,
   useUpdateProspectAsCuratedMutation,
@@ -89,9 +87,14 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     }
   }, [scheduledSurfaceData]);
 
-  // set up initial start/end dates for the query
-  const startDate = DateTime.local().toFormat('yyyy-MM-dd');
-  const endDate = DateTime.local().plus({ days: 1 }).toFormat('yyyy-MM-dd');
+  // This is the date used in the sidebar. Defaults to tomorrow
+  // TODO: once the date picker is in, should this be a state var instead?
+  const sidebarDate = DateTime.local().plus({ days: 1 }).toFormat('yyyy-MM-dd');
+
+  // Whether the data in the sidebar needs to be refreshed.
+  // Is needed when the user switches from surface to surface or
+  // when they schedule something for the date chosen in the sidebar.
+  const [refreshSidebarData, setRefreshSidebarData] = useState(false);
 
   /**
    * When the user selects another Scheduled Surface from the "I am curating for..."
@@ -103,15 +106,6 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     // fetch prospects for the selected Scheduled Surface
     refetch({ scheduledSurfaceGuid: option.code });
 
-    // fetch scheduled items for the selected Scheduled Surface
-    refetchScheduled({
-      filters: {
-        scheduledSurfaceGuid: currentScheduledSurfaceGuid,
-        endDate,
-        startDate,
-      },
-    });
-
     // Update the split button to reflect which ScheduledSurface the user is now on.
     setCurrentScheduledSurfaceGuid(option.code);
 
@@ -119,7 +113,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     // scheduled surface
     setIsManualSubmission(false);
 
-    // Get the relevant Scheduled Surface object out of the list of all surfaces
+    // Get the relevant ScheduledSurface object out of the list of all surfaces
     // we fetched earlier for the user.
     const currentScheduledSurface =
       scheduledSurfaceData?.getScheduledSurfacesForUser.filter(
@@ -145,24 +139,6 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       historyFilter: {
         limit: 1,
         scheduledSurfaceGuid: currentScheduledSurfaceGuid,
-      },
-    },
-  });
-
-  // Get today and tomorrow's items that are already scheduled for this Scheduled Surface
-  const {
-    loading: loadingScheduled,
-    error: errorScheduled,
-    data: dataScheduled,
-    refetch: refetchScheduled,
-  } = useGetScheduledItemsQuery({
-    fetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-    variables: {
-      filters: {
-        scheduledSurfaceGuid: currentScheduledSurfaceGuid,
-        startDate,
-        endDate,
       },
     },
   });
@@ -403,7 +379,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
             }
           );
         } else {
-          // if we don't have a prospect id, this was a manually added prospect
+          // if we don't have a prospect id, this was a manually added prospect,
           // and we don't need to call prospect api at all
           postCreateApprovedItem(
             approvedItemData.createApprovedCorpusItem,
@@ -515,7 +491,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         // Hide the loading indicator
         formikHelpers.setSubmitting(false);
 
-        // In case this prospect already existed in the corpus database i.e it has an approvedItem on it,
+        // In case this prospect already existed in the corpus database i.e. it has an approvedItem on it,
         // mark it as curated at this point
         // A manually added item/currentProspect won't have an approvedItem on it so this check is never hit
         if (currentProspect?.approvedCorpusItem) {
@@ -533,13 +509,9 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         // Hide the Schedule Item Form modal
         toggleScheduleModal();
 
-        // Refresh the sidebar if the story was scheduled for today or tomorrow
-        if (
-          [startDate, endDate].includes(
-            values.scheduledDate.toFormat('yyyy-MM-dd')
-          )
-        ) {
-          refetchScheduled();
+        // Refresh the sidebar data if the story was scheduled for today or tomorrow
+        if (sidebarDate === values.scheduledDate.toFormat('yyyy-MM-dd')) {
+          setRefreshSidebarData(true);
         }
       },
       () => {
@@ -620,7 +592,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
 
       <h1>Prospecting</h1>
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={9}>
+        <Grid item xs={12} sm={8}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               {scheduledSurfaceOptions.length > 0 && (
@@ -739,23 +711,12 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
             })}
         </Grid>
         <Hidden xsDown>
-          <Grid item sm={3}>
-            <h4>Scheduled for today and tomorrow</h4>
-            {!dataScheduled && (
-              <HandleApiResponse
-                loading={loadingScheduled}
-                error={errorScheduled}
-              />
-            )}
-            {dataScheduled &&
-              dataScheduled.getScheduledCorpusItems.map(
-                (data: ScheduledCorpusItemsResult) => (
-                  <ScheduledSurfaceGroupedList
-                    key={data.scheduledDate}
-                    data={data}
-                  />
-                )
-              )}
+          <Grid item sm={4}>
+            <ScheduleSummaryConnector
+              date={sidebarDate}
+              scheduledSurfaceGuid={currentScheduledSurfaceGuid}
+              refreshData={refreshSidebarData}
+            />
           </Grid>
         </Hidden>
       </Grid>
