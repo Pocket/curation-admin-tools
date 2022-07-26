@@ -64,57 +64,29 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   // Get the list of Scheduled Surfaces the currently logged-in user has access to.
   const { data: scheduledSurfaceData } = useGetScheduledSurfacesForUserQuery({
     onCompleted: (data) => {
-      alert('YEETT');
-      if (data) {
-        const options = data.getScheduledSurfacesForUser.map(
-          (scheduledSurface) => {
-            return { code: scheduledSurface.guid, name: scheduledSurface.name };
-          }
-        );
-        if (options.length > 0) {
-          setCurrentScheduledSurfaceGuid(options[0].code);
-          setScheduledSurfaceOptions(options);
+      const options = data.getScheduledSurfacesForUser.map(
+        (scheduledSurface) => {
+          return { code: scheduledSurface.guid, name: scheduledSurface.name };
         }
-
-        // Populate the Prospect Type filtering dropdown with values
-        // relevant to this Scheduled Surface.
-        if (data.getScheduledSurfacesForUser[0]) {
-          const filters = getProspectFilterOptions(
-            data.getScheduledSurfacesForUser[0].prospectTypes
-          );
-          setProspectFilters(filters);
-        }
-        //TODO: call lazy queries here
-        callGetProspectsQuery();
-        callGetScheduledItemsQuery();
+      );
+      if (options.length > 0) {
+        setCurrentScheduledSurfaceGuid(options[0].code);
+        setScheduledSurfaceOptions(options);
       }
+
+      // Populate the Prospect Type filtering dropdown with values
+      // relevant to this Scheduled Surface.
+      if (data.getScheduledSurfacesForUser[0]) {
+        const filters = getProspectFilterOptions(
+          data.getScheduledSurfacesForUser[0].prospectTypes
+        );
+        setProspectFilters(filters);
+      }
+      // call the dependent queries now
+      callGetProspectsQuery();
+      callGetScheduledItemsQuery();
     },
   });
-
-  // Once the data is ready, populate the values for current Scheduled Surface GUID
-  // and the dropdown options.
-  // useEffect(() => {
-  //   if (scheduledSurfaceData) {
-  //     const options = scheduledSurfaceData.getScheduledSurfacesForUser.map(
-  //       (scheduledSurface) => {
-  //         return { code: scheduledSurface.guid, name: scheduledSurface.name };
-  //       }
-  //     );
-  //     if (options.length > 0) {
-  //       setCurrentScheduledSurfaceGuid(options[0].code);
-  //       setScheduledSurfaceOptions(options);
-  //     }
-
-  //     // Populate the Prospect Type filtering dropdown with values
-  //     // relevant to this Scheduled Surface.
-  //     if (scheduledSurfaceData.getScheduledSurfacesForUser[0]) {
-  //       const filters = getProspectFilterOptions(
-  //         scheduledSurfaceData.getScheduledSurfacesForUser[0].prospectTypes
-  //       );
-  //       setProspectFilters(filters);
-  //     }
-  //   }
-  // }, [scheduledSurfaceData]);
 
   // set up initial start/end dates for the query
   const startDate = DateTime.local().toFormat('yyyy-MM-dd');
@@ -162,12 +134,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     setProspectFilters(filterOptions);
   };
 
-  //TODO
   // Get a list of prospects on the page
-  if (!currentScheduledSurfaceGuid) {
-    alert(`GUID is not set -->${currentScheduledSurfaceGuid}`);
-  }
-
   const [callGetProspectsQuery, { loading, error, data, refetch }] =
     useGetProspectsLazyQuery({
       // Do not cache prospects at all. On update, remove the relevant prospect
@@ -183,7 +150,6 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       },
     });
 
-  //TODO
   // Get today and tomorrow's items that are already scheduled for this Scheduled Surface
   const [
     callGetScheduledItemsQuery,
