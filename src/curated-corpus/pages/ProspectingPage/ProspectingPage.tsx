@@ -61,6 +61,47 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   // Ditto for the prospect filters dropdown - it depends on which Scheduled Surface you're on.
   const [prospectFilters, setProspectFilters] = useState<DropdownOption[]>([]);
 
+  // set up initial start/end dates for the query
+  const startDate = DateTime.local().toFormat('yyyy-MM-dd');
+  const endDate = DateTime.local().plus({ days: 1 }).toFormat('yyyy-MM-dd');
+
+  // Get a list of prospects on the page
+  const [callGetProspectsQuery, { loading, error, data, refetch }] =
+    useGetProspectsLazyQuery({
+      // Do not cache prospects at all. On update, remove the relevant prospect
+      // card from the screen manually once the prospect has been curated.
+      fetchPolicy: 'no-cache',
+      notifyOnNetworkStatusChange: true,
+      variables: {
+        scheduledSurfaceGuid: currentScheduledSurfaceGuid,
+        historyFilter: {
+          limit: 1,
+          scheduledSurfaceGuid: currentScheduledSurfaceGuid,
+        },
+      },
+    });
+
+  // Get today and tomorrow's items that are already scheduled for this Scheduled Surface
+  const [
+    callGetScheduledItemsQuery,
+    {
+      loading: loadingScheduled,
+      error: errorScheduled,
+      data: dataScheduled,
+      refetch: refetchScheduled,
+    },
+  ] = useGetScheduledItemsLazyQuery({
+    fetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+    variables: {
+      filters: {
+        scheduledSurfaceGuid: currentScheduledSurfaceGuid,
+        startDate,
+        endDate,
+      },
+    },
+  });
+
   // Get the list of Scheduled Surfaces the currently logged-in user has access to.
   const { data: scheduledSurfaceData } = useGetScheduledSurfacesForUserQuery({
     onCompleted: (data) => {
@@ -87,10 +128,6 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       callGetScheduledItemsQuery();
     },
   });
-
-  // set up initial start/end dates for the query
-  const startDate = DateTime.local().toFormat('yyyy-MM-dd');
-  const endDate = DateTime.local().plus({ days: 1 }).toFormat('yyyy-MM-dd');
 
   /**
    * When the user selects another Scheduled Surface from the "I am curating for..."
@@ -133,43 +170,6 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     );
     setProspectFilters(filterOptions);
   };
-
-  // Get a list of prospects on the page
-  const [callGetProspectsQuery, { loading, error, data, refetch }] =
-    useGetProspectsLazyQuery({
-      // Do not cache prospects at all. On update, remove the relevant prospect
-      // card from the screen manually once the prospect has been curated.
-      fetchPolicy: 'no-cache',
-      notifyOnNetworkStatusChange: true,
-      variables: {
-        scheduledSurfaceGuid: currentScheduledSurfaceGuid,
-        historyFilter: {
-          limit: 1,
-          scheduledSurfaceGuid: currentScheduledSurfaceGuid,
-        },
-      },
-    });
-
-  // Get today and tomorrow's items that are already scheduled for this Scheduled Surface
-  const [
-    callGetScheduledItemsQuery,
-    {
-      loading: loadingScheduled,
-      error: errorScheduled,
-      data: dataScheduled,
-      refetch: refetchScheduled,
-    },
-  ] = useGetScheduledItemsLazyQuery({
-    fetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-    variables: {
-      filters: {
-        scheduledSurfaceGuid: currentScheduledSurfaceGuid,
-        startDate,
-        endDate,
-      },
-    },
-  });
 
   /**
    * Set the current Prospect to be worked on (e.g., to be approved or rejected).
@@ -566,6 +566,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
 
   return (
     <>
+      {console.log('RENDER')}
       {currentProspect && (
         <>
           <RejectItemModal
