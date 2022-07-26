@@ -24,7 +24,7 @@ import {
   RejectProspectMutationVariables,
   useCreateApprovedCorpusItemMutation,
   useCreateScheduledCorpusItemMutation,
-  useGetProspectsQuery,
+  useGetProspectsLazyQuery,
   useGetScheduledSurfacesForUserQuery,
   useRejectProspectMutation,
   useUpdateProspectAsCuratedMutation,
@@ -60,13 +60,9 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   const [prospectFilters, setProspectFilters] = useState<DropdownOption[]>([]);
 
   // Get the list of Scheduled Surfaces the currently logged-in user has access to.
-  const { data: scheduledSurfaceData } = useGetScheduledSurfacesForUserQuery();
-
-  // Once the data is ready, populate the values for current Scheduled Surface GUID
-  // and the dropdown options.
-  useEffect(() => {
-    if (scheduledSurfaceData) {
-      const options = scheduledSurfaceData.getScheduledSurfacesForUser.map(
+  const { data: scheduledSurfaceData } = useGetScheduledSurfacesForUserQuery({
+    onCompleted: (data) => {
+      const options = data.getScheduledSurfacesForUser.map(
         (scheduledSurface) => {
           return { code: scheduledSurface.guid, name: scheduledSurface.name };
         }
@@ -78,14 +74,16 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
 
       // Populate the Prospect Type filtering dropdown with values
       // relevant to this Scheduled Surface.
-      if (scheduledSurfaceData.getScheduledSurfacesForUser[0]) {
+      if (data.getScheduledSurfacesForUser[0]) {
         const filters = getProspectFilterOptions(
-          scheduledSurfaceData.getScheduledSurfacesForUser[0].prospectTypes
+          data.getScheduledSurfacesForUser[0].prospectTypes
         );
         setProspectFilters(filters);
       }
-    }
-  }, [scheduledSurfaceData]);
+      // call the dependent queries now
+      callGetProspectsQuery();
+    },
+  });
 
   // This is the date used in the sidebar. Defaults to tomorrow
   // TODO: once the date picker is in, should this be a state var instead?
@@ -104,7 +102,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
    */
   const updateScheduledSurface = (option: DropdownOption) => {
     // fetch prospects for the selected Scheduled Surface
-    refetch({ scheduledSurfaceGuid: option.code });
+    refetch && refetch({ scheduledSurfaceGuid: option.code });
 
     // Update the split button to reflect which ScheduledSurface the user is now on.
     setCurrentScheduledSurfaceGuid(option.code);
@@ -129,19 +127,20 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   };
 
   // Get a list of prospects on the page
-  const { loading, error, data, refetch } = useGetProspectsQuery({
-    // Do not cache prospects at all. On update, remove the relevant prospect
-    // card from the screen manually once the prospect has been curated.
-    fetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-    variables: {
-      scheduledSurfaceGuid: currentScheduledSurfaceGuid,
-      historyFilter: {
-        limit: 1,
+  const [callGetProspectsQuery, { loading, error, data, refetch }] =
+    useGetProspectsLazyQuery({
+      // Do not cache prospects at all. On update, remove the relevant prospect
+      // card from the screen manually once the prospect has been curated.
+      fetchPolicy: 'no-cache',
+      notifyOnNetworkStatusChange: true,
+      variables: {
         scheduledSurfaceGuid: currentScheduledSurfaceGuid,
+        historyFilter: {
+          limit: 1,
+          scheduledSurfaceGuid: currentScheduledSurfaceGuid,
+        },
       },
-    },
-  });
+    });
 
   /**
    * Set the current Prospect to be worked on (e.g., to be approved or rejected).
@@ -562,7 +561,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       <RefreshProspectsModal
         isOpen={refreshProspectsModalOpen}
         onConfirm={() => {
-          refetch(filterProspectsBy);
+          refetch && refetch(filterProspectsBy);
           toggleRefreshProspectsModal();
         }}
         toggleModal={toggleRefreshProspectsModal}
@@ -625,7 +624,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                     // let's just fetch a new batch of prospects.
                     prospects && prospects.length > 0
                       ? toggleRefreshProspectsModal()
-                      : refetch(filterProspectsBy);
+                      : refetch && refetch(filterProspectsBy);
                   }}
                 >
                   <RefreshIcon fontSize="large" />
