@@ -566,7 +566,6 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
 
   return (
     <>
-      {console.log('RENDER')}
       {currentProspect && (
         <>
           <RejectItemModal
