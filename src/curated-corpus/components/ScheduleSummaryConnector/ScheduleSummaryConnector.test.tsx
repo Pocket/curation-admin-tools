@@ -1,13 +1,36 @@
 import React from 'react';
+import { render, screen, waitFor } from '@testing-library/react';
+import { ScheduleSummaryConnector } from './ScheduleSummaryConnector';
+import { MockedProvider, MockedResponse } from '@apollo/client/testing';
+import { mock_scheduledItems } from '../../integration-test-mocks/getScheduledItems';
 
 describe('The ScheduleSummaryConnector component', () => {
-  // let items: ScheduleSummary[];
-  //
-  // beforeEach(() => {
-  //   items = [];
-  // });
+  let mocks: MockedResponse[] = [];
 
-  it.todo('shows summary headings - including syndicated %, etc.');
+  beforeEach(() => {
+    mocks = [mock_scheduledItems];
+  });
+
+  it('shows summary headings - including syndicated %, etc.', async () => {
+    render(
+      <MockedProvider mocks={mocks}>
+        <ScheduleSummaryConnector
+          date={'2023-01-01'}
+          scheduledSurfaceGuid={'NEW_TAB_EN_US'}
+          refreshData={false}
+        />
+      </MockedProvider>
+    );
+
+    // Shows correct heading with formatted display date
+    await waitFor(() => {
+      expect(
+        screen.findByText('Scheduled for January 1, 2023')
+      ).toBeInTheDocument();
+    });
+
+    // Shows syndicated/total scheduled split
+  });
 
   it.todo('shows topic summary');
 

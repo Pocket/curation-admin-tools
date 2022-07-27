@@ -46,12 +46,20 @@ const scheduledItems: ScheduledCorpusItem[] = [
   },
 ];
 
+const variables = {
+  filters: {
+    scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+    startDate: '2023-01-01',
+    endDate: '2023-01-01',
+  },
+};
+
 /**
  * Return all the mocked scheduled items
  */
 export const mock_scheduledItems = constructMock(
-  'getScheduledItems',
+  'getScheduledCorpusItems',
   getScheduledItems,
-  undefined,
+  variables,
   scheduledItems
 );

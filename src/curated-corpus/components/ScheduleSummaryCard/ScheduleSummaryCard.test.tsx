@@ -1,13 +1,24 @@
 import React from 'react';
+import { ScheduleSummaryCard } from './ScheduleSummaryCard';
+import { render, screen } from '@testing-library/react';
 
 describe('The ScheduleSummaryCard component', () => {
-  // let items: ScheduleSummary[];
-  //
-  // beforeEach(() => {
-  //   items = [];
-  // });
+  it('shows a schedule summary', () => {
+    const items = [
+      { name: 'Publisher One', count: 4 },
+      { name: 'Publisher 2', count: 3 },
+      { name: 'Another publisher', count: 2 },
+      { name: 'Final publisher', count: 1 },
+    ];
+    render(<ScheduleSummaryCard headingCopy={'Publishers'} items={items} />);
 
-  it.todo('shows a schedule summary');
+    // There should be a heading
+    expect(screen.getByText('Publishers')).toBeInTheDocument();
 
-  it.todo('handles empty state');
+    // And all the rows with publisher names and data
+    items.forEach((item) => {
+      expect(screen.getByText(item.name)).toBeInTheDocument();
+      expect(screen.getByText(item.count)).toBeInTheDocument();
+    });
+  });
 });
