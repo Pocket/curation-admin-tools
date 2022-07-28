@@ -59,6 +59,31 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   // Ditto for the prospect filters dropdown - it depends on which Scheduled Surface you're on.
   const [prospectFilters, setProspectFilters] = useState<DropdownOption[]>([]);
 
+  // This is the date used in the sidebar. Defaults to tomorrow
+  // TODO: once the date picker is in, should this be a state var instead?
+  const sidebarDate = DateTime.local().plus({ days: 1 }).toFormat('yyyy-MM-dd');
+
+  // Whether the data in the sidebar needs to be refreshed.
+  // Is needed when the user switches from surface to surface or
+  // when they schedule something for the date chosen in the sidebar.
+  const [refreshSidebarData, setRefreshSidebarData] = useState(false);
+
+  // Get a list of prospects on the page
+  const [callGetProspectsQuery, { loading, error, data, refetch }] =
+    useGetProspectsLazyQuery({
+      // Do not cache prospects at all. On update, remove the relevant prospect
+      // card from the screen manually once the prospect has been curated.
+      fetchPolicy: 'no-cache',
+      notifyOnNetworkStatusChange: true,
+      variables: {
+        scheduledSurfaceGuid: currentScheduledSurfaceGuid,
+        historyFilter: {
+          limit: 1,
+          scheduledSurfaceGuid: currentScheduledSurfaceGuid,
+        },
+      },
+    });
+
   // Get the list of Scheduled Surfaces the currently logged-in user has access to.
   const { data: scheduledSurfaceData } = useGetScheduledSurfacesForUserQuery({
     onCompleted: (data) => {
@@ -84,15 +109,6 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       callGetProspectsQuery();
     },
   });
-
-  // This is the date used in the sidebar. Defaults to tomorrow
-  // TODO: once the date picker is in, should this be a state var instead?
-  const sidebarDate = DateTime.local().plus({ days: 1 }).toFormat('yyyy-MM-dd');
-
-  // Whether the data in the sidebar needs to be refreshed.
-  // Is needed when the user switches from surface to surface or
-  // when they schedule something for the date chosen in the sidebar.
-  const [refreshSidebarData, setRefreshSidebarData] = useState(false);
 
   /**
    * When the user selects another Scheduled Surface from the "I am curating for..."
@@ -125,22 +141,6 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     );
     setProspectFilters(filterOptions);
   };
-
-  // Get a list of prospects on the page
-  const [callGetProspectsQuery, { loading, error, data, refetch }] =
-    useGetProspectsLazyQuery({
-      // Do not cache prospects at all. On update, remove the relevant prospect
-      // card from the screen manually once the prospect has been curated.
-      fetchPolicy: 'no-cache',
-      notifyOnNetworkStatusChange: true,
-      variables: {
-        scheduledSurfaceGuid: currentScheduledSurfaceGuid,
-        historyFilter: {
-          limit: 1,
-          scheduledSurfaceGuid: currentScheduledSurfaceGuid,
-        },
-      },
-    });
 
   /**
    * Set the current Prospect to be worked on (e.g., to be approved or rejected).
@@ -711,11 +711,13 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         </Grid>
         <Hidden xsDown>
           <Grid item sm={4}>
-            <ScheduleSummaryConnector
-              date={sidebarDate}
-              scheduledSurfaceGuid={currentScheduledSurfaceGuid}
-              refreshData={refreshSidebarData}
-            />
+            {currentScheduledSurfaceGuid.length > 0 && (
+              <ScheduleSummaryConnector
+                date={sidebarDate}
+                scheduledSurfaceGuid={currentScheduledSurfaceGuid}
+                refreshData={refreshSidebarData}
+              />
+            )}
           </Grid>
         </Hidden>
       </Grid>
