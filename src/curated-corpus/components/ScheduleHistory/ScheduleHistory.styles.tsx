@@ -1,7 +1,7 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 /**
- * Styles for the ScheduledSurfaceGroupedList component.
+ * Styles for the ScheduleHistory component.
  */
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -16,6 +16,9 @@ export const useStyles = makeStyles((theme: Theme) =>
     root: {
       padding: '0.5em',
       backgroundColor: theme.palette.background.default,
+    },
+    lineBreak: {
+      width: '100%',
     },
   })
 );

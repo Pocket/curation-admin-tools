@@ -53,7 +53,7 @@ export const ScheduleHistory: React.FC<ScheduleHistory> = (
                   {getDisplayDate(item.scheduledDate)}
                 </Typography>
               </Grid>
-              <hr style={{ width: '100%' }} />
+              <hr className={classes.lineBreak} />
             </Grid>
           );
         })}
