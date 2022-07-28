@@ -47,7 +47,7 @@ export const ScheduleSummaryCard: React.FC<ScheduleSummaryCardProps> = (
                 <React.Fragment key={item.name}>
                   <TableRow>
                     <TableCell>{item.name}</TableCell>
-                    <TableCell>{item.count}</TableCell>
+                    <TableCell align="right">{item.count}</TableCell>
                   </TableRow>
                 </React.Fragment>
               );

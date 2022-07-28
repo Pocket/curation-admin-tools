@@ -1,7 +1,7 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 /**
- * Styles for the ScheduleSummaryCOnnector component.
+ * Styles for the ScheduleSummaryConnector component.
  */
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({

@@ -69,7 +69,7 @@ export const ScheduleSummaryConnector: React.FC<
   ): ScheduleSummary[] => {
     const publishers: ScheduleSummary[] = [];
 
-    data.getScheduledCorpusItems[0].items.forEach((item) => {
+    data.getScheduledCorpusItems[0]?.items.forEach((item) => {
       const publisher = item.approvedItem.publisher;
 
       const existingEntry = publishers.find(
@@ -93,7 +93,7 @@ export const ScheduleSummaryConnector: React.FC<
   ): ScheduleSummary[] => {
     const topics: ScheduleSummary[] = [];
 
-    data.getScheduledCorpusItems[0].items.forEach((item) => {
+    data.getScheduledCorpusItems[0]?.items.forEach((item) => {
       const topic = getDisplayTopic(item.approvedItem.topic);
 
       const existingEntry = topics.find((entry) => entry.name === topic);
@@ -112,12 +112,12 @@ export const ScheduleSummaryConnector: React.FC<
     <>
       <h4>Scheduled for {displayDate}</h4>
       {!data && <HandleApiResponse loading={loading} error={error} />}
-      {data && data.getScheduledCorpusItems.length < 1 && (
+      {data && data.getScheduledCorpusItems[0]?.items.length < 1 && (
         <Typography className={classes.heading} variant="h4">
           No results
         </Typography>
       )}
-      {data && data.getScheduledCorpusItems.length > 0 && (
+      {data && data.getScheduledCorpusItems[0]?.items.length > 0 && (
         <>
           <Typography className={classes.heading} variant="h4">
             ({data.getScheduledCorpusItems[0]?.syndicatedCount}/
