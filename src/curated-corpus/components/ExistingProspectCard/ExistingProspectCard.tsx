@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Box,
   Card,
   CardActions,
   CardMedia,
@@ -17,11 +16,16 @@ import LanguageIcon from '@material-ui/icons/Language';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import CheckIcon from '@material-ui/icons/Check';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import { DateTime } from 'luxon';
 
 import { useStyles } from './ExistingProspectCard.styles';
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { Button } from '../../../_shared/components';
-import { getDisplayTopic } from '../../helpers/helperFunctions';
+import {
+  getCuratorNameFromLdap,
+  getDisplayTopic,
+} from '../../helpers/helperFunctions';
+import { ScheduleHistory } from '../ScheduleHistory/ScheduleHistory';
 
 interface ExistingProspectCardProps {
   /**
@@ -44,6 +48,7 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
 ): JSX.Element => {
   const classes = useStyles();
   const { item, onSchedule } = props;
+  const showScheduleHistory = item.scheduledSurfaceHistory.length != 0;
 
   return (
     <Card className={classes.root}>
@@ -63,9 +68,20 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
               </ListItemIcon>
               <ListItemText secondary={item.language} />
             </ListItem>
+            <ListItem disableGutters>
+              <ListItemIcon className={classes.listItemIcon}>
+                <CheckIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText
+                primary={getCuratorNameFromLdap(item.createdBy)}
+                secondary={DateTime.fromSeconds(item.createdAt).toFormat(
+                  'MMMM dd, yyyy'
+                )}
+              />
+            </ListItem>
           </List>
         </Grid>
-        <Grid item xs={12} sm={9}>
+        <Grid item xs={12} sm={showScheduleHistory ? 5 : 9}>
           <Link href={item.url} target="_blank" className={classes.link}>
             <Typography
               className={classes.title}
@@ -85,30 +101,41 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
           >
             <span>{item.publisher}</span>
           </Typography>
-          <Box py={1}>
-            <Chip
-              variant="outlined"
-              color="primary"
-              label={getDisplayTopic(item.topic)}
-              icon={<LabelOutlinedIcon />}
-            />{' '}
-            {item.isSyndicated && (
+          <Grid container spacing={1}>
+            <Grid item>
               <Chip
                 variant="outlined"
                 color="primary"
-                label="Syndicated"
-                icon={<CheckCircleOutlineIcon />}
+                label={getDisplayTopic(item.topic)}
+                icon={<LabelOutlinedIcon />}
               />
-            )}{' '}
-            <Chip
-              variant="default"
-              color="secondary"
-              label="Already in corpus"
-              icon={<CheckIcon />}
-            />
-          </Box>
+            </Grid>
+            <Grid item>
+              {item.isSyndicated && (
+                <Chip
+                  variant="outlined"
+                  color="primary"
+                  label="Syndicated"
+                  icon={<CheckCircleOutlineIcon />}
+                />
+              )}
+            </Grid>
+            <Grid item>
+              <Chip
+                variant="default"
+                color="secondary"
+                label="Already in corpus"
+                icon={<CheckIcon />}
+              />
+            </Grid>
+          </Grid>
           <Typography component="div">{item.excerpt}</Typography>
         </Grid>
+        {showScheduleHistory && (
+          <Grid item xs={12} sm={4}>
+            <ScheduleHistory data={item.scheduledSurfaceHistory} />
+          </Grid>
+        )}
       </Grid>
 
       <CardActions className={classes.actions}>

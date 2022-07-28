@@ -75,7 +75,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       variables: {
         scheduledSurfaceGuid: currentScheduledSurfaceGuid,
         historyFilter: {
-          limit: 1,
+          limit: 3,
           scheduledSurfaceGuid: currentScheduledSurfaceGuid,
         },
       },

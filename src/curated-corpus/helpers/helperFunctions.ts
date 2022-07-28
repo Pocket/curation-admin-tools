@@ -205,3 +205,11 @@ export const getLocalDateTimeForGuid = (
     .toFormat('DDD')
     .concat(', ', localDateTime.toFormat('t'));
 };
+
+/**
+ * Converts a user's Mozilla ldap username e.g ad|Mozilla-LDAP|jdoe into jdoe
+ * @param ldapString
+ * @returns Curator's username in the following format: jdoe for John Doe
+ */
+export const getCuratorNameFromLdap = (ldapString: string) =>
+  ldapString.split('|')[2];
