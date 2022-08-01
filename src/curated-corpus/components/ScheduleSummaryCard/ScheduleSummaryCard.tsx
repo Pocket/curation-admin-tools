@@ -10,12 +10,28 @@ import {
 } from '@material-ui/core';
 
 export type ScheduleSummary = {
+  /**
+   * The name of the line item in the table to be displayed.
+   * Example: topic.
+   */
   name: string;
+
+  /**
+   * The number associated with the line item.
+   * Example: number of stories scheduled for a given topic.
+   */
   count: number;
 };
 
 interface ScheduleSummaryCardProps {
+  /**
+   * Words that go into the header on top of the table.
+   */
   headingCopy: string;
+
+  /**
+   * List of items to display in table format.
+   */
   items: ScheduleSummary[];
 }
 
@@ -44,12 +60,10 @@ export const ScheduleSummaryCard: React.FC<ScheduleSummaryCardProps> = (
           <TableBody>
             {items.map((item) => {
               return (
-                <React.Fragment key={item.name}>
-                  <TableRow>
-                    <TableCell>{item.name}</TableCell>
-                    <TableCell align="right">{item.count}</TableCell>
-                  </TableRow>
-                </React.Fragment>
+                <TableRow key={item.name}>
+                  <TableCell>{item.name}</TableCell>
+                  <TableCell align="right">{item.count}</TableCell>
+                </TableRow>
               );
             })}
           </TableBody>

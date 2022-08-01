@@ -12,18 +12,51 @@ import { useStyles } from './ScheduleSummaryConnector.styles';
 import { getDisplayTopic } from '../../helpers/helperFunctions';
 
 interface ScheduleSummaryCardConnectorProps {
+  /**
+   * The date the data should be fetched for. In YYYY-MM-DD format.
+   */
   date: string;
 
+  /**
+   * The scheduled surface GUID the data should be fetched for.
+   */
   scheduledSurfaceGuid: string;
 
+  /**
+   * Whether to refresh the data - a manual trigger to refresh it
+   * if an action happens upstream in a parent component.
+   */
   refreshData: boolean;
+
+  /**
+   * A method to set the manual trigger above back to `false`
+   * so it works on the next manual refresh (when it will be turned to `true`
+   * again).
+   *
+   * @param refreshData
+   */
+  setRefreshData: (refreshData: boolean) => void;
 }
 
+/**
+ * This component fetches summary data for a given date + scheduled surface
+ * combination.
+ *
+ * Currently, it groups the stories by topic and publisher - sorted by frequency
+ * in descending order.
+ *
+ * It displays all topics, including the ones none of the scheduled stories
+ * belong to. It groups and displays only those publishers that are associated
+ * with the scheduled stories.
+ *
+ * @param props
+ * @constructor
+ */
 export const ScheduleSummaryConnector: React.FC<
   ScheduleSummaryCardConnectorProps
 > = (props): JSX.Element => {
   const classes = useStyles();
-  const { date, scheduledSurfaceGuid, refreshData } = props;
+  const { date, scheduledSurfaceGuid, refreshData, setRefreshData } = props;
 
   const [publishers, setPublishers] = useState<ScheduleSummary[] | null>(null);
   const [topics, setTopics] = useState<ScheduleSummary[] | null>(null);
@@ -60,6 +93,10 @@ export const ScheduleSummaryConnector: React.FC<
    */
   useEffect(() => {
     refetch();
+
+    if (refreshData) {
+      setRefreshData(false);
+    }
   }, [refreshData, date, scheduledSurfaceGuid]);
 
   // Get data for publishers
@@ -81,7 +118,8 @@ export const ScheduleSummaryConnector: React.FC<
         : publishers.push({ name: publisher, count: 1 });
     });
 
-    publishers.sort(({ count: a }, { count: b }) => a - b);
+    // Sort publishers in descending order - most frequent on top
+    publishers.sort(({ count: a }, { count: b }) => b - a);
 
     return publishers;
   };
@@ -103,13 +141,14 @@ export const ScheduleSummaryConnector: React.FC<
         : topics.push({ name: topic, count: 1 });
     });
 
-    topics.sort(({ count: a }, { count: b }) => a - b);
+    // Sort topics in descending order - most frequent on top
+    topics.sort(({ count: a }, { count: b }) => b - a);
 
     return topics;
   };
 
   return (
-    <>
+    <div className={classes.root}>
       <h4>Scheduled for {displayDate}</h4>
       {!data && <HandleApiResponse loading={loading} error={error} />}
       {data && data.getScheduledCorpusItems[0]?.items.length < 1 && (
@@ -141,6 +180,6 @@ export const ScheduleSummaryConnector: React.FC<
           </Grid>
         </>
       )}
-    </>
+    </div>
   );
 };

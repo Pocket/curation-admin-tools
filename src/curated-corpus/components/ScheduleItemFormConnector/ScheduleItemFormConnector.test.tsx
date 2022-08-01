@@ -174,7 +174,7 @@ describe('ScheduleItemFormConnector', () => {
     // Find today's date on the monthly calendar (it's actually a button)
     const dates = screen.getAllByRole('button', {
       name: today.toFormat('d'),
-    }) as HTMLButtonElement[];
+    });
 
     // Click on the date to fire off the query to look up "already scheduled for this day" counts.
     // It's the second "date" pretend button, as the first one is actually hidden from view.

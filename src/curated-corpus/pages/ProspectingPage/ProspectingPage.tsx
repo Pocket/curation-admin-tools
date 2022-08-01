@@ -716,6 +716,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                 date={sidebarDate}
                 scheduledSurfaceGuid={currentScheduledSurfaceGuid}
                 refreshData={refreshSidebarData}
+                setRefreshData={setRefreshSidebarData}
               />
             )}
           </Grid>
