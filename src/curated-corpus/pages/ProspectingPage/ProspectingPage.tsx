@@ -35,11 +35,11 @@ import {
   useRunMutation,
   useToggle,
 } from '../../../_shared/hooks';
+import { downloadAndUploadApprovedItemImageToS3 } from '../../helpers/helperFunctions';
 import {
-  downloadAndUploadApprovedItemImageToS3,
+  getProspectFilterOptions,
   transformProspectToApprovedItem,
-} from '../../helpers/helperFunctions';
-import { getProspectFilterOptions } from '../../helpers/getProspectFilterOptions';
+} from '../../helpers/prospects';
 import { FormikHelpers, FormikValues } from 'formik';
 import { DropdownOption } from '../../helpers/definitions';
 import { EmptyState } from './EmptyState';

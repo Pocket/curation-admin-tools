@@ -62,7 +62,9 @@ export const ScheduleSummaryCard: React.FC<ScheduleSummaryCardProps> = (
               return (
                 <TableRow key={item.name}>
                   <TableCell>{item.name}</TableCell>
-                  <TableCell align="right">{item.count}</TableCell>
+                  <TableCell align="right">
+                    {item.count > 0 ? item.count : null}
+                  </TableCell>
                 </TableRow>
               );
             })}

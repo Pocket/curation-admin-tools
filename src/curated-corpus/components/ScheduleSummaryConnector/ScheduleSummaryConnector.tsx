@@ -2,14 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 import { Grid, Typography } from '@material-ui/core';
 
-import {
-  GetScheduledItemsQuery,
-  useGetScheduledItemsQuery,
-} from '../../../api/generatedTypes';
+import { useGetScheduledItemsQuery } from '../../../api/generatedTypes';
 import { HandleApiResponse } from '../../../_shared/components';
 import { ScheduleSummary, ScheduleSummaryCard } from '../../components';
 import { useStyles } from './ScheduleSummaryConnector.styles';
-import { getDisplayTopic } from '../../helpers/helperFunctions';
+import { getGroupedPublisherData } from '../../helpers/publishers';
+import { getGroupedTopicData } from '../../helpers/topics';
 
 interface ScheduleSummaryCardConnectorProps {
   /**
@@ -99,54 +97,7 @@ export const ScheduleSummaryConnector: React.FC<
     }
   }, [refreshData, date, scheduledSurfaceGuid]);
 
-  // Get data for publishers
-  // TODO: move to a helper function file and add tests
-  const getGroupedPublisherData = (
-    data: GetScheduledItemsQuery
-  ): ScheduleSummary[] => {
-    const publishers: ScheduleSummary[] = [];
-
-    data.getScheduledCorpusItems[0]?.items.forEach((item) => {
-      const publisher = item.approvedItem.publisher;
-
-      const existingEntry = publishers.find(
-        (entry) => entry.name === publisher
-      );
-
-      existingEntry
-        ? (existingEntry.count += 1)
-        : publishers.push({ name: publisher, count: 1 });
-    });
-
-    // Sort publishers in descending order - most frequent on top
-    publishers.sort(({ count: a }, { count: b }) => b - a);
-
-    return publishers;
-  };
-
-  // Get data for topics
-  // TODO: move to a helper function and add tests
-  const getGroupedTopicData = (
-    data: GetScheduledItemsQuery
-  ): ScheduleSummary[] => {
-    const topics: ScheduleSummary[] = [];
-
-    data.getScheduledCorpusItems[0]?.items.forEach((item) => {
-      const topic = getDisplayTopic(item.approvedItem.topic);
-
-      const existingEntry = topics.find((entry) => entry.name === topic);
-
-      existingEntry
-        ? (existingEntry.count += 1)
-        : topics.push({ name: topic, count: 1 });
-    });
-
-    // Sort topics in descending order - most frequent on top
-    topics.sort(({ count: a }, { count: b }) => b - a);
-
-    return topics;
-  };
-
+  // Finally, let's render everything onto the screen.
   return (
     <div className={classes.root}>
       <h4>Scheduled for {displayDate}</h4>

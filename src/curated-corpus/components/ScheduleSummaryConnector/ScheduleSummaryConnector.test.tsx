@@ -6,7 +6,7 @@ import {
   mock_scheduledItems,
   mock_scheduledItemsNoResults,
 } from '../../integration-test-mocks/getScheduledItems';
-import { getDisplayTopic } from '../../helpers/helperFunctions';
+import { getDisplayTopic } from '../../helpers/topics';
 import { Topics } from '../../../api/generatedTypes';
 
 describe('The ScheduleSummaryConnector component', () => {
@@ -23,6 +23,7 @@ describe('The ScheduleSummaryConnector component', () => {
           date={'2023-01-01'}
           scheduledSurfaceGuid={'NEW_TAB_EN_US'}
           refreshData={false}
+          setRefreshData={jest.fn()}
         />
       </MockedProvider>
     );
@@ -47,6 +48,7 @@ describe('The ScheduleSummaryConnector component', () => {
           date={'2023-01-01'}
           scheduledSurfaceGuid={'NEW_TAB_EN_US'}
           refreshData={false}
+          setRefreshData={jest.fn()}
         />
       </MockedProvider>
     );
@@ -82,6 +84,7 @@ describe('The ScheduleSummaryConnector component', () => {
           date={'2023-01-01'}
           scheduledSurfaceGuid={'NEW_TAB_EN_US'}
           refreshData={false}
+          setRefreshData={jest.fn()}
         />
       </MockedProvider>
     );
@@ -112,6 +115,7 @@ describe('The ScheduleSummaryConnector component', () => {
           date={'2023-01-01'}
           scheduledSurfaceGuid={'NEW_TAB_EN_US'}
           refreshData={false}
+          setRefreshData={jest.fn()}
         />
       </MockedProvider>
     );

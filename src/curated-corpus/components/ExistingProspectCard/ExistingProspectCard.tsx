@@ -21,7 +21,7 @@ import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import { useStyles } from './ExistingProspectCard.styles';
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { Button } from '../../../_shared/components';
-import { getDisplayTopic } from '../../helpers/helperFunctions';
+import { getDisplayTopic } from '../../helpers/topics';
 
 interface ExistingProspectCardProps {
   /**
