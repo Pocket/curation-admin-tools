@@ -1,4 +1,4 @@
-import { GetScheduledItemsQuery, Maybe } from '../../api/generatedTypes';
+import { Maybe } from '../../api/generatedTypes';
 import {
   DropdownOption,
   topics as canonicalTopics,
@@ -28,29 +28,28 @@ export const getDisplayTopic = (
  *
  * @param data
  */
-export const getGroupedTopicData = (
-  data: GetScheduledItemsQuery
-): ScheduleSummary[] => {
+export const getGroupedTopicData = (data: string[]): ScheduleSummary[] => {
   const topics: ScheduleSummary[] = [];
 
-  data.getScheduledCorpusItems[0]?.items.forEach((item) => {
-    const topicName = getDisplayTopic(item.approvedItem.topic);
-
-    const existingEntry = topics.find((entry) => entry.name === topicName);
+  data.forEach((topic) => {
+    const existingEntry = topics.find((entry) => entry.name === topic);
 
     existingEntry
       ? (existingEntry.count += 1)
-      : topics.push({ name: topicName, count: 1 });
+      : topics.push({ name: topic, count: 1 });
   });
 
-  // Add the rest of the pre-defined topics - we need to list them all
-  canonicalTopics.forEach((topic: DropdownOption) => {
-    const topicExists = topics.find((entry) => entry.name === topic.name);
+  // Add the rest of the pre-defined topics - we need to list them all,
+  // but only if there's anything actually scheduled for the day.
+  if (data.length > 0) {
+    canonicalTopics.forEach((topic: DropdownOption) => {
+      const topicExists = topics.find((entry) => entry.name === topic.name);
 
-    if (!topicExists) {
-      topics.push({ name: topic.name, count: 0 });
-    }
-  });
+      if (!topicExists) {
+        topics.push({ name: topic.name, count: 0 });
+      }
+    });
+  }
 
   // Sort topics in descending order - most frequent on top
   // And do a secondary sort within topics with equal counts

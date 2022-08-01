@@ -1,4 +1,3 @@
-import { GetScheduledItemsQuery } from '../../api/generatedTypes';
 import { ScheduleSummary } from '../components';
 
 /**
@@ -6,14 +5,10 @@ import { ScheduleSummary } from '../components';
  *
  * @param data
  */
-export const getGroupedPublisherData = (
-  data: GetScheduledItemsQuery
-): ScheduleSummary[] => {
+export const getGroupedPublisherData = (data: string[]): ScheduleSummary[] => {
   const publishers: ScheduleSummary[] = [];
 
-  data.getScheduledCorpusItems[0]?.items.forEach((item) => {
-    const publisher = item.approvedItem.publisher;
-
+  data.forEach((publisher) => {
     const existingEntry = publishers.find((entry) => entry.name === publisher);
 
     existingEntry

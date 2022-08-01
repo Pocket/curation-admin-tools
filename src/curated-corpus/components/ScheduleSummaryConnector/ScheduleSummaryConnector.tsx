@@ -7,7 +7,7 @@ import { HandleApiResponse } from '../../../_shared/components';
 import { ScheduleSummary, ScheduleSummaryCard } from '../../components';
 import { useStyles } from './ScheduleSummaryConnector.styles';
 import { getGroupedPublisherData } from '../../helpers/publishers';
-import { getGroupedTopicData } from '../../helpers/topics';
+import { getDisplayTopic, getGroupedTopicData } from '../../helpers/topics';
 
 interface ScheduleSummaryCardConnectorProps {
   /**
@@ -75,8 +75,21 @@ export const ScheduleSummaryConnector: React.FC<
       },
     },
     onCompleted: (data) => {
-      setPublishers(getGroupedPublisherData(data));
-      setTopics(getGroupedTopicData(data));
+      // Extract all publishers from scheduled item data
+      const publishers =
+        data.getScheduledCorpusItems[0]?.items.map(
+          (item) => item.approvedItem.publisher
+        ) ?? [];
+      // Prep data for display
+      setPublishers(getGroupedPublisherData(publishers));
+
+      // Extract all topics from scheduled item data
+      const topics =
+        data.getScheduledCorpusItems[0]?.items.map((item) =>
+          getDisplayTopic(item.approvedItem.topic)
+        ) ?? [];
+      // Prep data for display
+      setTopics(getGroupedTopicData(topics));
     },
   });
 
