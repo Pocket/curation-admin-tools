@@ -3,8 +3,10 @@ import { Grid, Typography, Collapse } from '@material-ui/core';
 import { DateTime } from 'luxon';
 import { ApprovedCorpusItemScheduledSurfaceHistory } from '../../../api/generatedTypes';
 import { useStyles } from './ScheduleHistory.styles';
-import { getCuratorNameFromLdap } from '../../helpers/helperFunctions';
-import { ScheduledSurfaces } from '../../helpers/definitions';
+import {
+  getCuratorNameFromLdap,
+  getScheduledSurfaceName,
+} from '../../helpers/helperFunctions';
 import { Button } from '../../../_shared/components';
 
 interface ScheduleHistory {
@@ -18,13 +20,6 @@ export const ScheduleHistory: React.FC<ScheduleHistory> = (
   const { data } = props;
 
   const [isShowingHistory, setIsShowingHistory] = useState(false);
-
-  const getScheduledSurfaceName = (surfaceGuid: string) => {
-    return (
-      ScheduledSurfaces.find((surface) => surface.guid === surfaceGuid)?.name ??
-      'Unknown Surface'
-    );
-  };
 
   const getDisplayDate = (date: string) => {
     return DateTime.fromFormat(date, 'yyyy-MM-dd')

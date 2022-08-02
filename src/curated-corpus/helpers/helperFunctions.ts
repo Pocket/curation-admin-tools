@@ -6,6 +6,7 @@ import {
   Prospect,
   UrlMetadata,
 } from '../../api/generatedTypes';
+import { ScheduledSurfaces } from './definitions';
 
 /**
  * Transforms the UrlMetaData object into a Prospect
@@ -152,3 +153,15 @@ export const getLocalDateTimeForGuid = (
  */
 export const getCuratorNameFromLdap = (ldapString: string) =>
   ldapString.split('|')[2];
+
+/**
+ *
+ * @param surfaceGuid
+ * @returns
+ */
+export const getScheduledSurfaceName = (surfaceGuid: string) => {
+  return (
+    ScheduledSurfaces.find((surface) => surface.guid === surfaceGuid)?.name ??
+    'Unknown Surface'
+  );
+};

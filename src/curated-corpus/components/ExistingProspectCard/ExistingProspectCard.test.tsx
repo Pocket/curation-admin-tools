@@ -10,6 +10,7 @@ import {
   Topics,
 } from '../../../api/generatedTypes';
 import { ExistingProspectCard } from './ExistingProspectCard';
+import { ScheduledSurfaces } from '../../helpers/definitions';
 
 describe('The ExistingProspectCard component', () => {
   let prospect: Prospect;
@@ -163,5 +164,40 @@ describe('The ExistingProspectCard component', () => {
     });
 
     expect(scheduleButton).toBeInTheDocument();
+  });
+
+  it('should render schedule history component', async () => {
+    // creating a prospect with an schedule history
+    const prospectWithScheduleHistory = {
+      ...prospect,
+      approvedCorpusItem: {
+        ...prospect.approvedCorpusItem!,
+        authors: [{ name: 'Marie Curie', sortOrder: 1 }],
+        scheduledSurfaceHistory: [
+          {
+            createdBy: 'ad|Mozilla-LDAP|aperson',
+            externalId: 'bogus-external-id',
+            scheduledDate: '2022-02-08',
+            scheduledSurfaceGuid: ScheduledSurfaces[0].guid,
+          },
+        ],
+      },
+    };
+
+    render(
+      <MemoryRouter>
+        <ExistingProspectCard
+          item={prospectWithScheduleHistory.approvedCorpusItem}
+          onSchedule={onSchedule}
+        />
+      </MemoryRouter>
+    );
+
+    // the button when clicked shows us the recent scheduled runs
+    const recentScheduledRunsButton = screen.getByRole('button', {
+      name: /view recent scheduled runs/i,
+    });
+
+    expect(recentScheduledRunsButton).toBeInTheDocument();
   });
 });
