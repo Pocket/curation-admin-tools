@@ -1,7 +1,6 @@
 import React from 'react';
 import { Prospect } from '../../../api/generatedTypes';
 import {
-  Box,
   Card,
   CardActions,
   CardMedia,
@@ -112,22 +111,26 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
             &middot; <span>{prospect.publisher}</span> &middot;{' '}
             <span>{prospect.domain}</span>
           </Typography>{' '}
-          <Box py={1}>
-            <Chip
-              variant="outlined"
-              color="primary"
-              label={getDisplayTopic(prospect.topic)}
-              icon={<LabelOutlinedIcon />}
-            />{' '}
-            {prospect.isSyndicated && (
+          <Grid container spacing={1}>
+            <Grid item>
               <Chip
                 variant="outlined"
                 color="primary"
-                label="Syndicated"
-                icon={<CheckCircleOutlineIcon />}
+                label={getDisplayTopic(prospect.topic)}
+                icon={<LabelOutlinedIcon />}
               />
-            )}
-          </Box>
+            </Grid>
+            <Grid item>
+              {prospect.isSyndicated && (
+                <Chip
+                  variant="outlined"
+                  color="primary"
+                  label="Syndicated"
+                  icon={<CheckCircleOutlineIcon />}
+                />
+              )}
+            </Grid>
+          </Grid>
           <Typography component="div">{prospect.excerpt}</Typography>
         </Grid>
       </Grid>

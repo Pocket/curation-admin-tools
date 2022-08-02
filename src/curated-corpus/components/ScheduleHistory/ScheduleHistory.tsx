@@ -34,7 +34,7 @@ export const ScheduleHistory: React.FC<ScheduleHistory> = (
 
   return (
     <Grid container>
-      <Grid item xs={12} className={classes.heading}>
+      <Grid item xs={12}>
         <Button
           buttonType="positive"
           variant="text"
