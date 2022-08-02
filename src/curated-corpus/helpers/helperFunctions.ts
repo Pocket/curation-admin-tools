@@ -155,9 +155,9 @@ export const getCuratorNameFromLdap = (ldapString: string) =>
   ldapString.split('|')[2];
 
 /**
- *
+ * Converts a scheduled surface guid e.g "NEW_TAB_EN_US" to a readable format
  * @param surfaceGuid
- * @returns
+ * @returns Readable scheduled surface name e.g New Tab (en-US)
  */
 export const getScheduledSurfaceName = (surfaceGuid: string) => {
   return (
