@@ -8,19 +8,22 @@ import {
 } from '../../integration-test-mocks/getScheduledItems';
 import { getDisplayTopic } from '../../helpers/topics';
 import { Topics } from '../../../api/generatedTypes';
+import { DateTime } from 'luxon';
 
 describe('The ScheduleSummaryConnector component', () => {
   let mocks: MockedResponse[] = [];
+  let date: DateTime;
 
   beforeEach(() => {
     mocks = [mock_scheduledItems];
+    date = DateTime.fromFormat('2023-01-01', 'yyyy-MM-dd');
   });
 
   it('shows summary headings - including syndicated %, etc.', async () => {
     render(
       <MockedProvider mocks={mocks}>
         <ScheduleSummaryConnector
-          date={'2023-01-01'}
+          date={date}
           scheduledSurfaceGuid={'NEW_TAB_EN_US'}
           refreshData={false}
           setRefreshData={jest.fn()}
@@ -45,7 +48,7 @@ describe('The ScheduleSummaryConnector component', () => {
     render(
       <MockedProvider mocks={mocks}>
         <ScheduleSummaryConnector
-          date={'2023-01-01'}
+          date={date}
           scheduledSurfaceGuid={'NEW_TAB_EN_US'}
           refreshData={false}
           setRefreshData={jest.fn()}
@@ -81,7 +84,7 @@ describe('The ScheduleSummaryConnector component', () => {
     render(
       <MockedProvider mocks={mocks}>
         <ScheduleSummaryConnector
-          date={'2023-01-01'}
+          date={date}
           scheduledSurfaceGuid={'NEW_TAB_EN_US'}
           refreshData={false}
           setRefreshData={jest.fn()}
@@ -112,7 +115,7 @@ describe('The ScheduleSummaryConnector component', () => {
     render(
       <MockedProvider mocks={mocks}>
         <ScheduleSummaryConnector
-          date={'2023-01-01'}
+          date={date}
           scheduledSurfaceGuid={'NEW_TAB_EN_US'}
           refreshData={false}
           setRefreshData={jest.fn()}

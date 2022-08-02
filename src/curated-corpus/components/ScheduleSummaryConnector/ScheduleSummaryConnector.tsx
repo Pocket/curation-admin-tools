@@ -9,11 +9,11 @@ import { useStyles } from './ScheduleSummaryConnector.styles';
 import { getGroupedPublisherData } from '../../helpers/publishers';
 import { getDisplayTopic, getGroupedTopicData } from '../../helpers/topics';
 
-interface ScheduleSummaryCardConnectorProps {
+interface ScheduleSummaryConnectorProps {
   /**
-   * The date the data should be fetched for. In YYYY-MM-DD format.
+   * The date the data should be fetched for. In Luxon's DateTime format
    */
-  date: string;
+  date: DateTime;
 
   /**
    * The scheduled surface GUID the data should be fetched for.
@@ -51,17 +51,13 @@ interface ScheduleSummaryCardConnectorProps {
  * @constructor
  */
 export const ScheduleSummaryConnector: React.FC<
-  ScheduleSummaryCardConnectorProps
+  ScheduleSummaryConnectorProps
 > = (props): JSX.Element => {
   const classes = useStyles();
   const { date, scheduledSurfaceGuid, refreshData, setRefreshData } = props;
 
   const [publishers, setPublishers] = useState<ScheduleSummary[] | null>(null);
   const [topics, setTopics] = useState<ScheduleSummary[] | null>(null);
-
-  const displayDate = DateTime.fromFormat(date, 'yyyy-MM-dd')
-    .setLocale('en')
-    .toLocaleString(DateTime.DATE_FULL);
 
   // Get the stories already scheduled for a given date+surface combination.
   const { loading, error, data, refetch } = useGetScheduledItemsQuery({
@@ -70,8 +66,8 @@ export const ScheduleSummaryConnector: React.FC<
     variables: {
       filters: {
         scheduledSurfaceGuid,
-        startDate: date,
-        endDate: date,
+        startDate: date.toFormat('yyyy-MM-dd'),
+        endDate: date.toFormat('yyyy-MM-dd'),
       },
     },
     onCompleted: (data) => {
@@ -112,8 +108,7 @@ export const ScheduleSummaryConnector: React.FC<
 
   // Finally, let's render everything onto the screen.
   return (
-    <div className={classes.root}>
-      <h4>Scheduled for {displayDate}</h4>
+    <>
       {!data && <HandleApiResponse loading={loading} error={error} />}
       {data && data.getScheduledCorpusItems[0]?.items.length < 1 && (
         <Typography className={classes.heading} variant="h4">
@@ -144,6 +139,6 @@ export const ScheduleSummaryConnector: React.FC<
           </Grid>
         </>
       )}
-    </div>
+    </>
   );
 };
