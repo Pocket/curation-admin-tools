@@ -22,12 +22,9 @@ import { DateTime } from 'luxon';
 import { useStyles } from './ExistingProspectCard.styles';
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { Button } from '../../../_shared/components';
-import {
-  getCuratorNameFromLdap,
-  getDisplayTopic,
-} from '../../helpers/helperFunctions';
+import { getCuratorNameFromLdap } from '../../helpers/helperFunctions';
 import { ScheduleHistory } from '../ScheduleHistory/ScheduleHistory';
-
+import { getDisplayTopic } from '../../helpers/topics';
 
 interface ExistingProspectCardProps {
   /**
