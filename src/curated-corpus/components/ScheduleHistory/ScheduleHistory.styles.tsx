@@ -7,18 +7,20 @@ export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     heading: {
       fontSize: '1rem',
-      fontWeight: 500,
-      textTransform: 'capitalize',
+      fontWeight: 400,
       color: theme.palette.primary.main,
-      padding: '0.75rem 0',
-      textAlign: 'center',
+      textDecoration: 'underline',
+      marginTop: '0.5em',
+      cursor: 'pointer',
     },
-    root: {
-      padding: '0.5em',
-      backgroundColor: theme.palette.background.default,
-    },
-    lineBreak: {
+    collapse: {
+      marginTop: '0.5rem',
+      border: `solid 1px ${theme.palette.secondary.light}`,
+      borderRadius: '5px',
       width: '100%',
+    },
+    scheduledHistoryWrapper: {
+      margin: '0.5em',
     },
   })
 );

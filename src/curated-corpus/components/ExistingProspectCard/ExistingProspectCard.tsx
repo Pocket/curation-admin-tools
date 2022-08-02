@@ -15,6 +15,7 @@ import {
 import LanguageIcon from '@material-ui/icons/Language';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import CheckIcon from '@material-ui/icons/Check';
+import FaceIcon from '@material-ui/icons/Face';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import { DateTime } from 'luxon';
 
@@ -70,7 +71,7 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
             </ListItem>
             <ListItem disableGutters>
               <ListItemIcon className={classes.listItemIcon}>
-                <CheckIcon fontSize="small" />
+                <FaceIcon fontSize="small" />
               </ListItemIcon>
               <ListItemText
                 primary={getCuratorNameFromLdap(item.createdBy)}
@@ -81,7 +82,7 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
             </ListItem>
           </List>
         </Grid>
-        <Grid item xs={12} sm={showScheduleHistory ? 5 : 9}>
+        <Grid item xs={12} sm={9}>
           <Link href={item.url} target="_blank" className={classes.link}>
             <Typography
               className={classes.title}
@@ -130,12 +131,12 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
             </Grid>
           </Grid>
           <Typography component="div">{item.excerpt}</Typography>
+          {showScheduleHistory && (
+            <Grid item xs={12}>
+              <ScheduleHistory data={item.scheduledSurfaceHistory} />
+            </Grid>
+          )}
         </Grid>
-        {showScheduleHistory && (
-          <Grid item xs={12} sm={4}>
-            <ScheduleHistory data={item.scheduledSurfaceHistory} />
-          </Grid>
-        )}
       </Grid>
 
       <CardActions className={classes.actions}>
