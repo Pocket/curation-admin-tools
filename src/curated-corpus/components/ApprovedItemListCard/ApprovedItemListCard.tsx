@@ -16,7 +16,7 @@ import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import LanguageIcon from '@material-ui/icons/Language';
 import { useStyles } from './ApprovedItemListCard.styles';
 import { ApprovedCorpusItem, CuratedStatus } from '../../../api/generatedTypes';
-import { getDisplayTopic } from '../../helpers/helperFunctions';
+import { getDisplayTopic } from '../../helpers/topics';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 
 interface ApprovedItemListCardProps {

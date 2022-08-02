@@ -1,55 +1,11 @@
 import { DateTime } from 'luxon';
 import { FileWithPath } from 'react-dropzone';
 import {
-  CorpusItemSource,
   CorpusLanguage,
-  CuratedStatus,
   GetScheduledSurfacesForUserQuery,
-  Maybe,
   Prospect,
   UrlMetadata,
 } from '../../api/generatedTypes';
-import { ApprovedItemFromProspect, topics } from './definitions';
-import { transformAuthors } from '../../_shared/utils/transformAuthors';
-
-/**
- *
- * This function simply transforms a Prospect object type to
- * an Approved Curated Corpus Item type. This is used to
- * convert a prospect item into a "dummy" approved item in the
- * ProspectItemModal
- */
-export const transformProspectToApprovedItem = (
-  prospect: Prospect,
-  isRecommendation: boolean,
-  isManual: boolean
-): ApprovedItemFromProspect => {
-  //TODO: do stuff here
-  return {
-    externalId: '',
-    prospectId: prospect.prospectId,
-    url: prospect.url,
-    title: prospect.title ?? '',
-    imageUrl: prospect.imageUrl ?? '',
-    authors: transformAuthors(prospect.authors),
-    publisher: prospect.publisher ?? '',
-    language: prospect.language || undefined,
-    source: isManual ? CorpusItemSource.Manual : CorpusItemSource.Prospect,
-    topic: prospect.topic ?? '',
-    status: isRecommendation
-      ? CuratedStatus.Recommendation
-      : CuratedStatus.Corpus,
-    isTimeSensitive: false,
-    isSyndicated: prospect.isSyndicated ?? false,
-    isCollection: prospect.isCollection ?? false,
-    excerpt: prospect.excerpt ?? '',
-    createdAt: prospect.createdAt ?? 0,
-    createdBy: '',
-    updatedAt: 0,
-    scheduledSurfaceHistory:
-      prospect.approvedCorpusItem?.scheduledSurfaceHistory ?? [],
-  };
-};
 
 /**
  * Transforms the UrlMetaData object into a Prospect
@@ -165,23 +121,6 @@ export const readImageFileFromDisk = (
       }
     }
   };
-};
-
-/**
- * This function transforms topic names as recorded in the database
- * into more easily readable names, e.g. `TECHNOLOGY` -> `Technology`
- * or `HEALTH_FITNESS` -> `Health & Fitness`.
- *
- * Returns `N/A` if there is no topic match from the known list of topics.
- */
-export const getDisplayTopic = (
-  topicCode: Maybe<string> | string | undefined
-): string => {
-  const displayTopic = topics.find((topic) => {
-    return topic.code === topicCode;
-  })?.name;
-
-  return displayTopic ? displayTopic : 'N/A';
 };
 
 export const getLocalDateTimeForGuid = (

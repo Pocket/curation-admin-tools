@@ -172,13 +172,14 @@ describe('ScheduleItemFormConnector', () => {
     userEvent.click(datePicker);
 
     // Find today's date on the monthly calendar (it's actually a button)
-    const date = screen.getByRole('button', {
+    const dates = screen.getAllByRole('button', {
       name: today.toFormat('d'),
-    }) as HTMLButtonElement;
+    });
 
-    // Click on the date to fire off the query to look up "already scheduled for this day" counts
-    // Note: doesn't work!
-    userEvent.click(date);
+    // Click on the date to fire off the query to look up "already scheduled for this day" counts.
+    // It's the second "date" pretend button, as the first one is actually hidden from view.
+    // Note: doesn't work! ...and is super flaky!
+    //userEvent.click(dates[1]);
 
     // TODO:
     //  - ????

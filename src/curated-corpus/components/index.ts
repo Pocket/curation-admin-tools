@@ -7,8 +7,6 @@ export { ApprovedItemModal } from './ApprovedItemModal/ApprovedItemModal';
 export { ApprovedItemSearchForm } from './ApprovedItemSearchForm/ApprovedItemSearchForm';
 export { ExistingProspectCard } from './ExistingProspectCard/ExistingProspectCard';
 export { LoadExtraButton } from './LoadExtraButton/LoadExtraButton';
-export { MiniScheduleCard } from './MiniScheduleCard/MiniScheduleCard';
-export { ScheduledSurfaceGroupedList } from './ScheduledSurfaceGroupedList/ScheduledSurfaceGroupedList';
 export { NextPrevPagination } from './NextPrevPagination/NextPrevPagination';
 export { ProspectListCard } from './ProspectListCard/ProspectListCard';
 export { RejectedItemListCard } from './RejectedItemListCard/RejectedItemListCard';
@@ -22,4 +20,7 @@ export { ScheduledItemCardWrapper } from './ScheduledItemCardWrapper/ScheduledIt
 export { ScheduleItemFormConnector } from './ScheduleItemFormConnector/ScheduleItemFormConnector';
 export { ScheduleItemForm } from './ScheduleItemForm/ScheduleItemForm';
 export { ScheduleItemModal } from './ScheduleItemModal/ScheduleItemModal';
+export type { ScheduleSummary } from './ScheduleSummaryCard/ScheduleSummaryCard';
+export { ScheduleSummaryCard } from './ScheduleSummaryCard/ScheduleSummaryCard';
+export { ScheduleSummaryConnector } from './ScheduleSummaryConnector/ScheduleSummaryConnector';
 export { SplitButton } from './SplitButton/SplitButton';

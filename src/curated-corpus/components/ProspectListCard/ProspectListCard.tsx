@@ -20,7 +20,7 @@ import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import MyLocationIcon from '@material-ui/icons/MyLocation';
 import { Button } from '../../../_shared/components';
-import { getDisplayTopic } from '../../helpers/helperFunctions';
+import { getDisplayTopic } from '../../helpers/topics';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 
 interface ProspectListCardProps {

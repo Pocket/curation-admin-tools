@@ -28,6 +28,7 @@ import {
 } from '../../helpers/helperFunctions';
 import { ScheduleHistory } from '../ScheduleHistory/ScheduleHistory';
 
+
 interface ExistingProspectCardProps {
   /**
    * An object with everything approved curated item-related in it.
