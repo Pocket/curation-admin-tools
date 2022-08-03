@@ -29,8 +29,8 @@ export const ScheduleHistory: React.FC<ScheduleHistory> = (
   const [isShowingHistory, setIsShowingHistory] = useState(false);
 
   const toggleHistoryButtonText = isShowingHistory
-    ? 'hide recent scheduled runs'
-    : 'view recent scheduled runs';
+    ? 'Hide recent scheduled runs'
+    : 'View recent scheduled runs';
 
   const getDisplayDate = (date: string) => {
     return DateTime.fromFormat(date, 'yyyy-MM-dd')
