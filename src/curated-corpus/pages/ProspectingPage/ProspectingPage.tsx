@@ -13,7 +13,7 @@ import {
   RefreshProspectsModal,
   RejectItemModal,
   ScheduleItemModal,
-  ScheduleSummaryConnector,
+  SidebarWrapper,
   SplitButton,
 } from '../../components';
 import {
@@ -60,8 +60,9 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   const [prospectFilters, setProspectFilters] = useState<DropdownOption[]>([]);
 
   // This is the date used in the sidebar. Defaults to tomorrow
-  // TODO: once the date picker is in, should this be a state var instead?
-  const sidebarDate = DateTime.local().plus({ days: 1 }).toFormat('yyyy-MM-dd');
+  const [sidebarDate, setSidebarDate] = useState<DateTime | null>(
+    DateTime.local().plus({ days: 1 })
+  );
 
   // Whether the data in the sidebar needs to be refreshed.
   // Is needed when the user switches from surface to surface or
@@ -508,8 +509,13 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         // Hide the Schedule Item Form modal
         toggleScheduleModal();
 
-        // Refresh the sidebar data if the story was scheduled for today or tomorrow
-        if (sidebarDate === values.scheduledDate.toFormat('yyyy-MM-dd')) {
+        // Refresh the sidebar data if it is showing the date this new prospect
+        // has just been scheduled for
+        if (
+          sidebarDate &&
+          sidebarDate.toFormat('yyyy-MM-dd') ===
+            values.scheduledDate.toFormat('yyyy-MM-dd')
+        ) {
           setRefreshSidebarData(true);
         }
       },
@@ -712,8 +718,9 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         <Hidden xsDown>
           <Grid item sm={4}>
             {currentScheduledSurfaceGuid.length > 0 && (
-              <ScheduleSummaryConnector
-                date={sidebarDate}
+              <SidebarWrapper
+                date={sidebarDate!}
+                setSidebarDate={setSidebarDate}
                 scheduledSurfaceGuid={currentScheduledSurfaceGuid}
                 refreshData={refreshSidebarData}
                 setRefreshData={setRefreshSidebarData}
