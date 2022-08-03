@@ -108,10 +108,10 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
             align="left"
           >
             <span>{prospect.authors ? prospect.authors : 'Authors: N/A'}</span>{' '}
-            &middot; <span>{prospect.publisher}</span> &middot;{' '}
+            &middot; <span>{prospect.publisher}</span> &middot;
             <span>{prospect.domain}</span>
-          </Typography>{' '}
-          <Grid container spacing={1}>
+          </Typography>
+          <Grid container className={classes.chipContainer}>
             <Grid item>
               <Chip
                 variant="outlined"

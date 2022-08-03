@@ -33,6 +33,10 @@ export const useStyles = makeStyles((theme: Theme) =>
     subtitle: {
       fontWeight: 400,
     },
+    chipContainer: {
+      paddingTop: '0.5em',
+      paddingBottom: '0.5em',
+    },
     [theme.breakpoints.down('sm')]: {
       title: {
         fontSize: '1rem',

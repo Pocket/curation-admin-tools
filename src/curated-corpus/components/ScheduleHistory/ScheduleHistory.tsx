@@ -28,6 +28,10 @@ export const ScheduleHistory: React.FC<ScheduleHistory> = (
 
   const [isShowingHistory, setIsShowingHistory] = useState(false);
 
+  const toggleHistoryButtonText = isShowingHistory
+    ? 'hide recent scheduled runs'
+    : 'view recent scheduled runs';
+
   const getDisplayDate = (date: string) => {
     return DateTime.fromFormat(date, 'yyyy-MM-dd')
       .setLocale('en')
@@ -36,19 +40,16 @@ export const ScheduleHistory: React.FC<ScheduleHistory> = (
 
   return (
     <Grid container>
-      <Grid item xs={12}>
-        <Button
-          buttonType="positive"
-          variant="text"
-          onClick={() => {
-            setIsShowingHistory(!isShowingHistory);
-          }}
-        >
-          {isShowingHistory
-            ? 'hide recent scheduled runs'
-            : 'view recent scheduled runs'}
-        </Button>
-      </Grid>
+      <Button
+        buttonType="positive"
+        variant="text"
+        onClick={() => {
+          setIsShowingHistory(!isShowingHistory);
+        }}
+        className={classes.toggleHistoryButton}
+      >
+        {toggleHistoryButtonText}
+      </Button>
 
       <Collapse
         in={isShowingHistory}
@@ -56,36 +57,34 @@ export const ScheduleHistory: React.FC<ScheduleHistory> = (
         unmountOnExit
         className={classes.collapse}
       >
-        <Grid container>
-          {data.map((item: ApprovedCorpusItemScheduledSurfaceHistory) => {
-            return (
-              <Grid
-                key={item.externalId}
-                item
-                xs={12}
-                className={classes.scheduledHistoryWrapper}
-              >
-                <Grid container justifyContent="space-between">
-                  <Grid item xs={4}>
-                    <Typography variant="body2">
-                      {getScheduledSurfaceName(item.scheduledSurfaceGuid)}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Typography variant="body2">
-                      {getCuratorNameFromLdap(item.createdBy)}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={4}>
-                    <Typography variant="body2">
-                      {getDisplayDate(item.scheduledDate)}
-                    </Typography>
-                  </Grid>
+        {data.map((item: ApprovedCorpusItemScheduledSurfaceHistory) => {
+          return (
+            <Grid
+              key={item.externalId}
+              item
+              xs={12}
+              className={classes.scheduledHistoryWrapper}
+            >
+              <Grid container justifyContent="space-between">
+                <Grid item xs={4}>
+                  <Typography variant="body2">
+                    {getScheduledSurfaceName(item.scheduledSurfaceGuid)}
+                  </Typography>
+                </Grid>
+                <Grid item xs={4}>
+                  <Typography variant="body2">
+                    {getCuratorNameFromLdap(item.createdBy)}
+                  </Typography>
+                </Grid>
+                <Grid item xs={4}>
+                  <Typography variant="body2">
+                    {getDisplayDate(item.scheduledDate)}
+                  </Typography>
                 </Grid>
               </Grid>
-            );
-          })}
-        </Grid>
+            </Grid>
+          );
+        })}
       </Collapse>
     </Grid>
   );

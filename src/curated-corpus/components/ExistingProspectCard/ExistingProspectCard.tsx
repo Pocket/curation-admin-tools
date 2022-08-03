@@ -100,7 +100,7 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
           >
             <span>{item.publisher}</span>
           </Typography>
-          <Grid container spacing={1}>
+          <Grid container spacing={1} className={classes.chipContainer}>
             <Grid item>
               <Chip
                 variant="outlined"
