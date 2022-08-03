@@ -509,8 +509,13 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         // Hide the Schedule Item Form modal
         toggleScheduleModal();
 
-        // Refresh the sidebar data if the story was scheduled for today or tomorrow
-        if (sidebarDate === values.scheduledDate.toFormat('yyyy-MM-dd')) {
+        // Refresh the sidebar data if it is showing the date this new prospect
+        // has just been scheduled for
+        if (
+          sidebarDate &&
+          sidebarDate.toFormat('yyyy-MM-dd') ===
+            values.scheduledDate.toFormat('yyyy-MM-dd')
+        ) {
           setRefreshSidebarData(true);
         }
       },

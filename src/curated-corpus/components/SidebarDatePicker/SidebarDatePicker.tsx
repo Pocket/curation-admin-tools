@@ -18,6 +18,13 @@ interface SidebarDatePickerProps {
   selectedDate: DateTime;
 }
 
+/**
+ * Little more than an out-of-the-box MUI date picker, this component is used
+ * in the sidebar to provide a means of selecting a date for summary scheduling data.
+ *
+ * @param props
+ * @constructor
+ */
 export const SidebarDatePicker: React.FC<SidebarDatePickerProps> = (
   props
 ): JSX.Element => {

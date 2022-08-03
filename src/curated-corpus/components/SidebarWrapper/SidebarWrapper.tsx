@@ -12,6 +12,12 @@ interface SidebarWrapperProps {
    */
   date: DateTime;
 
+  /**
+   * A state management function passed from the parent component that updates
+   * the date.
+   *
+   * @param date
+   */
   setSidebarDate: (date: DateTime | null) => void;
 
   /**
@@ -36,7 +42,11 @@ interface SidebarWrapperProps {
 }
 
 /**
+ * This component exists mainly because the contents of the sidebar
+ * should stay on the screen as the user scrolls down the page.
  *
+ * It's also handy to keep all this markup and some code out of
+ * the ProspectingPage component.
  *
  * @param props
  * @constructor
@@ -63,9 +73,10 @@ export const SidebarWrapper: React.FC<SidebarWrapperProps> = (
     // Keep track of the chosen date.
     setSidebarDate(date);
   };
+
   return (
     <div className={classes.root}>
-      <h4> Scheduled for {displayDate}</h4>
+      <h3> Scheduled for {displayDate}</h3>
 
       <Box mt={3} mb={1}>
         <SidebarDatePicker

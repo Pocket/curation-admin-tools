@@ -19,7 +19,7 @@ describe('The ScheduleSummaryConnector component', () => {
     date = DateTime.fromFormat('2023-01-01', 'yyyy-MM-dd');
   });
 
-  it('shows summary headings - including syndicated %, etc.', async () => {
+  it('should show total/syndicated split', async () => {
     render(
       <MockedProvider mocks={mocks}>
         <ScheduleSummaryConnector
@@ -32,19 +32,13 @@ describe('The ScheduleSummaryConnector component', () => {
     );
 
     await waitFor(() => {
-      // Shows correct heading with formatted display date
-      expect(
-        // Regex because this phrase takes up two lines in the DOM
-        // with extra whitespace/line break
-        screen.getByText(/scheduled for[\s\n]+?january 1, 2023/i)
-      ).toBeInTheDocument();
-
-      // Shows syndicated/total scheduled split ("0/3 Syndicated").
-      expect(screen.getByText(/1[\s\n]+?syndicated/i)).toBeInTheDocument();
+      // Shows syndicated/total scheduled split ("1 story, 0 syndicated").
+      expect(screen.getByText(/1[\s\n]+?story/i)).toBeInTheDocument();
+      expect(screen.getByText(/0[\s\n]+?syndicated/i)).toBeInTheDocument();
     });
   });
 
-  it('shows topic summary', async () => {
+  it('should show topic summary', async () => {
     render(
       <MockedProvider mocks={mocks}>
         <ScheduleSummaryConnector
@@ -80,7 +74,7 @@ describe('The ScheduleSummaryConnector component', () => {
     });
   });
 
-  it('shows publisher summary', async () => {
+  it('should show publisher summary', async () => {
     render(
       <MockedProvider mocks={mocks}>
         <ScheduleSummaryConnector
@@ -109,7 +103,7 @@ describe('The ScheduleSummaryConnector component', () => {
     });
   });
 
-  it('handles empty state', async () => {
+  it('should handle empty state', async () => {
     mocks = [mock_scheduledItemsNoResults];
 
     render(
@@ -124,7 +118,9 @@ describe('The ScheduleSummaryConnector component', () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText(/no results/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/no stories have been scheduled for this date yet/i)
+      ).toBeInTheDocument();
     });
   });
 });

@@ -8,8 +8,6 @@ export const useStyles = makeStyles((theme: Theme) =>
     heading: {
       fontSize: '1rem',
       fontWeight: 500,
-      textTransform: 'capitalize',
-      color: theme.palette.primary.main,
       padding: '0.75rem 0',
     },
   })

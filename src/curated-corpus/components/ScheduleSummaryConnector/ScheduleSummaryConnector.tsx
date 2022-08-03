@@ -110,16 +110,21 @@ export const ScheduleSummaryConnector: React.FC<
   return (
     <>
       {!data && <HandleApiResponse loading={loading} error={error} />}
-      {data && data.getScheduledCorpusItems[0]?.items.length < 1 && (
-        <Typography className={classes.heading} variant="h4">
-          No results
-        </Typography>
-      )}
+      {data &&
+        (data.getScheduledCorpusItems.length < 1 ||
+          data.getScheduledCorpusItems[0]?.items.length < 1) && (
+          <Typography className={classes.heading} variant="h4">
+            No stories have been scheduled for this date yet.
+          </Typography>
+        )}
       {data && data.getScheduledCorpusItems[0]?.items.length > 0 && (
         <>
           <Typography className={classes.heading} variant="h4">
-            ({data.getScheduledCorpusItems[0]?.syndicatedCount}/
-            {data.getScheduledCorpusItems[0]?.totalCount} syndicated)
+            {data.getScheduledCorpusItems[0]?.totalCount}{' '}
+            {data.getScheduledCorpusItems[0]?.totalCount === 1
+              ? 'story'
+              : 'stories'}
+            , {data.getScheduledCorpusItems[0]?.syndicatedCount} syndicated
           </Typography>
 
           <Grid container spacing={2}>
