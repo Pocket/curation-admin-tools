@@ -151,17 +151,18 @@ export const getLocalDateTimeForGuid = (
  * @param ldapString
  * @returns Curator's username in the following format: flastname
  */
-export const getCuratorNameFromLdap = (ldapString: string) =>
-  ldapString.split('|')[2];
+export const getCuratorNameFromLdap = (ldapString: string): string => {
+  return ldapString.split('|')[2] ?? 'invalid ldap string';
+};
 
 /**
  * Converts a scheduled surface guid e.g "NEW_TAB_EN_US" to a readable format
  * @param surfaceGuid
  * @returns Readable scheduled surface name e.g New Tab (en-US)
  */
-export const getScheduledSurfaceName = (surfaceGuid: string) => {
+export const getScheduledSurfaceName = (surfaceGuid: string): string => {
   return (
     ScheduledSurfaces.find((surface) => surface.guid === surfaceGuid)?.name ??
-    'Unknown Surface'
+    'invalid surface'
   );
 };

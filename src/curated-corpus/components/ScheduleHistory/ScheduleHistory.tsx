@@ -10,9 +10,16 @@ import {
 import { Button } from '../../../_shared/components';
 
 interface ScheduleHistory {
+  /**
+   * Schedule history of a prospect already existing in the corpus
+   */
   data: ApprovedCorpusItemScheduledSurfaceHistory[];
 }
-
+/**
+ * This component renders details about the recent scheduled runs for a prospect already existing in the corpus.
+ * Renders scheduled surface name, curator's name and the date scheduled for each scheduled run.
+ * @param props
+ */
 export const ScheduleHistory: React.FC<ScheduleHistory> = (
   props
 ): JSX.Element => {

@@ -167,6 +167,11 @@ describe('The ExistingProspectCard component', () => {
   });
 
   it('should render schedule history component', async () => {
+    /**
+     * We have separate units tests testing ScheduleHistory component in details in it's corresponding test file
+     * This test only tests if the ScheduleHistory component renders within this component
+     */
+
     // creating a prospect with an schedule history
     const prospectWithScheduleHistory = {
       ...prospect,

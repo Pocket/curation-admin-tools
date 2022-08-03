@@ -1,4 +1,9 @@
-import { fetchFileFromUrl } from './helperFunctions';
+import { ScheduledSurfaces } from './definitions';
+import {
+  fetchFileFromUrl,
+  getCuratorNameFromLdap,
+  getScheduledSurfaceName,
+} from './helperFunctions';
 
 describe('helperFunctions ', () => {
   describe('fetchFileFromUrl function', () => {
@@ -44,6 +49,34 @@ describe('helperFunctions ', () => {
 
       // assert blob has is undefined
       expect(responseBlob).toEqual(undefined);
+    });
+  });
+
+  describe('getCuratorNameFromLdap function', () => {
+    it('should return a curator name in jdoe format when a mozilla ldap string is provided', () => {
+      expect(getCuratorNameFromLdap('ad|Mozilla-LDAP|jdoe')).toEqual('jdoe');
+    });
+
+    it('should return "invalid ldap string" when an invalid mozilla ldap string is provided', () => {
+      expect(getCuratorNameFromLdap('ad-Mozilla-LDAP-jdoe')).toEqual(
+        'invalid ldap string'
+      );
+    });
+
+    it('should return "invalid ldap string" string when an empty string is provided', () => {
+      expect(getCuratorNameFromLdap('')).toEqual('invalid ldap string');
+    });
+  });
+
+  describe('getScheduledSurfaceName function', () => {
+    it('should return the correct scheduled surface name when its corresponding guid is provided', () => {
+      expect(getScheduledSurfaceName(ScheduledSurfaces[0].guid)).toEqual(
+        ScheduledSurfaces[0].name
+      );
+    });
+
+    it('should return "invalid surface" string when an incorrect guid is provided', () => {
+      expect(getScheduledSurfaceName('BOGUS_GUID')).toEqual('invalid surface');
     });
   });
 });
