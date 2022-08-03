@@ -57,14 +57,15 @@ describe('helperFunctions ', () => {
       expect(getCuratorNameFromLdap('ad|Mozilla-LDAP|jdoe')).toEqual('jdoe');
     });
 
-    it('should return "invalid ldap string" when an invalid mozilla ldap string is provided', () => {
+    it('should return the same input string when an invalid mozilla ldap string is provided', () => {
+      // note that the input string has - instead of |
       expect(getCuratorNameFromLdap('ad-Mozilla-LDAP-jdoe')).toEqual(
-        'invalid ldap string'
+        'ad-Mozilla-LDAP-jdoe'
       );
     });
 
-    it('should return "invalid ldap string" string when an empty string is provided', () => {
-      expect(getCuratorNameFromLdap('')).toEqual('invalid ldap string');
+    it('should return the same empty string when an empty string is provided', () => {
+      expect(getCuratorNameFromLdap('')).toEqual('');
     });
   });
 
@@ -75,8 +76,8 @@ describe('helperFunctions ', () => {
       );
     });
 
-    it('should return "invalid surface" string when an incorrect guid is provided', () => {
-      expect(getScheduledSurfaceName('BOGUS_GUID')).toEqual('invalid surface');
+    it('should return the same input guid string when an incorrect guid is provided', () => {
+      expect(getScheduledSurfaceName('BOGUS_GUID')).toEqual('BOGUS_GUID');
     });
   });
 });

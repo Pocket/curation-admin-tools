@@ -152,7 +152,7 @@ export const getLocalDateTimeForGuid = (
  * @returns Curator's username in the following format: flastname
  */
 export const getCuratorNameFromLdap = (ldapString: string): string => {
-  return ldapString.split('|')[2] ?? 'invalid ldap string';
+  return ldapString.split('|')[2] ?? ldapString;
 };
 
 /**
@@ -163,6 +163,6 @@ export const getCuratorNameFromLdap = (ldapString: string): string => {
 export const getScheduledSurfaceName = (surfaceGuid: string): string => {
   return (
     ScheduledSurfaces.find((surface) => surface.guid === surfaceGuid)?.name ??
-    'invalid surface'
+    surfaceGuid
   );
 };
