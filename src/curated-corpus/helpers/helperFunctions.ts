@@ -6,6 +6,7 @@ import {
   Prospect,
   UrlMetadata,
 } from '../../api/generatedTypes';
+import { ScheduledSurfaces } from './definitions';
 
 /**
  * Transforms the UrlMetaData object into a Prospect
@@ -143,4 +144,25 @@ export const getLocalDateTimeForGuid = (
   return localDateTime
     .toFormat('DDD')
     .concat(', ', localDateTime.toFormat('t'));
+};
+
+/**
+ * Converts an user's Mozilla ldap username e.g ad|Mozilla-LDAP|jdoe to jdoe
+ * @param ldapString
+ * @returns Curator's username in the following format: flastname
+ */
+export const getCuratorNameFromLdap = (ldapString: string): string => {
+  return ldapString.split('|')[2] ?? ldapString;
+};
+
+/**
+ * Converts a scheduled surface guid e.g "NEW_TAB_EN_US" to a readable format
+ * @param surfaceGuid
+ * @returns Readable scheduled surface name e.g New Tab (en-US)
+ */
+export const getScheduledSurfaceName = (surfaceGuid: string): string => {
+  return (
+    ScheduledSurfaces.find((surface) => surface.guid === surfaceGuid)?.name ??
+    surfaceGuid
+  );
 };

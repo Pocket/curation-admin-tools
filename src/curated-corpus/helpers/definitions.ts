@@ -73,3 +73,13 @@ export type ApprovedItemFromProspect = Omit<
   language: CorpusLanguage | undefined;
   authors: CollectionStoryAuthor[] | CorpusItemAuthor[];
 };
+
+// List of scheduled surfaces used to show the readable name by mapping it to it's corresponding guid
+export const ScheduledSurfaces = [
+  { guid: 'NEW_TAB_EN_US', name: 'New Tab (en-US)' },
+  { guid: 'NEW_TAB_DE_DE', name: 'New Tab (de-DE)' },
+  { guid: 'NEW_TAB_EN_GB', name: 'New Tab (en-GB)' },
+  { guid: 'NEW_TAB_EN_INTL', name: 'New Tab (en-INTL)' },
+  { guid: 'POCKET_HITS_EN_US', name: 'Pocket Hits (en-US)' },
+  { guid: 'POCKET_HITS_DE_DE', name: 'Pocket Hits (de-DE)' },
+];
