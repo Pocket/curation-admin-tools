@@ -53,7 +53,7 @@ describe('The RejectedItemListCard component', () => {
     expect(screen.getByText(rejectedItem.language)).toBeInTheDocument();
   });
 
-  it('should render rejected item card with reason', () => {
+  it('should render rejected item card with rejection reason', () => {
     render(
       <MemoryRouter>
         <RejectedItemListCard item={rejectedItem} />
@@ -81,5 +81,15 @@ describe('The RejectedItemListCard component', () => {
     );
 
     expect(screen.getByText(rejectedItem.topic)).toBeInTheDocument();
+  });
+
+  it('should render rejected item card with publisher', () => {
+    render(
+      <MemoryRouter>
+        <RejectedItemListCard item={rejectedItem} />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText(rejectedItem.publisher)).toBeInTheDocument();
   });
 });
