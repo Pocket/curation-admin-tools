@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import {
   CorpusItemSource,
@@ -69,7 +70,7 @@ describe('The ScheduledItemCardWrapper component', () => {
     expect(title).toBeInTheDocument();
   });
 
-  it('should render remove button', () => {
+  it('should render the "Remove" button', () => {
     render(
       <MemoryRouter>
         <ScheduledItemCardWrapper
@@ -88,7 +89,30 @@ describe('The ScheduledItemCardWrapper component', () => {
     expect(removeButton).toBeInTheDocument();
   });
 
-  it('should render reschedule button', () => {
+  it('should run an action on pressing the "Remove" button', () => {
+    const onRemove = jest.fn();
+
+    render(
+      <MemoryRouter>
+        <ScheduledItemCardWrapper
+          item={item}
+          onMoveToBottom={jest.fn()}
+          onReschedule={jest.fn()}
+          onRemove={onRemove}
+        />
+      </MemoryRouter>
+    );
+
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /Remove/i,
+      })
+    );
+
+    expect(onRemove).toHaveBeenCalled();
+  });
+
+  it('should render the "Reschedule" button', () => {
     render(
       <MemoryRouter>
         <ScheduledItemCardWrapper
@@ -107,7 +131,30 @@ describe('The ScheduledItemCardWrapper component', () => {
     expect(rescheduleButton).toBeInTheDocument();
   });
 
-  it('should render "move to bottom" button', () => {
+  it('should run an action on pressing the "Reschedule" button', () => {
+    const onReschedule = jest.fn();
+
+    render(
+      <MemoryRouter>
+        <ScheduledItemCardWrapper
+          item={item}
+          onMoveToBottom={jest.fn()}
+          onReschedule={onReschedule}
+          onRemove={jest.fn()}
+        />
+      </MemoryRouter>
+    );
+
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /Reschedule/i,
+      })
+    );
+
+    expect(onReschedule).toHaveBeenCalled();
+  });
+
+  it('should render the "Move to bottom" button', () => {
     render(
       <MemoryRouter>
         <ScheduledItemCardWrapper
@@ -124,5 +171,28 @@ describe('The ScheduledItemCardWrapper component', () => {
     });
 
     expect(button).toBeInTheDocument();
+  });
+
+  it('should run an action on pressing the "Remove" button', () => {
+    const onMoveToBottom = jest.fn();
+
+    render(
+      <MemoryRouter>
+        <ScheduledItemCardWrapper
+          item={item}
+          onMoveToBottom={onMoveToBottom}
+          onReschedule={jest.fn()}
+          onRemove={jest.fn()}
+        />
+      </MemoryRouter>
+    );
+
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /Move to bottom/i,
+      })
+    );
+
+    expect(onMoveToBottom).toHaveBeenCalled();
   });
 });

@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { CorpusLanguage, Prospect, Topics } from '../../../api/generatedTypes';
 import { ProspectListCard } from './ProspectListCard';
+import userEvent from '@testing-library/user-event';
 
 describe('The ProspectListCard component', () => {
   let prospect: Prospect;
@@ -141,5 +142,68 @@ describe('The ProspectListCard component', () => {
     expect(recommendButton).toBeInTheDocument();
     expect(rejectButton).toBeInTheDocument();
     expect(addToCorpusButton).toBeInTheDocument();
+  });
+
+  it('should run an action on pressing the "Recommend" button', () => {
+    render(
+      <MemoryRouter>
+        <ProspectListCard
+          prospect={prospect}
+          onAddToCorpus={onAddToCorpus}
+          onRecommend={onRecommend}
+          onReject={onReject}
+        />
+      </MemoryRouter>
+    );
+
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /Recommend/i,
+      })
+    );
+
+    expect(onRecommend).toHaveBeenCalled();
+  });
+
+  it('should run an action on pressing the "Reject" button', () => {
+    render(
+      <MemoryRouter>
+        <ProspectListCard
+          prospect={prospect}
+          onAddToCorpus={onAddToCorpus}
+          onRecommend={onRecommend}
+          onReject={onReject}
+        />
+      </MemoryRouter>
+    );
+
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /Reject/i,
+      })
+    );
+
+    expect(onReject).toHaveBeenCalled();
+  });
+
+  it('should run an action on pressing the "Add to corpus" button', () => {
+    render(
+      <MemoryRouter>
+        <ProspectListCard
+          prospect={prospect}
+          onAddToCorpus={onAddToCorpus}
+          onRecommend={onRecommend}
+          onReject={onReject}
+        />
+      </MemoryRouter>
+    );
+
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /Add to corpus/i,
+      })
+    );
+
+    expect(onAddToCorpus).toHaveBeenCalled();
   });
 });
