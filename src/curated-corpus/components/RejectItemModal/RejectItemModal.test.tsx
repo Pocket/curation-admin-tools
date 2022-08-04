@@ -27,6 +27,7 @@ describe('The RejectItemModal component', () => {
       />
     );
 
+    // fetch the modal's heading and assert it renders successfully
     expect(
       screen.getByText(/reject this item from inclusion in the curated corpus/i)
     ).toBeInTheDocument();
