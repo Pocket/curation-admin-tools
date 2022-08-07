@@ -6,7 +6,7 @@ import {
   Topics,
 } from '../../api/generatedTypes';
 
-const approvedCorpusItem: ApprovedCorpusItem = {
+export const approvedCorpusItem: ApprovedCorpusItem = {
   externalId: '123-abc',
   prospectId: '123-xyz',
   title: 'How To Win Friends And Influence People with React',
