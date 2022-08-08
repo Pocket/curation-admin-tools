@@ -1,6 +1,5 @@
-import * as Apollo from '@apollo/client';
 import { gql } from '@apollo/client';
-
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -1204,6 +1203,8 @@ export enum ProspectType {
 
 export type Query = {
   __typename?: 'Query';
+  /** Retrieves an approved item with the given external ID. */
+  approvedCorpusItem?: Maybe<ApprovedCorpusItem>;
   /** Retrieves an approved item with the given URL. */
   getApprovedCorpusItemByUrl?: Maybe<ApprovedCorpusItem>;
   /** Retrieves a paginated, filterable list of Approved Items. */
@@ -1258,6 +1259,10 @@ export type Query = {
   /** Look up {Item} info by a url. */
   itemByUrl?: Maybe<Item>;
   searchCollections: CollectionsResult;
+};
+
+export type QueryApprovedCorpusItemArgs = {
+  externalId: Scalars['ID'];
 };
 
 export type QueryGetApprovedCorpusItemByUrlArgs = {
@@ -2978,6 +2983,48 @@ export type UploadApprovedCorpusItemImageMutation = {
     __typename?: 'ApprovedCorpusImageUrl';
     url: string;
   };
+};
+
+export type ApprovedCorpusItemQueryVariables = Exact<{
+  externalId: Scalars['ID'];
+  historyFilter?: InputMaybe<ApprovedCorpusItemScheduledSurfaceHistoryFilters>;
+}>;
+
+export type ApprovedCorpusItemQuery = {
+  __typename?: 'Query';
+  approvedCorpusItem?: {
+    __typename?: 'ApprovedCorpusItem';
+    externalId: string;
+    prospectId?: string | null;
+    title: string;
+    language: CorpusLanguage;
+    publisher: string;
+    url: any;
+    imageUrl: any;
+    excerpt: string;
+    status: CuratedStatus;
+    source: CorpusItemSource;
+    topic: string;
+    isCollection: boolean;
+    isTimeSensitive: boolean;
+    isSyndicated: boolean;
+    createdBy: string;
+    createdAt: number;
+    updatedBy?: string | null;
+    updatedAt: number;
+    authors: Array<{
+      __typename?: 'CorpusItemAuthor';
+      name: string;
+      sortOrder: number;
+    }>;
+    scheduledSurfaceHistory: Array<{
+      __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
+      externalId: string;
+      createdBy: string;
+      scheduledDate: any;
+      scheduledSurfaceGuid: string;
+    }>;
+  } | null;
 };
 
 export type GetApprovedItemByUrlQueryVariables = Exact<{
@@ -5691,6 +5738,69 @@ export type UploadApprovedCorpusItemImageMutationOptions =
     UploadApprovedCorpusItemImageMutation,
     UploadApprovedCorpusItemImageMutationVariables
   >;
+export const ApprovedCorpusItemDocument = gql`
+  query approvedCorpusItem(
+    $externalId: ID!
+    $historyFilter: ApprovedCorpusItemScheduledSurfaceHistoryFilters
+  ) {
+    approvedCorpusItem(externalId: $externalId) {
+      ...CuratedItemDataWithHistory
+    }
+  }
+  ${CuratedItemDataWithHistoryFragmentDoc}
+`;
+
+/**
+ * __useApprovedCorpusItemQuery__
+ *
+ * To run a query within a React component, call `useApprovedCorpusItemQuery` and pass it any options that fit your needs.
+ * When your component renders, `useApprovedCorpusItemQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useApprovedCorpusItemQuery({
+ *   variables: {
+ *      externalId: // value for 'externalId'
+ *      historyFilter: // value for 'historyFilter'
+ *   },
+ * });
+ */
+export function useApprovedCorpusItemQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    ApprovedCorpusItemQuery,
+    ApprovedCorpusItemQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    ApprovedCorpusItemQuery,
+    ApprovedCorpusItemQueryVariables
+  >(ApprovedCorpusItemDocument, options);
+}
+export function useApprovedCorpusItemLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    ApprovedCorpusItemQuery,
+    ApprovedCorpusItemQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    ApprovedCorpusItemQuery,
+    ApprovedCorpusItemQueryVariables
+  >(ApprovedCorpusItemDocument, options);
+}
+export type ApprovedCorpusItemQueryHookResult = ReturnType<
+  typeof useApprovedCorpusItemQuery
+>;
+export type ApprovedCorpusItemLazyQueryHookResult = ReturnType<
+  typeof useApprovedCorpusItemLazyQuery
+>;
+export type ApprovedCorpusItemQueryResult = Apollo.QueryResult<
+  ApprovedCorpusItemQuery,
+  ApprovedCorpusItemQueryVariables
+>;
 export const GetApprovedItemByUrlDocument = gql`
   query getApprovedItemByUrl($url: String!) {
     getApprovedCorpusItemByUrl(url: $url) {

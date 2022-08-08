@@ -4,6 +4,7 @@ import { useStyles } from './ApprovedItemCardWrapper.styles';
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { Button } from '../../../_shared/components';
 import { ApprovedItemListCard } from '../ApprovedItemListCard/ApprovedItemListCard';
+import { Link } from 'react-router-dom';
 
 interface ApprovedItemCardWrapperProps {
   /**
@@ -39,6 +40,13 @@ export const ApprovedItemCardWrapper: React.FC<ApprovedItemCardWrapperProps> = (
           Edit
         </Button>
       </CardActions>
+      <Link
+        to={
+          /* temp temp temp! */ `/curated-corpus/corpus/item/${item.externalId}`
+        }
+      >
+        View
+      </Link>
     </Card>
   );
 };
