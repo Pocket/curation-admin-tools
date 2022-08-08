@@ -1,20 +1,14 @@
 import React from 'react';
-import { mock_AllScheduledSurfaces } from '../../integration-test-mocks/getScheduledSurfacesForUser';
 import { render, screen } from '@testing-library/react';
-import { MockedProvider, MockedResponse } from '@apollo/client/testing';
+import userEvent from '@testing-library/user-event';
+import LuxonUtils from '@date-io/luxon';
 import { SnackbarProvider } from 'notistack';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import LuxonUtils from '@date-io/luxon';
-import {
-  ApprovedCorpusItem,
-  CorpusItemSource,
-  CorpusLanguage,
-  CuratedStatus,
-  Topics,
-} from '../../../api/generatedTypes';
-import { ScheduleItemModal } from './ScheduleItemModal';
-import userEvent from '@testing-library/user-event';
+import { mock_AllScheduledSurfaces } from '../../integration-test-mocks/getScheduledSurfacesForUser';
 import { mock_ScheduledItemCountsZero } from '../../integration-test-mocks/getScheduledItemCounts';
+import { MockedProvider, MockedResponse } from '@apollo/client/testing';
+import { ScheduleItemModal } from './ScheduleItemModal';
+import { getTestApprovedItem } from '../../helpers/approvedItem';
 
 describe('ScheduleItemModal', () => {
   const mocks: MockedResponse[] = [
@@ -22,30 +16,7 @@ describe('ScheduleItemModal', () => {
     mock_ScheduledItemCountsZero,
   ];
 
-  const approvedItem: ApprovedCorpusItem = {
-    externalId: '123-abc',
-    prospectId: '123-xyz',
-    title: 'How To Win Friends And Influence People with React',
-    url: 'https://www.test.com/how-to',
-    imageUrl: 'https://placeimg.com/640/480/people?random=494',
-    excerpt: 'Everything You Wanted to Know About React and Were Afraid To Ask',
-    language: CorpusLanguage.De,
-    authors: [
-      { name: 'One Author', sortOrder: 1 },
-      { name: 'Two Authors', sortOrder: 2 },
-    ],
-    publisher: 'Amazing Inventions',
-    topic: Topics.HealthFitness,
-    source: CorpusItemSource.Prospect,
-    status: CuratedStatus.Recommendation,
-    isCollection: false,
-    isSyndicated: false,
-    isTimeSensitive: false,
-    createdAt: 1635014926,
-    createdBy: 'Amy',
-    updatedAt: 1635114926,
-    scheduledSurfaceHistory: [],
-  };
+  const approvedItem = getTestApprovedItem();
 
   const renderComponent = (
     mocks: MockedResponse[],
