@@ -13,6 +13,8 @@ interface ScheduleHistoryEntries {
    * Schedule history of a prospect already existing in the corpus
    */
   data: ApprovedCorpusItemScheduledSurfaceHistory[];
+
+  isShowingForProspect?: boolean;
 }
 /**
  * This component renders details about the recent scheduled runs for a prospect already existing in the corpus.
@@ -23,13 +25,16 @@ export const ScheduleHistoryEntries: React.FC<ScheduleHistoryEntries> = (
   props
 ): JSX.Element => {
   const classes = useStyles();
-  const { data } = props;
+  const { data, isShowingForProspect } = props;
 
   const getDisplayDate = (date: string) => {
     return DateTime.fromFormat(date, 'yyyy-MM-dd')
       .setLocale('en')
       .toLocaleString(DateTime.DATE_FULL);
   };
+
+  const curatorAndDateContainerElementWidth = isShowingForProspect ? 8 : 6;
+  const curatorAndDateItemElementWidth = isShowingForProspect ? 6 : 12;
 
   return (
     <Grid container>
@@ -41,21 +46,30 @@ export const ScheduleHistoryEntries: React.FC<ScheduleHistoryEntries> = (
             xs={12}
             className={classes.scheduledHistoryWrapper}
           >
-            <Grid container justifyContent="space-between">
+            <Grid container>
               <Grid item xs={4}>
                 <Typography variant="body2">
                   {getScheduledSurfaceName(item.scheduledSurfaceGuid)}
                 </Typography>
               </Grid>
-              <Grid item xs={4}>
-                <Typography variant="body2">
-                  {getCuratorNameFromLdap(item.createdBy)}
-                </Typography>
-              </Grid>
-              <Grid item xs={4}>
-                <Typography variant="body2">
-                  {getDisplayDate(item.scheduledDate)}
-                </Typography>
+              <Grid item xs={curatorAndDateContainerElementWidth}>
+                <Grid
+                  container
+                  className={
+                    isShowingForProspect ? classes.wideCard : classes.narrowCard
+                  }
+                >
+                  <Grid item xs={curatorAndDateItemElementWidth}>
+                    <Typography variant="body2">
+                      {getCuratorNameFromLdap(item.createdBy)}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={curatorAndDateItemElementWidth}>
+                    <Typography variant="body2">
+                      {getDisplayDate(item.scheduledDate)}
+                    </Typography>
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>

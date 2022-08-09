@@ -11,9 +11,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       borderRadius: '5px',
       width: '100%',
     },
-    scheduledHistoryWrapper: {
-      margin: '0.5em',
-    },
     toggleHistoryButton: {
       paddingLeft: '0px',
     },

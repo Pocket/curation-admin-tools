@@ -11,6 +11,8 @@ interface ScheduleHistory {
    * Schedule history of a prospect already existing in the corpus
    */
   data: ApprovedCorpusItemScheduledSurfaceHistory[];
+
+  isShowingForProspect?: boolean;
 }
 /**
  * This component renders details about the recent scheduled runs for a prospect already existing in the corpus.
@@ -21,7 +23,7 @@ export const ScheduleHistory: React.FC<ScheduleHistory> = (
   props
 ): JSX.Element => {
   const classes = useStyles();
-  const { data } = props;
+  const { data, isShowingForProspect } = props;
 
   const [isShowingHistory, setIsShowingHistory] = useState(false);
 
@@ -48,7 +50,10 @@ export const ScheduleHistory: React.FC<ScheduleHistory> = (
         unmountOnExit
         className={classes.collapse}
       >
-        <ScheduleHistoryEntries data={data} />
+        <ScheduleHistoryEntries
+          data={data}
+          isShowingForProspect={isShowingForProspect}
+        />
       </Collapse>
     </Grid>
   );
