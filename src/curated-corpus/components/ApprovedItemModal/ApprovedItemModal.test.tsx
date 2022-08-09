@@ -1,39 +1,12 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-
-import { ApprovedItemModal } from './ApprovedItemModal';
-import {
-  ApprovedCorpusItem,
-  CorpusItemSource,
-  CorpusLanguage,
-  CuratedStatus,
-  Topics,
-} from '../../../api/generatedTypes';
 import { SnackbarProvider } from 'notistack';
 import { MockedProvider } from '@apollo/client/testing';
+import { ApprovedItemModal } from './ApprovedItemModal';
+import { getTestApprovedItem } from '../../helpers/approvedItem';
 
 describe('The ApprovedItemModal component', () => {
-  const approvedItem: ApprovedCorpusItem = {
-    externalId: '123-abc',
-    prospectId: '123-xyz',
-    title: 'How To Win Friends And Influence People with React',
-    url: 'http://www.test.com/how-to',
-    imageUrl: 'https://placeimg.com/640/480/people?random=494',
-    excerpt: 'Everything You Wanted to Know About React and Were Afraid To Ask',
-    language: CorpusLanguage.De,
-    authors: [{ name: 'One Author', sortOrder: 1 }],
-    publisher: 'Amazing Inventions',
-    topic: Topics.HealthFitness,
-    source: CorpusItemSource.Prospect,
-    status: CuratedStatus.Recommendation,
-    isCollection: false,
-    isSyndicated: false,
-    isTimeSensitive: false,
-    createdAt: 1635014926,
-    createdBy: 'Amy',
-    updatedAt: 1635114926,
-    scheduledSurfaceHistory: [],
-  };
+  const approvedItem = getTestApprovedItem();
   const showItemTitle = true;
   const heading = 'Test Heading';
   const isRecommendation = true;
