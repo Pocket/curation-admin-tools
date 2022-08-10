@@ -97,7 +97,7 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
         {showScheduleHistory && (
           <ScheduleHistory
             data={item.scheduledSurfaceHistory}
-            isShowingForProspect={false}
+            isProspect={false}
           />
         )}
       </CardContent>

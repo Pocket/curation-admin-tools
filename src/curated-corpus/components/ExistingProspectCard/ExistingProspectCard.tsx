@@ -133,7 +133,7 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
             <Grid item xs={12}>
               <ScheduleHistory
                 data={item.scheduledSurfaceHistory}
-                isShowingForProspect={true}
+                isProspect={true}
               />
             </Grid>
           )}
