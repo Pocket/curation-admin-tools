@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import EventNoteIcon from '@material-ui/icons/EventNote';
 import { Grid, Collapse } from '@material-ui/core';
 import { ApprovedCorpusItemScheduledSurfaceHistory } from '../../../api/generatedTypes';
 import { useStyles } from './ScheduleHistory.styles';
@@ -8,15 +9,17 @@ import { ScheduleHistoryEntries } from '../ScheduleHistoryEntries/ScheduleHistor
 
 interface ScheduleHistory {
   /**
-   * Schedule history of a prospect already existing in the corpus
+   * Schedule history of an already existing item in the corpus
    */
   data: ApprovedCorpusItemScheduledSurfaceHistory[];
 
+  /**
+   * flag to know whether the schedule history is being shown for a prospect item or not
+   */
   isProspect?: boolean;
 }
 /**
- * This component renders details about the recent scheduled runs for a prospect already existing in the corpus.
- * Renders scheduled surface name, curator's name and the date scheduled for each scheduled run.
+ * This is a wrapper component for ScheduledHistoryEntries component.
  * @param props
  */
 export const ScheduleHistory: React.FC<ScheduleHistory> = (
@@ -28,8 +31,8 @@ export const ScheduleHistory: React.FC<ScheduleHistory> = (
   const [isShowingHistory, setIsShowingHistory] = useState(false);
 
   const toggleHistoryButtonText = isShowingHistory
-    ? 'Hide recent scheduled runs'
-    : 'View recent scheduled runs';
+    ? 'Hide recently scheduled'
+    : 'View recently scheduled';
 
   return (
     <Grid container>
@@ -40,6 +43,7 @@ export const ScheduleHistory: React.FC<ScheduleHistory> = (
           setIsShowingHistory(!isShowingHistory);
         }}
         className={classes.toggleHistoryButton}
+        startIcon={<EventNoteIcon />}
       >
         {toggleHistoryButtonText}
       </Button>

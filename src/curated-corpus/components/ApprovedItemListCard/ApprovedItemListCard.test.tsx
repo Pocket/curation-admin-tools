@@ -1,46 +1,15 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import {
-  ApprovedCorpusItem,
-  CorpusItemSource,
-  CorpusLanguage,
-  CuratedStatus,
-  Topics,
-} from '../../../api/generatedTypes';
+import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { ApprovedItemListCard } from './ApprovedItemListCard';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
+import { getTestApprovedItem } from '../../helpers/approvedItem';
+import { ScheduledSurfaces } from '../../helpers/definitions';
+import userEvent from '@testing-library/user-event';
 
 describe('The ApprovedItemListCard component', () => {
-  let item: ApprovedCorpusItem;
-
-  beforeEach(() => {
-    item = {
-      externalId: '123-abc',
-      prospectId: '123-xyz',
-      title: 'How To Win Friends And Influence People with React',
-      url: 'http://www.test.com/how-to',
-      imageUrl: 'https://placeimg.com/640/480/people?random=494',
-      excerpt:
-        'Everything You Wanted to Know About React and Were Afraid To Ask',
-      authors: [
-        { name: 'One Author', sortOrder: 1 },
-        { name: 'Two Authors', sortOrder: 2 },
-      ],
-      language: CorpusLanguage.De,
-      publisher: 'Amazing Inventions',
-      topic: Topics.SelfImprovement,
-      source: CorpusItemSource.Prospect,
-      status: CuratedStatus.Recommendation,
-      isCollection: false,
-      isSyndicated: false,
-      isTimeSensitive: false,
-      createdAt: 1635014926,
-      createdBy: 'Amy',
-      updatedAt: 1635114926,
-      scheduledSurfaceHistory: [],
-    };
-  });
+  let item: ApprovedCorpusItem = getTestApprovedItem();
 
   it('shows basic approved item information', () => {
     render(
@@ -101,7 +70,7 @@ describe('The ApprovedItemListCard component', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText('Self Improvement')).toBeInTheDocument();
+    expect(screen.getByText('Health & Fitness')).toBeInTheDocument();
   });
 
   it('should render approved item card with excerpt', () => {
@@ -168,5 +137,57 @@ describe('The ApprovedItemListCard component', () => {
     );
 
     expect(screen.getByText('Agatha Christie')).toBeInTheDocument();
+  });
+
+  it('should render ScheduleHistory component', () => {
+    item = {
+      ...item,
+      scheduledSurfaceHistory: [
+        {
+          createdBy: 'ad|Mozilla-LDAP|aperson',
+          externalId: 'bogus-external-id',
+          scheduledDate: '2022-08-01',
+          scheduledSurfaceGuid: ScheduledSurfaces[0].guid,
+        },
+        {
+          createdBy: 'ad|Mozilla-LDAP|bperson',
+          externalId: 'useless-external-id',
+          scheduledDate: '2022-08-02',
+          scheduledSurfaceGuid: ScheduledSurfaces[1].guid,
+        },
+      ],
+    };
+
+    render(
+      <MemoryRouter>
+        <ApprovedItemListCard item={item} />
+      </MemoryRouter>
+    );
+
+    // fetch the view recently scheduled button
+    const scheduleHistoryButton = screen.getByText(/view recently scheduled/i);
+
+    // assert that ScheduleHistory component rendered successfully
+    expect(scheduleHistoryButton).toBeInTheDocument();
+
+    userEvent.click(scheduleHistoryButton);
+
+    // assert that the copy changed on the above button
+    expect(screen.getByText(/hide recently scheduled/i)).toBeInTheDocument();
+
+    // fetch and assert that the first scheduled history entry details are rendered successfully
+    expect(screen.getByText(/aperson/i)).toBeInTheDocument();
+    expect(screen.getByText(/August 1, 2022/i)).toBeInTheDocument();
+    expect(screen.getByText('New Tab (en-US)')).toBeInTheDocument();
+
+    // fetch and assert that the second scheduled history entry details are rendered successfully
+    expect(screen.getByText(/bperson/i)).toBeInTheDocument();
+    expect(screen.getByText(/August 2, 2022/i)).toBeInTheDocument();
+    expect(screen.getByText('New Tab (de-DE)')).toBeInTheDocument();
+
+    userEvent.click(scheduleHistoryButton);
+
+    // assert that the copy changed to the original one on the above button
+    expect(screen.getByText(/view recently scheduled/i)).toBeInTheDocument();
   });
 });

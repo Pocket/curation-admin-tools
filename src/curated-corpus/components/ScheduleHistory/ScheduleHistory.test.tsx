@@ -14,7 +14,7 @@ describe('The ScheduleHistory component', () => {
 
     // the button when clicked shows us the recent scheduled runs
     const recentScheduledRunsButton = screen.getByRole('button', {
-      name: /view recent scheduled runs/i,
+      name: /view recently scheduled/i,
     });
 
     expect(recentScheduledRunsButton).toBeInTheDocument();
@@ -26,7 +26,7 @@ describe('The ScheduleHistory component', () => {
 
     // fetch the same button with a different name now since it was clicked
     const hideScheduledRunsButton = screen.getByRole('button', {
-      name: /hide recent scheduled runs/i,
+      name: /hide recently scheduled/i,
     });
 
     expect(hideScheduledRunsButton).toBeInTheDocument();
