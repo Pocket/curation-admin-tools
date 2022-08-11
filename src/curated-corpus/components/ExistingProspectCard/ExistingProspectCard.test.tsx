@@ -200,7 +200,7 @@ describe('The ExistingProspectCard component', () => {
 
     // the button when clicked shows us the recent scheduled runs
     const recentScheduledRunsButton = screen.getByRole('button', {
-      name: /view recent scheduled runs/i,
+      name: /view recently scheduled/i,
     });
 
     expect(recentScheduledRunsButton).toBeInTheDocument();

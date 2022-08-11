@@ -1,42 +1,38 @@
 import React, { useState } from 'react';
-import { Grid, Typography, Collapse } from '@material-ui/core';
-import { DateTime } from 'luxon';
+import EventNoteIcon from '@material-ui/icons/EventNote';
+import { Grid, Collapse } from '@material-ui/core';
 import { ApprovedCorpusItemScheduledSurfaceHistory } from '../../../api/generatedTypes';
 import { useStyles } from './ScheduleHistory.styles';
-import {
-  getCuratorNameFromLdap,
-  getScheduledSurfaceName,
-} from '../../helpers/helperFunctions';
+
 import { Button } from '../../../_shared/components';
+import { ScheduleHistoryEntries } from '../ScheduleHistoryEntries/ScheduleHistoryEntries';
 
 interface ScheduleHistory {
   /**
-   * Schedule history of a prospect already existing in the corpus
+   * Schedule history of an already existing item in the corpus
    */
   data: ApprovedCorpusItemScheduledSurfaceHistory[];
+
+  /**
+   * flag to know whether the schedule history is being shown for a prospect item or not
+   */
+  isProspect?: boolean;
 }
 /**
- * This component renders details about the recent scheduled runs for a prospect already existing in the corpus.
- * Renders scheduled surface name, curator's name and the date scheduled for each scheduled run.
+ * This is a wrapper component for ScheduledHistoryEntries component.
  * @param props
  */
 export const ScheduleHistory: React.FC<ScheduleHistory> = (
   props
 ): JSX.Element => {
   const classes = useStyles();
-  const { data } = props;
+  const { data, isProspect } = props;
 
   const [isShowingHistory, setIsShowingHistory] = useState(false);
 
   const toggleHistoryButtonText = isShowingHistory
-    ? 'Hide recent scheduled runs'
-    : 'View recent scheduled runs';
-
-  const getDisplayDate = (date: string) => {
-    return DateTime.fromFormat(date, 'yyyy-MM-dd')
-      .setLocale('en')
-      .toLocaleString(DateTime.DATE_FULL);
-  };
+    ? 'Hide recently scheduled'
+    : 'View recently scheduled';
 
   return (
     <Grid container>
@@ -47,6 +43,7 @@ export const ScheduleHistory: React.FC<ScheduleHistory> = (
           setIsShowingHistory(!isShowingHistory);
         }}
         className={classes.toggleHistoryButton}
+        startIcon={<EventNoteIcon />}
       >
         {toggleHistoryButtonText}
       </Button>
@@ -57,34 +54,7 @@ export const ScheduleHistory: React.FC<ScheduleHistory> = (
         unmountOnExit
         className={classes.collapse}
       >
-        {data.map((item: ApprovedCorpusItemScheduledSurfaceHistory) => {
-          return (
-            <Grid
-              key={item.externalId}
-              item
-              xs={12}
-              className={classes.scheduledHistoryWrapper}
-            >
-              <Grid container justifyContent="space-between">
-                <Grid item xs={4}>
-                  <Typography variant="body2">
-                    {getScheduledSurfaceName(item.scheduledSurfaceGuid)}
-                  </Typography>
-                </Grid>
-                <Grid item xs={4}>
-                  <Typography variant="body2">
-                    {getCuratorNameFromLdap(item.createdBy)}
-                  </Typography>
-                </Grid>
-                <Grid item xs={4}>
-                  <Typography variant="body2">
-                    {getDisplayDate(item.scheduledDate)}
-                  </Typography>
-                </Grid>
-              </Grid>
-            </Grid>
-          );
-        })}
+        <ScheduleHistoryEntries data={data} isProspect={isProspect} />
       </Collapse>
     </Grid>
   );

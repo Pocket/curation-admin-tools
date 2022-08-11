@@ -18,6 +18,7 @@ import { useStyles } from './ApprovedItemListCard.styles';
 import { ApprovedCorpusItem, CuratedStatus } from '../../../api/generatedTypes';
 import { getDisplayTopic } from '../../helpers/topics';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
+import { ScheduleHistory } from '../ScheduleHistory/ScheduleHistory';
 
 interface ApprovedItemListCardProps {
   /**
@@ -55,6 +56,8 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
       encodeURIComponent(item.imageUrl)
     );
 
+  const showScheduleHistory = item.scheduledSurfaceHistory.length != 0;
+
   return (
     <>
       <CardMedia
@@ -89,6 +92,14 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
         <Typography variant="body2" component="p" gutterBottom>
           {item.excerpt}
         </Typography>
+      </CardContent>
+      <CardContent>
+        {showScheduleHistory && (
+          <ScheduleHistory
+            data={item.scheduledSurfaceHistory}
+            isProspect={false}
+          />
+        )}
       </CardContent>
 
       {/* Push the rest of the elements to the bottom of the card. */}
