@@ -131,7 +131,10 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
           <Typography component="div">{item.excerpt}</Typography>
           {showScheduleHistory && (
             <Grid item xs={12}>
-              <ScheduleHistory data={item.scheduledSurfaceHistory} />
+              <ScheduleHistory
+                data={item.scheduledSurfaceHistory}
+                isProspect={true}
+              />
             </Grid>
           )}
         </Grid>

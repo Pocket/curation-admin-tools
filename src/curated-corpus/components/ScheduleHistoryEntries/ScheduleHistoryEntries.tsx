@@ -10,20 +10,25 @@ import {
 
 interface ScheduleHistoryEntries {
   /**
-   * Schedule history of a prospect already existing in the corpus
+   * Schedule history of an already existing item in the corpus
    */
   data: ApprovedCorpusItemScheduledSurfaceHistory[];
+
+  /**
+   * flag to know whether the schedule history is being shown for a prospect item or not
+   */
+  isProspect?: boolean;
 }
 /**
- * This component renders details about the recent scheduled runs for a prospect already existing in the corpus.
- * Renders scheduled surface name, curator's name and the date scheduled for each scheduled run.
+ * This component renders recent scheduled runs details of an already existing item in the corpus.
+ * Includes scheduled surface name, curator's name and the date scheduled for each scheduled run.
  * @param props
  */
 export const ScheduleHistoryEntries: React.FC<ScheduleHistoryEntries> = (
   props
 ): JSX.Element => {
   const classes = useStyles();
-  const { data } = props;
+  const { data, isProspect } = props;
 
   const getDisplayDate = (date: string) => {
     return DateTime.fromFormat(date, 'yyyy-MM-dd')
@@ -37,25 +42,29 @@ export const ScheduleHistoryEntries: React.FC<ScheduleHistoryEntries> = (
         return (
           <Grid
             key={item.externalId}
-            item
-            xs={12}
+            container
             className={classes.scheduledHistoryWrapper}
           >
-            <Grid container justifyContent="space-between">
-              <Grid item xs={4}>
-                <Typography variant="body2">
-                  {getScheduledSurfaceName(item.scheduledSurfaceGuid)}
-                </Typography>
-              </Grid>
-              <Grid item xs={4}>
-                <Typography variant="body2">
-                  {getCuratorNameFromLdap(item.createdBy)}
-                </Typography>
-              </Grid>
-              <Grid item xs={4}>
-                <Typography variant="body2">
-                  {getDisplayDate(item.scheduledDate)}
-                </Typography>
+            <Grid item xs={4}>
+              <Typography variant="body2">
+                {getScheduledSurfaceName(item.scheduledSurfaceGuid)}
+              </Typography>
+            </Grid>
+            <Grid item xs={8}>
+              <Grid
+                container
+                className={isProspect ? classes.wideCard : classes.narrowCard}
+              >
+                <Grid item xs>
+                  <Typography variant="body2">
+                    {getCuratorNameFromLdap(item.createdBy)}
+                  </Typography>
+                </Grid>
+                <Grid item xs>
+                  <Typography variant="body2">
+                    {getDisplayDate(item.scheduledDate)}
+                  </Typography>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>

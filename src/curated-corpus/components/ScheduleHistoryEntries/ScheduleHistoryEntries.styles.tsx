@@ -1,21 +1,19 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 
 /**
- * Styles for the ScheduleHistory component.
+ * Styles for the ScheduleHistoryEntries component.
  */
-export const useStyles = makeStyles((theme: Theme) =>
+export const useStyles = makeStyles(() =>
   createStyles({
-    collapse: {
-      marginTop: '0.5rem',
-      border: `solid 1px ${theme.palette.secondary.light}`,
-      borderRadius: '5px',
-      width: '100%',
-    },
     scheduledHistoryWrapper: {
       margin: '0.5em',
     },
-    toggleHistoryButton: {
-      paddingLeft: '0px',
+    narrowCard: {
+      flexDirection: 'column',
+      alignItems: 'flex-end',
+    },
+    wideCard: {
+      flexDirection: 'row',
     },
   })
 );
