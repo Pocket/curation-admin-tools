@@ -8,6 +8,7 @@ import { HandleApiResponse } from '../../../_shared/components';
 import {
   AddProspectModal,
   ApprovedItemModal,
+  DuplicateProspectModal,
   ExistingProspectCard,
   ProspectListCard,
   RefreshProspectsModal,
@@ -196,6 +197,10 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
    * Keep track of whether the "Schedule this item" modal is open or not.
    */
   const [scheduleModalOpen, toggleScheduleModal] = useToggle(false);
+
+  //TODO: add new modal toggle state here
+  const [duplicateProspectModalOpen, toggleDuplicateProspectModal] =
+    useToggle(false);
 
   // Get a helper function that will execute each mutation, show standard notifications
   // and execute any additional actions in a callback
@@ -576,7 +581,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         isOpen={addProspectModalOpen}
         toggleModal={toggleAddProspectModal}
         toggleApprovedItemModal={toggleApprovedItemModal}
-        toggleScheduleItemModal={toggleScheduleModalAndEnableScheduledSurface}
+        toggleDuplicateProspectModal={toggleDuplicateProspectModal}
         setCurrentProspect={setCurrentProspect}
         setApprovedItem={setApprovedItem}
         setIsRecommendation={setIsRecommendation}
@@ -584,16 +589,22 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       />
 
       {approvedItem && (
-        <ScheduleItemModal
-          approvedItem={approvedItem}
-          headingCopy="Optional: schedule this item"
-          isOpen={scheduleModalOpen}
-          scheduledSurfaceGuid={currentScheduledSurfaceGuid}
-          disableScheduledSurface={disableScheduledSurface}
-          onSave={onScheduleSave}
-          toggleModal={toggleScheduleModalAndDisableScheduledSurface}
-        />
-      )}
+          <ScheduleItemModal
+            approvedItem={approvedItem}
+            headingCopy="Optional: schedule this item"
+            isOpen={scheduleModalOpen}
+            scheduledSurfaceGuid={currentScheduledSurfaceGuid}
+            disableScheduledSurface={disableScheduledSurface}
+            onSave={onScheduleSave}
+            toggleModal={toggleScheduleModalAndDisableScheduledSurface}
+          />
+        ) && (
+          <DuplicateProspectModal
+            approvedItem={approvedItem}
+            isOpen={duplicateProspectModalOpen}
+            toggleModal={toggleDuplicateProspectModal}
+          />
+        )}
 
       <h1>Prospecting</h1>
       <Grid container spacing={3}>

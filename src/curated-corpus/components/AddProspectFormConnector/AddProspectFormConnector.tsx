@@ -8,7 +8,6 @@ import {
 } from '../../../api/generatedTypes';
 import { AddProspectForm } from '../';
 import { transformUrlMetaDataToProspect } from '../../helpers/helperFunctions';
-import { useNotifications } from '../../../_shared/hooks';
 
 interface AddProspectFormConnectorProps {
   /**
@@ -21,10 +20,8 @@ interface AddProspectFormConnectorProps {
    */
   toggleApprovedItemModal: VoidFunction;
 
-  /**
-   * Toggle the modal that contains the optional scheduling form as necessary.
-   */
-  toggleScheduleItemModal: VoidFunction;
+  //TODO: fix comment
+  toggleDuplicateProspectModal: VoidFunction;
 
   /**
    * The Prospecting page holds the prospect under consideration (its data being
@@ -66,7 +63,7 @@ export const AddProspectFormConnector: React.FC<
   const {
     toggleModal,
     toggleApprovedItemModal,
-    toggleScheduleItemModal,
+    toggleDuplicateProspectModal,
     setCurrentProspect,
     setApprovedItem,
     setIsManualSubmission,
@@ -80,9 +77,6 @@ export const AddProspectFormConnector: React.FC<
   // this is against our current pattern of using the formik.isSubmitting in the form component itself
   // to show a loading indicator. After a lot of debugging, we can't figure out why that way doesn't work hence resorting to this
   const [isLoaderShowing, setIsLoaderShowing] = useState<boolean>(false);
-
-  // set up some hooks
-  const { showNotification } = useNotifications();
 
   /**
    * Run through a series of steps when a Prospect is submitted manually
@@ -132,13 +126,8 @@ export const AddProspectFormConnector: React.FC<
         // Hide the Add Prospect form
         toggleModal();
 
-        showNotification(
-          'This story is already in the corpus, opening the optional scheduling modal',
-          'info'
-        );
-
-        // Show the optional scheduling modal
-        toggleScheduleItemModal();
+        //TODO: show the new modal that takes the user to the item details page
+        toggleDuplicateProspectModal();
 
         // Nothing else to do here - we can do an early exit
         return;
