@@ -30,6 +30,14 @@ export const ApprovedItemCardWrapper: React.FC<ApprovedItemCardWrapperProps> = (
       <ApprovedItemListCard item={item} />
 
       <CardActions className={classes.actions}>
+        <Button buttonType="positive" variant="text">
+          <Link
+            to={`/curated-corpus/corpus/item/${item.externalId}`}
+            className={classes.link}
+          >
+            View
+          </Link>
+        </Button>
         <Button buttonType="positive" variant="text" onClick={onSchedule}>
           Schedule
         </Button>
@@ -40,13 +48,6 @@ export const ApprovedItemCardWrapper: React.FC<ApprovedItemCardWrapperProps> = (
           Edit
         </Button>
       </CardActions>
-      <Link
-        to={
-          /* temp temp temp! */ `/curated-corpus/corpus/item/${item.externalId}`
-        }
-      >
-        View
-      </Link>
     </Card>
   );
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { useApprovedCorpusItemQuery } from '../../../api/generatedTypes';
+import { useApprovedCorpusItemByExternalIdQuery } from '../../../api/generatedTypes';
 import { HandleApiResponse } from '../../../_shared/components';
 import { Box, Button, ButtonGroup, Grid, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
@@ -19,7 +19,7 @@ export const CorpusItemPage: React.FC = (): JSX.Element => {
   const params = useParams<{ id: string }>();
 
   // Query the API for data
-  const { loading, error, data } = useApprovedCorpusItemQuery({
+  const { loading, error, data } = useApprovedCorpusItemByExternalIdQuery({
     variables: {
       externalId: params.id,
     },
@@ -31,7 +31,7 @@ export const CorpusItemPage: React.FC = (): JSX.Element => {
     <>
       {!data && <HandleApiResponse loading={loading} error={error} />}
       {/* The API query returns null if there is no match. Let's cater for it */}
-      {data && data.approvedCorpusItem === null && (
+      {data && data.approvedCorpusItemByExternalId === null && (
         <>
           <h1>🤦&nbsp;Oh no!</h1>
           <Box my={3}>
@@ -42,58 +42,57 @@ export const CorpusItemPage: React.FC = (): JSX.Element => {
           </Box>
         </>
       )}
-      {data && data.approvedCorpusItem !== null && (
-        <Grid container spacing={3}>
+      {data && data.approvedCorpusItemByExternalId !== null && (
+        <Grid container spacing={6}>
           <Grid item xs={12} sm={8}>
-            <Box display="flex">
-              <Box flexGrow={1} alignSelf="center" textOverflow="ellipsis">
-                <h1>
-                  {data.approvedCorpusItem?.title}
-                  <Typography variant="subtitle2" component="div">
-                    Corpus Item
-                  </Typography>
-                </h1>
-              </Box>
-              <Box alignSelf="center">
-                <ButtonGroup
-                  orientation="vertical"
-                  color="primary"
-                  variant="text"
-                >
-                  <Button
-                    color="primary"
-                    onClick={() => {
-                      alert('Ability to schedule is coming soon!');
-                    }}
-                  >
-                    Schedule
-                  </Button>
-                  <Button
-                    color="secondary"
-                    onClick={() => {
-                      alert('Ability to reject is coming soon!');
-                    }}
-                  >
-                    Reject
-                  </Button>
-                  <Button
-                    color="primary"
-                    onClick={() => {
-                      alert('Ability to edit is coming soon!');
-                    }}
-                  >
-                    Edit
-                  </Button>
-                </ButtonGroup>
-              </Box>
-            </Box>
+            <h1>
+              {data.approvedCorpusItemByExternalId?.title}
+              <Typography variant="subtitle2" component="div">
+                Corpus Item
+              </Typography>
+            </h1>
 
-            <ApprovedItemInfo item={data.approvedCorpusItem!} />
+            <ApprovedItemInfo item={data.approvedCorpusItemByExternalId!} />
           </Grid>
 
           <Grid item xs={12} sm={4}>
-            <h4>Sidebar with scheduling history</h4>
-            <ApprovedItemCurationHistory item={data.approvedCorpusItem!} />
+            <h2>Actions</h2>
+            <Box alignSelf="center" marginBottom={3}>
+              <ButtonGroup
+                orientation="horizontal"
+                color="primary"
+                variant="text"
+              >
+                <Button
+                  color="primary"
+                  onClick={() => {
+                    alert('Ability to schedule is coming soon!');
+                  }}
+                >
+                  Schedule
+                </Button>
+                <Button
+                  color="secondary"
+                  onClick={() => {
+                    alert('Ability to reject is coming soon!');
+                  }}
+                >
+                  Reject
+                </Button>
+                <Button
+                  color="primary"
+                  onClick={() => {
+                    alert('Ability to edit is coming soon!');
+                  }}
+                >
+                  Edit
+                </Button>
+              </ButtonGroup>
+            </Box>
+
+            <ApprovedItemCurationHistory
+              item={data.approvedCorpusItemByExternalId!}
+            />
           </Grid>
         </Grid>
       )}

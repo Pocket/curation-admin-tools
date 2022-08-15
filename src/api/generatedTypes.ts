@@ -598,6 +598,8 @@ export type Image = {
   src: Scalars['String'];
   /** If the image is also a link, the destination url */
   targetUrl?: Maybe<Scalars['String']>;
+  /** Absolute url to the image */
+  url: Scalars['Url'];
   /** If known, the width of the image in px */
   width?: Maybe<Scalars['Int']>;
 };
@@ -1204,7 +1206,7 @@ export enum ProspectType {
 export type Query = {
   __typename?: 'Query';
   /** Retrieves an approved item with the given external ID. */
-  approvedCorpusItem?: Maybe<ApprovedCorpusItem>;
+  approvedCorpusItemByExternalId?: Maybe<ApprovedCorpusItem>;
   /** Retrieves an approved item with the given URL. */
   getApprovedCorpusItemByUrl?: Maybe<ApprovedCorpusItem>;
   /** Retrieves a paginated, filterable list of Approved Items. */
@@ -1261,7 +1263,7 @@ export type Query = {
   searchCollections: CollectionsResult;
 };
 
-export type QueryApprovedCorpusItemArgs = {
+export type QueryApprovedCorpusItemByExternalIdArgs = {
   externalId: Scalars['ID'];
 };
 
@@ -2985,14 +2987,14 @@ export type UploadApprovedCorpusItemImageMutation = {
   };
 };
 
-export type ApprovedCorpusItemQueryVariables = Exact<{
+export type ApprovedCorpusItemByExternalIdQueryVariables = Exact<{
   externalId: Scalars['ID'];
   historyFilter?: InputMaybe<ApprovedCorpusItemScheduledSurfaceHistoryFilters>;
 }>;
 
-export type ApprovedCorpusItemQuery = {
+export type ApprovedCorpusItemByExternalIdQuery = {
   __typename?: 'Query';
-  approvedCorpusItem?: {
+  approvedCorpusItemByExternalId?: {
     __typename?: 'ApprovedCorpusItem';
     externalId: string;
     prospectId?: string | null;
@@ -5738,12 +5740,12 @@ export type UploadApprovedCorpusItemImageMutationOptions =
     UploadApprovedCorpusItemImageMutation,
     UploadApprovedCorpusItemImageMutationVariables
   >;
-export const ApprovedCorpusItemDocument = gql`
-  query approvedCorpusItem(
+export const ApprovedCorpusItemByExternalIdDocument = gql`
+  query approvedCorpusItemByExternalId(
     $externalId: ID!
     $historyFilter: ApprovedCorpusItemScheduledSurfaceHistoryFilters
   ) {
-    approvedCorpusItem(externalId: $externalId) {
+    approvedCorpusItemByExternalId(externalId: $externalId) {
       ...CuratedItemDataWithHistory
     }
   }
@@ -5751,55 +5753,55 @@ export const ApprovedCorpusItemDocument = gql`
 `;
 
 /**
- * __useApprovedCorpusItemQuery__
+ * __useApprovedCorpusItemByExternalIdQuery__
  *
- * To run a query within a React component, call `useApprovedCorpusItemQuery` and pass it any options that fit your needs.
- * When your component renders, `useApprovedCorpusItemQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useApprovedCorpusItemByExternalIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useApprovedCorpusItemByExternalIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useApprovedCorpusItemQuery({
+ * const { data, loading, error } = useApprovedCorpusItemByExternalIdQuery({
  *   variables: {
  *      externalId: // value for 'externalId'
  *      historyFilter: // value for 'historyFilter'
  *   },
  * });
  */
-export function useApprovedCorpusItemQuery(
+export function useApprovedCorpusItemByExternalIdQuery(
   baseOptions: Apollo.QueryHookOptions<
-    ApprovedCorpusItemQuery,
-    ApprovedCorpusItemQueryVariables
+    ApprovedCorpusItemByExternalIdQuery,
+    ApprovedCorpusItemByExternalIdQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
-    ApprovedCorpusItemQuery,
-    ApprovedCorpusItemQueryVariables
-  >(ApprovedCorpusItemDocument, options);
+    ApprovedCorpusItemByExternalIdQuery,
+    ApprovedCorpusItemByExternalIdQueryVariables
+  >(ApprovedCorpusItemByExternalIdDocument, options);
 }
-export function useApprovedCorpusItemLazyQuery(
+export function useApprovedCorpusItemByExternalIdLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    ApprovedCorpusItemQuery,
-    ApprovedCorpusItemQueryVariables
+    ApprovedCorpusItemByExternalIdQuery,
+    ApprovedCorpusItemByExternalIdQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    ApprovedCorpusItemQuery,
-    ApprovedCorpusItemQueryVariables
-  >(ApprovedCorpusItemDocument, options);
+    ApprovedCorpusItemByExternalIdQuery,
+    ApprovedCorpusItemByExternalIdQueryVariables
+  >(ApprovedCorpusItemByExternalIdDocument, options);
 }
-export type ApprovedCorpusItemQueryHookResult = ReturnType<
-  typeof useApprovedCorpusItemQuery
+export type ApprovedCorpusItemByExternalIdQueryHookResult = ReturnType<
+  typeof useApprovedCorpusItemByExternalIdQuery
 >;
-export type ApprovedCorpusItemLazyQueryHookResult = ReturnType<
-  typeof useApprovedCorpusItemLazyQuery
+export type ApprovedCorpusItemByExternalIdLazyQueryHookResult = ReturnType<
+  typeof useApprovedCorpusItemByExternalIdLazyQuery
 >;
-export type ApprovedCorpusItemQueryResult = Apollo.QueryResult<
-  ApprovedCorpusItemQuery,
-  ApprovedCorpusItemQueryVariables
+export type ApprovedCorpusItemByExternalIdQueryResult = Apollo.QueryResult<
+  ApprovedCorpusItemByExternalIdQuery,
+  ApprovedCorpusItemByExternalIdQueryVariables
 >;
 export const GetApprovedItemByUrlDocument = gql`
   query getApprovedItemByUrl($url: String!) {
