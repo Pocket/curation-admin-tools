@@ -20,8 +20,9 @@ interface AddProspectModalProps {
    */
   toggleApprovedItemModal: VoidFunction;
 
-  // TODO: fix comment
-
+  /**
+   * Toggle the DuplicateProspectModal modal component as necessary
+   */
   toggleDuplicateProspectModal: VoidFunction;
 
   /**

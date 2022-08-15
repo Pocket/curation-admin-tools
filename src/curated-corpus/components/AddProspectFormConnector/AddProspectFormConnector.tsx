@@ -20,7 +20,9 @@ interface AddProspectFormConnectorProps {
    */
   toggleApprovedItemModal: VoidFunction;
 
-  //TODO: fix comment
+  /**
+   * Toggle the DuplicateProspectModal modal component as necessary
+   */
   toggleDuplicateProspectModal: VoidFunction;
 
   /**
@@ -126,7 +128,7 @@ export const AddProspectFormConnector: React.FC<
         // Hide the Add Prospect form
         toggleModal();
 
-        //TODO: show the new modal that takes the user to the item details page
+        // Show the DuplicateProspectModal that provides a link to the item curation history page
         toggleDuplicateProspectModal();
 
         // Nothing else to do here - we can do an early exit

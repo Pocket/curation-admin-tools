@@ -1,7 +1,9 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Grid, Typography } from '@material-ui/core';
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
-import { Modal } from '../../../_shared/components';
+import { Button, Modal } from '../../../_shared/components';
+import { useStyles } from './DuplicateProspectModal.styles';
 
 interface DuplicateProspectModalProps {
   /**
@@ -14,27 +16,50 @@ interface DuplicateProspectModalProps {
    */
   toggleModal: VoidFunction;
 
-  //TODO: fix comment
+  /**
+   * Item of type ApprovedCorpusItem.
+   */
   approvedItem: ApprovedCorpusItem;
 }
 
-//TODO: fix comment
-//TODO: fix modal body copy
+/**
+ * This component renders a simple modal that links to the curation history page of an already existing prospect.
+ */
 export const DuplicateProspectModal: React.FC<DuplicateProspectModalProps> = (
   props
 ): JSX.Element => {
+  const classes = useStyles();
   const { isOpen, toggleModal, approvedItem } = props;
 
   return (
     <Modal open={isOpen} handleClose={toggleModal}>
-      <Grid container direction="column">
-        <Grid item>
-          <h2>Duplicate Prospect</h2>
+      <Grid container direction="column" className={classes.root}>
+        <Grid item xs={12}>
+          <h2>Duplicate Item</h2>
         </Grid>
-        <Grid item>
+        <Grid item xs={12}>
           <Typography variant="body1">
-            <a href={approvedItem.url}>See details</a>
+            <em>Title</em>: {approvedItem.title}
           </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <Grid container spacing={1} className={classes.buttonContainer}>
+            <Grid item xs={12}>
+              <Typography variant="subtitle1" align="center">
+                This item is already in the corpus
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Button buttonType="positive" variant="text">
+                <Link
+                  to={`/curated-corpus/corpus/item/${approvedItem.externalId}`}
+                  className={classes.link}
+                >
+                  View item curation history
+                </Link>
+              </Button>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
     </Modal>

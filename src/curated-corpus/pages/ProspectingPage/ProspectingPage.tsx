@@ -198,7 +198,9 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
    */
   const [scheduleModalOpen, toggleScheduleModal] = useToggle(false);
 
-  //TODO: add new modal toggle state here
+  /**
+   * Keep track of whether the "Duplicate item" modal is open or not.
+   */
   const [duplicateProspectModalOpen, toggleDuplicateProspectModal] =
     useToggle(false);
 
