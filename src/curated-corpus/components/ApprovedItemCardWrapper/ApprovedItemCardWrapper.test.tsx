@@ -72,6 +72,8 @@ describe('The ApprovedItemCardWrapper component', () => {
       </MemoryRouter>
     );
 
+    const viewButton = screen.getByRole('button', { name: /View/i });
+
     const scheduleButton = screen.getByRole('button', {
       name: /Schedule/i,
     });
@@ -82,6 +84,7 @@ describe('The ApprovedItemCardWrapper component', () => {
       name: /Edit/i,
     });
 
+    expect(viewButton).toBeInTheDocument();
     expect(scheduleButton).toBeInTheDocument();
     expect(rejectButton).toBeInTheDocument();
     expect(editButton).toBeInTheDocument();
