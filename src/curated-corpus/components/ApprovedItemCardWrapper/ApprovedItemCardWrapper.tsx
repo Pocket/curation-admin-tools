@@ -4,6 +4,7 @@ import { useStyles } from './ApprovedItemCardWrapper.styles';
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { Button } from '../../../_shared/components';
 import { ApprovedItemListCard } from '../ApprovedItemListCard/ApprovedItemListCard';
+import { Link } from 'react-router-dom';
 
 interface ApprovedItemCardWrapperProps {
   /**
@@ -29,6 +30,14 @@ export const ApprovedItemCardWrapper: React.FC<ApprovedItemCardWrapperProps> = (
       <ApprovedItemListCard item={item} />
 
       <CardActions className={classes.actions}>
+        <Button buttonType="positive" variant="text">
+          <Link
+            to={`/curated-corpus/corpus/item/${item.externalId}`}
+            className={classes.link}
+          >
+            View
+          </Link>
+        </Button>
         <Button buttonType="positive" variant="text" onClick={onSchedule}>
           Schedule
         </Button>

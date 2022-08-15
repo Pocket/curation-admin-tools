@@ -2,6 +2,8 @@ export { AddProspectModal } from './AddProspectModal/AddProspectModal';
 export { AddProspectForm } from './AddProspectForm/AddProspectForm';
 export { AddProspectFormConnector } from './AddProspectFormConnector/AddProspectFormConnector';
 export { ApprovedItemCardWrapper } from './ApprovedItemCardWrapper/ApprovedItemCardWrapper';
+export { ApprovedItemCurationHistory } from './ApprovedItemCurationHistory/ApprovedItemCurationHistory';
+export { ApprovedItemInfo } from './ApprovedItemInfo/ApprovedItemInfo';
 export { ApprovedItemListCard } from './ApprovedItemListCard/ApprovedItemListCard';
 export { ApprovedItemModal } from './ApprovedItemModal/ApprovedItemModal';
 export { ApprovedItemSearchForm } from './ApprovedItemSearchForm/ApprovedItemSearchForm';
