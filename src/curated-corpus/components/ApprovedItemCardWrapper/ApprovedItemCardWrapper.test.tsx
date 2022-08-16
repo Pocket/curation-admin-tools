@@ -1,46 +1,12 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import {
-  ApprovedCorpusItem,
-  CorpusItemSource,
-  CorpusLanguage,
-  CuratedStatus,
-} from '../../../api/generatedTypes';
+import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { ApprovedItemCardWrapper } from './ApprovedItemCardWrapper';
+import { getTestApprovedItem } from '../../helpers/approvedItem';
 
 describe('The ApprovedItemCardWrapper component', () => {
-  let item: ApprovedCorpusItem;
-
-  beforeEach(() => {
-    item = {
-      externalId: '123-abc',
-      prospectId: '123-xyz',
-      title: 'How To Win Friends And Influence People with React',
-      url: 'http://www.test.com/how-to',
-      imageUrl: 'https://placeimg.com/640/480/people?random=494',
-      excerpt:
-        'Everything You Wanted to Know About React and Were Afraid To Ask',
-      source: CorpusItemSource.Prospect,
-      language: CorpusLanguage.De,
-      scheduledSurfaceHistory: [],
-      publisher: 'Amazing Inventions',
-      topic: 'Technology',
-      status: CuratedStatus.Recommendation,
-      isCollection: false,
-      isSyndicated: false,
-      isTimeSensitive: false,
-      createdAt: 1635014926,
-      createdBy: 'Amy',
-      updatedAt: 1635114926,
-      authors: [
-        {
-          name: 'Octavia Butler',
-          sortOrder: 1,
-        },
-      ],
-    };
-  });
+  const item: ApprovedCorpusItem = getTestApprovedItem();
 
   it('should render an approved item card', () => {
     render(
