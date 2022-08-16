@@ -15,11 +15,25 @@ import { DateTime } from 'luxon';
 
 interface ApprovedItemCurationHistoryProps {
   /**
-   *
+   * The Approved Corpus Item (with history!)
    */
   item: ApprovedCorpusItem;
 }
 
+/**
+ * This component displays a summary of a curated item's history.
+ * This includes who and when initially added it to the corpus
+ * as well as recent entries on one or more scheduled
+ * surfaces.
+ *
+ * The data passed from CuratedItemPage uses default filters on the
+ * scheduled history for a corpus item, which means we get up to
+ * ten most recent entries from the history. This has a good chance
+ * of being revised in the future!
+ *
+ * @param props
+ * @constructor
+ */
 export const ApprovedItemCurationHistory: React.FC<
   ApprovedItemCurationHistoryProps
 > = (props): JSX.Element => {

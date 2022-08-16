@@ -16,11 +16,18 @@ import { getDisplayTopic } from '../../helpers/topics';
 
 interface ApprovedItemInfoProps {
   /**
-   *
+   * The Approved Corpus Item
    */
   item: ApprovedCorpusItem;
 }
 
+/**
+ * This component shows most of the data available for a curated corpus item.
+ * For use on the Curated Item page.
+ *
+ * @param props
+ * @constructor
+ */
 export const ApprovedItemInfo: React.FC<ApprovedItemInfoProps> = (
   props
 ): JSX.Element => {
