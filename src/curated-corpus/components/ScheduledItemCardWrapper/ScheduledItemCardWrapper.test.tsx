@@ -2,13 +2,9 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import {
-  CorpusItemSource,
-  CorpusLanguage,
-  CuratedStatus,
-  ScheduledCorpusItem,
-} from '../../../api/generatedTypes';
+import { ScheduledCorpusItem } from '../../../api/generatedTypes';
 import { ScheduledItemCardWrapper } from './ScheduledItemCardWrapper';
+import { getTestApprovedItem } from '../../helpers/approvedItem';
 
 describe('The ScheduledItemCardWrapper component', () => {
   let item: ScheduledCorpusItem;
@@ -22,33 +18,7 @@ describe('The ScheduledItemCardWrapper component', () => {
       updatedAt: 1635014926,
       updatedBy: 'Amy',
       scheduledSurfaceGuid: 'NEW_TAB_EN_US',
-      approvedItem: {
-        externalId: '123-abc',
-        prospectId: '123-xyz',
-        title: 'How To Win Friends And Influence People with React',
-        url: 'http://www.test.com/how-to',
-        imageUrl: 'https://placeimg.com/640/480/people?random=494',
-        excerpt:
-          'Everything You Wanted to Know About React and Were Afraid To Ask',
-        language: CorpusLanguage.De,
-        publisher: 'Amazing Inventions',
-        topic: 'Technology',
-        status: CuratedStatus.Recommendation,
-        isCollection: false,
-        isSyndicated: false,
-        isTimeSensitive: false,
-        createdAt: 1635014926,
-        createdBy: 'Amy',
-        updatedAt: 1635114926,
-        scheduledSurfaceHistory: [],
-        source: CorpusItemSource.Prospect,
-        authors: [
-          {
-            name: 'Octavia Butler',
-            sortOrder: 1,
-          },
-        ],
-      },
+      approvedItem: getTestApprovedItem(),
     };
   });
 
@@ -70,7 +40,7 @@ describe('The ScheduledItemCardWrapper component', () => {
     expect(title).toBeInTheDocument();
   });
 
-  it('should render the "Remove" button', () => {
+  it('should render all buttons', () => {
     render(
       <MemoryRouter>
         <ScheduledItemCardWrapper
@@ -82,11 +52,24 @@ describe('The ScheduledItemCardWrapper component', () => {
       </MemoryRouter>
     );
 
+    const viewButton = screen.getByRole('button', { name: /View/i });
+
     const removeButton = screen.getByRole('button', {
       name: /Remove/i,
     });
 
+    const rescheduleButton = screen.getByRole('button', {
+      name: /Reschedule/i,
+    });
+
+    const moveButton = screen.getByRole('button', {
+      name: /move to bottom/i,
+    });
+
+    expect(viewButton).toBeInTheDocument();
     expect(removeButton).toBeInTheDocument();
+    expect(rescheduleButton).toBeInTheDocument();
+    expect(moveButton).toBeInTheDocument();
   });
 
   it('should run an action on pressing the "Remove" button', () => {
@@ -112,25 +95,6 @@ describe('The ScheduledItemCardWrapper component', () => {
     expect(onRemove).toHaveBeenCalled();
   });
 
-  it('should render the "Reschedule" button', () => {
-    render(
-      <MemoryRouter>
-        <ScheduledItemCardWrapper
-          item={item}
-          onMoveToBottom={jest.fn()}
-          onReschedule={jest.fn()}
-          onRemove={jest.fn()}
-        />
-      </MemoryRouter>
-    );
-
-    const rescheduleButton = screen.getByRole('button', {
-      name: /Reschedule/i,
-    });
-
-    expect(rescheduleButton).toBeInTheDocument();
-  });
-
   it('should run an action on pressing the "Reschedule" button', () => {
     const onReschedule = jest.fn();
 
@@ -152,25 +116,6 @@ describe('The ScheduledItemCardWrapper component', () => {
     );
 
     expect(onReschedule).toHaveBeenCalled();
-  });
-
-  it('should render the "Move to bottom" button', () => {
-    render(
-      <MemoryRouter>
-        <ScheduledItemCardWrapper
-          item={item}
-          onMoveToBottom={jest.fn()}
-          onReschedule={jest.fn()}
-          onRemove={jest.fn()}
-        />
-      </MemoryRouter>
-    );
-
-    const button = screen.getByRole('button', {
-      name: /move to bottom/i,
-    });
-
-    expect(button).toBeInTheDocument();
   });
 
   it('should run an action on pressing the "Remove" button', () => {
