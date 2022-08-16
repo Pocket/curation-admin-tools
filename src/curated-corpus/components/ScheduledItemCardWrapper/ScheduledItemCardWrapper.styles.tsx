@@ -13,6 +13,14 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     actions: {
       margin: 'auto',
+      paddingLeft: 0,
+      '& button': {
+        marginLeft: '0 !important',
+      },
+    },
+    link: {
+      color: theme.palette.primary.main,
+      textDecoration: 'none',
     },
   })
 );
