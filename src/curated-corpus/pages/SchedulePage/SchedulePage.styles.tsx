@@ -10,7 +10,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       fontWeight: 500,
       textTransform: 'capitalize',
       color: theme.palette.primary.main,
-      padding: '0.75rem 0',
+      padding: '1 rem',
       marginTop: '3rem',
     },
   })

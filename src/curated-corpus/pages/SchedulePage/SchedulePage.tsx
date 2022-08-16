@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Typography } from '@material-ui/core';
+import { Collapse, Grid, Typography } from '@material-ui/core';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import { DateTime } from 'luxon';
 import { FormikHelpers, FormikValues } from 'formik';
 import {
@@ -11,6 +13,7 @@ import {
   RemoveItemFromScheduledSurfaceModal,
   ScheduledItemCardWrapper,
   ScheduleItemModal,
+  ScheduleSummaryConnector,
   SplitButton,
 } from '../../components';
 import {
@@ -438,12 +441,37 @@ export const SchedulePage: React.FC = (): JSX.Element => {
                   key={data.scheduledDate}
                 >
                   <Grid item xs={12}>
-                    <Grid container justifyContent="center">
-                      <Grid item>
-                        <Typography className={classes.heading} variant="h2">
+                    <Grid container justifyContent="center" alignItems="center">
+                      <Grid item xs={12}>
+                        <Button
+                          variant="text"
+                          className={classes.heading}
+                          onClick={() => alert('summary appears! hooray!')}
+                          endIcon={
+                            !data ? (
+                              <KeyboardArrowUpIcon />
+                            ) : (
+                              <KeyboardArrowDownIcon />
+                            )
+                          }
+                        >
                           {getDayAndSyndicatedCountHeading(data)}
-                        </Typography>
+                        </Button>
                       </Grid>
+                      <Collapse in={true}>
+                        <Grid item xs={12}>
+                          <ScheduleSummaryConnector
+                            date={DateTime.fromFormat(
+                              data.scheduledDate,
+                              'yyyy-MM-dd'
+                            )}
+                            scheduledSurfaceGuid={currentScheduledSurfaceGuid}
+                            refreshData={false}
+                            setRefreshData={toggleRemoveModal}
+                          />
+                        </Grid>
+                      </Collapse>
+
                       <Grid item xs={12}>
                         <hr />
                       </Grid>
