@@ -109,6 +109,9 @@ export const mock_scheduledItems = constructMock(
   data
 );
 
+/**
+ * And this mocked query doesn't return any results
+ */
 export const mock_scheduledItemsNoResults = constructMock(
   'getScheduledCorpusItems',
   getScheduledItems,
