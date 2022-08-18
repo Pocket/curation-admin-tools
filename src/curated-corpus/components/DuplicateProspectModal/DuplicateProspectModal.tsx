@@ -52,8 +52,10 @@ export const DuplicateProspectModal: React.FC<DuplicateProspectModalProps> = (
             <Grid item xs={12}>
               <Button buttonType="positive" variant="text">
                 <Link
-                  to={`/curated-corpus/corpus/item/${approvedItem.externalId}`}
                   className={classes.link}
+                  target="_blank"
+                  to={`/curated-corpus/corpus/item/${approvedItem.externalId}`}
+                  onClick={toggleModal}
                 >
                   View item curation history
                 </Link>
