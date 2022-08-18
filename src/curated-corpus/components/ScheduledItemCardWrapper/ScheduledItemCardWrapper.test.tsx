@@ -140,4 +140,25 @@ describe('The ScheduledItemCardWrapper component', () => {
 
     expect(onMoveToBottom).toHaveBeenCalled();
   });
+
+  it('should have the correct link to corpus item page', () => {
+    render(
+      <MemoryRouter>
+        <ScheduledItemCardWrapper
+          item={item}
+          onMoveToBottom={jest.fn()}
+          onReschedule={jest.fn()}
+          onRemove={jest.fn()}
+        />
+      </MemoryRouter>
+    );
+
+    // The link to the corpus item page is present and is well-formed
+    const linkToItemPage = screen.getByText(/view/i) as HTMLAnchorElement;
+    expect(linkToItemPage).toBeInTheDocument();
+    expect(linkToItemPage).toHaveAttribute(
+      'href',
+      expect.stringContaining(item.approvedItem.externalId)
+    );
+  });
 });

@@ -55,4 +55,25 @@ describe('The ApprovedItemCardWrapper component', () => {
     expect(rejectButton).toBeInTheDocument();
     expect(editButton).toBeInTheDocument();
   });
+
+  it('should have the correct link to corpus item page', () => {
+    render(
+      <MemoryRouter>
+        <ApprovedItemCardWrapper
+          item={item}
+          onEdit={jest.fn()}
+          onReject={jest.fn()}
+          onSchedule={jest.fn()}
+        />
+      </MemoryRouter>
+    );
+
+    // The link to the corpus item page is present and is well-formed
+    const linkToItemPage = screen.getByText(/view/i) as HTMLAnchorElement;
+    expect(linkToItemPage).toBeInTheDocument();
+    expect(linkToItemPage).toHaveAttribute(
+      'href',
+      expect.stringContaining(item.externalId)
+    );
+  });
 });
