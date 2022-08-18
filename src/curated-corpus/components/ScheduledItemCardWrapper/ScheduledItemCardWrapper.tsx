@@ -4,6 +4,7 @@ import { useStyles } from './ScheduledItemCardWrapper.styles';
 import { ScheduledCorpusItem } from '../../../api/generatedTypes';
 import { Button } from '../../../_shared/components';
 import { ApprovedItemListCard } from '../ApprovedItemListCard/ApprovedItemListCard';
+import { Link } from 'react-router-dom';
 
 interface ScheduledItemCardWrapperProps {
   /**
@@ -60,6 +61,14 @@ export const ScheduledItemCardWrapper: React.FC<
         />
 
         <CardActions className={classes.actions}>
+          <Button buttonType="positive" variant="text">
+            <Link
+              to={`/curated-corpus/corpus/item/${item.approvedItem.externalId}`}
+              className={classes.link}
+            >
+              View
+            </Link>
+          </Button>
           <Button buttonType="positive" variant="text" onClick={onReschedule}>
             Reschedule
           </Button>

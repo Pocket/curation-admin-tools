@@ -25,8 +25,6 @@ export const CorpusItemPage: React.FC = (): JSX.Element => {
     },
   });
 
-  console.log(loading, error, data);
-
   return (
     <>
       {!data && <HandleApiResponse loading={loading} error={error} />}
