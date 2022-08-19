@@ -44,7 +44,6 @@ export const transformProspectToApprovedItem = (
   isRecommendation: boolean,
   isManual: boolean
 ): ApprovedItemFromProspect => {
-  //TODO: do stuff here
   return {
     externalId: '',
     prospectId: prospect.prospectId,
