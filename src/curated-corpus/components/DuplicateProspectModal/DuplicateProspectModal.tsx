@@ -1,8 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { Grid, Typography } from '@material-ui/core';
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
-import { Button, Modal } from '../../../_shared/components';
+import { Modal, SharedFormButtons } from '../../../_shared/components';
 import { useStyles } from './DuplicateProspectModal.styles';
 
 interface DuplicateProspectModalProps {
@@ -31,6 +30,19 @@ export const DuplicateProspectModal: React.FC<DuplicateProspectModalProps> = (
   const classes = useStyles();
   const { isOpen, toggleModal, approvedItem } = props;
 
+  /**
+   *  on click function used by "View item curation history" button
+   *  opens the link in the new tab and toggles off the modal
+   */
+  const onClick = () => {
+    window.open(
+      `/curated-corpus/corpus/item/${approvedItem.externalId}`,
+      '_blank'
+    );
+
+    toggleModal();
+  };
+
   return (
     <Modal open={isOpen} handleClose={toggleModal}>
       <Grid container direction="column" className={classes.root}>
@@ -50,16 +62,11 @@ export const DuplicateProspectModal: React.FC<DuplicateProspectModalProps> = (
               </Typography>
             </Grid>
             <Grid item xs={12}>
-              <Button buttonType="positive" variant="text">
-                <Link
-                  className={classes.link}
-                  target="_blank"
-                  to={`/curated-corpus/corpus/item/${approvedItem.externalId}`}
-                  onClick={toggleModal}
-                >
-                  View item curation history
-                </Link>
-              </Button>
+              <SharedFormButtons
+                saveButtonLabel="View item curation history"
+                onSave={onClick}
+                onCancel={toggleModal}
+              />
             </Grid>
           </Grid>
         </Grid>
