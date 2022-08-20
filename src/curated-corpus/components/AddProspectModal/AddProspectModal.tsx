@@ -21,9 +21,9 @@ interface AddProspectModalProps {
   toggleApprovedItemModal: VoidFunction;
 
   /**
-   * Toggle the DuplicateProspectModal modal component as necessary
+   * Toggle the modal that contains the optional scheduling form as necessary.
    */
-  toggleDuplicateProspectModal: VoidFunction;
+  toggleScheduleItemModal: VoidFunction;
 
   /**
    * A setter for the current prospect to be worked on. This is passed
@@ -64,7 +64,7 @@ export const AddProspectModal: React.FC<AddProspectModalProps> = (
     isOpen,
     toggleModal,
     toggleApprovedItemModal,
-    toggleDuplicateProspectModal,
+    toggleScheduleItemModal,
     setCurrentProspect,
     setApprovedItem,
     setIsManualSubmission,
@@ -81,7 +81,7 @@ export const AddProspectModal: React.FC<AddProspectModalProps> = (
           <AddProspectFormConnector
             toggleModal={toggleModal}
             toggleApprovedItemModal={toggleApprovedItemModal}
-            toggleDuplicateProspectModal={toggleDuplicateProspectModal}
+            toggleScheduleItemModal={toggleScheduleItemModal}
             setCurrentProspect={setCurrentProspect}
             setApprovedItem={setApprovedItem}
             setIsRecommendation={setIsRecommendation}
