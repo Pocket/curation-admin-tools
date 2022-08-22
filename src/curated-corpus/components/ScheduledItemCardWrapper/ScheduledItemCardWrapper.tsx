@@ -63,7 +63,7 @@ export const ScheduledItemCardWrapper: React.FC<
         <CardActions className={classes.actions}>
           <Button buttonType="positive" variant="text">
             <Link
-              to={`/curated-corpus/corpus/item/${item.externalId}`}
+              to={`/curated-corpus/corpus/item/${item.approvedItem.externalId}`}
               className={classes.link}
             >
               View
