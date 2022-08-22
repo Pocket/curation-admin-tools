@@ -570,7 +570,6 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
           />
         </>
       )}
-
       <RefreshProspectsModal
         isOpen={refreshProspectsModalOpen}
         onConfirm={() => {
@@ -589,24 +588,25 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         setIsRecommendation={setIsRecommendation}
         setIsManualSubmission={setIsManualSubmission}
       />
+      {approvedItem && (
+        <ScheduleItemModal
+          approvedItem={approvedItem}
+          headingCopy="Optional: schedule this item"
+          isOpen={scheduleModalOpen}
+          scheduledSurfaceGuid={currentScheduledSurfaceGuid}
+          disableScheduledSurface={disableScheduledSurface}
+          onSave={onScheduleSave}
+          toggleModal={toggleScheduleModalAndDisableScheduledSurface}
+        />
+      )}
 
       {approvedItem && (
-          <ScheduleItemModal
-            approvedItem={approvedItem}
-            headingCopy="Optional: schedule this item"
-            isOpen={scheduleModalOpen}
-            scheduledSurfaceGuid={currentScheduledSurfaceGuid}
-            disableScheduledSurface={disableScheduledSurface}
-            onSave={onScheduleSave}
-            toggleModal={toggleScheduleModalAndDisableScheduledSurface}
-          />
-        ) && (
-          <DuplicateProspectModal
-            approvedItem={approvedItem}
-            isOpen={duplicateProspectModalOpen}
-            toggleModal={toggleDuplicateProspectModal}
-          />
-        )}
+        <DuplicateProspectModal
+          approvedItem={approvedItem}
+          isOpen={duplicateProspectModalOpen}
+          toggleModal={toggleDuplicateProspectModal}
+        />
+      )}
 
       <h1>Prospecting</h1>
       <Grid container spacing={3}>
