@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Typography } from '@material-ui/core';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Grid,
+  Typography,
+} from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { DateTime } from 'luxon';
 import { FormikHelpers, FormikValues } from 'formik';
 import {
@@ -11,6 +19,7 @@ import {
   RemoveItemFromScheduledSurfaceModal,
   ScheduledItemCardWrapper,
   ScheduleItemModal,
+  ScheduleSummaryLayout,
   SplitButton,
 } from '../../components';
 import {
@@ -424,9 +433,13 @@ export const SchedulePage: React.FC = (): JSX.Element => {
       {/** Page Contents Below */}
 
       <Grid container>
-        <Grid item xs={12}>
-          {!data && <HandleApiResponse loading={loading} error={error} />}
+        {!data && (
+          <Grid item xs={12}>
+            <HandleApiResponse loading={loading} error={error} />
+          </Grid>
+        )}
 
+        <Grid item xs={12}>
           {data &&
             data.getScheduledCorpusItems.map(
               (data: ScheduledCorpusItemsResult) => (
@@ -438,16 +451,18 @@ export const SchedulePage: React.FC = (): JSX.Element => {
                   key={data.scheduledDate}
                 >
                   <Grid item xs={12}>
-                    <Grid container justifyContent="center">
-                      <Grid item>
-                        <Typography className={classes.heading} variant="h2">
-                          {getDayAndSyndicatedCountHeading(data)}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={12}>
-                        <hr />
-                      </Grid>
-                    </Grid>
+                    <Box mt={3}>
+                      <Accordion>
+                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                          <Typography className={classes.heading}>
+                            {getDayAndSyndicatedCountHeading(data)}
+                          </Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <ScheduleSummaryLayout scheduledItems={data.items} />
+                        </AccordionDetails>
+                      </Accordion>
+                    </Box>
                   </Grid>
                   <Grid item xs={12}>
                     <Grid container spacing={2}>

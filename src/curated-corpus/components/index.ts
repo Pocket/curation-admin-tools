@@ -26,6 +26,7 @@ export { ScheduleItemModal } from './ScheduleItemModal/ScheduleItemModal';
 export type { ScheduleSummary } from './ScheduleSummaryCard/ScheduleSummaryCard';
 export { ScheduleSummaryCard } from './ScheduleSummaryCard/ScheduleSummaryCard';
 export { ScheduleSummaryConnector } from './ScheduleSummaryConnector/ScheduleSummaryConnector';
+export { ScheduleSummaryLayout } from './ScheduleSummaryLayout/ScheduleSummaryLayout';
 export { SidebarDatePicker } from './SidebarDatePicker/SidebarDatePicker';
 export { SidebarWrapper } from './SidebarWrapper/SidebarWrapper';
 export { SplitButton } from './SplitButton/SplitButton';
