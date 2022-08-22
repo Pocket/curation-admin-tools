@@ -10,8 +10,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       fontWeight: 500,
       textTransform: 'capitalize',
       color: theme.palette.primary.main,
-      padding: '0.75rem 0',
-      marginTop: '3rem',
     },
   })
 );
