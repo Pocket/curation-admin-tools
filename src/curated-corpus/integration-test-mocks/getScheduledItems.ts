@@ -38,7 +38,7 @@ const approvedItem: ApprovedCorpusItem = {
   ],
 };
 
-const scheduledItems: ScheduledCorpusItem[] = [
+export const scheduledItems: ScheduledCorpusItem[] = [
   {
     externalId: '456-qwerty',
     scheduledDate: '2030-01-01',

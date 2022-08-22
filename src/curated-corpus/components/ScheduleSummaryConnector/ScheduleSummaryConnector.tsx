@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
-import { Grid, Typography } from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 
-import { useGetScheduledItemsQuery } from '../../../api/generatedTypes';
+import {
+  ScheduledCorpusItem,
+  useGetScheduledItemsQuery,
+} from '../../../api/generatedTypes';
 import { HandleApiResponse } from '../../../_shared/components';
-import { ScheduleSummary, ScheduleSummaryCard } from '../../components';
+import { ScheduleSummaryLayout } from '../../components';
 import { useStyles } from './ScheduleSummaryConnector.styles';
-import { getGroupedPublisherData } from '../../helpers/publishers';
-import { getDisplayTopic, getGroupedTopicData } from '../../helpers/topics';
 
 interface ScheduleSummaryConnectorProps {
   /**
@@ -56,8 +57,9 @@ export const ScheduleSummaryConnector: React.FC<
   const classes = useStyles();
   const { date, scheduledSurfaceGuid, refreshData, setRefreshData } = props;
 
-  const [publishers, setPublishers] = useState<ScheduleSummary[] | null>(null);
-  const [topics, setTopics] = useState<ScheduleSummary[] | null>(null);
+  const [scheduledItems, setScheduledItems] = useState<ScheduledCorpusItem[]>(
+    []
+  );
 
   // Get the stories already scheduled for a given date+surface combination.
   const { loading, error, data, refetch } = useGetScheduledItemsQuery({
@@ -71,21 +73,9 @@ export const ScheduleSummaryConnector: React.FC<
       },
     },
     onCompleted: (data) => {
-      // Extract all publishers from scheduled item data
-      const publishers =
-        data.getScheduledCorpusItems[0]?.items.map(
-          (item) => item.approvedItem.publisher
-        ) ?? [];
-      // Prep data for display
-      setPublishers(getGroupedPublisherData(publishers));
-
-      // Extract all topics from scheduled item data
-      const topics =
-        data.getScheduledCorpusItems[0]?.items.map((item) =>
-          getDisplayTopic(item.approvedItem.topic)
-        ) ?? [];
-      // Prep data for display
-      setTopics(getGroupedTopicData(topics));
+      // Save the scheduled items in a state var to be passed
+      // on to the layout component to prep for display
+      setScheduledItems(data.getScheduledCorpusItems[0]?.items);
     },
   });
 
@@ -112,12 +102,12 @@ export const ScheduleSummaryConnector: React.FC<
       {!data && <HandleApiResponse loading={loading} error={error} />}
       {data &&
         (data.getScheduledCorpusItems.length < 1 ||
-          data.getScheduledCorpusItems[0]?.items.length < 1) && (
+          scheduledItems.length < 1) && (
           <Typography className={classes.heading} variant="h4">
             No stories have been scheduled for this date yet.
           </Typography>
         )}
-      {data && data.getScheduledCorpusItems[0]?.items.length > 0 && (
+      {data && scheduledItems.length > 0 && (
         <>
           <Typography className={classes.heading} variant="h4">
             {data.getScheduledCorpusItems[0]?.totalCount}{' '}
@@ -127,21 +117,7 @@ export const ScheduleSummaryConnector: React.FC<
             , {data.getScheduledCorpusItems[0]?.syndicatedCount} syndicated
           </Typography>
 
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              {publishers && (
-                <ScheduleSummaryCard
-                  headingCopy="Publishers"
-                  items={publishers}
-                />
-              )}
-            </Grid>
-            <Grid item xs={12} md={6}>
-              {topics && (
-                <ScheduleSummaryCard headingCopy="Topics" items={topics} />
-              )}
-            </Grid>
-          </Grid>
+          <ScheduleSummaryLayout scheduledItems={scheduledItems} />
         </>
       )}
     </>
