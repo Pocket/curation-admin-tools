@@ -74,8 +74,12 @@ export const ScheduleSummaryConnector: React.FC<
     },
     onCompleted: (data) => {
       // Save the scheduled items in a state var to be passed
-      // on to the layout component to prep for display
-      setScheduledItems(data.getScheduledCorpusItems[0]?.items);
+      // on to the layout component to prep for display.
+      //
+      // Note that if there's nothing scheduled for a particular day,
+      // `items` in the query result will be undefined, which is why
+      // we fall back to an empty array just in case.
+      setScheduledItems(data.getScheduledCorpusItems[0]?.items ?? []);
     },
   });
 
