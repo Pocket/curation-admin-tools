@@ -6,6 +6,7 @@ import {
   CardMedia,
   Chip,
   Grid,
+  IconButton,
   Link,
   List,
   ListItem,
@@ -13,6 +14,7 @@ import {
   ListItemText,
   Typography,
 } from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
 import { useStyles } from './ProspectListCard.styles';
 import LanguageIcon from '@material-ui/icons/Language';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
@@ -90,16 +92,37 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
           </List>
         </Grid>
         <Grid item xs={12} sm={9}>
-          <Link href={prospect.url} target="_blank" className={classes.link}>
-            <Typography
-              className={classes.title}
-              variant="h3"
-              align="left"
-              gutterBottom
+          <Grid container style={{ justifyContent: 'space-between' }}>
+            <Grid item xs={11}>
+              <Link
+                href={prospect.url}
+                target="_blank"
+                className={classes.link}
+              >
+                <Typography
+                  className={classes.title}
+                  variant="h3"
+                  align="left"
+                  gutterBottom
+                >
+                  {prospect.title}
+                </Typography>
+              </Link>
+            </Grid>
+            <Grid
+              item
+              xs={1}
+              style={{
+                textAlign: 'center',
+                verticalAlign: 'text-top',
+                display: 'inline',
+              }}
             >
-              {prospect.title}
-            </Typography>
-          </Link>
+              <IconButton style={{ padding: '4px' }}>
+                <CloseIcon fontSize="medium" color="error" />
+              </IconButton>
+            </Grid>
+          </Grid>
           <Typography
             className={classes.subtitle}
             variant="subtitle2"
