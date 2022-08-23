@@ -388,7 +388,6 @@ export const SchedulePage: React.FC = (): JSX.Element => {
                   initialFocusedDate={startDate}
                   disableToolbar
                   autoOk
-                  showTodayButton
                 />
               </Grid>
               <Grid item>
@@ -410,7 +409,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
                   autoOk
                 />
               </Grid>
-              <Grid item alignContent="center">
+              <Grid item>
                 <Button
                   buttonType="positive"
                   fullWidth
