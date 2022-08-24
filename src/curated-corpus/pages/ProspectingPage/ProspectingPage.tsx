@@ -8,6 +8,7 @@ import { HandleApiResponse } from '../../../_shared/components';
 import {
   AddProspectModal,
   ApprovedItemModal,
+  DuplicateProspectModal,
   ExistingProspectCard,
   ProspectListCard,
   RefreshProspectsModal,
@@ -196,6 +197,12 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
    * Keep track of whether the "Schedule this item" modal is open or not.
    */
   const [scheduleModalOpen, toggleScheduleModal] = useToggle(false);
+
+  /**
+   * Keep track of whether the "Duplicate item" modal is open or not.
+   */
+  const [duplicateProspectModalOpen, toggleDuplicateProspectModal] =
+    useToggle(false);
 
   // Get a helper function that will execute each mutation, show standard notifications
   // and execute any additional actions in a callback
@@ -563,7 +570,6 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
           />
         </>
       )}
-
       <RefreshProspectsModal
         isOpen={refreshProspectsModalOpen}
         onConfirm={() => {
@@ -576,13 +582,12 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         isOpen={addProspectModalOpen}
         toggleModal={toggleAddProspectModal}
         toggleApprovedItemModal={toggleApprovedItemModal}
-        toggleScheduleItemModal={toggleScheduleModalAndEnableScheduledSurface}
+        toggleDuplicateProspectModal={toggleDuplicateProspectModal}
         setCurrentProspect={setCurrentProspect}
         setApprovedItem={setApprovedItem}
         setIsRecommendation={setIsRecommendation}
         setIsManualSubmission={setIsManualSubmission}
       />
-
       {approvedItem && (
         <ScheduleItemModal
           approvedItem={approvedItem}
@@ -592,6 +597,14 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
           disableScheduledSurface={disableScheduledSurface}
           onSave={onScheduleSave}
           toggleModal={toggleScheduleModalAndDisableScheduledSurface}
+        />
+      )}
+
+      {approvedItem && (
+        <DuplicateProspectModal
+          approvedItem={approvedItem}
+          isOpen={duplicateProspectModalOpen}
+          toggleModal={toggleDuplicateProspectModal}
         />
       )}
 
