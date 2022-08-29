@@ -206,6 +206,33 @@ export enum CacheControlScope {
   Public = 'PUBLIC',
 }
 
+/** A requested image that is cached and has the requested image parameters */
+export type CachedImage = {
+  __typename?: 'CachedImage';
+  /** Height of the cached image */
+  height?: Maybe<Scalars['Int']>;
+  /** Id of the image that matches the ID from the requested options */
+  id: Scalars['ID'];
+  /** URL of the cached image */
+  url?: Maybe<Scalars['Url']>;
+  /** Width of the cached image */
+  width?: Maybe<Scalars['Int']>;
+};
+
+/** Set of parameters that will be used to change an image */
+export type CachedImageInput = {
+  /** File type of the requested image */
+  fileType?: InputMaybe<ImageFileType>;
+  /** Height of the image */
+  height?: InputMaybe<Scalars['Int']>;
+  /** Id of the image in the returned result set */
+  id: Scalars['ID'];
+  /** Quality of the image in whole percentage, 100 = full, quality 50 = half quality */
+  qualityPercentage?: InputMaybe<Scalars['Int']>;
+  /** Width of the image */
+  width?: InputMaybe<Scalars['Int']>;
+};
+
 export type Collection = {
   __typename?: 'Collection';
   IABChildCategory?: Maybe<IabCategory>;
@@ -218,6 +245,8 @@ export type Collection = {
   curationCategory?: Maybe<CurationCategory>;
   excerpt?: Maybe<Scalars['Markdown']>;
   externalId: Scalars['ID'];
+  image?: Maybe<Image>;
+  /** @deprecated use the image object instead */
   imageUrl?: Maybe<Scalars['Url']>;
   intro?: Maybe<Scalars['Markdown']>;
   /**
@@ -238,6 +267,8 @@ export type CollectionAuthor = {
   active: Scalars['Boolean'];
   bio?: Maybe<Scalars['Markdown']>;
   externalId: Scalars['ID'];
+  image?: Maybe<Image>;
+  /** @deprecated use the image object instead */
   imageUrl?: Maybe<Scalars['Url']>;
   name: Scalars['String'];
   slug?: Maybe<Scalars['String']>;
@@ -279,6 +310,7 @@ export type CollectionPartner = {
   __typename?: 'CollectionPartner';
   blurb: Scalars['Markdown'];
   externalId: Scalars['String'];
+  image: Image;
   imageUrl: Scalars['Url'];
   name: Scalars['String'];
   url: Scalars['Url'];
@@ -297,6 +329,7 @@ export type CollectionPartnerAssociation = {
   __typename?: 'CollectionPartnerAssociation';
   blurb?: Maybe<Scalars['Markdown']>;
   externalId: Scalars['String'];
+  image?: Maybe<Image>;
   imageUrl?: Maybe<Scalars['Url']>;
   name?: Maybe<Scalars['String']>;
   partner: CollectionPartner;
@@ -318,6 +351,8 @@ export type CollectionPartnership = {
   __typename?: 'CollectionPartnership';
   blurb: Scalars['Markdown'];
   externalId: Scalars['String'];
+  image: Image;
+  /** @deprecated use the image object instead */
   imageUrl: Scalars['Url'];
   name: Scalars['String'];
   type: CollectionPartnershipType;
@@ -344,6 +379,8 @@ export type CollectionStory = {
   externalId: Scalars['ID'];
   /** if True, the story is provided by a partner and should be displayed as such */
   fromPartner: Scalars['Boolean'];
+  image?: Maybe<Image>;
+  /** @deprecated use the image object instead */
   imageUrl?: Maybe<Scalars['Url']>;
   item?: Maybe<Item>;
   publisher?: Maybe<Scalars['String']>;
@@ -583,26 +620,43 @@ export type IabParentCategory = {
   slug: Scalars['String'];
 };
 
-/** An image, typically a thumbnail or article view image for an {Item} */
+/** An image that is keyed on URL */
 export type Image = {
   __typename?: 'Image';
+  /** Query to get a cached and modified set of images based on the image from the original url, images will be matched by the client assigned id value */
+  cachedImages?: Maybe<Array<Maybe<CachedImage>>>;
   /** A caption or description of the image */
   caption?: Maybe<Scalars['String']>;
   /** A credit for the image, typically who the image belongs to / created by */
   credit?: Maybe<Scalars['String']>;
-  /** If known, the height of the image in px */
+  /** The determined height of the image at the url */
   height?: Maybe<Scalars['Int']>;
   /** The id for placing within an Article View. {articleView.article} will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view. */
   imageId: Scalars['Int'];
-  /** Absolute url to the image */
+  /**
+   * Absolute url to the image
+   * @deprecated use url property moving forward
+   */
   src: Scalars['String'];
   /** If the image is also a link, the destination url */
   targetUrl?: Maybe<Scalars['String']>;
-  /** Absolute url to the image */
+  /** The url of the image */
   url: Scalars['Url'];
-  /** If known, the width of the image in px */
+  /** The determined width of the image at the url */
   width?: Maybe<Scalars['Int']>;
 };
+
+/** An image that is keyed on URL */
+export type ImageCachedImagesArgs = {
+  imageOptions: Array<CachedImageInput>;
+};
+
+/** The image file type */
+export enum ImageFileType {
+  Jpeg = 'JPEG',
+  Png = 'PNG',
+  Webp = 'WEBP',
+}
 
 export enum Imageness {
   /** Contains images (v3 value is 1) */
@@ -763,7 +817,7 @@ export type Item = {
   /** If the givenUrl redirects (once or many times), this is the final url. Otherwise, same as givenUrl */
   resolvedUrl?: Maybe<Scalars['Url']>;
   /**
-   * The http resonse code of the given url
+   * The http response code of the given url
    * @deprecated Clients should not use this
    */
   responseCode?: Maybe<Scalars['Int']>;
@@ -777,6 +831,11 @@ export type Item = {
   /** The title as determined by the parser. */
   title?: Maybe<Scalars['String']>;
   /** The page's / publisher's preferred thumbnail image */
+  topImage?: Maybe<Image>;
+  /**
+   * The page's / publisher's preferred thumbnail image
+   * @deprecated use the topImage object
+   */
   topImageUrl?: Maybe<Scalars['Url']>;
   /**
    * Indicates if the parser used fallback methods
@@ -1100,7 +1159,7 @@ export type NumberedListElement = ListElement & {
   content: Scalars['Markdown'];
   /** Numeric index. If a nested item, the index is zero-indexed from the first child. */
   index: Scalars['Int'];
-  /** Zero-indexed level, for handling nexted lists. */
+  /** Zero-indexed level, for handling nested lists. */
   level: Scalars['Int'];
 };
 
@@ -1679,7 +1738,7 @@ export type UrlMetadata = {
   url: Scalars['String'];
 };
 
-/** A Video, typically within an Article View of an {Item} or if the Item is a video itself." */
+/** A Video, typically within an Article View of an {Item} or if the Item is a video itself. */
 export type Video = {
   __typename?: 'Video';
   /** If known, the height of the video in px */
@@ -1743,9 +1802,25 @@ export type CollectionDataFragment = {
   slug: string;
   excerpt?: any | null;
   intro?: any | null;
-  imageUrl?: any | null;
   language: CollectionLanguage;
   status: CollectionStatus;
+  image?: {
+    __typename?: 'Image';
+    caption?: string | null;
+    credit?: string | null;
+    height?: number | null;
+    imageId: number;
+    targetUrl?: string | null;
+    url: any;
+    width?: number | null;
+    cachedImages?: Array<{
+      __typename?: 'CachedImage';
+      height?: number | null;
+      id: string;
+      url?: any | null;
+      width?: number | null;
+    } | null> | null;
+  } | null;
   authors: Array<{
     __typename?: 'CollectionAuthor';
     externalId: string;
@@ -1797,8 +1872,24 @@ export type CollectionPartnerAssociationDataFragment = {
     externalId: string;
     name: string;
     url: any;
-    imageUrl: any;
     blurb: any;
+    image: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      imageId: number;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+      cachedImages?: Array<{
+        __typename?: 'CachedImage';
+        height?: number | null;
+        id: string;
+        url?: any | null;
+        width?: number | null;
+      } | null> | null;
+    };
   };
 };
 
@@ -1807,8 +1898,24 @@ export type CollectionPartnerDataFragment = {
   externalId: string;
   name: string;
   url: any;
-  imageUrl: any;
   blurb: any;
+  image: {
+    __typename?: 'Image';
+    caption?: string | null;
+    credit?: string | null;
+    height?: number | null;
+    imageId: number;
+    targetUrl?: string | null;
+    url: any;
+    width?: number | null;
+    cachedImages?: Array<{
+      __typename?: 'CachedImage';
+      height?: number | null;
+      id: string;
+      url?: any | null;
+      width?: number | null;
+    } | null> | null;
+  };
 };
 
 export type CollectionStoryDataFragment = {
@@ -2087,6 +2194,7 @@ export type CreateCollectionMutationVariables = Exact<{
   IABParentCategoryExternalId?: InputMaybe<Scalars['String']>;
   IABChildCategoryExternalId?: InputMaybe<Scalars['String']>;
   language: CollectionLanguage;
+  imageOptions: Array<CachedImageInput> | CachedImageInput;
 }>;
 
 export type CreateCollectionMutation = {
@@ -2098,9 +2206,25 @@ export type CreateCollectionMutation = {
     slug: string;
     excerpt?: any | null;
     intro?: any | null;
-    imageUrl?: any | null;
     language: CollectionLanguage;
     status: CollectionStatus;
+    image?: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      imageId: number;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+      cachedImages?: Array<{
+        __typename?: 'CachedImage';
+        height?: number | null;
+        id: string;
+        url?: any | null;
+        width?: number | null;
+      } | null> | null;
+    } | null;
     authors: Array<{
       __typename?: 'CollectionAuthor';
       externalId: string;
@@ -2166,6 +2290,7 @@ export type CreateCollectionPartnerMutationVariables = Exact<{
   url: Scalars['Url'];
   blurb: Scalars['Markdown'];
   imageUrl: Scalars['Url'];
+  imageOptions: Array<CachedImageInput> | CachedImageInput;
 }>;
 
 export type CreateCollectionPartnerMutation = {
@@ -2175,8 +2300,24 @@ export type CreateCollectionPartnerMutation = {
     externalId: string;
     name: string;
     url: any;
-    imageUrl: any;
     blurb: any;
+    image: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      imageId: number;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+      cachedImages?: Array<{
+        __typename?: 'CachedImage';
+        height?: number | null;
+        id: string;
+        url?: any | null;
+        width?: number | null;
+      } | null> | null;
+    };
   };
 };
 
@@ -2188,6 +2329,7 @@ export type CreateCollectionPartnerAssociationMutationVariables = Exact<{
   url?: InputMaybe<Scalars['Url']>;
   imageUrl?: InputMaybe<Scalars['Url']>;
   blurb?: InputMaybe<Scalars['Markdown']>;
+  imageOptions: Array<CachedImageInput> | CachedImageInput;
 }>;
 
 export type CreateCollectionPartnerAssociationMutation = {
@@ -2205,8 +2347,24 @@ export type CreateCollectionPartnerAssociationMutation = {
       externalId: string;
       name: string;
       url: any;
-      imageUrl: any;
       blurb: any;
+      image: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        imageId: number;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+        cachedImages?: Array<{
+          __typename?: 'CachedImage';
+          height?: number | null;
+          id: string;
+          url?: any | null;
+          width?: number | null;
+        } | null> | null;
+      };
     };
   };
 };
@@ -2297,6 +2455,7 @@ export type CreateScheduledCorpusItemMutation = {
 
 export type DeleteCollectionPartnerAssociationMutationVariables = Exact<{
   externalId: Scalars['String'];
+  imageOptions: Array<CachedImageInput> | CachedImageInput;
 }>;
 
 export type DeleteCollectionPartnerAssociationMutation = {
@@ -2314,8 +2473,24 @@ export type DeleteCollectionPartnerAssociationMutation = {
       externalId: string;
       name: string;
       url: any;
-      imageUrl: any;
       blurb: any;
+      image: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        imageId: number;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+        cachedImages?: Array<{
+          __typename?: 'CachedImage';
+          height?: number | null;
+          id: string;
+          url?: any | null;
+          width?: number | null;
+        } | null> | null;
+      };
     };
   };
 };
@@ -2574,6 +2749,7 @@ export type UpdateCollectionMutationVariables = Exact<{
   IABChildCategoryExternalId?: InputMaybe<Scalars['String']>;
   language: CollectionLanguage;
   imageUrl?: InputMaybe<Scalars['Url']>;
+  imageOptions: Array<CachedImageInput> | CachedImageInput;
 }>;
 
 export type UpdateCollectionMutation = {
@@ -2585,9 +2761,25 @@ export type UpdateCollectionMutation = {
     slug: string;
     excerpt?: any | null;
     intro?: any | null;
-    imageUrl?: any | null;
     language: CollectionLanguage;
     status: CollectionStatus;
+    image?: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      imageId: number;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+      cachedImages?: Array<{
+        __typename?: 'CachedImage';
+        height?: number | null;
+        id: string;
+        url?: any | null;
+        width?: number | null;
+      } | null> | null;
+    } | null;
     authors: Array<{
       __typename?: 'CollectionAuthor';
       externalId: string;
@@ -2670,6 +2862,7 @@ export type UpdateCollectionAuthorImageUrlMutation = {
 export type UpdateCollectionImageUrlMutationVariables = Exact<{
   externalId: Scalars['String'];
   imageUrl: Scalars['Url'];
+  imageOptions: Array<CachedImageInput> | CachedImageInput;
 }>;
 
 export type UpdateCollectionImageUrlMutation = {
@@ -2681,9 +2874,25 @@ export type UpdateCollectionImageUrlMutation = {
     slug: string;
     excerpt?: any | null;
     intro?: any | null;
-    imageUrl?: any | null;
     language: CollectionLanguage;
     status: CollectionStatus;
+    image?: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      imageId: number;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+      cachedImages?: Array<{
+        __typename?: 'CachedImage';
+        height?: number | null;
+        id: string;
+        url?: any | null;
+        width?: number | null;
+      } | null> | null;
+    } | null;
     authors: Array<{
       __typename?: 'CollectionAuthor';
       externalId: string;
@@ -2729,6 +2938,7 @@ export type UpdateCollectionPartnerMutationVariables = Exact<{
   url: Scalars['Url'];
   blurb: Scalars['Markdown'];
   imageUrl?: InputMaybe<Scalars['Url']>;
+  imageOptions: Array<CachedImageInput> | CachedImageInput;
 }>;
 
 export type UpdateCollectionPartnerMutation = {
@@ -2738,8 +2948,24 @@ export type UpdateCollectionPartnerMutation = {
     externalId: string;
     name: string;
     url: any;
-    imageUrl: any;
     blurb: any;
+    image: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      imageId: number;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+      cachedImages?: Array<{
+        __typename?: 'CachedImage';
+        height?: number | null;
+        id: string;
+        url?: any | null;
+        width?: number | null;
+      } | null> | null;
+    };
   };
 };
 
@@ -2751,6 +2977,7 @@ export type UpdateCollectionPartnerAssociationMutationVariables = Exact<{
   url?: InputMaybe<Scalars['Url']>;
   imageUrl?: InputMaybe<Scalars['Url']>;
   blurb?: InputMaybe<Scalars['Markdown']>;
+  imageOptions: Array<CachedImageInput> | CachedImageInput;
 }>;
 
 export type UpdateCollectionPartnerAssociationMutation = {
@@ -2768,8 +2995,24 @@ export type UpdateCollectionPartnerAssociationMutation = {
       externalId: string;
       name: string;
       url: any;
-      imageUrl: any;
       blurb: any;
+      image: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        imageId: number;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+        cachedImages?: Array<{
+          __typename?: 'CachedImage';
+          height?: number | null;
+          id: string;
+          url?: any | null;
+          width?: number | null;
+        } | null> | null;
+      };
     };
   };
 };
@@ -2778,6 +3021,7 @@ export type UpdateCollectionPartnerAssociationImageUrlMutationVariables =
   Exact<{
     externalId: Scalars['String'];
     imageUrl: Scalars['Url'];
+    imageOptions: Array<CachedImageInput> | CachedImageInput;
   }>;
 
 export type UpdateCollectionPartnerAssociationImageUrlMutation = {
@@ -2795,8 +3039,24 @@ export type UpdateCollectionPartnerAssociationImageUrlMutation = {
       externalId: string;
       name: string;
       url: any;
-      imageUrl: any;
       blurb: any;
+      image: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        imageId: number;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+        cachedImages?: Array<{
+          __typename?: 'CachedImage';
+          height?: number | null;
+          id: string;
+          url?: any | null;
+          width?: number | null;
+        } | null> | null;
+      };
     };
   };
 };
@@ -2804,6 +3064,7 @@ export type UpdateCollectionPartnerAssociationImageUrlMutation = {
 export type UpdateCollectionPartnerImageUrlMutationVariables = Exact<{
   externalId: Scalars['String'];
   imageUrl: Scalars['Url'];
+  imageOptions: Array<CachedImageInput> | CachedImageInput;
 }>;
 
 export type UpdateCollectionPartnerImageUrlMutation = {
@@ -2813,8 +3074,24 @@ export type UpdateCollectionPartnerImageUrlMutation = {
     externalId: string;
     name: string;
     url: any;
-    imageUrl: any;
     blurb: any;
+    image: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      imageId: number;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+      cachedImages?: Array<{
+        __typename?: 'CachedImage';
+        height?: number | null;
+        id: string;
+        url?: any | null;
+        width?: number | null;
+      } | null> | null;
+    };
   };
 };
 
@@ -3173,6 +3450,7 @@ export type GetAuthorsQuery = {
 
 export type GetCollectionByExternalIdQueryVariables = Exact<{
   externalId: Scalars['String'];
+  imageOptions: Array<CachedImageInput> | CachedImageInput;
 }>;
 
 export type GetCollectionByExternalIdQuery = {
@@ -3184,9 +3462,25 @@ export type GetCollectionByExternalIdQuery = {
     slug: string;
     excerpt?: any | null;
     intro?: any | null;
-    imageUrl?: any | null;
     language: CollectionLanguage;
     status: CollectionStatus;
+    image?: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      imageId: number;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+      cachedImages?: Array<{
+        __typename?: 'CachedImage';
+        height?: number | null;
+        id: string;
+        url?: any | null;
+        width?: number | null;
+      } | null> | null;
+    } | null;
     authors: Array<{
       __typename?: 'CollectionAuthor';
       externalId: string;
@@ -3228,6 +3522,7 @@ export type GetCollectionByExternalIdQuery = {
 
 export type GetCollectionPartnerQueryVariables = Exact<{
   id: Scalars['String'];
+  imageOptions: Array<CachedImageInput> | CachedImageInput;
 }>;
 
 export type GetCollectionPartnerQuery = {
@@ -3237,13 +3532,30 @@ export type GetCollectionPartnerQuery = {
     externalId: string;
     name: string;
     url: any;
-    imageUrl: any;
     blurb: any;
+    image: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      imageId: number;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+      cachedImages?: Array<{
+        __typename?: 'CachedImage';
+        height?: number | null;
+        id: string;
+        url?: any | null;
+        width?: number | null;
+      } | null> | null;
+    };
   } | null;
 };
 
 export type GetCollectionPartnerAssociationQueryVariables = Exact<{
   externalId: Scalars['String'];
+  imageOptions: Array<CachedImageInput> | CachedImageInput;
 }>;
 
 export type GetCollectionPartnerAssociationQuery = {
@@ -3261,8 +3573,24 @@ export type GetCollectionPartnerAssociationQuery = {
       externalId: string;
       name: string;
       url: any;
-      imageUrl: any;
       blurb: any;
+      image: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        imageId: number;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+        cachedImages?: Array<{
+          __typename?: 'CachedImage';
+          height?: number | null;
+          id: string;
+          url?: any | null;
+          width?: number | null;
+        } | null> | null;
+      };
     };
   } | null;
 };
@@ -3270,6 +3598,7 @@ export type GetCollectionPartnerAssociationQuery = {
 export type GetCollectionPartnersQueryVariables = Exact<{
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
+  imageOptions: Array<CachedImageInput> | CachedImageInput;
 }>;
 
 export type GetCollectionPartnersQuery = {
@@ -3281,8 +3610,24 @@ export type GetCollectionPartnersQuery = {
       externalId: string;
       name: string;
       url: any;
-      imageUrl: any;
       blurb: any;
+      image: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        imageId: number;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+        cachedImages?: Array<{
+          __typename?: 'CachedImage';
+          height?: number | null;
+          id: string;
+          url?: any | null;
+          width?: number | null;
+        } | null> | null;
+      };
     }>;
     pagination?: {
       __typename?: 'Pagination';
@@ -3325,6 +3670,7 @@ export type GetCollectionsQueryVariables = Exact<{
   page: Scalars['Int'];
   perPage: Scalars['Int'];
   status: CollectionStatus;
+  imageOptions: Array<CachedImageInput> | CachedImageInput;
 }>;
 
 export type GetCollectionsQuery = {
@@ -3338,9 +3684,25 @@ export type GetCollectionsQuery = {
       slug: string;
       excerpt?: any | null;
       intro?: any | null;
-      imageUrl?: any | null;
       language: CollectionLanguage;
       status: CollectionStatus;
+      image?: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        imageId: number;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+        cachedImages?: Array<{
+          __typename?: 'CachedImage';
+          height?: number | null;
+          id: string;
+          url?: any | null;
+          width?: number | null;
+        } | null> | null;
+      } | null;
       authors: Array<{
         __typename?: 'CollectionAuthor';
         externalId: string;
@@ -3633,6 +3995,7 @@ export type GetSearchCollectionsQueryVariables = Exact<{
   status?: InputMaybe<CollectionStatus>;
   author?: InputMaybe<Scalars['String']>;
   title?: InputMaybe<Scalars['String']>;
+  imageOptions: Array<CachedImageInput> | CachedImageInput;
 }>;
 
 export type GetSearchCollectionsQuery = {
@@ -3646,9 +4009,25 @@ export type GetSearchCollectionsQuery = {
       slug: string;
       excerpt?: any | null;
       intro?: any | null;
-      imageUrl?: any | null;
       language: CollectionLanguage;
       status: CollectionStatus;
+      image?: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        imageId: number;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+        cachedImages?: Array<{
+          __typename?: 'CachedImage';
+          height?: number | null;
+          id: string;
+          url?: any | null;
+          width?: number | null;
+        } | null> | null;
+      } | null;
       authors: Array<{
         __typename?: 'CollectionAuthor';
         externalId: string;
@@ -3757,7 +4136,21 @@ export const CollectionDataFragmentDoc = gql`
     slug
     excerpt
     intro
-    imageUrl
+    image {
+      cachedImages(imageOptions: $imageOptions) {
+        height
+        id
+        url
+        width
+      }
+      caption
+      credit
+      height
+      imageId
+      targetUrl
+      url
+      width
+    }
     language
     status
     authors {
@@ -3794,7 +4187,21 @@ export const CollectionPartnerDataFragmentDoc = gql`
     externalId
     name
     url
-    imageUrl
+    image {
+      cachedImages(imageOptions: $imageOptions) {
+        height
+        id
+        url
+        width
+      }
+      caption
+      credit
+      height
+      imageId
+      targetUrl
+      url
+      width
+    }
     blurb
   }
 `;
@@ -4028,6 +4435,7 @@ export const CreateCollectionDocument = gql`
     $IABParentCategoryExternalId: String
     $IABChildCategoryExternalId: String
     $language: CollectionLanguage!
+    $imageOptions: [CachedImageInput!]!
   ) {
     createCollection(
       data: {
@@ -4076,6 +4484,7 @@ export type CreateCollectionMutationFn = Apollo.MutationFunction<
  *      IABParentCategoryExternalId: // value for 'IABParentCategoryExternalId'
  *      IABChildCategoryExternalId: // value for 'IABChildCategoryExternalId'
  *      language: // value for 'language'
+ *      imageOptions: // value for 'imageOptions'
  *   },
  * });
  */
@@ -4175,6 +4584,7 @@ export const CreateCollectionPartnerDocument = gql`
     $url: Url!
     $blurb: Markdown!
     $imageUrl: Url!
+    $imageOptions: [CachedImageInput!]!
   ) {
     createCollectionPartner(
       data: { name: $name, url: $url, blurb: $blurb, imageUrl: $imageUrl }
@@ -4206,6 +4616,7 @@ export type CreateCollectionPartnerMutationFn = Apollo.MutationFunction<
  *      url: // value for 'url'
  *      blurb: // value for 'blurb'
  *      imageUrl: // value for 'imageUrl'
+ *      imageOptions: // value for 'imageOptions'
  *   },
  * });
  */
@@ -4239,6 +4650,7 @@ export const CreateCollectionPartnerAssociationDocument = gql`
     $url: Url
     $imageUrl: Url
     $blurb: Markdown
+    $imageOptions: [CachedImageInput!]!
   ) {
     createCollectionPartnerAssociation(
       data: {
@@ -4282,6 +4694,7 @@ export type CreateCollectionPartnerAssociationMutationFn =
  *      url: // value for 'url'
  *      imageUrl: // value for 'imageUrl'
  *      blurb: // value for 'blurb'
+ *      imageOptions: // value for 'imageOptions'
  *   },
  * });
  */
@@ -4461,7 +4874,10 @@ export type CreateScheduledCorpusItemMutationOptions =
     CreateScheduledCorpusItemMutationVariables
   >;
 export const DeleteCollectionPartnerAssociationDocument = gql`
-  mutation deleteCollectionPartnerAssociation($externalId: String!) {
+  mutation deleteCollectionPartnerAssociation(
+    $externalId: String!
+    $imageOptions: [CachedImageInput!]!
+  ) {
     deleteCollectionPartnerAssociation(externalId: $externalId) {
       ...CollectionPartnerAssociationData
     }
@@ -4488,6 +4904,7 @@ export type DeleteCollectionPartnerAssociationMutationFn =
  * const [deleteCollectionPartnerAssociationMutation, { data, loading, error }] = useDeleteCollectionPartnerAssociationMutation({
  *   variables: {
  *      externalId: // value for 'externalId'
+ *      imageOptions: // value for 'imageOptions'
  *   },
  * });
  */
@@ -4914,6 +5331,7 @@ export const UpdateCollectionDocument = gql`
     $IABChildCategoryExternalId: String
     $language: CollectionLanguage!
     $imageUrl: Url
+    $imageOptions: [CachedImageInput!]!
   ) {
     updateCollection(
       data: {
@@ -4966,6 +5384,7 @@ export type UpdateCollectionMutationFn = Apollo.MutationFunction<
  *      IABChildCategoryExternalId: // value for 'IABChildCategoryExternalId'
  *      language: // value for 'language'
  *      imageUrl: // value for 'imageUrl'
+ *      imageOptions: // value for 'imageOptions'
  *   },
  * });
  */
@@ -5121,7 +5540,11 @@ export type UpdateCollectionAuthorImageUrlMutationOptions =
     UpdateCollectionAuthorImageUrlMutationVariables
   >;
 export const UpdateCollectionImageUrlDocument = gql`
-  mutation updateCollectionImageUrl($externalId: String!, $imageUrl: Url!) {
+  mutation updateCollectionImageUrl(
+    $externalId: String!
+    $imageUrl: Url!
+    $imageOptions: [CachedImageInput!]!
+  ) {
     updateCollectionImageUrl(
       data: { externalId: $externalId, imageUrl: $imageUrl }
     ) {
@@ -5150,6 +5573,7 @@ export type UpdateCollectionImageUrlMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      externalId: // value for 'externalId'
  *      imageUrl: // value for 'imageUrl'
+ *      imageOptions: // value for 'imageOptions'
  *   },
  * });
  */
@@ -5182,6 +5606,7 @@ export const UpdateCollectionPartnerDocument = gql`
     $url: Url!
     $blurb: Markdown!
     $imageUrl: Url
+    $imageOptions: [CachedImageInput!]!
   ) {
     updateCollectionPartner(
       data: {
@@ -5220,6 +5645,7 @@ export type UpdateCollectionPartnerMutationFn = Apollo.MutationFunction<
  *      url: // value for 'url'
  *      blurb: // value for 'blurb'
  *      imageUrl: // value for 'imageUrl'
+ *      imageOptions: // value for 'imageOptions'
  *   },
  * });
  */
@@ -5253,6 +5679,7 @@ export const UpdateCollectionPartnerAssociationDocument = gql`
     $url: Url
     $imageUrl: Url
     $blurb: Markdown
+    $imageOptions: [CachedImageInput!]!
   ) {
     updateCollectionPartnerAssociation(
       data: {
@@ -5296,6 +5723,7 @@ export type UpdateCollectionPartnerAssociationMutationFn =
  *      url: // value for 'url'
  *      imageUrl: // value for 'imageUrl'
  *      blurb: // value for 'blurb'
+ *      imageOptions: // value for 'imageOptions'
  *   },
  * });
  */
@@ -5325,6 +5753,7 @@ export const UpdateCollectionPartnerAssociationImageUrlDocument = gql`
   mutation updateCollectionPartnerAssociationImageUrl(
     $externalId: String!
     $imageUrl: Url!
+    $imageOptions: [CachedImageInput!]!
   ) {
     updateCollectionPartnerAssociationImageUrl(
       data: { externalId: $externalId, imageUrl: $imageUrl }
@@ -5355,6 +5784,7 @@ export type UpdateCollectionPartnerAssociationImageUrlMutationFn =
  *   variables: {
  *      externalId: // value for 'externalId'
  *      imageUrl: // value for 'imageUrl'
+ *      imageOptions: // value for 'imageOptions'
  *   },
  * });
  */
@@ -5383,6 +5813,7 @@ export const UpdateCollectionPartnerImageUrlDocument = gql`
   mutation updateCollectionPartnerImageUrl(
     $externalId: String!
     $imageUrl: Url!
+    $imageOptions: [CachedImageInput!]!
   ) {
     updateCollectionPartnerImageUrl(
       data: { externalId: $externalId, imageUrl: $imageUrl }
@@ -5412,6 +5843,7 @@ export type UpdateCollectionPartnerImageUrlMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      externalId: // value for 'externalId'
  *      imageUrl: // value for 'imageUrl'
+ *      imageOptions: // value for 'imageOptions'
  *   },
  * });
  */
@@ -6062,7 +6494,10 @@ export type GetAuthorsQueryResult = Apollo.QueryResult<
   GetAuthorsQueryVariables
 >;
 export const GetCollectionByExternalIdDocument = gql`
-  query getCollectionByExternalId($externalId: String!) {
+  query getCollectionByExternalId(
+    $externalId: String!
+    $imageOptions: [CachedImageInput!]!
+  ) {
     getCollection(externalId: $externalId) {
       ...CollectionData
     }
@@ -6083,6 +6518,7 @@ export const GetCollectionByExternalIdDocument = gql`
  * const { data, loading, error } = useGetCollectionByExternalIdQuery({
  *   variables: {
  *      externalId: // value for 'externalId'
+ *      imageOptions: // value for 'imageOptions'
  *   },
  * });
  */
@@ -6121,7 +6557,10 @@ export type GetCollectionByExternalIdQueryResult = Apollo.QueryResult<
   GetCollectionByExternalIdQueryVariables
 >;
 export const GetCollectionPartnerDocument = gql`
-  query getCollectionPartner($id: String!) {
+  query getCollectionPartner(
+    $id: String!
+    $imageOptions: [CachedImageInput!]!
+  ) {
     getCollectionPartner(externalId: $id) {
       ...CollectionPartnerData
     }
@@ -6142,6 +6581,7 @@ export const GetCollectionPartnerDocument = gql`
  * const { data, loading, error } = useGetCollectionPartnerQuery({
  *   variables: {
  *      id: // value for 'id'
+ *      imageOptions: // value for 'imageOptions'
  *   },
  * });
  */
@@ -6180,7 +6620,10 @@ export type GetCollectionPartnerQueryResult = Apollo.QueryResult<
   GetCollectionPartnerQueryVariables
 >;
 export const GetCollectionPartnerAssociationDocument = gql`
-  query getCollectionPartnerAssociation($externalId: String!) {
+  query getCollectionPartnerAssociation(
+    $externalId: String!
+    $imageOptions: [CachedImageInput!]!
+  ) {
     getCollectionPartnerAssociationForCollection(externalId: $externalId) {
       ...CollectionPartnerAssociationData
     }
@@ -6201,6 +6644,7 @@ export const GetCollectionPartnerAssociationDocument = gql`
  * const { data, loading, error } = useGetCollectionPartnerAssociationQuery({
  *   variables: {
  *      externalId: // value for 'externalId'
+ *      imageOptions: // value for 'imageOptions'
  *   },
  * });
  */
@@ -6239,7 +6683,11 @@ export type GetCollectionPartnerAssociationQueryResult = Apollo.QueryResult<
   GetCollectionPartnerAssociationQueryVariables
 >;
 export const GetCollectionPartnersDocument = gql`
-  query getCollectionPartners($page: Int, $perPage: Int) {
+  query getCollectionPartners(
+    $page: Int
+    $perPage: Int
+    $imageOptions: [CachedImageInput!]!
+  ) {
     getCollectionPartners(page: $page, perPage: $perPage) {
       partners {
         ...CollectionPartnerData
@@ -6268,11 +6716,12 @@ export const GetCollectionPartnersDocument = gql`
  *   variables: {
  *      page: // value for 'page'
  *      perPage: // value for 'perPage'
+ *      imageOptions: // value for 'imageOptions'
  *   },
  * });
  */
 export function useGetCollectionPartnersQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     GetCollectionPartnersQuery,
     GetCollectionPartnersQueryVariables
   >
@@ -6372,6 +6821,7 @@ export const GetCollectionsDocument = gql`
     $page: Int!
     $perPage: Int!
     $status: CollectionStatus!
+    $imageOptions: [CachedImageInput!]!
   ) {
     searchCollections(
       filters: { status: $status }
@@ -6406,6 +6856,7 @@ export const GetCollectionsDocument = gql`
  *      page: // value for 'page'
  *      perPage: // value for 'perPage'
  *      status: // value for 'status'
+ *      imageOptions: // value for 'imageOptions'
  *   },
  * });
  */
@@ -6867,6 +7318,7 @@ export const GetSearchCollectionsDocument = gql`
     $status: CollectionStatus
     $author: String
     $title: String
+    $imageOptions: [CachedImageInput!]!
   ) {
     searchCollections(
       filters: { status: $status, author: $author, title: $title }
@@ -6901,11 +7353,12 @@ export const GetSearchCollectionsDocument = gql`
  *      status: // value for 'status'
  *      author: // value for 'author'
  *      title: // value for 'title'
+ *      imageOptions: // value for 'imageOptions'
  *   },
  * });
  */
 export function useGetSearchCollectionsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
+  baseOptions: Apollo.QueryHookOptions<
     GetSearchCollectionsQuery,
     GetSearchCollectionsQueryVariables
   >

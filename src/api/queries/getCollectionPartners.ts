@@ -5,7 +5,11 @@ import { CollectionPartnerData } from '../fragments/CollectionPartnerData';
  * Get a list of collection partners
  */
 export const getCollectionPartners = gql`
-  query getCollectionPartners($page: Int, $perPage: Int) {
+  query getCollectionPartners(
+    $page: Int
+    $perPage: Int
+    $imageOptions: [CachedImageInput!]!
+  ) {
     getCollectionPartners(page: $page, perPage: $perPage) {
       partners {
         ...CollectionPartnerData

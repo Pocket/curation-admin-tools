@@ -10,6 +10,7 @@ export const createCollectionPartner = gql`
     $url: Url!
     $blurb: Markdown!
     $imageUrl: Url!
+    $imageOptions: [CachedImageInput!]!
   ) {
     createCollectionPartner(
       data: { name: $name, url: $url, blurb: $blurb, imageUrl: $imageUrl }

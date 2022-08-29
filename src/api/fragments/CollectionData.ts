@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
 import { CollectionAuthorData } from './CollectionAuthorData';
+// import { ImageData } from './ImageData';
 
 /**
  * All the properties that are needed to display and edit collections
@@ -14,7 +15,21 @@ export const CollectionData = gql`
     slug
     excerpt
     intro
-    imageUrl
+    image {
+      cachedImages(imageOptions: $imageOptions) {
+        height
+        id
+        url
+        width
+      }
+      caption
+      credit
+      height
+      imageId
+      targetUrl
+      url
+      width
+    }
     language
     status
     authors {

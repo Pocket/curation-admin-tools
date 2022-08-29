@@ -6,7 +6,10 @@ import { CollectionPartnerAssociationData } from '../fragments/CollectionPartner
  * of the collection it's related to.
  */
 export const getCollectionPartnerAssociation = gql`
-  query getCollectionPartnerAssociation($externalId: String!) {
+  query getCollectionPartnerAssociation(
+    $externalId: String!
+    $imageOptions: [CachedImageInput!]!
+  ) {
     getCollectionPartnerAssociationForCollection(externalId: $externalId) {
       ...CollectionPartnerAssociationData
     }

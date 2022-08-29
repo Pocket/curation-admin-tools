@@ -9,6 +9,7 @@ export const getCollections = gql`
     $page: Int!
     $perPage: Int!
     $status: CollectionStatus!
+    $imageOptions: [CachedImageInput!]!
   ) {
     searchCollections(
       filters: { status: $status }

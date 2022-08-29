@@ -18,6 +18,7 @@ export const updateCollection = gql`
     $IABChildCategoryExternalId: String
     $language: CollectionLanguage!
     $imageUrl: Url
+    $imageOptions: [CachedImageInput!]!
   ) {
     updateCollection(
       data: {

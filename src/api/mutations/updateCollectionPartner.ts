@@ -11,6 +11,7 @@ export const updateCollectionPartner = gql`
     $url: Url!
     $blurb: Markdown!
     $imageUrl: Url
+    $imageOptions: [CachedImageInput!]!
   ) {
     updateCollectionPartner(
       data: {

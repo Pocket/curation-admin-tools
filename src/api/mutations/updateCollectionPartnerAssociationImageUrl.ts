@@ -8,6 +8,7 @@ export const updateCollectionPartnerAssociationImageUrl = gql`
   mutation updateCollectionPartnerAssociationImageUrl(
     $externalId: String!
     $imageUrl: Url!
+    $imageOptions: [CachedImageInput!]!
   ) {
     updateCollectionPartnerAssociationImageUrl(
       data: { externalId: $externalId, imageUrl: $imageUrl }

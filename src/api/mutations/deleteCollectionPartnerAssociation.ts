@@ -5,7 +5,10 @@ import { CollectionPartnerAssociationData } from '../fragments/CollectionPartner
  * Delete a collection-partner association
  */
 export const deleteCollectionPartnerAssociation = gql`
-  mutation deleteCollectionPartnerAssociation($externalId: String!) {
+  mutation deleteCollectionPartnerAssociation(
+    $externalId: String!
+    $imageOptions: [CachedImageInput!]!
+  ) {
     deleteCollectionPartnerAssociation(externalId: $externalId) {
       ...CollectionPartnerAssociationData
     }

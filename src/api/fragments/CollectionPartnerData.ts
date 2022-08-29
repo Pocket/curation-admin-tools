@@ -8,7 +8,21 @@ export const CollectionPartnerData = gql`
     externalId
     name
     url
-    imageUrl
+    image {
+      cachedImages(imageOptions: $imageOptions) {
+        height
+        id
+        url
+        width
+      }
+      caption
+      credit
+      height
+      imageId
+      targetUrl
+      url
+      width
+    }
     blurb
   }
 `;

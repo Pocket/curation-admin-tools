@@ -16,6 +16,7 @@ export const createCollection = gql`
     $IABParentCategoryExternalId: String
     $IABChildCategoryExternalId: String
     $language: CollectionLanguage!
+    $imageOptions: [CachedImageInput!]!
   ) {
     createCollection(
       data: {

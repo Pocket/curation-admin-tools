@@ -13,6 +13,7 @@ export const createCollectionPartnerAssociation = gql`
     $url: Url
     $imageUrl: Url
     $blurb: Markdown
+    $imageOptions: [CachedImageInput!]!
   ) {
     createCollectionPartnerAssociation(
       data: {

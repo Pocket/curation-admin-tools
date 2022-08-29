@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 import { CollectionData } from '../fragments/CollectionData';
 
 /**
- * Seach collections
+ * Search collections
  */
 export const getSearchCollections = gql`
   query getSearchCollections(
@@ -11,6 +11,7 @@ export const getSearchCollections = gql`
     $status: CollectionStatus
     $author: String
     $title: String
+    $imageOptions: [CachedImageInput!]!
   ) {
     searchCollections(
       filters: { status: $status, author: $author, title: $title }

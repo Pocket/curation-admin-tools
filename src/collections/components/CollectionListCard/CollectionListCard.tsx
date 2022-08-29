@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 import ReactMarkdown from 'react-markdown';
 import { useStyles } from './CollectionListCard.styles';
-import { Collection } from '../../../api/generatedTypes';
+import { Collection, Image } from '../../../api/generatedTypes';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 import LanguageIcon from '@material-ui/icons/Language';
@@ -21,7 +21,9 @@ interface CollectionListCardProps {
    * An object with everything collection-related in it.
    * Except for stories. We don't need them in the card.
    */
-  collection: Omit<Collection, 'stories'>;
+  collection: Omit<Collection, 'stories' | 'image' | 'partnership'> & {
+    image?: Omit<Image, 'src'> | null;
+  };
 }
 
 /**
@@ -48,11 +50,7 @@ export const CollectionListCard: React.FC<CollectionListCardProps> = (
           <Grid item xs={4} sm={2}>
             <CardMedia
               component="img"
-              src={
-                collection.imageUrl && collection.imageUrl.length > 0
-                  ? collection.imageUrl
-                  : '/placeholders/collectionSmall.svg'
-              }
+              src={collection.image?.url ?? '/placeholders/collectionSmall.svg'}
               alt={collection.title}
               className={classes.image}
             />
