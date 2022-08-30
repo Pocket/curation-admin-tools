@@ -1,5 +1,6 @@
-import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+import { gql } from '@apollo/client';
+
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -583,24 +584,27 @@ export type IabParentCategory = {
   slug: Scalars['String'];
 };
 
-/** An image, typically a thumbnail or article view image for an {Item} */
+/** An image that is keyed on URL */
 export type Image = {
   __typename?: 'Image';
   /** A caption or description of the image */
   caption?: Maybe<Scalars['String']>;
   /** A credit for the image, typically who the image belongs to / created by */
   credit?: Maybe<Scalars['String']>;
-  /** If known, the height of the image in px */
+  /** The determined height of the image at the url */
   height?: Maybe<Scalars['Int']>;
   /** The id for placing within an Article View. {articleView.article} will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view. */
   imageId: Scalars['Int'];
-  /** Absolute url to the image */
+  /**
+   * Absolute url to the image
+   * @deprecated use url property moving forward
+   */
   src: Scalars['String'];
   /** If the image is also a link, the destination url */
   targetUrl?: Maybe<Scalars['String']>;
-  /** Absolute url to the image */
+  /** The url of the image */
   url: Scalars['Url'];
-  /** If known, the width of the image in px */
+  /** The determined width of the image at the url */
   width?: Maybe<Scalars['Int']>;
 };
 
@@ -777,6 +781,11 @@ export type Item = {
   /** The title as determined by the parser. */
   title?: Maybe<Scalars['String']>;
   /** The page's / publisher's preferred thumbnail image */
+  topImage?: Maybe<Image>;
+  /**
+   * The page's / publisher's preferred thumbnail image
+   * @deprecated use the topImage object
+   */
   topImageUrl?: Maybe<Scalars['Url']>;
   /**
    * Indicates if the parser used fallback methods
@@ -1367,20 +1376,20 @@ export type RejectedCorpusItem = {
   /** An alternative primary key in UUID format that is generated on creation. */
   externalId: Scalars['ID'];
   /** What language this story is in. This is a two-letter code, for example, 'EN' for English. */
-  language: CorpusLanguage;
+  language?: Maybe<CorpusLanguage>;
   /** The GUID of the corresponding Prospect ID. Will be empty if the item was manually added. */
   prospectId?: Maybe<Scalars['ID']>;
   /** The name of the online publication that published this story. */
-  publisher: Scalars['String'];
+  publisher?: Maybe<Scalars['String']>;
   /** Reason why it was rejected. Can be multiple reasons. Will likely be stored either as comma-separated values or JSON. */
   reason: Scalars['String'];
   /** The title of the story. */
-  title: Scalars['String'];
+  title?: Maybe<Scalars['String']>;
   /**
    * A topic this story best fits in.
    * Temporarily a string value that will be provided by Prospect API, possibly an enum in the future.
    */
-  topic: Scalars['String'];
+  topic?: Maybe<Scalars['String']>;
   /** The URL of the story. */
   url: Scalars['Url'];
 };
@@ -1953,10 +1962,10 @@ export type ProspectDataFragment = {
     externalId: string;
     prospectId?: string | null;
     url: any;
-    title: string;
-    topic: string;
-    language: CorpusLanguage;
-    publisher: string;
+    title?: string | null;
+    topic?: string | null;
+    language?: CorpusLanguage | null;
+    publisher?: string | null;
     reason: string;
     createdBy: string;
     createdAt: number;
@@ -1968,10 +1977,10 @@ export type RejectedItemDataFragment = {
   externalId: string;
   prospectId?: string | null;
   url: any;
-  title: string;
-  topic: string;
-  language: CorpusLanguage;
-  publisher: string;
+  title?: string | null;
+  topic?: string | null;
+  language?: CorpusLanguage | null;
+  publisher?: string | null;
   reason: string;
   createdBy: string;
   createdAt: number;
@@ -2458,10 +2467,10 @@ export type RejectProspectMutation = {
     externalId: string;
     prospectId?: string | null;
     url: any;
-    title: string;
-    topic: string;
-    language: CorpusLanguage;
-    publisher: string;
+    title?: string | null;
+    topic?: string | null;
+    language?: CorpusLanguage | null;
+    publisher?: string | null;
     reason: string;
     createdBy: string;
     createdAt: number;
@@ -2964,10 +2973,10 @@ export type UpdateProspectAsCuratedMutation = {
       externalId: string;
       prospectId?: string | null;
       url: any;
-      title: string;
-      topic: string;
-      language: CorpusLanguage;
-      publisher: string;
+      title?: string | null;
+      topic?: string | null;
+      language?: CorpusLanguage | null;
+      publisher?: string | null;
       reason: string;
       createdBy: string;
       createdAt: number;
@@ -3492,10 +3501,10 @@ export type GetProspectsQuery = {
       externalId: string;
       prospectId?: string | null;
       url: any;
-      title: string;
-      topic: string;
-      language: CorpusLanguage;
-      publisher: string;
+      title?: string | null;
+      topic?: string | null;
+      language?: CorpusLanguage | null;
+      publisher?: string | null;
       reason: string;
       createdBy: string;
       createdAt: number;
@@ -3528,10 +3537,10 @@ export type GetRejectedItemsQuery = {
         externalId: string;
         prospectId?: string | null;
         url: any;
-        title: string;
-        topic: string;
-        language: CorpusLanguage;
-        publisher: string;
+        title?: string | null;
+        topic?: string | null;
+        language?: CorpusLanguage | null;
+        publisher?: string | null;
         reason: string;
         createdBy: string;
         createdAt: number;
