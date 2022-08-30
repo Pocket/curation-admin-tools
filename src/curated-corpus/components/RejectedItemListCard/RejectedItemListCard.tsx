@@ -34,7 +34,7 @@ export const RejectedItemListCard: React.FC<RejectedItemListCardProps> = (
     <Card className={classes.root}>
       <CardContent className={classes.content}>
         <Typography className={classes.publisher} gutterBottom>
-          {item.publisher}
+          {item.publisher ?? 'N/A'}
         </Typography>
         <Typography
           className={classes.title}
@@ -43,7 +43,7 @@ export const RejectedItemListCard: React.FC<RejectedItemListCardProps> = (
           gutterBottom
         >
           <Link href={item.url} target="_blank" className={classes.link}>
-            {item.title}
+            {item.title ?? 'N/A'}
           </Link>
         </Typography>
       </CardContent>
@@ -71,13 +71,18 @@ export const RejectedItemListCard: React.FC<RejectedItemListCardProps> = (
           <ListItemIcon className={classes.listItemIcon}>
             <LabelOutlinedIcon />
           </ListItemIcon>
-          <ListItemText className={classes.topic} primary={item.topic} />
+          <ListItemText
+            className={classes.topic}
+            primary={item.topic ?? 'N/A'}
+          />
         </ListItem>
         <ListItem>
           <ListItemIcon className={classes.listItemIcon}>
             <LanguageIcon />
           </ListItemIcon>
-          <ListItemText primary={item.language.toUpperCase()} />
+          <ListItemText
+            primary={item.language ? item.language.toUpperCase() : 'N/A'}
+          />
         </ListItem>
       </List>
     </Card>

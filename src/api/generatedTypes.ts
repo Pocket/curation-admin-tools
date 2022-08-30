@@ -1,5 +1,6 @@
-import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+import { gql } from '@apollo/client';
+
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -1426,20 +1427,20 @@ export type RejectedCorpusItem = {
   /** An alternative primary key in UUID format that is generated on creation. */
   externalId: Scalars['ID'];
   /** What language this story is in. This is a two-letter code, for example, 'EN' for English. */
-  language: CorpusLanguage;
+  language?: Maybe<CorpusLanguage>;
   /** The GUID of the corresponding Prospect ID. Will be empty if the item was manually added. */
   prospectId?: Maybe<Scalars['ID']>;
   /** The name of the online publication that published this story. */
-  publisher: Scalars['String'];
+  publisher?: Maybe<Scalars['String']>;
   /** Reason why it was rejected. Can be multiple reasons. Will likely be stored either as comma-separated values or JSON. */
   reason: Scalars['String'];
   /** The title of the story. */
-  title: Scalars['String'];
+  title?: Maybe<Scalars['String']>;
   /**
    * A topic this story best fits in.
    * Temporarily a string value that will be provided by Prospect API, possibly an enum in the future.
    */
-  topic: Scalars['String'];
+  topic?: Maybe<Scalars['String']>;
   /** The URL of the story. */
   url: Scalars['Url'];
 };
@@ -2060,10 +2061,10 @@ export type ProspectDataFragment = {
     externalId: string;
     prospectId?: string | null;
     url: any;
-    title: string;
-    topic: string;
-    language: CorpusLanguage;
-    publisher: string;
+    title?: string | null;
+    topic?: string | null;
+    language?: CorpusLanguage | null;
+    publisher?: string | null;
     reason: string;
     createdBy: string;
     createdAt: number;
@@ -2075,10 +2076,10 @@ export type RejectedItemDataFragment = {
   externalId: string;
   prospectId?: string | null;
   url: any;
-  title: string;
-  topic: string;
-  language: CorpusLanguage;
-  publisher: string;
+  title?: string | null;
+  topic?: string | null;
+  language?: CorpusLanguage | null;
+  publisher?: string | null;
   reason: string;
   createdBy: string;
   createdAt: number;
@@ -2633,10 +2634,10 @@ export type RejectProspectMutation = {
     externalId: string;
     prospectId?: string | null;
     url: any;
-    title: string;
-    topic: string;
-    language: CorpusLanguage;
-    publisher: string;
+    title?: string | null;
+    topic?: string | null;
+    language?: CorpusLanguage | null;
+    publisher?: string | null;
     reason: string;
     createdBy: string;
     createdAt: number;
@@ -3241,10 +3242,10 @@ export type UpdateProspectAsCuratedMutation = {
       externalId: string;
       prospectId?: string | null;
       url: any;
-      title: string;
-      topic: string;
-      language: CorpusLanguage;
-      publisher: string;
+      title?: string | null;
+      topic?: string | null;
+      language?: CorpusLanguage | null;
+      publisher?: string | null;
       reason: string;
       createdBy: string;
       createdAt: number;
@@ -3854,10 +3855,10 @@ export type GetProspectsQuery = {
       externalId: string;
       prospectId?: string | null;
       url: any;
-      title: string;
-      topic: string;
-      language: CorpusLanguage;
-      publisher: string;
+      title?: string | null;
+      topic?: string | null;
+      language?: CorpusLanguage | null;
+      publisher?: string | null;
       reason: string;
       createdBy: string;
       createdAt: number;
@@ -3890,10 +3891,10 @@ export type GetRejectedItemsQuery = {
         externalId: string;
         prospectId?: string | null;
         url: any;
-        title: string;
-        topic: string;
-        language: CorpusLanguage;
-        publisher: string;
+        title?: string | null;
+        topic?: string | null;
+        language?: CorpusLanguage | null;
+        publisher?: string | null;
         reason: string;
         createdBy: string;
         createdAt: number;
