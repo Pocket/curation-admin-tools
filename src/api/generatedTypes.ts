@@ -265,6 +265,8 @@ export type CollectionAuthor = {
   active: Scalars['Boolean'];
   bio?: Maybe<Scalars['Markdown']>;
   externalId: Scalars['ID'];
+  image?: Maybe<Image>;
+  /** @deprecated use the image object instead */
   imageUrl?: Maybe<Scalars['Url']>;
   name: Scalars['String'];
   slug?: Maybe<Scalars['String']>;
@@ -1786,6 +1788,15 @@ export type CollectionAuthorDataFragment = {
   bio?: any | null;
   imageUrl?: any | null;
   active: boolean;
+  image?: {
+    __typename?: 'Image';
+    caption?: string | null;
+    credit?: string | null;
+    height?: number | null;
+    targetUrl?: string | null;
+    url: any;
+    width?: number | null;
+  } | null;
 };
 
 export type CollectionDataFragment = {
@@ -1806,6 +1817,15 @@ export type CollectionDataFragment = {
     bio?: any | null;
     imageUrl?: any | null;
     active: boolean;
+    image?: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+    } | null;
   }>;
   curationCategory?: {
     __typename?: 'CurationCategory';
@@ -2198,6 +2218,15 @@ export type CreateCollectionMutation = {
       bio?: any | null;
       imageUrl?: any | null;
       active: boolean;
+      image?: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+      } | null;
     }>;
     curationCategory?: {
       __typename?: 'CurationCategory';
@@ -2247,6 +2276,15 @@ export type CreateCollectionAuthorMutation = {
     bio?: any | null;
     imageUrl?: any | null;
     active: boolean;
+    image?: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+    } | null;
   };
 };
 
@@ -2703,6 +2741,15 @@ export type UpdateCollectionMutation = {
       bio?: any | null;
       imageUrl?: any | null;
       active: boolean;
+      image?: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+      } | null;
     }>;
     curationCategory?: {
       __typename?: 'CurationCategory';
@@ -2753,6 +2800,15 @@ export type UpdateCollectionAuthorMutation = {
     bio?: any | null;
     imageUrl?: any | null;
     active: boolean;
+    image?: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+    } | null;
   };
 };
 
@@ -2771,6 +2827,15 @@ export type UpdateCollectionAuthorImageUrlMutation = {
     bio?: any | null;
     imageUrl?: any | null;
     active: boolean;
+    image?: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+    } | null;
   };
 };
 
@@ -2799,6 +2864,15 @@ export type UpdateCollectionImageUrlMutation = {
       bio?: any | null;
       imageUrl?: any | null;
       active: boolean;
+      image?: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+      } | null;
     }>;
     curationCategory?: {
       __typename?: 'CurationCategory';
@@ -3275,6 +3349,15 @@ export type GetAuthorByIdQuery = {
     bio?: any | null;
     imageUrl?: any | null;
     active: boolean;
+    image?: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+    } | null;
   } | null;
 };
 
@@ -3295,6 +3378,15 @@ export type GetAuthorsQuery = {
       bio?: any | null;
       imageUrl?: any | null;
       active: boolean;
+      image?: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+      } | null;
     }>;
     pagination?: {
       __typename?: 'Pagination';
@@ -3329,6 +3421,15 @@ export type GetCollectionByExternalIdQuery = {
       bio?: any | null;
       imageUrl?: any | null;
       active: boolean;
+      image?: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+      } | null;
     }>;
     curationCategory?: {
       __typename?: 'CurationCategory';
@@ -3492,6 +3593,15 @@ export type GetCollectionsQuery = {
         bio?: any | null;
         imageUrl?: any | null;
         active: boolean;
+        image?: {
+          __typename?: 'Image';
+          caption?: string | null;
+          credit?: string | null;
+          height?: number | null;
+          targetUrl?: string | null;
+          url: any;
+          width?: number | null;
+        } | null;
       }>;
       curationCategory?: {
         __typename?: 'CurationCategory';
@@ -3548,6 +3658,15 @@ export type GetInitialCollectionFormDataQuery = {
       bio?: any | null;
       imageUrl?: any | null;
       active: boolean;
+      image?: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+      } | null;
     }>;
   };
   getCurationCategories: Array<{
@@ -3800,6 +3919,15 @@ export type GetSearchCollectionsQuery = {
         bio?: any | null;
         imageUrl?: any | null;
         active: boolean;
+        image?: {
+          __typename?: 'Image';
+          caption?: string | null;
+          credit?: string | null;
+          height?: number | null;
+          targetUrl?: string | null;
+          url: any;
+          width?: number | null;
+        } | null;
       }>;
       curationCategory?: {
         __typename?: 'CurationCategory';
@@ -3883,15 +4011,29 @@ export type GetUrlMetadataQuery = {
   };
 };
 
+export const ImageDataFragmentDoc = gql`
+  fragment ImageData on Image {
+    caption
+    credit
+    height
+    targetUrl
+    url
+    width
+  }
+`;
 export const CollectionAuthorDataFragmentDoc = gql`
   fragment CollectionAuthorData on CollectionAuthor {
     externalId
     name
     slug
     bio
+    image {
+      ...ImageData
+    }
     imageUrl
     active
   }
+  ${ImageDataFragmentDoc}
 `;
 export const CollectionDataFragmentDoc = gql`
   fragment CollectionData on Collection {
@@ -3954,16 +4096,6 @@ export const CollectionPartnerAssociationDataFragmentDoc = gql`
     }
   }
   ${CollectionPartnerDataFragmentDoc}
-`;
-export const ImageDataFragmentDoc = gql`
-  fragment ImageData on Image {
-    caption
-    credit
-    height
-    targetUrl
-    url
-    width
-  }
 `;
 export const CollectionStoryDataFragmentDoc = gql`
   fragment CollectionStoryData on CollectionStory {
