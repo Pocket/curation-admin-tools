@@ -9,9 +9,7 @@ export const ImageData = gql`
     caption
     credit
     height
-    imageId
     targetUrl
-    src
     url
     width
   }

@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { ImageData } from './ImageData';
 
 /**
  * All the properties that are needed to display components with collection
@@ -10,6 +11,9 @@ export const CollectionStoryData = gql`
     url
     title
     excerpt
+    image {
+      ...ImageData
+    }
     imageUrl
     authors {
       name
@@ -19,4 +23,5 @@ export const CollectionStoryData = gql`
     fromPartner
     sortOrder
   }
+  ${ImageData}
 `;

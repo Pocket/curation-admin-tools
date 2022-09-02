@@ -1,6 +1,5 @@
-import * as Apollo from '@apollo/client';
 import { gql } from '@apollo/client';
-
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -207,6 +206,33 @@ export enum CacheControlScope {
   Public = 'PUBLIC',
 }
 
+/** A requested image that is cached and has the requested image parameters */
+export type CachedImage = {
+  __typename?: 'CachedImage';
+  /** Height of the cached image */
+  height?: Maybe<Scalars['Int']>;
+  /** Id of the image that matches the ID from the requested options */
+  id: Scalars['ID'];
+  /** URL of the cached image */
+  url?: Maybe<Scalars['Url']>;
+  /** Width of the cached image */
+  width?: Maybe<Scalars['Int']>;
+};
+
+/** Set of parameters that will be used to change an image */
+export type CachedImageInput = {
+  /** File type of the requested image */
+  fileType?: InputMaybe<ImageFileType>;
+  /** Height of the image */
+  height?: InputMaybe<Scalars['Int']>;
+  /** Id of the image in the returned result set */
+  id: Scalars['ID'];
+  /** Quality of the image in whole percentage, 100 = full, quality 50 = half quality */
+  qualityPercentage?: InputMaybe<Scalars['Int']>;
+  /** Width of the image */
+  width?: InputMaybe<Scalars['Int']>;
+};
+
 export type Collection = {
   __typename?: 'Collection';
   IABChildCategory?: Maybe<IabCategory>;
@@ -345,6 +371,8 @@ export type CollectionStory = {
   externalId: Scalars['ID'];
   /** if True, the story is provided by a partner and should be displayed as such */
   fromPartner: Scalars['Boolean'];
+  image?: Maybe<Image>;
+  /** @deprecated use the image object instead */
   imageUrl?: Maybe<Scalars['Url']>;
   item?: Maybe<Item>;
   publisher?: Maybe<Scalars['String']>;
@@ -587,19 +615,14 @@ export type IabParentCategory = {
 /** An image that is keyed on URL */
 export type Image = {
   __typename?: 'Image';
+  /** Query to get a cached and modified set of images based on the image from the original url, images will be matched by the client assigned id value */
+  cachedImages?: Maybe<Array<Maybe<CachedImage>>>;
   /** A caption or description of the image */
   caption?: Maybe<Scalars['String']>;
   /** A credit for the image, typically who the image belongs to / created by */
   credit?: Maybe<Scalars['String']>;
   /** The determined height of the image at the url */
   height?: Maybe<Scalars['Int']>;
-  /** The id for placing within an Article View. {articleView.article} will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view. */
-  imageId: Scalars['Int'];
-  /**
-   * Absolute url to the image
-   * @deprecated use url property moving forward
-   */
-  src: Scalars['String'];
   /** If the image is also a link, the destination url */
   targetUrl?: Maybe<Scalars['String']>;
   /** The url of the image */
@@ -607,6 +630,18 @@ export type Image = {
   /** The determined width of the image at the url */
   width?: Maybe<Scalars['Int']>;
 };
+
+/** An image that is keyed on URL */
+export type ImageCachedImagesArgs = {
+  imageOptions: Array<CachedImageInput>;
+};
+
+/** The image file type */
+export enum ImageFileType {
+  Jpeg = 'JPEG',
+  Png = 'PNG',
+  Webp = 'WEBP',
+}
 
 export enum Imageness {
   /** Contains images (v3 value is 1) */
@@ -767,7 +802,7 @@ export type Item = {
   /** If the givenUrl redirects (once or many times), this is the final url. Otherwise, same as givenUrl */
   resolvedUrl?: Maybe<Scalars['Url']>;
   /**
-   * The http resonse code of the given url
+   * The http response code of the given url
    * @deprecated Clients should not use this
    */
   responseCode?: Maybe<Scalars['Int']>;
@@ -1109,7 +1144,7 @@ export type NumberedListElement = ListElement & {
   content: Scalars['Markdown'];
   /** Numeric index. If a nested item, the index is zero-indexed from the first child. */
   index: Scalars['Int'];
-  /** Zero-indexed level, for handling nexted lists. */
+  /** Zero-indexed level, for handling nested lists. */
   level: Scalars['Int'];
 };
 
@@ -1688,7 +1723,7 @@ export type UrlMetadata = {
   url: Scalars['String'];
 };
 
-/** A Video, typically within an Article View of an {Item} or if the Item is a video itself." */
+/** A Video, typically within an Article View of an {Item} or if the Item is a video itself. */
 export type Video = {
   __typename?: 'Video';
   /** If known, the height of the video in px */
@@ -1734,6 +1769,14 @@ export enum Videoness {
   /** No videos (v3 value is 0) */
   NoVideos = 'NO_VIDEOS',
 }
+
+export type CachedImageDataFragment = {
+  __typename?: 'CachedImage';
+  height?: number | null;
+  id: string;
+  url?: any | null;
+  width?: number | null;
+};
 
 export type CollectionAuthorDataFragment = {
   __typename?: 'CollectionAuthor';
@@ -1830,6 +1873,15 @@ export type CollectionStoryDataFragment = {
   publisher?: string | null;
   fromPartner: boolean;
   sortOrder?: number | null;
+  image?: {
+    __typename?: 'Image';
+    caption?: string | null;
+    credit?: string | null;
+    height?: number | null;
+    targetUrl?: string | null;
+    url: any;
+    width?: number | null;
+  } | null;
   authors: Array<{
     __typename?: 'CollectionStoryAuthor';
     name: string;
@@ -1869,6 +1921,34 @@ export type CuratedItemDataWithHistoryFragment = {
     scheduledDate: any;
     scheduledSurfaceGuid: string;
   }>;
+};
+
+export type ImageDataFragment = {
+  __typename?: 'Image';
+  caption?: string | null;
+  credit?: string | null;
+  height?: number | null;
+  targetUrl?: string | null;
+  url: any;
+  width?: number | null;
+};
+
+export type ImageDataWithCachedImagesFragment = {
+  __typename?: 'Image';
+  caption?: string | null;
+  credit?: string | null;
+  height?: number | null;
+  imageId: number;
+  targetUrl?: string | null;
+  url: any;
+  width?: number | null;
+  cachedImages?: Array<{
+    __typename?: 'CachedImage';
+    height?: number | null;
+    id: string;
+    url?: any | null;
+    width?: number | null;
+  } | null> | null;
 };
 
 export type CuratedItemDataFragment = {
@@ -2244,6 +2324,15 @@ export type CreateCollectionStoryMutation = {
     publisher?: string | null;
     fromPartner: boolean;
     sortOrder?: number | null;
+    image?: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+    } | null;
     authors: Array<{
       __typename?: 'CollectionStoryAuthor';
       name: string;
@@ -2345,6 +2434,15 @@ export type DeleteCollectionStoryMutation = {
     publisher?: string | null;
     fromPartner: boolean;
     sortOrder?: number | null;
+    image?: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+    } | null;
     authors: Array<{
       __typename?: 'CollectionStoryAuthor';
       name: string;
@@ -2851,6 +2949,15 @@ export type UpdateCollectionStoryMutation = {
     publisher?: string | null;
     fromPartner: boolean;
     sortOrder?: number | null;
+    image?: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+    } | null;
     authors: Array<{
       __typename?: 'CollectionStoryAuthor';
       name: string;
@@ -2876,6 +2983,15 @@ export type UpdateCollectionStoryImageUrlMutation = {
     publisher?: string | null;
     fromPartner: boolean;
     sortOrder?: number | null;
+    image?: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+    } | null;
     authors: Array<{
       __typename?: 'CollectionStoryAuthor';
       name: string;
@@ -2901,6 +3017,15 @@ export type UpdateCollectionStorySortOrderMutation = {
     publisher?: string | null;
     fromPartner: boolean;
     sortOrder?: number | null;
+    image?: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+    } | null;
     authors: Array<{
       __typename?: 'CollectionStoryAuthor';
       name: string;
@@ -3321,6 +3446,15 @@ export type GetCollectionStoriesQuery = {
       publisher?: string | null;
       fromPartner: boolean;
       sortOrder?: number | null;
+      image?: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+      } | null;
       authors: Array<{
         __typename?: 'CollectionStoryAuthor';
         name: string;
@@ -3821,12 +3955,25 @@ export const CollectionPartnerAssociationDataFragmentDoc = gql`
   }
   ${CollectionPartnerDataFragmentDoc}
 `;
+export const ImageDataFragmentDoc = gql`
+  fragment ImageData on Image {
+    caption
+    credit
+    height
+    targetUrl
+    url
+    width
+  }
+`;
 export const CollectionStoryDataFragmentDoc = gql`
   fragment CollectionStoryData on CollectionStory {
     externalId
     url
     title
     excerpt
+    image {
+      ...ImageData
+    }
     imageUrl
     authors {
       name
@@ -3836,6 +3983,30 @@ export const CollectionStoryDataFragmentDoc = gql`
     fromPartner
     sortOrder
   }
+  ${ImageDataFragmentDoc}
+`;
+export const CachedImageDataFragmentDoc = gql`
+  fragment CachedImageData on CachedImage {
+    height
+    id
+    url
+    width
+  }
+`;
+export const ImageDataWithCachedImagesFragmentDoc = gql`
+  fragment ImageDataWithCachedImages on Image {
+    cachedImages(imageOptions: $imageOptions) {
+      ...CachedImageData
+    }
+    caption
+    credit
+    height
+    imageId
+    targetUrl
+    url
+    width
+  }
+  ${CachedImageDataFragmentDoc}
 `;
 export const CuratedItemDataWithHistoryFragmentDoc = gql`
   fragment CuratedItemDataWithHistory on ApprovedCorpusItem {
