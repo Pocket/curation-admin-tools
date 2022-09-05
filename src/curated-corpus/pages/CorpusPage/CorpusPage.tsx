@@ -9,7 +9,6 @@ import {
   CreateScheduledCorpusItemInput,
   useCreateScheduledCorpusItemMutation,
   useGetApprovedItemsLazyQuery,
-  useRejectApprovedItemMutation,
   useUpdateApprovedCorpusItemMutation,
 } from '../../../api/generatedTypes';
 import { HandleApiResponse } from '../../../_shared/components';
@@ -18,7 +17,7 @@ import {
   ApprovedItemModal,
   ApprovedItemSearchForm,
   NextPrevPagination,
-  RejectItemModal,
+  RejectCorpusItemAction,
   ScheduleItemModal,
 } from '../../components';
 import {
@@ -153,38 +152,6 @@ export const CorpusPage: React.FC = (): JSX.Element => {
     Omit<ApprovedCorpusItem, '__typename'> | undefined
   >(undefined);
 
-  // 1. Prepare the "reject curated item" mutation
-  const [rejectCuratedItem] = useRejectApprovedItemMutation();
-  // 2. Remove the curated item from the recommendation corpus and place it
-  // into the rejected item list.
-  const onRejectSave = (
-    values: FormikValues,
-    formikHelpers: FormikHelpers<any>
-  ): void => {
-    // Set out all the variables we need to pass to the mutation
-    const variables = {
-      data: {
-        externalId: currentItem?.externalId,
-        reason: values.reason,
-      },
-    };
-
-    // Run the mutation
-    runMutation(
-      rejectCuratedItem,
-      { variables },
-      `Item successfully moved to the rejected corpus.`,
-      () => {
-        toggleRejectModal();
-        formikHelpers.setSubmitting(false);
-      },
-      () => {
-        formikHelpers.setSubmitting(false);
-      },
-      refetch
-    );
-  };
-
   // 1. Prepare the "schedule curated item" mutation
   const [scheduleCuratedItem] = useCreateScheduledCorpusItemMutation();
   // 2. Schedule the curated item when the user saves a scheduling request
@@ -290,11 +257,11 @@ export const CorpusPage: React.FC = (): JSX.Element => {
             onSave={onEditItemSave}
             toggleModal={toggleEditModal}
           />
-          <RejectItemModal
-            prospect={currentItem}
-            isOpen={rejectModalOpen}
-            onSave={onRejectSave}
+          <RejectCorpusItemAction
+            item={currentItem}
+            modalOpen={rejectModalOpen}
             toggleModal={toggleRejectModal}
+            refetch={refetch}
           />
         </>
       )}

@@ -7,39 +7,45 @@ import {
   searchCollectionsFieldPolicy,
 } from './field-policies';
 
-const apolloOptions = {
-  cache: new InMemoryCache({
-    typePolicies: {
-      CollectionAuthor: {
-        keyFields: ['externalId'],
-      },
-      CollectionStory: {
-        keyFields: ['externalId'],
-      },
-      Collection: {
-        keyFields: ['externalId'],
-      },
-      ApprovedCuratedCorpusItem: {
-        keyFields: ['externalId'],
-      },
-      RejectedCuratedCorpusItem: {
-        keyFields: ['externalId'],
-      },
-      ScheduledCuratedCorpusItem: {
-        keyFields: ['externalId'],
-      },
-      ScheduledCuratedCorpusItemsResult: {
-        keyFields: ['scheduledDate'],
-      },
-      Query: {
-        fields: {
-          getCollectionAuthors: getCollectionAuthorsFieldPolicy,
-          getCollectionPartners: getCollectionPartnersFieldPolicy,
-          searchCollections: searchCollectionsFieldPolicy,
-        },
+/**
+ * Custom type policies for Apollo Cache. Now in their own
+ * variable to feed them into integration tests, too.
+ */
+export const apolloCache = new InMemoryCache({
+  typePolicies: {
+    CollectionAuthor: {
+      keyFields: ['externalId'],
+    },
+    CollectionStory: {
+      keyFields: ['externalId'],
+    },
+    Collection: {
+      keyFields: ['externalId'],
+    },
+    ApprovedCorpusItem: {
+      keyFields: ['externalId'],
+    },
+    RejectedCorpusItem: {
+      keyFields: ['externalId'],
+    },
+    ScheduledCorpusItem: {
+      keyFields: ['externalId'],
+    },
+    ScheduledCorpusItemsResult: {
+      keyFields: ['scheduledDate'],
+    },
+    Query: {
+      fields: {
+        getCollectionAuthors: getCollectionAuthorsFieldPolicy,
+        getCollectionPartners: getCollectionPartnersFieldPolicy,
+        searchCollections: searchCollectionsFieldPolicy,
       },
     },
-  }),
+  },
+});
+
+const apolloOptions = {
+  cache: apolloCache,
   name: config.apolloClientName,
   version: config.version,
 };
