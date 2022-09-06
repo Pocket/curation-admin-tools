@@ -495,9 +495,9 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     runMutation(
       scheduleCuratedItem,
       { variables },
-      `Item scheduled successfully for ${values.scheduledDate.toLocaleString(
-        DateTime.DATE_FULL
-      )}`,
+      `Item scheduled successfully for ${values.scheduledDate
+        .setLocale('en')
+        .toLocaleString(DateTime.DATE_FULL)}`,
       () => {
         // Hide the loading indicator
         formikHelpers.setSubmitting(false);

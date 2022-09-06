@@ -8,6 +8,7 @@ import {
   ApprovedItemCurationHistory,
   ApprovedItemInfo,
   RejectCorpusItemAction,
+  ScheduleCorpusItemAction,
 } from '../../components';
 import { useToggle } from '../../../_shared/hooks';
 
@@ -32,6 +33,11 @@ export const CorpusItemPage: React.FC = (): JSX.Element => {
    * Keep track of whether the "Reject this item" modal is open or not.
    */
   const [rejectModalOpen, toggleRejectModal] = useToggle(false);
+
+  /**
+   * Keep track of whether the "Schedule this item" modal is open or not.
+   */
+  const [scheduleModalOpen, toggleScheduleModal] = useToggle(false);
 
   return (
     <>
@@ -74,12 +80,7 @@ export const CorpusItemPage: React.FC = (): JSX.Element => {
                   color="primary"
                   variant="text"
                 >
-                  <Button
-                    color="primary"
-                    onClick={() => {
-                      alert('Ability to schedule is coming soon!');
-                    }}
-                  >
+                  <Button color="primary" onClick={toggleScheduleModal}>
                     Schedule
                   </Button>
                   <Button color="secondary" onClick={toggleRejectModal}>
@@ -105,6 +106,12 @@ export const CorpusItemPage: React.FC = (): JSX.Element => {
             item={data.approvedCorpusItemByExternalId!}
             modalOpen={rejectModalOpen}
             toggleModal={toggleRejectModal}
+            refetch={refetch}
+          />
+          <ScheduleCorpusItemAction
+            item={data.approvedCorpusItemByExternalId!}
+            modalOpen={scheduleModalOpen}
+            toggleModal={toggleScheduleModal}
             refetch={refetch}
           />
         </>

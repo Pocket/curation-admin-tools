@@ -6,8 +6,6 @@ import {
   ApprovedCorpusItem,
   ApprovedCorpusItemEdge,
   ApprovedCorpusItemFilter,
-  CreateScheduledCorpusItemInput,
-  useCreateScheduledCorpusItemMutation,
   useGetApprovedItemsLazyQuery,
   useUpdateApprovedCorpusItemMutation,
 } from '../../../api/generatedTypes';
@@ -18,14 +16,9 @@ import {
   ApprovedItemSearchForm,
   NextPrevPagination,
   RejectCorpusItemAction,
-  ScheduleItemModal,
+  ScheduleCorpusItemAction,
 } from '../../components';
-import {
-  useNotifications,
-  useRunMutation,
-  useToggle,
-} from '../../../_shared/hooks';
-import { DateTime } from 'luxon';
+import { useRunMutation, useToggle } from '../../../_shared/hooks';
 import { transformAuthors } from '../../../_shared/utils/transformAuthors';
 
 export const CorpusPage: React.FC = (): JSX.Element => {
@@ -40,9 +33,6 @@ export const CorpusPage: React.FC = (): JSX.Element => {
   // Get a helper function that will execute each mutation, show standard notifications
   // and execute any additional actions in a callback
   const { runMutation } = useRunMutation();
-
-  // set up the hook for toast notification
-  const { showNotification } = useNotifications();
 
   // Save the filters in a state variable to be able to use them when paginating
   // through results.
@@ -152,44 +142,6 @@ export const CorpusPage: React.FC = (): JSX.Element => {
     Omit<ApprovedCorpusItem, '__typename'> | undefined
   >(undefined);
 
-  // 1. Prepare the "schedule curated item" mutation
-  const [scheduleCuratedItem] = useCreateScheduledCorpusItemMutation();
-  // 2. Schedule the curated item when the user saves a scheduling request
-  const onScheduleSave = (
-    values: FormikValues,
-    formikHelpers: FormikHelpers<any>
-  ): void => {
-    // DE items migrated from the old system don't have a topic. This check forces to add a topic before scheduling
-    // Although for this case, if an item is in the corpus already, we shouldn't run into this since you need to add a Topic before you can save it to the corpus
-    if (!currentItem?.topic) {
-      showNotification('Cannot schedule item without topic', 'error');
-      return;
-    }
-
-    // Set out all the variables we need to pass to the mutation
-    const variables: CreateScheduledCorpusItemInput = {
-      approvedItemExternalId: currentItem?.externalId!,
-      scheduledSurfaceGuid: values.scheduledSurfaceGuid,
-      scheduledDate: values.scheduledDate.toISODate(),
-    };
-
-    // Run the mutation
-    runMutation(
-      scheduleCuratedItem,
-      { variables },
-      `Item scheduled successfully for ${values.scheduledDate.toLocaleString(
-        DateTime.DATE_FULL
-      )}`,
-      () => {
-        toggleScheduleModal();
-        formikHelpers.setSubmitting(false);
-      },
-      () => {
-        formikHelpers.setSubmitting(false);
-      }
-    );
-  };
-
   // Mutation for updating an approved item
   const [updateApprovedItem] = useUpdateApprovedCorpusItemMutation();
 
@@ -243,11 +195,11 @@ export const CorpusPage: React.FC = (): JSX.Element => {
 
       {currentItem && (
         <>
-          <ScheduleItemModal
-            approvedItem={currentItem}
-            isOpen={scheduleModalOpen}
-            onSave={onScheduleSave}
+          <ScheduleCorpusItemAction
+            item={currentItem}
+            modalOpen={scheduleModalOpen}
             toggleModal={toggleScheduleModal}
+            refetch={refetch}
           />
           <ApprovedItemModal
             approvedItem={currentItem}

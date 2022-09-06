@@ -20,6 +20,7 @@ export { RejectItemModal } from './RejectItemModal/RejectItemModal';
 export { RejectItemForm } from './RejectItemForm/RejectItemForm';
 export { RemoveItemFromScheduledSurfaceForm } from './RemoveItemFromScheduledSurfaceForm/RemoveItemFromScheduledSurfaceForm';
 export { RemoveItemFromScheduledSurfaceModal } from './RemoveItemFromScheduledSurfaceModal/RemoveItemFromScheduledSurfaceModal';
+export { ScheduleCorpusItemAction } from './actions/ScheduleCorpusItemAction/ScheduleCorpusItemAction';
 export { ScheduledItemCardWrapper } from './ScheduledItemCardWrapper/ScheduledItemCardWrapper';
 export { ScheduleItemFormConnector } from './ScheduleItemFormConnector/ScheduleItemFormConnector';
 export { ScheduleItemForm } from './ScheduleItemForm/ScheduleItemForm';
