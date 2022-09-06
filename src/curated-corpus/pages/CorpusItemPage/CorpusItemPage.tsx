@@ -7,7 +7,9 @@ import { Alert } from '@material-ui/lab';
 import {
   ApprovedItemCurationHistory,
   ApprovedItemInfo,
+  RejectCorpusItemAction,
 } from '../../components';
+import { useToggle } from '../../../_shared/hooks';
 
 /**
  * This page displays all the details and schedule history of a single corpus item.
@@ -19,11 +21,17 @@ export const CorpusItemPage: React.FC = (): JSX.Element => {
   const params = useParams<{ id: string }>();
 
   // Query the API for data
-  const { loading, error, data } = useApprovedCorpusItemByExternalIdQuery({
-    variables: {
-      externalId: params.id,
-    },
-  });
+  const { loading, error, data, refetch } =
+    useApprovedCorpusItemByExternalIdQuery({
+      variables: {
+        externalId: params.id,
+      },
+    });
+
+  /**
+   * Keep track of whether the "Reject this item" modal is open or not.
+   */
+  const [rejectModalOpen, toggleRejectModal] = useToggle(false);
 
   return (
     <>
@@ -36,63 +44,70 @@ export const CorpusItemPage: React.FC = (): JSX.Element => {
             <Alert severity="info" variant="filled">
               A corpus item with ID of &quot;{params.id}&quot; could not be
               found.
+              <br />
+              <br />
+              Note that you will also see this message if you have just moved
+              this corpus item to the Rejected corpus.
             </Alert>
           </Box>
         </>
       )}
       {data && data.approvedCorpusItemByExternalId !== null && (
-        <Grid container spacing={6}>
-          <Grid item xs={12} sm={8}>
-            <h1>
-              {data.approvedCorpusItemByExternalId?.title}
-              <Typography variant="subtitle2" component="div">
-                Corpus Item
-              </Typography>
-            </h1>
+        <>
+          <Grid container spacing={6}>
+            <Grid item xs={12} sm={8}>
+              <h1>
+                {data.approvedCorpusItemByExternalId?.title}
+                <Typography variant="subtitle2" component="div">
+                  Corpus Item
+                </Typography>
+              </h1>
 
-            <ApprovedItemInfo item={data.approvedCorpusItemByExternalId!} />
-          </Grid>
+              <ApprovedItemInfo item={data.approvedCorpusItemByExternalId!} />
+            </Grid>
 
-          <Grid item xs={12} sm={4}>
-            <h2>Actions</h2>
-            <Box alignSelf="center" marginBottom={3}>
-              <ButtonGroup
-                orientation="horizontal"
-                color="primary"
-                variant="text"
-              >
-                <Button
+            <Grid item xs={12} sm={4}>
+              <h2>Actions</h2>
+              <Box alignSelf="center" marginBottom={3}>
+                <ButtonGroup
+                  orientation="horizontal"
                   color="primary"
-                  onClick={() => {
-                    alert('Ability to schedule is coming soon!');
-                  }}
+                  variant="text"
                 >
-                  Schedule
-                </Button>
-                <Button
-                  color="secondary"
-                  onClick={() => {
-                    alert('Ability to reject is coming soon!');
-                  }}
-                >
-                  Reject
-                </Button>
-                <Button
-                  color="primary"
-                  onClick={() => {
-                    alert('Ability to edit is coming soon!');
-                  }}
-                >
-                  Edit
-                </Button>
-              </ButtonGroup>
-            </Box>
+                  <Button
+                    color="primary"
+                    onClick={() => {
+                      alert('Ability to schedule is coming soon!');
+                    }}
+                  >
+                    Schedule
+                  </Button>
+                  <Button color="secondary" onClick={toggleRejectModal}>
+                    Reject
+                  </Button>
+                  <Button
+                    color="primary"
+                    onClick={() => {
+                      alert('Ability to edit is coming soon!');
+                    }}
+                  >
+                    Edit
+                  </Button>
+                </ButtonGroup>
+              </Box>
 
-            <ApprovedItemCurationHistory
-              item={data.approvedCorpusItemByExternalId!}
-            />
+              <ApprovedItemCurationHistory
+                item={data.approvedCorpusItemByExternalId!}
+              />
+            </Grid>
           </Grid>
-        </Grid>
+          <RejectCorpusItemAction
+            item={data.approvedCorpusItemByExternalId!}
+            modalOpen={rejectModalOpen}
+            toggleModal={toggleRejectModal}
+            refetch={refetch}
+          />
+        </>
       )}
     </>
   );
