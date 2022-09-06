@@ -87,7 +87,11 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     });
 
   // Get the list of Scheduled Surfaces the currently logged-in user has access to.
-  const { data: scheduledSurfaceData } = useGetScheduledSurfacesForUserQuery({
+  const {
+    data: scheduledSurfaceData,
+    loading: scheduledSurfaceLoading,
+    error: scheduledSurfaceError,
+  } = useGetScheduledSurfacesForUserQuery({
     onCompleted: (data) => {
       const options = data.getScheduledSurfacesForUser.map(
         (scheduledSurface) => {
@@ -613,6 +617,12 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         <Grid item xs={12} sm={8}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
+              {!scheduledSurfaceData && (
+                <HandleApiResponse
+                  loading={scheduledSurfaceLoading}
+                  error={scheduledSurfaceError}
+                />
+              )}
               {scheduledSurfaceOptions.length > 0 && (
                 <>
                   I am prospecting for
