@@ -38,9 +38,8 @@ interface ScheduleCorpusItemActionProps {
 }
 
 /**
- * This component encapsulates the logic needed to reject a corpus item -
- * send through a mutation to the Curated Corpus API to move the corpus item
- * from the approved to the rejected pile.
+ * This component encapsulates the logic needed to schedule a corpus item
+ * onto a surface.
  *
  * @param props
  * @constructor
