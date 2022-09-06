@@ -8,7 +8,7 @@ import {
   ApprovedItemCurationHistory,
   ApprovedItemInfo,
   RejectCorpusItemAction,
-  ScheduleCorpusItemAction,
+  ScheduleCorpusItemAction
 } from '../../components';
 import { useToggle } from '../../../_shared/hooks';
 
