@@ -466,6 +466,9 @@ export const CollectionPage = (): JSX.Element => {
       externalId: '',
       name: '',
       url: '',
+      image: {
+        url: '',
+      },
       imageUrl: '',
       blurb: '',
     },

@@ -306,6 +306,7 @@ export type CollectionPartner = {
   __typename?: 'CollectionPartner';
   blurb: Scalars['Markdown'];
   externalId: Scalars['String'];
+  image: Image;
   imageUrl: Scalars['Url'];
   name: Scalars['String'];
   url: Scalars['Url'];
@@ -324,6 +325,7 @@ export type CollectionPartnerAssociation = {
   __typename?: 'CollectionPartnerAssociation';
   blurb?: Maybe<Scalars['Markdown']>;
   externalId: Scalars['String'];
+  image?: Maybe<Image>;
   imageUrl?: Maybe<Scalars['Url']>;
   name?: Maybe<Scalars['String']>;
   partner: CollectionPartner;
@@ -345,6 +347,8 @@ export type CollectionPartnership = {
   __typename?: 'CollectionPartnership';
   blurb: Scalars['Markdown'];
   externalId: Scalars['String'];
+  image: Image;
+  /** @deprecated use the image object instead */
   imageUrl: Scalars['Url'];
   name: Scalars['String'];
   type: CollectionPartnershipType;
@@ -1833,6 +1837,15 @@ export type CollectionDataFragment = {
     url: any;
     imageUrl: any;
     blurb: any;
+    image: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+    };
   } | null;
 };
 
@@ -1844,6 +1857,15 @@ export type CollectionPartnerAssociationDataFragment = {
   url?: any | null;
   imageUrl?: any | null;
   blurb?: any | null;
+  image?: {
+    __typename?: 'Image';
+    caption?: string | null;
+    credit?: string | null;
+    height?: number | null;
+    targetUrl?: string | null;
+    url: any;
+    width?: number | null;
+  } | null;
   partner: {
     __typename?: 'CollectionPartner';
     externalId: string;
@@ -1851,6 +1873,15 @@ export type CollectionPartnerAssociationDataFragment = {
     url: any;
     imageUrl: any;
     blurb: any;
+    image: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+    };
   };
 };
 
@@ -1861,6 +1892,15 @@ export type CollectionPartnerDataFragment = {
   url: any;
   imageUrl: any;
   blurb: any;
+  image: {
+    __typename?: 'Image';
+    caption?: string | null;
+    credit?: string | null;
+    height?: number | null;
+    targetUrl?: string | null;
+    url: any;
+    width?: number | null;
+  };
 };
 
 export type CollectionStoryDataFragment = {
@@ -2225,6 +2265,15 @@ export type CreateCollectionMutation = {
       url: any;
       imageUrl: any;
       blurb: any;
+      image: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+      };
     } | null;
   };
 };
@@ -2266,6 +2315,15 @@ export type CreateCollectionPartnerMutation = {
     url: any;
     imageUrl: any;
     blurb: any;
+    image: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+    };
   };
 };
 
@@ -2289,6 +2347,15 @@ export type CreateCollectionPartnerAssociationMutation = {
     url?: any | null;
     imageUrl?: any | null;
     blurb?: any | null;
+    image?: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+    } | null;
     partner: {
       __typename?: 'CollectionPartner';
       externalId: string;
@@ -2296,6 +2363,15 @@ export type CreateCollectionPartnerAssociationMutation = {
       url: any;
       imageUrl: any;
       blurb: any;
+      image: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+      };
     };
   };
 };
@@ -2407,6 +2483,15 @@ export type DeleteCollectionPartnerAssociationMutation = {
     url?: any | null;
     imageUrl?: any | null;
     blurb?: any | null;
+    image?: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+    } | null;
     partner: {
       __typename?: 'CollectionPartner';
       externalId: string;
@@ -2414,6 +2499,15 @@ export type DeleteCollectionPartnerAssociationMutation = {
       url: any;
       imageUrl: any;
       blurb: any;
+      image: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+      };
     };
   };
 };
@@ -2730,6 +2824,15 @@ export type UpdateCollectionMutation = {
       url: any;
       imageUrl: any;
       blurb: any;
+      image: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+      };
     } | null;
   };
 };
@@ -2826,6 +2929,15 @@ export type UpdateCollectionImageUrlMutation = {
       url: any;
       imageUrl: any;
       blurb: any;
+      image: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+      };
     } | null;
   };
 };
@@ -2847,6 +2959,15 @@ export type UpdateCollectionPartnerMutation = {
     url: any;
     imageUrl: any;
     blurb: any;
+    image: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+    };
   };
 };
 
@@ -2870,6 +2991,15 @@ export type UpdateCollectionPartnerAssociationMutation = {
     url?: any | null;
     imageUrl?: any | null;
     blurb?: any | null;
+    image?: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+    } | null;
     partner: {
       __typename?: 'CollectionPartner';
       externalId: string;
@@ -2877,6 +3007,15 @@ export type UpdateCollectionPartnerAssociationMutation = {
       url: any;
       imageUrl: any;
       blurb: any;
+      image: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+      };
     };
   };
 };
@@ -2897,6 +3036,15 @@ export type UpdateCollectionPartnerAssociationImageUrlMutation = {
     url?: any | null;
     imageUrl?: any | null;
     blurb?: any | null;
+    image?: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+    } | null;
     partner: {
       __typename?: 'CollectionPartner';
       externalId: string;
@@ -2904,6 +3052,15 @@ export type UpdateCollectionPartnerAssociationImageUrlMutation = {
       url: any;
       imageUrl: any;
       blurb: any;
+      image: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+      };
     };
   };
 };
@@ -2922,6 +3079,15 @@ export type UpdateCollectionPartnerImageUrlMutation = {
     url: any;
     imageUrl: any;
     blurb: any;
+    image: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+    };
   };
 };
 
@@ -3356,6 +3522,15 @@ export type GetCollectionByExternalIdQuery = {
       url: any;
       imageUrl: any;
       blurb: any;
+      image: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+      };
     } | null;
   } | null;
 };
@@ -3373,6 +3548,15 @@ export type GetCollectionPartnerQuery = {
     url: any;
     imageUrl: any;
     blurb: any;
+    image: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+    };
   } | null;
 };
 
@@ -3390,6 +3574,15 @@ export type GetCollectionPartnerAssociationQuery = {
     url?: any | null;
     imageUrl?: any | null;
     blurb?: any | null;
+    image?: {
+      __typename?: 'Image';
+      caption?: string | null;
+      credit?: string | null;
+      height?: number | null;
+      targetUrl?: string | null;
+      url: any;
+      width?: number | null;
+    } | null;
     partner: {
       __typename?: 'CollectionPartner';
       externalId: string;
@@ -3397,6 +3590,15 @@ export type GetCollectionPartnerAssociationQuery = {
       url: any;
       imageUrl: any;
       blurb: any;
+      image: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+      };
     };
   } | null;
 };
@@ -3417,6 +3619,15 @@ export type GetCollectionPartnersQuery = {
       url: any;
       imageUrl: any;
       blurb: any;
+      image: {
+        __typename?: 'Image';
+        caption?: string | null;
+        credit?: string | null;
+        height?: number | null;
+        targetUrl?: string | null;
+        url: any;
+        width?: number | null;
+      };
     }>;
     pagination?: {
       __typename?: 'Pagination';
@@ -3519,6 +3730,15 @@ export type GetCollectionsQuery = {
         url: any;
         imageUrl: any;
         blurb: any;
+        image: {
+          __typename?: 'Image';
+          caption?: string | null;
+          credit?: string | null;
+          height?: number | null;
+          targetUrl?: string | null;
+          url: any;
+          width?: number | null;
+        };
       } | null;
     }>;
     pagination: {
@@ -3827,6 +4047,15 @@ export type GetSearchCollectionsQuery = {
         url: any;
         imageUrl: any;
         blurb: any;
+        image: {
+          __typename?: 'Image';
+          caption?: string | null;
+          credit?: string | null;
+          height?: number | null;
+          targetUrl?: string | null;
+          url: any;
+          width?: number | null;
+        };
       } | null;
     }>;
     pagination: { __typename?: 'Pagination'; totalResults: number };
@@ -3893,6 +4122,16 @@ export const CollectionAuthorDataFragmentDoc = gql`
     active
   }
 `;
+export const ImageDataFragmentDoc = gql`
+  fragment ImageData on Image {
+    caption
+    credit
+    height
+    targetUrl
+    url
+    width
+  }
+`;
 export const CollectionDataFragmentDoc = gql`
   fragment CollectionData on Collection {
     externalId
@@ -3926,20 +4165,28 @@ export const CollectionDataFragmentDoc = gql`
       type
       name
       url
+      image {
+        ...ImageData
+      }
       imageUrl
       blurb
     }
   }
   ${CollectionAuthorDataFragmentDoc}
+  ${ImageDataFragmentDoc}
 `;
 export const CollectionPartnerDataFragmentDoc = gql`
   fragment CollectionPartnerData on CollectionPartner {
     externalId
     name
     url
+    image {
+      ...ImageData
+    }
     imageUrl
     blurb
   }
+  ${ImageDataFragmentDoc}
 `;
 export const CollectionPartnerAssociationDataFragmentDoc = gql`
   fragment CollectionPartnerAssociationData on CollectionPartnerAssociation {
@@ -3947,23 +4194,17 @@ export const CollectionPartnerAssociationDataFragmentDoc = gql`
     type
     name
     url
+    image {
+      ...ImageData
+    }
     imageUrl
     blurb
     partner {
       ...CollectionPartnerData
     }
   }
+  ${ImageDataFragmentDoc}
   ${CollectionPartnerDataFragmentDoc}
-`;
-export const ImageDataFragmentDoc = gql`
-  fragment ImageData on Image {
-    caption
-    credit
-    height
-    targetUrl
-    url
-    width
-  }
 `;
 export const CollectionStoryDataFragmentDoc = gql`
   fragment CollectionStoryData on CollectionStory {

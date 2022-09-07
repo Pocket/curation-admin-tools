@@ -25,6 +25,9 @@ export const AddPartnerPage: React.FC = (): JSX.Element => {
     externalId: '',
     name: '',
     url: '',
+    image: {
+      url: '',
+    },
     imageUrl: '',
     blurb: '',
   };

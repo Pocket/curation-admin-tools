@@ -1,5 +1,6 @@
 import { gql } from '@apollo/client';
 import { CollectionAuthorData } from './CollectionAuthorData';
+import { ImageData } from './ImageData';
 
 /**
  * All the properties that are needed to display and edit collections
@@ -40,9 +41,13 @@ export const CollectionData = gql`
       type
       name
       url
+      image {
+        ...ImageData
+      }
       imageUrl
       blurb
     }
   }
   ${CollectionAuthorData}
+  ${ImageData}
 `;
