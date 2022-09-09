@@ -14,7 +14,7 @@ export const approvedCorpusItem: ApprovedCorpusItem = {
   imageUrl: 'https://placeimg.com/640/480/people?random=494',
   excerpt: 'Everything You Wanted to Know About React and Were Afraid To Ask',
   language: CorpusLanguage.De,
-  authors: [{ name: 'One Author', sortOrder: 1 }],
+  authors: [{ name: 'One Author', sortOrder: 0 }],
   publisher: 'Amazing Inventions',
   topic: Topics.HealthFitness,
   source: CorpusItemSource.Prospect,
