@@ -11,6 +11,7 @@ import {
   ScheduleCorpusItemAction,
 } from '../../components';
 import { useToggle } from '../../../_shared/hooks';
+import { EditCorpusItemAction } from '../../components/actions/EditCorpusItemAction/EditCorpusItemAction';
 
 /**
  * This page displays all the details and schedule history of a single corpus item.
@@ -38,6 +39,11 @@ export const CorpusItemPage: React.FC = (): JSX.Element => {
    * Keep track of whether the "Schedule this item" modal is open or not.
    */
   const [scheduleModalOpen, toggleScheduleModal] = useToggle(false);
+
+  /**
+   * Keep track of whether the "Edit this item" modal is open or not.
+   */
+  const [editModalOpen, toggleEditModal] = useToggle(false);
 
   return (
     <>
@@ -86,12 +92,7 @@ export const CorpusItemPage: React.FC = (): JSX.Element => {
                   <Button color="secondary" onClick={toggleRejectModal}>
                     Reject
                   </Button>
-                  <Button
-                    color="primary"
-                    onClick={() => {
-                      alert('Ability to edit is coming soon!');
-                    }}
-                  >
+                  <Button color="primary" onClick={toggleEditModal}>
                     Edit
                   </Button>
                 </ButtonGroup>
@@ -112,6 +113,12 @@ export const CorpusItemPage: React.FC = (): JSX.Element => {
             item={data.approvedCorpusItemByExternalId!}
             modalOpen={scheduleModalOpen}
             toggleModal={toggleScheduleModal}
+            refetch={refetch}
+          />
+          <EditCorpusItemAction
+            item={data.approvedCorpusItemByExternalId!}
+            modalOpen={editModalOpen}
+            toggleModal={toggleEditModal}
             refetch={refetch}
           />
         </>

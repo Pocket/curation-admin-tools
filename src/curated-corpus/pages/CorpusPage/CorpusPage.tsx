@@ -1,25 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { Grid, Typography } from '@material-ui/core';
-import { FormikHelpers, FormikValues } from 'formik';
+import { FormikValues } from 'formik';
 import { config } from '../../../config';
 import {
   ApprovedCorpusItem,
   ApprovedCorpusItemEdge,
   ApprovedCorpusItemFilter,
   useGetApprovedItemsLazyQuery,
-  useUpdateApprovedCorpusItemMutation,
 } from '../../../api/generatedTypes';
 import { HandleApiResponse } from '../../../_shared/components';
 import {
   ApprovedItemCardWrapper,
-  ApprovedItemModal,
   ApprovedItemSearchForm,
   NextPrevPagination,
   RejectCorpusItemAction,
   ScheduleCorpusItemAction,
 } from '../../components';
-import { useRunMutation, useToggle } from '../../../_shared/hooks';
-import { transformAuthors } from '../../../_shared/utils/transformAuthors';
+import { useToggle } from '../../../_shared/hooks';
+import { EditCorpusItemAction } from '../../components/actions/EditCorpusItemAction/EditCorpusItemAction';
 
 export const CorpusPage: React.FC = (): JSX.Element => {
   // Get the usual API response vars and a helper method to retrieve data
@@ -29,10 +27,6 @@ export const CorpusPage: React.FC = (): JSX.Element => {
       // We need to make sure search results are never served from the cache.
       { fetchPolicy: 'no-cache', notifyOnNetworkStatusChange: true }
     );
-
-  // Get a helper function that will execute each mutation, show standard notifications
-  // and execute any additional actions in a callback
-  const { runMutation } = useRunMutation();
 
   // Save the filters in a state variable to be able to use them when paginating
   // through results.
@@ -142,50 +136,6 @@ export const CorpusPage: React.FC = (): JSX.Element => {
     Omit<ApprovedCorpusItem, '__typename'> | undefined
   >(undefined);
 
-  // Mutation for updating an approved item
-  const [updateApprovedItem] = useUpdateApprovedCorpusItemMutation();
-
-  /**
-   * Executed on form submission
-   */
-  const onEditItemSave = (
-    values: FormikValues,
-    formikHelpers: FormikHelpers<any>
-  ): void => {
-    const variables = {
-      data: {
-        externalId: currentItem?.externalId,
-        title: values.title,
-        excerpt: values.excerpt,
-        status: values.curationStatus,
-        language: values.language,
-        authors: transformAuthors(values.authors),
-        publisher: values.publisher,
-        imageUrl: values.imageUrl,
-        topic: values.topic,
-        isTimeSensitive: values.timeSensitive,
-      },
-    };
-
-    // Executed the mutation to update the approved item
-    runMutation(
-      updateApprovedItem,
-      { variables },
-      `Curated item "${currentItem?.title.substring(
-        0,
-        40
-      )}..." successfully updated`,
-      () => {
-        toggleEditModal();
-        formikHelpers.setSubmitting(false);
-      },
-      () => {
-        formikHelpers.setSubmitting(false);
-      },
-      refetch
-    );
-  };
-
   return (
     <>
       <h1>Corpus</h1>
@@ -201,13 +151,11 @@ export const CorpusPage: React.FC = (): JSX.Element => {
             toggleModal={toggleScheduleModal}
             refetch={refetch}
           />
-          <ApprovedItemModal
-            approvedItem={currentItem}
-            heading="Edit Item"
-            showItemTitle={true}
-            isOpen={editModalOpen}
-            onSave={onEditItemSave}
+          <EditCorpusItemAction
+            item={currentItem}
+            modalOpen={editModalOpen}
             toggleModal={toggleEditModal}
+            refetch={refetch}
           />
           <RejectCorpusItemAction
             item={currentItem}
