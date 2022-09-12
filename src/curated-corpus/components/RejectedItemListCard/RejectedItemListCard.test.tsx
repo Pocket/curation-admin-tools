@@ -50,7 +50,7 @@ describe('The RejectedItemListCard component', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText(rejectedItem.language)).toBeInTheDocument();
+    expect(screen.getByText(rejectedItem.language!)).toBeInTheDocument();
   });
 
   it('should render rejected item card with rejection reason', () => {
@@ -80,7 +80,7 @@ describe('The RejectedItemListCard component', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText(rejectedItem.topic)).toBeInTheDocument();
+    expect(screen.getByText(rejectedItem.topic!)).toBeInTheDocument();
   });
 
   it('should render rejected item card with publisher', () => {
@@ -90,6 +90,25 @@ describe('The RejectedItemListCard component', () => {
       </MemoryRouter>
     );
 
-    expect(screen.getByText(rejectedItem.publisher)).toBeInTheDocument();
+    expect(screen.getByText(rejectedItem.publisher!)).toBeInTheDocument();
+  });
+
+  it('should render card with optional rejected item data missing', () => {
+    rejectedItem = {
+      ...rejectedItem,
+      title: undefined,
+      language: undefined,
+      publisher: undefined,
+      topic: undefined,
+    };
+
+    render(
+      <MemoryRouter>
+        <RejectedItemListCard item={rejectedItem} />
+      </MemoryRouter>
+    );
+
+    const placeholders = screen.getAllByText('N/A');
+    expect(placeholders).toHaveLength(4);
   });
 });

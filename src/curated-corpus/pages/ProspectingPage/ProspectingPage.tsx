@@ -88,7 +88,11 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     });
 
   // Get the list of Scheduled Surfaces the currently logged-in user has access to.
-  const { data: scheduledSurfaceData } = useGetScheduledSurfacesForUserQuery({
+  const {
+    data: scheduledSurfaceData,
+    loading: scheduledSurfaceLoading,
+    error: scheduledSurfaceError,
+  } = useGetScheduledSurfacesForUserQuery({
     onCompleted: (data) => {
       const options = data.getScheduledSurfacesForUser.map(
         (scheduledSurface) => {
@@ -495,9 +499,9 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     runMutation(
       scheduleCuratedItem,
       { variables },
-      `Item scheduled successfully for ${values.scheduledDate.toLocaleString(
-        DateTime.DATE_FULL
-      )}`,
+      `Item scheduled successfully for ${values.scheduledDate
+        .setLocale('en')
+        .toLocaleString(DateTime.DATE_FULL)}`,
       () => {
         // Hide the loading indicator
         formikHelpers.setSubmitting(false);
@@ -637,6 +641,12 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         <Grid item xs={12} sm={8}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
+              {!scheduledSurfaceData && (
+                <HandleApiResponse
+                  loading={scheduledSurfaceLoading}
+                  error={scheduledSurfaceError}
+                />
+              )}
               {scheduledSurfaceOptions.length > 0 && (
                 <>
                   I am prospecting for

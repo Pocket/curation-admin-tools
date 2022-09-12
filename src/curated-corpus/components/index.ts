@@ -12,6 +12,7 @@ export { DuplicateProspectModal } from './DuplicateProspectModal/DuplicateProspe
 export { LoadExtraButton } from './LoadExtraButton/LoadExtraButton';
 export { NextPrevPagination } from './NextPrevPagination/NextPrevPagination';
 export { ProspectListCard } from './ProspectListCard/ProspectListCard';
+export { RejectCorpusItemAction } from './actions/RejectCorpusItemAction/RejectCorpusItemAction';
 export { RejectedItemListCard } from './RejectedItemListCard/RejectedItemListCard';
 export { RejectedItemSearchForm } from './RejectedItemSearchForm/RejectedItemSearchForm';
 export { RefreshProspectsModal } from './RefreshProspectsModal/RefreshProspectsModal';
@@ -19,6 +20,7 @@ export { RejectItemModal } from './RejectItemModal/RejectItemModal';
 export { RejectItemForm } from './RejectItemForm/RejectItemForm';
 export { RemoveItemFromScheduledSurfaceForm } from './RemoveItemFromScheduledSurfaceForm/RemoveItemFromScheduledSurfaceForm';
 export { RemoveItemFromScheduledSurfaceModal } from './RemoveItemFromScheduledSurfaceModal/RemoveItemFromScheduledSurfaceModal';
+export { ScheduleCorpusItemAction } from './actions/ScheduleCorpusItemAction/ScheduleCorpusItemAction';
 export { ScheduledItemCardWrapper } from './ScheduledItemCardWrapper/ScheduledItemCardWrapper';
 export { ScheduleItemFormConnector } from './ScheduleItemFormConnector/ScheduleItemFormConnector';
 export { ScheduleItemForm } from './ScheduleItemForm/ScheduleItemForm';
