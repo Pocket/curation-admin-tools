@@ -8,6 +8,7 @@ import { HandleApiResponse } from '../../../_shared/components';
 import {
   AddProspectModal,
   ApprovedItemModal,
+  DuplicateProspectModal,
   ExistingProspectCard,
   ProspectListCard,
   RefreshProspectsModal,
@@ -86,7 +87,11 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     });
 
   // Get the list of Scheduled Surfaces the currently logged-in user has access to.
-  const { data: scheduledSurfaceData } = useGetScheduledSurfacesForUserQuery({
+  const {
+    data: scheduledSurfaceData,
+    loading: scheduledSurfaceLoading,
+    error: scheduledSurfaceError,
+  } = useGetScheduledSurfacesForUserQuery({
     onCompleted: (data) => {
       const options = data.getScheduledSurfacesForUser.map(
         (scheduledSurface) => {
@@ -196,6 +201,12 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
    * Keep track of whether the "Schedule this item" modal is open or not.
    */
   const [scheduleModalOpen, toggleScheduleModal] = useToggle(false);
+
+  /**
+   * Keep track of whether the "Duplicate item" modal is open or not.
+   */
+  const [duplicateProspectModalOpen, toggleDuplicateProspectModal] =
+    useToggle(false);
 
   // Get a helper function that will execute each mutation, show standard notifications
   // and execute any additional actions in a callback
@@ -484,9 +495,9 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     runMutation(
       scheduleCuratedItem,
       { variables },
-      `Item scheduled successfully for ${values.scheduledDate.toLocaleString(
-        DateTime.DATE_FULL
-      )}`,
+      `Item scheduled successfully for ${values.scheduledDate
+        .setLocale('en')
+        .toLocaleString(DateTime.DATE_FULL)}`,
       () => {
         // Hide the loading indicator
         formikHelpers.setSubmitting(false);
@@ -563,7 +574,6 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
           />
         </>
       )}
-
       <RefreshProspectsModal
         isOpen={refreshProspectsModalOpen}
         onConfirm={() => {
@@ -576,13 +586,12 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         isOpen={addProspectModalOpen}
         toggleModal={toggleAddProspectModal}
         toggleApprovedItemModal={toggleApprovedItemModal}
-        toggleScheduleItemModal={toggleScheduleModalAndEnableScheduledSurface}
+        toggleDuplicateProspectModal={toggleDuplicateProspectModal}
         setCurrentProspect={setCurrentProspect}
         setApprovedItem={setApprovedItem}
         setIsRecommendation={setIsRecommendation}
         setIsManualSubmission={setIsManualSubmission}
       />
-
       {approvedItem && (
         <ScheduleItemModal
           approvedItem={approvedItem}
@@ -595,11 +604,25 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         />
       )}
 
+      {approvedItem && (
+        <DuplicateProspectModal
+          approvedItem={approvedItem}
+          isOpen={duplicateProspectModalOpen}
+          toggleModal={toggleDuplicateProspectModal}
+        />
+      )}
+
       <h1>Prospecting</h1>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={8}>
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
+              {!scheduledSurfaceData && (
+                <HandleApiResponse
+                  loading={scheduledSurfaceLoading}
+                  error={scheduledSurfaceError}
+                />
+              )}
               {scheduledSurfaceOptions.length > 0 && (
                 <>
                   I am prospecting for

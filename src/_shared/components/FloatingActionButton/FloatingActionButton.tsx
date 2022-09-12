@@ -1,5 +1,5 @@
 import React from 'react';
-import { Fab, IconButton } from '@material-ui/core';
+import { Fab } from '@material-ui/core';
 import { ArrowUpward } from '@material-ui/icons';
 import { useStyles } from './FloatingActionButton.styles';
 
@@ -22,10 +22,13 @@ export const FloatingActionButton: React.FC<FloatingActionButtonProps> = (
   const classes = useStyles();
 
   return (
-    <Fab color="default" size="medium" className={classes.bottomRightFloating}>
-      <IconButton title="Scroll to top" onClick={onClick}>
-        <ArrowUpward />
-      </IconButton>
+    <Fab
+      color="default"
+      size="medium"
+      className={classes.bottomRightFloating}
+      onClick={onClick}
+    >
+      <ArrowUpward />
     </Fab>
   );
 };

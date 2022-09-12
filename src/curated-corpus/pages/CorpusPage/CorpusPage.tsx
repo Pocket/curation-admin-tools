@@ -1,33 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { Grid, Typography } from '@material-ui/core';
-import { FormikHelpers, FormikValues } from 'formik';
+import { FormikValues } from 'formik';
 import { config } from '../../../config';
 import {
   ApprovedCorpusItem,
   ApprovedCorpusItemEdge,
   ApprovedCorpusItemFilter,
-  CreateScheduledCorpusItemInput,
-  useCreateScheduledCorpusItemMutation,
   useGetApprovedItemsLazyQuery,
-  useRejectApprovedItemMutation,
-  useUpdateApprovedCorpusItemMutation,
 } from '../../../api/generatedTypes';
 import { HandleApiResponse } from '../../../_shared/components';
 import {
   ApprovedItemCardWrapper,
-  ApprovedItemModal,
   ApprovedItemSearchForm,
   NextPrevPagination,
-  RejectItemModal,
-  ScheduleItemModal,
+  RejectCorpusItemAction,
+  ScheduleCorpusItemAction,
 } from '../../components';
-import {
-  useNotifications,
-  useRunMutation,
-  useToggle,
-} from '../../../_shared/hooks';
-import { DateTime } from 'luxon';
-import { transformAuthors } from '../../../_shared/utils/transformAuthors';
+import { useToggle } from '../../../_shared/hooks';
+import { EditCorpusItemAction } from '../../components/actions/EditCorpusItemAction/EditCorpusItemAction';
 
 export const CorpusPage: React.FC = (): JSX.Element => {
   // Get the usual API response vars and a helper method to retrieve data
@@ -37,13 +27,6 @@ export const CorpusPage: React.FC = (): JSX.Element => {
       // We need to make sure search results are never served from the cache.
       { fetchPolicy: 'no-cache', notifyOnNetworkStatusChange: true }
     );
-
-  // Get a helper function that will execute each mutation, show standard notifications
-  // and execute any additional actions in a callback
-  const { runMutation } = useRunMutation();
-
-  // set up the hook for toast notification
-  const { showNotification } = useNotifications();
 
   // Save the filters in a state variable to be able to use them when paginating
   // through results.
@@ -153,120 +136,6 @@ export const CorpusPage: React.FC = (): JSX.Element => {
     Omit<ApprovedCorpusItem, '__typename'> | undefined
   >(undefined);
 
-  // 1. Prepare the "reject curated item" mutation
-  const [rejectCuratedItem] = useRejectApprovedItemMutation();
-  // 2. Remove the curated item from the recommendation corpus and place it
-  // into the rejected item list.
-  const onRejectSave = (
-    values: FormikValues,
-    formikHelpers: FormikHelpers<any>
-  ): void => {
-    // Set out all the variables we need to pass to the mutation
-    const variables = {
-      data: {
-        externalId: currentItem?.externalId,
-        reason: values.reason,
-      },
-    };
-
-    // Run the mutation
-    runMutation(
-      rejectCuratedItem,
-      { variables },
-      `Item successfully moved to the rejected corpus.`,
-      () => {
-        toggleRejectModal();
-        formikHelpers.setSubmitting(false);
-      },
-      () => {
-        formikHelpers.setSubmitting(false);
-      },
-      refetch
-    );
-  };
-
-  // 1. Prepare the "schedule curated item" mutation
-  const [scheduleCuratedItem] = useCreateScheduledCorpusItemMutation();
-  // 2. Schedule the curated item when the user saves a scheduling request
-  const onScheduleSave = (
-    values: FormikValues,
-    formikHelpers: FormikHelpers<any>
-  ): void => {
-    // DE items migrated from the old system don't have a topic. This check forces to add a topic before scheduling
-    // Although for this case, if an item is in the corpus already, we shouldn't run into this since you need to add a Topic before you can save it to the corpus
-    if (!currentItem?.topic) {
-      showNotification('Cannot schedule item without topic', 'error');
-      return;
-    }
-
-    // Set out all the variables we need to pass to the mutation
-    const variables: CreateScheduledCorpusItemInput = {
-      approvedItemExternalId: currentItem?.externalId!,
-      scheduledSurfaceGuid: values.scheduledSurfaceGuid,
-      scheduledDate: values.scheduledDate.toISODate(),
-    };
-
-    // Run the mutation
-    runMutation(
-      scheduleCuratedItem,
-      { variables },
-      `Item scheduled successfully for ${values.scheduledDate.toLocaleString(
-        DateTime.DATE_FULL
-      )}`,
-      () => {
-        toggleScheduleModal();
-        formikHelpers.setSubmitting(false);
-      },
-      () => {
-        formikHelpers.setSubmitting(false);
-      }
-    );
-  };
-
-  // Mutation for updating an approved item
-  const [updateApprovedItem] = useUpdateApprovedCorpusItemMutation();
-
-  /**
-   * Executed on form submission
-   */
-  const onEditItemSave = (
-    values: FormikValues,
-    formikHelpers: FormikHelpers<any>
-  ): void => {
-    const variables = {
-      data: {
-        externalId: currentItem?.externalId,
-        title: values.title,
-        excerpt: values.excerpt,
-        status: values.curationStatus,
-        language: values.language,
-        authors: transformAuthors(values.authors),
-        publisher: values.publisher,
-        imageUrl: values.imageUrl,
-        topic: values.topic,
-        isTimeSensitive: values.timeSensitive,
-      },
-    };
-
-    // Executed the mutation to update the approved item
-    runMutation(
-      updateApprovedItem,
-      { variables },
-      `Curated item "${currentItem?.title.substring(
-        0,
-        40
-      )}..." successfully updated`,
-      () => {
-        toggleEditModal();
-        formikHelpers.setSubmitting(false);
-      },
-      () => {
-        formikHelpers.setSubmitting(false);
-      },
-      refetch
-    );
-  };
-
   return (
     <>
       <h1>Corpus</h1>
@@ -276,25 +145,23 @@ export const CorpusPage: React.FC = (): JSX.Element => {
 
       {currentItem && (
         <>
-          <ScheduleItemModal
-            approvedItem={currentItem}
-            isOpen={scheduleModalOpen}
-            onSave={onScheduleSave}
+          <ScheduleCorpusItemAction
+            item={currentItem}
+            modalOpen={scheduleModalOpen}
             toggleModal={toggleScheduleModal}
+            refetch={refetch}
           />
-          <ApprovedItemModal
-            approvedItem={currentItem}
-            heading="Edit Item"
-            showItemTitle={true}
-            isOpen={editModalOpen}
-            onSave={onEditItemSave}
+          <EditCorpusItemAction
+            item={currentItem}
+            modalOpen={editModalOpen}
             toggleModal={toggleEditModal}
+            refetch={refetch}
           />
-          <RejectItemModal
-            prospect={currentItem}
-            isOpen={rejectModalOpen}
-            onSave={onRejectSave}
+          <RejectCorpusItemAction
+            item={currentItem}
+            modalOpen={rejectModalOpen}
             toggleModal={toggleRejectModal}
+            refetch={refetch}
           />
         </>
       )}
