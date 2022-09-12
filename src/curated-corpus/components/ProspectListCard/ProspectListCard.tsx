@@ -36,6 +36,11 @@ interface ProspectListCardProps {
   onAddToCorpus: VoidFunction;
 
   /**
+   * Function called when the dismiss (cross) button is clicked
+   */
+  onDismiss: () => void;
+
+  /**
    * Function called when "Recommend" button is clicked
    */
   onRecommend: VoidFunction;
@@ -49,7 +54,7 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
   props
 ): JSX.Element => {
   const classes = useStyles();
-  const { prospect, onAddToCorpus, onRecommend, onReject } = props;
+  const { prospect, onAddToCorpus, onDismiss, onRecommend, onReject } = props;
 
   return (
     <Card className={classes.root}>
@@ -118,8 +123,8 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
                 display: 'inline',
               }}
             >
-              <IconButton style={{ padding: '4px' }}>
-                <CloseIcon fontSize="medium" color="error" />
+              <IconButton className={classes.dismissButton} onClick={onDismiss}>
+                <CloseIcon fontSize="medium" />
               </IconButton>
             </Grid>
           </Grid>

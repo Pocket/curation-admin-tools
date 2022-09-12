@@ -77,7 +77,7 @@ export const RejectedItemListCard: React.FC<RejectedItemListCardProps> = (
           <ListItemIcon className={classes.listItemIcon}>
             <LanguageIcon />
           </ListItemIcon>
-          <ListItemText primary={item.language.toUpperCase()} />
+          <ListItemText primary={item.language?.toUpperCase()} />
         </ListItem>
       </List>
     </Card>

@@ -206,6 +206,33 @@ export enum CacheControlScope {
   Public = 'PUBLIC',
 }
 
+/** A requested image that is cached and has the requested image parameters */
+export type CachedImage = {
+  __typename?: 'CachedImage';
+  /** Height of the cached image */
+  height?: Maybe<Scalars['Int']>;
+  /** Id of the image that matches the ID from the requested options */
+  id: Scalars['ID'];
+  /** URL of the cached image */
+  url?: Maybe<Scalars['Url']>;
+  /** Width of the cached image */
+  width?: Maybe<Scalars['Int']>;
+};
+
+/** Set of parameters that will be used to change an image */
+export type CachedImageInput = {
+  /** File type of the requested image */
+  fileType?: InputMaybe<ImageFileType>;
+  /** Height of the image */
+  height?: InputMaybe<Scalars['Int']>;
+  /** Id of the image in the returned result set */
+  id: Scalars['ID'];
+  /** Quality of the image in whole percentage, 100 = full, quality 50 = half quality */
+  qualityPercentage?: InputMaybe<Scalars['Int']>;
+  /** Width of the image */
+  width?: InputMaybe<Scalars['Int']>;
+};
+
 export type Collection = {
   __typename?: 'Collection';
   IABChildCategory?: Maybe<IabCategory>;
@@ -583,26 +610,43 @@ export type IabParentCategory = {
   slug: Scalars['String'];
 };
 
-/** An image, typically a thumbnail or article view image for an {Item} */
+/** An image that is keyed on URL */
 export type Image = {
   __typename?: 'Image';
+  /** Query to get a cached and modified set of images based on the image from the original url, images will be matched by the client assigned id value */
+  cachedImages?: Maybe<Array<Maybe<CachedImage>>>;
   /** A caption or description of the image */
   caption?: Maybe<Scalars['String']>;
   /** A credit for the image, typically who the image belongs to / created by */
   credit?: Maybe<Scalars['String']>;
-  /** If known, the height of the image in px */
+  /** The determined height of the image at the url */
   height?: Maybe<Scalars['Int']>;
   /** The id for placing within an Article View. {articleView.article} will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view. */
   imageId: Scalars['Int'];
-  /** Absolute url to the image */
+  /**
+   * Absolute url to the image
+   * @deprecated use url property moving forward
+   */
   src: Scalars['String'];
   /** If the image is also a link, the destination url */
   targetUrl?: Maybe<Scalars['String']>;
-  /** Absolute url to the image */
+  /** The url of the image */
   url: Scalars['Url'];
-  /** If known, the width of the image in px */
+  /** The determined width of the image at the url */
   width?: Maybe<Scalars['Int']>;
 };
+
+/** An image that is keyed on URL */
+export type ImageCachedImagesArgs = {
+  imageOptions: Array<CachedImageInput>;
+};
+
+/** The image file type */
+export enum ImageFileType {
+  Jpeg = 'JPEG',
+  Png = 'PNG',
+  Webp = 'WEBP',
+}
 
 export enum Imageness {
   /** Contains images (v3 value is 1) */
@@ -763,7 +807,7 @@ export type Item = {
   /** If the givenUrl redirects (once or many times), this is the final url. Otherwise, same as givenUrl */
   resolvedUrl?: Maybe<Scalars['Url']>;
   /**
-   * The http resonse code of the given url
+   * The http response code of the given url
    * @deprecated Clients should not use this
    */
   responseCode?: Maybe<Scalars['Int']>;
@@ -777,6 +821,11 @@ export type Item = {
   /** The title as determined by the parser. */
   title?: Maybe<Scalars['String']>;
   /** The page's / publisher's preferred thumbnail image */
+  topImage?: Maybe<Image>;
+  /**
+   * The page's / publisher's preferred thumbnail image
+   * @deprecated use the topImage object
+   */
   topImageUrl?: Maybe<Scalars['Url']>;
   /**
    * Indicates if the parser used fallback methods
@@ -907,6 +956,14 @@ export type Mutation = {
   /** Deletes an item from a Scheduled Surface. */
   deleteScheduledCorpusItem: ScheduledCorpusItem;
   /**
+   * Marks a prospect as 'curated' in the database, preventing it from being displayed for prospecting.
+   * Returns the prospect if the operation succeeds, and null if not (almost surely due to an incorrect id).
+   *
+   * This is functionally a copy of updateProspectAsCurated for now, but will have differences in
+   * snowplow reporting down the line.
+   */
+  dismissProspect?: Maybe<Prospect>;
+  /**
    * Lets an automated process create an Approved Item and optionally schedule it to appear
    * on a Scheduled Surface.
    */
@@ -962,8 +1019,8 @@ export type Mutation = {
    */
   updateCollectionStorySortOrder: CollectionStory;
   /**
-   * marks a prospect as 'curated' in the database, preventing it from being displayed for prospecting.
-   * returns true if the operation succeeds, false if not (almost surely due to an incorrect id).
+   * Marks a prospect as 'curated' in the database, preventing it from being displayed for prospecting.
+   * Returns the prospect if the operation succeeds, and null if not (almost surely due to an incorrect id).
    */
   updateProspectAsCurated?: Maybe<Prospect>;
   /** Uploads an image to S3 for an Approved Item */
@@ -1016,6 +1073,10 @@ export type MutationDeleteCollectionStoryArgs = {
 
 export type MutationDeleteScheduledCorpusItemArgs = {
   data: DeleteScheduledCorpusItemInput;
+};
+
+export type MutationDismissProspectArgs = {
+  id: Scalars['ID'];
 };
 
 export type MutationImportApprovedCorpusItemArgs = {
@@ -1100,7 +1161,7 @@ export type NumberedListElement = ListElement & {
   content: Scalars['Markdown'];
   /** Numeric index. If a nested item, the index is zero-indexed from the first child. */
   index: Scalars['Int'];
-  /** Zero-indexed level, for handling nexted lists. */
+  /** Zero-indexed level, for handling nested lists. */
   level: Scalars['Int'];
 };
 
@@ -1367,20 +1428,20 @@ export type RejectedCorpusItem = {
   /** An alternative primary key in UUID format that is generated on creation. */
   externalId: Scalars['ID'];
   /** What language this story is in. This is a two-letter code, for example, 'EN' for English. */
-  language: CorpusLanguage;
+  language?: Maybe<CorpusLanguage>;
   /** The GUID of the corresponding Prospect ID. Will be empty if the item was manually added. */
   prospectId?: Maybe<Scalars['ID']>;
   /** The name of the online publication that published this story. */
-  publisher: Scalars['String'];
+  publisher?: Maybe<Scalars['String']>;
   /** Reason why it was rejected. Can be multiple reasons. Will likely be stored either as comma-separated values or JSON. */
   reason: Scalars['String'];
   /** The title of the story. */
-  title: Scalars['String'];
+  title?: Maybe<Scalars['String']>;
   /**
    * A topic this story best fits in.
    * Temporarily a string value that will be provided by Prospect API, possibly an enum in the future.
    */
-  topic: Scalars['String'];
+  topic?: Maybe<Scalars['String']>;
   /** The URL of the story. */
   url: Scalars['Url'];
 };
@@ -1679,7 +1740,7 @@ export type UrlMetadata = {
   url: Scalars['String'];
 };
 
-/** A Video, typically within an Article View of an {Item} or if the Item is a video itself." */
+/** A Video, typically within an Article View of an {Item} or if the Item is a video itself. */
 export type Video = {
   __typename?: 'Video';
   /** If known, the height of the video in px */
@@ -1953,10 +2014,10 @@ export type ProspectDataFragment = {
     externalId: string;
     prospectId?: string | null;
     url: any;
-    title: string;
-    topic: string;
-    language: CorpusLanguage;
-    publisher: string;
+    title?: string | null;
+    topic?: string | null;
+    language?: CorpusLanguage | null;
+    publisher?: string | null;
     reason: string;
     createdBy: string;
     createdAt: number;
@@ -1968,10 +2029,10 @@ export type RejectedItemDataFragment = {
   externalId: string;
   prospectId?: string | null;
   url: any;
-  title: string;
-  topic: string;
-  language: CorpusLanguage;
-  publisher: string;
+  title?: string | null;
+  topic?: string | null;
+  language?: CorpusLanguage | null;
+  publisher?: string | null;
   reason: string;
   createdBy: string;
   createdAt: number;
@@ -2458,10 +2519,10 @@ export type RejectProspectMutation = {
     externalId: string;
     prospectId?: string | null;
     url: any;
-    title: string;
-    topic: string;
-    language: CorpusLanguage;
-    publisher: string;
+    title?: string | null;
+    topic?: string | null;
+    language?: CorpusLanguage | null;
+    publisher?: string | null;
     reason: string;
     createdBy: string;
     createdAt: number;
@@ -2900,6 +2961,81 @@ export type UpdateCollectionStorySortOrderMutation = {
   };
 };
 
+export type DismissProspectMutationVariables = Exact<{
+  id: Scalars['ID'];
+  historyFilter?: InputMaybe<ApprovedCorpusItemScheduledSurfaceHistoryFilters>;
+}>;
+
+export type DismissProspectMutation = {
+  __typename?: 'Mutation';
+  dismissProspect?: {
+    __typename?: 'Prospect';
+    id: string;
+    prospectId: string;
+    scheduledSurfaceGuid: string;
+    topic?: string | null;
+    prospectType: string;
+    url: string;
+    createdAt?: number | null;
+    imageUrl?: string | null;
+    authors?: string | null;
+    publisher?: string | null;
+    domain?: string | null;
+    title?: string | null;
+    excerpt?: string | null;
+    language?: CorpusLanguage | null;
+    saveCount?: number | null;
+    isSyndicated?: boolean | null;
+    isCollection?: boolean | null;
+    approvedCorpusItem?: {
+      __typename?: 'ApprovedCorpusItem';
+      externalId: string;
+      prospectId?: string | null;
+      title: string;
+      language: CorpusLanguage;
+      publisher: string;
+      url: any;
+      imageUrl: any;
+      excerpt: string;
+      status: CuratedStatus;
+      source: CorpusItemSource;
+      topic: string;
+      isCollection: boolean;
+      isTimeSensitive: boolean;
+      isSyndicated: boolean;
+      createdBy: string;
+      createdAt: number;
+      updatedBy?: string | null;
+      updatedAt: number;
+      authors: Array<{
+        __typename?: 'CorpusItemAuthor';
+        name: string;
+        sortOrder: number;
+      }>;
+      scheduledSurfaceHistory: Array<{
+        __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
+        externalId: string;
+        createdBy: string;
+        scheduledDate: any;
+        scheduledSurfaceGuid: string;
+      }>;
+    } | null;
+    rejectedCorpusItem?: {
+      __typename?: 'RejectedCorpusItem';
+      externalId: string;
+      prospectId?: string | null;
+      url: any;
+      title?: string | null;
+      topic?: string | null;
+      language?: CorpusLanguage | null;
+      publisher?: string | null;
+      reason: string;
+      createdBy: string;
+      createdAt: number;
+    } | null;
+  } | null;
+};
+
 export type UpdateProspectAsCuratedMutationVariables = Exact<{
   id: Scalars['ID'];
   historyFilter?: InputMaybe<ApprovedCorpusItemScheduledSurfaceHistoryFilters>;
@@ -2964,10 +3100,10 @@ export type UpdateProspectAsCuratedMutation = {
       externalId: string;
       prospectId?: string | null;
       url: any;
-      title: string;
-      topic: string;
-      language: CorpusLanguage;
-      publisher: string;
+      title?: string | null;
+      topic?: string | null;
+      language?: CorpusLanguage | null;
+      publisher?: string | null;
       reason: string;
       createdBy: string;
       createdAt: number;
@@ -3492,10 +3628,10 @@ export type GetProspectsQuery = {
       externalId: string;
       prospectId?: string | null;
       url: any;
-      title: string;
-      topic: string;
-      language: CorpusLanguage;
-      publisher: string;
+      title?: string | null;
+      topic?: string | null;
+      language?: CorpusLanguage | null;
+      publisher?: string | null;
       reason: string;
       createdBy: string;
       createdAt: number;
@@ -3528,10 +3664,10 @@ export type GetRejectedItemsQuery = {
         externalId: string;
         prospectId?: string | null;
         url: any;
-        title: string;
-        topic: string;
-        language: CorpusLanguage;
-        publisher: string;
+        title?: string | null;
+        topic?: string | null;
+        language?: CorpusLanguage | null;
+        publisher?: string | null;
         reason: string;
         createdBy: string;
         createdAt: number;
@@ -5634,6 +5770,61 @@ export type UpdateCollectionStorySortOrderMutationOptions =
     UpdateCollectionStorySortOrderMutation,
     UpdateCollectionStorySortOrderMutationVariables
   >;
+export const DismissProspectDocument = gql`
+  mutation dismissProspect(
+    $id: ID!
+    $historyFilter: ApprovedCorpusItemScheduledSurfaceHistoryFilters
+  ) {
+    dismissProspect(id: $id) {
+      ...ProspectData
+    }
+  }
+  ${ProspectDataFragmentDoc}
+`;
+export type DismissProspectMutationFn = Apollo.MutationFunction<
+  DismissProspectMutation,
+  DismissProspectMutationVariables
+>;
+
+/**
+ * __useDismissProspectMutation__
+ *
+ * To run a mutation, you first call `useDismissProspectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDismissProspectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [dismissProspectMutation, { data, loading, error }] = useDismissProspectMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      historyFilter: // value for 'historyFilter'
+ *   },
+ * });
+ */
+export function useDismissProspectMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DismissProspectMutation,
+    DismissProspectMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    DismissProspectMutation,
+    DismissProspectMutationVariables
+  >(DismissProspectDocument, options);
+}
+export type DismissProspectMutationHookResult = ReturnType<
+  typeof useDismissProspectMutation
+>;
+export type DismissProspectMutationResult =
+  Apollo.MutationResult<DismissProspectMutation>;
+export type DismissProspectMutationOptions = Apollo.BaseMutationOptions<
+  DismissProspectMutation,
+  DismissProspectMutationVariables
+>;
 export const UpdateProspectAsCuratedDocument = gql`
   mutation updateProspectAsCurated(
     $id: ID!

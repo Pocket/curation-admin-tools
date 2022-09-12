@@ -29,6 +29,7 @@ import {
   useGetScheduledSurfacesForUserQuery,
   useRejectProspectMutation,
   useUpdateProspectAsCuratedMutation,
+  useDismissProspectMutation,
   useUploadApprovedCorpusItemImageMutation,
 } from '../../../api/generatedTypes';
 import {
@@ -320,6 +321,9 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   // Prepare the upload approved item image mutation
   const [uploadApprovedItemImage] = useUploadApprovedCorpusItemImageMutation();
 
+  // Prepare the dismiss prospect mutation
+  const [dismissProspect] = useDismissProspectMutation();
+
   // The toast notification hook
   const { showNotification } = useNotifications();
 
@@ -533,6 +537,26 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     );
   };
 
+  //TODO: add comment
+  const onDismissProspect = async (prospectId: string): Promise<void> => {
+    // call the mutation function
+    const { data, errors } = await dismissProspect({
+      variables: { id: prospectId },
+    });
+
+    // show error toast if response returns with any errors
+    if (errors?.length) {
+      const errorMessage = errors?.[0].message ?? 'Could not dismiss prospect';
+      showNotification(errorMessage, 'error');
+    }
+
+    // if request is successful, update the list of prospects currently rendered by removing the dismissed prospect
+    setProspects(
+      prospects.filter((prospect) => prospect.id !== data?.dismissProspect?.id)
+    );
+    showNotification('Prospect dismissed', 'success');
+  };
+
   // check if no prospects are returned in the api call
   const showEmptyState = prospects && !loading && prospects.length === 0;
 
@@ -713,6 +737,9 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                     setIsManualSubmission(false);
                     setIsRecommendation(false);
                     toggleApprovedItemModal();
+                  }}
+                  onDismiss={() => {
+                    onDismissProspect(prospect.id);
                   }}
                   onRecommend={() => {
                     setCurrentProspect(prospect);
