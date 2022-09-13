@@ -38,7 +38,7 @@ describe('The ApprovedItemCurationHistory component', () => {
     expect(screen.getByText(/recommendation/i)).toBeInTheDocument();
     expect(screen.getByText(/acurator/i)).toBeInTheDocument();
 
-    expect(screen.getByText(/august 14, 2022/i)).toBeInTheDocument();
+    expect(screen.getByText(/august 15, 2022/i)).toBeInTheDocument();
   });
 
   it('displays scheduling history', () => {
