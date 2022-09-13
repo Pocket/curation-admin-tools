@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { ProspectData } from '../fragments/prospect';
+import { ProspectDataWithCorpusItems } from '../fragments/prospectWithCorpusItems';
 
 export const updateProspectAsCurated = gql`
   mutation updateProspectAsCurated(
@@ -7,8 +7,8 @@ export const updateProspectAsCurated = gql`
     $historyFilter: ApprovedCorpusItemScheduledSurfaceHistoryFilters
   ) {
     updateProspectAsCurated(id: $id) {
-      ...ProspectData
+      ...ProspectDataWithCorpusItems
     }
   }
-  ${ProspectData}
+  ${ProspectDataWithCorpusItems}
 `;

@@ -123,7 +123,11 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
                 display: 'inline',
               }}
             >
-              <IconButton className={classes.dismissButton} onClick={onDismiss}>
+              <IconButton
+                className={classes.dismissButton}
+                onClick={onDismiss}
+                data-testid="dismissButton"
+              >
                 <CloseIcon fontSize="medium" />
               </IconButton>
             </Grid>

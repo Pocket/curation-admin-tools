@@ -10,6 +10,7 @@ describe('The ProspectListCard component', () => {
   const onAddToCorpus = jest.fn();
   const onRecommend = jest.fn();
   const onReject = jest.fn();
+  const onDismiss = jest.fn();
 
   beforeEach(() => {
     prospect = {
@@ -39,6 +40,7 @@ describe('The ProspectListCard component', () => {
           onAddToCorpus={onAddToCorpus}
           onRecommend={onRecommend}
           onReject={onReject}
+          onDismiss={onDismiss}
         />
       </MemoryRouter>
     );
@@ -117,7 +119,7 @@ describe('The ProspectListCard component', () => {
     expect(screen.getByText('Syndicated')).toBeInTheDocument();
   });
 
-  it('should render curated item card with the action buttons', () => {
+  it('should render prospect card with the action buttons', () => {
     render(
       <MemoryRouter>
         <ProspectListCard
@@ -125,6 +127,7 @@ describe('The ProspectListCard component', () => {
           onAddToCorpus={onAddToCorpus}
           onRecommend={onRecommend}
           onReject={onReject}
+          onDismiss={onDismiss}
         />
       </MemoryRouter>
     );
@@ -139,9 +142,12 @@ describe('The ProspectListCard component', () => {
       name: /Add to Corpus/i,
     });
 
+    const dismissProspectButton = screen.getByTestId('dismissButton');
+
     expect(recommendButton).toBeInTheDocument();
     expect(rejectButton).toBeInTheDocument();
     expect(addToCorpusButton).toBeInTheDocument();
+    expect(dismissProspectButton).toBeInTheDocument();
   });
 
   it('should run an action on pressing the "Recommend" button', () => {
@@ -152,6 +158,7 @@ describe('The ProspectListCard component', () => {
           onAddToCorpus={onAddToCorpus}
           onRecommend={onRecommend}
           onReject={onReject}
+          onDismiss={onDismiss}
         />
       </MemoryRouter>
     );
@@ -173,6 +180,7 @@ describe('The ProspectListCard component', () => {
           onAddToCorpus={onAddToCorpus}
           onRecommend={onRecommend}
           onReject={onReject}
+          onDismiss={onDismiss}
         />
       </MemoryRouter>
     );
@@ -194,6 +202,7 @@ describe('The ProspectListCard component', () => {
           onAddToCorpus={onAddToCorpus}
           onRecommend={onRecommend}
           onReject={onReject}
+          onDismiss={onDismiss}
         />
       </MemoryRouter>
     );

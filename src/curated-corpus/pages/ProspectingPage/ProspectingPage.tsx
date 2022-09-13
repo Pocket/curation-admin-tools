@@ -541,7 +541,10 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     );
   };
 
-  //TODO: add comment
+  /**
+   * This function gets called when the dismiss button (cross) is clicked on a prospect card
+   * @param prospectId
+   */
   const onDismissProspect = async (prospectId: string): Promise<void> => {
     // call the mutation function
     const { data, errors } = await dismissProspect({

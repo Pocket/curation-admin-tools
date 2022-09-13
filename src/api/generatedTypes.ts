@@ -1,6 +1,5 @@
-import * as Apollo from '@apollo/client';
 import { gql } from '@apollo/client';
-
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -1977,6 +1976,27 @@ export type ProspectDataFragment = {
   saveCount?: number | null;
   isSyndicated?: boolean | null;
   isCollection?: boolean | null;
+};
+
+export type ProspectDataWithCorpusItemsFragment = {
+  __typename?: 'Prospect';
+  id: string;
+  prospectId: string;
+  scheduledSurfaceGuid: string;
+  topic?: string | null;
+  prospectType: string;
+  url: string;
+  createdAt?: number | null;
+  imageUrl?: string | null;
+  authors?: string | null;
+  publisher?: string | null;
+  domain?: string | null;
+  title?: string | null;
+  excerpt?: string | null;
+  language?: CorpusLanguage | null;
+  saveCount?: number | null;
+  isSyndicated?: boolean | null;
+  isCollection?: boolean | null;
   approvedCorpusItem?: {
     __typename?: 'ApprovedCorpusItem';
     externalId: string;
@@ -2454,6 +2474,34 @@ export type DeleteScheduledItemMutation = {
       }>;
     };
   };
+};
+
+export type DismissProspectMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+export type DismissProspectMutation = {
+  __typename?: 'Mutation';
+  dismissProspect?: {
+    __typename?: 'Prospect';
+    id: string;
+    prospectId: string;
+    scheduledSurfaceGuid: string;
+    topic?: string | null;
+    prospectType: string;
+    url: string;
+    createdAt?: number | null;
+    imageUrl?: string | null;
+    authors?: string | null;
+    publisher?: string | null;
+    domain?: string | null;
+    title?: string | null;
+    excerpt?: string | null;
+    language?: CorpusLanguage | null;
+    saveCount?: number | null;
+    isSyndicated?: boolean | null;
+    isCollection?: boolean | null;
+  } | null;
 };
 
 export type ImageUploadMutationVariables = Exact<{
@@ -2960,81 +3008,6 @@ export type UpdateCollectionStorySortOrderMutation = {
       sortOrder: number;
     }>;
   };
-};
-
-export type DismissProspectMutationVariables = Exact<{
-  id: Scalars['ID'];
-  historyFilter?: InputMaybe<ApprovedCorpusItemScheduledSurfaceHistoryFilters>;
-}>;
-
-export type DismissProspectMutation = {
-  __typename?: 'Mutation';
-  dismissProspect?: {
-    __typename?: 'Prospect';
-    id: string;
-    prospectId: string;
-    scheduledSurfaceGuid: string;
-    topic?: string | null;
-    prospectType: string;
-    url: string;
-    createdAt?: number | null;
-    imageUrl?: string | null;
-    authors?: string | null;
-    publisher?: string | null;
-    domain?: string | null;
-    title?: string | null;
-    excerpt?: string | null;
-    language?: CorpusLanguage | null;
-    saveCount?: number | null;
-    isSyndicated?: boolean | null;
-    isCollection?: boolean | null;
-    approvedCorpusItem?: {
-      __typename?: 'ApprovedCorpusItem';
-      externalId: string;
-      prospectId?: string | null;
-      title: string;
-      language: CorpusLanguage;
-      publisher: string;
-      url: any;
-      imageUrl: any;
-      excerpt: string;
-      status: CuratedStatus;
-      source: CorpusItemSource;
-      topic: string;
-      isCollection: boolean;
-      isTimeSensitive: boolean;
-      isSyndicated: boolean;
-      createdBy: string;
-      createdAt: number;
-      updatedBy?: string | null;
-      updatedAt: number;
-      authors: Array<{
-        __typename?: 'CorpusItemAuthor';
-        name: string;
-        sortOrder: number;
-      }>;
-      scheduledSurfaceHistory: Array<{
-        __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
-        externalId: string;
-        createdBy: string;
-        scheduledDate: any;
-        scheduledSurfaceGuid: string;
-      }>;
-    } | null;
-    rejectedCorpusItem?: {
-      __typename?: 'RejectedCorpusItem';
-      externalId: string;
-      prospectId?: string | null;
-      url: any;
-      title?: string | null;
-      topic?: string | null;
-      language?: CorpusLanguage | null;
-      publisher?: string | null;
-      reason: string;
-      createdBy: string;
-      createdAt: number;
-    } | null;
-  } | null;
 };
 
 export type UpdateProspectAsCuratedMutationVariables = Exact<{
@@ -3965,6 +3938,27 @@ export const CollectionStoryDataFragmentDoc = gql`
     sortOrder
   }
 `;
+export const ProspectDataFragmentDoc = gql`
+  fragment ProspectData on Prospect {
+    id
+    prospectId
+    scheduledSurfaceGuid
+    topic
+    prospectType
+    url
+    createdAt
+    imageUrl
+    authors
+    publisher
+    domain
+    title
+    excerpt
+    language
+    saveCount
+    isSyndicated
+    isCollection
+  }
+`;
 export const CuratedItemDataWithHistoryFragmentDoc = gql`
   fragment CuratedItemDataWithHistory on ApprovedCorpusItem {
     externalId
@@ -4011,8 +4005,8 @@ export const RejectedItemDataFragmentDoc = gql`
     createdAt
   }
 `;
-export const ProspectDataFragmentDoc = gql`
-  fragment ProspectData on Prospect {
+export const ProspectDataWithCorpusItemsFragmentDoc = gql`
+  fragment ProspectDataWithCorpusItems on Prospect {
     id
     prospectId
     scheduledSurfaceGuid
@@ -4759,6 +4753,57 @@ export type DeleteScheduledItemMutationResult =
 export type DeleteScheduledItemMutationOptions = Apollo.BaseMutationOptions<
   DeleteScheduledItemMutation,
   DeleteScheduledItemMutationVariables
+>;
+export const DismissProspectDocument = gql`
+  mutation dismissProspect($id: ID!) {
+    dismissProspect(id: $id) {
+      ...ProspectData
+    }
+  }
+  ${ProspectDataFragmentDoc}
+`;
+export type DismissProspectMutationFn = Apollo.MutationFunction<
+  DismissProspectMutation,
+  DismissProspectMutationVariables
+>;
+
+/**
+ * __useDismissProspectMutation__
+ *
+ * To run a mutation, you first call `useDismissProspectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDismissProspectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [dismissProspectMutation, { data, loading, error }] = useDismissProspectMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDismissProspectMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DismissProspectMutation,
+    DismissProspectMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    DismissProspectMutation,
+    DismissProspectMutationVariables
+  >(DismissProspectDocument, options);
+}
+export type DismissProspectMutationHookResult = ReturnType<
+  typeof useDismissProspectMutation
+>;
+export type DismissProspectMutationResult =
+  Apollo.MutationResult<DismissProspectMutation>;
+export type DismissProspectMutationOptions = Apollo.BaseMutationOptions<
+  DismissProspectMutation,
+  DismissProspectMutationVariables
 >;
 export const ImageUploadDocument = gql`
   mutation imageUpload(
@@ -5771,71 +5816,16 @@ export type UpdateCollectionStorySortOrderMutationOptions =
     UpdateCollectionStorySortOrderMutation,
     UpdateCollectionStorySortOrderMutationVariables
   >;
-export const DismissProspectDocument = gql`
-  mutation dismissProspect(
-    $id: ID!
-    $historyFilter: ApprovedCorpusItemScheduledSurfaceHistoryFilters
-  ) {
-    dismissProspect(id: $id) {
-      ...ProspectData
-    }
-  }
-  ${ProspectDataFragmentDoc}
-`;
-export type DismissProspectMutationFn = Apollo.MutationFunction<
-  DismissProspectMutation,
-  DismissProspectMutationVariables
->;
-
-/**
- * __useDismissProspectMutation__
- *
- * To run a mutation, you first call `useDismissProspectMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDismissProspectMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [dismissProspectMutation, { data, loading, error }] = useDismissProspectMutation({
- *   variables: {
- *      id: // value for 'id'
- *      historyFilter: // value for 'historyFilter'
- *   },
- * });
- */
-export function useDismissProspectMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    DismissProspectMutation,
-    DismissProspectMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    DismissProspectMutation,
-    DismissProspectMutationVariables
-  >(DismissProspectDocument, options);
-}
-export type DismissProspectMutationHookResult = ReturnType<
-  typeof useDismissProspectMutation
->;
-export type DismissProspectMutationResult =
-  Apollo.MutationResult<DismissProspectMutation>;
-export type DismissProspectMutationOptions = Apollo.BaseMutationOptions<
-  DismissProspectMutation,
-  DismissProspectMutationVariables
->;
 export const UpdateProspectAsCuratedDocument = gql`
   mutation updateProspectAsCurated(
     $id: ID!
     $historyFilter: ApprovedCorpusItemScheduledSurfaceHistoryFilters
   ) {
     updateProspectAsCurated(id: $id) {
-      ...ProspectData
+      ...ProspectDataWithCorpusItems
     }
   }
-  ${ProspectDataFragmentDoc}
+  ${ProspectDataWithCorpusItemsFragmentDoc}
 `;
 export type UpdateProspectAsCuratedMutationFn = Apollo.MutationFunction<
   UpdateProspectAsCuratedMutation,
@@ -6725,10 +6715,10 @@ export const GetProspectsDocument = gql`
         prospectType: $prospectType
       }
     ) {
-      ...ProspectData
+      ...ProspectDataWithCorpusItems
     }
   }
-  ${ProspectDataFragmentDoc}
+  ${ProspectDataWithCorpusItemsFragmentDoc}
 `;
 
 /**
