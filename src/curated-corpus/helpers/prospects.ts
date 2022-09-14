@@ -5,9 +5,11 @@ import {
 } from './definitions';
 import {
   CorpusItemSource,
+  CorpusLanguage,
   CuratedStatus,
   Prospect,
   ProspectType,
+  UrlMetadata,
 } from '../../api/generatedTypes';
 import { transformAuthors } from '../../_shared/utils/transformAuthors';
 
@@ -67,5 +69,47 @@ export const transformProspectToApprovedItem = (
     updatedAt: 0,
     scheduledSurfaceHistory:
       prospect.approvedCorpusItem?.scheduledSurfaceHistory ?? [],
+  };
+};
+
+/**
+ * Transforms the UrlMetaData object into a Prospect
+ *
+ * @param metadata
+ * @returns Prospect
+ */
+export const transformUrlMetaDataToProspect = (
+  metadata: UrlMetadata
+): Prospect => {
+  // set language to undefined if metadata.language is an empty string or undefined.
+  // if not, then map it from string to its corresponding CorpusLanguage enum value
+  const language = !metadata.language
+    ? undefined
+    : metadata.language === 'en'
+    ? CorpusLanguage.En
+    : CorpusLanguage.De;
+
+  return {
+    // manually added items don't have a prospect id!
+    id: '',
+    prospectId: '',
+    // Set whatever properties the Parser could retrieve for us
+    url: metadata.url,
+    title: metadata.title ?? '',
+    imageUrl: metadata.imageUrl ?? '',
+    authors: metadata.authors ?? '',
+    publisher: metadata.publisher ?? '',
+    language,
+    isSyndicated: metadata.isSyndicated ?? false,
+    isCollection: metadata.isCollection ?? false,
+    excerpt: metadata.excerpt ?? '',
+
+    // The curators will have to choose a topic manually
+    topic: '',
+
+    // These two properties are ok to set to empty strings
+    // as they won't be recorded anywhere on the backend.
+    prospectType: '',
+    scheduledSurfaceGuid: '',
   };
 };
