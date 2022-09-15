@@ -538,9 +538,16 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   };
 
   /**
-   * TODO
+   * Gets called after a successful/failed dismissProspect mutation call and shows success or error toast.
+   * On success, updates the state by removing the dismissed prospect.
+   * @param prospectId
+   * @param errorMessage
+   * @returns void
    */
-  const onDismissProspect = (prospectId: string, errorMessage?: string) => {
+  const onDismissProspect = (
+    prospectId: string,
+    errorMessage?: string
+  ): void => {
     if (errorMessage) {
       showNotification(errorMessage, 'error');
       return;
