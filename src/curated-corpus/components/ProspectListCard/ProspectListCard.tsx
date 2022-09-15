@@ -6,7 +6,6 @@ import {
   CardMedia,
   Chip,
   Grid,
-  IconButton,
   Link,
   List,
   ListItem,
@@ -14,7 +13,6 @@ import {
   ListItemText,
   Typography,
 } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
 import { useStyles } from './ProspectListCard.styles';
 import LanguageIcon from '@material-ui/icons/Language';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
@@ -23,6 +21,7 @@ import MyLocationIcon from '@material-ui/icons/MyLocation';
 import { Button } from '../../../_shared/components';
 import { getDisplayTopic } from '../../helpers/topics';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import { DismissProspectAction } from '../actions/DismissProspectAction/DismissProspectAction';
 
 interface ProspectListCardProps {
   /**
@@ -38,7 +37,7 @@ interface ProspectListCardProps {
   /**
    * Function called when the dismiss (cross) button is clicked
    */
-  onDismiss: () => void;
+  onDismissProspect: (prospectId: string, errorMessage?: string) => void;
 
   /**
    * Function called when "Recommend" button is clicked
@@ -54,7 +53,8 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
   props
 ): JSX.Element => {
   const classes = useStyles();
-  const { prospect, onAddToCorpus, onDismiss, onRecommend, onReject } = props;
+  const { prospect, onAddToCorpus, onDismissProspect, onRecommend, onReject } =
+    props;
 
   return (
     <Card className={classes.root}>
@@ -123,13 +123,10 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
                 display: 'inline',
               }}
             >
-              <IconButton
-                className={classes.dismissButton}
-                onClick={onDismiss}
-                data-testid="dismissButton"
-              >
-                <CloseIcon fontSize="medium" />
-              </IconButton>
+              <DismissProspectAction
+                onDismissProspect={onDismissProspect}
+                prospectId={prospect.id}
+              />
             </Grid>
           </Grid>
           <Typography

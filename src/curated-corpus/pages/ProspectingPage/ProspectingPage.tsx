@@ -29,7 +29,6 @@ import {
   useGetScheduledSurfacesForUserQuery,
   useRejectProspectMutation,
   useUpdateProspectAsCuratedMutation,
-  useDismissProspectMutation,
   useUploadApprovedCorpusItemImageMutation,
 } from '../../../api/generatedTypes';
 import {
@@ -325,9 +324,6 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   // Prepare the upload approved item image mutation
   const [uploadApprovedItemImage] = useUploadApprovedCorpusItemImageMutation();
 
-  // Prepare the dismiss prospect mutation
-  const [dismissProspect] = useDismissProspectMutation();
-
   // The toast notification hook
   const { showNotification } = useNotifications();
 
@@ -542,25 +538,16 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   };
 
   /**
-   * This function gets called when the dismiss button (cross) is clicked on a prospect card
-   * @param prospectId
+   * TODO
    */
-  const onDismissProspect = async (prospectId: string): Promise<void> => {
-    // call the mutation function
-    const { data, errors } = await dismissProspect({
-      variables: { id: prospectId },
-    });
-
-    // show error toast if response returns with any errors
-    if (errors?.length) {
-      const errorMessage = errors?.[0].message ?? 'Could not dismiss prospect';
+  const onDismissProspect = (prospectId: string, errorMessage?: string) => {
+    if (errorMessage) {
       showNotification(errorMessage, 'error');
+      return;
     }
 
     // if request is successful, update the list of prospects currently rendered by removing the dismissed prospect
-    setProspects(
-      prospects.filter((prospect) => prospect.id !== data?.dismissProspect?.id)
-    );
+    setProspects(prospects.filter((prospect) => prospect.id !== prospectId));
     showNotification('Prospect dismissed', 'success');
   };
 
@@ -751,9 +738,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                     setIsRecommendation(false);
                     toggleApprovedItemModal();
                   }}
-                  onDismiss={() => {
-                    onDismissProspect(prospect.id);
-                  }}
+                  onDismissProspect={onDismissProspect}
                   onRecommend={() => {
                     setCurrentProspect(prospect);
                     setIsManualSubmission(false);
