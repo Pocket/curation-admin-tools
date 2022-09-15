@@ -97,7 +97,7 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
           </List>
         </Grid>
         <Grid item xs={12} sm={9}>
-          <Grid container style={{ justifyContent: 'space-between' }}>
+          <Grid container>
             <Grid item xs={11}>
               <Link
                 href={prospect.url}
@@ -117,11 +117,7 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
             <Grid
               item
               xs={1}
-              style={{
-                textAlign: 'center',
-                verticalAlign: 'text-top',
-                display: 'inline',
-              }}
+              className={classes.dismissProspectButtonContainer}
             >
               <DismissProspectAction
                 onDismissProspect={onDismissProspect}

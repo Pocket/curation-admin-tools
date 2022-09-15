@@ -4,13 +4,14 @@ import { MemoryRouter } from 'react-router-dom';
 import { CorpusLanguage, Prospect, Topics } from '../../../api/generatedTypes';
 import { ProspectListCard } from './ProspectListCard';
 import userEvent from '@testing-library/user-event';
+import { MockedProvider } from '@apollo/client/testing';
 
 describe('The ProspectListCard component', () => {
   let prospect: Prospect;
   const onAddToCorpus = jest.fn();
   const onRecommend = jest.fn();
   const onReject = jest.fn();
-  const onDismiss = jest.fn();
+  const onDismissProspect = jest.fn();
 
   beforeEach(() => {
     prospect = {
@@ -32,17 +33,19 @@ describe('The ProspectListCard component', () => {
     };
   });
 
-  const renderComponent = () => {
+  const renderComponent = (mocks?: []) => {
     render(
-      <MemoryRouter>
-        <ProspectListCard
-          prospect={prospect}
-          onAddToCorpus={onAddToCorpus}
-          onRecommend={onRecommend}
-          onReject={onReject}
-          onDismiss={onDismiss}
-        />
-      </MemoryRouter>
+      <MockedProvider mocks={mocks}>
+        <MemoryRouter>
+          <ProspectListCard
+            prospect={prospect}
+            onAddToCorpus={onAddToCorpus}
+            onRecommend={onRecommend}
+            onReject={onReject}
+            onDismissProspect={onDismissProspect}
+          />
+        </MemoryRouter>
+      </MockedProvider>
     );
   };
 
@@ -120,17 +123,7 @@ describe('The ProspectListCard component', () => {
   });
 
   it('should render prospect card with the action buttons', () => {
-    render(
-      <MemoryRouter>
-        <ProspectListCard
-          prospect={prospect}
-          onAddToCorpus={onAddToCorpus}
-          onRecommend={onRecommend}
-          onReject={onReject}
-          onDismiss={onDismiss}
-        />
-      </MemoryRouter>
-    );
+    renderComponent();
 
     const recommendButton = screen.getByRole('button', {
       name: /Recommend/i,
@@ -151,17 +144,7 @@ describe('The ProspectListCard component', () => {
   });
 
   it('should run an action on pressing the "Recommend" button', () => {
-    render(
-      <MemoryRouter>
-        <ProspectListCard
-          prospect={prospect}
-          onAddToCorpus={onAddToCorpus}
-          onRecommend={onRecommend}
-          onReject={onReject}
-          onDismiss={onDismiss}
-        />
-      </MemoryRouter>
-    );
+    renderComponent();
 
     userEvent.click(
       screen.getByRole('button', {
@@ -173,17 +156,7 @@ describe('The ProspectListCard component', () => {
   });
 
   it('should run an action on pressing the "Reject" button', () => {
-    render(
-      <MemoryRouter>
-        <ProspectListCard
-          prospect={prospect}
-          onAddToCorpus={onAddToCorpus}
-          onRecommend={onRecommend}
-          onReject={onReject}
-          onDismiss={onDismiss}
-        />
-      </MemoryRouter>
-    );
+    renderComponent();
 
     userEvent.click(
       screen.getByRole('button', {
@@ -195,17 +168,7 @@ describe('The ProspectListCard component', () => {
   });
 
   it('should run an action on pressing the "Add to corpus" button', () => {
-    render(
-      <MemoryRouter>
-        <ProspectListCard
-          prospect={prospect}
-          onAddToCorpus={onAddToCorpus}
-          onRecommend={onRecommend}
-          onReject={onReject}
-          onDismiss={onDismiss}
-        />
-      </MemoryRouter>
-    );
+    renderComponent();
 
     userEvent.click(
       screen.getByRole('button', {
