@@ -13,13 +13,10 @@ import { apolloCache } from '../../../../api/client';
 import { getTestProspect } from '../../../helpers/prospects';
 
 describe('The DismissProspectAction', () => {
-  let mocks: MockedResponse[] = [];
   const prospectId = getTestProspect().id;
   const onDismissProspect = jest.fn();
 
-  it('should render the dismiss button and call the onDismissProspect function without an error message', async () => {
-    mocks = [successMock];
-
+  const renderComponent = (mocks?: MockedResponse[]) => {
     render(
       <MockedProvider mocks={mocks} cache={apolloCache}>
         <SnackbarProvider maxSnack={1}>
@@ -30,6 +27,10 @@ describe('The DismissProspectAction', () => {
         </SnackbarProvider>
       </MockedProvider>
     );
+  };
+
+  it('should render the dismiss button and call the onDismissProspect function without an error message', async () => {
+    renderComponent([successMock]);
 
     const dismissBtn = screen.getByTestId('dismissButton');
 
@@ -55,18 +56,7 @@ describe('The DismissProspectAction', () => {
    *
    */
   xit('should render the dismiss button and call the onDismissProspect function with an error message', async () => {
-    mocks = [errorMock];
-
-    render(
-      <MockedProvider mocks={mocks} cache={apolloCache}>
-        <SnackbarProvider maxSnack={1}>
-          <DismissProspectAction
-            prospectId={prospectId}
-            onDismissProspect={onDismissProspect}
-          />
-        </SnackbarProvider>
-      </MockedProvider>
-    );
+    renderComponent([errorMock]);
 
     const dismissBtn = screen.getByTestId('dismissButton');
 

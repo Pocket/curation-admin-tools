@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { CorpusLanguage, Prospect, Topics } from '../../../api/generatedTypes';
 import { ProspectListCard } from './ProspectListCard';
 import userEvent from '@testing-library/user-event';
-import { MockedProvider } from '@apollo/client/testing';
+import { MockedProvider, MockedResponse } from '@apollo/client/testing';
 
 describe('The ProspectListCard component', () => {
   let prospect: Prospect;
@@ -33,7 +33,7 @@ describe('The ProspectListCard component', () => {
     };
   });
 
-  const renderComponent = (mocks?: []) => {
+  const renderComponent = (mocks?: MockedResponse[]) => {
     render(
       <MockedProvider mocks={mocks}>
         <MemoryRouter>
