@@ -1,8 +1,11 @@
+import { DateTime } from 'luxon';
+import { ProspectType } from '../../api/generatedTypes';
 import { ScheduledSurfaces } from './definitions';
 import {
   fetchFileFromUrl,
   getCuratorNameFromLdap,
   getScheduledSurfaceName,
+  getLocalDateTimeForGuid,
 } from './helperFunctions';
 
 describe('helperFunctions ', () => {
@@ -78,6 +81,43 @@ describe('helperFunctions ', () => {
 
     it('should return the same input guid string when an incorrect guid is provided', () => {
       expect(getScheduledSurfaceName('BOGUS_GUID')).toEqual('BOGUS_GUID');
+    });
+  });
+
+  describe('getLocalDateTimeForGuid function', () => {
+    const newTabEnUsSurface = {
+      name: 'en-US',
+      guid: 'NEW_TAB_EN_US',
+      ianaTimezone: 'America/New_York',
+      prospectTypes: [ProspectType.Global],
+    };
+
+    const mockGetScheduledSurfacesForUserQueryData = {
+      getScheduledSurfacesForUser: [newTabEnUsSurface],
+    };
+
+    it('should return the correctly formatted local date time for the NEW_TAB_EN_US guid', () => {
+      const dateTimeFromFunction = getLocalDateTimeForGuid(
+        newTabEnUsSurface.guid,
+        mockGetScheduledSurfacesForUserQueryData
+      );
+
+      const localDateTime = DateTime.local().setZone(
+        newTabEnUsSurface.ianaTimezone
+      );
+
+      expect(dateTimeFromFunction).toEqual(
+        localDateTime.toFormat('DDD').concat(', ', localDateTime.toFormat('t'))
+      );
+    });
+
+    it('should return undefined for an incorrect guid', () => {
+      const dateTimeFromFunction = getLocalDateTimeForGuid(
+        'FAKE_GUID',
+        mockGetScheduledSurfacesForUserQueryData
+      );
+
+      expect(dateTimeFromFunction).toEqual(undefined);
     });
   });
 });
