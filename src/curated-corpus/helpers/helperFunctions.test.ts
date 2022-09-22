@@ -2,10 +2,12 @@ import { DateTime } from 'luxon';
 import { ProspectType } from '../../api/generatedTypes';
 import { ScheduledSurfaces } from './definitions';
 import {
+  downloadAndUploadApprovedItemImageToS3,
   fetchFileFromUrl,
   getCuratorNameFromLdap,
   getScheduledSurfaceName,
   getLocalDateTimeForGuid,
+  readImageFileFromDisk,
 } from './helperFunctions';
 
 describe('helperFunctions ', () => {
@@ -118,6 +120,104 @@ describe('helperFunctions ', () => {
       );
 
       expect(dateTimeFromFunction).toEqual(undefined);
+    });
+  });
+
+  describe('readImageFileFromDisk function', () => {
+    const mockReadAsDataUrl = jest.fn();
+
+    const testFileReader = new FileReader();
+    testFileReader.readAsDataURL = mockReadAsDataUrl;
+
+    const testFile = new File([''], 'filename', { type: 'text/html' });
+
+    it('does the test', () => {
+      readImageFileFromDisk(testFile, undefined, testFileReader);
+
+      expect(mockReadAsDataUrl).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('downloadAndUploadApprovedItemImageToS3 function', async () => {
+    const testMutationResponseData = {
+      data: { uploadApprovedCorpusItemImage: { url: 's3-test-image-url' } },
+    };
+
+    const testMutationResponseError = {
+      errors: [new Error()],
+    };
+
+    const originalFetch = global.fetch;
+    const mockBlob = new Blob(['test'], { type: 'image/png' });
+    const mockResponse = new Response();
+
+    afterEach(() => {
+      global.fetch = originalFetch;
+    });
+
+    it('should return the correct s3 url when the fetch and mutation function is called successfully', async () => {
+      global.fetch = jest.fn(() => {
+        return Promise.resolve({
+          ...mockResponse,
+          blob: () => {
+            return Promise.resolve(mockBlob);
+          },
+        });
+      });
+
+      // call our function and pass in an anonymous function that returns success mutation response
+      const result = await downloadAndUploadApprovedItemImageToS3(
+        'www.test-image-url.com',
+        () => {
+          return testMutationResponseData;
+        }
+      );
+
+      expect(result).toEqual(
+        testMutationResponseData.data.uploadApprovedCorpusItemImage.url
+      );
+    });
+
+    it('should throw an error if the image fetch from the source is not successful ', async () => {
+      global.fetch = jest.fn(() => {
+        return Promise.resolve({
+          ...mockResponse,
+          ok: false,
+        });
+      });
+
+      // the anonymous mutation function we pass in as the second argument doesn't matter since the fetch call before it should fail
+      await expect(async () => {
+        await downloadAndUploadApprovedItemImageToS3(
+          'www.test-image-url.com',
+          () => {
+            return testMutationResponseData;
+          }
+        );
+      }).rejects.toThrow(
+        'Failed to download image, please upload a new image manually'
+      );
+    });
+
+    it('should throw an error if the mutation function is unsuccessful ', async () => {
+      global.fetch = jest.fn(() => {
+        return Promise.resolve({
+          ...mockResponse,
+          blob: () => {
+            return Promise.resolve(mockBlob);
+          },
+        });
+      });
+
+      // the anonymous mutation function returns an error response
+      await expect(async () => {
+        await downloadAndUploadApprovedItemImageToS3(
+          'www.test-image-url.com',
+          () => {
+            return testMutationResponseError;
+          }
+        );
+      }).rejects.toThrow('Failed to upload image, please try again');
     });
   });
 });

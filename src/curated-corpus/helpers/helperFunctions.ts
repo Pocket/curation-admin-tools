@@ -54,9 +54,11 @@ export const downloadAndUploadApprovedItemImageToS3 = async (
  */
 export const readImageFileFromDisk = (
   file: FileWithPath,
-  onloadCallBack?: VoidFunction
+  onloadCallBack?: VoidFunction,
+  fileReader?: FileReader
 ) => {
-  const reader = new FileReader();
+  const reader: FileReader = fileReader || new FileReader();
+
   //read file as a blob
   reader.readAsDataURL(file);
 
