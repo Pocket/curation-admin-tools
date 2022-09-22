@@ -51,6 +51,7 @@ export const downloadAndUploadApprovedItemImageToS3 = async (
 /**
  * This helper function reads a file, creates an HTML image and
  * assigns the onLoadCallBack function to its onLoad property
+ * NOTE: the optional argument fileReader is only being used for testing purposes as of now
  */
 export const readImageFileFromDisk = (
   file: FileWithPath,
