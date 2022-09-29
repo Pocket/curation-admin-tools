@@ -5,6 +5,8 @@ npm run test:nowatch
 #can add integration test and other commands based on the need
 echo "running lint-check in: $(pwd)"
 npm run lint-fix
+echo "lint check successful ✅"
 cd .aws
 echo "running lint-check in: $(pwd)"
 npm run lint-fix
+echo "lint check successful ✅"
