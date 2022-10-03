@@ -85,9 +85,9 @@ describe('The ScheduleCorpusItemAction', () => {
     userEvent.click(datePicker);
 
     // Find today's date on the monthly calendar (it's actually a button)
-    const todaysDateButton = screen.getByRole('button', {
+    const todaysDateButton = screen.getAllByRole('button', {
       name: today.toFormat('d'),
-    });
+    })[0];
 
     // Choose it
     userEvent.click(todaysDateButton);
