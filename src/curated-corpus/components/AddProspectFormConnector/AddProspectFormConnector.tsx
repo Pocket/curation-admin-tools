@@ -7,7 +7,7 @@ import {
   useGetUrlMetadataLazyQuery,
 } from '../../../api/generatedTypes';
 import { AddProspectForm } from '../';
-import { transformUrlMetaDataToProspect } from '../../helpers/helperFunctions';
+import { transformUrlMetaDataToProspect } from '../../helpers/prospects';
 
 interface AddProspectFormConnectorProps {
   /**

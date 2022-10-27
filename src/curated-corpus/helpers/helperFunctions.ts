@@ -1,54 +1,7 @@
 import { DateTime } from 'luxon';
 import { FileWithPath } from 'react-dropzone';
-import {
-  CorpusLanguage,
-  GetScheduledSurfacesForUserQuery,
-  Prospect,
-  UrlMetadata,
-} from '../../api/generatedTypes';
+import { GetScheduledSurfacesForUserQuery } from '../../api/generatedTypes';
 import { ScheduledSurfaces } from './definitions';
-
-/**
- * Transforms the UrlMetaData object into a Prospect
- *
- * @param metadata
- * @returns Prospect
- */
-export const transformUrlMetaDataToProspect = (
-  metadata: UrlMetadata
-): Prospect => {
-  // set language to undefined if metadata.language is an empty string or undefined.
-  // if not, then map it from string to its corresponding CorpusLanguage enum value
-  const language = !metadata.language
-    ? undefined
-    : metadata.language === 'en'
-    ? CorpusLanguage.En
-    : CorpusLanguage.De;
-
-  return {
-    // manually added items don't have a prospect id!
-    id: '',
-    prospectId: '',
-    // Set whatever properties the Parser could retrieve for us
-    url: metadata.url,
-    title: metadata.title ?? '',
-    imageUrl: metadata.imageUrl ?? '',
-    authors: metadata.authors ?? '',
-    publisher: metadata.publisher ?? '',
-    language,
-    isSyndicated: metadata.isSyndicated ?? false,
-    isCollection: metadata.isCollection ?? false,
-    excerpt: metadata.excerpt ?? '',
-
-    // The curators will have to choose a topic manually
-    topic: '',
-
-    // These two properties are ok to set to empty strings
-    // as they won't be recorded anywhere on the backend.
-    prospectType: '',
-    scheduledSurfaceGuid: '',
-  };
-};
 
 // downloads image from source url
 export const fetchFileFromUrl = async (
@@ -98,12 +51,15 @@ export const downloadAndUploadApprovedItemImageToS3 = async (
 /**
  * This helper function reads a file, creates an HTML image and
  * assigns the onLoadCallBack function to its onLoad property
+ * NOTE: the optional argument fileReader is only being used for testing purposes as of now
  */
 export const readImageFileFromDisk = (
   file: FileWithPath,
-  onloadCallBack?: VoidFunction
+  onloadCallBack?: VoidFunction,
+  fileReader?: FileReader
 ) => {
-  const reader = new FileReader();
+  const reader: FileReader = fileReader || new FileReader();
+
   //read file as a blob
   reader.readAsDataURL(file);
 

@@ -3,6 +3,7 @@ import { expect as jestExpect } from '@jest/globals';
 import {
   getProspectFilterOptions,
   transformProspectToApprovedItem,
+  transformUrlMetaDataToProspect,
 } from './prospects';
 import {
   CorpusItemSource,
@@ -10,10 +11,11 @@ import {
   CuratedStatus,
   Prospect,
   ProspectType,
+  UrlMetadata,
 } from '../../api/generatedTypes';
 
 describe('helper functions related to prospects', () => {
-  describe('getProspectFilterOptions', () => {
+  describe('getProspectFilterOptions function', () => {
     it('returns just the "All Sources" option if no prospect types are available', () => {
       const types: ProspectType[] = [];
 
@@ -134,6 +136,66 @@ describe('helper functions related to prospects', () => {
         createdAt: 0,
         createdBy: '',
         updatedAt: 0,
+      });
+    });
+  });
+
+  describe('transformUrlMetaDataToProspect function', () => {
+    const urlMetadata: UrlMetadata = { url: 'www.test-url.com' };
+
+    it('should return the default values when metadata is lacking most of the fields', () => {
+      const prospect = transformUrlMetaDataToProspect(urlMetadata);
+
+      expect(prospect).to.deep.equal({
+        id: '',
+        prospectId: '',
+        url: urlMetadata.url,
+        title: '',
+        imageUrl: '',
+        authors: '',
+        publisher: '',
+        language: undefined,
+        isSyndicated: false,
+        isCollection: false,
+        excerpt: '',
+        topic: '',
+        prospectType: '',
+        scheduledSurfaceGuid: '',
+      });
+    });
+
+    it('should return correctly formatted prospect with values derived from the metadata', () => {
+      const metaDataWithPopulatedFields: UrlMetadata = {
+        ...urlMetadata,
+        title: 'test title',
+        imageUrl: 'www.test-image-url.com',
+        authors: 'test author A, test author B',
+        publisher: 'test publisher',
+        language: 'en',
+        isSyndicated: true,
+        isCollection: true,
+        excerpt: 'test excerpt',
+      };
+
+      const prospect = transformUrlMetaDataToProspect(
+        metaDataWithPopulatedFields
+      );
+
+      expect(prospect).to.deep.equal({
+        id: '',
+        prospectId: '',
+        url: metaDataWithPopulatedFields.url,
+        title: metaDataWithPopulatedFields.title,
+        imageUrl: metaDataWithPopulatedFields.imageUrl,
+        authors: metaDataWithPopulatedFields.authors,
+        publisher: metaDataWithPopulatedFields.publisher,
+        language: CorpusLanguage.En,
+        isSyndicated: true,
+        isCollection: true,
+        excerpt: metaDataWithPopulatedFields.excerpt,
+        topic: '',
+        prospectType: '',
+        scheduledSurfaceGuid: '',
       });
     });
   });
