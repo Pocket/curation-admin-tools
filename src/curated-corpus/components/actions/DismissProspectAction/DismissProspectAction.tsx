@@ -12,6 +12,11 @@ interface DismissProspectActionProps {
   onDismissProspect: (prospectId: string, errorMessage?: string) => void;
 }
 
+/**
+ * This component renders a cross (close) button and calls the dismissProspect mutation
+ * @param props
+ * @returns
+ */
 export const DismissProspectAction: React.FC<DismissProspectActionProps> = (
   props
 ) => {
@@ -21,6 +26,7 @@ export const DismissProspectAction: React.FC<DismissProspectActionProps> = (
   const [dismissProspect] = useDismissProspectMutation();
 
   const onClick = async () => {
+    // call the dismissProspect mutation function and only extract the errors object
     const { errors } = await dismissProspect({
       variables: { id: prospectId },
     });
@@ -31,6 +37,7 @@ export const DismissProspectAction: React.FC<DismissProspectActionProps> = (
       errorMessage = errors?.[0].message ?? 'Could not dismiss prospect';
     }
 
+    // call the function that was passed in as a prop by the parents component
     onDismissProspect(prospectId, errorMessage);
   };
 
