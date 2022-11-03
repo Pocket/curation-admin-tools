@@ -1,8 +1,9 @@
 import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { DateTime } from 'luxon';
 import { getTestApprovedItem } from '../../helpers/approvedItem';
 import { ApprovedCorpusItem, CuratedStatus } from '../../../api/generatedTypes';
 import { ApprovedItemCurationHistory } from './ApprovedItemCurationHistory';
-import { render, screen } from '@testing-library/react';
 
 describe('The ApprovedItemCurationHistory component', () => {
   const item: ApprovedCorpusItem = getTestApprovedItem({
@@ -35,10 +36,17 @@ describe('The ApprovedItemCurationHistory component', () => {
   it('displays item status and curation history', () => {
     render(<ApprovedItemCurationHistory item={item} />);
 
+    // using the same logic from the respective component instead of a hardcoded string.
+    // this prevents the test from failing due to off by one day error depending on the time and timezone it's being run in.
+    // keeps it consistent now with local dev machines timezones and CI server timezone
+    const addedToCorpusDate = DateTime.fromSeconds(item.createdAt).toFormat(
+      'MMMM dd, yyyy'
+    );
+
     expect(screen.getByText(/recommendation/i)).toBeInTheDocument();
     expect(screen.getByText(/acurator/i)).toBeInTheDocument();
 
-    expect(screen.getByText(/august 15, 2022/i)).toBeInTheDocument();
+    expect(screen.getByText(addedToCorpusDate)).toBeInTheDocument();
   });
 
   it('displays scheduling history', () => {

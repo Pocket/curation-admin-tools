@@ -11,7 +11,7 @@ describe('The AddProspectModal component', () => {
   const setIsRecommendation = jest.fn;
   const toggleApprovedItemModal = jest.fn;
   const toggleModal = jest.fn;
-  const toggleScheduleItemModal = jest.fn;
+  const toggleDuplicateProspectModal = jest.fn;
 
   it('should render the modal and the AddProspect form component', () => {
     render(
@@ -25,7 +25,7 @@ describe('The AddProspectModal component', () => {
             setIsRecommendation={setIsRecommendation}
             toggleApprovedItemModal={toggleApprovedItemModal}
             toggleModal={toggleModal}
-            toggleScheduleItemModal={toggleScheduleItemModal}
+            toggleDuplicateProspectModal={toggleDuplicateProspectModal}
           />
         </SnackbarProvider>
       </MockedProvider>
