@@ -12,7 +12,7 @@ import {
 } from '../../integration-test-mocks/getScheduledSurfacesForUser';
 import userEvent from '@testing-library/user-event';
 import { mock_ScheduledItemCountsZero } from '../../integration-test-mocks/getScheduledItemCounts';
-import { DateTime } from 'luxon';
+// import { DateTime } from 'luxon';
 
 describe('ScheduleItemFormConnector', () => {
   let mocks = [];
@@ -162,7 +162,7 @@ describe('ScheduleItemFormConnector', () => {
     // Select a scheduled surface
     userEvent.selectOptions(surfaceSelect, 'POCKET_HITS_EN_US');
 
-    const today = DateTime.local();
+    // const today = DateTime.local();
 
     const datePicker = screen.getByRole('textbox', {
       name: 'Choose a date',
@@ -172,9 +172,9 @@ describe('ScheduleItemFormConnector', () => {
     userEvent.click(datePicker);
 
     // Find today's date on the monthly calendar (it's actually a button)
-    const dates = screen.getAllByRole('button', {
-      name: today.toFormat('d'),
-    });
+    // const dates = screen.getAllByRole('button', {
+    //   name: today.toFormat('d'),
+    // });
 
     // Click on the date to fire off the query to look up "already scheduled for this day" counts.
     // It's the second "date" pretend button, as the first one is actually hidden from view.
