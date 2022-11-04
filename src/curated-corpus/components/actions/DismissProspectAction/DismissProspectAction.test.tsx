@@ -47,15 +47,14 @@ describe('The DismissProspectAction', () => {
   });
 
   /**
-   * Note: this test *should* work but doesn't. There are past and open GitHub issues
-   * about it on the Apollo Client project. Unskip this test when the promised overhaul
-   * of the Mocked Provider materialises.
-   *
-   * https://github.com/apollographql/apollo-client/issues/4283 (closed)
-   * https://github.com/apollographql/apollo-client/issues/7167 (open since 2020).
+   * Note: This test is being skipped due to error mocks not working correctly.
+   * Similar issue as one of the RejectCorpusItemAction test. Refer to the block comment there.
    *
    */
   xit('should render the dismiss button and call the onDismissProspect function with an error message', async () => {
+    //This test asserts that the onDismissProspect callback is called
+    //with the correct prospectId and errorMessage argument
+
     renderComponent([errorMock]);
 
     const dismissBtn = screen.getByTestId('dismissButton');
