@@ -1,6 +1,5 @@
-import * as Apollo from '@apollo/client';
 import { gql } from '@apollo/client';
-
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -207,6 +206,33 @@ export enum CacheControlScope {
   Public = 'PUBLIC',
 }
 
+/** A requested image that is cached and has the requested image parameters */
+export type CachedImage = {
+  __typename?: 'CachedImage';
+  /** Height of the cached image */
+  height?: Maybe<Scalars['Int']>;
+  /** Id of the image that matches the ID from the requested options */
+  id: Scalars['ID'];
+  /** URL of the cached image */
+  url?: Maybe<Scalars['Url']>;
+  /** Width of the cached image */
+  width?: Maybe<Scalars['Int']>;
+};
+
+/** Set of parameters that will be used to change an image */
+export type CachedImageInput = {
+  /** File type of the requested image */
+  fileType?: InputMaybe<ImageFileType>;
+  /** Height of the image */
+  height?: InputMaybe<Scalars['Int']>;
+  /** Id of the image in the returned result set */
+  id: Scalars['ID'];
+  /** Quality of the image in whole percentage, 100 = full, quality 50 = half quality */
+  qualityPercentage?: InputMaybe<Scalars['Int']>;
+  /** Width of the image */
+  width?: InputMaybe<Scalars['Int']>;
+};
+
 export type Collection = {
   __typename?: 'Collection';
   IABChildCategory?: Maybe<IabCategory>;
@@ -221,6 +247,7 @@ export type Collection = {
   externalId: Scalars['ID'];
   imageUrl?: Maybe<Scalars['Url']>;
   intro?: Maybe<Scalars['Markdown']>;
+  labels?: Maybe<Array<Maybe<Label>>>;
   /**
    * note that language is *not* being used as locale - only to specify the
    * language of the collection.
@@ -459,6 +486,7 @@ export type CreateCollectionInput = {
   excerpt?: InputMaybe<Scalars['Markdown']>;
   imageUrl?: InputMaybe<Scalars['Url']>;
   intro?: InputMaybe<Scalars['Markdown']>;
+  labelExternalIds?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   language: CollectionLanguage;
   slug: Scalars['String'];
   status?: InputMaybe<CollectionStatus>;
@@ -587,6 +615,8 @@ export type IabParentCategory = {
 /** An image that is keyed on URL */
 export type Image = {
   __typename?: 'Image';
+  /** Query to get a cached and modified set of images based on the image from the original url, images will be matched by the client assigned id value */
+  cachedImages?: Maybe<Array<Maybe<CachedImage>>>;
   /** A caption or description of the image */
   caption?: Maybe<Scalars['String']>;
   /** A credit for the image, typically who the image belongs to / created by */
@@ -607,6 +637,18 @@ export type Image = {
   /** The determined width of the image at the url */
   width?: Maybe<Scalars['Int']>;
 };
+
+/** An image that is keyed on URL */
+export type ImageCachedImagesArgs = {
+  imageOptions: Array<CachedImageInput>;
+};
+
+/** The image file type */
+export enum ImageFileType {
+  Jpeg = 'JPEG',
+  Png = 'PNG',
+  Webp = 'WEBP',
+}
 
 export enum Imageness {
   /** Contains images (v3 value is 1) */
@@ -767,7 +809,7 @@ export type Item = {
   /** If the givenUrl redirects (once or many times), this is the final url. Otherwise, same as givenUrl */
   resolvedUrl?: Maybe<Scalars['Url']>;
   /**
-   * The http resonse code of the given url
+   * The http response code of the given url
    * @deprecated Clients should not use this
    */
   responseCode?: Maybe<Scalars['Int']>;
@@ -796,6 +838,13 @@ export type Item = {
   videos?: Maybe<Array<Maybe<Video>>>;
   /** Number of words in the article */
   wordCount?: Maybe<Scalars['Int']>;
+};
+
+/** A label used to mark and categorize an Entity (e.g. Collection). */
+export type Label = {
+  __typename?: 'Label';
+  externalId: Scalars['ID'];
+  name: Scalars['String'];
 };
 
 export type ListElement = {
@@ -916,6 +965,14 @@ export type Mutation = {
   /** Deletes an item from a Scheduled Surface. */
   deleteScheduledCorpusItem: ScheduledCorpusItem;
   /**
+   * Marks a prospect as 'curated' in the database, preventing it from being displayed for prospecting.
+   * Returns the prospect if the operation succeeds, and null if not (almost surely due to an incorrect id).
+   *
+   * This is functionally a copy of updateProspectAsCurated for now, but will have differences in
+   * snowplow reporting down the line.
+   */
+  dismissProspect?: Maybe<Prospect>;
+  /**
    * Lets an automated process create an Approved Item and optionally schedule it to appear
    * on a Scheduled Surface.
    */
@@ -971,8 +1028,8 @@ export type Mutation = {
    */
   updateCollectionStorySortOrder: CollectionStory;
   /**
-   * marks a prospect as 'curated' in the database, preventing it from being displayed for prospecting.
-   * returns true if the operation succeeds, false if not (almost surely due to an incorrect id).
+   * Marks a prospect as 'curated' in the database, preventing it from being displayed for prospecting.
+   * Returns the prospect if the operation succeeds, and null if not (almost surely due to an incorrect id).
    */
   updateProspectAsCurated?: Maybe<Prospect>;
   /** Uploads an image to S3 for an Approved Item */
@@ -1025,6 +1082,10 @@ export type MutationDeleteCollectionStoryArgs = {
 
 export type MutationDeleteScheduledCorpusItemArgs = {
   data: DeleteScheduledCorpusItemInput;
+};
+
+export type MutationDismissProspectArgs = {
+  id: Scalars['ID'];
 };
 
 export type MutationImportApprovedCorpusItemArgs = {
@@ -1109,7 +1170,7 @@ export type NumberedListElement = ListElement & {
   content: Scalars['Markdown'];
   /** Numeric index. If a nested item, the index is zero-indexed from the first child. */
   index: Scalars['Int'];
-  /** Zero-indexed level, for handling nexted lists. */
+  /** Zero-indexed level, for handling nested lists. */
   level: Scalars['Int'];
 };
 
@@ -1269,6 +1330,8 @@ export type Query = {
   itemByItemId?: Maybe<Item>;
   /** Look up {Item} info by a url. */
   itemByUrl?: Maybe<Item>;
+  /** Retrieves all available Labels */
+  labels: Array<Label>;
   searchCollections: CollectionsResult;
 };
 
@@ -1688,7 +1751,7 @@ export type UrlMetadata = {
   url: Scalars['String'];
 };
 
-/** A Video, typically within an Article View of an {Item} or if the Item is a video itself." */
+/** A Video, typically within an Article View of an {Item} or if the Item is a video itself. */
 export type Video = {
   __typename?: 'Video';
   /** If known, the height of the video in px */
@@ -3416,6 +3479,7 @@ export type GetInitialCollectionFormDataQuery = {
       active: boolean;
     }>;
   };
+  labels: Array<{ __typename?: 'Label'; externalId: string; name: string }>;
   getCurationCategories: Array<{
     __typename?: 'CurationCategory';
     externalId: string;
@@ -6458,6 +6522,10 @@ export const GetInitialCollectionFormDataDocument = gql`
       authors {
         ...CollectionAuthorData
       }
+    }
+    labels {
+      externalId
+      name
     }
     getLanguages
     getCurationCategories {
