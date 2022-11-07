@@ -35,6 +35,10 @@ export const CollectionData = gql`
       name
       slug
     }
+    labels {
+      externalId
+      name
+    }
     partnership {
       externalId
       type

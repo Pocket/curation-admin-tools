@@ -1,5 +1,6 @@
-import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+import { gql } from '@apollo/client';
+
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -1845,6 +1846,11 @@ export type CollectionDataFragment = {
     name: string;
     slug: string;
   } | null;
+  labels?: Array<{
+    __typename?: 'Label';
+    externalId: string;
+    name: string;
+  } | null> | null;
   partnership?: {
     __typename?: 'CollectionPartnership';
     externalId: string;
@@ -2200,6 +2206,11 @@ export type CreateCollectionMutation = {
       name: string;
       slug: string;
     } | null;
+    labels?: Array<{
+      __typename?: 'Label';
+      externalId: string;
+      name: string;
+    } | null> | null;
     partnership?: {
       __typename?: 'CollectionPartnership';
       externalId: string;
@@ -2687,6 +2698,11 @@ export type UpdateCollectionMutation = {
       name: string;
       slug: string;
     } | null;
+    labels?: Array<{
+      __typename?: 'Label';
+      externalId: string;
+      name: string;
+    } | null> | null;
     partnership?: {
       __typename?: 'CollectionPartnership';
       externalId: string;
@@ -2783,6 +2799,11 @@ export type UpdateCollectionImageUrlMutation = {
       name: string;
       slug: string;
     } | null;
+    labels?: Array<{
+      __typename?: 'Label';
+      externalId: string;
+      name: string;
+    } | null> | null;
     partnership?: {
       __typename?: 'CollectionPartnership';
       externalId: string;
@@ -3286,6 +3307,11 @@ export type GetCollectionByExternalIdQuery = {
       name: string;
       slug: string;
     } | null;
+    labels?: Array<{
+      __typename?: 'Label';
+      externalId: string;
+      name: string;
+    } | null> | null;
     partnership?: {
       __typename?: 'CollectionPartnership';
       externalId: string;
@@ -3440,6 +3466,11 @@ export type GetCollectionsQuery = {
         name: string;
         slug: string;
       } | null;
+      labels?: Array<{
+        __typename?: 'Label';
+        externalId: string;
+        name: string;
+      } | null> | null;
       partnership?: {
         __typename?: 'CollectionPartnership';
         externalId: string;
@@ -3749,6 +3780,11 @@ export type GetSearchCollectionsQuery = {
         name: string;
         slug: string;
       } | null;
+      labels?: Array<{
+        __typename?: 'Label';
+        externalId: string;
+        name: string;
+      } | null> | null;
       partnership?: {
         __typename?: 'CollectionPartnership';
         externalId: string;
@@ -3850,6 +3886,10 @@ export const CollectionDataFragmentDoc = gql`
       externalId
       name
       slug
+    }
+    labels {
+      externalId
+      name
     }
     partnership {
       externalId
