@@ -247,6 +247,7 @@ export type Collection = {
   externalId: Scalars['ID'];
   imageUrl?: Maybe<Scalars['Url']>;
   intro?: Maybe<Scalars['Markdown']>;
+  labels?: Maybe<Array<Maybe<Label>>>;
   /**
    * note that language is *not* being used as locale - only to specify the
    * language of the collection.
@@ -485,6 +486,7 @@ export type CreateCollectionInput = {
   excerpt?: InputMaybe<Scalars['Markdown']>;
   imageUrl?: InputMaybe<Scalars['Url']>;
   intro?: InputMaybe<Scalars['Markdown']>;
+  labelExternalIds?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   language: CollectionLanguage;
   slug: Scalars['String'];
   status?: InputMaybe<CollectionStatus>;
@@ -836,6 +838,13 @@ export type Item = {
   videos?: Maybe<Array<Maybe<Video>>>;
   /** Number of words in the article */
   wordCount?: Maybe<Scalars['Int']>;
+};
+
+/** A label used to mark and categorize an Entity (e.g. Collection). */
+export type Label = {
+  __typename?: 'Label';
+  externalId: Scalars['ID'];
+  name: Scalars['String'];
 };
 
 export type ListElement = {
@@ -1321,6 +1330,8 @@ export type Query = {
   itemByItemId?: Maybe<Item>;
   /** Look up {Item} info by a url. */
   itemByUrl?: Maybe<Item>;
+  /** Retrieves all available Labels */
+  labels: Array<Label>;
   searchCollections: CollectionsResult;
 };
 
@@ -1834,6 +1845,11 @@ export type CollectionDataFragment = {
     name: string;
     slug: string;
   } | null;
+  labels?: Array<{
+    __typename?: 'Label';
+    externalId: string;
+    name: string;
+  } | null> | null;
   partnership?: {
     __typename?: 'CollectionPartnership';
     externalId: string;
@@ -2210,6 +2226,11 @@ export type CreateCollectionMutation = {
       name: string;
       slug: string;
     } | null;
+    labels?: Array<{
+      __typename?: 'Label';
+      externalId: string;
+      name: string;
+    } | null> | null;
     partnership?: {
       __typename?: 'CollectionPartnership';
       externalId: string;
@@ -2725,6 +2746,11 @@ export type UpdateCollectionMutation = {
       name: string;
       slug: string;
     } | null;
+    labels?: Array<{
+      __typename?: 'Label';
+      externalId: string;
+      name: string;
+    } | null> | null;
     partnership?: {
       __typename?: 'CollectionPartnership';
       externalId: string;
@@ -2821,6 +2847,11 @@ export type UpdateCollectionImageUrlMutation = {
       name: string;
       slug: string;
     } | null;
+    labels?: Array<{
+      __typename?: 'Label';
+      externalId: string;
+      name: string;
+    } | null> | null;
     partnership?: {
       __typename?: 'CollectionPartnership';
       externalId: string;
@@ -3324,6 +3355,11 @@ export type GetCollectionByExternalIdQuery = {
       name: string;
       slug: string;
     } | null;
+    labels?: Array<{
+      __typename?: 'Label';
+      externalId: string;
+      name: string;
+    } | null> | null;
     partnership?: {
       __typename?: 'CollectionPartnership';
       externalId: string;
@@ -3478,6 +3514,11 @@ export type GetCollectionsQuery = {
         name: string;
         slug: string;
       } | null;
+      labels?: Array<{
+        __typename?: 'Label';
+        externalId: string;
+        name: string;
+      } | null> | null;
       partnership?: {
         __typename?: 'CollectionPartnership';
         externalId: string;
@@ -3517,6 +3558,7 @@ export type GetInitialCollectionFormDataQuery = {
       active: boolean;
     }>;
   };
+  labels: Array<{ __typename?: 'Label'; externalId: string; name: string }>;
   getCurationCategories: Array<{
     __typename?: 'CurationCategory';
     externalId: string;
@@ -3786,6 +3828,11 @@ export type GetSearchCollectionsQuery = {
         name: string;
         slug: string;
       } | null;
+      labels?: Array<{
+        __typename?: 'Label';
+        externalId: string;
+        name: string;
+      } | null> | null;
       partnership?: {
         __typename?: 'CollectionPartnership';
         externalId: string;
@@ -3887,6 +3934,10 @@ export const CollectionDataFragmentDoc = gql`
       externalId
       name
       slug
+    }
+    labels {
+      externalId
+      name
     }
     partnership {
       externalId
@@ -6631,6 +6682,10 @@ export const GetInitialCollectionFormDataDocument = gql`
       authors {
         ...CollectionAuthorData
       }
+    }
+    labels {
+      externalId
+      name
     }
     getLanguages
     getCurationCategories {
