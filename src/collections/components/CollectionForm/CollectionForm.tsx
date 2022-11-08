@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Grid, LinearProgress } from '@material-ui/core';
+import { Box, Grid, LinearProgress, TextField } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
 import slugify from 'slugify';
 import { FormikValues, useFormik } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
@@ -22,6 +23,7 @@ import {
   CurationCategory,
   IabCategory,
   IabParentCategory,
+  Label,
 } from '../../../api/generatedTypes';
 
 interface CollectionFormProps {
@@ -44,6 +46,11 @@ interface CollectionFormProps {
    * A list of IAB categories
    */
   iabCategories: IabParentCategory[];
+
+  /**
+   * A list of available labels
+   */
+  labels: Label[];
 
   /**
    * A list of all supported languages
@@ -70,6 +77,7 @@ export const CollectionForm: React.FC<
     collection,
     curationCategories,
     iabCategories,
+    labels,
     languages,
     onSubmit,
     editMode = true,
@@ -96,6 +104,7 @@ export const CollectionForm: React.FC<
       slug: collection.slug ?? '',
       excerpt: collection.excerpt ?? '',
       intro: collection.intro ?? '',
+      labels: collection.labels ?? '',
       language: collection.language ?? CollectionLanguage.En,
       status: collection.status ?? CollectionStatus.Draft,
       authorExternalId,
@@ -108,7 +117,7 @@ export const CollectionForm: React.FC<
     // before they actually submit the form
     validateOnBlur: false,
     validateOnChange: false,
-    validationSchema: getValidationSchema(authorIds, languages),
+    validationSchema: getValidationSchema(authorIds, labels),
     onSubmit: (values, formikHelpers) => {
       onSubmit(values, formikHelpers);
     },
@@ -273,6 +282,27 @@ export const CollectionForm: React.FC<
               );
             })}
           </FormikSelectField>
+        </Grid>
+        <Grid item xs={12}>
+          <Autocomplete
+            multiple
+            id="tags-outlined"
+            options={labels}
+            getOptionLabel={(option) => option.name}
+            getOptionSelected={(option, value) =>
+              option.externalId === value.externalId
+            }
+            defaultValue={[labels[0]]}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="outlined"
+                label="Labels"
+                placeholder="Add a label"
+              />
+            )}
+          />
         </Grid>
         <Grid item xs={12}>
           <MarkdownPreview minHeight={6.5} source={formik.values.excerpt}>

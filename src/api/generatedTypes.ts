@@ -809,7 +809,7 @@ export type Item = {
   /** If the givenUrl redirects (once or many times), this is the final url. Otherwise, same as givenUrl */
   resolvedUrl?: Maybe<Scalars['Url']>;
   /**
-   * The http response code of the given url
+   * The http resonse code of the given url
    * @deprecated Clients should not use this
    */
   responseCode?: Maybe<Scalars['Int']>;
@@ -1170,7 +1170,7 @@ export type NumberedListElement = ListElement & {
   content: Scalars['Markdown'];
   /** Numeric index. If a nested item, the index is zero-indexed from the first child. */
   index: Scalars['Int'];
-  /** Zero-indexed level, for handling nested lists. */
+  /** Zero-indexed level, for handling nexted lists. */
   level: Scalars['Int'];
 };
 
@@ -1581,6 +1581,7 @@ export type ScheduledSurface = {
 /** available filters for searching collections */
 export type SearchCollectionsFilters = {
   author?: InputMaybe<Scalars['String']>;
+  labelExternalIds?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   status?: InputMaybe<CollectionStatus>;
   title?: InputMaybe<Scalars['String']>;
 };
@@ -1751,7 +1752,7 @@ export type UrlMetadata = {
   url: Scalars['String'];
 };
 
-/** A Video, typically within an Article View of an {Item} or if the Item is a video itself. */
+/** A Video, typically within an Article View of an {Item} or if the Item is a video itself." */
 export type Video = {
   __typename?: 'Video';
   /** If known, the height of the video in px */
@@ -2149,16 +2150,7 @@ export type CreateApprovedCorpusItemMutation = {
 };
 
 export type CreateCollectionMutationVariables = Exact<{
-  title: Scalars['String'];
-  slug: Scalars['String'];
-  excerpt?: InputMaybe<Scalars['Markdown']>;
-  intro?: InputMaybe<Scalars['Markdown']>;
-  status: CollectionStatus;
-  authorExternalId: Scalars['String'];
-  curationCategoryExternalId?: InputMaybe<Scalars['String']>;
-  IABParentCategoryExternalId?: InputMaybe<Scalars['String']>;
-  IABChildCategoryExternalId?: InputMaybe<Scalars['String']>;
-  language: CollectionLanguage;
+  data: CreateCollectionInput;
 }>;
 
 export type CreateCollectionMutation = {
@@ -2634,18 +2626,7 @@ export type UpdateApprovedCorpusItemMutation = {
 };
 
 export type UpdateCollectionMutationVariables = Exact<{
-  externalId?: InputMaybe<Scalars['String']>;
-  title: Scalars['String'];
-  slug: Scalars['String'];
-  excerpt: Scalars['Markdown'];
-  intro?: InputMaybe<Scalars['Markdown']>;
-  status: CollectionStatus;
-  authorExternalId: Scalars['String'];
-  curationCategoryExternalId?: InputMaybe<Scalars['String']>;
-  IABParentCategoryExternalId?: InputMaybe<Scalars['String']>;
-  IABChildCategoryExternalId?: InputMaybe<Scalars['String']>;
-  language: CollectionLanguage;
-  imageUrl?: InputMaybe<Scalars['Url']>;
+  data: UpdateCollectionInput;
 }>;
 
 export type UpdateCollectionMutation = {
@@ -4090,32 +4071,8 @@ export type CreateApprovedCorpusItemMutationOptions =
     CreateApprovedCorpusItemMutationVariables
   >;
 export const CreateCollectionDocument = gql`
-  mutation createCollection(
-    $title: String!
-    $slug: String!
-    $excerpt: Markdown
-    $intro: Markdown
-    $status: CollectionStatus!
-    $authorExternalId: String!
-    $curationCategoryExternalId: String
-    $IABParentCategoryExternalId: String
-    $IABChildCategoryExternalId: String
-    $language: CollectionLanguage!
-  ) {
-    createCollection(
-      data: {
-        title: $title
-        slug: $slug
-        excerpt: $excerpt
-        intro: $intro
-        status: $status
-        authorExternalId: $authorExternalId
-        curationCategoryExternalId: $curationCategoryExternalId
-        IABParentCategoryExternalId: $IABParentCategoryExternalId
-        IABChildCategoryExternalId: $IABChildCategoryExternalId
-        language: $language
-      }
-    ) {
+  mutation createCollection($data: CreateCollectionInput!) {
+    createCollection(data: $data) {
       ...CollectionData
     }
   }
@@ -4139,16 +4096,7 @@ export type CreateCollectionMutationFn = Apollo.MutationFunction<
  * @example
  * const [createCollectionMutation, { data, loading, error }] = useCreateCollectionMutation({
  *   variables: {
- *      title: // value for 'title'
- *      slug: // value for 'slug'
- *      excerpt: // value for 'excerpt'
- *      intro: // value for 'intro'
- *      status: // value for 'status'
- *      authorExternalId: // value for 'authorExternalId'
- *      curationCategoryExternalId: // value for 'curationCategoryExternalId'
- *      IABParentCategoryExternalId: // value for 'IABParentCategoryExternalId'
- *      IABChildCategoryExternalId: // value for 'IABChildCategoryExternalId'
- *      language: // value for 'language'
+ *      data: // value for 'data'
  *   },
  * });
  */
@@ -4974,36 +4922,8 @@ export type UpdateApprovedCorpusItemMutationOptions =
     UpdateApprovedCorpusItemMutationVariables
   >;
 export const UpdateCollectionDocument = gql`
-  mutation updateCollection(
-    $externalId: String
-    $title: String!
-    $slug: String!
-    $excerpt: Markdown!
-    $intro: Markdown
-    $status: CollectionStatus!
-    $authorExternalId: String!
-    $curationCategoryExternalId: String
-    $IABParentCategoryExternalId: String
-    $IABChildCategoryExternalId: String
-    $language: CollectionLanguage!
-    $imageUrl: Url
-  ) {
-    updateCollection(
-      data: {
-        externalId: $externalId
-        title: $title
-        slug: $slug
-        excerpt: $excerpt
-        intro: $intro
-        status: $status
-        authorExternalId: $authorExternalId
-        curationCategoryExternalId: $curationCategoryExternalId
-        IABParentCategoryExternalId: $IABParentCategoryExternalId
-        IABChildCategoryExternalId: $IABChildCategoryExternalId
-        language: $language
-        imageUrl: $imageUrl
-      }
-    ) {
+  mutation updateCollection($data: UpdateCollectionInput!) {
+    updateCollection(data: $data) {
       ...CollectionData
     }
   }
@@ -5027,18 +4947,7 @@ export type UpdateCollectionMutationFn = Apollo.MutationFunction<
  * @example
  * const [updateCollectionMutation, { data, loading, error }] = useUpdateCollectionMutation({
  *   variables: {
- *      externalId: // value for 'externalId'
- *      title: // value for 'title'
- *      slug: // value for 'slug'
- *      excerpt: // value for 'excerpt'
- *      intro: // value for 'intro'
- *      status: // value for 'status'
- *      authorExternalId: // value for 'authorExternalId'
- *      curationCategoryExternalId: // value for 'curationCategoryExternalId'
- *      IABParentCategoryExternalId: // value for 'IABParentCategoryExternalId'
- *      IABChildCategoryExternalId: // value for 'IABChildCategoryExternalId'
- *      language: // value for 'language'
- *      imageUrl: // value for 'imageUrl'
+ *      data: // value for 'data'
  *   },
  * });
  */
