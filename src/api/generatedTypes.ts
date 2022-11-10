@@ -809,7 +809,7 @@ export type Item = {
   /** If the givenUrl redirects (once or many times), this is the final url. Otherwise, same as givenUrl */
   resolvedUrl?: Maybe<Scalars['Url']>;
   /**
-   * The http resonse code of the given url
+   * The http response code of the given url
    * @deprecated Clients should not use this
    */
   responseCode?: Maybe<Scalars['Int']>;
@@ -1170,7 +1170,7 @@ export type NumberedListElement = ListElement & {
   content: Scalars['Markdown'];
   /** Numeric index. If a nested item, the index is zero-indexed from the first child. */
   index: Scalars['Int'];
-  /** Zero-indexed level, for handling nexted lists. */
+  /** Zero-indexed level, for handling nested lists. */
   level: Scalars['Int'];
 };
 
@@ -1753,7 +1753,7 @@ export type UrlMetadata = {
   url: Scalars['String'];
 };
 
-/** A Video, typically within an Article View of an {Item} or if the Item is a video itself." */
+/** A Video, typically within an Article View of an {Item} or if the Item is a video itself. */
 export type Video = {
   __typename?: 'Video';
   /** If known, the height of the video in px */
