@@ -11,6 +11,7 @@ import {
   CollectionLanguage,
   CollectionStatus,
   GetCollectionsDocument,
+  Label,
   useCreateCollectionMutation,
   useGetInitialCollectionFormDataQuery,
 } from '../../../api/generatedTypes';
@@ -32,6 +33,7 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
     excerpt: '',
     intro: '',
     imageUrl: '',
+    labels: [],
     language: CollectionLanguage.En,
     status: CollectionStatus.Draft,
     authors: [],
@@ -52,7 +54,8 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
    */
   const handleSubmit = (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
+    labels: Label[]
   ): void => {
     addCollection({
       variables: {
@@ -66,8 +69,8 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
           curationCategoryExternalId: values.curationCategoryExternalId,
           IABParentCategoryExternalId: values.IABParentCategoryExternalId,
           IABChildCategoryExternalId: values.IABChildCategoryExternalId,
+          labelExternalIds: labels.map((value: Label) => value.externalId),
           language: values.language,
-          labelExternalIds: values.labelExternalIds,
         },
       },
       // make sure the relevant Collections tab is updated

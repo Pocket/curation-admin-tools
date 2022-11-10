@@ -32,6 +32,7 @@ import {
   CollectionStory,
   GetCollectionByExternalIdDocument,
   GetCollectionsDocument,
+  Label,
   useCreateCollectionPartnerAssociationMutation,
   useCreateCollectionStoryMutation,
   useGetCollectionByExternalIdQuery,
@@ -194,7 +195,8 @@ export const CollectionPage = (): JSX.Element => {
   // 3. Update the story when the user submits the form
   const onCollectionUpdate = (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
+    labels: Label[]
   ): void => {
     const options = {
       variables: {
@@ -209,7 +211,7 @@ export const CollectionPage = (): JSX.Element => {
           curationCategoryExternalId: values.curationCategoryExternalId,
           IABParentCategoryExternalId: values.IABParentCategoryExternalId,
           IABChildCategoryExternalId: values.IABChildCategoryExternalId,
-          labelExternalIds: values.labelExternalIds,
+          labelExternalIds: labels.map((value: Label) => value.externalId),
           language: values.language,
         },
       },

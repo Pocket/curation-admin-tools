@@ -2,10 +2,9 @@ import * as yup from 'yup';
 import {
   CollectionLanguage,
   CollectionStatus,
-  Label,
 } from '../../../api/generatedTypes';
 
-export const getValidationSchema = (authorIds: string[], labels: Label[]) => {
+export const getValidationSchema = (authorIds: string[]) => {
   return yup.object({
     title: yup
       .string()
@@ -24,7 +23,6 @@ export const getValidationSchema = (authorIds: string[], labels: Label[]) => {
       .min(6),
     excerpt: yup.string(),
     intro: yup.string(),
-    // labels:
     language: yup
       .mixed<CollectionLanguage>()
       .oneOf(Object.values(CollectionLanguage))

@@ -59,10 +59,19 @@ interface CollectionFormProps {
 
   /**
    * What do we do with the submitted data?
+   *
+   * Note: unlike most other onSubmit functions in this repository,
+   * this one consumes the value for one field (labels) directly, circumventing
+   * form validation.
+   *
+   * This is due to the fact that Formik cannot process objects as input values
+   * while `labels` must be an array of objects in order for the MUI Autocomplete
+   * component to work as intended.
    */
   onSubmit: (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
+    labels: Label[]
   ) => void | Promise<any>;
 }
 
@@ -95,6 +104,19 @@ export const CollectionForm: React.FC<
   const authorExternalId =
     collection.authors.length > 0 ? collection.authors[0].externalId : '';
 
+  // If this collection has any labels, let's keep track of them here
+  // to be able to show them in the form correctly
+  const [selectedLabels, setSelectedLabels] = useState<Label[]>(
+    // The API, via generated types, returns a `Maybe` type (Label [] | null),
+    // so type coalescing is required to keep the labels field happy.
+    (collection.labels as Label[]) ?? []
+  );
+
+  // Update labels if the user has made any changes
+  const handleLabelChange = (e: React.ChangeEvent<unknown>, value: Label[]) => {
+    setSelectedLabels(value);
+  };
+
   /**
    * Set up form validation
    */
@@ -104,7 +126,7 @@ export const CollectionForm: React.FC<
       slug: collection.slug ?? '',
       excerpt: collection.excerpt ?? '',
       intro: collection.intro ?? '',
-      labels: collection.labels ?? '',
+      labels: selectedLabels,
       language: collection.language ?? CollectionLanguage.En,
       status: collection.status ?? CollectionStatus.Draft,
       authorExternalId,
@@ -117,9 +139,12 @@ export const CollectionForm: React.FC<
     // before they actually submit the form
     validateOnBlur: false,
     validateOnChange: false,
-    validationSchema: getValidationSchema(authorIds, labels),
+    validationSchema: getValidationSchema(authorIds),
     onSubmit: (values, formikHelpers) => {
-      onSubmit(values, formikHelpers);
+      // TODO: follow up with a separate PR/ticket that will be solely
+      // responsible for validating the labels before submission
+      // as they don't go through our normal form validation
+      onSubmit(values, formikHelpers, selectedLabels);
     },
   });
 
@@ -286,13 +311,14 @@ export const CollectionForm: React.FC<
         <Grid item xs={12}>
           <Autocomplete
             multiple
-            id="tags-outlined"
+            id="labels"
+            onChange={handleLabelChange}
             options={labels}
             getOptionLabel={(option) => option.name}
             getOptionSelected={(option, value) =>
               option.externalId === value.externalId
             }
-            defaultValue={[labels[0]]}
+            value={selectedLabels}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField

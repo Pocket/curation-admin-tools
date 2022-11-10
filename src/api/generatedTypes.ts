@@ -1,6 +1,5 @@
-import * as Apollo from '@apollo/client';
 import { gql } from '@apollo/client';
-
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -1683,6 +1682,7 @@ export type UpdateCollectionInput = {
   externalId?: InputMaybe<Scalars['String']>;
   imageUrl?: InputMaybe<Scalars['Url']>;
   intro?: InputMaybe<Scalars['Markdown']>;
+  labelExternalIds?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   language: CollectionLanguage;
   slug: Scalars['String'];
   status: CollectionStatus;
