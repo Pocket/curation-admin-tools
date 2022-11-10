@@ -64,6 +64,19 @@ export const CollectionInfo: React.FC<CollectionInfoProps> = (
             icon={<Avatar className={classes.iabAvatar}>IAB</Avatar>}
           />
         )}{' '}
+        {collection.labels &&
+          collection.labels.length > 0 &&
+          collection.labels.map((data, index) => {
+            return (
+              <Chip
+                key={data?.externalId}
+                variant="outlined"
+                color="primary"
+                label={data?.name}
+                icon={<LabelOutlinedIcon />}
+              />
+            );
+          })}
       </Box>
 
       <h3>Slug</h3>
