@@ -4,10 +4,7 @@ import {
   CollectionStatus,
 } from '../../../api/generatedTypes';
 
-export const getValidationSchema = (
-  authorIds: string[],
-  languages: CollectionLanguage[]
-) => {
+export const getValidationSchema = (authorIds: string[]) => {
   return yup.object({
     title: yup
       .string()
