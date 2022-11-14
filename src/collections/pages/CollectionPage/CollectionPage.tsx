@@ -32,6 +32,7 @@ import {
   CollectionStory,
   GetCollectionByExternalIdDocument,
   GetCollectionsDocument,
+  Label,
   useCreateCollectionPartnerAssociationMutation,
   useCreateCollectionStoryMutation,
   useGetCollectionByExternalIdQuery,
@@ -69,7 +70,7 @@ export const CollectionPage = (): JSX.Element => {
   // and execute any additional actions in a callback
   const { runMutation } = useRunMutation();
 
-  // And this one is only used to set the image url once the we know the S3 link
+  // And this one is only used to set the image url once we know the S3 link
   const [updateCollectionImageUrl] = useUpdateCollectionImageUrlMutation();
 
   // prepare the "create story" mutation
@@ -101,7 +102,7 @@ export const CollectionPage = (): JSX.Element => {
 
   /**
    * If the user came directly to this page (i.e., via a bookmarked page),
-   * fetch the Collection info from the the API.
+   * fetch the Collection info from the API.
    */
   const params = useParams<{ id: string }>();
   const { loading, error, data } = useGetCollectionByExternalIdQuery({
@@ -194,21 +195,25 @@ export const CollectionPage = (): JSX.Element => {
   // 3. Update the story when the user submits the form
   const onCollectionUpdate = (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
+    labels: Label[]
   ): void => {
     const options = {
       variables: {
-        externalId: collection!.externalId,
-        title: values.title,
-        slug: values.slug,
-        excerpt: values.excerpt,
-        intro: values.intro,
-        status: values.status,
-        authorExternalId: values.authorExternalId,
-        curationCategoryExternalId: values.curationCategoryExternalId,
-        IABParentCategoryExternalId: values.IABParentCategoryExternalId,
-        IABChildCategoryExternalId: values.IABChildCategoryExternalId,
-        language: values.language,
+        data: {
+          externalId: collection!.externalId,
+          title: values.title,
+          slug: values.slug,
+          excerpt: values.excerpt,
+          intro: values.intro,
+          status: values.status,
+          authorExternalId: values.authorExternalId,
+          curationCategoryExternalId: values.curationCategoryExternalId,
+          IABParentCategoryExternalId: values.IABParentCategoryExternalId,
+          IABChildCategoryExternalId: values.IABChildCategoryExternalId,
+          labelExternalIds: labels.map((value: Label) => value.externalId),
+          language: values.language,
+        },
       },
       refetchQueries: [
         {
@@ -267,6 +272,7 @@ export const CollectionPage = (): JSX.Element => {
         collection.IABParentCategory =
           data?.updateCollection?.IABParentCategory;
         collection.IABChildCategory = data?.updateCollection?.IABChildCategory;
+        collection.labels = data?.updateCollection?.labels;
         collection.language = data?.updateCollection?.language!;
 
         toggleEditForm();
@@ -612,6 +618,7 @@ export const CollectionPage = (): JSX.Element => {
                         initialCollectionFormData.getCurationCategories
                       }
                       iabCategories={initialCollectionFormData.getIABCategories}
+                      labels={initialCollectionFormData.labels}
                       languages={initialCollectionFormData.getLanguages}
                       editMode={true}
                       onCancel={toggleEditForm}
