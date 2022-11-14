@@ -98,7 +98,20 @@ export const CollectionListCard: React.FC<CollectionListCardProps> = (
                   label={`${collection.IABParentCategory.name} → ${collection.IABChildCategory.name}`}
                   icon={<Avatar className={classes.iabAvatar}>IAB</Avatar>}
                 />
-              )}
+              )}{' '}
+              {collection.labels &&
+                collection.labels.length > 0 &&
+                collection.labels.map((data, index) => {
+                  return (
+                    <Chip
+                      key={data?.externalId}
+                      variant="outlined"
+                      color="primary"
+                      label={data?.name}
+                      icon={<LabelOutlinedIcon />}
+                    />
+                  );
+                })}
             </Box>
             <Typography noWrap component="div">
               <ReactMarkdown>
