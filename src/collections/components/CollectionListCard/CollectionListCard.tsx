@@ -15,6 +15,7 @@ import { Collection } from '../../../api/generatedTypes';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 import LanguageIcon from '@material-ui/icons/Language';
+import CategoryIcon from '@material-ui/icons/Category';
 
 interface CollectionListCardProps {
   /**
@@ -88,7 +89,7 @@ export const CollectionListCard: React.FC<CollectionListCardProps> = (
                   variant="outlined"
                   color="primary"
                   label={collection.curationCategory.name}
-                  icon={<LabelOutlinedIcon />}
+                  icon={<CategoryIcon />}
                 />
               )}{' '}
               {collection.IABParentCategory && collection.IABChildCategory && (
