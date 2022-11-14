@@ -6,6 +6,8 @@ import { CollectionListCard, CollectionSearchForm } from '../../components';
 import { useGetSearchCollectionsLazyQuery } from '../../../api/generatedTypes';
 
 export const CollectionSearchPage: React.FC = (): JSX.Element => {
+  // TODO: Get all available labels and pass them onto the form
+
   // prepare the query for executing in the handleSubmit callback below
   const [searchCollections, { loading, error, data }] =
     useGetSearchCollectionsLazyQuery(

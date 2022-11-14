@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Grid,
@@ -10,6 +10,8 @@ import {
 import { Button } from '../../../_shared/components';
 import { FormikValues, useFormik } from 'formik';
 import { validationSchema } from './CollectionSearchForm.validation';
+import { Autocomplete } from '@material-ui/lab';
+import { Label } from '../../../api/generatedTypes';
 
 interface CollectionSearchFormProps {
   /**
@@ -25,6 +27,20 @@ export const CollectionSearchForm: React.FC<CollectionSearchFormProps> = (
   props
 ): JSX.Element => {
   const { onSubmit } = props;
+
+  // Keep track of selected labels
+  const [selectedLabels, setSelectedLabels] = useState<Label[]>([]);
+
+  // TODO: use a query to get this data!
+  const labels = [
+    { externalId: '123-abc', name: 'test-label-one' },
+    { externalId: '456-cbe', name: 'test-label-two' },
+  ];
+
+  // Update labels if the user has made any changes
+  const handleLabelChange = (e: React.ChangeEvent<unknown>, value: Label[]) => {
+    setSelectedLabels(value);
+  };
 
   /**
    * Set up form validation
@@ -121,6 +137,29 @@ export const CollectionSearchForm: React.FC<CollectionSearchFormProps> = (
               {formik.errors.filterRequired}
             </div>
           )}
+        </Grid>
+
+        <Grid item xs={12}>
+          <Autocomplete
+            multiple
+            id="labels"
+            onChange={handleLabelChange}
+            options={labels}
+            getOptionLabel={(option) => option.name}
+            getOptionSelected={(option, value) =>
+              option.externalId === value.externalId
+            }
+            value={selectedLabels}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="outlined"
+                label="Labels"
+                placeholder="Add a label"
+              />
+            )}
+          />
         </Grid>
 
         {formik.isSubmitting && (
