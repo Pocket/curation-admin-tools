@@ -11,6 +11,7 @@ import {
   CollectionLanguage,
   CollectionStatus,
   GetCollectionsDocument,
+  Label,
   useCreateCollectionMutation,
   useGetInitialCollectionFormDataQuery,
 } from '../../../api/generatedTypes';
@@ -32,6 +33,7 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
     excerpt: '',
     intro: '',
     imageUrl: '',
+    labels: [],
     language: CollectionLanguage.En,
     status: CollectionStatus.Draft,
     authors: [],
@@ -52,20 +54,24 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
    */
   const handleSubmit = (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
+    labels: Label[]
   ): void => {
     addCollection({
       variables: {
-        title: values.title,
-        slug: values.slug,
-        excerpt: values.excerpt,
-        intro: values.intro,
-        status: values.status,
-        authorExternalId: values.authorExternalId,
-        curationCategoryExternalId: values.curationCategoryExternalId,
-        IABParentCategoryExternalId: values.IABParentCategoryExternalId,
-        IABChildCategoryExternalId: values.IABChildCategoryExternalId,
-        language: values.language,
+        data: {
+          title: values.title,
+          slug: values.slug,
+          excerpt: values.excerpt,
+          intro: values.intro,
+          status: values.status,
+          authorExternalId: values.authorExternalId,
+          curationCategoryExternalId: values.curationCategoryExternalId,
+          IABParentCategoryExternalId: values.IABParentCategoryExternalId,
+          IABChildCategoryExternalId: values.IABChildCategoryExternalId,
+          labelExternalIds: labels.map((value: Label) => value.externalId),
+          language: values.language,
+        },
       },
       // make sure the relevant Collections tab is updated
       // when we add a new collection
@@ -109,11 +115,13 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
             data.getCollectionAuthors &&
             data.getCurationCategories &&
             data.getIABCategories &&
-            data.getLanguages && (
+            data.getLanguages &&
+            data.labels && (
               <CollectionForm
                 authors={data.getCollectionAuthors.authors}
                 curationCategories={data.getCurationCategories}
                 iabCategories={data.getIABCategories}
+                labels={data.labels}
                 languages={data.getLanguages}
                 collection={collection}
                 onSubmit={handleSubmit}

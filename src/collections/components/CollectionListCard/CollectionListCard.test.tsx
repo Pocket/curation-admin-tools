@@ -140,6 +140,38 @@ describe('The CollectionListCard component', () => {
     expect(screen.queryByText('Careers → Job Fairs')).not.toBeInTheDocument();
   });
 
+  it('shows label if labels are set', () => {
+    collection.labels = [
+      {
+        externalId: 'label-1',
+        name: 'region-east-africa',
+      },
+      {
+        externalId: 'label-2',
+        name: 'region-west-africa',
+      },
+    ];
+
+    render(
+      <MemoryRouter>
+        <CollectionListCard collection={collection} />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('region-east-africa')).toBeInTheDocument();
+    expect(screen.getByText('region-west-africa')).toBeInTheDocument();
+  });
+
+  it('omits label if labels are not set', () => {
+    render(
+      <MemoryRouter>
+        <CollectionListCard collection={collection} />
+      </MemoryRouter>
+    );
+
+    expect(screen.queryByText('region-east-africa')).not.toBeInTheDocument();
+  });
+
   it("links to an individual collection's page", () => {
     const history = createMemoryHistory({
       initialEntries: ['/collections/collections/'],

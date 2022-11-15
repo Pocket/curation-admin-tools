@@ -12,7 +12,7 @@ import {
 import AlarmIcon from '@material-ui/icons/Alarm';
 import BookmarksIcon from '@material-ui/icons/Bookmarks';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
-import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
+import CategoryIcon from '@material-ui/icons/Category';
 import LanguageIcon from '@material-ui/icons/Language';
 import { useStyles } from './ApprovedItemListCard.styles';
 import { ApprovedCorpusItem, CuratedStatus } from '../../../api/generatedTypes';
@@ -132,7 +132,7 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
         )}
         <ListItem>
           <ListItemIcon className={classes.listItemIcon}>
-            <LabelOutlinedIcon />
+            <CategoryIcon />
           </ListItemIcon>
           <ListItemText
             className={classes.topic}

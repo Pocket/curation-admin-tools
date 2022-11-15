@@ -6,6 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import { useStyles } from './CollectionInfo.styles';
 import { Collection, CollectionStatus } from '../../../api/generatedTypes';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
+import CategoryIcon from '@material-ui/icons/Category';
 
 interface CollectionInfoProps {
   /**
@@ -53,7 +54,7 @@ export const CollectionInfo: React.FC<CollectionInfoProps> = (
             variant="outlined"
             color="primary"
             label={collection.curationCategory.name}
-            icon={<LabelOutlinedIcon />}
+            icon={<CategoryIcon />}
           />
         )}{' '}
         {collection.IABParentCategory && collection.IABChildCategory && (
@@ -64,6 +65,19 @@ export const CollectionInfo: React.FC<CollectionInfoProps> = (
             icon={<Avatar className={classes.iabAvatar}>IAB</Avatar>}
           />
         )}{' '}
+        {collection.labels &&
+          collection.labels.length > 0 &&
+          collection.labels.map((data, index) => {
+            return (
+              <Chip
+                key={data?.externalId}
+                variant="outlined"
+                color="primary"
+                label={data?.name}
+                icon={<LabelOutlinedIcon />}
+              />
+            );
+          })}
       </Box>
 
       <h3>Slug</h3>

@@ -13,7 +13,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import LanguageIcon from '@material-ui/icons/Language';
-import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
+import CategoryIcon from '@material-ui/icons/Category';
 import CheckIcon from '@material-ui/icons/Check';
 import FaceIcon from '@material-ui/icons/Face';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
@@ -106,7 +106,7 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
                 variant="outlined"
                 color="primary"
                 label={getDisplayTopic(item.topic)}
-                icon={<LabelOutlinedIcon />}
+                icon={<CategoryIcon />}
               />
             </Grid>
             <Grid item>

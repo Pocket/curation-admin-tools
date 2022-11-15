@@ -15,13 +15,14 @@ import {
 } from '@material-ui/core';
 import { useStyles } from './ProspectListCard.styles';
 import LanguageIcon from '@material-ui/icons/Language';
-import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import MyLocationIcon from '@material-ui/icons/MyLocation';
 import { Button } from '../../../_shared/components';
 import { getDisplayTopic } from '../../helpers/topics';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import { DismissProspectAction } from '../actions/DismissProspectAction/DismissProspectAction';
+import CategoryIcon from '@material-ui/icons/Category';
+
 
 interface ProspectListCardProps {
   /**
@@ -142,7 +143,7 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
                 variant="outlined"
                 color="primary"
                 label={getDisplayTopic(prospect.topic)}
-                icon={<LabelOutlinedIcon />}
+                icon={<CategoryIcon />}
               />
             </Grid>
             <Grid item>
