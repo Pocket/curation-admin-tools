@@ -25,6 +25,7 @@ import {
   IabParentCategory,
   Label,
 } from '../../../api/generatedTypes';
+import { validateLabels } from '../../helpers/label';
 
 interface CollectionFormProps {
   /**
@@ -141,10 +142,8 @@ export const CollectionForm: React.FC<
     validateOnChange: false,
     validationSchema: getValidationSchema(authorIds),
     onSubmit: (values, formikHelpers) => {
-      // TODO: follow up with a separate PR/ticket that will be solely
-      // responsible for validating the labels before submission
-      // as they don't go through our normal form validation
-      onSubmit(values, formikHelpers, selectedLabels);
+      validateLabels(values.labels, selectedLabels) &&
+        onSubmit(values, formikHelpers, selectedLabels);
     },
   });
 

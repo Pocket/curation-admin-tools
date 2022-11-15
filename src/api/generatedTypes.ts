@@ -1975,6 +1975,12 @@ export type CuratedItemDataFragment = {
   }>;
 };
 
+export type LabelDataFragment = {
+  __typename?: 'Label';
+  externalId: string;
+  name: string;
+};
+
 export type ProspectDataFragment = {
   __typename?: 'Prospect';
   id: string;
@@ -3830,6 +3836,13 @@ export type GetUrlMetadataQuery = {
   };
 };
 
+export type LabelsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type LabelsQuery = {
+  __typename?: 'Query';
+  labels: Array<{ __typename?: 'Label'; externalId: string; name: string }>;
+};
+
 export const CollectionAuthorDataFragmentDoc = gql`
   fragment CollectionAuthorData on CollectionAuthor {
     externalId
@@ -3920,6 +3933,12 @@ export const CollectionStoryDataFragmentDoc = gql`
     publisher
     fromPartner
     sortOrder
+  }
+`;
+export const LabelDataFragmentDoc = gql`
+  fragment labelData on Label {
+    externalId
+    name
   }
 `;
 export const CuratedItemDataWithHistoryFragmentDoc = gql`
@@ -7094,4 +7113,52 @@ export type GetUrlMetadataLazyQueryHookResult = ReturnType<
 export type GetUrlMetadataQueryResult = Apollo.QueryResult<
   GetUrlMetadataQuery,
   GetUrlMetadataQueryVariables
+>;
+export const LabelsDocument = gql`
+  query labels {
+    labels {
+      ...labelData
+    }
+  }
+  ${LabelDataFragmentDoc}
+`;
+
+/**
+ * __useLabelsQuery__
+ *
+ * To run a query within a React component, call `useLabelsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLabelsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLabelsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLabelsQuery(
+  baseOptions?: Apollo.QueryHookOptions<LabelsQuery, LabelsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<LabelsQuery, LabelsQueryVariables>(
+    LabelsDocument,
+    options
+  );
+}
+export function useLabelsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<LabelsQuery, LabelsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<LabelsQuery, LabelsQueryVariables>(
+    LabelsDocument,
+    options
+  );
+}
+export type LabelsQueryHookResult = ReturnType<typeof useLabelsQuery>;
+export type LabelsLazyQueryHookResult = ReturnType<typeof useLabelsLazyQuery>;
+export type LabelsQueryResult = Apollo.QueryResult<
+  LabelsQuery,
+  LabelsQueryVariables
 >;
