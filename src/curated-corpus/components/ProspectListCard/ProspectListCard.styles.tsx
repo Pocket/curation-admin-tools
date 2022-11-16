@@ -37,6 +37,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       paddingTop: '0.5em',
       paddingBottom: '0.5em',
     },
+    dismissProspectButtonContainer: {
+      textAlign: 'center',
+    },
     [theme.breakpoints.down('sm')]: {
       title: {
         fontSize: '1rem',
