@@ -11,6 +11,10 @@ export const validateLabels = (
     return true;
   }
 
+  if (selectedLabels.length === 1) {
+    return false;
+  }
+
   // pull out external ids for selected labels
   const selectedLabelsExternalIds = selectedLabels.map(
     (label) => label.externalId

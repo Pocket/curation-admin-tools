@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { Box, Grid, LinearProgress, TextField } from '@material-ui/core';
+import {
+  Box,
+  FormHelperText,
+  Grid,
+  LinearProgress,
+  TextField,
+} from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import slugify from 'slugify';
 import { FormikValues, useFormik } from 'formik';
@@ -118,6 +124,8 @@ export const CollectionForm: React.FC<
     setSelectedLabels(value);
   };
 
+  // let showLabelErrorMessage = false;
+
   /**
    * Set up form validation
    */
@@ -142,8 +150,11 @@ export const CollectionForm: React.FC<
     validateOnChange: false,
     validationSchema: getValidationSchema(authorIds),
     onSubmit: (values, formikHelpers) => {
-      validateLabels(values.labels, selectedLabels) &&
-        onSubmit(values, formikHelpers, selectedLabels);
+      if (!validateLabels(labels, selectedLabels)) {
+        return;
+      }
+
+      onSubmit(values, formikHelpers, selectedLabels);
     },
   });
 
@@ -328,6 +339,11 @@ export const CollectionForm: React.FC<
               />
             )}
           />
+          <Box mb={2}>
+            {!validateLabels(labels, selectedLabels) && (
+              <FormHelperText error>Incorrect labels</FormHelperText>
+            )}
+          </Box>
         </Grid>
         <Grid item xs={12}>
           <MarkdownPreview minHeight={6.5} source={formik.values.excerpt}>
