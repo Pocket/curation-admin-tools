@@ -12,7 +12,7 @@ import {
 import LanguageIcon from '@material-ui/icons/Language';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import FaceIcon from '@material-ui/icons/Face';
-import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
+import CategoryIcon from '@material-ui/icons/Category';
 
 import { useStyles } from './RejectedItemListCard.styles';
 import { RejectedCorpusItem } from '../../../api/generatedTypes';
@@ -69,7 +69,7 @@ export const RejectedItemListCard: React.FC<RejectedItemListCardProps> = (
         </ListItem>
         <ListItem>
           <ListItemIcon className={classes.listItemIcon}>
-            <LabelOutlinedIcon />
+            <CategoryIcon />
           </ListItemIcon>
           <ListItemText
             className={classes.topic}

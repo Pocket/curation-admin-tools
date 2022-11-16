@@ -1,6 +1,5 @@
-import * as Apollo from '@apollo/client';
 import { gql } from '@apollo/client';
-
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -1582,6 +1581,7 @@ export type ScheduledSurface = {
 /** available filters for searching collections */
 export type SearchCollectionsFilters = {
   author?: InputMaybe<Scalars['String']>;
+  labelExternalIds?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   status?: InputMaybe<CollectionStatus>;
   title?: InputMaybe<Scalars['String']>;
 };
@@ -1682,6 +1682,7 @@ export type UpdateCollectionInput = {
   externalId?: InputMaybe<Scalars['String']>;
   imageUrl?: InputMaybe<Scalars['Url']>;
   intro?: InputMaybe<Scalars['Markdown']>;
+  labelExternalIds?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   language: CollectionLanguage;
   slug: Scalars['String'];
   status: CollectionStatus;
@@ -1993,6 +1994,27 @@ export type ProspectDataFragment = {
   saveCount?: number | null;
   isSyndicated?: boolean | null;
   isCollection?: boolean | null;
+};
+
+export type ProspectDataWithCorpusItemsFragment = {
+  __typename?: 'Prospect';
+  id: string;
+  prospectId: string;
+  scheduledSurfaceGuid: string;
+  topic?: string | null;
+  prospectType: string;
+  url: string;
+  createdAt?: number | null;
+  imageUrl?: string | null;
+  authors?: string | null;
+  publisher?: string | null;
+  domain?: string | null;
+  title?: string | null;
+  excerpt?: string | null;
+  language?: CorpusLanguage | null;
+  saveCount?: number | null;
+  isSyndicated?: boolean | null;
+  isCollection?: boolean | null;
   approvedCorpusItem?: {
     __typename?: 'ApprovedCorpusItem';
     externalId: string;
@@ -2155,16 +2177,7 @@ export type CreateApprovedCorpusItemMutation = {
 };
 
 export type CreateCollectionMutationVariables = Exact<{
-  title: Scalars['String'];
-  slug: Scalars['String'];
-  excerpt?: InputMaybe<Scalars['Markdown']>;
-  intro?: InputMaybe<Scalars['Markdown']>;
-  status: CollectionStatus;
-  authorExternalId: Scalars['String'];
-  curationCategoryExternalId?: InputMaybe<Scalars['String']>;
-  IABParentCategoryExternalId?: InputMaybe<Scalars['String']>;
-  IABChildCategoryExternalId?: InputMaybe<Scalars['String']>;
-  language: CollectionLanguage;
+  data: CreateCollectionInput;
 }>;
 
 export type CreateCollectionMutation = {
@@ -2477,6 +2490,34 @@ export type DeleteScheduledItemMutation = {
   };
 };
 
+export type DismissProspectMutationVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+export type DismissProspectMutation = {
+  __typename?: 'Mutation';
+  dismissProspect?: {
+    __typename?: 'Prospect';
+    id: string;
+    prospectId: string;
+    scheduledSurfaceGuid: string;
+    topic?: string | null;
+    prospectType: string;
+    url: string;
+    createdAt?: number | null;
+    imageUrl?: string | null;
+    authors?: string | null;
+    publisher?: string | null;
+    domain?: string | null;
+    title?: string | null;
+    excerpt?: string | null;
+    language?: CorpusLanguage | null;
+    saveCount?: number | null;
+    isSyndicated?: boolean | null;
+    isCollection?: boolean | null;
+  } | null;
+};
+
 export type ImageUploadMutationVariables = Exact<{
   image: Scalars['Upload'];
   width: Scalars['Int'];
@@ -2645,18 +2686,7 @@ export type UpdateApprovedCorpusItemMutation = {
 };
 
 export type UpdateCollectionMutationVariables = Exact<{
-  externalId?: InputMaybe<Scalars['String']>;
-  title: Scalars['String'];
-  slug: Scalars['String'];
-  excerpt: Scalars['Markdown'];
-  intro?: InputMaybe<Scalars['Markdown']>;
-  status: CollectionStatus;
-  authorExternalId: Scalars['String'];
-  curationCategoryExternalId?: InputMaybe<Scalars['String']>;
-  IABParentCategoryExternalId?: InputMaybe<Scalars['String']>;
-  IABChildCategoryExternalId?: InputMaybe<Scalars['String']>;
-  language: CollectionLanguage;
-  imageUrl?: InputMaybe<Scalars['Url']>;
+  data: UpdateCollectionInput;
 }>;
 
 export type UpdateCollectionMutation = {
@@ -3941,6 +3971,27 @@ export const CollectionStoryDataFragmentDoc = gql`
     sortOrder
   }
 `;
+export const ProspectDataFragmentDoc = gql`
+  fragment ProspectData on Prospect {
+    id
+    prospectId
+    scheduledSurfaceGuid
+    topic
+    prospectType
+    url
+    createdAt
+    imageUrl
+    authors
+    publisher
+    domain
+    title
+    excerpt
+    language
+    saveCount
+    isSyndicated
+    isCollection
+  }
+`;
 export const CuratedItemDataWithHistoryFragmentDoc = gql`
   fragment CuratedItemDataWithHistory on ApprovedCorpusItem {
     externalId
@@ -3987,8 +4038,8 @@ export const RejectedItemDataFragmentDoc = gql`
     createdAt
   }
 `;
-export const ProspectDataFragmentDoc = gql`
-  fragment ProspectData on Prospect {
+export const ProspectDataWithCorpusItemsFragmentDoc = gql`
+  fragment ProspectDataWithCorpusItems on Prospect {
     id
     prospectId
     scheduledSurfaceGuid
@@ -4130,32 +4181,8 @@ export type CreateApprovedCorpusItemMutationOptions =
     CreateApprovedCorpusItemMutationVariables
   >;
 export const CreateCollectionDocument = gql`
-  mutation createCollection(
-    $title: String!
-    $slug: String!
-    $excerpt: Markdown
-    $intro: Markdown
-    $status: CollectionStatus!
-    $authorExternalId: String!
-    $curationCategoryExternalId: String
-    $IABParentCategoryExternalId: String
-    $IABChildCategoryExternalId: String
-    $language: CollectionLanguage!
-  ) {
-    createCollection(
-      data: {
-        title: $title
-        slug: $slug
-        excerpt: $excerpt
-        intro: $intro
-        status: $status
-        authorExternalId: $authorExternalId
-        curationCategoryExternalId: $curationCategoryExternalId
-        IABParentCategoryExternalId: $IABParentCategoryExternalId
-        IABChildCategoryExternalId: $IABChildCategoryExternalId
-        language: $language
-      }
-    ) {
+  mutation createCollection($data: CreateCollectionInput!) {
+    createCollection(data: $data) {
       ...CollectionData
     }
   }
@@ -4179,16 +4206,7 @@ export type CreateCollectionMutationFn = Apollo.MutationFunction<
  * @example
  * const [createCollectionMutation, { data, loading, error }] = useCreateCollectionMutation({
  *   variables: {
- *      title: // value for 'title'
- *      slug: // value for 'slug'
- *      excerpt: // value for 'excerpt'
- *      intro: // value for 'intro'
- *      status: // value for 'status'
- *      authorExternalId: // value for 'authorExternalId'
- *      curationCategoryExternalId: // value for 'curationCategoryExternalId'
- *      IABParentCategoryExternalId: // value for 'IABParentCategoryExternalId'
- *      IABChildCategoryExternalId: // value for 'IABChildCategoryExternalId'
- *      language: // value for 'language'
+ *      data: // value for 'data'
  *   },
  * });
  */
@@ -4736,6 +4754,57 @@ export type DeleteScheduledItemMutationOptions = Apollo.BaseMutationOptions<
   DeleteScheduledItemMutation,
   DeleteScheduledItemMutationVariables
 >;
+export const DismissProspectDocument = gql`
+  mutation dismissProspect($id: ID!) {
+    dismissProspect(id: $id) {
+      ...ProspectData
+    }
+  }
+  ${ProspectDataFragmentDoc}
+`;
+export type DismissProspectMutationFn = Apollo.MutationFunction<
+  DismissProspectMutation,
+  DismissProspectMutationVariables
+>;
+
+/**
+ * __useDismissProspectMutation__
+ *
+ * To run a mutation, you first call `useDismissProspectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDismissProspectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [dismissProspectMutation, { data, loading, error }] = useDismissProspectMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDismissProspectMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DismissProspectMutation,
+    DismissProspectMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    DismissProspectMutation,
+    DismissProspectMutationVariables
+  >(DismissProspectDocument, options);
+}
+export type DismissProspectMutationHookResult = ReturnType<
+  typeof useDismissProspectMutation
+>;
+export type DismissProspectMutationResult =
+  Apollo.MutationResult<DismissProspectMutation>;
+export type DismissProspectMutationOptions = Apollo.BaseMutationOptions<
+  DismissProspectMutation,
+  DismissProspectMutationVariables
+>;
 export const ImageUploadDocument = gql`
   mutation imageUpload(
     $image: Upload!
@@ -5014,36 +5083,8 @@ export type UpdateApprovedCorpusItemMutationOptions =
     UpdateApprovedCorpusItemMutationVariables
   >;
 export const UpdateCollectionDocument = gql`
-  mutation updateCollection(
-    $externalId: String
-    $title: String!
-    $slug: String!
-    $excerpt: Markdown!
-    $intro: Markdown
-    $status: CollectionStatus!
-    $authorExternalId: String!
-    $curationCategoryExternalId: String
-    $IABParentCategoryExternalId: String
-    $IABChildCategoryExternalId: String
-    $language: CollectionLanguage!
-    $imageUrl: Url
-  ) {
-    updateCollection(
-      data: {
-        externalId: $externalId
-        title: $title
-        slug: $slug
-        excerpt: $excerpt
-        intro: $intro
-        status: $status
-        authorExternalId: $authorExternalId
-        curationCategoryExternalId: $curationCategoryExternalId
-        IABParentCategoryExternalId: $IABParentCategoryExternalId
-        IABChildCategoryExternalId: $IABChildCategoryExternalId
-        language: $language
-        imageUrl: $imageUrl
-      }
-    ) {
+  mutation updateCollection($data: UpdateCollectionInput!) {
+    updateCollection(data: $data) {
       ...CollectionData
     }
   }
@@ -5067,18 +5108,7 @@ export type UpdateCollectionMutationFn = Apollo.MutationFunction<
  * @example
  * const [updateCollectionMutation, { data, loading, error }] = useUpdateCollectionMutation({
  *   variables: {
- *      externalId: // value for 'externalId'
- *      title: // value for 'title'
- *      slug: // value for 'slug'
- *      excerpt: // value for 'excerpt'
- *      intro: // value for 'intro'
- *      status: // value for 'status'
- *      authorExternalId: // value for 'authorExternalId'
- *      curationCategoryExternalId: // value for 'curationCategoryExternalId'
- *      IABParentCategoryExternalId: // value for 'IABParentCategoryExternalId'
- *      IABChildCategoryExternalId: // value for 'IABChildCategoryExternalId'
- *      language: // value for 'language'
- *      imageUrl: // value for 'imageUrl'
+ *      data: // value for 'data'
  *   },
  * });
  */
@@ -5753,10 +5783,10 @@ export const UpdateProspectAsCuratedDocument = gql`
     $historyFilter: ApprovedCorpusItemScheduledSurfaceHistoryFilters
   ) {
     updateProspectAsCurated(id: $id) {
-      ...ProspectData
+      ...ProspectDataWithCorpusItems
     }
   }
-  ${ProspectDataFragmentDoc}
+  ${ProspectDataWithCorpusItemsFragmentDoc}
 `;
 export type UpdateProspectAsCuratedMutationFn = Apollo.MutationFunction<
   UpdateProspectAsCuratedMutation,
@@ -6650,10 +6680,10 @@ export const GetProspectsDocument = gql`
         prospectType: $prospectType
       }
     ) {
-      ...ProspectData
+      ...ProspectDataWithCorpusItems
     }
   }
-  ${ProspectDataFragmentDoc}
+  ${ProspectDataWithCorpusItemsFragmentDoc}
 `;
 
 /**

@@ -9,6 +9,7 @@ import {
   CollectionStatus,
   CurationCategory,
   IabParentCategory,
+  Label,
 } from '../../../api/generatedTypes';
 
 describe('The CollectionForm component', () => {
@@ -16,6 +17,7 @@ describe('The CollectionForm component', () => {
   let authors: CollectionAuthor[];
   let curationCategories: CurationCategory[];
   let iabCategories: IabParentCategory[];
+  let labels: Label[];
   let languages: CollectionLanguage[];
   const handleSubmit = jest.fn();
 
@@ -90,6 +92,11 @@ describe('The CollectionForm component', () => {
       },
     ];
 
+    labels = [
+      { externalId: '345-dfg', name: 'test-label-one' },
+      { externalId: '789-yui', name: 'test-label-two' },
+    ];
+
     languages = Object.values(CollectionLanguage);
   });
 
@@ -100,6 +107,7 @@ describe('The CollectionForm component', () => {
         collection={collection}
         curationCategories={curationCategories}
         iabCategories={iabCategories}
+        labels={labels}
         languages={Object.values(CollectionLanguage)}
         onSubmit={handleSubmit}
       />
@@ -117,13 +125,16 @@ describe('The CollectionForm component', () => {
         collection={collection}
         curationCategories={curationCategories}
         iabCategories={iabCategories}
+        labels={labels}
         languages={languages}
         onSubmit={handleSubmit}
       />
     );
 
     const buttons = screen.getAllByRole('button');
-    expect(buttons.length).toEqual(3);
+
+    // The fourth button is part of the MUI Autocomplete component
+    expect(buttons.length).toEqual(4);
   });
 
   it('only shows two buttons if not in edit mode', () => {
@@ -133,6 +144,7 @@ describe('The CollectionForm component', () => {
         collection={collection}
         curationCategories={curationCategories}
         iabCategories={iabCategories}
+        labels={labels}
         languages={languages}
         editMode={false}
         onSubmit={handleSubmit}
@@ -140,7 +152,9 @@ describe('The CollectionForm component', () => {
     );
 
     const buttons = screen.getAllByRole('button');
-    expect(buttons.length).toEqual(2);
+
+    // The third button is part of the MUI Autocomplete component
+    expect(buttons.length).toEqual(3);
   });
 
   it('displays collection information', () => {
@@ -150,6 +164,7 @@ describe('The CollectionForm component', () => {
         collection={collection}
         curationCategories={curationCategories}
         iabCategories={iabCategories}
+        labels={labels}
         languages={languages}
         onSubmit={handleSubmit}
       />
@@ -193,6 +208,7 @@ describe('The CollectionForm component', () => {
         collection={collection}
         curationCategories={curationCategories}
         iabCategories={iabCategories}
+        labels={labels}
         languages={languages}
         onSubmit={handleSubmit}
       />
@@ -245,6 +261,7 @@ describe('The CollectionForm component', () => {
         collection={collection}
         curationCategories={curationCategories}
         iabCategories={iabCategories}
+        labels={labels}
         languages={languages}
         onSubmit={handleSubmit}
       />
@@ -291,6 +308,7 @@ describe('The CollectionForm component', () => {
         collection={collection}
         curationCategories={curationCategories}
         iabCategories={iabCategories}
+        labels={labels}
         languages={languages}
         onSubmit={handleSubmit}
       />
@@ -332,6 +350,7 @@ describe('The CollectionForm component', () => {
         collection={collection}
         curationCategories={curationCategories}
         iabCategories={iabCategories}
+        labels={labels}
         languages={languages}
         onSubmit={handleSubmit}
       />
@@ -368,6 +387,7 @@ describe('The CollectionForm component', () => {
         collection={collection}
         curationCategories={curationCategories}
         iabCategories={iabCategories}
+        labels={labels}
         languages={languages}
         onSubmit={handleSubmit}
       />
@@ -378,5 +398,26 @@ describe('The CollectionForm component', () => {
 
     const previewTabs = screen.getAllByText(/preview/i);
     expect(previewTabs.length).toEqual(2);
+  });
+
+  it('displays pre-existing labels for a collection', () => {
+    // Let's assign the two mock labels that we have to a collection
+    collection.labels = labels;
+
+    render(
+      <CollectionForm
+        authors={authors}
+        collection={collection}
+        curationCategories={curationCategories}
+        iabCategories={iabCategories}
+        labels={labels}
+        languages={languages}
+        onSubmit={handleSubmit}
+      />
+    );
+
+    // Expect to see both of these labels on the screen
+    expect(screen.getByText(labels[0].name)).toBeInTheDocument();
+    expect(screen.getByText(labels[1].name)).toBeInTheDocument();
   });
 });

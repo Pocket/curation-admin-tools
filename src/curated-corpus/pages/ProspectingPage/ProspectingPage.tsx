@@ -537,6 +537,27 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     );
   };
 
+  /**
+   * Gets called after a successful/failed dismissProspect mutation call and shows success or error toast.
+   * On success, updates the state by removing the dismissed prospect.
+   * @param prospectId
+   * @param errorMessage
+   * @returns void
+   */
+  const onDismissProspect = (
+    prospectId: string,
+    errorMessage?: string
+  ): void => {
+    if (errorMessage) {
+      showNotification(errorMessage, 'error');
+      return;
+    }
+
+    // if request is successful, update the list of prospects currently rendered by removing the dismissed prospect
+    setProspects(prospects.filter((prospect) => prospect.id !== prospectId));
+    showNotification('Prospect dismissed', 'success');
+  };
+
   // check if no prospects are returned in the api call
   const showEmptyState = prospects && !loading && prospects.length === 0;
 
@@ -724,6 +745,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                     setIsRecommendation(false);
                     toggleApprovedItemModal();
                   }}
+                  onDismissProspect={onDismissProspect}
                   onRecommend={() => {
                     setCurrentProspect(prospect);
                     setIsManualSubmission(false);
