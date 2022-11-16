@@ -732,6 +732,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                       setApprovedItem(prospect.approvedCorpusItem!);
                       toggleScheduleModalAndDisableScheduledSurface();
                     }}
+                    onDismissProspect={onDismissProspect}
                   />
                 );
               }

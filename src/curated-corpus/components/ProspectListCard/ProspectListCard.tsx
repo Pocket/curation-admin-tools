@@ -23,7 +23,6 @@ import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import { DismissProspectAction } from '../actions/DismissProspectAction/DismissProspectAction';
 import CategoryIcon from '@material-ui/icons/Category';
 
-
 interface ProspectListCardProps {
   /**
    * An object with everything prospect-related in it.
