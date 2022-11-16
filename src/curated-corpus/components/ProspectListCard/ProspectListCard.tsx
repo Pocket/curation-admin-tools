@@ -20,7 +20,9 @@ import MyLocationIcon from '@material-ui/icons/MyLocation';
 import { Button } from '../../../_shared/components';
 import { getDisplayTopic } from '../../helpers/topics';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import { DismissProspectAction } from '../actions/DismissProspectAction/DismissProspectAction';
 import CategoryIcon from '@material-ui/icons/Category';
+
 
 interface ProspectListCardProps {
   /**
@@ -32,6 +34,11 @@ interface ProspectListCardProps {
    * Function called when "Add to Corpus" button is clicked
    */
   onAddToCorpus: VoidFunction;
+
+  /**
+   * Function called when the dismiss (cross) button is clicked
+   */
+  onDismissProspect: (prospectId: string, errorMessage?: string) => void;
 
   /**
    * Function called when "Recommend" button is clicked
@@ -47,7 +54,8 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
   props
 ): JSX.Element => {
   const classes = useStyles();
-  const { prospect, onAddToCorpus, onRecommend, onReject } = props;
+  const { prospect, onAddToCorpus, onDismissProspect, onRecommend, onReject } =
+    props;
 
   return (
     <Card className={classes.root}>
@@ -90,16 +98,34 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
           </List>
         </Grid>
         <Grid item xs={12} sm={9}>
-          <Link href={prospect.url} target="_blank" className={classes.link}>
-            <Typography
-              className={classes.title}
-              variant="h3"
-              align="left"
-              gutterBottom
+          <Grid container>
+            <Grid item xs={11}>
+              <Link
+                href={prospect.url}
+                target="_blank"
+                className={classes.link}
+              >
+                <Typography
+                  className={classes.title}
+                  variant="h3"
+                  align="left"
+                  gutterBottom
+                >
+                  {prospect.title}
+                </Typography>
+              </Link>
+            </Grid>
+            <Grid
+              item
+              xs={1}
+              className={classes.dismissProspectButtonContainer}
             >
-              {prospect.title}
-            </Typography>
-          </Link>
+              <DismissProspectAction
+                onDismissProspect={onDismissProspect}
+                prospectId={prospect.id}
+              />
+            </Grid>
+          </Grid>
           <Typography
             className={classes.subtitle}
             variant="subtitle2"

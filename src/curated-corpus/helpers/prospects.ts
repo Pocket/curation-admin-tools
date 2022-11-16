@@ -9,9 +9,43 @@ import {
   CuratedStatus,
   Prospect,
   ProspectType,
+  Topics,
   UrlMetadata,
 } from '../../api/generatedTypes';
 import { transformAuthors } from '../../_shared/utils/transformAuthors';
+
+const testProspect: Prospect = {
+  id: 'test-id',
+  prospectId: 'test-prospect-id',
+  prospectType: 'GLOBAL',
+  title: 'How To Win Friends And Influence People with React',
+  url: 'http://www.test.com/how-to',
+  imageUrl: 'https://placeimg.com/640/480/people?random=494',
+  excerpt: 'Everything You Wanted to Know About React and Were Afraid To Ask',
+  language: CorpusLanguage.En,
+  authors: 'testAuthor',
+  publisher: 'Amazing Inventions',
+  topic: Topics.Technology,
+  isCollection: false,
+  isSyndicated: false,
+  createdAt: 1635014926,
+  scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+  domain: 'test-domain',
+  saveCount: 10,
+};
+
+/**
+ * @param options to override certain properties and customize the prospect
+ * @returns Returns a test object of type Prospect
+ *
+ * NOTE: it does not have the approvedItem and rejectedItem properties by default
+ */
+export const getTestProspect = (options?: Partial<Prospect>): Prospect => {
+  return {
+    ...testProspect,
+    ...options,
+  };
+};
 
 /**
  * This helper function takes all possible prospect filter options for the filtering

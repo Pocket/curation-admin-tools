@@ -1,10 +1,7 @@
 import { gql } from '@apollo/client';
-import { CuratedItemDataWithHistory } from './CuratedItemWithHistory';
-import { RejectedItemData } from './rejectedItemData';
 
 /**
- * Everything we need to fetch for a Prospect, including optional
- * ApprovedCorpusItem and RejectedCorpusItem objects if there's a match by URL.
+ * Everything we need to fetch for a Prospect
  */
 export const ProspectData = gql`
   fragment ProspectData on Prospect {
@@ -25,13 +22,5 @@ export const ProspectData = gql`
     saveCount
     isSyndicated
     isCollection
-    approvedCorpusItem {
-      ...CuratedItemDataWithHistory
-    }
-    rejectedCorpusItem {
-      ...RejectedItemData
-    }
   }
-  ${CuratedItemDataWithHistory}
-  ${RejectedItemData}
 `;

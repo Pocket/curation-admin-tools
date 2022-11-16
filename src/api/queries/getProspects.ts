@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { ProspectData } from '../fragments/prospect';
+import { ProspectDataWithCorpusItems } from '../fragments/prospectWithCorpusItems';
 
 /**
  * Get a list of prospects for a given Scheduled Service GUID.
@@ -16,8 +16,8 @@ export const getProspects = gql`
         prospectType: $prospectType
       }
     ) {
-      ...ProspectData
+      ...ProspectDataWithCorpusItems
     }
   }
-  ${ProspectData}
+  ${ProspectDataWithCorpusItems}
 `;
