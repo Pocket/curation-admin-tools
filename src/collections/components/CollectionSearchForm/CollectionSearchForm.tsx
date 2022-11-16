@@ -15,9 +15,14 @@ import { Label } from '../../../api/generatedTypes';
 
 interface CollectionSearchFormProps {
   /**
+   * All the labels in the system we can filter by.
+   */
+  labels: Label[];
+
+  /**
    * What do we do with the submitted data?
    */
-  onSubmit: (values: FormikValues) => void;
+  onSubmit: (values: FormikValues, labels: Label[]) => void;
 }
 
 /**
@@ -26,16 +31,10 @@ interface CollectionSearchFormProps {
 export const CollectionSearchForm: React.FC<CollectionSearchFormProps> = (
   props
 ): JSX.Element => {
-  const { onSubmit } = props;
+  const { labels, onSubmit } = props;
 
   // Keep track of selected labels
   const [selectedLabels, setSelectedLabels] = useState<Label[]>([]);
-
-  // TODO: use a query to get this data!
-  const labels = [
-    { externalId: '123-abc', name: 'test-label-one' },
-    { externalId: '456-cbe', name: 'test-label-two' },
-  ];
 
   // Update labels if the user has made any changes
   const handleLabelChange = (e: React.ChangeEvent<unknown>, value: Label[]) => {
@@ -60,7 +59,7 @@ export const CollectionSearchForm: React.FC<CollectionSearchFormProps> = (
     // fields is filled out
     validationSchema,
     onSubmit: (values) => {
-      onSubmit(values);
+      onSubmit(values, selectedLabels);
       formik.setSubmitting(false);
     },
   });
