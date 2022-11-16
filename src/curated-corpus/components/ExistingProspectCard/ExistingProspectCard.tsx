@@ -100,7 +100,7 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
                 </Typography>
               </Link>
             </Grid>
-            <Grid xs={1}>
+            <Grid item xs={1}>
               {/*TODO @Herraj the non-null assertion from the prospectId below */}
               <DismissProspectAction
                 onDismissProspect={onDismissProspect}
