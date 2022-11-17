@@ -1,17 +1,17 @@
-import React from 'react';
-import {
-  Box,
-  Grid,
-  InputLabel,
-  LinearProgress,
-  Select,
-  TextField,
-} from '@material-ui/core';
-import { Button } from '../../../_shared/components';
+import React, { useState } from 'react';
+import { Box, Grid, LinearProgress, TextField } from '@material-ui/core';
+import { Button, FormikSelectField } from '../../../_shared/components';
 import { FormikValues, useFormik } from 'formik';
 import { validationSchema } from './CollectionSearchForm.validation';
+import { Autocomplete } from '@material-ui/lab';
+import { Label } from '../../../api/generatedTypes';
 
 interface CollectionSearchFormProps {
+  /**
+   * All the labels in the system we can filter by.
+   */
+  labels: Label[];
+
   /**
    * What do we do with the submitted data?
    */
@@ -24,7 +24,19 @@ interface CollectionSearchFormProps {
 export const CollectionSearchForm: React.FC<CollectionSearchFormProps> = (
   props
 ): JSX.Element => {
-  const { onSubmit } = props;
+  const { labels, onSubmit } = props;
+
+  // Keep track of selected labels
+  const [selectedLabels, setSelectedLabels] = useState<Label[]>([]);
+
+  // Update labels if the user has made any changes
+  const handleLabelChange = (e: React.ChangeEvent<unknown>, value: Label[]) => {
+    setSelectedLabels(value);
+
+    // Explicitly set labels within the validation library, too - otherwise the value
+    // sent through is undefined
+    formik.setFieldValue('labels', value);
+  };
 
   /**
    * Set up form validation
@@ -34,14 +46,13 @@ export const CollectionSearchForm: React.FC<CollectionSearchFormProps> = (
       title: '',
       author: '',
       status: '',
+      labels: [],
       filterRequired: '',
     },
     // We don't want to irritate users by displaying validation errors
     // before they actually submit the form
     validateOnBlur: false,
     validateOnChange: false,
-    // TODO: we should write a custom validator that makes sure at least one of the
-    // fields is filled out
     validationSchema,
     onSubmit: (values) => {
       onSubmit(values);
@@ -63,14 +74,8 @@ export const CollectionSearchForm: React.FC<CollectionSearchFormProps> = (
             size="small"
             variant="outlined"
             {...formik.getFieldProps('title')}
-            error={
-              !!(formik.touched.title && formik.errors.title) ||
-              !!(formik.errors && formik.errors.filterRequired)
-            }
-            helperText={
-              (formik.errors.title && formik.errors.title) ||
-              (formik.errors && formik.errors.filterRequired)
-            }
+            error={!!(formik.touched.title && formik.errors.title)}
+            helperText={formik.errors.title && formik.errors.title}
           />
         </Grid>
 
@@ -85,43 +90,56 @@ export const CollectionSearchForm: React.FC<CollectionSearchFormProps> = (
             size="small"
             variant="outlined"
             {...formik.getFieldProps('author')}
-            error={
-              !!(formik.touched.author && formik.errors.author) ||
-              !!(formik.errors && formik.errors.filterRequired)
-            }
-            helperText={
-              (formik.errors.author && formik.errors.author) ||
-              (formik.errors && formik.errors.filterRequired)
-            }
+            error={!!(formik.touched.author && formik.errors.author)}
+            helperText={formik.errors.author}
           />
         </Grid>
 
         <Grid item xs={12}>
-          <InputLabel htmlFor="status" shrink={true}>
-            Status
-          </InputLabel>
-          <Select
-            variant="outlined"
+          <FormikSelectField
+            id="status"
             label="Status"
-            fullWidth
-            inputProps={{
-              name: 'status',
-              id: 'status',
-            }}
-            {...formik.getFieldProps('status')}
-            error={!!(formik.errors && formik.errors.filterRequired)}
+            fieldProps={formik.getFieldProps('status')}
+            fieldMeta={formik.getFieldMeta('status')}
           >
             <option value=""></option>
             <option value="DRAFT">Draft</option>
+            <option value="REVIEW">Review</option>
             <option value="PUBLISHED">Published</option>
             <option value="ARCHIVED">Archived</option>
-          </Select>
-          {formik.errors && formik.errors.filterRequired && (
+          </FormikSelectField>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Autocomplete
+            multiple
+            id="labels"
+            onChange={handleLabelChange}
+            options={labels}
+            getOptionLabel={(option) => option.name}
+            getOptionSelected={(option, value) =>
+              option.externalId === value.externalId
+            }
+            value={selectedLabels}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant="outlined"
+                label="Labels"
+                placeholder="Add a label"
+              />
+            )}
+          />
+        </Grid>
+
+        {formik.errors && formik.errors.filterRequired && (
+          <Grid item xs={12}>
             <div className="MuiFormHelperText-root MuiFormHelperText-contained Mui-error MuiFormHelperText-marginDense">
               {formik.errors.filterRequired}
             </div>
-          )}
-        </Grid>
+          </Grid>
+        )}
 
         {formik.isSubmitting && (
           <Grid item xs={12}>

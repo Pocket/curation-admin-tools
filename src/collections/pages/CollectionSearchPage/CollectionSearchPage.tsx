@@ -3,24 +3,31 @@ import { Box, Paper } from '@material-ui/core';
 import { FormikValues } from 'formik';
 import { HandleApiResponse, ScrollToTop } from '../../../_shared/components';
 import { CollectionListCard, CollectionSearchForm } from '../../components';
-import { useGetSearchCollectionsLazyQuery } from '../../../api/generatedTypes';
+import {
+  Label,
+  useLabelsQuery,
+  useSearchCollectionsLazyQuery,
+} from '../../../api/generatedTypes';
 
 export const CollectionSearchPage: React.FC = (): JSX.Element => {
+  // TODO: Get all available labels and pass them onto the form
+
   // prepare the query for executing in the handleSubmit callback below
   const [searchCollections, { loading, error, data }] =
-    useGetSearchCollectionsLazyQuery(
+    useSearchCollectionsLazyQuery(
       // We need to make sure search results are never served from the cache.
       // Otherwise this page is broken as we have a type policy on the
       // 'searchCollections' query.
       { fetchPolicy: 'no-cache' }
     );
 
+  const { data: labelData } = useLabelsQuery();
+
   /**
    * Collect form data and send it to the API.
    * Update components on page if updates have been saved successfully
    */
   const handleSubmit = (values: FormikValues): void => {
-    // prepare the search filters
     const searchVars: any = {
       author: values.author,
       title: values.title,
@@ -32,9 +39,15 @@ export const CollectionSearchPage: React.FC = (): JSX.Element => {
       searchVars['status'] = values.status;
     }
 
+    if (values.labels.length > 0) {
+      searchVars['labelExternalIds'] = values.labels.map(
+        (value: Label) => value.externalId
+      );
+    }
+
     // execute the search
     searchCollections({
-      variables: searchVars,
+      variables: { filters: searchVars },
     });
   };
 
@@ -46,7 +59,12 @@ export const CollectionSearchPage: React.FC = (): JSX.Element => {
       </Box>
 
       <Box p={2} mt={3}>
-        <CollectionSearchForm onSubmit={handleSubmit} />
+        {labelData && (
+          <CollectionSearchForm
+            labels={labelData.labels}
+            onSubmit={handleSubmit}
+          />
+        )}
       </Box>
 
       <Paper elevation={4}>
