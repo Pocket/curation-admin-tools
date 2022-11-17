@@ -101,6 +101,7 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
               </Link>
             </Grid>
             <Grid item xs={1}>
+              {/*TODO This is a temporary measure. We need to implement a better solution regarding manually added items showing up again on the prospecting page */}
               {item.prospectId && (
                 <DismissProspectAction
                   onDismissProspect={onDismissProspect}
