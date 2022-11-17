@@ -101,11 +101,12 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
               </Link>
             </Grid>
             <Grid item xs={1}>
-              {/*TODO @Herraj the non-null assertion from the prospectId below */}
-              <DismissProspectAction
-                onDismissProspect={onDismissProspect}
-                prospectId={item.prospectId!}
-              />
+              {item.prospectId && (
+                <DismissProspectAction
+                  onDismissProspect={onDismissProspect}
+                  prospectId={item.prospectId}
+                />
+              )}
             </Grid>
           </Grid>
           <Typography
