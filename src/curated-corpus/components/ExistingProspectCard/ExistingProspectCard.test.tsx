@@ -11,10 +11,12 @@ import {
 } from '../../../api/generatedTypes';
 import { ExistingProspectCard } from './ExistingProspectCard';
 import { ScheduledSurfaces } from '../../helpers/definitions';
+import { MockedProvider } from '@apollo/client/testing';
 
 describe('The ExistingProspectCard component', () => {
   let prospect: Prospect;
   const onSchedule = jest.fn();
+  const onDismissProspect = jest.fn();
 
   beforeEach(() => {
     prospect = {
@@ -57,12 +59,15 @@ describe('The ExistingProspectCard component', () => {
 
   it('should show basic prospect metadata', () => {
     render(
-      <MemoryRouter>
-        <ExistingProspectCard
-          item={prospect.approvedCorpusItem!}
-          onSchedule={onSchedule}
-        />
-      </MemoryRouter>
+      <MockedProvider>
+        <MemoryRouter>
+          <ExistingProspectCard
+            item={prospect.approvedCorpusItem!}
+            onSchedule={onSchedule}
+            onDismissProspect={onDismissProspect}
+          />
+        </MemoryRouter>
+      </MockedProvider>
     );
 
     // The image is present and the alt text is the item title
@@ -83,12 +88,15 @@ describe('The ExistingProspectCard component', () => {
 
   it('should show language correctly', () => {
     render(
-      <MemoryRouter>
-        <ExistingProspectCard
-          item={prospect.approvedCorpusItem!}
-          onSchedule={onSchedule}
-        />
-      </MemoryRouter>
+      <MockedProvider>
+        <MemoryRouter>
+          <ExistingProspectCard
+            item={prospect.approvedCorpusItem!}
+            onSchedule={onSchedule}
+            onDismissProspect={onDismissProspect}
+          />
+        </MemoryRouter>
+      </MockedProvider>
     );
 
     expect(screen.getByText(/^de$/i)).toBeInTheDocument();
@@ -96,12 +104,15 @@ describe('The ExistingProspectCard component', () => {
 
   it('should show topic correctly', () => {
     render(
-      <MemoryRouter>
-        <ExistingProspectCard
-          item={prospect.approvedCorpusItem!}
-          onSchedule={onSchedule}
-        />
-      </MemoryRouter>
+      <MockedProvider>
+        <MemoryRouter>
+          <ExistingProspectCard
+            item={prospect.approvedCorpusItem!}
+            onSchedule={onSchedule}
+            onDismissProspect={onDismissProspect}
+          />
+        </MemoryRouter>
+      </MockedProvider>
     );
 
     expect(screen.getByText(/^technology$/i)).toBeInTheDocument();
@@ -109,12 +120,15 @@ describe('The ExistingProspectCard component', () => {
 
   it('should render card with excerpt', () => {
     render(
-      <MemoryRouter>
-        <ExistingProspectCard
-          item={prospect.approvedCorpusItem!}
-          onSchedule={onSchedule}
-        />
-      </MemoryRouter>
+      <MockedProvider>
+        <MemoryRouter>
+          <ExistingProspectCard
+            item={prospect.approvedCorpusItem!}
+            onSchedule={onSchedule}
+            onDismissProspect={onDismissProspect}
+          />
+        </MemoryRouter>
+      </MockedProvider>
     );
 
     expect(screen.getByText(prospect.excerpt!)).toBeInTheDocument();
@@ -122,12 +136,15 @@ describe('The ExistingProspectCard component', () => {
 
   it('should not render "syndicated" tag for non-syndicated articles', () => {
     render(
-      <MemoryRouter>
-        <ExistingProspectCard
-          item={prospect.approvedCorpusItem!}
-          onSchedule={onSchedule}
-        />
-      </MemoryRouter>
+      <MockedProvider>
+        <MemoryRouter>
+          <ExistingProspectCard
+            item={prospect.approvedCorpusItem!}
+            onSchedule={onSchedule}
+            onDismissProspect={onDismissProspect}
+          />
+        </MemoryRouter>
+      </MockedProvider>
     );
 
     expect(screen.queryByText('Syndicated')).not.toBeInTheDocument();
@@ -138,32 +155,40 @@ describe('The ExistingProspectCard component', () => {
     prospect.approvedCorpusItem!.isSyndicated = true;
 
     render(
-      <MemoryRouter>
-        <ExistingProspectCard
-          item={prospect.approvedCorpusItem!}
-          onSchedule={onSchedule}
-        />
-      </MemoryRouter>
+      <MockedProvider>
+        <MemoryRouter>
+          <ExistingProspectCard
+            item={prospect.approvedCorpusItem!}
+            onSchedule={onSchedule}
+            onDismissProspect={onDismissProspect}
+          />
+        </MemoryRouter>
+      </MockedProvider>
     );
 
     expect(screen.queryByText('Syndicated')).toBeInTheDocument();
   });
 
-  it('should render curated item card with the action button', () => {
+  it('should render curated item card with the action buttons', () => {
     render(
-      <MemoryRouter>
-        <ExistingProspectCard
-          item={prospect.approvedCorpusItem!}
-          onSchedule={onSchedule}
-        />
-      </MemoryRouter>
+      <MockedProvider>
+        <MemoryRouter>
+          <ExistingProspectCard
+            item={prospect.approvedCorpusItem!}
+            onSchedule={onSchedule}
+            onDismissProspect={onDismissProspect}
+          />
+        </MemoryRouter>
+      </MockedProvider>
     );
 
     const scheduleButton = screen.getByRole('button', {
       name: /Schedule/i,
     });
+    const dismissProspectButton = screen.getByTestId('dismissButton');
 
     expect(scheduleButton).toBeInTheDocument();
+    expect(dismissProspectButton).toBeInTheDocument();
   });
 
   it('should render schedule history component', async () => {
@@ -190,12 +215,15 @@ describe('The ExistingProspectCard component', () => {
     };
 
     render(
-      <MemoryRouter>
-        <ExistingProspectCard
-          item={prospectWithScheduleHistory.approvedCorpusItem}
-          onSchedule={onSchedule}
-        />
-      </MemoryRouter>
+      <MockedProvider>
+        <MemoryRouter>
+          <ExistingProspectCard
+            item={prospectWithScheduleHistory.approvedCorpusItem!}
+            onSchedule={onSchedule}
+            onDismissProspect={onDismissProspect}
+          />
+        </MemoryRouter>
+      </MockedProvider>
     );
 
     // the button when clicked shows us the recent scheduled runs
