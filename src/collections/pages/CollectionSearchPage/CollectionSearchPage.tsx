@@ -27,8 +27,7 @@ export const CollectionSearchPage: React.FC = (): JSX.Element => {
    * Collect form data and send it to the API.
    * Update components on page if updates have been saved successfully
    */
-  const handleSubmit = (values: FormikValues, labels: Label[]): void => {
-    // prepare the search filters
+  const handleSubmit = (values: FormikValues): void => {
     const searchVars: any = {
       author: values.author,
       title: values.title,
@@ -40,8 +39,8 @@ export const CollectionSearchPage: React.FC = (): JSX.Element => {
       searchVars['status'] = values.status;
     }
 
-    if (labels.length > 0) {
-      searchVars['labelExternalIds'] = labels.map(
+    if (values.labels.length > 0) {
+      searchVars['labelExternalIds'] = values.labels.map(
         (value: Label) => value.externalId
       );
     }
