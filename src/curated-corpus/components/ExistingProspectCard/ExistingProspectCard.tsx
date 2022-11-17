@@ -34,7 +34,7 @@ interface ExistingProspectCardProps {
   item: ApprovedCorpusItem;
 
   /**
-   * Current Prospect id associated with this item from prospect-api.
+   * This is the prospect.id and NOT prospect.prospectId
    */
   prospectId: string;
 
