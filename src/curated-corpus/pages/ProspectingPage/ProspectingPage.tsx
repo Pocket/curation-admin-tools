@@ -727,11 +727,13 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                   <ExistingProspectCard
                     key={prospect.id}
                     item={prospect.approvedCorpusItem}
+                    prospectId={prospect.id}
                     onSchedule={() => {
                       setCurrentProspect(prospect);
                       setApprovedItem(prospect.approvedCorpusItem!);
                       toggleScheduleModalAndDisableScheduledSurface();
                     }}
+                    onDismissProspect={onDismissProspect}
                   />
                 );
               }
