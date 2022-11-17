@@ -63,6 +63,7 @@ describe('The ExistingProspectCard component', () => {
         <MemoryRouter>
           <ExistingProspectCard
             item={prospect.approvedCorpusItem!}
+            prospectId={prospect.prospectId}
             onSchedule={onSchedule}
             onDismissProspect={onDismissProspect}
           />
@@ -92,6 +93,7 @@ describe('The ExistingProspectCard component', () => {
         <MemoryRouter>
           <ExistingProspectCard
             item={prospect.approvedCorpusItem!}
+            prospectId={prospect.prospectId}
             onSchedule={onSchedule}
             onDismissProspect={onDismissProspect}
           />
@@ -108,6 +110,7 @@ describe('The ExistingProspectCard component', () => {
         <MemoryRouter>
           <ExistingProspectCard
             item={prospect.approvedCorpusItem!}
+            prospectId={prospect.prospectId}
             onSchedule={onSchedule}
             onDismissProspect={onDismissProspect}
           />
@@ -124,6 +127,7 @@ describe('The ExistingProspectCard component', () => {
         <MemoryRouter>
           <ExistingProspectCard
             item={prospect.approvedCorpusItem!}
+            prospectId={prospect.prospectId}
             onSchedule={onSchedule}
             onDismissProspect={onDismissProspect}
           />
@@ -140,6 +144,7 @@ describe('The ExistingProspectCard component', () => {
         <MemoryRouter>
           <ExistingProspectCard
             item={prospect.approvedCorpusItem!}
+            prospectId={prospect.prospectId}
             onSchedule={onSchedule}
             onDismissProspect={onDismissProspect}
           />
@@ -159,6 +164,7 @@ describe('The ExistingProspectCard component', () => {
         <MemoryRouter>
           <ExistingProspectCard
             item={prospect.approvedCorpusItem!}
+            prospectId={prospect.prospectId}
             onSchedule={onSchedule}
             onDismissProspect={onDismissProspect}
           />
@@ -175,6 +181,7 @@ describe('The ExistingProspectCard component', () => {
         <MemoryRouter>
           <ExistingProspectCard
             item={prospect.approvedCorpusItem!}
+            prospectId={prospect.prospectId}
             onSchedule={onSchedule}
             onDismissProspect={onDismissProspect}
           />
@@ -219,6 +226,7 @@ describe('The ExistingProspectCard component', () => {
         <MemoryRouter>
           <ExistingProspectCard
             item={prospectWithScheduleHistory.approvedCorpusItem!}
+            prospectId={prospect.prospectId}
             onSchedule={onSchedule}
             onDismissProspect={onDismissProspect}
           />
