@@ -33,10 +33,18 @@ interface ExistingProspectCardProps {
    */
   item: ApprovedCorpusItem;
 
+  /**
+   * Current Prospect id associated with this item from prospect-api.
+   */
+  prospectId: string;
+
+  /**
+   * Function called when the scheduled button is clicked.
+   */
   onSchedule: VoidFunction;
 
   /**
-   * Function called when the dismiss (cross) button is clicked
+   * Function called when the dismiss (cross) button is clicked.
    */
   onDismissProspect: (prospectId: string, errorMessage?: string) => void;
 }
@@ -52,7 +60,7 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
   props
 ): JSX.Element => {
   const classes = useStyles();
-  const { item, onSchedule, onDismissProspect } = props;
+  const { item, onSchedule, onDismissProspect, prospectId } = props;
   const showScheduleHistory = item.scheduledSurfaceHistory.length != 0;
 
   return (
@@ -101,13 +109,10 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
               </Link>
             </Grid>
             <Grid item xs={1}>
-              {/*TODO This is a temporary measure. We need to implement a better solution regarding manually added items showing up again on the prospecting page */}
-              {item.prospectId && (
-                <DismissProspectAction
-                  onDismissProspect={onDismissProspect}
-                  prospectId={item.prospectId}
-                />
-              )}
+              <DismissProspectAction
+                onDismissProspect={onDismissProspect}
+                prospectId={prospectId}
+              />
             </Grid>
           </Grid>
           <Typography
