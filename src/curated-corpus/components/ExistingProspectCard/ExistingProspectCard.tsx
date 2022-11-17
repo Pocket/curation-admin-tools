@@ -25,6 +25,7 @@ import { Button } from '../../../_shared/components';
 import { getCuratorNameFromLdap } from '../../helpers/helperFunctions';
 import { ScheduleHistory } from '../ScheduleHistory/ScheduleHistory';
 import { getDisplayTopic } from '../../helpers/topics';
+import { DismissProspectAction } from '../actions/DismissProspectAction/DismissProspectAction';
 
 interface ExistingProspectCardProps {
   /**
@@ -32,7 +33,20 @@ interface ExistingProspectCardProps {
    */
   item: ApprovedCorpusItem;
 
+  /**
+   * This is the prospect.id and NOT prospect.prospectId
+   */
+  prospectId: string;
+
+  /**
+   * Function called when the scheduled button is clicked.
+   */
   onSchedule: VoidFunction;
+
+  /**
+   * Function called when the dismiss (cross) button is clicked.
+   */
+  onDismissProspect: (prospectId: string, errorMessage?: string) => void;
 }
 
 /**
@@ -46,7 +60,7 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
   props
 ): JSX.Element => {
   const classes = useStyles();
-  const { item, onSchedule } = props;
+  const { item, onSchedule, onDismissProspect, prospectId } = props;
   const showScheduleHistory = item.scheduledSurfaceHistory.length != 0;
 
   return (
@@ -81,16 +95,26 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
           </List>
         </Grid>
         <Grid item xs={12} sm={9}>
-          <Link href={item.url} target="_blank" className={classes.link}>
-            <Typography
-              className={classes.title}
-              variant="h3"
-              align="left"
-              gutterBottom
-            >
-              {item.title}
-            </Typography>
-          </Link>
+          <Grid container>
+            <Grid item xs={11}>
+              <Link href={item.url} target="_blank" className={classes.link}>
+                <Typography
+                  className={classes.title}
+                  variant="h3"
+                  align="left"
+                  gutterBottom
+                >
+                  {item.title}
+                </Typography>
+              </Link>
+            </Grid>
+            <Grid item xs={1}>
+              <DismissProspectAction
+                onDismissProspect={onDismissProspect}
+                prospectId={prospectId}
+              />
+            </Grid>
+          </Grid>
           <Typography
             className={classes.subtitle}
             variant="subtitle2"
