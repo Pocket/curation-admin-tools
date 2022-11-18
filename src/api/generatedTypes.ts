@@ -1,5 +1,6 @@
-import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+import { gql } from '@apollo/client';
+
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -3761,15 +3762,13 @@ export type GetScheduledSurfacesForUserQuery = {
   }>;
 };
 
-export type GetSearchCollectionsQueryVariables = Exact<{
+export type SearchCollectionsQueryVariables = Exact<{
+  filters: SearchCollectionsFilters;
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
-  status?: InputMaybe<CollectionStatus>;
-  author?: InputMaybe<Scalars['String']>;
-  title?: InputMaybe<Scalars['String']>;
 }>;
 
-export type GetSearchCollectionsQuery = {
+export type SearchCollectionsQuery = {
   __typename?: 'Query';
   searchCollections: {
     __typename?: 'CollectionsResult';
@@ -3825,7 +3824,13 @@ export type GetSearchCollectionsQuery = {
         blurb: any;
       } | null;
     }>;
-    pagination: { __typename?: 'Pagination'; totalResults: number };
+    pagination: {
+      __typename?: 'Pagination';
+      currentPage: number;
+      totalPages: number;
+      totalResults: number;
+      perPage: number;
+    };
   };
 };
 
@@ -3877,6 +3882,13 @@ export type GetUrlMetadataQuery = {
     isCollection?: boolean | null;
     authors?: string | null;
   };
+};
+
+export type LabelsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type LabelsQuery = {
+  __typename?: 'Query';
+  labels: Array<{ __typename?: 'Label'; externalId: string; name: string }>;
 };
 
 export const CollectionAuthorDataFragmentDoc = gql`
@@ -7007,24 +7019,21 @@ export type GetScheduledSurfacesForUserQueryResult = Apollo.QueryResult<
   GetScheduledSurfacesForUserQuery,
   GetScheduledSurfacesForUserQueryVariables
 >;
-export const GetSearchCollectionsDocument = gql`
-  query getSearchCollections(
+export const SearchCollectionsDocument = gql`
+  query searchCollections(
+    $filters: SearchCollectionsFilters!
     $page: Int
     $perPage: Int
-    $status: CollectionStatus
-    $author: String
-    $title: String
   ) {
-    searchCollections(
-      filters: { status: $status, author: $author, title: $title }
-      page: $page
-      perPage: $perPage
-    ) {
+    searchCollections(filters: $filters, page: $page, perPage: $perPage) {
       collections {
         ...CollectionData
       }
       pagination {
+        currentPage
+        totalPages
         totalResults
+        perPage
       }
     }
   }
@@ -7032,58 +7041,56 @@ export const GetSearchCollectionsDocument = gql`
 `;
 
 /**
- * __useGetSearchCollectionsQuery__
+ * __useSearchCollectionsQuery__
  *
- * To run a query within a React component, call `useGetSearchCollectionsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetSearchCollectionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSearchCollectionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchCollectionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetSearchCollectionsQuery({
+ * const { data, loading, error } = useSearchCollectionsQuery({
  *   variables: {
+ *      filters: // value for 'filters'
  *      page: // value for 'page'
  *      perPage: // value for 'perPage'
- *      status: // value for 'status'
- *      author: // value for 'author'
- *      title: // value for 'title'
  *   },
  * });
  */
-export function useGetSearchCollectionsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    GetSearchCollectionsQuery,
-    GetSearchCollectionsQueryVariables
+export function useSearchCollectionsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SearchCollectionsQuery,
+    SearchCollectionsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
-    GetSearchCollectionsQuery,
-    GetSearchCollectionsQueryVariables
-  >(GetSearchCollectionsDocument, options);
+    SearchCollectionsQuery,
+    SearchCollectionsQueryVariables
+  >(SearchCollectionsDocument, options);
 }
-export function useGetSearchCollectionsLazyQuery(
+export function useSearchCollectionsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    GetSearchCollectionsQuery,
-    GetSearchCollectionsQueryVariables
+    SearchCollectionsQuery,
+    SearchCollectionsQueryVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
-    GetSearchCollectionsQuery,
-    GetSearchCollectionsQueryVariables
-  >(GetSearchCollectionsDocument, options);
+    SearchCollectionsQuery,
+    SearchCollectionsQueryVariables
+  >(SearchCollectionsDocument, options);
 }
-export type GetSearchCollectionsQueryHookResult = ReturnType<
-  typeof useGetSearchCollectionsQuery
+export type SearchCollectionsQueryHookResult = ReturnType<
+  typeof useSearchCollectionsQuery
 >;
-export type GetSearchCollectionsLazyQueryHookResult = ReturnType<
-  typeof useGetSearchCollectionsLazyQuery
+export type SearchCollectionsLazyQueryHookResult = ReturnType<
+  typeof useSearchCollectionsLazyQuery
 >;
-export type GetSearchCollectionsQueryResult = Apollo.QueryResult<
-  GetSearchCollectionsQuery,
-  GetSearchCollectionsQueryVariables
+export type SearchCollectionsQueryResult = Apollo.QueryResult<
+  SearchCollectionsQuery,
+  SearchCollectionsQueryVariables
 >;
 export const GetStoryFromParserDocument = gql`
   query getStoryFromParser($url: String!) {
@@ -7215,4 +7222,52 @@ export type GetUrlMetadataLazyQueryHookResult = ReturnType<
 export type GetUrlMetadataQueryResult = Apollo.QueryResult<
   GetUrlMetadataQuery,
   GetUrlMetadataQueryVariables
+>;
+export const LabelsDocument = gql`
+  query labels {
+    labels {
+      externalId
+      name
+    }
+  }
+`;
+
+/**
+ * __useLabelsQuery__
+ *
+ * To run a query within a React component, call `useLabelsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useLabelsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useLabelsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLabelsQuery(
+  baseOptions?: Apollo.QueryHookOptions<LabelsQuery, LabelsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<LabelsQuery, LabelsQueryVariables>(
+    LabelsDocument,
+    options
+  );
+}
+export function useLabelsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<LabelsQuery, LabelsQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<LabelsQuery, LabelsQueryVariables>(
+    LabelsDocument,
+    options
+  );
+}
+export type LabelsQueryHookResult = ReturnType<typeof useLabelsQuery>;
+export type LabelsLazyQueryHookResult = ReturnType<typeof useLabelsLazyQuery>;
+export type LabelsQueryResult = Apollo.QueryResult<
+  LabelsQuery,
+  LabelsQueryVariables
 >;
