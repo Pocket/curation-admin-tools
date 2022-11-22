@@ -31,7 +31,6 @@ import {
   IabParentCategory,
   Label,
 } from '../../../api/generatedTypes';
-import { validateLabels } from '../../helpers/label';
 
 interface CollectionFormProps {
   /**
@@ -111,6 +110,9 @@ export const CollectionForm: React.FC<
   const authorExternalId =
     collection.authors.length > 0 ? collection.authors[0].externalId : '';
 
+  // pull out external ids of all the available labels in a separate variable
+  const availableLabelExternalIds = labels.map((label) => label.externalId);
+
   // If this collection has any labels, let's keep track of them here
   // to be able to show them in the form correctly
   const [selectedLabels, setSelectedLabels] = useState<Label[]>(
@@ -119,9 +121,15 @@ export const CollectionForm: React.FC<
     (collection.labels as Label[]) ?? []
   );
 
+  // pull out external ids of all the selected labels in a separate variable
+  const selectedLabelsExternalIds = selectedLabels.map(
+    (label) => label.externalId
+  );
   // Update labels if the user has made any changes
   const handleLabelChange = (e: React.ChangeEvent<unknown>, value: Label[]) => {
     setSelectedLabels(value);
+
+    formik.setFieldValue('labels', value);
   };
 
   // let showLabelErrorMessage = false;
@@ -135,7 +143,7 @@ export const CollectionForm: React.FC<
       slug: collection.slug ?? '',
       excerpt: collection.excerpt ?? '',
       intro: collection.intro ?? '',
-      labels: selectedLabels,
+      labels: collection.labels ?? [],
       language: collection.language ?? CollectionLanguage.En,
       status: collection.status ?? CollectionStatus.Draft,
       authorExternalId,
@@ -148,12 +156,12 @@ export const CollectionForm: React.FC<
     // before they actually submit the form
     validateOnBlur: false,
     validateOnChange: false,
-    validationSchema: getValidationSchema(authorIds),
+    validationSchema: getValidationSchema(
+      authorIds,
+      selectedLabelsExternalIds,
+      availableLabelExternalIds
+    ),
     onSubmit: (values, formikHelpers) => {
-      if (!validateLabels(labels, selectedLabels)) {
-        return;
-      }
-
       onSubmit(values, formikHelpers, selectedLabels);
     },
   });
@@ -339,11 +347,13 @@ export const CollectionForm: React.FC<
               />
             )}
           />
-          <Box mb={2}>
-            {!validateLabels(labels, selectedLabels) && (
-              <FormHelperText error>Incorrect labels</FormHelperText>
-            )}
-          </Box>
+          {
+            <Box mb={2}>
+              {formik.errors?.labels && (
+                <FormHelperText error>{formik.errors?.labels}</FormHelperText>
+              )}
+            </Box>
+          }
         </Grid>
         <Grid item xs={12}>
           <MarkdownPreview minHeight={6.5} source={formik.values.excerpt}>
