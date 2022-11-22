@@ -132,8 +132,6 @@ export const CollectionForm: React.FC<
     formik.setFieldValue('labels', value);
   };
 
-  // let showLabelErrorMessage = false;
-
   /**
    * Set up form validation
    */
