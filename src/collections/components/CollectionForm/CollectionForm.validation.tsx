@@ -4,7 +4,11 @@ import {
   CollectionStatus,
 } from '../../../api/generatedTypes';
 
-export const getValidationSchema = (authorIds: string[]) => {
+export const getValidationSchema = (
+  authorIds: string[],
+  selectedLabelExternalIds: string[],
+  availableLabelExternalIds: string[]
+) => {
   return yup.object({
     title: yup
       .string()
@@ -31,6 +35,19 @@ export const getValidationSchema = (authorIds: string[]) => {
       .mixed<CollectionStatus>()
       .oneOf(Object.values(CollectionStatus))
       .required(),
+    labels: yup
+      .mixed()
+      .test(
+        'hasValidLabels',
+        'Please only select labels that are available for this collection',
+        () => {
+          return selectedLabelExternalIds.length === 0
+            ? true
+            : selectedLabelExternalIds.some((label) =>
+                availableLabelExternalIds.includes(label)
+              );
+        }
+      ),
     authorExternalId: yup
       .string()
       .oneOf(authorIds)
