@@ -5,7 +5,7 @@ import {
   Grid,
   LinearProgress,
   Switch,
-} from '@material-ui/core';
+} from '@mui/material';
 import slugify from 'slugify';
 import { FormikValues, useFormik } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
