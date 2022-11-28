@@ -7,7 +7,7 @@ export const validationSchema = yup.object({
   name: yup
     .string()
     .required('Please enter the full name of the author')
-    .min(6),
+    .min(2),
   slug: yup
     .string()
     .trim()
@@ -18,7 +18,7 @@ export const validationSchema = yup.object({
       /^[a-z0-9-]+$/,
       'Slug can only contain lowercase alphanumeric characters and hyphens'
     )
-    .min(6),
+    .min(2),
   bio: yup.string(),
   active: yup.boolean().required(),
 });
