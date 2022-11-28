@@ -79,13 +79,14 @@ describe('The AuthorForm component', () => {
       screen.queryByText(/please enter the full name of the author/i)
     ).toBeInTheDocument();
     expect(
-      screen.queryByText(/name must be at least 6 characters/i)
+      screen.queryByText(/name must be at least 2 characters/i)
     ).not.toBeInTheDocument();
 
-    // Submit a name that is too short (under 6 characters)
+    // Submit a name that is too short (under 2 characters)
     // Note that a full name is expected here - few first name + last name combinations
     // are shorter than this.
-    userEvent.type(nameField, 'John');
+    // **NOTE** As of November 28, 2022. We changed the minimum author name requirement to 2 as per curators' request.
+    userEvent.type(nameField, 'J');
     await waitFor(() => {
       userEvent.click(saveButton);
     });
@@ -93,7 +94,7 @@ describe('The AuthorForm component', () => {
       screen.queryByText(/please enter the full name of the author/i)
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByText(/name must be at least 6 characters/i)
+      screen.queryByText(/name must be at least 2 characters/i)
     ).toBeInTheDocument();
 
     // Submit a name that satisfies all the requirements
@@ -105,7 +106,7 @@ describe('The AuthorForm component', () => {
       screen.queryByText(/please enter the full name of the author/i)
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByText(/name must be at least 6 characters/i)
+      screen.queryByText(/name must be at least 2 characters/i)
     ).not.toBeInTheDocument();
   });
 
@@ -122,17 +123,18 @@ describe('The AuthorForm component', () => {
     });
     expect(screen.queryByText(/please enter a slug/i)).toBeInTheDocument();
     expect(
-      screen.queryByText(/slug must be at least 6 characters/i)
+      screen.queryByText(/slug must be at least 2 characters/i)
     ).not.toBeInTheDocument();
 
-    // Submit a slug that is too short (under 6 characters)
-    userEvent.type(slugField, 'q-bee');
+    // Submit a slug that is too short (under 2 characters)
+    // **NOTE** As of November 28, 2022. We changed the minimum author name requirement to 2 as per curators' request. This affects the slug length as well.
+    userEvent.type(slugField, 'q');
     await waitFor(() => {
       userEvent.click(saveButton);
     });
     expect(screen.queryByText(/please enter a slug/i)).not.toBeInTheDocument();
     expect(
-      screen.queryByText(/slug must be at least 6 characters/i)
+      screen.queryByText(/slug must be at least 2 characters/i)
     ).toBeInTheDocument();
 
     // Submit a slug that satisfies all the requirements
@@ -142,7 +144,7 @@ describe('The AuthorForm component', () => {
     });
     expect(screen.queryByText(/please enter a slug/i)).not.toBeInTheDocument();
     expect(
-      screen.queryByText(/slug must be at least 6 characters/i)
+      screen.queryByText(/slug must be at least 2 characters/i)
     ).not.toBeInTheDocument();
   });
 
