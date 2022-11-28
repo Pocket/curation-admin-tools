@@ -44,7 +44,16 @@ describe('The ScheduleCorpusItemAction', () => {
   });
 
   it('completes the action successfully', async () => {
-    const today = DateTime.local();
+    // When running the test case on the last day of a month,
+    // MUI date picker also grabs a few previous dates which are marked
+    // as hidden and disabled.
+    // The current date is not disabled, but it
+    // is marked as hidden, hence, MUI complains that it doesn't have a
+    // pointer event set on the hidden date.
+    // The solution is to add an extra day to ensure that MUI does not fetch
+    // the days from a previous month when running the test case on the
+    // last day of a month.
+    const today = DateTime.local().plus({ days: 1 });
 
     mocks = [
       mock_AllScheduledSurfaces,
