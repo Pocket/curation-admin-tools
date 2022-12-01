@@ -138,7 +138,7 @@ describe('helperFunctions ', () => {
     });
   });
 
-  describe('downloadAndUploadApprovedItemImageToS3 function', async () => {
+  describe('downloadAndUploadApprovedItemImageToS3 function', () => {
     const testMutationResponseData = {
       data: { uploadApprovedCorpusItemImage: { url: 's3-test-image-url' } },
     };

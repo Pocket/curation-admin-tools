@@ -20,6 +20,7 @@ import {
   CollectionPage,
   CollectionSearchPage,
   CollectionsHomePage,
+  LabelListPage,
   PartnerListPage,
   PartnerPage,
 } from '../';
@@ -39,6 +40,10 @@ export const CollectionsLandingPage = (): JSX.Element => {
     {
       text: 'Authors',
       url: `${path}/authors/`,
+    },
+    {
+      text: 'Labels',
+      url: `${path}/labels/`,
     },
     {
       text: 'Partners',
@@ -81,6 +86,9 @@ export const CollectionsLandingPage = (): JSX.Element => {
           </Route>
           <Route exact path={`${path}/collections/:id/`}>
             <CollectionPage />
+          </Route>
+          <Route exact path={`${path}/labels/`}>
+            <LabelListPage />
           </Route>
           <Route exact path={`${path}/partners/`}>
             <PartnerListPage />
