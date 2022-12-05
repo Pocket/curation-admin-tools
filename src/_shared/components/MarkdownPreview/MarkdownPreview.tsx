@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CustomTabType, TabPanel, TabSet } from '../';
-import { Box, Link } from '@material-ui/core';
+import { Box, Link } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
 
 interface MarkdownPreviewProps {

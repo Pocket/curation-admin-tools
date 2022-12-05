@@ -55,21 +55,4 @@ describe('The FormikTextField component', () => {
 
     expect(field.value).toEqual('This is a test');
   });
-
-  it('passes on Material-UI props to the underlying component', async () => {
-    // instead of an input field, this is now a textarea element with five rows
-    render(
-      <FormikTextField
-        id="title"
-        label="Test Title"
-        fieldProps={fieldProps}
-        fieldMeta={fieldMeta}
-        multiline
-        minRows={5}
-      />
-    );
-
-    const field = screen.getByRole('textbox') as HTMLTextAreaElement;
-    expect(field.rows).toEqual(5);
-  });
 });
