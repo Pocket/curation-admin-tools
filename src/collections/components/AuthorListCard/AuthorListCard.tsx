@@ -1,9 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import { Card, CardMedia, Grid, Typography } from '@material-ui/core';
-import { useStyles } from './AuthorListCard.styles';
+import { Card, CardMedia, Grid, Link, Typography } from '@mui/material';
 import { CollectionAuthor } from '../../../api/generatedTypes';
+import { curationPalette } from '../../../theme';
 
 interface AuthorListCardProps {
   /**
@@ -18,20 +18,33 @@ interface AuthorListCardProps {
  * @param props
  */
 export const AuthorListCard: React.FC<AuthorListCardProps> = (props) => {
-  const classes = useStyles();
   const { author } = props;
 
   // We pass the author object along with the link so that when the user clicks
   // on the card to go to an individual author's page, the page is loaded instantly.
   return (
     <Link
+      component={RouterLink}
       to={{
         pathname: `/collections/authors/${author.externalId}/`,
         state: { author },
       }}
-      className={classes.link}
+      sx={{
+        textDecoration: 'none',
+        padding: '1.25 rem 0',
+      }}
     >
-      <Card variant="outlined" square className={classes.root}>
+      <Card
+        square
+        sx={{
+          margin: '1rem auto',
+          padding: '1.25rem 0.25rem',
+          cursor: 'pointer',
+          '&:active': {
+            backgroundColor: curationPalette.neutral,
+          },
+        }}
+      >
         <Grid container spacing={2}>
           <Grid item xs={4} sm={2}>
             <CardMedia
@@ -42,20 +55,19 @@ export const AuthorListCard: React.FC<AuthorListCardProps> = (props) => {
                   : '/placeholders/authorSmall.svg'
               }
               alt={author.name}
-              className={classes.image}
+              sx={{
+                borderRadius: 1,
+              }}
             />
           </Grid>
           <Grid item xs={8} sm={10}>
-            <Typography
-              className={classes.title}
-              variant="h3"
-              align="left"
-              gutterBottom
-            >
+            <Typography variant="h5" align="left" gutterBottom>
               {author.name}
             </Typography>
             <Typography
-              className={classes.subtitle}
+              sx={{
+                fontWeight: 400,
+              }}
               variant="subtitle2"
               color="textSecondary"
               component="span"

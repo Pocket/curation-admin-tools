@@ -1,6 +1,6 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
-import { Box, Paper } from '@material-ui/core';
+import { Box, Paper } from '@mui/material';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import { AuthorForm } from '../../components';
