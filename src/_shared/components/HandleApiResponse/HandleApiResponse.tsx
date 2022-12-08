@@ -1,29 +1,14 @@
 import React, { useState } from 'react';
 import { ApolloError } from '@apollo/client';
-import { makeStyles } from '@material-ui/core/styles';
 import {
+  Alert,
   Box,
   CircularProgress,
   Collapse,
   Grow,
   IconButton,
-} from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
-import CloseIcon from '@material-ui/icons/Close';
-
-/**
- * Styles for the error message alert.
- */
-const useStyles = makeStyles(() => ({
-  root: {
-    fontWeight: 400,
-    fontSize: '0.875rem',
-  },
-  title: {
-    fontWeight: 400,
-    fontSize: '1.125rem',
-  },
-}));
+} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 interface HandleApiResponseProps {
   /**
@@ -57,8 +42,6 @@ interface HandleApiResponseProps {
 export const HandleApiResponse: React.FC<HandleApiResponseProps> = (
   props
 ): JSX.Element | null => {
-  const classes = useStyles();
-
   const [isErrorVisible, setIsErrorVisible] = useState(true);
 
   const { loading, error, errorIsDismissible = true, loadingText = '' } = props;
@@ -122,7 +105,7 @@ export const HandleApiResponse: React.FC<HandleApiResponseProps> = (
             }
             severity="error"
             variant="filled"
-            className={classes.root}
+            sx={{ fontWeight: 400, fontSize: '0.875rem' }}
           >
             {messages}
           </Alert>

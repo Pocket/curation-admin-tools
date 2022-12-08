@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Paper } from '@material-ui/core';
+import { Box, Paper } from '@mui/material';
 import { FormikValues } from 'formik';
 import { HandleApiResponse, ScrollToTop } from '../../../_shared/components';
 import { CollectionListCard, CollectionSearchForm } from '../../components';
