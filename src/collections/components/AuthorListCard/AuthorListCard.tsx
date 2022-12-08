@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import { Card, CardMedia, Grid, Link, Typography } from '@mui/material';
+import { CardMedia, Grid, Typography } from '@mui/material';
 import { CollectionAuthor } from '../../../api/generatedTypes';
-import { curationPalette } from '../../../theme';
+import { StyledCardLink, StyledListCard } from '../../../_shared/styled';
 
 interface AuthorListCardProps {
   /**
@@ -23,28 +23,14 @@ export const AuthorListCard: React.FC<AuthorListCardProps> = (props) => {
   // We pass the author object along with the link so that when the user clicks
   // on the card to go to an individual author's page, the page is loaded instantly.
   return (
-    <Link
+    <StyledCardLink
       component={RouterLink}
       to={{
         pathname: `/collections/authors/${author.externalId}/`,
         state: { author },
       }}
-      sx={{
-        textDecoration: 'none',
-        padding: '1.25 rem 0',
-      }}
     >
-      <Card
-        square
-        sx={{
-          margin: '1rem auto',
-          padding: '1.25rem 0.25rem',
-          cursor: 'pointer',
-          '&:active': {
-            backgroundColor: curationPalette.neutral,
-          },
-        }}
-      >
+      <StyledListCard square>
         <Grid container spacing={2}>
           <Grid item xs={4} sm={2}>
             <CardMedia
@@ -82,7 +68,7 @@ export const AuthorListCard: React.FC<AuthorListCardProps> = (props) => {
             </Typography>
           </Grid>
         </Grid>
-      </Card>
-    </Link>
+      </StyledListCard>
+    </StyledCardLink>
   );
 };
