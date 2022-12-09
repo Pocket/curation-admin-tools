@@ -7,10 +7,10 @@ import {
   Grid,
   Paper,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ReactMarkdown from 'react-markdown';
-import EditIcon from '@material-ui/icons/Edit';
-import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import {

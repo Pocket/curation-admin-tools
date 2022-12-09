@@ -1,5 +1,6 @@
 export { Button } from './Button/Button';
 export { Chip } from './Chip/Chip';
+export { FileUploadInfo } from './FileUploadInfo/FileUploadInfo';
 export { FormikTextField } from './_form-elements/FormikTextField/FormikTextField';
 export { FormikSelectField } from './_form-elements/FormikSelectField/FormikSelectField';
 export { HandleApiResponse } from './HandleApiResponse/HandleApiResponse';

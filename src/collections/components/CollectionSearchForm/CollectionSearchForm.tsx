@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
-import { Box, Grid, LinearProgress, TextField } from '@material-ui/core';
+import {
+  Autocomplete,
+  Box,
+  Grid,
+  LinearProgress,
+  TextField,
+} from '@mui/material';
 import { Button, FormikSelectField } from '../../../_shared/components';
 import { FormikValues, useFormik } from 'formik';
 import { validationSchema } from './CollectionSearchForm.validation';
-import { Autocomplete } from '@material-ui/lab';
 import { Label } from '../../../api/generatedTypes';
 
 interface CollectionSearchFormProps {
@@ -117,7 +122,7 @@ export const CollectionSearchForm: React.FC<CollectionSearchFormProps> = (
             onChange={handleLabelChange}
             options={labels}
             getOptionLabel={(option) => option.name}
-            getOptionSelected={(option, value) =>
+            isOptionEqualToValue={(option, value) =>
               option.externalId === value.externalId
             }
             value={selectedLabels}

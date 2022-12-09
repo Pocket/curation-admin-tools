@@ -1,8 +1,7 @@
 import React from 'react';
 import { FileWithPath } from 'react-dropzone';
-import { Typography } from '@material-ui/core';
-import { formatFileSize } from '../../../_shared/utils/formatFileSize';
-import { useStyles } from './FileUploadInfo.styles';
+import { Typography } from '@mui/material';
+import { formatFileSize } from '../../utils/formatFileSize';
 
 interface FileUploadInfoProps {
   /**
@@ -23,13 +22,12 @@ export const FileUploadInfo: React.FC<FileUploadInfoProps> = (
   props
 ): JSX.Element => {
   const { file } = props;
-  const classes = useStyles();
 
   return (
     <Typography align="center" component="div">
-      <p className={classes.p}>Name: {file.name}</p>
-      <p className={classes.p}>Size: {formatFileSize(file.size)}</p>
-      <p className={classes.p}>Type: {file.type}</p>
+      <Typography component="p">Name: {file.name}</Typography>
+      <Typography component="p">Size: {formatFileSize(file.size)}</Typography>
+      <Typography component="p">Type: {file.type}</Typography>
     </Typography>
   );
 };

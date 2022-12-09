@@ -1,12 +1,13 @@
 import React from 'react';
-import { Avatar, Box, Chip, Typography } from '@material-ui/core';
-import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
-import LanguageIcon from '@material-ui/icons/Language';
 import ReactMarkdown from 'react-markdown';
-import { useStyles } from './CollectionInfo.styles';
+import { Box, Chip, Typography } from '@mui/material';
+import AdUnitsIcon from '@mui/icons-material/AdUnits';
+import CategoryIcon from '@mui/icons-material/Category';
+import LabelOutlinedIcon from '@mui/icons-material/LabelOutlined';
+import LanguageIcon from '@mui/icons-material/Language';
+
 import { Collection, CollectionStatus } from '../../../api/generatedTypes';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
-import CategoryIcon from '@material-ui/icons/Category';
 
 interface CollectionInfoProps {
   /**
@@ -20,7 +21,6 @@ export const CollectionInfo: React.FC<CollectionInfoProps> = (
   props
 ): JSX.Element => {
   const { collection } = props;
-  const classes = useStyles();
 
   const baseURL = 'https://getpocket.com/collections/';
 
@@ -33,11 +33,11 @@ export const CollectionInfo: React.FC<CollectionInfoProps> = (
   return (
     <>
       <Typography
-        className={classes.subtitle}
         variant="subtitle2"
         color="textSecondary"
         component="span"
         align="left"
+        sx={{ fontWeight: 400 }}
       >
         <span>{collection.status}</span> &middot;{' '}
         <span>{flattenAuthors(collection.authors)}</span>
@@ -62,12 +62,12 @@ export const CollectionInfo: React.FC<CollectionInfoProps> = (
             variant="outlined"
             color="primary"
             label={`${collection.IABParentCategory.name} → ${collection.IABChildCategory.name}`}
-            icon={<Avatar className={classes.iabAvatar}>IAB</Avatar>}
+            icon={<AdUnitsIcon />}
           />
         )}{' '}
         {collection.labels &&
           collection.labels.length > 0 &&
-          collection.labels.map((data, index) => {
+          collection.labels.map((data) => {
             return (
               <Chip
                 key={data?.externalId}
@@ -107,11 +107,11 @@ export const CollectionInfo: React.FC<CollectionInfoProps> = (
       </Typography>
       <h3>Excerpt</h3>
       <Typography
-        className={classes.excerpt}
         variant="subtitle2"
         color="textSecondary"
         component="span"
         align="left"
+        sx={{ fontWeight: 400 }}
       >
         <ReactMarkdown>{collection.excerpt}</ReactMarkdown>
       </Typography>
