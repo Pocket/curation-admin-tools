@@ -50,10 +50,6 @@ export const Tab: React.FC<MuiTabProps & TabProps> = (props): JSX.Element => {
   // with a route to elsewhere in the app
   const { hasLink, ...otherProps } = props;
 
-  // Pass an additional `tabSelected` property to the TabLink component if needed
-  //const tabLinkProps = hasLink ? { tabSelected } : {};
-  // {...tabLinkProps}
-
   return (
     <MuiTab
       component={hasLink ? TabLink : undefined}
