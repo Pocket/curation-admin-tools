@@ -9,12 +9,16 @@ import {
   Hidden,
   LinearProgress,
   Typography,
-} from '@material-ui/core';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+} from '@mui/material';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import Dropzone, { FileWithPath } from 'react-dropzone';
-import { Modal, SharedFormButtons } from '../../../_shared/components';
-import { FileUploadInfo } from '../';
-import { useStyles } from './ImageUpload.styles';
+import {
+  FileUploadInfo,
+  Modal,
+  SharedFormButtons,
+} from '../../../_shared/components';
+import { StyledDropzoneBox } from '../../../_shared/styled';
+import { curationPalette } from '../../../theme';
 import { useNotifications } from '../../../_shared/hooks';
 import {
   Collection,
@@ -62,7 +66,6 @@ interface ImageUploadProps {
  * @constructor
  */
 export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
-  const classes = useStyles();
   const { entity, placeholder, onImageSave } = props;
   const { showNotification } = useNotifications();
 
@@ -76,7 +79,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
     CollectionImageUploadInput | undefined
   >(undefined);
 
-  // And these ones are for figuring out whether to show the uploaded image
+  // And these are for figuring out whether to show the uploaded image
   // or a placeholder
   const [imageSrc, setImageSrc] = useState<string>(entity.imageUrl);
   const [hasImage, setHasImage] = useState<boolean>(
@@ -159,12 +162,26 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
         <CardMedia
           component="img"
           src={hasImage ? imageSrc : placeholder}
-          className={hasImage ? classes.image : classes.placeholder}
+          sx={
+            hasImage
+              ? {
+                  cursor: 'pointer',
+                }
+              : {
+                  cursor: 'pointer',
+                  borderBottom: `1px solid ${curationPalette.lightGrey}`,
+                }
+          }
           onClick={() => {
             setImageUploadOpen(true);
           }}
         />
-        <CardActions disableSpacing={true} className={classes.cardActions}>
+        <CardActions
+          disableSpacing={true}
+          sx={{
+            justifyContent: 'center',
+          }}
+        >
           <MuiButton
             size="small"
             color="primary"
@@ -172,7 +189,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
               setImageUploadOpen(true);
             }}
           >
-            <CloudUploadIcon className={classes.uploadIcon} />
+            <CloudUploadIcon sx={{ paddingRight: '0.5rem' }} />
             <Hidden smDown implementation="css">
               Update image
             </Hidden>
@@ -185,12 +202,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
           <Grid item xs={12}>
             <Dropzone onDrop={onDrop} maxFiles={1} accept="image/*">
               {({ getRootProps, getInputProps }) => (
-                <Box
-                  {...getRootProps({
-                    className: classes.dropzone,
-                  })}
-                  pt={2}
-                >
+                <StyledDropzoneBox {...getRootProps()} pt={2}>
                   <input {...getInputProps()} />
                   <Typography align="center">
                     Drag and drop an image here, or click to select one
@@ -208,7 +220,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
                       </Box>
                     )}
                   </Box>
-                </Box>
+                </StyledDropzoneBox>
               )}
             </Dropzone>
           </Grid>

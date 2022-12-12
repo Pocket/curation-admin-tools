@@ -1,8 +1,7 @@
 import React from 'react';
-import { Grid, Hidden, Typography } from '@material-ui/core';
-import CheckIcon from '@material-ui/icons/Check';
+import { Grid, Hidden, Typography } from '@mui/material';
+import CheckIcon from '@mui/icons-material/Check';
 import ReactMarkdown from 'react-markdown';
-import { useStyles } from './StoryCard.styles';
 import { CollectionStory } from '../../../api/generatedTypes';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 
@@ -14,11 +13,10 @@ interface StoryCardProps {
 }
 
 /**
- * A purely layout component that displays Collection Story information such as title, authors, excerpt
+ * A layout only component that displays Collection Story information such as title, authors, excerpt
  */
 export const StoryCard: React.FC<StoryCardProps> = (props): JSX.Element => {
   const { story } = props;
-  const classes = useStyles();
 
   // Work out a comma-separated list of authors if there are any for this story
   const displayAuthors = flattenAuthors(story.authors);
@@ -32,10 +30,17 @@ export const StoryCard: React.FC<StoryCardProps> = (props): JSX.Element => {
   return (
     <>
       <Typography
-        className={classes.title}
-        variant="h3"
+        variant="h5"
         align="left"
         gutterBottom
+        sx={{
+          fontSize: '1.125rem',
+          fontWeight: 500,
+          '& a': {
+            textDecoration: 'none',
+            color: '#222222',
+          },
+        }}
       >
         <a href={story.url} target="_blank" rel="noreferrer">
           {story.title}
@@ -43,11 +48,11 @@ export const StoryCard: React.FC<StoryCardProps> = (props): JSX.Element => {
       </Typography>
 
       <Typography
-        className={classes.subtitle}
         variant="subtitle2"
         color="textSecondary"
         component="span"
         align="left"
+        sx={{ fontWeight: 400 }}
       >
         <span>{displayAuthors}</span>
         {displayAuthors.length > 0 && ` ${middot} `}
@@ -60,9 +65,9 @@ export const StoryCard: React.FC<StoryCardProps> = (props): JSX.Element => {
           </Grid>
           <Grid item>
             <Typography
-              className={classes.subtitle}
               color="primary"
               variant="subtitle2"
+              sx={{ fontWeight: 400 }}
             >
               From partner/sponsor
             </Typography>

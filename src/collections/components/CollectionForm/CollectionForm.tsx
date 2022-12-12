@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import {
+  Autocomplete,
   Box,
   FormHelperText,
   Grid,
   LinearProgress,
   TextField,
-} from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
+} from '@mui/material';
 import slugify from 'slugify';
 import { FormikValues, useFormik } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
@@ -19,7 +19,6 @@ import {
   SharedFormButtonsProps,
 } from '../../../_shared/components';
 import { getValidationSchema } from './CollectionForm.validation';
-import { useStyles } from './CollectionForm.styles';
 import { config } from '../../../config';
 import {
   Collection,
@@ -98,8 +97,6 @@ export const CollectionForm: React.FC<
     editMode = true,
     onCancel,
   } = props;
-
-  const classes = useStyles();
 
   // get a list of author ids for the validation schema
   const authorIds = authors.map((author: CollectionAuthor) => {
@@ -230,12 +227,14 @@ export const CollectionForm: React.FC<
 
         <Grid item xs={12} sm={6}>
           <FormikSelectField
-            className={classes.marginBottom}
             id="status"
             label="Status"
             fieldProps={formik.getFieldProps('status')}
             fieldMeta={formik.getFieldMeta('status')}
             disabled={!editMode}
+            sx={{
+              marginBottom: '1.25rem',
+            }}
           >
             <option value="DRAFT">Draft</option>
             <option value="REVIEW">Review</option>
@@ -243,11 +242,13 @@ export const CollectionForm: React.FC<
             <option value="ARCHIVED">Archived</option>
           </FormikSelectField>
           <FormikSelectField
-            className={classes.marginBottom}
             id="authorExternalId"
             label="Author"
             fieldProps={formik.getFieldProps('authorExternalId')}
             fieldMeta={formik.getFieldMeta('authorExternalId')}
+            sx={{
+              marginBottom: '1.25rem',
+            }}
           >
             <option aria-label="None" value="" />
             {authors.map((author: CollectionAuthor) => {
@@ -276,11 +277,13 @@ export const CollectionForm: React.FC<
 
         <Grid item xs={12} sm={6}>
           <FormikSelectField
-            className={classes.marginBottom}
             id="curationCategoryExternalId"
             label="Curation Category"
             fieldProps={formik.getFieldProps('curationCategoryExternalId')}
             fieldMeta={formik.getFieldMeta('curationCategoryExternalId')}
+            sx={{
+              marginBottom: '1.25rem',
+            }}
           >
             <option aria-label="None" value="" />
             {curationCategories.map((category: CurationCategory) => {
@@ -293,11 +296,13 @@ export const CollectionForm: React.FC<
           </FormikSelectField>
 
           <FormikSelectField
-            className={classes.marginBottom}
             id="IABParentCategoryExternalId"
             label="IAB Parent Category"
             fieldProps={formik.getFieldProps('IABParentCategoryExternalId')}
             fieldMeta={formik.getFieldMeta('IABParentCategoryExternalId')}
+            sx={{
+              marginBottom: '1.25rem',
+            }}
           >
             <option aria-label="None" value="" />
             {iabCategories.map((category: IabParentCategory) => {
@@ -331,7 +336,7 @@ export const CollectionForm: React.FC<
             onChange={handleLabelChange}
             options={labels}
             getOptionLabel={(option) => option.name}
-            getOptionSelected={(option, value) =>
+            isOptionEqualToValue={(option, value) =>
               option.externalId === value.externalId
             }
             value={selectedLabels}

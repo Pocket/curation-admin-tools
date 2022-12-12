@@ -67,6 +67,7 @@ export const TabSet: React.FC<TabSetProps> = (props): JSX.Element => {
             label={tab.label}
             to={tab.pathname}
             value={tab.pathname}
+            isCurrentTab={currentTab == tab.pathname}
           />
         );
       })}

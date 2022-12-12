@@ -11,6 +11,6 @@ export const StyledListCard = styled(Card)(() => ({
   padding: '1.25rem 0.25rem',
   cursor: 'pointer',
   '&:active': {
-    backgroundColor: curationPalette.neutral,
+    backgroundColor: curationPalette.lightGrey,
   },
 }));

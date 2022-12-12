@@ -1,20 +1,11 @@
 import React from 'react';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  Card,
-  Collapse,
-  Grid,
-  Paper,
-} from '@material-ui/core';
-import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
-import EditIcon from '@material-ui/icons/Edit';
+import { Box, Button, ButtonGroup, Collapse, Grid, Paper } from '@mui/material';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import EditIcon from '@mui/icons-material/Edit';
 import { transformAuthors } from '../../../_shared/utils/transformAuthors';
 import { ImageUpload, StoryCard, StoryForm } from '../';
-import { useStyles } from './StoryListCard.styles';
 import { useRunMutation, useToggle } from '../../../_shared/hooks';
 import {
   CollectionStory,
@@ -22,6 +13,7 @@ import {
   useUpdateCollectionStoryImageUrlMutation,
   useUpdateCollectionStoryMutation,
 } from '../../../api/generatedTypes';
+import { StyledListCard } from '../../../_shared/styled';
 
 interface StoryListCardProps {
   /**
@@ -46,13 +38,12 @@ interface StoryListCardProps {
 
 /**
  * A Collection Story card component that is responsible for an awful lot of things:
- * displaying all the controls for a story, i.e image upload, edit and delete buttons,
+ * displaying all the controls for a story, i.e. image upload, edit and delete buttons,
  * running the update/delete/upload new image mutations - the lot!
  *
  * @param props
  */
 export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
-  const classes = useStyles();
   const { story, refetch, showFromPartner } = props;
   const [showEditForm, toggleEditForm] = useToggle();
 
@@ -136,7 +127,7 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
 
   return (
     <>
-      <Card variant="outlined" square className={classes.root}>
+      <StyledListCard square>
         <Grid container spacing={2}>
           <Grid item xs={3}>
             <ImageUpload
@@ -178,7 +169,7 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
             </Box>
           </Paper>
         </Collapse>
-      </Card>
+      </StyledListCard>
     </>
   );
 };

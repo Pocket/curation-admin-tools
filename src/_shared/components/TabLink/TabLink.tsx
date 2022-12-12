@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link, LinkProps } from 'react-router-dom';
-import { createStyles, makeStyles } from '@material-ui/core/styles';
-import { CircularProgress } from '@material-ui/core';
-import { Chip } from '../';
+import { Box, CircularProgress } from '@mui/material';
+import { Chip } from '../../components';
 import { curationPalette } from '../../../theme';
 
 interface TabLinkProps {
@@ -14,16 +13,8 @@ interface TabLinkProps {
   /**
    * Whether the current tab is active.
    */
-  tabSelected: boolean;
+  isCurrentTab: boolean;
 }
-
-const useStyles = makeStyles(() =>
-  createStyles({
-    spinner: {
-      color: curationPalette.white,
-    },
-  })
-);
 
 /**
  * Used for routing between various subpages available as tabs, i.e.
@@ -35,12 +26,11 @@ export const TabLink = React.forwardRef<
   HTMLAnchorElement,
   LinkProps & TabLinkProps
 >((props, ref): JSX.Element => {
-  const classes = useStyles();
-  const { count, children, tabSelected, ...otherProps } = props;
+  const { count, children, isCurrentTab, ...otherProps } = props;
   const showChip = !!(count && count > 0);
 
   // workaround to make sure the chip on the active tab is highlighted.
-  const color = tabSelected ? 'primary' : 'default';
+  const color = isCurrentTab ? 'primary' : 'default';
 
   // don't show the exact number of articles if there is more
   // than a thousand of entries
@@ -48,18 +38,25 @@ export const TabLink = React.forwardRef<
 
   return (
     <Link {...otherProps} ref={ref}>
-      {children}
-      <Chip
-        label={
-          showChip ? (
-            chipLabel
-          ) : (
-            <CircularProgress size={14} className={classes.spinner} />
-          )
-        }
-        size="small"
-        color={color}
-      />
+      <Box>
+        {children}
+        <Chip
+          label={
+            showChip ? (
+              chipLabel
+            ) : (
+              <CircularProgress
+                size={14}
+                sx={{
+                  color: curationPalette.white,
+                }}
+              />
+            )
+          }
+          size="small"
+          color={color}
+        />
+      </Box>
     </Link>
   );
 });
