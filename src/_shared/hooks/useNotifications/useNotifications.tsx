@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSnackbar, VariantType } from 'notistack';
-import { IconButton } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import { IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 /**
  * This interface defines the signature of the helper function this hook returns.

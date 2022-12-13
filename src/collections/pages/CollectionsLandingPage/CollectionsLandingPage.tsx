@@ -5,10 +5,10 @@ import { ApolloProvider } from '@apollo/client';
 import { client } from '../../../api/client';
 import {
   HeaderConnector,
-  MainContentWrapper,
   MenuLink,
   PageNotFound,
 } from '../../../_shared/components';
+import { StyledContainer } from '../../../_shared/styled';
 
 import {
   AddAuthorPage,
@@ -57,7 +57,7 @@ export const CollectionsLandingPage = (): JSX.Element => {
         productLink="/collections"
         menuLinks={menuLinks}
       />
-      <MainContentWrapper>
+      <StyledContainer>
         <Switch>
           <Route exact path={path}>
             <CollectionsHomePage />
@@ -96,7 +96,7 @@ export const CollectionsLandingPage = (): JSX.Element => {
           </Route>
           <Route component={PageNotFound} />
         </Switch>
-      </MainContentWrapper>
+      </StyledContainer>
     </ApolloProvider>
   );
 };

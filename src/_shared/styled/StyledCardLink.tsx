@@ -7,5 +7,5 @@ import { styled } from '@mui/styles';
  */
 export const StyledCardLink = styled(Link)(() => ({
   textDecoration: 'none',
-  padding: '1.25 rem 0',
+  padding: '1.25rem 0',
 })) as typeof Link;

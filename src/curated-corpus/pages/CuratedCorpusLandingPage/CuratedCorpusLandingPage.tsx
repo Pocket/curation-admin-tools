@@ -6,10 +6,10 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import LuxonUtils from '@date-io/luxon';
 import {
   HeaderConnector,
-  MainContentWrapper,
   MenuLink,
   PageNotFound,
 } from '../../../_shared/components';
+import { StyledContainer } from '../../../_shared/styled';
 import {
   CorpusItemPage,
   CorpusPage,
@@ -53,7 +53,7 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
           productLink="/curated-corpus"
           menuLinks={menuLinks}
         />
-        <MainContentWrapper>
+        <StyledContainer>
           <Switch>
             <Route exact path={`${path}/`}>
               <h2>Welcome to Pocket&apos;s Curated Corpus management tool.</h2>
@@ -105,7 +105,7 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
             </Route>
             <Route component={PageNotFound} />
           </Switch>
-        </MainContentWrapper>
+        </StyledContainer>
       </MuiPickersUtilsProvider>
     </ApolloProvider>
   );
