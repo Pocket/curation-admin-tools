@@ -13,6 +13,7 @@ export const curationPalette = {
   blue: '#3668ff', // bright blue for active tabs
   white: '#FFFFFF',
   lightGrey: '#cccccc', // for borders here and there
+  pocketBlack: '#1a1a1a', // for not-quite-black text
 };
 
 const theme: Theme = createTheme({
