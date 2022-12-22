@@ -7,6 +7,7 @@ export { ApprovedItemInfo } from './ApprovedItemInfo/ApprovedItemInfo';
 export { ApprovedItemListCard } from './ApprovedItemListCard/ApprovedItemListCard';
 export { ApprovedItemModal } from './ApprovedItemModal/ApprovedItemModal';
 export { ApprovedItemSearchForm } from './ApprovedItemSearchForm/ApprovedItemSearchForm';
+export { EditCorpusItemAction } from './actions/EditCorpusItemAction/EditCorpusItemAction';
 export { ExistingProspectCard } from './ExistingProspectCard/ExistingProspectCard';
 export { DuplicateProspectModal } from './DuplicateProspectModal/DuplicateProspectModal';
 export { LoadExtraButton } from './LoadExtraButton/LoadExtraButton';

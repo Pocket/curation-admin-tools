@@ -1,4 +1,13 @@
 import React from 'react';
+import {
+  Box,
+  FormControlLabel,
+  FormHelperText,
+  Grid,
+  LinearProgress,
+  Switch,
+  TextField,
+} from '@mui/material';
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import { validationSchema } from './ApprovedItemForm.validation';
 import { ApprovedCorpusItem, CuratedStatus } from '../../../api/generatedTypes';
@@ -9,15 +18,6 @@ import {
   languages,
   topics,
 } from '../../helpers/definitions';
-import {
-  Box,
-  FormControlLabel,
-  FormHelperText,
-  Grid,
-  LinearProgress,
-  Switch,
-  TextField,
-} from '@material-ui/core';
 import {
   FormikSelectField,
   FormikTextField,

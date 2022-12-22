@@ -1,11 +1,11 @@
 import React from 'react';
-import { useRunMutation } from '../../../../_shared/hooks';
+import { FormikHelpers, FormikValues } from 'formik';
 import {
   ApprovedCorpusItem,
   useRejectApprovedItemMutation,
 } from '../../../../api/generatedTypes';
-import { FormikHelpers, FormikValues } from 'formik';
-import { RejectItemModal } from '../../RejectItemModal/RejectItemModal';
+import { useRunMutation } from '../../../../_shared/hooks';
+import { RejectItemModal } from '../../';
 
 interface RejectCorpusItemActionProps {
   /**

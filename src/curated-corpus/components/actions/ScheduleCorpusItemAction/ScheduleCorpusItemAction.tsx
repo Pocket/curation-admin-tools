@@ -1,13 +1,13 @@
 import React from 'react';
-import { useNotifications, useRunMutation } from '../../../../_shared/hooks';
+import { FormikHelpers, FormikValues } from 'formik';
+import { DateTime } from 'luxon';
 import {
   ApprovedCorpusItem,
   CreateScheduledCorpusItemInput,
   useCreateScheduledCorpusItemMutation,
 } from '../../../../api/generatedTypes';
-import { FormikHelpers, FormikValues } from 'formik';
-import { ScheduleItemModal } from '../../ScheduleItemModal/ScheduleItemModal';
-import { DateTime } from 'luxon';
+import { useNotifications, useRunMutation } from '../../../../_shared/hooks';
+import { ScheduleItemModal } from '../../';
 
 interface ScheduleCorpusItemActionProps {
   /**

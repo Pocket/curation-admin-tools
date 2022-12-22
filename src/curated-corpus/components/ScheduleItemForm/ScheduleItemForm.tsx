@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
-import { Box, Grid, LinearProgress, TextField } from '@material-ui/core';
+import { Box, Grid, LinearProgress, TextField } from '@mui/material';
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
-import { DatePicker } from '@material-ui/pickers';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { DateTime } from 'luxon';
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import {
   FormikSelectField,
   SharedFormButtons,
   SharedFormButtonsProps,
 } from '../../../_shared/components';
 import { getValidationSchema } from './ScheduleItemForm.validation';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { ScheduledSurface } from '../../../api/generatedTypes';
-import { DateTime } from 'luxon';
 
 interface ScheduleItemFormProps {
   /**
@@ -21,10 +21,7 @@ interface ScheduleItemFormProps {
   /**
    * What to do when the user picks a date.
    */
-  handleDateChange: (
-    date: MaterialUiPickersDate,
-    value?: string | null | undefined
-  ) => void;
+  handleDateChange: (date: any, value?: string | null | undefined) => void;
 
   /**
    * The copy/JSX to show underneath the form when the user picks a date
@@ -117,7 +114,7 @@ export const ScheduleItemForm: React.FC<
   });
 
   return (
-    <>
+    <LocalizationProvider dateAdapter={AdapterLuxon}>
       <form name="schedule-item-form" onSubmit={formik.handleSubmit}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
@@ -146,20 +143,21 @@ export const ScheduleItemForm: React.FC<
           </Grid>
           <Grid item xs={12}>
             <DatePicker
-              variant="inline"
-              inputVariant="outlined"
-              format="MMMM d, yyyy"
-              margin="none"
-              id="scheduled-date"
-              label="Choose a date"
+              inputFormat="MMMM d, yyyy"
               value={selectedDate}
               onChange={handleDateChange}
               disablePast
-              initialFocusedDate={tomorrow}
+              openTo="day"
               maxDate={tomorrow.plus({ days: 59 })}
-              disableToolbar
-              autoOk
-              fullWidth
+              renderInput={(params: any) => (
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  id="scheduled-date"
+                  label="Choose a date"
+                  {...params}
+                />
+              )}
             />
           </Grid>
 
@@ -189,6 +187,6 @@ export const ScheduleItemForm: React.FC<
           </Box>
         </Grid>
       </Grid>
-    </>
+    </LocalizationProvider>
   );
 };

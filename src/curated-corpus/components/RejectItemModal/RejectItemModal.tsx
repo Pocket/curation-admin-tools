@@ -1,10 +1,10 @@
 import React from 'react';
-import { Modal } from '../../../_shared/components';
-import { Box, Grid, Typography } from '@material-ui/core';
+import { Box, Grid, Typography } from '@mui/material';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import { ApprovedCorpusItem, Prospect } from '../../../api/generatedTypes';
-import { RejectItemForm } from '../RejectItemForm/RejectItemForm';
+import { Modal } from '../../../_shared/components';
+import { RejectItemForm } from '../';
 
 interface RejectProspectModalProps {
   prospect: Prospect | ApprovedCorpusItem;

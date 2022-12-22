@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
-import { Box, Grid, Typography } from '@material-ui/core';
+import { Box, Grid, Typography } from '@mui/material';
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { Modal } from '../../../_shared/components';
 import { ScheduleItemFormConnector } from '../';
