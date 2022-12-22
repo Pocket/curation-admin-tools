@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button } from '../../../_shared/components';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import { Box } from '@material-ui/core';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { Box } from '@mui/material';
 
 interface NextPrevPaginationProps {
   /**
