@@ -8,7 +8,7 @@ import {
   FormHelperText,
   Grid,
   LinearProgress,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   SharedFormButtons,
   SharedFormButtonsProps,

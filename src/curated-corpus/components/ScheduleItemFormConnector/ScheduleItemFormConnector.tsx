@@ -1,6 +1,8 @@
-import { ScheduleItemForm } from '../ScheduleItemForm/ScheduleItemForm';
 import React, { useEffect, useState } from 'react';
+import { ApolloError } from '@apollo/client';
 import { FormikHelpers, FormikValues } from 'formik';
+import { DateTime } from 'luxon';
+import { CircularProgress } from '@mui/material';
 import {
   HandleApiResponse,
   SharedFormButtonsProps,
@@ -10,11 +12,9 @@ import {
   useGetScheduledItemCountsLazyQuery,
   useGetScheduledSurfacesForUserQuery,
 } from '../../../api/generatedTypes';
-import { DateTime } from 'luxon';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
-import { ApolloError } from '@apollo/client';
 import { useNotifications } from '../../../_shared/hooks';
-import { CircularProgress } from '@material-ui/core';
+import { ScheduleItemForm } from '../';
 
 interface ScheduleItemFormConnectorProps {
   /**

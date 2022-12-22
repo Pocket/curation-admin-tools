@@ -21,6 +21,9 @@ describe('The CollectionForm component', () => {
   let languages: CollectionLanguage[];
   const handleSubmit = jest.fn();
 
+  // This test suite occasionally takes forever to run on a local machine
+  jest.setTimeout(10000);
+
   beforeEach(() => {
     collection = {
       externalId: '124abc',
