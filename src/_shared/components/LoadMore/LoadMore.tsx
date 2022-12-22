@@ -1,6 +1,6 @@
 import React from 'react';
-import { Box, CircularProgress } from '@material-ui/core';
-import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
+import { Box, CircularProgress } from '@mui/material';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import { Button } from '../';
 
 interface LoadMoreProps {

@@ -28,7 +28,7 @@ interface FormikTextFieldProps {
 
 /**
  * A place where we can hide away some of the awkwardness of integrating Formik
- * with Material-UI input fields.
+ * with Material UI input fields.
  *
  * This component relies on the form itself to call the useFormik() hook and pass
  * down the properties of interest to the field itself.

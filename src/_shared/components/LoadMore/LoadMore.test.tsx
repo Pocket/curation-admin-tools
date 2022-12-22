@@ -39,7 +39,7 @@ describe('The LoadMore component', () => {
 
     const button = screen.getByRole('button') as HTMLButtonElement;
 
-    // Helpfully, Material-UI doesn't actually use the 'disabled' attribute
+    // Helpfully, Material UI doesn't actually use the 'disabled' attribute
     // on a button element - instead, it adds a couple of 'disabled' classes to it.
     expect(button.getAttribute('class')).toContain('disabled');
   });
