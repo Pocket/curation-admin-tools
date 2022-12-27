@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
-import { Box, Button, Grid, Hidden } from '@material-ui/core';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import FilterListIcon from '@material-ui/icons/FilterList';
-import AddIcon from '@material-ui/icons/Add';
+import { Box, Button, Grid, Hidden } from '@mui/material';
+import { Refresh, FilterList } from '@mui/icons-material';
+import AddIcon from '@mui/icons-material/Add';
 import { HandleApiResponse } from '../../../_shared/components';
 import {
   AddProspectModal,
@@ -658,7 +657,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
             <Grid item xs={12} sm={6}>
               <Box display="flex" justifyContent="flex-end" mb={2}>
                 <Button
-                  color="default"
+                  sx={{ color: 'rgb(0, 0, 0, 0.87)' }}
                   onClick={() => {
                     // toggle the add prospect modal
                     toggleAddProspectModal();
@@ -667,7 +666,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                   <AddIcon fontSize="large" />
                 </Button>
                 <Button
-                  color="default"
+                  sx={{ color: 'rgb(0, 0, 0, 0.87)' }}
                   onClick={() => {
                     // If all the prospects have been processed already,
                     // there is no need for a confirmation dialogue here,
@@ -677,12 +676,12 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                       : refetch && refetch(filterProspectsBy);
                   }}
                 >
-                  <RefreshIcon fontSize="large" />
+                  <Refresh fontSize="large" />
                 </Button>
 
                 {prospectFilters.length > 0 && (
                   <SplitButton
-                    icon={<FilterListIcon fontSize="large" />}
+                    icon={<FilterList fontSize="large" />}
                     onMenuOptionClick={updateFilters}
                     options={prospectFilters}
                     size="medium"
