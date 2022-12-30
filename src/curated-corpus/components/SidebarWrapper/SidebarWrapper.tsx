@@ -3,8 +3,7 @@ import { DateTime } from 'luxon';
 import { useStyles } from './SidebarWrapper.styles';
 import { ScheduleSummaryConnector } from '../ScheduleSummaryConnector/ScheduleSummaryConnector';
 import { SidebarDatePicker } from '../SidebarDatePicker/SidebarDatePicker';
-import { Box } from '@material-ui/core';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import { Box } from '@mui/material';
 
 interface SidebarWrapperProps {
   /**
@@ -66,10 +65,7 @@ export const SidebarWrapper: React.FC<SidebarWrapperProps> = (
   const displayDate = date.setLocale('en').toLocaleString(DateTime.DATE_FULL);
 
   // What to do when the user clicks on a date in the calendar.
-  const handleDateChange = (
-    date: MaterialUiPickersDate,
-    value?: string | null | undefined
-  ) => {
+  const handleDateChange = (date: any, value?: string | null | undefined) => {
     // Keep track of the chosen date.
     setSidebarDate(date);
   };

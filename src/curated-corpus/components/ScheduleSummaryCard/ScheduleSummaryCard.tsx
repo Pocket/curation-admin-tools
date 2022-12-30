@@ -7,7 +7,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-} from '@material-ui/core';
+} from '@mui/material';
 
 export type ScheduleSummary = {
   /**

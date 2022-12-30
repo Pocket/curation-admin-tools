@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import { ScheduleSummaryCard } from '../ScheduleSummaryCard/ScheduleSummaryCard';
 import { getGroupedPublisherData } from '../../helpers/publishers';
 import { getDisplayTopic, getGroupedTopicData } from '../../helpers/topics';

@@ -8,8 +8,8 @@ import {
   MenuList,
   Paper,
   Popper,
-} from '@material-ui/core';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+} from '@mui/material';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { useStyles } from './SplitButton.styles';
 import { DropdownOption } from '../../helpers/definitions';
 
@@ -72,7 +72,7 @@ export const SplitButton: React.FC<SplitButtonProps> = (props) => {
     setOpen((prevOpen) => !prevOpen);
   };
 
-  const handleClose = (event: React.MouseEvent<Document, MouseEvent>) => {
+  const handleClose = (event: MouseEvent | TouchEvent) => {
     if (
       anchorRef.current &&
       anchorRef.current.contains(event.target as HTMLElement)
@@ -83,13 +83,15 @@ export const SplitButton: React.FC<SplitButtonProps> = (props) => {
     setOpen(false);
   };
 
+  //TODO @Herraj fix ButtonGroup divider color and hover bgColor
+
   return (
     <>
       <ButtonGroup
         variant="text"
-        color="default"
         ref={anchorRef}
         aria-label="split button"
+        sx={{ color: 'rgb(0, 0, 0, 0.87)' }}
       >
         <Button
           className={
@@ -97,6 +99,7 @@ export const SplitButton: React.FC<SplitButtonProps> = (props) => {
               ? classes.optionNameSmall
               : classes.optionNameMedium
           }
+          sx={{ color: 'rgb(0, 0, 0, 0.87)' }}
         >
           {icon}{' '}
           {/* If the selected option no longer exists after the split button
@@ -107,7 +110,7 @@ export const SplitButton: React.FC<SplitButtonProps> = (props) => {
             : options[0].name}
         </Button>
         <Button
-          color="default"
+          sx={{ color: 'rgb(0, 0, 0, 0.87)' }}
           size="small"
           aria-controls={open ? 'split-button-menu' : undefined}
           aria-expanded={open ? 'true' : undefined}

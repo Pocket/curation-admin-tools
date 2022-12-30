@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 
 import {
   ScheduledCorpusItem,
@@ -8,7 +8,6 @@ import {
 } from '../../../api/generatedTypes';
 import { HandleApiResponse } from '../../../_shared/components';
 import { ScheduleSummaryLayout } from '../../components';
-import { useStyles } from './ScheduleSummaryConnector.styles';
 
 interface ScheduleSummaryConnectorProps {
   /**
@@ -54,7 +53,6 @@ interface ScheduleSummaryConnectorProps {
 export const ScheduleSummaryConnector: React.FC<
   ScheduleSummaryConnectorProps
 > = (props): JSX.Element => {
-  const classes = useStyles();
   const { date, scheduledSurfaceGuid, refreshData, setRefreshData } = props;
 
   const [scheduledItems, setScheduledItems] = useState<ScheduledCorpusItem[]>(
@@ -107,13 +105,19 @@ export const ScheduleSummaryConnector: React.FC<
       {data &&
         (data.getScheduledCorpusItems.length < 1 ||
           scheduledItems.length < 1) && (
-          <Typography className={classes.heading} variant="h4">
+          <Typography
+            variant="h4"
+            sx={{ fontSize: '1rem', fontWeight: 500, padding: '0.75rem 0' }}
+          >
             No stories have been scheduled for this date yet.
           </Typography>
         )}
       {data && scheduledItems.length > 0 && (
         <>
-          <Typography className={classes.heading} variant="h4">
+          <Typography
+            variant="h4"
+            sx={{ fontSize: '1rem', fontWeight: 500, padding: '0.75rem 0' }}
+          >
             {data.getScheduledCorpusItems[0]?.totalCount}{' '}
             {data.getScheduledCorpusItems[0]?.totalCount === 1
               ? 'story'
