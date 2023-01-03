@@ -53,7 +53,7 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
           productLink="/curated-corpus"
           menuLinks={menuLinks}
         />
-        <StyledContainer>
+        <StyledContainer maxWidth="xl" disableGutters>
           <Switch>
             <Route exact path={`${path}/`}>
               <h2>Welcome to Pocket&apos;s Curated Corpus management tool.</h2>

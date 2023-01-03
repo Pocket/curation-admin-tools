@@ -24,14 +24,12 @@ export const FloatingActionButton: React.FC<FloatingActionButtonProps> = (
       size="medium"
       onClick={onClick}
       sx={{
-        bottomRightFloating: {
-          position: 'fixed',
-          margin: '0rem',
-          top: 'auto',
-          right: '1.5rem',
-          bottom: '1.5rem',
-          left: 'auto',
-        },
+        position: 'fixed',
+        margin: '0rem',
+        top: 'auto',
+        right: '1.5rem',
+        bottom: '1.5rem',
+        left: 'auto',
       }}
     >
       <ArrowUpwardIcon />

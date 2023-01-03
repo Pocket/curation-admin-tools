@@ -1,10 +1,10 @@
 import React from 'react';
-import { Card, CardActions, Grid } from '@material-ui/core';
-import { useStyles } from './ScheduledItemCardWrapper.styles';
+import { Card, CardActions, Grid, Link } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 import { ScheduledCorpusItem } from '../../../api/generatedTypes';
+import { curationPalette } from '../../../theme';
 import { Button } from '../../../_shared/components';
 import { ApprovedItemListCard } from '../ApprovedItemListCard/ApprovedItemListCard';
-import { Link } from 'react-router-dom';
 
 interface ScheduledItemCardWrapperProps {
   /**
@@ -41,7 +41,6 @@ interface ScheduledItemCardWrapperProps {
 export const ScheduledItemCardWrapper: React.FC<
   ScheduledItemCardWrapperProps
 > = (props): JSX.Element => {
-  const classes = useStyles();
   const {
     item,
     onMoveToBottom,
@@ -53,18 +52,37 @@ export const ScheduledItemCardWrapper: React.FC<
 
   return (
     <Grid item xs={12} sm={6} md={3}>
-      <Card className={classes.root}>
+      <Card
+        sx={{
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          position: 'relative',
+        }}
+      >
         <ApprovedItemListCard
           item={item.approvedItem}
           showLanguageIcon={showLanguageIcon}
           showRecommendedOverlay={showRecommendedOverlay}
         />
 
-        <CardActions className={classes.actions}>
+        <CardActions
+          sx={{
+            margin: 'auto',
+            paddingLeft: 0,
+            '& button': {
+              marginLeft: '0 !important',
+            },
+          }}
+        >
           <Button buttonType="positive" variant="text">
             <Link
               to={`/curated-corpus/corpus/item/${item.approvedItem.externalId}`}
-              className={classes.link}
+              component={RouterLink}
+              sx={{
+                color: curationPalette.primary,
+                textDecoration: 'none',
+              }}
             >
               View
             </Link>
