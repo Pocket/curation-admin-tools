@@ -12,7 +12,7 @@ import {
   useGetScheduledItemCountsLazyQuery,
   useGetScheduledSurfacesForUserQuery,
 } from '../../../api/generatedTypes';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+
 import { useNotifications } from '../../../_shared/hooks';
 import { ScheduleItemForm } from '../';
 
@@ -102,10 +102,7 @@ export const ScheduleItemFormConnector: React.FC<
     });
 
   // What to do when the user clicks on a date in the calendar.
-  const handleDateChange = (
-    date: MaterialUiPickersDate,
-    value?: string | null | undefined
-  ) => {
+  const handleDateChange = (date: any, value?: string | null | undefined) => {
     // Keep track of the chosen date.
     setSelectedDate(date);
 

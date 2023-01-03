@@ -1,9 +1,9 @@
 import React from 'react';
 import { Modal } from '../../../_shared/components';
-import { Grid } from '@material-ui/core';
-import { ScheduledCorpusItem } from '../../../api/generatedTypes';
+import { Grid } from '@mui/material';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
+import { ScheduledCorpusItem } from '../../../api/generatedTypes';
 import { RemoveItemFromScheduledSurfaceForm } from '../';
 
 interface RemoveItemFromScheduledSurfaceModalProps {

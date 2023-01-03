@@ -57,7 +57,7 @@ export const CollectionsLandingPage = (): JSX.Element => {
         productLink="/collections"
         menuLinks={menuLinks}
       />
-      <StyledContainer>
+      <StyledContainer maxWidth="xl" disableGutters>
         <Switch>
           <Route exact path={path}>
             <CollectionsHomePage />

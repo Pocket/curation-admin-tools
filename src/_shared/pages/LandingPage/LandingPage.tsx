@@ -16,7 +16,7 @@ export const LandingPage = (): JSX.Element => {
         productLink=""
         menuLinks={[]}
       />
-      <StyledContainer>
+      <StyledContainer maxWidth="xl" disableGutters>
         <Grid
           container
           spacing={2}
