@@ -143,6 +143,7 @@ export const ScheduleItemForm: React.FC<
           </Grid>
           <Grid item xs={12}>
             <DatePicker
+              label="Choose a date"
               inputFormat="MMMM d, yyyy"
               value={selectedDate}
               onChange={handleDateChange}
@@ -152,9 +153,9 @@ export const ScheduleItemForm: React.FC<
               renderInput={(params: any) => (
                 <TextField
                   fullWidth
+                  size="small"
                   variant="outlined"
                   id="scheduled-date"
-                  label="Choose a date"
                   {...params}
                 />
               )}
