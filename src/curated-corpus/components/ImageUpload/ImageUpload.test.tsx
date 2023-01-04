@@ -11,6 +11,8 @@ import {
 import { SnackbarProvider } from 'notistack';
 import { MockedProvider } from '@apollo/client/testing';
 import { formatFileSize } from '../../../_shared/utils/formatFileSize';
+import { ThemeProvider } from '@mui/material/styles';
+import theme from '../../../theme';
 
 describe('The ImageUpload component', () => {
   let entity: ApprovedCorpusItem;
@@ -45,13 +47,15 @@ describe('The ImageUpload component', () => {
   it('should render all elements when update image button is clicked', async () => {
     render(
       <MockedProvider>
-        <SnackbarProvider maxSnack={3}>
-          <ImageUpload
-            entity={entity}
-            placeholder={placeholder}
-            onImageSave={onImageSave}
-          />
-        </SnackbarProvider>
+        <ThemeProvider theme={theme}>
+          <SnackbarProvider maxSnack={3}>
+            <ImageUpload
+              entity={entity}
+              placeholder={placeholder}
+              onImageSave={onImageSave}
+            />
+          </SnackbarProvider>
+        </ThemeProvider>
       </MockedProvider>
     );
 
@@ -89,13 +93,15 @@ describe('The ImageUpload component', () => {
 
     render(
       <MockedProvider>
-        <SnackbarProvider maxSnack={3}>
-          <ImageUpload
-            entity={entity}
-            placeholder={placeholder}
-            onImageSave={onImageSave}
-          />
-        </SnackbarProvider>
+        <ThemeProvider theme={theme}>
+          <SnackbarProvider maxSnack={3}>
+            <ImageUpload
+              entity={entity}
+              placeholder={placeholder}
+              onImageSave={onImageSave}
+            />
+          </SnackbarProvider>
+        </ThemeProvider>
       </MockedProvider>
     );
 

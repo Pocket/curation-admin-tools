@@ -5,6 +5,8 @@ import { MemoryRouter } from 'react-router-dom';
 import { ScheduledCorpusItem } from '../../../api/generatedTypes';
 import { ScheduledItemCardWrapper } from './ScheduledItemCardWrapper';
 import { getTestApprovedItem } from '../../helpers/approvedItem';
+import { ThemeProvider } from '@mui/material/styles';
+import theme from '../../../theme';
 
 describe('The ScheduledItemCardWrapper component', () => {
   let item: ScheduledCorpusItem;
@@ -25,12 +27,14 @@ describe('The ScheduledItemCardWrapper component', () => {
   it('should render an approved item card from a scheduled item', () => {
     render(
       <MemoryRouter>
-        <ScheduledItemCardWrapper
-          item={item}
-          onMoveToBottom={jest.fn()}
-          onReschedule={jest.fn()}
-          onRemove={jest.fn()}
-        />
+        <ThemeProvider theme={theme}>
+          <ScheduledItemCardWrapper
+            item={item}
+            onMoveToBottom={jest.fn()}
+            onReschedule={jest.fn()}
+            onRemove={jest.fn()}
+          />
+        </ThemeProvider>
       </MemoryRouter>
     );
 
@@ -43,12 +47,14 @@ describe('The ScheduledItemCardWrapper component', () => {
   it('should render all buttons', () => {
     render(
       <MemoryRouter>
-        <ScheduledItemCardWrapper
-          item={item}
-          onMoveToBottom={jest.fn()}
-          onReschedule={jest.fn()}
-          onRemove={jest.fn()}
-        />
+        <ThemeProvider theme={theme}>
+          <ScheduledItemCardWrapper
+            item={item}
+            onMoveToBottom={jest.fn()}
+            onReschedule={jest.fn()}
+            onRemove={jest.fn()}
+          />
+        </ThemeProvider>
       </MemoryRouter>
     );
 
@@ -77,12 +83,14 @@ describe('The ScheduledItemCardWrapper component', () => {
 
     render(
       <MemoryRouter>
-        <ScheduledItemCardWrapper
-          item={item}
-          onMoveToBottom={jest.fn()}
-          onReschedule={jest.fn()}
-          onRemove={onRemove}
-        />
+        <ThemeProvider theme={theme}>
+          <ScheduledItemCardWrapper
+            item={item}
+            onMoveToBottom={jest.fn()}
+            onReschedule={jest.fn()}
+            onRemove={onRemove}
+          />
+        </ThemeProvider>
       </MemoryRouter>
     );
 
@@ -100,12 +108,14 @@ describe('The ScheduledItemCardWrapper component', () => {
 
     render(
       <MemoryRouter>
-        <ScheduledItemCardWrapper
-          item={item}
-          onMoveToBottom={jest.fn()}
-          onReschedule={onReschedule}
-          onRemove={jest.fn()}
-        />
+        <ThemeProvider theme={theme}>
+          <ScheduledItemCardWrapper
+            item={item}
+            onMoveToBottom={jest.fn()}
+            onReschedule={onReschedule}
+            onRemove={jest.fn()}
+          />
+        </ThemeProvider>
       </MemoryRouter>
     );
 
@@ -123,12 +133,14 @@ describe('The ScheduledItemCardWrapper component', () => {
 
     render(
       <MemoryRouter>
-        <ScheduledItemCardWrapper
-          item={item}
-          onMoveToBottom={onMoveToBottom}
-          onReschedule={jest.fn()}
-          onRemove={jest.fn()}
-        />
+        <ThemeProvider theme={theme}>
+          <ScheduledItemCardWrapper
+            item={item}
+            onMoveToBottom={onMoveToBottom}
+            onReschedule={jest.fn()}
+            onRemove={jest.fn()}
+          />
+        </ThemeProvider>
       </MemoryRouter>
     );
 
@@ -144,12 +156,14 @@ describe('The ScheduledItemCardWrapper component', () => {
   it('should have the correct link to corpus item page', () => {
     render(
       <MemoryRouter>
-        <ScheduledItemCardWrapper
-          item={item}
-          onMoveToBottom={jest.fn()}
-          onReschedule={jest.fn()}
-          onRemove={jest.fn()}
-        />
+        <ThemeProvider theme={theme}>
+          <ScheduledItemCardWrapper
+            item={item}
+            onMoveToBottom={jest.fn()}
+            onReschedule={jest.fn()}
+            onRemove={jest.fn()}
+          />
+        </ThemeProvider>
       </MemoryRouter>
     );
 

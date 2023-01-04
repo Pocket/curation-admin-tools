@@ -13,6 +13,8 @@ import {
 import { ApprovedItemForm } from './ApprovedItemForm';
 import { uploadApprovedItemImage } from '../../../api/mutations/uploadApprovedItemImage';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
+import { ThemeProvider } from '@mui/material/styles';
+import theme from '../../../theme';
 
 describe('The ApprovedItemForm component', () => {
   let item: ApprovedCorpusItem;
@@ -51,14 +53,16 @@ describe('The ApprovedItemForm component', () => {
   it('should render all the form fields with correct initial values', () => {
     render(
       <MockedProvider>
-        <SnackbarProvider maxSnack={3}>
-          <ApprovedItemForm
-            approvedItem={item}
-            onSubmit={onSubmit}
-            onCancel={onCancel}
-            onImageSave={onImageSave}
-          />
-        </SnackbarProvider>
+        <ThemeProvider theme={theme}>
+          <SnackbarProvider maxSnack={3}>
+            <ApprovedItemForm
+              approvedItem={item}
+              onSubmit={onSubmit}
+              onCancel={onCancel}
+              onImageSave={onImageSave}
+            />
+          </SnackbarProvider>
+        </ThemeProvider>
       </MockedProvider>
     );
 
@@ -124,14 +128,16 @@ describe('The ApprovedItemForm component', () => {
   it('should render the ImageUpload component', () => {
     render(
       <MockedProvider>
-        <SnackbarProvider maxSnack={3}>
-          <ApprovedItemForm
-            approvedItem={item}
-            onSubmit={onSubmit}
-            onCancel={onCancel}
-            onImageSave={onImageSave}
-          />
-        </SnackbarProvider>
+        <ThemeProvider theme={theme}>
+          <SnackbarProvider maxSnack={3}>
+            <ApprovedItemForm
+              approvedItem={item}
+              onSubmit={onSubmit}
+              onCancel={onCancel}
+              onImageSave={onImageSave}
+            />
+          </SnackbarProvider>
+        </ThemeProvider>
       </MockedProvider>
     );
 
@@ -144,14 +150,16 @@ describe('The ApprovedItemForm component', () => {
   it('should render form buttons', () => {
     render(
       <MockedProvider>
-        <SnackbarProvider maxSnack={3}>
-          <ApprovedItemForm
-            approvedItem={item}
-            onSubmit={onSubmit}
-            onCancel={onCancel}
-            onImageSave={onImageSave}
-          />
-        </SnackbarProvider>
+        <ThemeProvider theme={theme}>
+          <SnackbarProvider maxSnack={3}>
+            <ApprovedItemForm
+              approvedItem={item}
+              onSubmit={onSubmit}
+              onCancel={onCancel}
+              onImageSave={onImageSave}
+            />
+          </SnackbarProvider>
+        </ThemeProvider>
       </MockedProvider>
     );
 
@@ -167,14 +175,16 @@ describe('The ApprovedItemForm component', () => {
     it('should call the onSave callback for the save button', async () => {
       render(
         <MockedProvider>
-          <SnackbarProvider maxSnack={3}>
-            <ApprovedItemForm
-              approvedItem={item}
-              onSubmit={onSubmit}
-              onCancel={onCancel}
-              onImageSave={onImageSave}
-            />
-          </SnackbarProvider>
+          <ThemeProvider theme={theme}>
+            <SnackbarProvider maxSnack={3}>
+              <ApprovedItemForm
+                approvedItem={item}
+                onSubmit={onSubmit}
+                onCancel={onCancel}
+                onImageSave={onImageSave}
+              />
+            </SnackbarProvider>
+          </ThemeProvider>
         </MockedProvider>
       );
 
@@ -193,14 +203,16 @@ describe('The ApprovedItemForm component', () => {
     it('should call the onCancel callback for the cancel button', async () => {
       render(
         <MockedProvider>
-          <SnackbarProvider maxSnack={3}>
-            <ApprovedItemForm
-              approvedItem={item}
-              onSubmit={onSubmit}
-              onCancel={onCancel}
-              onImageSave={onImageSave}
-            />
-          </SnackbarProvider>
+          <ThemeProvider theme={theme}>
+            <SnackbarProvider maxSnack={3}>
+              <ApprovedItemForm
+                approvedItem={item}
+                onSubmit={onSubmit}
+                onCancel={onCancel}
+                onImageSave={onImageSave}
+              />
+            </SnackbarProvider>
+          </ThemeProvider>
         </MockedProvider>
       );
 
@@ -243,14 +255,16 @@ describe('The ApprovedItemForm component', () => {
 
       render(
         <MockedProvider mocks={mocks}>
-          <SnackbarProvider maxSnack={3}>
-            <ApprovedItemForm
-              approvedItem={item}
-              onSubmit={onSubmit}
-              onCancel={onCancel}
-              onImageSave={onImageSave}
-            />
-          </SnackbarProvider>
+          <ThemeProvider theme={theme}>
+            <SnackbarProvider maxSnack={3}>
+              <ApprovedItemForm
+                approvedItem={item}
+                onSubmit={onSubmit}
+                onCancel={onCancel}
+                onImageSave={onImageSave}
+              />
+            </SnackbarProvider>
+          </ThemeProvider>
         </MockedProvider>
       );
 
@@ -298,14 +312,16 @@ describe('The ApprovedItemForm component', () => {
     it('should call the onSave callback for the save button ', async () => {
       render(
         <MockedProvider>
-          <SnackbarProvider maxSnack={3}>
-            <ApprovedItemForm
-              approvedItem={item}
-              onSubmit={onSubmit}
-              onCancel={onCancel}
-              onImageSave={onImageSave}
-            />
-          </SnackbarProvider>
+          <ThemeProvider theme={theme}>
+            <SnackbarProvider maxSnack={3}>
+              <ApprovedItemForm
+                approvedItem={item}
+                onSubmit={onSubmit}
+                onCancel={onCancel}
+                onImageSave={onImageSave}
+              />
+            </SnackbarProvider>
+          </ThemeProvider>
         </MockedProvider>
       );
 
@@ -324,14 +340,16 @@ describe('The ApprovedItemForm component', () => {
 
       render(
         <MockedProvider>
-          <SnackbarProvider maxSnack={3}>
-            <ApprovedItemForm
-              approvedItem={itemWithoutImage}
-              onSubmit={onSubmit}
-              onCancel={onCancel}
-              onImageSave={onImageSave}
-            />
-          </SnackbarProvider>
+          <ThemeProvider theme={theme}>
+            <SnackbarProvider maxSnack={3}>
+              <ApprovedItemForm
+                approvedItem={itemWithoutImage}
+                onSubmit={onSubmit}
+                onCancel={onCancel}
+                onImageSave={onImageSave}
+              />
+            </SnackbarProvider>
+          </ThemeProvider>
         </MockedProvider>
       );
 

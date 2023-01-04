@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import EventNoteIcon from '@material-ui/icons/EventNote';
-import { Grid, Collapse } from '@material-ui/core';
+import { Grid } from '@mui/material';
+import EventNoteIcon from '@mui/icons-material/EventNote';
 import { ApprovedCorpusItemScheduledSurfaceHistory } from '../../../api/generatedTypes';
-import { useStyles } from './ScheduleHistory.styles';
-
 import { Button } from '../../../_shared/components';
-import { ScheduleHistoryEntries } from '../ScheduleHistoryEntries/ScheduleHistoryEntries';
+import { ScheduleHistoryEntries } from '../';
+import { StyledHistoryCollapse } from '../../../_shared/styled';
 
 interface ScheduleHistory {
   /**
@@ -25,7 +24,6 @@ interface ScheduleHistory {
 export const ScheduleHistory: React.FC<ScheduleHistory> = (
   props
 ): JSX.Element => {
-  const classes = useStyles();
   const { data, isProspect } = props;
 
   const [isShowingHistory, setIsShowingHistory] = useState(false);
@@ -42,20 +40,17 @@ export const ScheduleHistory: React.FC<ScheduleHistory> = (
         onClick={() => {
           setIsShowingHistory(!isShowingHistory);
         }}
-        className={classes.toggleHistoryButton}
         startIcon={<EventNoteIcon />}
+        sx={{
+          paddingLeft: '0px',
+        }}
       >
         {toggleHistoryButtonText}
       </Button>
 
-      <Collapse
-        in={isShowingHistory}
-        timeout="auto"
-        unmountOnExit
-        className={classes.collapse}
-      >
+      <StyledHistoryCollapse in={isShowingHistory} timeout="auto" unmountOnExit>
         <ScheduleHistoryEntries data={data} isProspect={isProspect} />
-      </Collapse>
+      </StyledHistoryCollapse>
     </Grid>
   );
 };

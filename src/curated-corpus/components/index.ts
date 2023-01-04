@@ -10,7 +10,6 @@ export { ApprovedItemSearchForm } from './ApprovedItemSearchForm/ApprovedItemSea
 export { EditCorpusItemAction } from './actions/EditCorpusItemAction/EditCorpusItemAction';
 export { ExistingProspectCard } from './ExistingProspectCard/ExistingProspectCard';
 export { DuplicateProspectModal } from './DuplicateProspectModal/DuplicateProspectModal';
-export { LoadExtraButton } from './LoadExtraButton/LoadExtraButton';
 export { NextPrevPagination } from './NextPrevPagination/NextPrevPagination';
 export { ProspectListCard } from './ProspectListCard/ProspectListCard';
 export { RejectCorpusItemAction } from './actions/RejectCorpusItemAction/RejectCorpusItemAction';
@@ -22,6 +21,8 @@ export { RejectItemForm } from './RejectItemForm/RejectItemForm';
 export { RemoveItemFromScheduledSurfaceForm } from './RemoveItemFromScheduledSurfaceForm/RemoveItemFromScheduledSurfaceForm';
 export { RemoveItemFromScheduledSurfaceModal } from './RemoveItemFromScheduledSurfaceModal/RemoveItemFromScheduledSurfaceModal';
 export { ScheduleCorpusItemAction } from './actions/ScheduleCorpusItemAction/ScheduleCorpusItemAction';
+export { ScheduleHistory } from './ScheduleHistory/ScheduleHistory';
+export { ScheduleHistoryEntries } from './ScheduleHistoryEntries/ScheduleHistoryEntries';
 export { ScheduledItemCardWrapper } from './ScheduledItemCardWrapper/ScheduledItemCardWrapper';
 export { ScheduleItemFormConnector } from './ScheduleItemFormConnector/ScheduleItemFormConnector';
 export { ScheduleItemForm } from './ScheduleItemForm/ScheduleItemForm';

@@ -1,9 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import LuxonUtils from '@date-io/luxon';
 import { SnackbarProvider } from 'notistack';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { mock_AllScheduledSurfaces } from '../../integration-test-mocks/getScheduledSurfacesForUser';
 import { mock_ScheduledItemCountsZero } from '../../integration-test-mocks/getScheduledItemCounts';
 import { MockedProvider, MockedResponse } from '@apollo/client/testing';
@@ -29,17 +27,15 @@ describe('ScheduleItemModal', () => {
     render(
       <MockedProvider mocks={mocks}>
         <SnackbarProvider>
-          <MuiPickersUtilsProvider utils={LuxonUtils}>
-            <ScheduleItemModal
-              approvedItem={approvedItem}
-              disableScheduledSurface={false}
-              isOpen={props.isOpen ?? true}
-              scheduledSurfaceGuid={'dummyId'}
-              onSave={jest.fn()}
-              toggleModal={props.toggleModal ?? jest.fn()}
-              headingCopy={props.headingCopy ?? undefined}
-            />
-          </MuiPickersUtilsProvider>
+          <ScheduleItemModal
+            approvedItem={approvedItem}
+            disableScheduledSurface={false}
+            isOpen={props.isOpen ?? true}
+            scheduledSurfaceGuid={'dummyId'}
+            onSave={jest.fn()}
+            toggleModal={props.toggleModal ?? jest.fn()}
+            headingCopy={props.headingCopy ?? undefined}
+          />
         </SnackbarProvider>
       </MockedProvider>
     );

@@ -3,12 +3,16 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { ScheduleHistory } from './ScheduleHistory';
 import userEvent from '@testing-library/user-event';
+import { ThemeProvider } from '@mui/material/styles';
+import theme from '../../../theme';
 
 describe('The ScheduleHistory component', () => {
   it('should render the buttons to toggle and hide recent scheduled runs', async () => {
     render(
       <MemoryRouter>
-        <ScheduleHistory data={[]} />
+        <ThemeProvider theme={theme}>
+          <ScheduleHistory data={[]} />
+        </ThemeProvider>
       </MemoryRouter>
     );
 
