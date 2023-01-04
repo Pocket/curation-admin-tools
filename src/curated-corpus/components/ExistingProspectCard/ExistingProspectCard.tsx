@@ -19,6 +19,7 @@ import FaceIcon from '@mui/icons-material/Face';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { DateTime } from 'luxon';
 
+import { curationPalette } from '../../../theme';
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { Button } from '../../../_shared/components';
 import { getCuratorNameFromLdap } from '../../helpers/helperFunctions';
@@ -76,7 +77,10 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
             component="img"
             src={item.imageUrl}
             alt={item.title}
-            sx={{ borderRadius: 4, border: '1px solid lightgray' }}
+            sx={{
+              borderRadius: 4,
+              border: `1px solid ${curationPalette.lightGrey}`,
+            }}
           />
 
           <List dense disablePadding>
@@ -108,7 +112,7 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
                 sx={{
                   textDecoration: 'none',
                   padding: '1.25 rem 0',
-                  color: '#222',
+                  color: curationPalette.pocketBlack,
                 }}
               >
                 <Typography

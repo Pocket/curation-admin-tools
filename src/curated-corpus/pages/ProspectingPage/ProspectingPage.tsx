@@ -4,6 +4,8 @@ import { Box, Button, Grid, Hidden } from '@mui/material';
 import Refresh from '@mui/icons-material/Refresh';
 import FilterList from '@mui/icons-material/FilterList';
 import AddIcon from '@mui/icons-material/Add';
+
+import { curationPalette } from '../../../theme';
 import { HandleApiResponse } from '../../../_shared/components';
 import {
   AddProspectModal,
@@ -658,7 +660,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
             <Grid item xs={12} sm={6}>
               <Box display="flex" justifyContent="flex-end" mb={2}>
                 <Button
-                  sx={{ color: 'rgb(0, 0, 0, 0.87)' }}
+                  sx={{ color: curationPalette.pocketBlack }}
                   onClick={() => {
                     // toggle the add prospect modal
                     toggleAddProspectModal();
@@ -667,7 +669,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                   <AddIcon fontSize="large" />
                 </Button>
                 <Button
-                  sx={{ color: 'rgb(0, 0, 0, 0.87)' }}
+                  sx={{ color: curationPalette.pocketBlack }}
                   onClick={() => {
                     // If all the prospects have been processed already,
                     // there is no need for a confirmation dialogue here,
