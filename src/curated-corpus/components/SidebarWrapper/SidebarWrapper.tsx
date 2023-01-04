@@ -1,9 +1,7 @@
 import React from 'react';
-import { DateTime } from 'luxon';
-import { useStyles } from './SidebarWrapper.styles';
-import { ScheduleSummaryConnector } from '../ScheduleSummaryConnector/ScheduleSummaryConnector';
-import { SidebarDatePicker } from '../SidebarDatePicker/SidebarDatePicker';
 import { Box } from '@mui/material';
+import { DateTime } from 'luxon';
+import { ScheduleSummaryConnector, SidebarDatePicker } from '../';
 
 interface SidebarWrapperProps {
   /**
@@ -53,7 +51,6 @@ interface SidebarWrapperProps {
 export const SidebarWrapper: React.FC<SidebarWrapperProps> = (
   props
 ): JSX.Element => {
-  const classes = useStyles();
   const {
     date,
     setSidebarDate,
@@ -71,7 +68,17 @@ export const SidebarWrapper: React.FC<SidebarWrapperProps> = (
   };
 
   return (
-    <div className={classes.root}>
+    <Box
+      sx={{
+        background: 'white',
+        position: 'sticky',
+        top: 0,
+        bottom: 0,
+        paddingTop: '0.5rem',
+        paddingBottom: '0.5rem',
+        zIndex: 5,
+      }}
+    >
       <h3> Scheduled for {displayDate}</h3>
 
       <Box mt={3} mb={1}>
@@ -87,6 +94,6 @@ export const SidebarWrapper: React.FC<SidebarWrapperProps> = (
         refreshData={refreshData}
         setRefreshData={setRefreshData}
       />
-    </div>
+    </Box>
   );
 };

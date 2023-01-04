@@ -18,6 +18,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CategoryIcon from '@mui/icons-material/Category';
+import { curationPalette } from '../../../theme';
 import { Button } from '../../../_shared/components';
 import { getDisplayTopic } from '../../helpers/topics';
 import { DismissProspectAction } from '../actions/DismissProspectAction/DismissProspectAction';
@@ -54,8 +55,6 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
   const { prospect, onAddToCorpus, onDismissProspect, onRecommend, onReject } =
     props;
 
-  //TODO @Herraj card width is smaller than before
-
   return (
     <Card
       sx={{
@@ -75,7 +74,10 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
                 : '/placeholders/collectionSmall.svg'
             }
             alt={prospect.title ?? 'No title supplied'}
-            sx={{ borderRadius: 4, border: '1px solid lightgray' }}
+            sx={{
+              borderRadius: 4,
+              border: `1px solid ${curationPalette.lightGrey}`,
+            }}
           />
 
           <List dense disablePadding>
@@ -113,7 +115,7 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
                 sx={{
                   textDecoration: 'none',
                   padding: '1.25 rem 0',
-                  color: '#222',
+                  color: curationPalette.primary,
                 }}
               >
                 <Typography

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 import { Box, Button, Grid, Hidden } from '@mui/material';
-import { Refresh, FilterList } from '@mui/icons-material';
+import Refresh from '@mui/icons-material/Refresh';
+import FilterList from '@mui/icons-material/FilterList';
 import AddIcon from '@mui/icons-material/Add';
 import { HandleApiResponse } from '../../../_shared/components';
 import {
