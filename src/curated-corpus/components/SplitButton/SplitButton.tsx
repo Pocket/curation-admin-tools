@@ -82,8 +82,6 @@ export const SplitButton: React.FC<SplitButtonProps> = (props) => {
     setOpen(false);
   };
 
-  //TODO @Herraj fix ButtonGroup divider color and hover bgColor
-
   return (
     <>
       <ButtonGroup

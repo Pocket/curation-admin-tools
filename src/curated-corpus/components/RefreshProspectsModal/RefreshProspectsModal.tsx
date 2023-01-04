@@ -13,7 +13,6 @@ export const RefreshProspectsModal: React.FC<RefreshProspectsModalProps> = (
 ): JSX.Element => {
   const { isOpen, onConfirm, toggleModal } = props;
 
-  //TODO @Herraj cancel button outline is primary color instead of neutral (grey)
   return (
     <Modal
       open={isOpen}

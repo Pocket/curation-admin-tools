@@ -70,7 +70,7 @@ export const AddProspectModal: React.FC<AddProspectModalProps> = (
     setIsManualSubmission,
     setIsRecommendation,
   } = props;
-  //TODO: @Herraj save button padding is off, cancel button outline is primary colour instead of neutral
+
   return (
     <Modal open={isOpen} handleClose={toggleModal}>
       <Grid container direction="column">
