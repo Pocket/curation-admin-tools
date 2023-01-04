@@ -1,8 +1,6 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider, MockedResponse } from '@apollo/client/testing';
-import LuxonUtils from '@date-io/luxon';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import { DateTime } from 'luxon';
 import { SidebarWrapper } from '../../components';
 import { mock_scheduledItems } from '../../integration-test-mocks/getScheduledItems';
@@ -19,15 +17,13 @@ describe('The SidebarWrapper component', () => {
   it('should show sidebar heading', async () => {
     render(
       <MockedProvider mocks={mocks}>
-        <MuiPickersUtilsProvider utils={LuxonUtils}>
-          <SidebarWrapper
-            date={date}
-            scheduledSurfaceGuid={'NEW_TAB_EN_US'}
-            refreshData={false}
-            setRefreshData={jest.fn()}
-            setSidebarDate={jest.fn()}
-          ></SidebarWrapper>
-        </MuiPickersUtilsProvider>
+        <SidebarWrapper
+          date={date}
+          scheduledSurfaceGuid={'NEW_TAB_EN_US'}
+          refreshData={false}
+          setRefreshData={jest.fn()}
+          setSidebarDate={jest.fn()}
+        ></SidebarWrapper>
       </MockedProvider>
     );
 
@@ -44,15 +40,13 @@ describe('The SidebarWrapper component', () => {
   it('should show the date picker', async () => {
     render(
       <MockedProvider mocks={mocks}>
-        <MuiPickersUtilsProvider utils={LuxonUtils}>
-          <SidebarWrapper
-            date={date}
-            scheduledSurfaceGuid={'NEW_TAB_EN_US'}
-            refreshData={false}
-            setRefreshData={jest.fn()}
-            setSidebarDate={jest.fn()}
-          ></SidebarWrapper>
-        </MuiPickersUtilsProvider>
+        <SidebarWrapper
+          date={date}
+          scheduledSurfaceGuid={'NEW_TAB_EN_US'}
+          refreshData={false}
+          setRefreshData={jest.fn()}
+          setSidebarDate={jest.fn()}
+        ></SidebarWrapper>
       </MockedProvider>
     );
 
@@ -69,15 +63,13 @@ describe('The SidebarWrapper component', () => {
   it('should show the schedule summary', async () => {
     render(
       <MockedProvider mocks={mocks}>
-        <MuiPickersUtilsProvider utils={LuxonUtils}>
-          <SidebarWrapper
-            date={date}
-            scheduledSurfaceGuid={'NEW_TAB_EN_US'}
-            refreshData={false}
-            setRefreshData={jest.fn()}
-            setSidebarDate={jest.fn()}
-          ></SidebarWrapper>
-        </MuiPickersUtilsProvider>
+        <SidebarWrapper
+          date={date}
+          scheduledSurfaceGuid={'NEW_TAB_EN_US'}
+          refreshData={false}
+          setRefreshData={jest.fn()}
+          setSidebarDate={jest.fn()}
+        ></SidebarWrapper>
       </MockedProvider>
     );
 
