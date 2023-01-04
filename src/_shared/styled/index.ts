@@ -1,10 +1,15 @@
 export { StyledAppBar } from './StyledAppBar';
+export { StyledCardActions } from './StyledCardActions';
 export { StyledCardLink } from './StyledCardLink';
 export { StyledContainer } from './StyledContainer';
+export { StyledCorpusItemCard } from './StyledCorpusItemCard';
 export { StyledDrawerHeader } from './StyledDrawerHeader';
 export { StyledAppBarLink } from './StyledAppBarLink';
 export { StyledDropzoneBox } from './StyledDropzoneBox';
+export { StyledHistoryCollapse } from './StyledHistoryCollapse';
+export { StyledLinkButton } from './StyledLinkButton';
 export { StyledListCard } from './StyledListCard';
+export { StyledListItemIcon } from './StyledListItemIcon';
 export { StyledProductHeading } from './StyledProductHeading';
 export { StyledProductHeadingLink } from './StyledProductHeadingLink';
 export { StyledRouterLink } from './StyledRouterLink';

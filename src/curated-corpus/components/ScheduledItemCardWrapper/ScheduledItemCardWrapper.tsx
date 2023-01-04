@@ -1,10 +1,14 @@
 import React from 'react';
-import { Card, CardActions, Grid, Link } from '@mui/material';
+import { Grid } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import { ScheduledCorpusItem } from '../../../api/generatedTypes';
-import { curationPalette } from '../../../theme';
 import { Button } from '../../../_shared/components';
-import { ApprovedItemListCard } from '../ApprovedItemListCard/ApprovedItemListCard';
+import {
+  StyledCardActions,
+  StyledCorpusItemCard,
+  StyledLinkButton,
+} from '../../../_shared/styled';
+import { ApprovedItemListCard } from '../';
 
 interface ScheduledItemCardWrapperProps {
   /**
@@ -52,40 +56,21 @@ export const ScheduledItemCardWrapper: React.FC<
 
   return (
     <Grid item xs={12} sm={6} md={3}>
-      <Card
-        sx={{
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          position: 'relative',
-        }}
-      >
+      <StyledCorpusItemCard>
         <ApprovedItemListCard
           item={item.approvedItem}
           showLanguageIcon={showLanguageIcon}
           showRecommendedOverlay={showRecommendedOverlay}
         />
 
-        <CardActions
-          sx={{
-            margin: 'auto',
-            paddingLeft: 0,
-            '& button': {
-              marginLeft: '0 !important',
-            },
-          }}
-        >
+        <StyledCardActions>
           <Button buttonType="positive" variant="text">
-            <Link
+            <StyledLinkButton
               to={`/curated-corpus/corpus/item/${item.approvedItem.externalId}`}
               component={RouterLink}
-              sx={{
-                color: curationPalette.primary,
-                textDecoration: 'none',
-              }}
             >
               View
-            </Link>
+            </StyledLinkButton>
           </Button>
           <Button buttonType="positive" variant="text" onClick={onReschedule}>
             Reschedule
@@ -96,8 +81,8 @@ export const ScheduledItemCardWrapper: React.FC<
           <Button buttonType="negative" variant="text" onClick={onRemove}>
             Remove
           </Button>
-        </CardActions>
-      </Card>
+        </StyledCardActions>
+      </StyledCorpusItemCard>
     </Grid>
   );
 };
