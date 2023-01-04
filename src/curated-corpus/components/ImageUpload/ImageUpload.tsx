@@ -9,12 +9,14 @@ import {
   Hidden,
   LinearProgress,
   Typography,
-} from '@material-ui/core';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+} from '@mui/material';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import Dropzone, { FileWithPath } from 'react-dropzone';
-import { Modal, SharedFormButtons } from '../../../_shared/components';
-import { FileUploadInfo } from '../../../_shared/components/FileUploadInfo/FileUploadInfo';
-import { useStyles } from './ImageUpload.styles';
+import {
+  FileUploadInfo,
+  Modal,
+  SharedFormButtons,
+} from '../../../_shared/components';
 import { useNotifications } from '../../../_shared/hooks';
 import {
   ApprovedCorpusItem,
@@ -23,6 +25,7 @@ import {
 } from '../../../api/generatedTypes';
 import { readImageFileFromDisk } from '../../helpers/helperFunctions';
 import { ApprovedItemFromProspect } from '../../helpers/definitions';
+import { StyledDropzoneBox } from '../../../_shared/styled';
 
 interface ImageUploadProps {
   /**
@@ -56,7 +59,6 @@ interface ImageUploadProps {
  */
 
 export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
-  const classes = useStyles();
   const { entity, placeholder, onImageSave } = props;
   const { showNotification } = useNotifications();
 
@@ -135,12 +137,19 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
         <CardMedia
           component="img"
           src={imageSrc || placeholder}
-          className={imageSrc ? classes.image : classes.placeholder}
           onClick={() => {
             setImageUploadOpen(true);
           }}
+          sx={{
+            cursor: 'pointer',
+          }}
         />
-        <CardActions disableSpacing={true} className={classes.cardActions}>
+        <CardActions
+          disableSpacing={true}
+          sx={{
+            justifyContent: 'center',
+          }}
+        >
           <MuiButton
             size="small"
             color="primary"
@@ -148,7 +157,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
               setImageUploadOpen(true);
             }}
           >
-            <CloudUploadIcon className={classes.uploadIcon} />
+            <CloudUploadIcon sx={{ paddingRight: '0.5rem' }} />
             <Hidden smDown implementation="css">
               Update image
             </Hidden>
@@ -161,12 +170,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
           <Grid item xs={12}>
             <Dropzone onDrop={onDrop} maxFiles={1} accept="image/*">
               {({ getRootProps, getInputProps }) => (
-                <Box
-                  {...getRootProps({
-                    className: classes.dropzone,
-                  })}
-                  pt={2}
-                >
+                <StyledDropzoneBox {...getRootProps()} pt={2}>
                   <input
                     {...getInputProps()}
                     data-testid="curated-corpus-image-upload-input"
@@ -188,7 +192,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
                       </Box>
                     )}
                   </Box>
-                </Box>
+                </StyledDropzoneBox>
               )}
             </Dropzone>
           </Grid>

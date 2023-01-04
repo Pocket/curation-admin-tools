@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@mui/material';
 import { FormikValues } from 'formik';
 import { config } from '../../../config';
 import {
@@ -12,12 +12,12 @@ import { HandleApiResponse } from '../../../_shared/components';
 import {
   ApprovedItemCardWrapper,
   ApprovedItemSearchForm,
+  EditCorpusItemAction,
   NextPrevPagination,
   RejectCorpusItemAction,
   ScheduleCorpusItemAction,
 } from '../../components';
 import { useToggle } from '../../../_shared/hooks';
-import { EditCorpusItemAction } from '../../components/actions/EditCorpusItemAction/EditCorpusItemAction';
 
 export const CorpusPage: React.FC = (): JSX.Element => {
   // Get the usual API response vars and a helper method to retrieve data
