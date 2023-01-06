@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 import { Box, Button, Grid, Hidden } from '@mui/material';
-import Refresh from '@mui/icons-material/Refresh';
-import FilterList from '@mui/icons-material/FilterList';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import AddIcon from '@mui/icons-material/Add';
 
 import { curationPalette } from '../../../theme';
@@ -679,12 +679,12 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                       : refetch && refetch(filterProspectsBy);
                   }}
                 >
-                  <Refresh fontSize="large" />
+                  <RefreshIcon fontSize="large" />
                 </Button>
 
                 {prospectFilters.length > 0 && (
                   <SplitButton
-                    icon={<FilterList fontSize="large" />}
+                    icon={<FilterListIcon fontSize="large" />}
                     onMenuOptionClick={updateFilters}
                     options={prospectFilters}
                     size="medium"

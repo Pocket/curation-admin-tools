@@ -98,7 +98,7 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
             marginTop: '0.25rem',
             fontWeight: 400,
             fontSize: '0.875rem',
-            color: curationPalette.lightGrey,
+            color: curationPalette.neutral,
           }}
         >
           <span>{item.publisher}</span> &middot;{' '}

@@ -9,7 +9,6 @@ import {
   Link,
   List,
   ListItem,
-  ListItemIcon,
   ListItemText,
   Typography,
 } from '@mui/material';
@@ -20,6 +19,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CategoryIcon from '@mui/icons-material/Category';
 import { curationPalette } from '../../../theme';
 import { Button } from '../../../_shared/components';
+import { StyledListItemIcon } from '../../../_shared/styled';
 import { getDisplayTopic } from '../../helpers/topics';
 import { DismissProspectAction } from '../actions/DismissProspectAction/DismissProspectAction';
 
@@ -82,25 +82,25 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
 
           <List dense disablePadding>
             <ListItem disableGutters>
-              <ListItemIcon sx={{ minWidth: '1.5rem' }}>
+              <StyledListItemIcon>
                 <LanguageIcon fontSize="small" />
-              </ListItemIcon>
+              </StyledListItemIcon>
               <ListItemText
                 secondary={prospect.language?.toUpperCase() ?? 'N/A'}
               />
             </ListItem>
 
             <ListItem disableGutters>
-              <ListItemIcon sx={{ minWidth: '1.5rem' }}>
+              <StyledListItemIcon>
                 <FavoriteBorderIcon fontSize="small" />
-              </ListItemIcon>
+              </StyledListItemIcon>
               <ListItemText secondary={`${prospect.saveCount} saves`} />
             </ListItem>
 
             <ListItem disableGutters>
-              <ListItemIcon sx={{ minWidth: '1.5rem' }}>
+              <StyledListItemIcon>
                 <MyLocationIcon fontSize="small" />
-              </ListItemIcon>
+              </StyledListItemIcon>
               <ListItemText secondary={prospect.prospectType.toLowerCase()} />
             </ListItem>
           </List>

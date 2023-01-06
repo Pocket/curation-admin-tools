@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { DateTime } from 'luxon';
 import { TextField } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
@@ -28,16 +28,9 @@ export const SidebarDatePicker: React.FC<SidebarDatePickerProps> = (
 ): JSX.Element => {
   const { handleDateChange, selectedDate } = props;
 
-  // state variable to track date picker open state.
-  // This is being controlled by the onClick on the TextField component within the DatePicker component below
-  const [open, setOpen] = useState(false);
-
   return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
       <DatePicker
-        open={open}
-        onOpen={() => setOpen(true)}
-        onClose={() => setOpen(false)}
         inputFormat="MMMM d, yyyy"
         label="Choose a different date"
         value={selectedDate}
@@ -51,7 +44,6 @@ export const SidebarDatePicker: React.FC<SidebarDatePickerProps> = (
             variant="outlined"
             id="scheduled-date"
             label="Choose a date"
-            onClick={() => setOpen(true)}
             {...params}
           />
         )}
