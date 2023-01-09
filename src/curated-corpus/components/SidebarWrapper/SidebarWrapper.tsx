@@ -1,10 +1,7 @@
 import React from 'react';
+import { Box } from '@mui/material';
 import { DateTime } from 'luxon';
-import { useStyles } from './SidebarWrapper.styles';
-import { ScheduleSummaryConnector } from '../ScheduleSummaryConnector/ScheduleSummaryConnector';
-import { SidebarDatePicker } from '../SidebarDatePicker/SidebarDatePicker';
-import { Box } from '@material-ui/core';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import { ScheduleSummaryConnector, SidebarDatePicker } from '../';
 
 interface SidebarWrapperProps {
   /**
@@ -54,7 +51,6 @@ interface SidebarWrapperProps {
 export const SidebarWrapper: React.FC<SidebarWrapperProps> = (
   props
 ): JSX.Element => {
-  const classes = useStyles();
   const {
     date,
     setSidebarDate,
@@ -66,16 +62,23 @@ export const SidebarWrapper: React.FC<SidebarWrapperProps> = (
   const displayDate = date.setLocale('en').toLocaleString(DateTime.DATE_FULL);
 
   // What to do when the user clicks on a date in the calendar.
-  const handleDateChange = (
-    date: MaterialUiPickersDate,
-    value?: string | null | undefined
-  ) => {
+  const handleDateChange = (date: any, value?: string | null | undefined) => {
     // Keep track of the chosen date.
     setSidebarDate(date);
   };
 
   return (
-    <div className={classes.root}>
+    <Box
+      sx={{
+        background: 'white',
+        position: 'sticky',
+        top: 0,
+        bottom: 0,
+        paddingTop: '0.5rem',
+        paddingBottom: '0.5rem',
+        zIndex: 5,
+      }}
+    >
       <h3> Scheduled for {displayDate}</h3>
 
       <Box mt={3} mb={1}>
@@ -91,6 +94,6 @@ export const SidebarWrapper: React.FC<SidebarWrapperProps> = (
         refreshData={refreshData}
         setRefreshData={setRefreshData}
       />
-    </div>
+    </Box>
   );
 };

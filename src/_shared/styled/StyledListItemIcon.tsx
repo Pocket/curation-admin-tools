@@ -6,5 +6,5 @@ import { styled } from '@mui/styles';
  * (there are five of those at the time of adding this comment)
  */
 export const StyledListItemIcon = styled(ListItemIcon)(() => ({
-  minWidth: '2rem',
+  minWidth: '1.5rem',
 }));

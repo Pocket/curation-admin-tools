@@ -9,19 +9,19 @@ import {
   Link,
   List,
   ListItem,
-  ListItemIcon,
   ListItemText,
   Typography,
-} from '@material-ui/core';
-import { useStyles } from './ProspectListCard.styles';
-import LanguageIcon from '@material-ui/icons/Language';
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
-import MyLocationIcon from '@material-ui/icons/MyLocation';
+} from '@mui/material';
+import LanguageIcon from '@mui/icons-material/Language';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import MyLocationIcon from '@mui/icons-material/MyLocation';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CategoryIcon from '@mui/icons-material/Category';
+import { curationPalette } from '../../../theme';
 import { Button } from '../../../_shared/components';
+import { StyledListItemIcon } from '../../../_shared/styled';
 import { getDisplayTopic } from '../../helpers/topics';
-import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import { DismissProspectAction } from '../actions/DismissProspectAction/DismissProspectAction';
-import CategoryIcon from '@material-ui/icons/Category';
 
 interface ProspectListCardProps {
   /**
@@ -52,12 +52,18 @@ interface ProspectListCardProps {
 export const ProspectListCard: React.FC<ProspectListCardProps> = (
   props
 ): JSX.Element => {
-  const classes = useStyles();
   const { prospect, onAddToCorpus, onDismissProspect, onRecommend, onReject } =
     props;
 
   return (
-    <Card className={classes.root}>
+    <Card
+      sx={{
+        padding: '0.5rem',
+        display: 'flex',
+        flexDirection: 'column',
+        marginBottom: '2rem',
+      }}
+    >
       <Grid container spacing={2}>
         <Grid item xs={12} sm={3}>
           <CardMedia
@@ -68,30 +74,33 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
                 : '/placeholders/collectionSmall.svg'
             }
             alt={prospect.title ?? 'No title supplied'}
-            className={classes.image}
+            sx={{
+              borderRadius: 4,
+              border: `1px solid ${curationPalette.lightGrey}`,
+            }}
           />
 
           <List dense disablePadding>
             <ListItem disableGutters>
-              <ListItemIcon className={classes.listItemIcon}>
+              <StyledListItemIcon>
                 <LanguageIcon fontSize="small" />
-              </ListItemIcon>
+              </StyledListItemIcon>
               <ListItemText
                 secondary={prospect.language?.toUpperCase() ?? 'N/A'}
               />
             </ListItem>
 
             <ListItem disableGutters>
-              <ListItemIcon className={classes.listItemIcon}>
+              <StyledListItemIcon>
                 <FavoriteBorderIcon fontSize="small" />
-              </ListItemIcon>
+              </StyledListItemIcon>
               <ListItemText secondary={`${prospect.saveCount} saves`} />
             </ListItem>
 
             <ListItem disableGutters>
-              <ListItemIcon className={classes.listItemIcon}>
+              <StyledListItemIcon>
                 <MyLocationIcon fontSize="small" />
-              </ListItemIcon>
+              </StyledListItemIcon>
               <ListItemText secondary={prospect.prospectType.toLowerCase()} />
             </ListItem>
           </List>
@@ -102,23 +111,30 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
               <Link
                 href={prospect.url}
                 target="_blank"
-                className={classes.link}
+                underline="hover"
+                sx={{
+                  textDecoration: 'none',
+                  padding: '1.25 rem 0',
+                  color: curationPalette.primary,
+                }}
               >
                 <Typography
-                  className={classes.title}
                   variant="h3"
                   align="left"
                   gutterBottom
+                  sx={{
+                    fontSize: {
+                      sm: '1rem',
+                      md: '1.25rem',
+                    },
+                    fontWeight: 500,
+                  }}
                 >
                   {prospect.title}
                 </Typography>
               </Link>
             </Grid>
-            <Grid
-              item
-              xs={1}
-              className={classes.dismissProspectButtonContainer}
-            >
+            <Grid item xs={1} sx={{ textAlign: 'center' }}>
               <DismissProspectAction
                 onDismissProspect={onDismissProspect}
                 prospectId={prospect.id}
@@ -126,17 +142,17 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
             </Grid>
           </Grid>
           <Typography
-            className={classes.subtitle}
             variant="subtitle2"
             color="textSecondary"
             component="span"
             align="left"
+            sx={{ fontWeight: 400 }}
           >
             <span>{prospect.authors ? prospect.authors : 'Authors: N/A'}</span>{' '}
             &middot; <span>{prospect.publisher}</span> &middot;
             <span>{prospect.domain}</span>
           </Typography>
-          <Grid container className={classes.chipContainer}>
+          <Grid container sx={{ paddingTop: '0.5em', paddingBottom: '0.5em' }}>
             <Grid item>
               <Chip
                 variant="outlined"
@@ -159,7 +175,7 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
           <Typography component="div">{prospect.excerpt}</Typography>
         </Grid>
       </Grid>
-      <CardActions className={classes.actions}>
+      <CardActions sx={{ margin: 'auto' }}>
         <Button buttonType="positive" variant="text" onClick={onRecommend}>
           Recommend
         </Button>

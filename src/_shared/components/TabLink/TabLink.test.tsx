@@ -7,7 +7,7 @@ describe('The TabLink component', () => {
   it('renders successfully', () => {
     render(
       <MemoryRouter>
-        <TabLink tabSelected={false} to="/any/path/">
+        <TabLink isCurrentTab={false} to="/any/path/">
           Tab title
         </TabLink>
       </MemoryRouter>
@@ -22,7 +22,7 @@ describe('The TabLink component', () => {
   it('renders with article count', () => {
     render(
       <MemoryRouter>
-        <TabLink count={22} tabSelected to="/any/path/">
+        <TabLink count={22} isCurrentTab to="/any/path/">
           Tab title
         </TabLink>
       </MemoryRouter>
@@ -35,7 +35,7 @@ describe('The TabLink component', () => {
   it('renders with article count that is larger than 1000', () => {
     render(
       <MemoryRouter>
-        <TabLink count={1235} tabSelected to="/any/path/">
+        <TabLink count={1235} isCurrentTab to="/any/path/">
           Tab title
         </TabLink>
       </MemoryRouter>
