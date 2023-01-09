@@ -8,6 +8,7 @@ export { CollectionPartnerAssociationForm } from './CollectionPartnerAssociation
 export { CollectionPartnerAssociationInfo } from './CollectionPartnerAssociationInfo/CollectionPartnerAssociationInfo';
 export { CollectionSearchForm } from './CollectionSearchForm/CollectionSearchForm';
 export { ImageUpload } from './ImageUpload/ImageUpload';
+export { LabelListCard } from './LabelListCard/LabelListCard';
 export { PartnerForm } from './PartnerForm/PartnerForm';
 export { PartnerInfo } from './PartnerInfo/PartnerInfo';
 export { PartnerListCard } from './PartnerListCard/PartnerListCard';

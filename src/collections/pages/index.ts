@@ -10,6 +10,8 @@ export { CollectionPage } from './CollectionPage/CollectionPage';
 export { CollectionSearchPage } from './CollectionSearchPage/CollectionSearchPage';
 export { AddCollectionPage } from './AddCollectionPage/AddCollectionPage';
 
+export { LabelListPage } from './LabelListPage/LabelListPage';
+
 export { PartnerListPage } from './PartnerListPage/PartnerListPage';
 export { PartnerPage } from './PartnerPage/PartnerPage';
 export { AddPartnerPage } from './AddPartnerPage/AddPartnerPage';
