@@ -1,7 +1,7 @@
 import React from 'react';
-import { Card, Grid, Typography } from '@material-ui/core';
-import { useStyles } from './LabelListCard.styles';
+import { Card, Grid, Typography } from '@mui/material';
 import { Label } from '../../../api/generatedTypes';
+import { curationPalette } from '../../../theme';
 
 interface LabelListCardProps {
   /**
@@ -16,17 +16,32 @@ interface LabelListCardProps {
  * @param props
  */
 export const LabelListCard: React.FC<LabelListCardProps> = (props) => {
-  const classes = useStyles();
   const { label } = props;
   return (
-    <Card variant="outlined" square className={classes.root}>
+    <Card
+      variant="outlined"
+      square
+      sx={{
+        margin: 'auto',
+        padding: '1.25rem 0.25rem',
+        border: 0,
+        borderBottom: `1px solid ${curationPalette.lightGrey}`,
+        cursor: 'pointer',
+        '&:active': {
+          backgroundColor: curationPalette.lightGrey,
+        },
+      }}
+    >
       <Grid container spacing={2}>
         <Grid item xs={8} sm={10}>
           <Typography
-            className={classes.title}
-            variant="h3"
+            variant="h5"
             align="left"
             gutterBottom
+            sx={{
+              fontSize: '1.25rem',
+              fontWeight: 500,
+            }}
           >
             {label.name}
           </Typography>
