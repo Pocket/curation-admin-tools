@@ -89,7 +89,11 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
   };
 
   // prepare the upload to S3 mutation
-  const [uploadImage] = useImageUploadMutation();
+  const [uploadImage] = useImageUploadMutation({
+    context: {
+      headers: { 'x-apollo-operation-name': 'collectionImageUpload' },
+    },
+  });
 
   // Process the file the user chose from their PC/mobile device,
   // show file info to the user and set data to use in upload mutation
