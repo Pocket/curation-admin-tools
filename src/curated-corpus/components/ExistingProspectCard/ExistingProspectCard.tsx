@@ -78,7 +78,7 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
             src={item.imageUrl}
             alt={item.title}
             sx={{
-              borderRadius: 4,
+              borderRadius: 1,
               border: `1px solid ${curationPalette.lightGrey}`,
             }}
           />
