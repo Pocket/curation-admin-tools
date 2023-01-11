@@ -75,7 +75,7 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
             }
             alt={prospect.title ?? 'No title supplied'}
             sx={{
-              borderRadius: 4,
+              borderRadius: 1,
               border: `1px solid ${curationPalette.lightGrey}`,
             }}
           />
