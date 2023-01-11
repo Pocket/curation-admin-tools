@@ -6,6 +6,7 @@ import {
   Link,
   List,
   ListItem,
+  ListItemIcon,
   ListItemText,
   Typography,
 } from '@mui/material';
@@ -18,7 +19,6 @@ import { ApprovedCorpusItem, CuratedStatus } from '../../../api/generatedTypes';
 import { getDisplayTopic } from '../../helpers/topics';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 import { ScheduleHistory } from '../';
-import { StyledListItemIcon } from '../../../_shared/styled';
 
 import { curationPalette } from '../../../theme';
 
@@ -140,6 +140,7 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
       {/* Push the rest of the elements to the bottom of the card. */}
       <Box sx={{ flexGrow: 1 }} />
 
+      {/* Note that minWidth style overrides only work inside an `sx` property, not a styled component. */}
       <List
         dense
         sx={{
@@ -148,32 +149,32 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
       >
         {item.isSyndicated && (
           <ListItem>
-            <StyledListItemIcon>
+            <ListItemIcon sx={{ minWidth: '2rem' }}>
               <CheckCircleOutlineIcon fontSize="small" />
-            </StyledListItemIcon>
+            </ListItemIcon>
             <ListItemText primary={'Syndicated'} />
           </ListItem>
         )}
         {item.isCollection && (
           <ListItem>
-            <StyledListItemIcon>
+            <ListItemIcon sx={{ minWidth: '2rem' }}>
               <BookmarksIcon fontSize="small" />
-            </StyledListItemIcon>
+            </ListItemIcon>
             <ListItemText primary={'Collection'} />
           </ListItem>
         )}
         {item.isTimeSensitive && (
           <ListItem>
-            <StyledListItemIcon>
+            <ListItemIcon sx={{ minWidth: '2rem' }}>
               <AlarmIcon fontSize="small" />
-            </StyledListItemIcon>
+            </ListItemIcon>
             <ListItemText primary={'Time Sensitive'} />
           </ListItem>
         )}
         <ListItem>
-          <StyledListItemIcon>
+          <ListItemIcon sx={{ minWidth: '2rem' }}>
             <CategoryIcon />
-          </StyledListItemIcon>
+          </ListItemIcon>
           <ListItemText
             primary={getDisplayTopic(item.topic)}
             sx={{ textTransform: 'capitalize' }}
@@ -181,9 +182,9 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
         </ListItem>
         {showLanguageIcon && (
           <ListItem>
-            <StyledListItemIcon>
+            <ListItemIcon sx={{ minWidth: '2rem' }}>
               <LanguageIcon />
-            </StyledListItemIcon>
+            </ListItemIcon>
             <ListItemText primary={item.language.toUpperCase()} />
           </ListItem>
         )}

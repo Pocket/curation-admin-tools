@@ -44,7 +44,11 @@ export const DismissProspectAction: React.FC<DismissProspectActionProps> = (
     <IconButton
       onClick={onClick}
       data-testid="dismissButton"
-      sx={{ padding: '0.25rem', color: curationPalette.secondary }}
+      sx={{
+        color: curationPalette.secondary,
+        marginRight: '-1rem',
+        padding: '0.25rem',
+      }}
     >
       <CloseIcon fontSize="medium" />
     </IconButton>
