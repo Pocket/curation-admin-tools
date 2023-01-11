@@ -5,8 +5,8 @@ import {
   downloadAndUploadApprovedItemImageToS3,
   fetchFileFromUrl,
   getCuratorNameFromLdap,
-  getScheduledSurfaceName,
   getLocalDateTimeForGuid,
+  getScheduledSurfaceName,
   readImageFileFromDisk,
 } from './helperFunctions';
 

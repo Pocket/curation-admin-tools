@@ -1,14 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import {
-  Box,
-  Button,
-  Collapse,
-  Grid,
-  Paper,
-  Typography,
-} from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
+import { Box, Button, Collapse, Grid, Paper, Typography } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import { HandleApiResponse, ScrollToTop } from '../../../_shared/components';

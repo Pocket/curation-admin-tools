@@ -3,8 +3,8 @@ import App from './App';
 
 import { AuthProvider, AuthService, useAuth } from 'react-oauth2-pkce';
 import { config } from './config';
-import { Box, Grid } from '@material-ui/core';
-import { ThemeProvider } from '@material-ui/core/styles';
+import { Box, Grid } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
 import { Button } from './_shared/components';
 import theme from './theme';
 import pocketLogo from './_shared/assets/PKTLogoRounded_RGB.png';

@@ -2,6 +2,8 @@ import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { render, screen } from '@testing-library/react';
 import { Header, MenuLink } from './Header';
+import { ThemeProvider } from '@mui/material/styles';
+import theme from '../../../theme';
 
 describe('The Header component', () => {
   let menuLinks: MenuLink[];
@@ -9,15 +11,15 @@ describe('The Header component', () => {
   beforeEach(() => {
     menuLinks = [
       {
-        text: 'Collections',
+        text: 'Link One',
         url: '/collections/',
       },
       {
-        text: 'Authors',
+        text: 'Link Two',
         url: '/authors/',
       },
       {
-        text: 'Search',
+        text: 'Link Three',
         url: '/search/',
       },
     ];
@@ -26,14 +28,16 @@ describe('The Header component', () => {
   it('renders successfully', () => {
     render(
       <MemoryRouter>
-        <Header
-          hasUser={false}
-          menuLinks={menuLinks}
-          onLogout={jest.fn()}
-          parsedIdToken={null}
-          productLink="/something"
-          productName="Collections"
-        />
+        <ThemeProvider theme={theme}>
+          <Header
+            hasUser={false}
+            menuLinks={menuLinks}
+            onLogout={jest.fn()}
+            parsedIdToken={null}
+            productLink="/something"
+            productName="Collections"
+          />
+        </ThemeProvider>
       </MemoryRouter>
     );
 
@@ -52,19 +56,30 @@ describe('The Header component', () => {
   it('shows navigation links', () => {
     render(
       <MemoryRouter>
-        <Header
-          hasUser={false}
-          menuLinks={menuLinks}
-          onLogout={jest.fn()}
-          parsedIdToken={null}
-          productLink="/something"
-          productName="Collections"
-        />
+        <ThemeProvider theme={theme}>
+          <Header
+            hasUser={false}
+            menuLinks={menuLinks}
+            onLogout={jest.fn()}
+            parsedIdToken={null}
+            productLink="/something"
+            productName="Collections"
+          />
+        </ThemeProvider>
       </MemoryRouter>
     );
-    const links = screen.getAllByRole('button');
 
-    // the extra button is the menu button in the top left corner on mobile screens
-    expect(links.length).toEqual(menuLinks.length + 1);
+    // Menu links are actual links and not buttons in MUI 5, hooray!
+    const link1 = screen.getByRole('link', { name: menuLinks[0].text });
+    expect(link1).toBeInTheDocument();
+    expect(link1).toHaveAttribute('href', menuLinks[0].url);
+
+    const link2 = screen.getByRole('link', { name: menuLinks[1].text });
+    expect(link2).toBeInTheDocument();
+    expect(link2).toHaveAttribute('href', menuLinks[1].url);
+
+    const link3 = screen.getByRole('link', { name: menuLinks[2].text });
+    expect(link3).toBeInTheDocument();
+    expect(link3).toHaveAttribute('href', menuLinks[2].url);
   });
 });

@@ -3,9 +3,8 @@ import {
   LinkProps,
   Tab as MuiTab,
   TabProps as MuiTabProps,
-} from '@material-ui/core';
+} from '@mui/material';
 import { TabLink } from '../';
-import { useStyles } from './Tab.styles';
 
 interface TabProps {
   /**
@@ -24,7 +23,7 @@ interface TabProps {
    * the Tab.selected property as it won't be forwarded to the
    * TabLink component; a custom property is needed.
    */
-  tabSelected?: boolean;
+  isCurrentTab?: boolean;
 
   /**
    * The route for the TabLink component.
@@ -43,7 +42,6 @@ interface TabProps {
  * the number of items under that tab.
  */
 export const Tab: React.FC<MuiTabProps & TabProps> = (props): JSX.Element => {
-  const classes = useStyles();
   const { count, label, value } = props;
 
   // Destructure `hasLink` property from ~280 others so that it doesn't get
@@ -52,18 +50,18 @@ export const Tab: React.FC<MuiTabProps & TabProps> = (props): JSX.Element => {
   // with a route to elsewhere in the app
   const { hasLink, ...otherProps } = props;
 
-  // Pass an additional `tabSelected` property to the TabLink component if needed
-  const tabLinkProps = hasLink ? { tabSelected: props.selected } : {};
-
   return (
     <MuiTab
-      classes={classes}
       component={hasLink ? TabLink : undefined}
       count={count}
       label={label}
       value={value}
+      sx={{
+        textTransform: 'none',
+        fontWeight: 400,
+        fontSize: '1rem',
+      }}
       {...otherProps}
-      {...tabLinkProps}
     />
   );
 };

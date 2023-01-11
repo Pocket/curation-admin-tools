@@ -5,7 +5,7 @@ import {
   DialogProps,
   useMediaQuery,
   useTheme,
-} from '@material-ui/core';
+} from '@mui/material';
 
 interface ModalProps {
   handleClose: () => void;

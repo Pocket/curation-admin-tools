@@ -1,7 +1,6 @@
 import React from 'react';
-import { TextField } from '@material-ui/core';
+import { TextField, TextFieldProps } from '@mui/material';
 import { FieldInputProps, FieldMetaProps } from 'formik/dist/types';
-import { TextFieldProps } from '@material-ui/core/TextField/TextField';
 
 interface FormikTextFieldProps {
   /**
@@ -29,7 +28,7 @@ interface FormikTextFieldProps {
 
 /**
  * A place where we can hide away some of the awkwardness of integrating Formik
- * with Material-UI input fields.
+ * with Material UI input fields.
  *
  * This component relies on the form itself to call the useFormik() hook and pass
  * down the properties of interest to the field itself.

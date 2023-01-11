@@ -1,21 +1,15 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import {
-  Avatar,
-  Box,
-  Card,
-  CardMedia,
-  Chip,
-  Grid,
-  Typography,
-} from '@material-ui/core';
+import { Link as RouterLink } from 'react-router-dom';
+import { Box, CardMedia, Chip, Grid, Typography } from '@mui/material';
+import LabelOutlinedIcon from '@mui/icons-material/LabelOutlined';
+import LanguageIcon from '@mui/icons-material/Language';
+import CategoryIcon from '@mui/icons-material/Category';
+import AdUnitsIcon from '@mui/icons-material/AdUnits';
 import ReactMarkdown from 'react-markdown';
-import { useStyles } from './CollectionListCard.styles';
+
 import { Collection } from '../../../api/generatedTypes';
-import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
+import { StyledCardLink, StyledListCard } from '../../../_shared/styled';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
-import LanguageIcon from '@material-ui/icons/Language';
-import CategoryIcon from '@material-ui/icons/Category';
 
 interface CollectionListCardProps {
   /**
@@ -33,18 +27,17 @@ interface CollectionListCardProps {
 export const CollectionListCard: React.FC<CollectionListCardProps> = (
   props
 ) => {
-  const classes = useStyles();
   const { collection } = props;
 
   return (
-    <Link
+    <StyledCardLink
+      component={RouterLink}
       to={{
         pathname: `/collections/collections/${collection.externalId}/`,
         state: { collection },
       }}
-      className={classes.link}
     >
-      <Card variant="outlined" square className={classes.root}>
+      <StyledListCard square>
         <Grid container spacing={2}>
           <Grid item xs={4} sm={2}>
             <CardMedia
@@ -55,24 +48,21 @@ export const CollectionListCard: React.FC<CollectionListCardProps> = (
                   : '/placeholders/collectionSmall.svg'
               }
               alt={collection.title}
-              className={classes.image}
+              sx={{ borderRadius: 1 }}
             />
           </Grid>
           <Grid item xs={8} sm={10}>
-            <Typography
-              className={classes.title}
-              variant="h3"
-              align="left"
-              gutterBottom
-            >
+            <Typography variant="h5" align="left" gutterBottom>
               {collection.title}
             </Typography>
             <Typography
-              className={classes.subtitle}
               variant="subtitle2"
               color="textSecondary"
               component="span"
               align="left"
+              sx={{
+                fontWeight: 400,
+              }}
             >
               <span>{collection.status}</span> &middot;{' '}
               <span>{flattenAuthors(collection.authors)}</span>
@@ -97,12 +87,12 @@ export const CollectionListCard: React.FC<CollectionListCardProps> = (
                   variant="outlined"
                   color="primary"
                   label={`${collection.IABParentCategory.name} → ${collection.IABChildCategory.name}`}
-                  icon={<Avatar className={classes.iabAvatar}>IAB</Avatar>}
+                  icon={<AdUnitsIcon />}
                 />
               )}{' '}
               {collection.labels &&
                 collection.labels.length > 0 &&
-                collection.labels.map((data, index) => {
+                collection.labels.map((data) => {
                   return (
                     <Chip
                       key={data?.externalId}
@@ -121,7 +111,7 @@ export const CollectionListCard: React.FC<CollectionListCardProps> = (
             </Typography>
           </Grid>
         </Grid>
-      </Card>
-    </Link>
+      </StyledListCard>
+    </StyledCardLink>
   );
 };

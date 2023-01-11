@@ -4,6 +4,8 @@ import { MemoryRouter } from 'react-router-dom';
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { ApprovedItemCardWrapper } from './ApprovedItemCardWrapper';
 import { getTestApprovedItem } from '../../helpers/approvedItem';
+import { ThemeProvider } from '@mui/material/styles';
+import theme from '../../../theme';
 
 describe('The ApprovedItemCardWrapper component', () => {
   const item: ApprovedCorpusItem = getTestApprovedItem();
@@ -11,12 +13,14 @@ describe('The ApprovedItemCardWrapper component', () => {
   it('should render an approved item card', () => {
     render(
       <MemoryRouter>
-        <ApprovedItemCardWrapper
-          item={item}
-          onEdit={jest.fn()}
-          onReject={jest.fn()}
-          onSchedule={jest.fn()}
-        />
+        <ThemeProvider theme={theme}>
+          <ApprovedItemCardWrapper
+            item={item}
+            onEdit={jest.fn()}
+            onReject={jest.fn()}
+            onSchedule={jest.fn()}
+          />
+        </ThemeProvider>
       </MemoryRouter>
     );
 
@@ -29,12 +33,14 @@ describe('The ApprovedItemCardWrapper component', () => {
   it('should render action buttons', () => {
     render(
       <MemoryRouter>
-        <ApprovedItemCardWrapper
-          item={item}
-          onEdit={jest.fn()}
-          onReject={jest.fn()}
-          onSchedule={jest.fn()}
-        />
+        <ThemeProvider theme={theme}>
+          <ApprovedItemCardWrapper
+            item={item}
+            onEdit={jest.fn()}
+            onReject={jest.fn()}
+            onSchedule={jest.fn()}
+          />
+        </ThemeProvider>
       </MemoryRouter>
     );
 
@@ -59,12 +65,14 @@ describe('The ApprovedItemCardWrapper component', () => {
   it('should have the correct link to corpus item page', () => {
     render(
       <MemoryRouter>
-        <ApprovedItemCardWrapper
-          item={item}
-          onEdit={jest.fn()}
-          onReject={jest.fn()}
-          onSchedule={jest.fn()}
-        />
+        <ThemeProvider theme={theme}>
+          <ApprovedItemCardWrapper
+            item={item}
+            onEdit={jest.fn()}
+            onReject={jest.fn()}
+            onSchedule={jest.fn()}
+          />
+        </ThemeProvider>
       </MemoryRouter>
     );
 

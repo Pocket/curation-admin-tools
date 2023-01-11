@@ -1,6 +1,6 @@
 import React from 'react';
-import { Grid } from '@material-ui/core';
-import { ScheduleSummaryCard } from '../ScheduleSummaryCard/ScheduleSummaryCard';
+import { Grid } from '@mui/material';
+import { ScheduleSummaryCard } from '../';
 import { getGroupedPublisherData } from '../../helpers/publishers';
 import { getDisplayTopic, getGroupedTopicData } from '../../helpers/topics';
 import { Maybe, ScheduledCorpusItem } from '../../../api/generatedTypes';

@@ -7,9 +7,9 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
-} from '@material-ui/core';
-import FaceIcon from '@material-ui/icons/Face';
-import ThumbUpIcon from '@material-ui/icons/ThumbUp';
+} from '@mui/material';
+import FaceIcon from '@mui/icons-material/Face';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import { getCuratorNameFromLdap } from '../../helpers/helperFunctions';
 import { DateTime } from 'luxon';
 

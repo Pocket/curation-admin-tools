@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Paper } from '@material-ui/core';
+import { Box, Paper } from '@mui/material';
 import { FormikValues } from 'formik';
 import { HandleApiResponse, ScrollToTop } from '../../../_shared/components';
 import { CollectionListCard, CollectionSearchForm } from '../../components';
@@ -16,7 +16,7 @@ export const CollectionSearchPage: React.FC = (): JSX.Element => {
   const [searchCollections, { loading, error, data }] =
     useSearchCollectionsLazyQuery(
       // We need to make sure search results are never served from the cache.
-      // Otherwise this page is broken as we have a type policy on the
+      // Otherwise, this page is broken as we have a type policy on the
       // 'searchCollections' query.
       { fetchPolicy: 'no-cache' }
     );

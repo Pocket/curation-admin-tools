@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@mui/material';
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { Modal, SharedFormButtons } from '../../../_shared/components';
 import { useStyles } from './DuplicateProspectModal.styles';

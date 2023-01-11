@@ -1,10 +1,13 @@
 import React from 'react';
-import { Card, CardActions } from '@material-ui/core';
-import { useStyles } from './ApprovedItemCardWrapper.styles';
+import { Link as RouterLink } from 'react-router-dom';
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { Button } from '../../../_shared/components';
-import { ApprovedItemListCard } from '../ApprovedItemListCard/ApprovedItemListCard';
-import { Link } from 'react-router-dom';
+import {
+  StyledCardActions,
+  StyledCorpusItemCard,
+  StyledLinkButton,
+} from '../../../_shared/styled';
+import { ApprovedItemListCard } from '../';
 
 interface ApprovedItemCardWrapperProps {
   /**
@@ -12,31 +15,46 @@ interface ApprovedItemCardWrapperProps {
    */
   item: ApprovedCorpusItem;
 
+  /**
+   * Action to run when the "Reject" button is pressed underneath the card.
+   */
   onReject: VoidFunction;
 
+  /**
+   * Action to run when the "Schedule" button is pressed underneath the card.
+   */
   onSchedule: VoidFunction;
 
+  /**
+   * Action to run when the "Edit" button is pressed underneath the card.
+   */
   onEdit: VoidFunction;
 }
 
+/**
+ * This component wraps around ApprovedItemListCard and adds action buttons
+ * needed on the Curated Corpus -> Corpus page.
+ *
+ * @param props
+ * @constructor
+ */
 export const ApprovedItemCardWrapper: React.FC<ApprovedItemCardWrapperProps> = (
   props
 ): JSX.Element => {
-  const classes = useStyles();
   const { item, onEdit, onReject, onSchedule } = props;
 
   return (
-    <Card className={classes.root}>
+    <StyledCorpusItemCard>
       <ApprovedItemListCard item={item} />
 
-      <CardActions className={classes.actions}>
+      <StyledCardActions>
         <Button buttonType="positive" variant="text">
-          <Link
+          <StyledLinkButton
             to={`/curated-corpus/corpus/item/${item.externalId}`}
-            className={classes.link}
+            component={RouterLink}
           >
             View
-          </Link>
+          </StyledLinkButton>
         </Button>
         <Button buttonType="positive" variant="text" onClick={onSchedule}>
           Schedule
@@ -47,7 +65,7 @@ export const ApprovedItemCardWrapper: React.FC<ApprovedItemCardWrapperProps> = (
         <Button buttonType="positive" variant="text" onClick={onEdit}>
           Edit
         </Button>
-      </CardActions>
-    </Card>
+      </StyledCardActions>
+    </StyledCorpusItemCard>
   );
 };

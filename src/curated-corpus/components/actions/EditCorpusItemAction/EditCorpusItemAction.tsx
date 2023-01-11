@@ -1,12 +1,12 @@
 import React from 'react';
-import { useRunMutation } from '../../../../_shared/hooks';
+import { FormikHelpers, FormikValues } from 'formik';
 import {
   ApprovedCorpusItem,
   useUpdateApprovedCorpusItemMutation,
 } from '../../../../api/generatedTypes';
-import { FormikHelpers, FormikValues } from 'formik';
-import { ApprovedItemModal } from '../../ApprovedItemModal/ApprovedItemModal';
+import { useRunMutation } from '../../../../_shared/hooks';
 import { transformAuthors } from '../../../../_shared/utils/transformAuthors';
+import { ApprovedItemModal } from '../../';
 
 interface EditCorpusItemActionProps {
   /**

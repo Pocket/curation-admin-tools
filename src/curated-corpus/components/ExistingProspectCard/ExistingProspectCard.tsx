@@ -11,15 +11,15 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
-} from '@material-ui/core';
-import LanguageIcon from '@material-ui/icons/Language';
-import CategoryIcon from '@material-ui/icons/Category';
-import CheckIcon from '@material-ui/icons/Check';
-import FaceIcon from '@material-ui/icons/Face';
-import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+} from '@mui/material';
+import LanguageIcon from '@mui/icons-material/Language';
+import CategoryIcon from '@mui/icons-material/Category';
+import CheckIcon from '@mui/icons-material/Check';
+import FaceIcon from '@mui/icons-material/Face';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { DateTime } from 'luxon';
 
-import { useStyles } from './ExistingProspectCard.styles';
+import { curationPalette } from '../../../theme';
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { Button } from '../../../_shared/components';
 import { getCuratorNameFromLdap } from '../../helpers/helperFunctions';
@@ -59,30 +59,40 @@ interface ExistingProspectCardProps {
 export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
   props
 ): JSX.Element => {
-  const classes = useStyles();
   const { item, onSchedule, onDismissProspect, prospectId } = props;
   const showScheduleHistory = item.scheduledSurfaceHistory.length != 0;
 
   return (
-    <Card className={classes.root}>
+    <Card
+      sx={{
+        padding: '0.5rem',
+        display: 'flex',
+        flexDirection: 'column',
+        marginBottom: '2rem',
+      }}
+    >
       <Grid container spacing={2}>
         <Grid item xs={12} sm={3}>
           <CardMedia
             component="img"
             src={item.imageUrl}
             alt={item.title}
-            className={classes.image}
+            sx={{
+              borderRadius: 4,
+              border: `1px solid ${curationPalette.lightGrey}`,
+            }}
           />
 
+          {/* Note that minWidth style overrides only work inside an `sx` property, not a styled component. */}
           <List dense disablePadding>
             <ListItem disableGutters>
-              <ListItemIcon className={classes.listItemIcon}>
+              <ListItemIcon sx={{ minWidth: '1.5rem' }}>
                 <LanguageIcon fontSize="small" />
               </ListItemIcon>
               <ListItemText secondary={item.language} />
             </ListItem>
             <ListItem disableGutters>
-              <ListItemIcon className={classes.listItemIcon}>
+              <ListItemIcon sx={{ minWidth: '1.5rem' }}>
                 <FaceIcon fontSize="small" />
               </ListItemIcon>
               <ListItemText
@@ -97,18 +107,32 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
         <Grid item xs={12} sm={9}>
           <Grid container>
             <Grid item xs={11}>
-              <Link href={item.url} target="_blank" className={classes.link}>
+              <Link
+                href={item.url}
+                target="_blank"
+                sx={{
+                  textDecoration: 'none',
+                  padding: '1.25 rem 0',
+                  color: curationPalette.pocketBlack,
+                }}
+              >
                 <Typography
-                  className={classes.title}
                   variant="h3"
                   align="left"
                   gutterBottom
+                  sx={{
+                    fontSize: {
+                      sm: '1rem',
+                      md: '1.25rem',
+                    },
+                    fontWeight: 500,
+                  }}
                 >
                   {item.title}
                 </Typography>
               </Link>
             </Grid>
-            <Grid item xs={1}>
+            <Grid item xs={1} sx={{ textAlign: 'center' }}>
               <DismissProspectAction
                 onDismissProspect={onDismissProspect}
                 prospectId={prospectId}
@@ -116,15 +140,19 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
             </Grid>
           </Grid>
           <Typography
-            className={classes.subtitle}
             variant="subtitle2"
             color="textSecondary"
             component="span"
             align="left"
+            sx={{ fontWeight: 400 }}
           >
             <span>{item.publisher}</span>
           </Typography>
-          <Grid container spacing={1} className={classes.chipContainer}>
+          <Grid
+            container
+            spacing={1}
+            sx={{ paddingTop: '0.5em', paddingBottom: '0.5em' }}
+          >
             <Grid item>
               <Chip
                 variant="outlined"
@@ -145,7 +173,7 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
             </Grid>
             <Grid item>
               <Chip
-                variant="default"
+                variant="filled"
                 color="secondary"
                 label="Already in corpus"
                 icon={<CheckIcon />}
@@ -164,7 +192,7 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
         </Grid>
       </Grid>
 
-      <CardActions className={classes.actions}>
+      <CardActions sx={{ margin: 'auto' }}>
         <Button buttonType="positive" variant="text" onClick={onSchedule}>
           Schedule
         </Button>

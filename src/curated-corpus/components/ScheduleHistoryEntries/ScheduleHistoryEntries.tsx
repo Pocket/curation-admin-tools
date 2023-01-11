@@ -1,8 +1,7 @@
 import React from 'react';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@mui/material';
 import { DateTime } from 'luxon';
 import { ApprovedCorpusItemScheduledSurfaceHistory } from '../../../api/generatedTypes';
-import { useStyles } from './ScheduleHistoryEntries.styles';
 import {
   getCuratorNameFromLdap,
   getScheduledSurfaceName,
@@ -27,7 +26,6 @@ interface ScheduleHistoryEntries {
 export const ScheduleHistoryEntries: React.FC<ScheduleHistoryEntries> = (
   props
 ): JSX.Element => {
-  const classes = useStyles();
   const { data, isProspect } = props;
 
   const getDisplayDate = (date: string) => {
@@ -43,7 +41,9 @@ export const ScheduleHistoryEntries: React.FC<ScheduleHistoryEntries> = (
           <Grid
             key={item.externalId}
             container
-            className={classes.scheduledHistoryWrapper}
+            sx={{
+              margin: '0.5em',
+            }}
           >
             <Grid item xs={4}>
               <Typography variant="body2">
@@ -53,7 +53,16 @@ export const ScheduleHistoryEntries: React.FC<ScheduleHistoryEntries> = (
             <Grid item xs={8}>
               <Grid
                 container
-                className={isProspect ? classes.wideCard : classes.narrowCard}
+                sx={
+                  isProspect
+                    ? {
+                        flexDirection: 'row',
+                      }
+                    : {
+                        flexDirection: 'column',
+                        alignItems: 'flex-end',
+                      }
+                }
               >
                 <Grid item xs>
                   <Typography variant="body2">

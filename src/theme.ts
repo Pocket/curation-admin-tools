@@ -1,11 +1,9 @@
-import {
-  /**
-   * backport from v.5 to fix deprecation warnings in Material UI
-   * see here for details: https://github.com/mui-org/material-ui/issues/13394
-   */
-  Theme,
-  unstable_createMuiStrictModeTheme as createMuiTheme,
-} from '@material-ui/core/styles';
+import { createTheme, Theme } from '@mui/material/styles';
+
+declare module '@mui/styles' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends Theme {}
+}
 
 /* Curation frontend colors */
 export const curationPalette = {
@@ -14,19 +12,18 @@ export const curationPalette = {
   neutral: '#737373', // dark grey
   blue: '#3668ff', // bright blue for active tabs
   white: '#FFFFFF',
+  lightGrey: '#cccccc', // for borders here and there
+  pocketBlack: '#1a1a1a', // for not-quite-black text
 };
 
-const theme: Theme = createMuiTheme({
-  palette: {
-    /* The primary color palette: dark green + white for contrasting text. */
-    primary: {
-      main: curationPalette.primary,
-      contrastText: curationPalette.white,
-    },
-    /* The secondary color palette: red/brown + white for contrasting text. */
-    secondary: {
-      main: curationPalette.secondary,
-      contrastText: curationPalette.white,
+const theme: Theme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 960,
+      lg: 1024,
+      xl: 1280,
     },
   },
   /* The font used is the default font on getpocket.com */
@@ -40,145 +37,49 @@ const theme: Theme = createMuiTheme({
       'sans-serif',
     ].join(','),
   },
-  breakpoints: {
-    values: {
-      xs: 0,
-      sm: 600,
-      md: 960,
-      lg: 1024,
-      xl: 1280,
+  palette: {
+    /* The primary color palette: dark green + white for contrasting text. */
+    primary: {
+      main: curationPalette.primary,
+      contrastText: curationPalette.white,
+    },
+    /* The secondary color palette: red/brown + white for contrasting text. */
+    secondary: {
+      main: curationPalette.secondary,
+      contrastText: curationPalette.white,
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        /* Global styles for buttons. */
+        root: {
+          fontWeight: 500,
+          textTransform: 'none',
+          '&.Mui-disabled': {
+            border: 'none',
+          },
+        },
+
+        /* Global styles for outlined buttons. */
+        outlined: {
+          backgroundColor: curationPalette.white,
+          borderWidth: '2px',
+          '&:hover': {
+            borderWidth: '2px',
+          },
+        },
+      },
+    },
+    /* The divider is slightly darker than the default MUI one. */
+    MuiDivider: {
+      styleOverrides: {
+        root: {
+          backgroundColor: curationPalette.neutral,
+        },
+      },
     },
   },
 });
 
-theme.props = {
-  /* All the buttons in this project are flat. */
-  MuiButton: {
-    disableElevation: true,
-  },
-};
-
-theme.overrides = {
-  /* Global styles for buttons. */
-  MuiButton: {
-    root: {
-      fontWeight: 500,
-      textTransform: 'none',
-    },
-
-    /* The default button; used for "Snooze" and "Edit" actions. */
-    contained: {
-      backgroundColor: curationPalette.neutral,
-      color: curationPalette.white,
-      '&:hover': {
-        backgroundColor: theme.palette.grey[700],
-      },
-    },
-
-    containedPrimary: {
-      border: `1px solid ${theme.palette.primary.main}`,
-      '&:hover': {
-        border: `1px solid ${theme.palette.primary.dark}`,
-      },
-    },
-
-    containedSecondary: {
-      border: `1px solid ${theme.palette.secondary.main}`,
-      '&:hover': {
-        border: `1px solid ${theme.palette.secondary.dark}`,
-      },
-    },
-
-    /* Global styles for outlined buttons. */
-    outlined: {
-      backgroundColor: curationPalette.white,
-      border: `2px solid ${curationPalette.neutral}`,
-    },
-
-    /* The outlined button; used for the "Log out" button in the header. */
-    outlinedPrimary: {
-      border: `2px solid ${theme.palette.primary.main}`,
-      '&:hover': {
-        border: `2px solid ${theme.palette.primary.dark}`,
-      },
-      '&.Mui-disabled': {
-        backgroundColor: theme.palette.grey[100],
-        border: `2px solid ${theme.palette.grey[400]}`,
-      },
-    },
-
-    /**
-     *  Outlined button in secondary (red/brown) colour; not currently used
-     *  but provided here for completeness.
-     */
-    outlinedSecondary: {
-      border: `2px solid ${theme.palette.secondary.main}`,
-      '&:hover': {
-        border: `2px solid ${theme.palette.secondary.dark}`,
-      },
-    },
-
-    disabled: {
-      border: 'none',
-    },
-  },
-
-  /* The divider is slightly darker than the default MUI one. */
-  MuiDivider: {
-    root: {
-      backgroundColor: theme.palette.grey[400],
-    },
-  },
-
-  /* An iOS-style switch */
-  MuiSwitch: {
-    root: {
-      width: 80,
-      height: 48,
-      padding: 8,
-    },
-    switchBase: {
-      padding: 11,
-      color: curationPalette.white,
-      '& $thumb': {
-        backgroundColor: curationPalette.white,
-        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="22" viewBox="0 0 20 20" width="21"><path fill="${encodeURIComponent(
-          curationPalette.neutral
-        )}" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/><path d="M0 0h24v24H0z" fill="none"/></svg>')`,
-      },
-    },
-    thumb: {
-      width: 26,
-      height: 26,
-      backgroundColor: curationPalette.white,
-    },
-    track: {
-      backgroundColor: curationPalette.neutral,
-      opacity: '1',
-      borderRadius: 20,
-      position: 'relative',
-    },
-    checked: {
-      '&$switchBase': {
-        transform: 'translateX(32px)',
-      },
-      '& $thumb': {
-        backgroundColor: curationPalette.white,
-        backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="-2 0 20 20" width="20"><path d="M0 0h24v24H0z" fill="none"/><path fill="${encodeURIComponent(
-          theme.palette.primary.main
-        )}" d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/></svg>')`,
-      },
-      '& + $track': {
-        background: theme.palette.primary.main,
-        opacity: '1 !important',
-      },
-    },
-    disabled: {
-      '& + $track': {
-        opacity: '0.2 !important',
-        cursor: 'not-allowed',
-      },
-    },
-  },
-};
 export default theme;

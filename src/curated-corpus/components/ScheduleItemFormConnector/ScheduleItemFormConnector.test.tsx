@@ -1,18 +1,16 @@
 import React from 'react';
+import { SnackbarProvider } from 'notistack';
+import { DateTime } from 'luxon';
 import { render, screen } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { SnackbarProvider } from 'notistack';
+import userEvent from '@testing-library/user-event';
 import { ScheduleItemFormConnector } from './ScheduleItemFormConnector';
-import LuxonUtils from '@date-io/luxon';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import {
   mock_AllScheduledSurfaces,
   mock_OneScheduledSurface,
   mock_TwoScheduledSurfaces,
 } from '../../integration-test-mocks/getScheduledSurfacesForUser';
-import userEvent from '@testing-library/user-event';
 import { mock_ScheduledItemCountsZero } from '../../integration-test-mocks/getScheduledItemCounts';
-// import { DateTime } from 'luxon';
 
 describe('ScheduleItemFormConnector', () => {
   let mocks = [];
@@ -23,12 +21,10 @@ describe('ScheduleItemFormConnector', () => {
     render(
       <MockedProvider mocks={mocks}>
         <SnackbarProvider>
-          <MuiPickersUtilsProvider utils={LuxonUtils}>
-            <ScheduleItemFormConnector
-              approvedItemExternalId="dummyId"
-              onSubmit={jest.fn()}
-            />
-          </MuiPickersUtilsProvider>
+          <ScheduleItemFormConnector
+            approvedItemExternalId="dummyId"
+            onSubmit={jest.fn()}
+          />
         </SnackbarProvider>
       </MockedProvider>
     );
@@ -68,12 +64,10 @@ describe('ScheduleItemFormConnector', () => {
     render(
       <MockedProvider mocks={mocks}>
         <SnackbarProvider>
-          <MuiPickersUtilsProvider utils={LuxonUtils}>
-            <ScheduleItemFormConnector
-              approvedItemExternalId="dummyId"
-              onSubmit={jest.fn()}
-            />
-          </MuiPickersUtilsProvider>
+          <ScheduleItemFormConnector
+            approvedItemExternalId="dummyId"
+            onSubmit={jest.fn()}
+          />
         </SnackbarProvider>
       </MockedProvider>
     );
@@ -105,12 +99,10 @@ describe('ScheduleItemFormConnector', () => {
     render(
       <MockedProvider mocks={mocks}>
         <SnackbarProvider>
-          <MuiPickersUtilsProvider utils={LuxonUtils}>
-            <ScheduleItemFormConnector
-              approvedItemExternalId="dummyId"
-              onSubmit={jest.fn()}
-            />
-          </MuiPickersUtilsProvider>
+          <ScheduleItemFormConnector
+            approvedItemExternalId="dummyId"
+            onSubmit={jest.fn()}
+          />
         </SnackbarProvider>
       </MockedProvider>
     );
@@ -140,12 +132,10 @@ describe('ScheduleItemFormConnector', () => {
     render(
       <MockedProvider mocks={mocks}>
         <SnackbarProvider>
-          <MuiPickersUtilsProvider utils={LuxonUtils}>
-            <ScheduleItemFormConnector
-              approvedItemExternalId="dummyId"
-              onSubmit={jest.fn()}
-            />
-          </MuiPickersUtilsProvider>
+          <ScheduleItemFormConnector
+            approvedItemExternalId="dummyId"
+            onSubmit={jest.fn()}
+          />
         </SnackbarProvider>
       </MockedProvider>
     );
@@ -162,28 +152,26 @@ describe('ScheduleItemFormConnector', () => {
     // Select a scheduled surface
     userEvent.selectOptions(surfaceSelect, 'POCKET_HITS_EN_US');
 
-    // const today = DateTime.local();
-
-    const datePicker = screen.getByRole('textbox', {
-      name: 'Choose a date',
+    const datePicker = screen.getByRole('button', {
+      name: /choose date/i,
     }) as HTMLInputElement;
 
     // Click on the date field to bring up the calendar
     userEvent.click(datePicker);
 
-    // Find today's date on the monthly calendar (it's actually a button)
-    // const dates = screen.getAllByRole('button', {
-    //   name: today.toFormat('d'),
-    // });
+    // Find today's date on the monthly calendar (in MUI 5, it's a grid cell)
+    const today = DateTime.local();
+    const todaysDate = screen.getAllByRole('gridcell', {
+      name: today.toFormat('d'),
+    })[0];
 
-    // Click on the date to fire off the query to look up "already scheduled for this day" counts.
-    // It's the second "date" pretend button, as the first one is actually hidden from view.
-    // Note: doesn't work! ...and is super flaky!
-    //userEvent.click(dates[1]);
+    // Choose it
+    userEvent.click(todaysDate);
 
     // TODO:
-    //  - ????
-    //  - Profit!!!
+    //  - wait for the API call to go through
+    //  - Assert that the copy with the number of items already scheduled
+    //  appears on the screen
   });
 
   // TODO: More tests:

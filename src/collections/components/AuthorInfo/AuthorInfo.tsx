@@ -1,7 +1,6 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import ReactMarkdown from 'react-markdown';
-import { useStyles } from './AuthorInfo.styles';
 import { CollectionAuthor } from '../../../api/generatedTypes';
 
 interface AuthorInfoProps {
@@ -20,16 +19,17 @@ interface AuthorInfoProps {
  */
 export const AuthorInfo: React.FC<AuthorInfoProps> = (props): JSX.Element => {
   const { author } = props;
-  const classes = useStyles();
 
   return (
     <>
       <Typography
-        className={classes.subtitle}
         variant="subtitle2"
         color="textSecondary"
         component="span"
         align="left"
+        sx={{
+          fontWeight: 400,
+        }}
       >
         <span>{author.active ? 'Active' : 'Inactive'}</span>
       </Typography>

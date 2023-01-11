@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Box,
   Card,
   CardContent,
   Link,
@@ -8,14 +9,14 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
-} from '@material-ui/core';
-import LanguageIcon from '@material-ui/icons/Language';
-import ThumbDownIcon from '@material-ui/icons/ThumbDown';
-import FaceIcon from '@material-ui/icons/Face';
-import CategoryIcon from '@material-ui/icons/Category';
+} from '@mui/material';
+import LanguageIcon from '@mui/icons-material/Language';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import FaceIcon from '@mui/icons-material/Face';
+import CategoryIcon from '@mui/icons-material/Category';
 
-import { useStyles } from './RejectedItemListCard.styles';
 import { RejectedCorpusItem } from '../../../api/generatedTypes';
+import { curationPalette } from '../../../theme';
 
 interface RejectedItemListCardProps {
   /**
@@ -27,57 +28,107 @@ interface RejectedItemListCardProps {
 export const RejectedItemListCard: React.FC<RejectedItemListCardProps> = (
   props
 ): JSX.Element => {
-  const classes = useStyles();
   const { item } = props;
 
   return (
-    <Card className={classes.root}>
-      <CardContent className={classes.content}>
-        <Typography className={classes.publisher} gutterBottom>
+    <Card
+      sx={{
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      <CardContent
+        sx={{
+          padding: '0.5rem',
+        }}
+      >
+        <Typography
+          gutterBottom
+          sx={{
+            fontSize: '0.875rem',
+            color: curationPalette.neutral,
+          }}
+        >
           {item.publisher ?? 'N/A'}
         </Typography>
         <Typography
-          className={classes.title}
           variant="h3"
           align="left"
           gutterBottom
+          sx={{
+            fontSize: '1rem',
+            fontWeight: 500,
+          }}
         >
-          <Link href={item.url} target="_blank" className={classes.link}>
+          <Link
+            href={item.url}
+            target="_blank"
+            sx={{
+              textDecoration: 'none',
+              color: curationPalette.pocketBlack,
+            }}
+          >
             {item.title ?? 'N/A'}
           </Link>
         </Typography>
       </CardContent>
 
       {/* Push the rest of the elements to the bottom of the card. */}
-      <div className={classes.flexGrow} />
+      <Box sx={{ flexGrow: 1 }} />
 
-      <List dense className={classes.list}>
+      <List dense>
         <ListItem>
-          <ListItemIcon className={classes.listItemIcon}>
+          <ListItemIcon
+            sx={{
+              minWidth: '2rem',
+            }}
+          >
             <ThumbDownIcon />
           </ListItemIcon>
-          <ListItemText className={classes.reason} primary={item.reason} />
+          <ListItemText
+            primary={item.reason}
+            sx={{
+              textTransform: 'capitalize',
+            }}
+          />
         </ListItem>
         <ListItem>
-          <ListItemIcon className={classes.listItemIcon}>
+          <ListItemIcon
+            sx={{
+              minWidth: '2rem',
+            }}
+          >
             <FaceIcon />
           </ListItemIcon>
           <ListItemText
-            className={classes.createdBy}
             primary={item.createdBy}
+            sx={{
+              textTransform: 'capitalize',
+            }}
           />
         </ListItem>
         <ListItem>
-          <ListItemIcon className={classes.listItemIcon}>
+          <ListItemIcon
+            sx={{
+              minWidth: '2rem',
+            }}
+          >
             <CategoryIcon />
           </ListItemIcon>
           <ListItemText
-            className={classes.topic}
             primary={item.topic ?? 'N/A'}
+            sx={{
+              textTransform: 'capitalize',
+            }}
           />
         </ListItem>
         <ListItem>
-          <ListItemIcon className={classes.listItemIcon}>
+          <ListItemIcon
+            sx={{
+              minWidth: '2rem',
+            }}
+          >
             <LanguageIcon />
           </ListItemIcon>
           <ListItemText
