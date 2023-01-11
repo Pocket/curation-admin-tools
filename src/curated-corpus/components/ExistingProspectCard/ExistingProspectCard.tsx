@@ -83,6 +83,7 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
             }}
           />
 
+          {/* Note that minWidth style overrides only work inside an `sx` property, not a styled component. */}
           <List dense disablePadding>
             <ListItem disableGutters>
               <ListItemIcon sx={{ minWidth: '1.5rem' }}>
@@ -131,7 +132,7 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
                 </Typography>
               </Link>
             </Grid>
-            <Grid item xs={1}>
+            <Grid item xs={1} sx={{ textAlign: 'center' }}>
               <DismissProspectAction
                 onDismissProspect={onDismissProspect}
                 prospectId={prospectId}

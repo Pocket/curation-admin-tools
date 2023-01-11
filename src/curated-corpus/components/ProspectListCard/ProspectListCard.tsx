@@ -9,6 +9,7 @@ import {
   Link,
   List,
   ListItem,
+  ListItemIcon,
   ListItemText,
   Typography,
 } from '@mui/material';
@@ -19,7 +20,6 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CategoryIcon from '@mui/icons-material/Category';
 import { curationPalette } from '../../../theme';
 import { Button } from '../../../_shared/components';
-import { StyledListItemIcon } from '../../../_shared/styled';
 import { getDisplayTopic } from '../../helpers/topics';
 import { DismissProspectAction } from '../actions/DismissProspectAction/DismissProspectAction';
 
@@ -79,28 +79,28 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
               border: `1px solid ${curationPalette.lightGrey}`,
             }}
           />
-
+          {/* Note that minWidth style overrides only work inside an `sx` property, not a styled component. */}
           <List dense disablePadding>
             <ListItem disableGutters>
-              <StyledListItemIcon>
+              <ListItemIcon sx={{ minWidth: '1.5rem' }}>
                 <LanguageIcon fontSize="small" />
-              </StyledListItemIcon>
+              </ListItemIcon>
               <ListItemText
                 secondary={prospect.language?.toUpperCase() ?? 'N/A'}
               />
             </ListItem>
 
             <ListItem disableGutters>
-              <StyledListItemIcon>
+              <ListItemIcon sx={{ minWidth: '1.5rem' }}>
                 <FavoriteBorderIcon fontSize="small" />
-              </StyledListItemIcon>
+              </ListItemIcon>
               <ListItemText secondary={`${prospect.saveCount} saves`} />
             </ListItem>
 
             <ListItem disableGutters>
-              <StyledListItemIcon>
+              <ListItemIcon sx={{ minWidth: '1.5rem' }}>
                 <MyLocationIcon fontSize="small" />
-              </StyledListItemIcon>
+              </ListItemIcon>
               <ListItemText secondary={prospect.prospectType.toLowerCase()} />
             </ListItem>
           </List>
@@ -119,13 +119,13 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
                 }}
               >
                 <Typography
-                  variant="h3"
+                  variant="h5"
                   align="left"
                   gutterBottom
                   sx={{
                     fontSize: {
-                      sm: '1rem',
-                      md: '1.25rem',
+                      xs: '1rem',
+                      sm: '1.25rem',
                     },
                     fontWeight: 500,
                   }}

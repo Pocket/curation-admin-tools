@@ -9,7 +9,6 @@ export { StyledDropzoneBox } from './StyledDropzoneBox';
 export { StyledHistoryCollapse } from './StyledHistoryCollapse';
 export { StyledLinkButton } from './StyledLinkButton';
 export { StyledListCard } from './StyledListCard';
-export { StyledListItemIcon } from './StyledListItemIcon';
 export { StyledProductHeading } from './StyledProductHeading';
 export { StyledProductHeadingLink } from './StyledProductHeadingLink';
 export { StyledRouterLink } from './StyledRouterLink';
