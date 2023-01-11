@@ -1,38 +1,53 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+// import React from 'react';
 import { Box } from '@material-ui/core';
 import { Button, HandleApiResponse } from '../../../_shared/components';
-import { LabelListCard } from '../../components';
+import { useToggle } from '../../../_shared/hooks';
+import { AddLabelModal, LabelListCard } from '../../components';
 import { Label, useLabelsQuery } from '../../../api/generatedTypes';
 
 /**
  * Label List Page
  */
 export const LabelListPage = (): JSX.Element => {
-  const { loading, error, data } = useLabelsQuery({});
+  /**
+   * Keeps track of whether the "Add Label" modal is open or not.
+   */
+  const [addLabelModalOpen, toggleAddLabelModal] = useToggle(false);
+  /**
+   * Keeps track of label list state
+   */
+  const [labelsList, setLabelsList] = useState<Label[]>([]);
+  const { loading, error, data } = useLabelsQuery({
+    onCompleted: (data) => {
+      // set the state to the returned label list
+      setLabelsList(data.labels ?? []);
+    },
+  });
 
+  console.log('data.labels: ', data?.labels);
+  console.log('labelsList: ', labelsList);
   return (
     <>
       <Box display="flex">
         <Box flexGrow={1} alignSelf="center">
           <h1>Labels</h1>
         </Box>
-        <Box alignSelf="center">
-          <Button
-            component={Link}
-            to="/collections/labels/add/"
-            buttonType="hollow"
-          >
-            Add label
-          </Button>
-        </Box>
+        <AddLabelModal
+          isOpen={addLabelModalOpen}
+          toggleModal={toggleAddLabelModal}
+          setLabelsList={setLabelsList}
+        />
+
+        <Button buttonType="hollow" onClick={toggleAddLabelModal}>
+          Add label
+        </Button>
       </Box>
       {!data && <HandleApiResponse loading={loading} error={error} />}
 
-      {data &&
-        data.labels.map((label: Label) => {
-          return <LabelListCard key={label.externalId} label={label} />;
-        })}
+      {labelsList.map((label: Label) => {
+        return <LabelListCard key={label.externalId} label={label} />;
+      })}
     </>
   );
 };

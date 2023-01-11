@@ -1,6 +1,5 @@
-import * as Apollo from '@apollo/client';
 import { gql } from '@apollo/client';
-
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -955,6 +954,8 @@ export type Mutation = {
   createCollectionPartnerAssociation: CollectionPartnerAssociation;
   /** Creates a CollectionStory. */
   createCollectionStory: CollectionStory;
+  /** Creates a Label. */
+  createLabel: Label;
   /** Creates a Rejected Item. */
   createRejectedCorpusItem: RejectedCorpusItem;
   /** Creates a Scheduled Surface Scheduled Item. */
@@ -1063,6 +1064,10 @@ export type MutationCreateCollectionPartnerAssociationArgs = {
 
 export type MutationCreateCollectionStoryArgs = {
   data: CreateCollectionStoryInput;
+};
+
+export type MutationCreateLabelArgs = {
+  name: Scalars['String'];
 };
 
 export type MutationCreateRejectedCorpusItemArgs = {
@@ -2338,6 +2343,15 @@ export type CreateCollectionStoryMutation = {
       sortOrder: number;
     }>;
   };
+};
+
+export type CreateLabelMutationVariables = Exact<{
+  name: Scalars['String'];
+}>;
+
+export type CreateLabelMutation = {
+  __typename?: 'Mutation';
+  createLabel: { __typename?: 'Label'; externalId: string; name: string };
 };
 
 export type CreateScheduledCorpusItemMutationVariables = Exact<{
@@ -4530,6 +4544,57 @@ export type CreateCollectionStoryMutationResult =
 export type CreateCollectionStoryMutationOptions = Apollo.BaseMutationOptions<
   CreateCollectionStoryMutation,
   CreateCollectionStoryMutationVariables
+>;
+export const CreateLabelDocument = gql`
+  mutation createLabel($name: String!) {
+    createLabel(name: $name) {
+      externalId
+      name
+    }
+  }
+`;
+export type CreateLabelMutationFn = Apollo.MutationFunction<
+  CreateLabelMutation,
+  CreateLabelMutationVariables
+>;
+
+/**
+ * __useCreateLabelMutation__
+ *
+ * To run a mutation, you first call `useCreateLabelMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateLabelMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createLabelMutation, { data, loading, error }] = useCreateLabelMutation({
+ *   variables: {
+ *      name: // value for 'name'
+ *   },
+ * });
+ */
+export function useCreateLabelMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateLabelMutation,
+    CreateLabelMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateLabelMutation, CreateLabelMutationVariables>(
+    CreateLabelDocument,
+    options
+  );
+}
+export type CreateLabelMutationHookResult = ReturnType<
+  typeof useCreateLabelMutation
+>;
+export type CreateLabelMutationResult =
+  Apollo.MutationResult<CreateLabelMutation>;
+export type CreateLabelMutationOptions = Apollo.BaseMutationOptions<
+  CreateLabelMutation,
+  CreateLabelMutationVariables
 >;
 export const CreateScheduledCorpusItemDocument = gql`
   mutation createScheduledCorpusItem(
