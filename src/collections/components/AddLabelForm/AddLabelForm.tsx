@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, LinearProgress } from '@material-ui/core';
+import { Grid, LinearProgress } from '@mui/material';
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import {
   FormikTextField,
@@ -8,7 +8,6 @@ import {
 } from '../../../_shared/components';
 
 import { validationSchema } from './AddLabelForm.validation';
-import { useStyles } from './AddLabelForm.styles';
 
 interface AddLabelFormProps {
   onSubmit: (
@@ -26,9 +25,6 @@ interface AddLabelFormProps {
 export const AddLabelForm: React.FC<
   AddLabelFormProps & SharedFormButtonsProps
 > = (props) => {
-  // get styles
-  const classes = useStyles();
-
   // de-structure props
   const { onCancel, onSubmit, isLoaderShowing } = props;
 
@@ -44,12 +40,17 @@ export const AddLabelForm: React.FC<
   });
 
   return (
-    <form
-      name="add-label-form"
-      onSubmit={formik.handleSubmit}
-      className={classes.root}
-    >
-      <Grid container spacing={2}>
+    <form name="add-label-form" onSubmit={formik.handleSubmit}>
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          width: {
+            sm: '100%',
+            md: 800,
+          },
+        }}
+      >
         <Grid item xs={12}>
           <FormikTextField
             id="labelName"
