@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, LinearProgress } from '@material-ui/core';
+import { Grid, LinearProgress } from '@mui/material';
 
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import {
@@ -9,7 +9,6 @@ import {
 } from '../../../_shared/components';
 
 import { validationSchema } from './AddProspectForm.validation';
-import { useStyles } from './AddProspectForm.styles';
 
 interface AddProspectFormProps {
   onSubmit: (
@@ -27,9 +26,6 @@ interface AddProspectFormProps {
 export const AddProspectForm: React.FC<
   AddProspectFormProps & SharedFormButtonsProps
 > = (props) => {
-  // get styles
-  const classes = useStyles();
-
   // de-structure props
   const { onCancel, onSubmit, isLoaderShowing } = props;
 
@@ -45,12 +41,17 @@ export const AddProspectForm: React.FC<
   });
 
   return (
-    <form
-      name="add-prospect-form"
-      onSubmit={formik.handleSubmit}
-      className={classes.root}
-    >
-      <Grid container spacing={2}>
+    <form name="add-prospect-form" onSubmit={formik.handleSubmit}>
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          width: {
+            sm: '100%',
+            md: 800,
+          },
+        }}
+      >
         <Grid item xs={12}>
           <FormikTextField
             id="itemUrl"

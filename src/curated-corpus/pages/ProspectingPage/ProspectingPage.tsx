@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
-import { Box, Button, Grid, Hidden } from '@material-ui/core';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import FilterListIcon from '@material-ui/icons/FilterList';
-import AddIcon from '@material-ui/icons/Add';
+import { Box, Button, Grid, Hidden } from '@mui/material';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import AddIcon from '@mui/icons-material/Add';
+
+import { curationPalette } from '../../../theme';
 import { HandleApiResponse } from '../../../_shared/components';
 import {
   AddProspectModal,
@@ -658,7 +660,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
             <Grid item xs={12} sm={6}>
               <Box display="flex" justifyContent="flex-end" mb={2}>
                 <Button
-                  color="default"
+                  sx={{ color: curationPalette.pocketBlack }}
                   onClick={() => {
                     // toggle the add prospect modal
                     toggleAddProspectModal();
@@ -667,7 +669,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                   <AddIcon fontSize="large" />
                 </Button>
                 <Button
-                  color="default"
+                  sx={{ color: curationPalette.pocketBlack }}
                   onClick={() => {
                     // If all the prospects have been processed already,
                     // there is no need for a confirmation dialogue here,

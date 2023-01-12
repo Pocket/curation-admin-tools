@@ -8,9 +8,9 @@ import {
   MenuList,
   Paper,
   Popper,
-} from '@material-ui/core';
-import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
-import { useStyles } from './SplitButton.styles';
+} from '@mui/material';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { curationPalette } from '../../../theme';
 import { DropdownOption } from '../../helpers/definitions';
 
 interface SplitButtonProps {
@@ -45,7 +45,6 @@ interface SplitButtonProps {
  * @constructor
  */
 export const SplitButton: React.FC<SplitButtonProps> = (props) => {
-  const classes = useStyles();
   const { icon, onMenuOptionClick, options, size = 'medium' } = props;
   const [open, setOpen] = React.useState(false);
   const anchorRef = React.useRef<HTMLDivElement>(null);
@@ -72,7 +71,7 @@ export const SplitButton: React.FC<SplitButtonProps> = (props) => {
     setOpen((prevOpen) => !prevOpen);
   };
 
-  const handleClose = (event: React.MouseEvent<Document, MouseEvent>) => {
+  const handleClose = (event: MouseEvent | TouchEvent) => {
     if (
       anchorRef.current &&
       anchorRef.current.contains(event.target as HTMLElement)
@@ -87,16 +86,15 @@ export const SplitButton: React.FC<SplitButtonProps> = (props) => {
     <>
       <ButtonGroup
         variant="text"
-        color="default"
         ref={anchorRef}
         aria-label="split button"
+        sx={{ color: curationPalette.pocketBlack }}
       >
         <Button
-          className={
-            size === 'small'
-              ? classes.optionNameSmall
-              : classes.optionNameMedium
-          }
+          sx={{
+            color: curationPalette.pocketBlack,
+            minWidth: size === 'small' ? '4rem' : '9rem',
+          }}
         >
           {icon}{' '}
           {/* If the selected option no longer exists after the split button
@@ -107,7 +105,7 @@ export const SplitButton: React.FC<SplitButtonProps> = (props) => {
             : options[0].name}
         </Button>
         <Button
-          color="default"
+          sx={{ color: curationPalette.pocketBlack }}
           size="small"
           aria-controls={open ? 'split-button-menu' : undefined}
           aria-expanded={open ? 'true' : undefined}
@@ -119,12 +117,12 @@ export const SplitButton: React.FC<SplitButtonProps> = (props) => {
         </Button>
       </ButtonGroup>
       <Popper
-        className={classes.popper}
         open={open}
         anchorEl={anchorRef.current}
         role={undefined}
         transition
         disablePortal
+        sx={{ zIndex: 2 }}
       >
         {({ TransitionProps, placement }) => (
           <Grow

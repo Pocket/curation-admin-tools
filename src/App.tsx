@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { ThemeProvider } from '@material-ui/core/styles';
+import { ThemeProvider } from '@mui/material/styles';
 import { ApolloProvider } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { SnackbarProvider } from 'notistack';
@@ -11,7 +11,7 @@ import { PageNotFound } from './_shared/components/';
 import { CollectionsLandingPage } from './collections/pages';
 import { CuratedCorpusLandingPage } from './curated-corpus/pages';
 import { useMozillaAuth } from './_shared/hooks';
-import { client } from '../src/api/client';
+import { client } from './api/client';
 
 function App(): JSX.Element {
   const { canAccessCuration, canAccessCollections, jwtIdToken } =

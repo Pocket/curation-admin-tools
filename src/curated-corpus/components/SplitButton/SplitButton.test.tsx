@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import { SplitButton } from './SplitButton';
 import { DropdownOption } from '../../helpers/definitions';
-import FilterListIcon from '@material-ui/icons/FilterList';
+import FilterListIcon from '@mui/icons-material/Filter';
 import userEvent from '@testing-library/user-event';
 
 describe('The SplitButton component', () => {

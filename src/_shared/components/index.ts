@@ -1,5 +1,6 @@
 export { Button } from './Button/Button';
 export { Chip } from './Chip/Chip';
+export { FileUploadInfo } from './FileUploadInfo/FileUploadInfo';
 export { FormikTextField } from './_form-elements/FormikTextField/FormikTextField';
 export { FormikSelectField } from './_form-elements/FormikSelectField/FormikSelectField';
 export { HandleApiResponse } from './HandleApiResponse/HandleApiResponse';
@@ -7,7 +8,6 @@ export { Header } from './Header/Header';
 export type { MenuLink } from './Header/Header';
 export { HeaderConnector } from './HeaderConnector/HeaderConnector';
 export { LoadMore } from './LoadMore/LoadMore';
-export { MainContentWrapper } from './MainContentWrapper/MainContentWrapper';
 export { MarkdownPreview } from './MarkdownPreview/MarkdownPreview';
 export { Modal } from './Modal/Modal';
 export { SharedFormButtons } from './_form-elements/SharedFormButtons/SharedFormButtons';

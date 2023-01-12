@@ -9,7 +9,6 @@ export { CollectionListCard } from './CollectionListCard/CollectionListCard';
 export { CollectionPartnerAssociationForm } from './CollectionPartnerAssociationForm/CollectionPartnerAssociationForm';
 export { CollectionPartnerAssociationInfo } from './CollectionPartnerAssociationInfo/CollectionPartnerAssociationInfo';
 export { CollectionSearchForm } from './CollectionSearchForm/CollectionSearchForm';
-export { FileUploadInfo } from './FileUploadInfo/FileUploadInfo';
 export { ImageUpload } from './ImageUpload/ImageUpload';
 export { LabelListCard } from './LabelListCard/LabelListCard';
 export { PartnerForm } from './PartnerForm/PartnerForm';

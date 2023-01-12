@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
-import { Grid } from '@material-ui/core';
+import { Grid } from '@mui/material';
 import {
   Button,
   FormikSelectField,
@@ -50,7 +50,7 @@ export const RejectedItemSearchForm: React.FC<RejectedItemSearchFormProps> = (
 
   return (
     <form name="rejected-item-search-form" onSubmit={formik.handleSubmit}>
-      <Grid container spacing={3}>
+      <Grid container columnSpacing={1} rowSpacing={3}>
         <Grid item xs={12}>
           <FormikTextField
             id="title"
@@ -68,9 +68,7 @@ export const RejectedItemSearchForm: React.FC<RejectedItemSearchFormProps> = (
             fieldMeta={formik.getFieldMeta('url')}
           />
         </Grid>
-      </Grid>
 
-      <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
           <FormikSelectField
             id="topic"
@@ -105,8 +103,7 @@ export const RejectedItemSearchForm: React.FC<RejectedItemSearchFormProps> = (
             })}
           </FormikSelectField>
         </Grid>
-      </Grid>
-      <Grid container spacing={1}>
+
         <Grid item xs={12} md={10}>
           <Button buttonType="positive" type="submit" fullWidth>
             Search

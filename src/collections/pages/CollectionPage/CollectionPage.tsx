@@ -8,9 +8,9 @@ import {
   Grid,
   Paper,
   Typography,
-} from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
-import AddIcon from '@material-ui/icons/Add';
+} from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import AddIcon from '@mui/icons-material/Add';
 import { DropResult } from 'react-beautiful-dnd';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';

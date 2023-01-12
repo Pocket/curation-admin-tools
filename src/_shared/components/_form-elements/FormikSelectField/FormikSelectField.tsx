@@ -4,10 +4,9 @@ import {
   FormHelperText,
   InputLabel,
   Select,
-} from '@material-ui/core';
+  SelectProps,
+} from '@mui/material';
 import { FieldInputProps, FieldMetaProps } from 'formik/dist/types';
-import { SelectProps } from '@material-ui/core/Select/Select';
-import { useStyles } from './FormikSelectField.styles';
 
 interface FormikSelectFieldProps {
   /**
@@ -40,7 +39,7 @@ interface FormikSelectFieldProps {
 
 /**
  * A place where we can hide away some of the awkwardness of integrating Formik
- * with Material-UI dropdowns.
+ * with Material UI dropdowns.
  *
  * This component relies on the form itself to call the useFormik() hook and pass
  * down the properties of interest to the field itself.
@@ -50,10 +49,15 @@ export const FormikSelectField: React.FC<
   FormikSelectFieldProps & SelectProps
 > = (props): JSX.Element => {
   const { id, label, fieldProps, fieldMeta, children, ...otherProps } = props;
-  const classes = useStyles();
 
   return (
-    <FormControl variant="outlined" className={classes.formControl}>
+    <FormControl
+      variant="outlined"
+      size="small"
+      sx={{
+        width: '100%',
+      }}
+    >
       <InputLabel htmlFor={id}>{label}</InputLabel>
       <Select
         native

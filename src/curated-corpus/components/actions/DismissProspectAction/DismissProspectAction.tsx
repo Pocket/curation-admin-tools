@@ -1,8 +1,8 @@
 import React from 'react';
+import { IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import { curationPalette } from '../../../../theme';
 import { useDismissProspectMutation } from '../../../../api/generatedTypes';
-import { IconButton } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
-import { useStyles } from './DismissProspectAction.styles';
 
 interface DismissProspectActionProps {
   // sent by prospectListCard
@@ -20,7 +20,6 @@ interface DismissProspectActionProps {
 export const DismissProspectAction: React.FC<DismissProspectActionProps> = (
   props
 ) => {
-  const classes = useStyles();
   const { prospectId, onDismissProspect } = props;
 
   const [dismissProspect] = useDismissProspectMutation();
@@ -43,9 +42,13 @@ export const DismissProspectAction: React.FC<DismissProspectActionProps> = (
 
   return (
     <IconButton
-      className={classes.dismissButton}
       onClick={onClick}
       data-testid="dismissButton"
+      sx={{
+        color: curationPalette.secondary,
+        marginRight: '-1rem',
+        padding: '0.25rem',
+      }}
     >
       <CloseIcon fontSize="medium" />
     </IconButton>

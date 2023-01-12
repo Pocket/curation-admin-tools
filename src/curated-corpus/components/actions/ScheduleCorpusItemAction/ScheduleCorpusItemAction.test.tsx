@@ -3,9 +3,6 @@ import { MockedProvider, MockedResponse } from '@apollo/client/testing';
 import { render, screen } from '@testing-library/react';
 import { SnackbarProvider } from 'notistack';
 import userEvent from '@testing-library/user-event';
-import LuxonUtils from '@date-io/luxon';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-
 import { getTestApprovedItem } from '../../../helpers/approvedItem';
 import { successMock } from '../../../integration-test-mocks/createScheduledCorpusItem';
 import { apolloCache } from '../../../../api/client';
@@ -16,6 +13,9 @@ import { DateTime } from 'luxon';
 describe('The ScheduleCorpusItemAction', () => {
   let mocks: MockedResponse[] = [];
 
+  // This test suite occasionally takes forever to run on a local machine
+  jest.setTimeout(10000);
+
   it('renders the modal and form', async () => {
     // This first mock is needed for the form to load
     mocks = [mock_AllScheduledSurfaces];
@@ -23,13 +23,11 @@ describe('The ScheduleCorpusItemAction', () => {
     render(
       <MockedProvider mocks={mocks} cache={apolloCache}>
         <SnackbarProvider maxSnack={3}>
-          <MuiPickersUtilsProvider utils={LuxonUtils}>
-            <ScheduleCorpusItemAction
-              item={getTestApprovedItem()}
-              toggleModal={jest.fn()}
-              modalOpen={true}
-            />
-          </MuiPickersUtilsProvider>
+          <ScheduleCorpusItemAction
+            item={getTestApprovedItem()}
+            toggleModal={jest.fn()}
+            modalOpen={true}
+          />
         </SnackbarProvider>
       </MockedProvider>
     );
@@ -63,13 +61,11 @@ describe('The ScheduleCorpusItemAction', () => {
     render(
       <MockedProvider mocks={mocks} cache={apolloCache}>
         <SnackbarProvider maxSnack={3}>
-          <MuiPickersUtilsProvider utils={LuxonUtils}>
-            <ScheduleCorpusItemAction
-              item={getTestApprovedItem()}
-              toggleModal={jest.fn()}
-              modalOpen={true}
-            />
-          </MuiPickersUtilsProvider>
+          <ScheduleCorpusItemAction
+            item={getTestApprovedItem()}
+            toggleModal={jest.fn()}
+            modalOpen={true}
+          />
         </SnackbarProvider>
       </MockedProvider>
     );
@@ -86,20 +82,20 @@ describe('The ScheduleCorpusItemAction', () => {
     // Select a scheduled surface
     userEvent.selectOptions(surfaceSelect, 'NEW_TAB_EN_US');
 
-    const datePicker = screen.getByRole('textbox', {
-      name: 'Choose a date',
+    const datePicker = screen.getByRole('button', {
+      name: /choose date/i,
     }) as HTMLInputElement;
 
     // Click on the date field to bring up the calendar
     userEvent.click(datePicker);
 
-    // Find today's date on the monthly calendar (it's actually a button)
-    const todaysDateButton = screen.getAllByRole('button', {
+    // Find today's date on the monthly calendar (in MUI 5, it's a grid cell)
+    const todaysDate = screen.getAllByRole('gridcell', {
       name: today.toFormat('d'),
     })[0];
 
     // Choose it
-    userEvent.click(todaysDateButton);
+    userEvent.click(todaysDate);
 
     userEvent.click(screen.getByText('Save'));
 

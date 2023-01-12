@@ -1,10 +1,8 @@
 import React from 'react';
-import LuxonUtils from '@date-io/luxon';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { DateTime } from 'luxon';
 import { render, screen } from '@testing-library/react';
 import { ScheduleItemForm } from './ScheduleItemForm';
 import { ProspectType, ScheduledSurface } from '../../../api/generatedTypes';
-import { DateTime } from 'luxon';
 
 describe('The ScheduleItemForm component', () => {
   const handleSubmit = jest.fn();
@@ -31,16 +29,14 @@ describe('The ScheduleItemForm component', () => {
 
   it('renders successfully', () => {
     render(
-      <MuiPickersUtilsProvider utils={LuxonUtils}>
-        <ScheduleItemForm
-          handleDateChange={jest.fn()}
-          lookupCopy=""
-          selectedDate={DateTime.local()}
-          onSubmit={handleSubmit}
-          scheduledSurfaces={scheduledSurfaces}
-          approvedItemExternalId={'123abc'}
-        />
-      </MuiPickersUtilsProvider>
+      <ScheduleItemForm
+        handleDateChange={jest.fn()}
+        lookupCopy=""
+        selectedDate={DateTime.local()}
+        onSubmit={handleSubmit}
+        scheduledSurfaces={scheduledSurfaces}
+        approvedItemExternalId={'123abc'}
+      />
     );
 
     // there is at least a form and nothing falls over
@@ -48,38 +44,35 @@ describe('The ScheduleItemForm component', () => {
     expect(form).toBeInTheDocument();
   });
 
-  it('has two buttons', () => {
+  it('has three buttons', () => {
     render(
-      <MuiPickersUtilsProvider utils={LuxonUtils}>
-        <ScheduleItemForm
-          handleDateChange={jest.fn()}
-          lookupCopy=""
-          selectedDate={DateTime.local()}
-          onSubmit={handleSubmit}
-          scheduledSurfaces={scheduledSurfaces}
-          approvedItemExternalId={'123abc'}
-        />
-      </MuiPickersUtilsProvider>
+      <ScheduleItemForm
+        handleDateChange={jest.fn()}
+        lookupCopy=""
+        selectedDate={DateTime.local()}
+        onSubmit={handleSubmit}
+        scheduledSurfaces={scheduledSurfaces}
+        approvedItemExternalId={'123abc'}
+      />
     );
 
     const buttons = screen.getAllByRole('button');
-    // "Save" and "Cancel" buttons.
-    expect(buttons).toHaveLength(2);
+    // "Save" and "Cancel" buttons, plus the "DatePicker"
+    // button in the far right of the date picker field
+    expect(buttons).toHaveLength(3);
   });
 
   it('does not pre-select a scheduled surface if none was passed in and the user has access to many', () => {
     render(
-      <MuiPickersUtilsProvider utils={LuxonUtils}>
-        <ScheduleItemForm
-          data-testId="surface-selector"
-          handleDateChange={jest.fn()}
-          lookupCopy=""
-          selectedDate={DateTime.local()}
-          onSubmit={handleSubmit}
-          scheduledSurfaces={scheduledSurfaces}
-          approvedItemExternalId={'123abc'}
-        />
-      </MuiPickersUtilsProvider>
+      <ScheduleItemForm
+        data-testId="surface-selector"
+        handleDateChange={jest.fn()}
+        lookupCopy=""
+        selectedDate={DateTime.local()}
+        onSubmit={handleSubmit}
+        scheduledSurfaces={scheduledSurfaces}
+        approvedItemExternalId={'123abc'}
+      />
     );
 
     const select = screen.getByLabelText(
@@ -95,18 +88,16 @@ describe('The ScheduleItemForm component', () => {
 
   it('pre-selects the passed in scheduled surface', () => {
     render(
-      <MuiPickersUtilsProvider utils={LuxonUtils}>
-        <ScheduleItemForm
-          data-testId="surface-selector"
-          handleDateChange={jest.fn()}
-          lookupCopy=""
-          selectedDate={DateTime.local()}
-          onSubmit={handleSubmit}
-          scheduledSurfaces={scheduledSurfaces}
-          scheduledSurfaceGuid="NEW_TAB_EN_US"
-          approvedItemExternalId={'123abc'}
-        />
-      </MuiPickersUtilsProvider>
+      <ScheduleItemForm
+        data-testId="surface-selector"
+        handleDateChange={jest.fn()}
+        lookupCopy=""
+        selectedDate={DateTime.local()}
+        onSubmit={handleSubmit}
+        scheduledSurfaces={scheduledSurfaces}
+        scheduledSurfaceGuid="NEW_TAB_EN_US"
+        approvedItemExternalId={'123abc'}
+      />
     );
 
     const select = screen.getByLabelText(
@@ -123,17 +114,15 @@ describe('The ScheduleItemForm component', () => {
 
   it('pre-selects the only available scheduled surface if none was specified and the user only has access to a single one', () => {
     render(
-      <MuiPickersUtilsProvider utils={LuxonUtils}>
-        <ScheduleItemForm
-          data-testId="surface-selector"
-          handleDateChange={jest.fn()}
-          lookupCopy=""
-          selectedDate={DateTime.local()}
-          onSubmit={handleSubmit}
-          scheduledSurfaces={[scheduledSurfaces[0]]}
-          approvedItemExternalId={'123abc'}
-        />
-      </MuiPickersUtilsProvider>
+      <ScheduleItemForm
+        data-testId="surface-selector"
+        handleDateChange={jest.fn()}
+        lookupCopy=""
+        selectedDate={DateTime.local()}
+        onSubmit={handleSubmit}
+        scheduledSurfaces={[scheduledSurfaces[0]]}
+        approvedItemExternalId={'123abc'}
+      />
     );
 
     const select = screen.getByLabelText(

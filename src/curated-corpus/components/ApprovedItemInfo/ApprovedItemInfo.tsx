@@ -10,7 +10,7 @@ import {
   TableContainer,
   TableRow,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 import { getDisplayTopic } from '../../helpers/topics';
 

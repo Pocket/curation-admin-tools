@@ -12,6 +12,8 @@ import {
 import { ExistingProspectCard } from './ExistingProspectCard';
 import { ScheduledSurfaces } from '../../helpers/definitions';
 import { MockedProvider } from '@apollo/client/testing';
+import { ThemeProvider } from '@mui/material/styles';
+import theme from '../../../theme';
 
 describe('The ExistingProspectCard component', () => {
   let prospect: Prospect;
@@ -60,14 +62,16 @@ describe('The ExistingProspectCard component', () => {
   it('should show basic prospect metadata', () => {
     render(
       <MockedProvider>
-        <MemoryRouter>
-          <ExistingProspectCard
-            item={prospect.approvedCorpusItem!}
-            prospectId={prospect.prospectId}
-            onSchedule={onSchedule}
-            onDismissProspect={onDismissProspect}
-          />
-        </MemoryRouter>
+        <ThemeProvider theme={theme}>
+          <MemoryRouter>
+            <ExistingProspectCard
+              item={prospect.approvedCorpusItem!}
+              prospectId={prospect.prospectId}
+              onSchedule={onSchedule}
+              onDismissProspect={onDismissProspect}
+            />
+          </MemoryRouter>
+        </ThemeProvider>
       </MockedProvider>
     );
 
@@ -90,14 +94,16 @@ describe('The ExistingProspectCard component', () => {
   it('should show language correctly', () => {
     render(
       <MockedProvider>
-        <MemoryRouter>
-          <ExistingProspectCard
-            item={prospect.approvedCorpusItem!}
-            prospectId={prospect.prospectId}
-            onSchedule={onSchedule}
-            onDismissProspect={onDismissProspect}
-          />
-        </MemoryRouter>
+        <ThemeProvider theme={theme}>
+          <MemoryRouter>
+            <ExistingProspectCard
+              item={prospect.approvedCorpusItem!}
+              prospectId={prospect.prospectId}
+              onSchedule={onSchedule}
+              onDismissProspect={onDismissProspect}
+            />
+          </MemoryRouter>
+        </ThemeProvider>
       </MockedProvider>
     );
 
@@ -107,14 +113,16 @@ describe('The ExistingProspectCard component', () => {
   it('should show topic correctly', () => {
     render(
       <MockedProvider>
-        <MemoryRouter>
-          <ExistingProspectCard
-            item={prospect.approvedCorpusItem!}
-            prospectId={prospect.prospectId}
-            onSchedule={onSchedule}
-            onDismissProspect={onDismissProspect}
-          />
-        </MemoryRouter>
+        <ThemeProvider theme={theme}>
+          <MemoryRouter>
+            <ExistingProspectCard
+              item={prospect.approvedCorpusItem!}
+              prospectId={prospect.prospectId}
+              onSchedule={onSchedule}
+              onDismissProspect={onDismissProspect}
+            />
+          </MemoryRouter>
+        </ThemeProvider>
       </MockedProvider>
     );
 
@@ -124,14 +132,16 @@ describe('The ExistingProspectCard component', () => {
   it('should render card with excerpt', () => {
     render(
       <MockedProvider>
-        <MemoryRouter>
-          <ExistingProspectCard
-            item={prospect.approvedCorpusItem!}
-            prospectId={prospect.prospectId}
-            onSchedule={onSchedule}
-            onDismissProspect={onDismissProspect}
-          />
-        </MemoryRouter>
+        <ThemeProvider theme={theme}>
+          <MemoryRouter>
+            <ExistingProspectCard
+              item={prospect.approvedCorpusItem!}
+              prospectId={prospect.prospectId}
+              onSchedule={onSchedule}
+              onDismissProspect={onDismissProspect}
+            />
+          </MemoryRouter>
+        </ThemeProvider>
       </MockedProvider>
     );
 
@@ -141,14 +151,16 @@ describe('The ExistingProspectCard component', () => {
   it('should not render "syndicated" tag for non-syndicated articles', () => {
     render(
       <MockedProvider>
-        <MemoryRouter>
-          <ExistingProspectCard
-            item={prospect.approvedCorpusItem!}
-            prospectId={prospect.prospectId}
-            onSchedule={onSchedule}
-            onDismissProspect={onDismissProspect}
-          />
-        </MemoryRouter>
+        <ThemeProvider theme={theme}>
+          <MemoryRouter>
+            <ExistingProspectCard
+              item={prospect.approvedCorpusItem!}
+              prospectId={prospect.prospectId}
+              onSchedule={onSchedule}
+              onDismissProspect={onDismissProspect}
+            />
+          </MemoryRouter>
+        </ThemeProvider>
       </MockedProvider>
     );
 
@@ -161,14 +173,16 @@ describe('The ExistingProspectCard component', () => {
 
     render(
       <MockedProvider>
-        <MemoryRouter>
-          <ExistingProspectCard
-            item={prospect.approvedCorpusItem!}
-            prospectId={prospect.prospectId}
-            onSchedule={onSchedule}
-            onDismissProspect={onDismissProspect}
-          />
-        </MemoryRouter>
+        <ThemeProvider theme={theme}>
+          <MemoryRouter>
+            <ExistingProspectCard
+              item={prospect.approvedCorpusItem!}
+              prospectId={prospect.prospectId}
+              onSchedule={onSchedule}
+              onDismissProspect={onDismissProspect}
+            />
+          </MemoryRouter>
+        </ThemeProvider>
       </MockedProvider>
     );
 
@@ -178,14 +192,16 @@ describe('The ExistingProspectCard component', () => {
   it('should render curated item card with the action buttons', () => {
     render(
       <MockedProvider>
-        <MemoryRouter>
-          <ExistingProspectCard
-            item={prospect.approvedCorpusItem!}
-            prospectId={prospect.prospectId}
-            onSchedule={onSchedule}
-            onDismissProspect={onDismissProspect}
-          />
-        </MemoryRouter>
+        <ThemeProvider theme={theme}>
+          <MemoryRouter>
+            <ExistingProspectCard
+              item={prospect.approvedCorpusItem!}
+              prospectId={prospect.prospectId}
+              onSchedule={onSchedule}
+              onDismissProspect={onDismissProspect}
+            />
+          </MemoryRouter>
+        </ThemeProvider>
       </MockedProvider>
     );
 
@@ -223,14 +239,16 @@ describe('The ExistingProspectCard component', () => {
 
     render(
       <MockedProvider>
-        <MemoryRouter>
-          <ExistingProspectCard
-            item={prospectWithScheduleHistory.approvedCorpusItem!}
-            prospectId={prospect.prospectId}
-            onSchedule={onSchedule}
-            onDismissProspect={onDismissProspect}
-          />
-        </MemoryRouter>
+        <ThemeProvider theme={theme}>
+          <MemoryRouter>
+            <ExistingProspectCard
+              item={prospectWithScheduleHistory.approvedCorpusItem!}
+              prospectId={prospect.prospectId}
+              onSchedule={onSchedule}
+              onDismissProspect={onDismissProspect}
+            />
+          </MemoryRouter>
+        </ThemeProvider>
       </MockedProvider>
     );
 

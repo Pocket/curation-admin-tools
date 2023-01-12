@@ -1,10 +1,14 @@
 import React from 'react';
-import { Card, CardActions, Grid } from '@material-ui/core';
-import { useStyles } from './ScheduledItemCardWrapper.styles';
+import { Grid } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
 import { ScheduledCorpusItem } from '../../../api/generatedTypes';
 import { Button } from '../../../_shared/components';
-import { ApprovedItemListCard } from '../ApprovedItemListCard/ApprovedItemListCard';
-import { Link } from 'react-router-dom';
+import {
+  StyledCardActions,
+  StyledCorpusItemCard,
+  StyledLinkButton,
+} from '../../../_shared/styled';
+import { ApprovedItemListCard } from '../';
 
 interface ScheduledItemCardWrapperProps {
   /**
@@ -41,7 +45,6 @@ interface ScheduledItemCardWrapperProps {
 export const ScheduledItemCardWrapper: React.FC<
   ScheduledItemCardWrapperProps
 > = (props): JSX.Element => {
-  const classes = useStyles();
   const {
     item,
     onMoveToBottom,
@@ -53,21 +56,21 @@ export const ScheduledItemCardWrapper: React.FC<
 
   return (
     <Grid item xs={12} sm={6} md={3}>
-      <Card className={classes.root}>
+      <StyledCorpusItemCard>
         <ApprovedItemListCard
           item={item.approvedItem}
           showLanguageIcon={showLanguageIcon}
           showRecommendedOverlay={showRecommendedOverlay}
         />
 
-        <CardActions className={classes.actions}>
+        <StyledCardActions>
           <Button buttonType="positive" variant="text">
-            <Link
+            <StyledLinkButton
               to={`/curated-corpus/corpus/item/${item.approvedItem.externalId}`}
-              className={classes.link}
+              component={RouterLink}
             >
               View
-            </Link>
+            </StyledLinkButton>
           </Button>
           <Button buttonType="positive" variant="text" onClick={onReschedule}>
             Reschedule
@@ -78,8 +81,8 @@ export const ScheduledItemCardWrapper: React.FC<
           <Button buttonType="negative" variant="text" onClick={onRemove}>
             Remove
           </Button>
-        </CardActions>
-      </Card>
+        </StyledCardActions>
+      </StyledCorpusItemCard>
     </Grid>
   );
 };

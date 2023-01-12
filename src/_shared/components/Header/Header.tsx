@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  AppBar,
   Avatar,
   Container,
   Drawer,
@@ -12,14 +11,22 @@ import {
   ListItemText,
   Menu,
   MenuItem,
-} from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
-import CloseIcon from '@material-ui/icons/Close';
+} from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 import { Link } from 'react-router-dom';
 import pocketLogo from '../../assets/PKTLogoRounded_RGB.png';
 import pocketShield from '../../assets/pocket-shield.svg';
-import { useStyles } from './Header.styles';
 import { IDToken } from '../../hooks';
+import { curationPalette } from '../../../theme';
+import {
+  StyledAppBar,
+  StyledAppBarLink,
+  StyledDrawerHeader,
+  StyledProductHeading,
+  StyledProductHeadingLink,
+} from '../../styled';
+import { config } from '../../../config';
 
 export interface MenuLink {
   text: string;
@@ -62,7 +69,6 @@ interface HeaderProps {
  * Page header for all pages that authorised users see.
  */
 export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
-  const classes = useStyles();
   const {
     hasUser,
     onLogout,
@@ -94,7 +100,18 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
 
   return (
     <>
-      <AppBar className={classes.appBar} position="absolute">
+      <StyledAppBar
+        position="absolute"
+        sx={
+          // Turn the header colour brick red in development environments.
+          // Apply here as this property won't be overwritten in the styled component.
+          {
+            backgroundColor: config.isProduction
+              ? curationPalette.white
+              : curationPalette.secondary,
+          }
+        }
+      >
         <Container maxWidth="lg" disableGutters>
           <Grid
             container
@@ -113,9 +130,13 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
                   <Grid item sm={4}>
                     <Link to="/">
                       <img
-                        className={classes.logo}
                         src={pocketLogo}
                         alt="Home Page"
+                        style={{
+                          width: '100px',
+                          paddingRight: '0.25rem',
+                          marginTop: '0.5rem',
+                        }}
                       />
                     </Link>
                   </Grid>
@@ -127,29 +148,34 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
                       <MenuIcon fontSize="large" />
                     </IconButton>
                     <Drawer
-                      className={classes.drawer}
                       anchor="left"
                       open={open}
                       variant="temporary"
-                      classes={{
-                        paper: classes.drawerPaper,
+                      sx={{
+                        flexShrink: 0,
                       }}
                     >
-                      <div className={classes.drawerHeader}>
+                      <StyledDrawerHeader>
                         <IconButton onClick={handleDrawerClose}>
                           <CloseIcon />
                         </IconButton>
-                      </div>
-                      <List className={classes.menuList}>
+                      </StyledDrawerHeader>
+                      <List
+                        sx={{
+                          padding: '0.5rem 1rem',
+                        }}
+                      >
                         {menuLinks.map((link: MenuLink) => {
                           return (
                             <ListItem
-                              className={classes.menuLink}
-                              button
                               component={Link}
                               to={link.url}
                               key={link.url}
                               onClick={handleDrawerClose}
+                              sx={{
+                                borderBottom: `1px solid ${curationPalette.lightGrey}`,
+                                color: curationPalette.pocketBlack,
+                              }}
                             >
                               <ListItemText primary={link.text} />
                             </ListItem>
@@ -163,20 +189,33 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
                   <Grid item xs={1}>
                     <Link to="/">
                       <img
-                        className={classes.logoMobile}
                         src={pocketShield}
                         alt="Pocket Logo"
+                        style={{
+                          width: '1.25rem',
+                          paddingTop: '0.375rem',
+                        }}
                       />
                     </Link>
                   </Grid>
                 </Hidden>
 
                 <Grid item xs={8} sm={6}>
-                  <h1 className={classes.product}>
-                    <Link to={productLink} className={classes.productLink}>
+                  <StyledProductHeading
+                    variant="h5"
+                    sx={
+                      /* Override Typography styles here as otherwise they don't
+                     take effect in the styled component - my guess is the variant
+                      applied takes precedence over styles in the `styled` component */
+                      {
+                        fontWeight: 500,
+                      }
+                    }
+                  >
+                    <StyledProductHeadingLink to={productLink}>
                       {productName}
-                    </Link>
-                  </h1>
+                    </StyledProductHeadingLink>
+                  </StyledProductHeading>
                 </Grid>
               </Grid>
             </Grid>
@@ -189,13 +228,17 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
               >
                 <Hidden smDown implementation="css">
                   <Grid item sm={8}>
-                    <List className={classes.appBarList}>
+                    <List
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        padding: 0,
+                      }}
+                    >
                       {menuLinks.map((link: MenuLink) => {
                         return (
                           <ListItem
-                            className={classes.appBarLink}
-                            button
-                            component={Link}
+                            component={StyledAppBarLink}
                             to={link.url}
                             key={link.url}
                           >
@@ -234,7 +277,7 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
             </Grid>
           </Grid>
         </Container>
-      </AppBar>
+      </StyledAppBar>
     </>
   );
 };

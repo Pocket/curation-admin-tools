@@ -10,7 +10,7 @@ import {
   Switch,
   TextField,
   Typography,
-} from '@material-ui/core';
+} from '@mui/material';
 import { FormikValues, useFormik } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import {
@@ -21,7 +21,6 @@ import {
   SharedFormButtonsProps,
 } from '../../../_shared/components';
 import { useNotifications } from '../../../_shared/hooks';
-import { useStyles } from './StoryForm.styles';
 import { validationSchema } from './StoryForm.validation';
 import {
   CollectionStory,
@@ -73,7 +72,6 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
     editMode,
     showFromPartner,
   } = props;
-  const classes = useStyles();
 
   // Prepare state vars and helper methods for API notifications
   const { showNotification } = useNotifications();
@@ -264,7 +262,6 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
                 component="img"
                 src={imageSrc}
                 alt={formik.values.title}
-                className={classes.image}
               />
               <br />
               <Typography variant="caption">

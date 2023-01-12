@@ -2,16 +2,22 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useApprovedCorpusItemByExternalIdQuery } from '../../../api/generatedTypes';
 import { HandleApiResponse } from '../../../_shared/components';
-import { Box, Button, ButtonGroup, Grid, Typography } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
+import {
+  Alert,
+  Box,
+  Button,
+  ButtonGroup,
+  Grid,
+  Typography,
+} from '@mui/material';
 import {
   ApprovedItemCurationHistory,
   ApprovedItemInfo,
+  EditCorpusItemAction,
   RejectCorpusItemAction,
   ScheduleCorpusItemAction,
 } from '../../components';
 import { useToggle } from '../../../_shared/hooks';
-import { EditCorpusItemAction } from '../../components/actions/EditCorpusItemAction/EditCorpusItemAction';
 
 /**
  * This page displays all the details and schedule history of a single corpus item.

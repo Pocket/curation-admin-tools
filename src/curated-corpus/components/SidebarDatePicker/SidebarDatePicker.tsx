@@ -1,16 +1,14 @@
 import React from 'react';
 import { DateTime } from 'luxon';
-import { DatePicker } from '@material-ui/pickers';
-import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import { TextField } from '@mui/material';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 
 interface SidebarDatePickerProps {
   /**
    * What to do when the user picks a date.
    */
-  handleDateChange: (
-    date: MaterialUiPickersDate,
-    value?: string | null | undefined
-  ) => void;
+  handleDateChange: (date: any, value?: string | null | undefined) => void;
 
   /**
    * A date in the Luxon DateTime format to be used with the Material UI Date Picker
@@ -31,21 +29,25 @@ export const SidebarDatePicker: React.FC<SidebarDatePickerProps> = (
   const { handleDateChange, selectedDate } = props;
 
   return (
-    <DatePicker
-      variant="inline"
-      inputVariant="outlined"
-      format="MMMM d, yyyy"
-      margin="none"
-      id="scheduled-date"
-      label="Choose a different date"
-      value={selectedDate}
-      onChange={handleDateChange}
-      disablePast
-      initialFocusedDate={selectedDate}
-      maxDate={selectedDate.plus({ days: 59 })}
-      disableToolbar
-      autoOk
-      fullWidth
-    />
+    <LocalizationProvider dateAdapter={AdapterLuxon}>
+      <DatePicker
+        inputFormat="MMMM d, yyyy"
+        label="Choose a different date"
+        value={selectedDate}
+        onChange={handleDateChange}
+        disablePast
+        openTo="day"
+        maxDate={selectedDate.plus({ days: 59 })}
+        renderInput={(params: any) => (
+          <TextField
+            fullWidth
+            variant="outlined"
+            id="scheduled-date"
+            label="Choose a date"
+            {...params}
+          />
+        )}
+      />
+    </LocalizationProvider>
   );
 };

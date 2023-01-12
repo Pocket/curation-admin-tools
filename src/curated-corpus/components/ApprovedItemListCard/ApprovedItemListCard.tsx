@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Box,
   CardContent,
   CardMedia,
   Link,
@@ -8,17 +9,18 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
-} from '@material-ui/core';
-import AlarmIcon from '@material-ui/icons/Alarm';
-import BookmarksIcon from '@material-ui/icons/Bookmarks';
-import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
-import CategoryIcon from '@material-ui/icons/Category';
-import LanguageIcon from '@material-ui/icons/Language';
-import { useStyles } from './ApprovedItemListCard.styles';
+} from '@mui/material';
+import AlarmIcon from '@mui/icons-material/Alarm';
+import BookmarksIcon from '@mui/icons-material/Bookmarks';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CategoryIcon from '@mui/icons-material/Category';
+import LanguageIcon from '@mui/icons-material/Language';
 import { ApprovedCorpusItem, CuratedStatus } from '../../../api/generatedTypes';
 import { getDisplayTopic } from '../../helpers/topics';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
-import { ScheduleHistory } from '../ScheduleHistory/ScheduleHistory';
+import { ScheduleHistory } from '../';
+
+import { curationPalette } from '../../../theme';
 
 interface ApprovedItemListCardProps {
   /**
@@ -40,7 +42,6 @@ interface ApprovedItemListCardProps {
 export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
   props
 ): JSX.Element => {
-  const classes = useStyles();
   const {
     item,
     showLanguageIcon = true,
@@ -71,21 +72,55 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
       />
 
       {isRecommendedOverlayVisible && (
-        <div className={classes.imageOverlay}>Rec</div>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            color: curationPalette.white,
+            backgroundColor: curationPalette.primary,
+            borderRadius: '0.125rem',
+            padding: '0.25rem',
+          }}
+        >
+          Rec
+        </Box>
       )}
 
-      <CardContent className={classes.content}>
-        <Typography className={classes.publisher} gutterBottom>
+      <CardContent
+        sx={{
+          padding: '0.5rem',
+        }}
+      >
+        <Typography
+          gutterBottom
+          sx={{
+            marginTop: '0.25rem',
+            fontWeight: 400,
+            fontSize: '0.875rem',
+            color: curationPalette.neutral,
+          }}
+        >
           <span>{item.publisher}</span> &middot;{' '}
           <span>{flattenAuthors(item.authors)}</span>
         </Typography>
         <Typography
-          className={classes.title}
-          variant="h3"
+          variant="h5"
           align="left"
           gutterBottom
+          sx={{
+            fontSize: '1rem',
+            fontWeight: 500,
+          }}
         >
-          <Link href={item.url} target="_blank" className={classes.link}>
+          <Link
+            href={item.url}
+            target="_blank"
+            sx={{
+              textDecoration: 'none',
+              color: curationPalette.pocketBlack,
+            }}
+          >
             {item.title}
           </Link>
         </Typography>
@@ -103,12 +138,18 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
       </CardContent>
 
       {/* Push the rest of the elements to the bottom of the card. */}
-      <div className={classes.flexGrow} />
+      <Box sx={{ flexGrow: 1 }} />
 
-      <List dense className={classes.list}>
+      {/* Note that minWidth style overrides only work inside an `sx` property, not a styled component. */}
+      <List
+        dense
+        sx={{
+          borderBottom: `1px solid ${curationPalette.lightGrey}`,
+        }}
+      >
         {item.isSyndicated && (
           <ListItem>
-            <ListItemIcon className={classes.listItemIcon}>
+            <ListItemIcon sx={{ minWidth: '2rem' }}>
               <CheckCircleOutlineIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText primary={'Syndicated'} />
@@ -116,7 +157,7 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
         )}
         {item.isCollection && (
           <ListItem>
-            <ListItemIcon className={classes.listItemIcon}>
+            <ListItemIcon sx={{ minWidth: '2rem' }}>
               <BookmarksIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText primary={'Collection'} />
@@ -124,24 +165,24 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
         )}
         {item.isTimeSensitive && (
           <ListItem>
-            <ListItemIcon className={classes.listItemIcon}>
+            <ListItemIcon sx={{ minWidth: '2rem' }}>
               <AlarmIcon fontSize="small" />
             </ListItemIcon>
             <ListItemText primary={'Time Sensitive'} />
           </ListItem>
         )}
         <ListItem>
-          <ListItemIcon className={classes.listItemIcon}>
+          <ListItemIcon sx={{ minWidth: '2rem' }}>
             <CategoryIcon />
           </ListItemIcon>
           <ListItemText
-            className={classes.topic}
             primary={getDisplayTopic(item.topic)}
+            sx={{ textTransform: 'capitalize' }}
           />
         </ListItem>
         {showLanguageIcon && (
           <ListItem>
-            <ListItemIcon className={classes.listItemIcon}>
+            <ListItemIcon sx={{ minWidth: '2rem' }}>
               <LanguageIcon />
             </ListItemIcon>
             <ListItemText primary={item.language.toUpperCase()} />

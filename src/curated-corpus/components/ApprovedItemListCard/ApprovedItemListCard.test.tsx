@@ -7,6 +7,8 @@ import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 import { getTestApprovedItem } from '../../helpers/approvedItem';
 import { ScheduledSurfaces } from '../../helpers/definitions';
 import userEvent from '@testing-library/user-event';
+import { ThemeProvider } from '@mui/material/styles';
+import theme from '../../../theme';
 
 describe('The ApprovedItemListCard component', () => {
   let item: ApprovedCorpusItem = getTestApprovedItem();
@@ -14,7 +16,9 @@ describe('The ApprovedItemListCard component', () => {
   it('shows basic approved item information', () => {
     render(
       <MemoryRouter>
-        <ApprovedItemListCard item={item} />
+        <ThemeProvider theme={theme}>
+          <ApprovedItemListCard item={item} />
+        </ThemeProvider>
       </MemoryRouter>
     );
 
@@ -37,7 +41,9 @@ describe('The ApprovedItemListCard component', () => {
   it('shows curated status correctly', () => {
     render(
       <MemoryRouter>
-        <ApprovedItemListCard item={item} />
+        <ThemeProvider theme={theme}>
+          <ApprovedItemListCard item={item} />
+        </ThemeProvider>
       </MemoryRouter>
     );
 
@@ -56,7 +62,9 @@ describe('The ApprovedItemListCard component', () => {
   it('shows language correctly', () => {
     render(
       <MemoryRouter>
-        <ApprovedItemListCard item={item} />
+        <ThemeProvider theme={theme}>
+          <ApprovedItemListCard item={item} />
+        </ThemeProvider>
       </MemoryRouter>
     );
 
@@ -66,7 +74,9 @@ describe('The ApprovedItemListCard component', () => {
   it('shows topic correctly', () => {
     render(
       <MemoryRouter>
-        <ApprovedItemListCard item={item} />
+        <ThemeProvider theme={theme}>
+          <ApprovedItemListCard item={item} />
+        </ThemeProvider>
       </MemoryRouter>
     );
 
@@ -76,7 +86,9 @@ describe('The ApprovedItemListCard component', () => {
   it('should render approved item card with excerpt', () => {
     render(
       <MemoryRouter>
-        <ApprovedItemListCard item={item} />
+        <ThemeProvider theme={theme}>
+          <ApprovedItemListCard item={item} />
+        </ThemeProvider>
       </MemoryRouter>
     );
 
@@ -86,7 +98,9 @@ describe('The ApprovedItemListCard component', () => {
   it('should not render any extra flags if item does not have these props', () => {
     render(
       <MemoryRouter>
-        <ApprovedItemListCard item={item} />
+        <ThemeProvider theme={theme}>
+          <ApprovedItemListCard item={item} />
+        </ThemeProvider>
       </MemoryRouter>
     );
 
@@ -105,7 +119,9 @@ describe('The ApprovedItemListCard component', () => {
 
     render(
       <MemoryRouter>
-        <ApprovedItemListCard item={item} />
+        <ThemeProvider theme={theme}>
+          <ApprovedItemListCard item={item} />
+        </ThemeProvider>
       </MemoryRouter>
     );
 
@@ -117,7 +133,9 @@ describe('The ApprovedItemListCard component', () => {
   it('should show multiple authors as a comma-separated string', () => {
     render(
       <MemoryRouter>
-        <ApprovedItemListCard item={item} />
+        <ThemeProvider theme={theme}>
+          <ApprovedItemListCard item={item} />
+        </ThemeProvider>
       </MemoryRouter>
     );
 
@@ -132,7 +150,9 @@ describe('The ApprovedItemListCard component', () => {
 
     render(
       <MemoryRouter>
-        <ApprovedItemListCard item={item} />
+        <ThemeProvider theme={theme}>
+          <ApprovedItemListCard item={item} />
+        </ThemeProvider>
       </MemoryRouter>
     );
 
@@ -160,7 +180,9 @@ describe('The ApprovedItemListCard component', () => {
 
     render(
       <MemoryRouter>
-        <ApprovedItemListCard item={item} />
+        <ThemeProvider theme={theme}>
+          <ApprovedItemListCard item={item} />
+        </ThemeProvider>
       </MemoryRouter>
     );
 

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-// import React from 'react';
-import { Box } from '@material-ui/core';
+import { Box } from '@mui/material';
 import { Button, HandleApiResponse } from '../../../_shared/components';
 import { useToggle } from '../../../_shared/hooks';
 import { AddLabelModal, LabelListCard } from '../../components';
@@ -24,9 +23,6 @@ export const LabelListPage = (): JSX.Element => {
       setLabelsList(data.labels ?? []);
     },
   });
-
-  console.log('data.labels: ', data?.labels);
-  console.log('labelsList: ', labelsList);
   return (
     <>
       <Box display="flex">

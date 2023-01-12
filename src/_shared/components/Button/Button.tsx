@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button as MuiButton, ButtonProps } from '@material-ui/core';
+import { Button as MuiButton, ButtonProps } from '@mui/material';
 
 interface Props extends ButtonProps {
   buttonType:

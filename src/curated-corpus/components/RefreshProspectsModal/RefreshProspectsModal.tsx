@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, SharedFormButtons } from '../../../_shared/components';
-import { Box, Grid, Typography } from '@material-ui/core';
+import { Box, Grid, Typography } from '@mui/material';
 
 interface RefreshProspectsModalProps {
   isOpen: boolean;

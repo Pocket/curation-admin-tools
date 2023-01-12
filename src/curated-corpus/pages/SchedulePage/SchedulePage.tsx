@@ -5,10 +5,13 @@ import {
   AccordionSummary,
   Box,
   Grid,
+  TextField,
   Typography,
-} from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+} from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { DateTime } from 'luxon';
+import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { FormikHelpers, FormikValues } from 'formik';
 import {
   Button,
@@ -35,14 +38,11 @@ import {
   useRunMutation,
   useToggle,
 } from '../../../_shared/hooks';
-import { useStyles } from './SchedulePage.styles';
 import { DropdownOption } from '../../helpers/definitions';
-import { DatePicker } from '@material-ui/pickers';
 import { getLocalDateTimeForGuid } from '../../helpers/helperFunctions';
+import { curationPalette } from '../../../theme';
 
 export const SchedulePage: React.FC = (): JSX.Element => {
-  const classes = useStyles();
-
   /**
    * ##########
    * ########## State variables start here
@@ -367,64 +367,71 @@ export const SchedulePage: React.FC = (): JSX.Element => {
                 size="small"
               />
             </Grid>
-            <Grid>
+            <Grid item>
               <Typography variant="h6">{guidLocalDateTime}</Typography>
             </Grid>
           </Grid>
           <Grid item>
-            <Grid container spacing={2} alignItems="center">
-              <Grid item>
-                <DatePicker
-                  variant="inline"
-                  inputVariant="outlined"
-                  format="MMMM d, yyyy"
-                  margin="none"
-                  id="scheduled-start-date"
-                  label="Start date"
-                  value={startDate}
-                  onChange={(date) => {
-                    date && setStartDate(date);
-                  }}
-                  initialFocusedDate={startDate}
-                  disableToolbar
-                  autoOk
-                />
+            <LocalizationProvider dateAdapter={AdapterLuxon}>
+              <Grid container spacing={2} alignItems="center">
+                <Grid item sm>
+                  <DatePicker
+                    label="Start date"
+                    inputFormat="MMMM d, yyyy"
+                    value={startDate}
+                    onChange={(date) => {
+                      date && setStartDate(date);
+                    }}
+                    openTo="day"
+                    renderInput={(params: any) => (
+                      <TextField
+                        fullWidth
+                        size="small"
+                        variant="outlined"
+                        id="scheduled-start-date"
+                        {...params}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item sm>
+                  <DatePicker
+                    label="End date"
+                    inputFormat="MMMM d, yyyy"
+                    value={endDate}
+                    onChange={(date) => {
+                      date && setEndDate(date);
+                    }}
+                    openTo="day"
+                    maxDate={startDate.plus({ days: 30 })}
+                    renderInput={(params: any) => (
+                      <TextField
+                        fullWidth
+                        size="small"
+                        variant="outlined"
+                        id="scheduled-end-date"
+                        {...params}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item>
+                  <Button
+                    buttonType="positive"
+                    fullWidth
+                    onClick={() => {
+                      executeGetScheduledItemsQuery(
+                        currentScheduledSurfaceGuid,
+                        startDate,
+                        endDate
+                      );
+                    }}
+                  >
+                    Get schedule
+                  </Button>
+                </Grid>
               </Grid>
-              <Grid item>
-                <DatePicker
-                  variant="inline"
-                  inputVariant="outlined"
-                  format="MMMM d, yyyy"
-                  margin="none"
-                  id="scheduled-end-date"
-                  label="End date"
-                  value={endDate}
-                  onChange={(date) => {
-                    date && setEndDate(date);
-                  }}
-                  initialFocusedDate={endDate}
-                  maxDate={startDate.plus({ days: 30 })}
-                  minDate={startDate.plus({ days: 1 })}
-                  disableToolbar
-                  autoOk
-                />
-              </Grid>
-              <Grid item>
-                <Button
-                  buttonType="positive"
-                  fullWidth
-                  onClick={() => {
-                    executeGetScheduledItemsQuery(
-                      currentScheduledSurfaceGuid,
-                      startDate,
-                      endDate
-                    );
-                  }}
-                >
-                  Get schedule
-                </Button>
-              </Grid>
-            </Grid>
+            </LocalizationProvider>
           </Grid>
         </Grid>
       )}
@@ -453,7 +460,14 @@ export const SchedulePage: React.FC = (): JSX.Element => {
                     <Box mt={3}>
                       <Accordion>
                         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                          <Typography className={classes.heading}>
+                          <Typography
+                            sx={{
+                              fontSize: '1.5rem',
+                              fontWeight: 500,
+                              textTransform: 'capitalize',
+                              color: curationPalette.primary,
+                            }}
+                          >
                             {getDayAndSyndicatedCountHeading(data)}
                           </Typography>
                         </AccordionSummary>
