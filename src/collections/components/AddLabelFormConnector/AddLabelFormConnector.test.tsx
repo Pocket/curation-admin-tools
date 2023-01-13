@@ -118,7 +118,7 @@ describe('AddLabelFormConnector', () => {
     });
     // should resolve in duplicate error
     expect(
-      screen.getByText('A label with the name "fake-label-2" already exists.')
+      screen.getByText('A label with the name "fake-label-2" already exists')
     ).toBeInTheDocument();
   });
 

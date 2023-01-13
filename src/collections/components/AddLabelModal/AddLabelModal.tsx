@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid } from '@mui/material';
 import { Modal } from '../../../_shared/components';
 import { AddLabelFormConnector } from '../';
-import { Label } from '../../../api/generatedTypes';
+// import { Label } from '../../../api/generatedTypes';
 
 interface AddLabelModalProps {
   /**
@@ -16,9 +16,10 @@ interface AddLabelModalProps {
   toggleModal: VoidFunction;
 
   /**
-   * state variable from Parent component LabelList Page
-   * */
-  setLabelsList: React.Dispatch<React.SetStateAction<Label[]>>;
+   * A helper function from Apollo Client that triggers a new API call to refetch
+   * the data for a given query.
+   */
+  refetch: VoidFunction;
 }
 
 /**
@@ -27,7 +28,7 @@ interface AddLabelModalProps {
 export const AddLabelModal: React.FC<AddLabelModalProps> = (
   props
 ): JSX.Element => {
-  const { isOpen, toggleModal, setLabelsList } = props;
+  const { isOpen, toggleModal, refetch } = props;
 
   return (
     <Modal open={isOpen} handleClose={toggleModal}>
@@ -36,10 +37,7 @@ export const AddLabelModal: React.FC<AddLabelModalProps> = (
           <h2>Add a New Label</h2>
         </Grid>
         <Grid item></Grid>
-        <AddLabelFormConnector
-          toggleModal={toggleModal}
-          setLabelsList={setLabelsList}
-        />
+        <AddLabelFormConnector toggleModal={toggleModal} refetch={refetch} />
       </Grid>
     </Modal>
   );

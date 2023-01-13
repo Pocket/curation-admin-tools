@@ -1,5 +1,4 @@
 import { createLabel } from '../../api/mutations/createLabel';
-// import { getTestApprovedItem } from '../helpers/approvedItem';
 
 export const createLabel1SuccessMock = {
   request: {
@@ -42,7 +41,7 @@ export const createDuplicateLabelErrorMock = {
       name: 'fake-label-2',
     },
   },
-  error: new Error('A label with the name "fake-label-2" already exists.'),
+  error: new Error('A label with the name "fake-label-2" already exists'),
 };
 
 export const createMinCharLabelErrorMock = {

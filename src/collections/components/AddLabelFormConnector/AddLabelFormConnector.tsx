@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useNotifications } from '../../../_shared/hooks';
+import { useRunMutation } from '../../../_shared/hooks';
 import { AddLabelForm } from '../';
 import { FormikHelpers, FormikValues } from 'formik';
-import { Label, useCreateLabelMutation } from '../../../api/generatedTypes';
+import { useCreateLabelMutation } from '../../../api/generatedTypes';
 
 interface AddLabelFormConnectorProps {
   /**
@@ -11,65 +11,50 @@ interface AddLabelFormConnectorProps {
   toggleModal: VoidFunction;
 
   /**
-   * state variable for list of lables
-   * */
-  setLabelsList: React.Dispatch<React.SetStateAction<Label[]>>;
+   * A helper function from Apollo Client that triggers a new API call to refetch
+   * the data for a given query.
+   */
+  refetch: VoidFunction;
 }
 
 /**
- * Parent component for the AddLabelFormConnector component
+ * Parent component for the AddLabelForm component
  */
 export const AddLabelFormConnector: React.FC<AddLabelFormConnectorProps> = (
   props
 ): JSX.Element => {
-  const { toggleModal, setLabelsList } = props;
+  const { toggleModal, refetch } = props;
   const [isLoaderShowing, setIsLoaderShowing] = useState<boolean>(false);
   const [createLabelMutation] = useCreateLabelMutation();
-  // Prepare state vars and helper methods for API notifications
-  const { showNotification } = useNotifications();
+
+  // Get a helper function that will execute each mutation, show standard notifications
+  // and execute any additional actions in a callback
+  const { runMutation } = useRunMutation();
 
   const onSubmit = (
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
-  ) => {
-    formikHelpers.setSubmitting(true);
-    // call create label mutation
-    createLabelMutation({
-      variables: {
-        name: values.labelName,
-      },
-      notifyOnNetworkStatusChange: true,
-      fetchPolicy: 'no-cache',
-    })
-      .then(({ data }) => {
-        const createdLabelName = data?.createLabel.name;
-
-        // hide the loading bar after this failed submission
+  ): void => {
+    // Run the mutation
+    runMutation(
+      createLabelMutation,
+      { variables: { name: values.labelName } },
+      `"${values.labelName} has been created"`,
+      () => {
         setIsLoaderShowing(false);
+        toggleModal();
+        formikHelpers.setSubmitting(false);
 
-        if (data && createdLabelName) {
-          // Hide the Add Label form
-          toggleModal();
-
-          // append the newly created label object to old array
-          setLabelsList((prevState: Label[]) => {
-            return [...prevState, data.createLabel];
-          });
-          showNotification(
-            `"${data.createLabel.name} has been created"`,
-            'success'
-          );
-          // Nothing else to do here - we can do an early exit
-          return;
+        if (refetch) {
+          refetch();
         }
-      })
-      .catch((error: Error) => {
+      },
+      () => {
         setIsLoaderShowing(false);
-        showNotification(error.message, 'error');
-      });
+        formikHelpers.setSubmitting(false);
+      }
+    );
     setIsLoaderShowing(true);
-
-    formikHelpers.resetForm();
   };
   return (
     <AddLabelForm

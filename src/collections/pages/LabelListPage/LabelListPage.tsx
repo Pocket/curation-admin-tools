@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box } from '@mui/material';
 import { Button, HandleApiResponse } from '../../../_shared/components';
 import { useToggle } from '../../../_shared/hooks';
@@ -13,16 +13,7 @@ export const LabelListPage = (): JSX.Element => {
    * Keeps track of whether the "Add Label" modal is open or not.
    */
   const [addLabelModalOpen, toggleAddLabelModal] = useToggle(false);
-  /**
-   * Keeps track of label list state
-   */
-  const [labelsList, setLabelsList] = useState<Label[]>([]);
-  const { loading, error, data } = useLabelsQuery({
-    onCompleted: (data) => {
-      // set the state to the returned label list
-      setLabelsList(data.labels ?? []);
-    },
-  });
+  const { loading, error, data, refetch } = useLabelsQuery({});
   return (
     <>
       <Box display="flex">
@@ -32,7 +23,7 @@ export const LabelListPage = (): JSX.Element => {
         <AddLabelModal
           isOpen={addLabelModalOpen}
           toggleModal={toggleAddLabelModal}
-          setLabelsList={setLabelsList}
+          refetch={refetch}
         />
 
         <Button buttonType="hollow" onClick={toggleAddLabelModal}>
@@ -41,9 +32,10 @@ export const LabelListPage = (): JSX.Element => {
       </Box>
       {!data && <HandleApiResponse loading={loading} error={error} />}
 
-      {labelsList.map((label: Label) => {
-        return <LabelListCard key={label.externalId} label={label} />;
-      })}
+      {data &&
+        data.labels.map((label: Label) => {
+          return <LabelListCard key={label.externalId} label={label} />;
+        })}
     </>
   );
 };
