@@ -1,5 +1,5 @@
 # development build - build app
-FROM node:16@sha256:0c672d547405fe64808ea28b49c5772b1026f81b3b716ff44c10c96abf177d6a as builder
+FROM node:16@sha256:27fab5920246070cf13449cf44c25bc4f5adef18ca7482b2bda90b7cf9e64481 as builder
 WORKDIR /usr/src/app
 ARG GIT_SHA
 ARG APP_ENV
