@@ -1,3 +1,6 @@
+export { AddLabelForm } from './AddLabelForm/AddLabelForm';
+export { AddLabelFormConnector } from './AddLabelFormConnector/AddLabelFormConnector';
+export { AddLabelModal } from './AddLabelModal/AddLabelModal';
 export { AuthorForm } from './AuthorForm/AuthorForm';
 export { AuthorInfo } from './AuthorInfo/AuthorInfo';
 export { AuthorListCard } from './AuthorListCard/AuthorListCard';
