@@ -22,10 +22,7 @@ describe('AddLabelFormConnector', () => {
     render(
       <MockedProvider mocks={mocks}>
         <SnackbarProvider>
-          <AddLabelFormConnector
-            setLabelsList={jest.fn()}
-            toggleModal={toggleModal}
-          />
+          <AddLabelFormConnector toggleModal={toggleModal} />
         </SnackbarProvider>
       </MockedProvider>
     );
@@ -56,10 +53,7 @@ describe('AddLabelFormConnector', () => {
     render(
       <MockedProvider mocks={mocks}>
         <SnackbarProvider>
-          <AddLabelFormConnector
-            setLabelsList={jest.fn()}
-            toggleModal={toggleModal}
-          />
+          <AddLabelFormConnector toggleModal={toggleModal} />
         </SnackbarProvider>
       </MockedProvider>
     );
@@ -91,10 +85,7 @@ describe('AddLabelFormConnector', () => {
     render(
       <MockedProvider mocks={mocks}>
         <SnackbarProvider>
-          <AddLabelFormConnector
-            setLabelsList={jest.fn()}
-            toggleModal={toggleModal}
-          />
+          <AddLabelFormConnector toggleModal={toggleModal} />
         </SnackbarProvider>
       </MockedProvider>
     );
@@ -128,10 +119,7 @@ describe('AddLabelFormConnector', () => {
     render(
       <MockedProvider mocks={mocks}>
         <SnackbarProvider>
-          <AddLabelFormConnector
-            setLabelsList={jest.fn()}
-            toggleModal={toggleModal}
-          />
+          <AddLabelFormConnector toggleModal={toggleModal} />
         </SnackbarProvider>
       </MockedProvider>
     );
@@ -165,10 +153,7 @@ describe('AddLabelFormConnector', () => {
     render(
       <MockedProvider mocks={mocks}>
         <SnackbarProvider>
-          <AddLabelFormConnector
-            setLabelsList={jest.fn()}
-            toggleModal={toggleModal}
-          />
+          <AddLabelFormConnector toggleModal={toggleModal} />
         </SnackbarProvider>
       </MockedProvider>
     );
@@ -204,10 +189,7 @@ describe('AddLabelFormConnector', () => {
     render(
       <MockedProvider mocks={mocks}>
         <SnackbarProvider>
-          <AddLabelFormConnector
-            setLabelsList={jest.fn()}
-            toggleModal={toggleModal}
-          />
+          <AddLabelFormConnector toggleModal={toggleModal} />
         </SnackbarProvider>
       </MockedProvider>
     );
@@ -240,10 +222,7 @@ describe('AddLabelFormConnector', () => {
     render(
       <MockedProvider mocks={mocks}>
         <SnackbarProvider>
-          <AddLabelFormConnector
-            setLabelsList={jest.fn()}
-            toggleModal={toggleModal}
-          />
+          <AddLabelFormConnector toggleModal={toggleModal} />
         </SnackbarProvider>
       </MockedProvider>
     );

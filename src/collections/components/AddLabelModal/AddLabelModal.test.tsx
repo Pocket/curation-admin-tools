@@ -5,18 +5,13 @@ import { MockedProvider } from '@apollo/client/testing';
 import { AddLabelModal } from './AddLabelModal';
 
 describe('The AddLabelModal component', () => {
-  const setLabelsList = jest.fn;
   const toggleModal = jest.fn;
 
   it('should render the modal and the AddLabelForm component', () => {
     render(
       <MockedProvider>
         <SnackbarProvider maxSnack={3}>
-          <AddLabelModal
-            isOpen={true}
-            setLabelsList={setLabelsList}
-            toggleModal={toggleModal}
-          />
+          <AddLabelModal isOpen={true} toggleModal={toggleModal} />
         </SnackbarProvider>
       </MockedProvider>
     );

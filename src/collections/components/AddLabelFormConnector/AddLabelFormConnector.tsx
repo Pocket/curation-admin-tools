@@ -44,15 +44,12 @@ export const AddLabelFormConnector: React.FC<AddLabelFormConnectorProps> = (
         setIsLoaderShowing(false);
         toggleModal();
         formikHelpers.setSubmitting(false);
-
-        if (refetch) {
-          refetch();
-        }
       },
       () => {
         setIsLoaderShowing(false);
         formikHelpers.setSubmitting(false);
-      }
+      },
+      refetch
     );
     setIsLoaderShowing(true);
   };
