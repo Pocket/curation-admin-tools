@@ -4,6 +4,7 @@ export { AddLabelModal } from './AddLabelModal/AddLabelModal';
 export { AuthorForm } from './AuthorForm/AuthorForm';
 export { AuthorInfo } from './AuthorInfo/AuthorInfo';
 export { AuthorListCard } from './AuthorListCard/AuthorListCard';
+export { ChipLabelsList } from './ChipLabelsList/ChipLabelsList';
 export { CollectionForm } from './CollectionForm/CollectionForm';
 export { CollectionInfo } from './CollectionInfo/CollectionInfo';
 export { CollectionListCard } from './CollectionListCard/CollectionListCard';

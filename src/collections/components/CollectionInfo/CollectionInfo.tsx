@@ -3,10 +3,10 @@ import ReactMarkdown from 'react-markdown';
 import { Box, Chip, Typography } from '@mui/material';
 import AdUnitsIcon from '@mui/icons-material/AdUnits';
 import CategoryIcon from '@mui/icons-material/Category';
-import LabelOutlinedIcon from '@mui/icons-material/LabelOutlined';
 import LanguageIcon from '@mui/icons-material/Language';
 
 import { Collection, CollectionStatus } from '../../../api/generatedTypes';
+import { ChipLabelsList } from '../';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 
 interface CollectionInfoProps {
@@ -65,19 +65,9 @@ export const CollectionInfo: React.FC<CollectionInfoProps> = (
             icon={<AdUnitsIcon />}
           />
         )}{' '}
-        {collection.labels &&
-          collection.labels.length > 0 &&
-          collection.labels.map((data) => {
-            return (
-              <Chip
-                key={data?.externalId}
-                variant="outlined"
-                color="primary"
-                label={data?.name}
-                icon={<LabelOutlinedIcon />}
-              />
-            );
-          })}
+        {collection && collection.labels && (
+          <ChipLabelsList collection={collection} />
+        )}
       </Box>
 
       <h3>Slug</h3>
