@@ -13,6 +13,11 @@ interface ChipLabelsListProps {
    * Except for stories.
    */
   collection: Omit<Collection, 'stories'>;
+
+  /**
+   * Boolean flag whether or not enable the onClick event.
+   * */
+  enableOnClick: boolean;
 }
 
 /**
@@ -21,7 +26,7 @@ interface ChipLabelsListProps {
  * @param props
  */
 export const ChipLabelsList: React.FC<ChipLabelsListProps> = (props) => {
-  const { collection } = props;
+  const { collection, enableOnClick } = props;
 
   // expand more/less button state
   const [expandButtonToggled, setExpandButtonToggle] = useState(true);
@@ -64,7 +69,7 @@ export const ChipLabelsList: React.FC<ChipLabelsListProps> = (props) => {
             key="expand-button"
             variant="text"
             onMouseDown={handleMouseDown}
-            onClick={handleClick}
+            onClick={enableOnClick ? handleClick : undefined}
             endIcon={expandButtonToggled ? <ExpandMore /> : <ExpandLess />}
           >
             {expandButtonToggled

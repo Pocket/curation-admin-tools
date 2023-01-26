@@ -92,7 +92,7 @@ export const CollectionListCard: React.FC<CollectionListCardProps> = (
                 />
               )}{' '}
               {collection && collection.labels && (
-                <ChipLabelsList collection={collection} />
+                <ChipLabelsList collection={collection} enableOnClick={true} />
               )}
             </Box>
             <Typography noWrap component="div">

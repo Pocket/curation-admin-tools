@@ -66,7 +66,7 @@ export const CollectionInfo: React.FC<CollectionInfoProps> = (
           />
         )}{' '}
         {collection && collection.labels && (
-          <ChipLabelsList collection={collection} />
+          <ChipLabelsList collection={collection} enableOnClick={false} />
         )}
       </Box>
 
