@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box, CardMedia, Chip, Grid, Typography } from '@mui/material';
-import LabelOutlinedIcon from '@mui/icons-material/LabelOutlined';
 import LanguageIcon from '@mui/icons-material/Language';
 import CategoryIcon from '@mui/icons-material/Category';
 import AdUnitsIcon from '@mui/icons-material/AdUnits';
@@ -9,6 +8,7 @@ import ReactMarkdown from 'react-markdown';
 
 import { Collection } from '../../../api/generatedTypes';
 import { StyledCardLink, StyledListCard } from '../../../_shared/styled';
+import { ChipLabelsList } from '../';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 
 interface CollectionListCardProps {
@@ -28,7 +28,6 @@ export const CollectionListCard: React.FC<CollectionListCardProps> = (
   props
 ) => {
   const { collection } = props;
-
   return (
     <StyledCardLink
       component={RouterLink}
@@ -48,7 +47,9 @@ export const CollectionListCard: React.FC<CollectionListCardProps> = (
                   : '/placeholders/collectionSmall.svg'
               }
               alt={collection.title}
-              sx={{ borderRadius: 1 }}
+              sx={{
+                borderRadius: 1,
+              }}
             />
           </Grid>
           <Grid item xs={8} sm={10}>
@@ -90,19 +91,9 @@ export const CollectionListCard: React.FC<CollectionListCardProps> = (
                   icon={<AdUnitsIcon />}
                 />
               )}{' '}
-              {collection.labels &&
-                collection.labels.length > 0 &&
-                collection.labels.map((data) => {
-                  return (
-                    <Chip
-                      key={data?.externalId}
-                      variant="outlined"
-                      color="primary"
-                      label={data?.name}
-                      icon={<LabelOutlinedIcon />}
-                    />
-                  );
-                })}
+              {collection && collection.labels && (
+                <ChipLabelsList collection={collection} enableOnClick={true} />
+              )}
             </Box>
             <Typography noWrap component="div">
               <ReactMarkdown>
