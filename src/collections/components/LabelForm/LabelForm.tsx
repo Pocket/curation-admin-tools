@@ -6,10 +6,11 @@ import {
   SharedFormButtons,
   SharedFormButtonsProps,
 } from '../../../_shared/components';
+import { Label } from '../../../api/generatedTypes';
 
-import { validationSchema } from './AddLabelForm.validation';
+import { validationSchema } from './LabelForm.validation';
 
-interface AddLabelFormProps {
+interface LabelFormProps {
   onSubmit: (
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
@@ -17,21 +18,27 @@ interface AddLabelFormProps {
 
   // show/hide the loading bar on submissions
   isLoaderShowing: boolean;
+
+  /**
+   * An object with everything label-related in it. It is optional because it is only
+   * relevant when updating a label.
+   */
+  label?: Label;
 }
 
 /**
  * This component houses all the logic and data that will be used in this form.
  */
-export const AddLabelForm: React.FC<
-  AddLabelFormProps & SharedFormButtonsProps
-> = (props) => {
+export const LabelForm: React.FC<LabelFormProps & SharedFormButtonsProps> = (
+  props
+) => {
   // de-structure props
-  const { onCancel, onSubmit, isLoaderShowing } = props;
+  const { onCancel, onSubmit, isLoaderShowing, label } = props;
 
   // set up formik object for this form
   const formik = useFormik({
     initialValues: {
-      labelName: '',
+      labelName: label?.name ?? '',
     },
     validateOnBlur: false,
     validateOnChange: false,

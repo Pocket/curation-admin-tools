@@ -2,7 +2,7 @@ import React from 'react';
 import { Box } from '@mui/material';
 import { Button, HandleApiResponse } from '../../../_shared/components';
 import { useToggle } from '../../../_shared/hooks';
-import { AddLabelModal, LabelListCard } from '../../components';
+import { LabelModal, LabelListCard } from '../../components';
 import { Label, useLabelsQuery } from '../../../api/generatedTypes';
 
 /**
@@ -10,9 +10,9 @@ import { Label, useLabelsQuery } from '../../../api/generatedTypes';
  */
 export const LabelListPage = (): JSX.Element => {
   /**
-   * Keeps track of whether the "Add Label" modal is open or not.
+   * Keeps track of whether the "Add Label/Edit Label" modal is open or not.
    */
-  const [addLabelModalOpen, toggleAddLabelModal] = useToggle(false);
+  const [labelModalOpen, toggleLabelModal] = useToggle(false);
   const { loading, error, data, refetch } = useLabelsQuery({});
   return (
     <>
@@ -20,13 +20,15 @@ export const LabelListPage = (): JSX.Element => {
         <Box flexGrow={1} alignSelf="center">
           <h1>Labels</h1>
         </Box>
-        <AddLabelModal
-          isOpen={addLabelModalOpen}
-          toggleModal={toggleAddLabelModal}
+        <LabelModal
+          isOpen={labelModalOpen}
+          toggleModal={toggleLabelModal}
+          modalTitle="Add a Label"
           refetch={refetch}
+          runCreateLabelMutation={true}
         />
 
-        <Button buttonType="hollow" onClick={toggleAddLabelModal}>
+        <Button buttonType="hollow" onClick={toggleLabelModal}>
           Add label
         </Button>
       </Box>
@@ -34,7 +36,13 @@ export const LabelListPage = (): JSX.Element => {
 
       {data &&
         data.labels.map((label: Label) => {
-          return <LabelListCard key={label.externalId} label={label} />;
+          return (
+            <LabelListCard
+              key={label.externalId}
+              label={label}
+              refetch={refetch}
+            />
+          );
         })}
     </>
   );

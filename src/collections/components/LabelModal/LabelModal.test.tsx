@@ -2,27 +2,27 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { SnackbarProvider } from 'notistack';
 import { MockedProvider } from '@apollo/client/testing';
-import { AddLabelModal } from './AddLabelModal';
+import { LabelModal } from './LabelModal';
 
-describe('The AddLabelModal component', () => {
+describe('The LabelModal component', () => {
   const toggleModal = jest.fn;
 
-  it('should render the modal and the AddLabelForm component', () => {
+  it('should render the modal and the LabelForm component', () => {
     render(
       <MockedProvider>
         <SnackbarProvider maxSnack={3}>
-          <AddLabelModal isOpen={true} toggleModal={toggleModal} />
+          <LabelModal isOpen={true} toggleModal={toggleModal} />
         </SnackbarProvider>
       </MockedProvider>
     );
 
     // using the modal heading to fetch it
-    const addLabelModal = screen.getByText(/add a new label/i);
+    const labelModal = screen.getByText(/add a new label/i);
 
     // fetching the form component that is rendered within this modal component
-    const addLabelForm = screen.getByLabelText(/label name/i);
+    const labelForm = screen.getByLabelText(/label name/i);
 
-    expect(addLabelModal).toBeInTheDocument();
-    expect(addLabelForm).toBeInTheDocument();
+    expect(labelModal).toBeInTheDocument();
+    expect(labelForm).toBeInTheDocument();
   });
 });

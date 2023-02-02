@@ -3,7 +3,7 @@ import { SnackbarProvider } from 'notistack';
 import { render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';
-import { AddLabelFormConnector } from './AddLabelFormConnector';
+import { LabelFormConnector } from './LabelFormConnector';
 import {
   createLabel1SuccessMock,
   createLabel2SuccessMock,
@@ -12,7 +12,7 @@ import {
   createBadCharLabelErrorMock,
 } from '../../integration-test-mocks/createLabels';
 
-describe('AddLabelFormConnector', () => {
+describe('LabelFormConnector', () => {
   let mocks = [];
   const toggleModal = jest.fn();
 
@@ -22,7 +22,7 @@ describe('AddLabelFormConnector', () => {
     render(
       <MockedProvider mocks={mocks}>
         <SnackbarProvider>
-          <AddLabelFormConnector toggleModal={toggleModal} />
+          <LabelFormConnector toggleModal={toggleModal} />
         </SnackbarProvider>
       </MockedProvider>
     );
@@ -53,7 +53,7 @@ describe('AddLabelFormConnector', () => {
     render(
       <MockedProvider mocks={mocks}>
         <SnackbarProvider>
-          <AddLabelFormConnector toggleModal={toggleModal} />
+          <LabelFormConnector toggleModal={toggleModal} />
         </SnackbarProvider>
       </MockedProvider>
     );
@@ -85,7 +85,7 @@ describe('AddLabelFormConnector', () => {
     render(
       <MockedProvider mocks={mocks}>
         <SnackbarProvider>
-          <AddLabelFormConnector toggleModal={toggleModal} />
+          <LabelFormConnector toggleModal={toggleModal} />
         </SnackbarProvider>
       </MockedProvider>
     );
@@ -119,7 +119,7 @@ describe('AddLabelFormConnector', () => {
     render(
       <MockedProvider mocks={mocks}>
         <SnackbarProvider>
-          <AddLabelFormConnector toggleModal={toggleModal} />
+          <LabelFormConnector toggleModal={toggleModal} />
         </SnackbarProvider>
       </MockedProvider>
     );
@@ -153,7 +153,7 @@ describe('AddLabelFormConnector', () => {
     render(
       <MockedProvider mocks={mocks}>
         <SnackbarProvider>
-          <AddLabelFormConnector toggleModal={toggleModal} />
+          <LabelFormConnector toggleModal={toggleModal} />
         </SnackbarProvider>
       </MockedProvider>
     );
@@ -189,7 +189,7 @@ describe('AddLabelFormConnector', () => {
     render(
       <MockedProvider mocks={mocks}>
         <SnackbarProvider>
-          <AddLabelFormConnector toggleModal={toggleModal} />
+          <LabelFormConnector toggleModal={toggleModal} />
         </SnackbarProvider>
       </MockedProvider>
     );
@@ -222,7 +222,7 @@ describe('AddLabelFormConnector', () => {
     render(
       <MockedProvider mocks={mocks}>
         <SnackbarProvider>
-          <AddLabelFormConnector toggleModal={toggleModal} />
+          <LabelFormConnector toggleModal={toggleModal} />
         </SnackbarProvider>
       </MockedProvider>
     );
