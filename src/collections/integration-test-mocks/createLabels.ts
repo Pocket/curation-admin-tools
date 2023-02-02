@@ -38,10 +38,12 @@ export const createDuplicateLabelErrorMock = {
   request: {
     query: createLabel,
     variables: {
-      name: 'fake-label-2',
+      name: 'fake-label-duplicate',
     },
   },
-  error: new Error('A label with the name "fake-label-2" already exists'),
+  error: new Error(
+    'A label with the name "fake-label-duplicate" already exists'
+  ),
 };
 
 export const createMinCharLabelErrorMock = {

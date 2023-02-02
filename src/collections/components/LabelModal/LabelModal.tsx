@@ -16,7 +16,7 @@ interface LabelModalProps {
   toggleModal: VoidFunction;
 
   /**
-   * Label custom title.
+   * Label Modal custom title.
    */
   modalTitle: string;
 

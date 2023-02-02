@@ -60,7 +60,11 @@ export const LabelListCard: React.FC<LabelListCardProps> = (props) => {
               label={label} // we also need to pass the label data to update
             />
             <ButtonGroup orientation="vertical" color="primary" variant="text">
-              <Button color="primary" onClick={toggleLabelModal}>
+              <Button
+                color="primary"
+                onClick={toggleLabelModal}
+                data-testid="edit-label-button"
+              >
                 <EditIcon />
               </Button>
             </ButtonGroup>

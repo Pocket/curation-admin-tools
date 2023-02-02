@@ -23,9 +23,9 @@ export const LabelListPage = (): JSX.Element => {
         <LabelModal
           isOpen={labelModalOpen}
           toggleModal={toggleLabelModal}
-          modalTitle="Add a Label"
+          modalTitle="Add a New Label"
           refetch={refetch}
-          runCreateLabelMutation={true}
+          runCreateLabelMutation={true} // this modal is in charge of creating a label, so passing flag
         />
 
         <Button buttonType="hollow" onClick={toggleLabelModal}>

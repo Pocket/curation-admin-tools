@@ -66,7 +66,6 @@ export const LabelFormConnector: React.FC<LabelFormConnectorProps> = (
   ): void => {
     // if runCreateLabelMutation flag is true, createLabel
     if (runCreateLabelMutation) {
-      console.log('runCreateLabelMutation');
       runMutation(
         createLabelMutation,
         { variables: { name: values.labelName } },
@@ -85,7 +84,6 @@ export const LabelFormConnector: React.FC<LabelFormConnectorProps> = (
     }
     // if runUpdateLabelMutation flag is true and label data is passed, updateLabel
     if (runUpdateLabelMutation && label) {
-      console.log('runUpdateLabelMutation');
       // construct the updateLabel input
       const input: UpdateLabelInput = {
         externalId: label.externalId,
