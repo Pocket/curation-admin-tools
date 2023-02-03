@@ -3,17 +3,17 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
 import { SnackbarProvider } from 'notistack';
-import { AddLabelForm } from './AddLabelForm';
+import { LabelForm } from './LabelForm';
 import { createLabel1SuccessMock } from '../../integration-test-mocks/createLabels';
 
-describe('The AddLabelForm component', () => {
+describe('The LabelForm component', () => {
   let mocks = [];
   const onSubmit = jest.fn();
   const onCancel = jest.fn();
 
   it('should render all the form fields and elements', () => {
     render(
-      <AddLabelForm
+      <LabelForm
         onSubmit={onSubmit}
         onCancel={onCancel}
         isLoaderShowing={false}
@@ -35,7 +35,7 @@ describe('The AddLabelForm component', () => {
     render(
       <MockedProvider>
         <SnackbarProvider maxSnack={3}>
-          <AddLabelForm
+          <LabelForm
             onSubmit={onSubmit}
             onCancel={onCancel}
             isLoaderShowing={false}
@@ -57,7 +57,7 @@ describe('The AddLabelForm component', () => {
     render(
       <MockedProvider mocks={mocks}>
         <SnackbarProvider maxSnack={3}>
-          <AddLabelForm
+          <LabelForm
             onSubmit={onSubmit}
             onCancel={onCancel}
             isLoaderShowing={false}

@@ -14,7 +14,7 @@ describe('The LabelListCard component', () => {
     };
   });
 
-  it('shows label name', () => {
+  it('shows label name and edit button', () => {
     render(
       <MemoryRouter>
         <LabelListCard label={label} />
@@ -23,5 +23,8 @@ describe('The LabelListCard component', () => {
 
     const name = screen.getByText(/region-east-africa/i);
     expect(name).toBeInTheDocument();
+
+    const editButton = screen.getByTestId('edit-label-button');
+    expect(editButton).toBeInTheDocument();
   });
 });

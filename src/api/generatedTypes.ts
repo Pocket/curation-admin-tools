@@ -1029,6 +1029,8 @@ export type Mutation = {
    * Dedicated to ordering stories within the UI.
    */
   updateCollectionStorySortOrder: CollectionStory;
+  /** Updates a Label. */
+  updateLabel: Label;
   /**
    * Marks a prospect as 'curated' in the database, preventing it from being displayed for prospecting.
    * Returns the prospect if the operation succeeds, and null if not (almost surely due to an incorrect id).
@@ -1160,6 +1162,10 @@ export type MutationUpdateCollectionStoryImageUrlArgs = {
 
 export type MutationUpdateCollectionStorySortOrderArgs = {
   data: UpdateCollectionStorySortOrderInput;
+};
+
+export type MutationUpdateLabelArgs = {
+  data: UpdateLabelInput;
 };
 
 export type MutationUpdateProspectAsCuratedArgs = {
@@ -1743,6 +1749,11 @@ export type UpdateCollectionStoryInput = {
 export type UpdateCollectionStorySortOrderInput = {
   externalId: Scalars['String'];
   sortOrder: Scalars['Int'];
+};
+
+export type UpdateLabelInput = {
+  externalId?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
 };
 
 export type UrlMetadata = {
@@ -3036,6 +3047,15 @@ export type UpdateCollectionStorySortOrderMutation = {
       sortOrder: number;
     }>;
   };
+};
+
+export type UpdateLabelMutationVariables = Exact<{
+  data: UpdateLabelInput;
+}>;
+
+export type UpdateLabelMutation = {
+  __typename?: 'Mutation';
+  updateLabel: { __typename?: 'Label'; externalId: string; name: string };
 };
 
 export type UpdateProspectAsCuratedMutationVariables = Exact<{
@@ -5854,6 +5874,57 @@ export type UpdateCollectionStorySortOrderMutationOptions =
     UpdateCollectionStorySortOrderMutation,
     UpdateCollectionStorySortOrderMutationVariables
   >;
+export const UpdateLabelDocument = gql`
+  mutation updateLabel($data: UpdateLabelInput!) {
+    updateLabel(data: $data) {
+      externalId
+      name
+    }
+  }
+`;
+export type UpdateLabelMutationFn = Apollo.MutationFunction<
+  UpdateLabelMutation,
+  UpdateLabelMutationVariables
+>;
+
+/**
+ * __useUpdateLabelMutation__
+ *
+ * To run a mutation, you first call `useUpdateLabelMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateLabelMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateLabelMutation, { data, loading, error }] = useUpdateLabelMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateLabelMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateLabelMutation,
+    UpdateLabelMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateLabelMutation, UpdateLabelMutationVariables>(
+    UpdateLabelDocument,
+    options
+  );
+}
+export type UpdateLabelMutationHookResult = ReturnType<
+  typeof useUpdateLabelMutation
+>;
+export type UpdateLabelMutationResult =
+  Apollo.MutationResult<UpdateLabelMutation>;
+export type UpdateLabelMutationOptions = Apollo.BaseMutationOptions<
+  UpdateLabelMutation,
+  UpdateLabelMutationVariables
+>;
 export const UpdateProspectAsCuratedDocument = gql`
   mutation updateProspectAsCurated(
     $id: ID!
