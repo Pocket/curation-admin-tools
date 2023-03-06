@@ -10,12 +10,17 @@ import { LandingPage } from './_shared/pages';
 import { PageNotFound } from './_shared/components/';
 import { CollectionsLandingPage } from './collections/pages';
 import { CuratedCorpusLandingPage } from './curated-corpus/pages';
+import { ModerationLandingPage } from './moderation/pages';
 import { useMozillaAuth } from './_shared/hooks';
 import { client } from './api/client';
 
 function App(): JSX.Element {
-  const { canAccessCuration, canAccessCollections, jwtIdToken } =
-    useMozillaAuth();
+  const {
+    canAccessCollections,
+    canAccessCuration,
+    canAccessModeration,
+    jwtIdToken,
+  } = useMozillaAuth();
 
   // create an ApolloLink that adds the authorization header
   const authLink = setContext((_, { headers }) => {
@@ -50,6 +55,11 @@ function App(): JSX.Element {
                 {canAccessCuration && (
                   <Route path="/curated-corpus">
                     <CuratedCorpusLandingPage />
+                  </Route>
+                )}
+                {canAccessModeration && (
+                  <Route path="/moderation">
+                    <ModerationLandingPage />
                   </Route>
                 )}
                 <Route component={PageNotFound} />
