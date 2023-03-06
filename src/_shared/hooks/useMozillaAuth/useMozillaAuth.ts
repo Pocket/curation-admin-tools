@@ -28,6 +28,7 @@ export const useMozillaAuth = (): {
   jwtIdToken: string;
   canAccessCollections: boolean;
   canAccessCuration: boolean;
+  canAccessModeration: boolean;
 } => {
   const { authService } = pkceUseAuth();
   const parsedIdToken = authService.getUser() as IDToken;
@@ -46,8 +47,11 @@ export const useMozillaAuth = (): {
     authService,
     parsedIdToken,
     jwtIdToken,
-    //TODO: Setup mozillians.org groups
+    // Everyone at Pocket has read-only access to this tool
+    // Access groups are checked on the backend when actions (mutations)
+    // are performed.
     canAccessCollections: true, //parsedIdToken.groups.includes('asd'),
     canAccessCuration: true, //parsedIdToken.groups.includes('asd'),
+    canAccessModeration: true,
   };
 };

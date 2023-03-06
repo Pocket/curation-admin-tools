@@ -55,7 +55,7 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
           <Route exact path={`${path}/`}>
             <h2>Welcome to Pocket&apos;s Curated Corpus management tool.</h2>
 
-            <p>Use the menu above to nagivate:</p>
+            <p>Use the menu above to navigate:</p>
 
             <List>
               <ListItem>
