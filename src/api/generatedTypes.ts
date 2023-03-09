@@ -25,6 +25,12 @@ export type Scalars = {
   /** A String representing a date in the format of `yyyy-MM-dd HH:mm:ss` */
   DateString: any;
   /**
+   * ISOString scalar - all datetime fields are Typescript Date objects on this server &
+   * returned as ISO-8601 encoded date strings (e.g. ISOString scalars) to GraphQL clients.
+   * See Section 5.6 of the RFC 3339 profile of the ISO 8601 standard: https://www.ietf.org/rfc/rfc3339.txt.
+   */
+  ISOString: any;
+  /**
    * A string formatted with CommonMark markdown,
    * plus the strikethrough extension from GFM.
    * This Scalar is for documentation purposes; otherwise
@@ -935,6 +941,13 @@ export type MarticleText = {
   content: Scalars['Markdown'];
 };
 
+/** Input data for removing (moderating) a ShareableList */
+export type ModerateShareableListInput = {
+  externalId: Scalars['ID'];
+  moderationReason: Scalars['String'];
+  moderationStatus: ShareableListModerationStatus;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   /**
@@ -979,6 +992,8 @@ export type Mutation = {
    * on a Scheduled Surface.
    */
   importApprovedCorpusItem: ImportApprovedCorpusItemPayload;
+  /** Removes (moderates) a Shareable List. */
+  moderateShareableList?: Maybe<ShareableList>;
   /** Refresh an {Item}'s article content. */
   refreshItemArticle: Item;
   /** Rejects an Approved Item: deletes it from the corpus and creates a Rejected Item instead. */
@@ -1029,7 +1044,7 @@ export type Mutation = {
    * Dedicated to ordering stories within the UI.
    */
   updateCollectionStorySortOrder: CollectionStory;
-  /** Updates a Label. */
+  /** Updates a Label that is not assigned to any Collection yet. */
   updateLabel: Label;
   /**
    * Marks a prospect as 'curated' in the database, preventing it from being displayed for prospecting.
@@ -1098,6 +1113,10 @@ export type MutationDismissProspectArgs = {
 
 export type MutationImportApprovedCorpusItemArgs = {
   data: ImportApprovedCorpusItemInput;
+};
+
+export type MutationModerateShareableListArgs = {
+  data: ModerateShareableListInput;
 };
 
 export type MutationRefreshItemArticleArgs = {
@@ -1345,6 +1364,8 @@ export type Query = {
   /** Retrieves all available Labels */
   labels: Array<Label>;
   searchCollections: CollectionsResult;
+  /** Looks up and returns a Shareable List with a given external ID for any user. */
+  searchShareableList?: Maybe<ShareableList>;
 };
 
 export type QueryApprovedCorpusItemByExternalIdArgs = {
@@ -1431,6 +1452,10 @@ export type QuerySearchCollectionsArgs = {
   filters: SearchCollectionsFilters;
   page?: InputMaybe<Scalars['Int']>;
   perPage?: InputMaybe<Scalars['Int']>;
+};
+
+export type QuerySearchShareableListArgs = {
+  externalId: Scalars['ID'];
 };
 
 /** Input data for rejecting an Approved Item. */
@@ -1597,6 +1622,65 @@ export type SearchCollectionsFilters = {
   status?: InputMaybe<CollectionStatus>;
   title?: InputMaybe<Scalars['String']>;
 };
+
+/** A user-created list of Pocket saves that can be shared publicly. */
+export type ShareableList = {
+  __typename?: 'ShareableList';
+  /** The timestamp of when the list was created by its owner. */
+  createdAt: Scalars['ISOString'];
+  /** Optional text description of a Shareable List. Provided by the Pocket user. */
+  description?: Maybe<Scalars['String']>;
+  externalId: Scalars['ID'];
+  /**
+   * The LDAP username of the moderator who took down a list
+   * that violates the Pocket content moderation policy.
+   */
+  moderatedBy?: Maybe<Scalars['String']>;
+  /** The reason why the moderator took down the list. */
+  moderationReason?: Maybe<Scalars['String']>;
+  /** The moderation status of the list. Defaults to VISIBLE. */
+  moderationStatus: ShareableListModerationStatus;
+  /**
+   * A URL-ready identifier of the list. Generated from the title
+   * of the list when it's first made public. Unique per user.
+   */
+  slug?: Maybe<Scalars['String']>;
+  /** The status of the list. Defaults to PRIVATE. */
+  status: ShareableListStatus;
+  /** The title of the list. Provided by the Pocket user. */
+  title: Scalars['String'];
+  /**
+   * The timestamp of when the list was last updated by its owner
+   * or a member of the moderation team.
+   */
+  updatedAt: Scalars['ISOString'];
+  /**
+   * Pocket User ID.
+   * UserId is of Float type as GraphQL does not support BigInt.
+   * This will ensure that all large integer values are handled and will
+   * be interpreted as Number type.
+   */
+  userId: Scalars['Float'];
+};
+
+/** The moderation status of a Shareable List. Defaults to VISIBLE. */
+export enum ShareableListModerationStatus {
+  /**
+   * The list and its contents have been removed from view and further editing
+   * by its owner as it violated the Pocket content moderation policy.
+   */
+  Hidden = 'HIDDEN',
+  /** The list and its contents abide by the Pocket content moderation policy. */
+  Visible = 'VISIBLE',
+}
+
+/** The status of a Shareable List. Defaults to PRIVATE - visible only to its owner. */
+export enum ShareableListStatus {
+  /** The list is only visible to its owner - the Pocket user who created it. */
+  Private = 'PRIVATE',
+  /** The list has been shared and can be viewed by anyone in the world. */
+  Public = 'PUBLIC',
+}
 
 /**
  * The list of Pocket topics. This enum is not used anywhere in this schema, however it is used
@@ -1956,6 +2040,21 @@ export type CuratedItemDataWithHistoryFragment = {
     scheduledDate: any;
     scheduledSurfaceGuid: string;
   }>;
+};
+
+export type ShareableListPropsFragment = {
+  __typename?: 'ShareableList';
+  externalId: string;
+  userId: number;
+  title: string;
+  description?: string | null;
+  slug?: string | null;
+  status: ShareableListStatus;
+  moderationStatus: ShareableListModerationStatus;
+  moderatedBy?: string | null;
+  moderationReason?: string | null;
+  createdAt: any;
+  updatedAt: any;
 };
 
 export type CuratedItemDataFragment = {
@@ -3925,6 +4024,28 @@ export type LabelsQuery = {
   labels: Array<{ __typename?: 'Label'; externalId: string; name: string }>;
 };
 
+export type SearchShareableListQueryVariables = Exact<{
+  externalId: Scalars['ID'];
+}>;
+
+export type SearchShareableListQuery = {
+  __typename?: 'Query';
+  searchShareableList?: {
+    __typename?: 'ShareableList';
+    externalId: string;
+    userId: number;
+    title: string;
+    description?: string | null;
+    slug?: string | null;
+    status: ShareableListStatus;
+    moderationStatus: ShareableListModerationStatus;
+    moderatedBy?: string | null;
+    moderationReason?: string | null;
+    createdAt: any;
+    updatedAt: any;
+  } | null;
+};
+
 export const CollectionAuthorDataFragmentDoc = gql`
   fragment CollectionAuthorData on CollectionAuthor {
     externalId
@@ -4015,6 +4136,21 @@ export const CollectionStoryDataFragmentDoc = gql`
     publisher
     fromPartner
     sortOrder
+  }
+`;
+export const ShareableListPropsFragmentDoc = gql`
+  fragment ShareableListProps on ShareableList {
+    externalId
+    userId
+    title
+    description
+    slug
+    status
+    moderationStatus
+    moderatedBy
+    moderationReason
+    createdAt
+    updatedAt
   }
 `;
 export const ProspectDataFragmentDoc = gql`
@@ -7406,4 +7542,63 @@ export type LabelsLazyQueryHookResult = ReturnType<typeof useLabelsLazyQuery>;
 export type LabelsQueryResult = Apollo.QueryResult<
   LabelsQuery,
   LabelsQueryVariables
+>;
+export const SearchShareableListDocument = gql`
+  query searchShareableList($externalId: ID!) {
+    searchShareableList(externalId: $externalId) {
+      ...ShareableListProps
+    }
+  }
+  ${ShareableListPropsFragmentDoc}
+`;
+
+/**
+ * __useSearchShareableListQuery__
+ *
+ * To run a query within a React component, call `useSearchShareableListQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchShareableListQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchShareableListQuery({
+ *   variables: {
+ *      externalId: // value for 'externalId'
+ *   },
+ * });
+ */
+export function useSearchShareableListQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    SearchShareableListQuery,
+    SearchShareableListQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    SearchShareableListQuery,
+    SearchShareableListQueryVariables
+  >(SearchShareableListDocument, options);
+}
+export function useSearchShareableListLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    SearchShareableListQuery,
+    SearchShareableListQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    SearchShareableListQuery,
+    SearchShareableListQueryVariables
+  >(SearchShareableListDocument, options);
+}
+export type SearchShareableListQueryHookResult = ReturnType<
+  typeof useSearchShareableListQuery
+>;
+export type SearchShareableListLazyQueryHookResult = ReturnType<
+  typeof useSearchShareableListLazyQuery
+>;
+export type SearchShareableListQueryResult = Apollo.QueryResult<
+  SearchShareableListQuery,
+  SearchShareableListQueryVariables
 >;
