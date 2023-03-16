@@ -20,6 +20,9 @@ export const ShareableListCompleteProps = gql`
     listItems {
       ...ShareableListItemProps
     }
+    user {
+      id
+    }
   }
   ${ShareableListItemProps}
 `;

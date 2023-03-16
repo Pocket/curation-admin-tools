@@ -2132,6 +2132,7 @@ export type ShareableListCompletePropsFragment = {
     createdAt: any;
     updatedAt: any;
   }>;
+  user: { __typename?: 'User'; id: string };
 };
 
 export type ShareableListItemPropsFragment = {
@@ -4148,6 +4149,7 @@ export type SearchShareableListQuery = {
       createdAt: any;
       updatedAt: any;
     }>;
+    user: { __typename?: 'User'; id: string };
   } | null;
 };
 
@@ -4272,6 +4274,9 @@ export const ShareableListCompletePropsFragmentDoc = gql`
     moderationReason
     listItems {
       ...ShareableListItemProps
+    }
+    user {
+      id
     }
   }
   ${ShareableListItemPropsFragmentDoc}

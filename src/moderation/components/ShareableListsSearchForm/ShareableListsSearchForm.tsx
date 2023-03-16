@@ -50,7 +50,7 @@ export const ShareableListsSearchForm: React.FC<
             }}
             size="small"
             variant="outlined"
-            {...formik.getFieldProps('title')}
+            {...formik.getFieldProps('externalId')}
             error={!!(formik.touched.externalId && formik.errors.externalId)}
             helperText={formik.errors.externalId && formik.errors.externalId}
           />
