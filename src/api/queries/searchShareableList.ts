@@ -1,11 +1,11 @@
 import { gql } from '@apollo/client';
-import { ShareableListProps } from '../fragments/ShareableListProps';
+import { ShareableListCompleteProps } from '../fragments/ShareableListCompleteProps';
 
 export const searchShareableList = gql`
   query searchShareableList($externalId: ID!) {
     searchShareableList(externalId: $externalId) {
-      ...ShareableListProps
+      ...ShareableListCompleteProps
     }
   }
-  ${ShareableListProps}
+  ${ShareableListCompleteProps}
 `;

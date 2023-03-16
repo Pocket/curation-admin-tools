@@ -993,7 +993,7 @@ export type Mutation = {
    */
   importApprovedCorpusItem: ImportApprovedCorpusItemPayload;
   /** Removes (moderates) a Shareable List. */
-  moderateShareableList?: Maybe<ShareableList>;
+  moderateShareableList?: Maybe<ShareableListComplete>;
   /** Refresh an {Item}'s article content. */
   refreshItemArticle: Item;
   /** Rejects an Approved Item: deletes it from the corpus and creates a Rejected Item instead. */
@@ -1365,7 +1365,7 @@ export type Query = {
   labels: Array<Label>;
   searchCollections: CollectionsResult;
   /** Looks up and returns a Shareable List with a given external ID for any user. */
-  searchShareableList?: Maybe<ShareableList>;
+  searchShareableList?: Maybe<ShareableListComplete>;
 };
 
 export type QueryApprovedCorpusItemByExternalIdArgs = {
@@ -1623,14 +1623,16 @@ export type SearchCollectionsFilters = {
   title?: InputMaybe<Scalars['String']>;
 };
 
-/** A user-created list of Pocket saves that can be shared publicly. */
-export type ShareableList = {
-  __typename?: 'ShareableList';
+export type ShareableListComplete = ShareableListInterface & {
+  __typename?: 'ShareableListComplete';
   /** The timestamp of when the list was created by its owner. */
   createdAt: Scalars['ISOString'];
   /** Optional text description of a Shareable List. Provided by the Pocket user. */
   description?: Maybe<Scalars['String']>;
+  /** A unique string identifier in UUID format. */
   externalId: Scalars['ID'];
+  /** Pocket Saves that have been added to this list by the Pocket user. */
+  listItems: Array<ShareableListItem>;
   /**
    * The LDAP username of the moderator who took down a list
    * that violates the Pocket content moderation policy.
@@ -1654,13 +1656,69 @@ export type ShareableList = {
    * or a member of the moderation team.
    */
   updatedAt: Scalars['ISOString'];
+  /** The user who created this shareable list. */
+  user: User;
+};
+
+export type ShareableListInterface = {
+  /** The timestamp of when the list was created by its owner. */
+  createdAt: Scalars['ISOString'];
+  /** Optional text description of a Shareable List. Provided by the Pocket user. */
+  description?: Maybe<Scalars['String']>;
+  /** A unique string identifier in UUID format. */
+  externalId: Scalars['ID'];
+  /** Pocket Saves that have been added to this list by the Pocket user. */
+  listItems: Array<ShareableListItem>;
+  /** The moderation status of the list. Defaults to VISIBLE. */
+  moderationStatus: ShareableListModerationStatus;
   /**
-   * Pocket User ID.
-   * UserId is of Float type as GraphQL does not support BigInt.
-   * This will ensure that all large integer values are handled and will
-   * be interpreted as Number type.
+   * A URL-ready identifier of the list. Generated from the title
+   * of the list when it's first made public. Unique per user.
    */
-  userId: Scalars['Float'];
+  slug?: Maybe<Scalars['String']>;
+  /** The status of the list. Defaults to PRIVATE. */
+  status: ShareableListStatus;
+  /** The title of the list. Provided by the Pocket user. */
+  title: Scalars['String'];
+  /**
+   * The timestamp of when the list was last updated by its owner
+   * or a member of the moderation team.
+   */
+  updatedAt: Scalars['ISOString'];
+  /** The user who created this shareable list. */
+  user: User;
+};
+
+/** A Pocket Save (story) that has been added to a Shareable List. */
+export type ShareableListItem = {
+  __typename?: 'ShareableListItem';
+  /** A comma-separated list of story authors. Supplied by the Parser. */
+  authors?: Maybe<Scalars['String']>;
+  /** The timestamp of when this story was added to the list by its owner. */
+  createdAt: Scalars['ISOString'];
+  /** The excerpt of the story. Supplied by the Parser. */
+  excerpt?: Maybe<Scalars['String']>;
+  /** A unique string identifier in UUID format. */
+  externalId: Scalars['ID'];
+  /** The URL of the thumbnail image illustrating the story. Supplied by the Parser. */
+  imageUrl?: Maybe<Scalars['Url']>;
+  /** The Parser Item ID. */
+  itemId?: Maybe<Scalars['Float']>;
+  /** The name of the publisher for this story. Supplied by the Parser. */
+  publisher?: Maybe<Scalars['String']>;
+  /** The custom sort order of stories within a list. Defaults to 1. */
+  sortOrder: Scalars['Int'];
+  /**
+   * The title of the story. Supplied by the Parser.
+   * May not be available for URLs that cannot be resolved.
+   * Not editable by the Pocket user, as are all the other
+   * Parser-supplied story properties below.
+   */
+  title?: Maybe<Scalars['String']>;
+  /** The timestamp of when the story was last updated. Not used for the MVP. */
+  updatedAt: Scalars['ISOString'];
+  /** The URL of the story saved to a list. */
+  url: Scalars['Url'];
 };
 
 /** The moderation status of a Shareable List. Defaults to VISIBLE. */
@@ -1854,6 +1912,12 @@ export type UrlMetadata = {
   url: Scalars['String'];
 };
 
+/** Resolve by reference the User entity in this graph to provide user data with public lists. */
+export type User = {
+  __typename?: 'User';
+  id: Scalars['ID'];
+};
+
 /** A Video, typically within an Article View of an {Item} or if the Item is a video itself. */
 export type Video = {
   __typename?: 'Video';
@@ -2042,17 +2106,45 @@ export type CuratedItemDataWithHistoryFragment = {
   }>;
 };
 
-export type ShareableListPropsFragment = {
-  __typename?: 'ShareableList';
+export type ShareableListCompletePropsFragment = {
+  __typename?: 'ShareableListComplete';
   externalId: string;
-  userId: number;
   title: string;
   description?: string | null;
   slug?: string | null;
   status: ShareableListStatus;
   moderationStatus: ShareableListModerationStatus;
+  createdAt: any;
+  updatedAt: any;
   moderatedBy?: string | null;
   moderationReason?: string | null;
+  listItems: Array<{
+    __typename?: 'ShareableListItem';
+    externalId: string;
+    itemId?: number | null;
+    url: any;
+    title?: string | null;
+    excerpt?: string | null;
+    imageUrl?: any | null;
+    publisher?: string | null;
+    authors?: string | null;
+    sortOrder: number;
+    createdAt: any;
+    updatedAt: any;
+  }>;
+};
+
+export type ShareableListItemPropsFragment = {
+  __typename?: 'ShareableListItem';
+  externalId: string;
+  itemId?: number | null;
+  url: any;
+  title?: string | null;
+  excerpt?: string | null;
+  imageUrl?: any | null;
+  publisher?: string | null;
+  authors?: string | null;
+  sortOrder: number;
   createdAt: any;
   updatedAt: any;
 };
@@ -4031,18 +4123,31 @@ export type SearchShareableListQueryVariables = Exact<{
 export type SearchShareableListQuery = {
   __typename?: 'Query';
   searchShareableList?: {
-    __typename?: 'ShareableList';
+    __typename?: 'ShareableListComplete';
     externalId: string;
-    userId: number;
     title: string;
     description?: string | null;
     slug?: string | null;
     status: ShareableListStatus;
     moderationStatus: ShareableListModerationStatus;
-    moderatedBy?: string | null;
-    moderationReason?: string | null;
     createdAt: any;
     updatedAt: any;
+    moderatedBy?: string | null;
+    moderationReason?: string | null;
+    listItems: Array<{
+      __typename?: 'ShareableListItem';
+      externalId: string;
+      itemId?: number | null;
+      url: any;
+      title?: string | null;
+      excerpt?: string | null;
+      imageUrl?: any | null;
+      publisher?: string | null;
+      authors?: string | null;
+      sortOrder: number;
+      createdAt: any;
+      updatedAt: any;
+    }>;
   } | null;
 };
 
@@ -4138,20 +4243,38 @@ export const CollectionStoryDataFragmentDoc = gql`
     sortOrder
   }
 `;
-export const ShareableListPropsFragmentDoc = gql`
-  fragment ShareableListProps on ShareableList {
+export const ShareableListItemPropsFragmentDoc = gql`
+  fragment ShareableListItemProps on ShareableListItem {
     externalId
-    userId
+    itemId
+    url
+    title
+    excerpt
+    imageUrl
+    publisher
+    authors
+    sortOrder
+    createdAt
+    updatedAt
+  }
+`;
+export const ShareableListCompletePropsFragmentDoc = gql`
+  fragment ShareableListCompleteProps on ShareableListComplete {
+    externalId
     title
     description
     slug
     status
     moderationStatus
-    moderatedBy
-    moderationReason
     createdAt
     updatedAt
+    moderatedBy
+    moderationReason
+    listItems {
+      ...ShareableListItemProps
+    }
   }
+  ${ShareableListItemPropsFragmentDoc}
 `;
 export const ProspectDataFragmentDoc = gql`
   fragment ProspectData on Prospect {
@@ -7546,10 +7669,10 @@ export type LabelsQueryResult = Apollo.QueryResult<
 export const SearchShareableListDocument = gql`
   query searchShareableList($externalId: ID!) {
     searchShareableList(externalId: $externalId) {
-      ...ShareableListProps
+      ...ShareableListCompleteProps
     }
   }
-  ${ShareableListPropsFragmentDoc}
+  ${ShareableListCompletePropsFragmentDoc}
 `;
 
 /**
