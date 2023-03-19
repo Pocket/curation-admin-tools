@@ -8,10 +8,10 @@ declare module '@mui/styles' {
 /* Curation frontend colors */
 export const curationPalette = {
   primary: '#008078', // dark green
-  secondary: '#b24000', // red/brown
-  neutral: '#737373', // dark grey
   blue: '#3668ff', // bright blue for active tabs
   white: '#FFFFFF',
+  secondary: '#b24000', // red/brown
+  neutral: '#737373', // dark grey
   lightGrey: '#cccccc', // for borders here and there
   pocketBlack: '#1a1a1a', // for not-quite-black text
 };
