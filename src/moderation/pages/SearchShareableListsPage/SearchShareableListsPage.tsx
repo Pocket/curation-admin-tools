@@ -1,16 +1,21 @@
 import React from 'react';
-import { ShareableListsSearchForm } from '../../components';
-import { useSearchShareableListLazyQuery } from '../../../api/generatedTypes';
+import { ShareableListModal, ShareableListsSearchForm } from '../../components';
+import {
+  // ShareableList,
+  useSearchShareableListLazyQuery,
+} from '../../../api/generatedTypes';
 import { FormikValues } from 'formik';
 import { Box, Paper } from '@mui/material';
-import { HandleApiResponse } from '../../../_shared/components';
+import { Button, HandleApiResponse } from '../../../_shared/components';
+import { useToggle } from '../../../_shared/hooks';
 
 /**
  * Shareable lists lookup page
  */
 export const SearchShareableListsPage = (): JSX.Element => {
+  const [shareableListModalOpen, toggleLabelModal] = useToggle(false);
   // prepare the query for executing in the handleSubmit callback below
-  const [searchShareableLists, { loading, error, data }] =
+  const [searchShareableLists, { loading, error, data, refetch }] =
     useSearchShareableListLazyQuery(
       // Make sure search results are never served from the cache.
       { fetchPolicy: 'no-cache' }
@@ -32,11 +37,28 @@ export const SearchShareableListsPage = (): JSX.Element => {
       <Paper elevation={4}>
         <Box p={2} mt={3}>
           {!data && <HandleApiResponse loading={loading} error={error} />}
-
           {data && data.searchShareableList && (
+            // data.searchShareableLists.map((list: ShareableList) => {
+
+            <ShareableListModal
+              key={data.searchShareableList.externalId}
+              isOpen={shareableListModalOpen}
+              toggleModal={toggleLabelModal}
+              modalTitle="Moderate List"
+              refetch={refetch}
+              shareableList={data.searchShareableList}
+              runModerateShareableListMutation={true} // this modal is in charge of creating a label, so passing flag
+            >
+              <Button buttonType="hollow" onClick={toggleLabelModal}>
+                Add label
+              </Button>{' '}
+            </ShareableListModal>
+          )}
+
+          {/*          {data && data.searchShareableList && (
             // TODO: flesh out a component
             <h3>{data.searchShareableList.title}</h3>
-          )}
+          )}*/}
         </Box>
       </Paper>
     </>

@@ -2655,6 +2655,28 @@ export type ImageUploadMutation = {
   collectionImageUpload: { __typename?: 'CollectionImageUrl'; url: string };
 };
 
+export type ModerateShareableListMutationVariables = Exact<{
+  data: ModerateShareableListInput;
+}>;
+
+export type ModerateShareableListMutation = {
+  __typename?: 'Mutation';
+  moderateShareableList?: {
+    __typename?: 'ShareableList';
+    externalId: string;
+    userId: number;
+    title: string;
+    description?: string | null;
+    slug?: string | null;
+    status: ShareableListStatus;
+    moderationStatus: ShareableListModerationStatus;
+    moderatedBy?: string | null;
+    moderationReason?: string | null;
+    createdAt: any;
+    updatedAt: any;
+  } | null;
+};
+
 export type RejectApprovedItemMutationVariables = Exact<{
   data: RejectApprovedCorpusItemInput;
 }>;
@@ -5102,6 +5124,57 @@ export type ImageUploadMutationResult =
 export type ImageUploadMutationOptions = Apollo.BaseMutationOptions<
   ImageUploadMutation,
   ImageUploadMutationVariables
+>;
+export const ModerateShareableListDocument = gql`
+  mutation moderateShareableList($data: ModerateShareableListInput!) {
+    moderateShareableList(data: $data) {
+      ...ShareableListProps
+    }
+  }
+  ${ShareableListPropsFragmentDoc}
+`;
+export type ModerateShareableListMutationFn = Apollo.MutationFunction<
+  ModerateShareableListMutation,
+  ModerateShareableListMutationVariables
+>;
+
+/**
+ * __useModerateShareableListMutation__
+ *
+ * To run a mutation, you first call `useModerateShareableListMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useModerateShareableListMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [moderateShareableListMutation, { data, loading, error }] = useModerateShareableListMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useModerateShareableListMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    ModerateShareableListMutation,
+    ModerateShareableListMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    ModerateShareableListMutation,
+    ModerateShareableListMutationVariables
+  >(ModerateShareableListDocument, options);
+}
+export type ModerateShareableListMutationHookResult = ReturnType<
+  typeof useModerateShareableListMutation
+>;
+export type ModerateShareableListMutationResult =
+  Apollo.MutationResult<ModerateShareableListMutation>;
+export type ModerateShareableListMutationOptions = Apollo.BaseMutationOptions<
+  ModerateShareableListMutation,
+  ModerateShareableListMutationVariables
 >;
 export const RejectApprovedItemDocument = gql`
   mutation rejectApprovedItem($data: RejectApprovedCorpusItemInput!) {
