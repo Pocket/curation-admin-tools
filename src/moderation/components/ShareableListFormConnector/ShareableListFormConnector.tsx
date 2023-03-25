@@ -5,7 +5,7 @@ import { FormikHelpers, FormikValues } from 'formik';
 import {
   useModerateShareableListMutation,
   ModerateShareableListInput,
-  ShareableList,
+  ShareableListComplete,
 } from '../../../api/generatedTypes';
 
 interface ShareableListFormConnectorProps {
@@ -23,7 +23,7 @@ interface ShareableListFormConnectorProps {
   /**
    * An object with everything shareableList-related in it.
    */
-  shareableList: ShareableList;
+  shareableList: ShareableListComplete;
 
   /**
    * Whether or not to run the moderateShareableList mutation.
@@ -58,15 +58,30 @@ export const ShareableListFormConnector: React.FC<
     // if runModerateShareableListMutation flag is true, moderateShareableList
     if (runModerateShareableListMutation) {
       // construct the ModerateShareableListInput
+      let moderationReason;
+      // we need to construct a stringified JSON obj to pass in the moderation reason and the details (optional)
+      // the list of moderation reasons is not stored in the back-end db, so we keep track of the current reason
+      // from the constructed JSON obj. This also makes it easier to retrieve and display the values.
+      if (values.moderationDetails) {
+        moderationReason = {
+          reason: values.moderationReason,
+          details: values.moderationDetails,
+        };
+      } else {
+        moderationReason = {
+          reason: values.moderationReason,
+        };
+      }
       const input: ModerateShareableListInput = {
         externalId: shareableList.externalId,
         moderationStatus: values.moderationStatus,
-        moderationReason: values.moderationReason,
+        moderationReason: JSON.stringify(moderationReason),
       };
+      console.log(input);
       runMutation(
         moderateShareableListMutation,
         { variables: { data: input } },
-        `"${shareableList.title} has been moderated"`,
+        `"${shareableList.title} is now ${input.moderationStatus}"`,
         () => {
           setIsLoaderShowing(false);
           toggleModal();

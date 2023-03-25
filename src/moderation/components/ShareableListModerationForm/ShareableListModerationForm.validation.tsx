@@ -1,9 +1,9 @@
 import * as yup from 'yup';
 
 export const validationSchema = yup.object({
-  moderationReason: yup
+  moderationStatus: yup
     .string()
-    .trim()
-    .required('Please add a moderation reason.')
-    .min(3, 'moderation reason needs to be at least 3 characters.'),
+    .oneOf(['HIDDEN', null], 'Cannot make list VISIBLE yet.'),
+  moderationDetails: yup.string(),
+  moderationReason: yup.string().required('Please choose an option.'),
 });

@@ -2,7 +2,7 @@ import React from 'react';
 import { Grid } from '@mui/material';
 import { Modal } from '../../../_shared/components';
 import { ShareableListFormConnector } from '../';
-import { ShareableList } from '../../../api/generatedTypes';
+import { ShareableListComplete } from '../../../api/generatedTypes';
 
 interface ShareableListsModalProps {
   /**
@@ -29,7 +29,7 @@ interface ShareableListsModalProps {
   /**
    * An object with everything shareableList-related in it.
    */
-  shareableList: ShareableList;
+  shareableList: ShareableListComplete;
 
   /**
    * Whether or not to run the moderateShareableList mutation.

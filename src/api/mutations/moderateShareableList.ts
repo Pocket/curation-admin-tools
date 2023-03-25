@@ -1,11 +1,11 @@
 import { gql } from '@apollo/client';
-import { ShareableListProps } from '../fragments/ShareableListProps';
+import { ShareableListCompleteProps } from '../fragments/ShareableListCompleteProps';
 
 export const moderateShareableList = gql`
   mutation moderateShareableList($data: ModerateShareableListInput!) {
     moderateShareableList(data: $data) {
-      ...ShareableListProps
+      ...ShareableListCompleteProps
     }
   }
-  ${ShareableListProps}
+  ${ShareableListCompleteProps}
 `;

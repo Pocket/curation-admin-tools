@@ -7,10 +7,10 @@ import {
   SharedFormButtons,
   SharedFormButtonsProps,
 } from '../../../_shared/components';
-import { ShareableList } from '../../../api/generatedTypes';
+import { ShareableListComplete } from '../../../api/generatedTypes';
 import {
   DropdownOption,
-  shareableListModerationStatusOptions,
+  hideShareableListModerationReasonOptions,
 } from '../../helpers/definitions';
 import { validationSchema } from './ShareableListModerationForm.validation';
 
@@ -26,7 +26,7 @@ interface ShareableListModerationFormProps {
   /**
    * An object with everything shareableList-related in it.
    */
-  shareableList: ShareableList;
+  shareableList: ShareableListComplete;
 }
 
 /**
@@ -41,9 +41,13 @@ export const ShareableListModerationForm: React.FC<
   // set up formik object for this form
   const formik = useFormik({
     initialValues: {
-      // shareableListTitle: shareableList?.title ?? '',
       moderationStatus: shareableList.moderationStatus ?? '',
-      moderationReason: shareableList.moderationReason ?? '',
+      moderationReason: shareableList.moderationReason
+        ? JSON.parse(shareableList.moderationReason!).reason
+        : '',
+      moderationDetails: shareableList.moderationReason
+        ? JSON.parse(shareableList.moderationReason!).details
+        : '',
     },
     validateOnBlur: false,
     validateOnChange: false,
@@ -65,17 +69,30 @@ export const ShareableListModerationForm: React.FC<
       >
         <Grid item xs={12}>
           <FormikSelectField
-            id="shareableListModerationStatus"
+            id="moderationStatus"
             label="Moderation Status"
             fieldProps={formik.getFieldProps('moderationStatus')}
             fieldMeta={formik.getFieldMeta('moderationStatus')}
           >
+            <option value="VISIBLE" disabled={true}>
+              Visible
+            </option>
+            <option value="HIDDEN">Hidden</option>
+          </FormikSelectField>
+        </Grid>
+        <Grid item xs={12}>
+          <FormikSelectField
+            id="moderationReason"
+            label="Moderation Reason"
+            fieldProps={formik.getFieldProps('moderationReason')}
+            fieldMeta={formik.getFieldMeta('moderationReason')}
+          >
             <option aria-label="None" value="" />
-            {shareableListModerationStatusOptions.map(
-              (modStatus: DropdownOption) => {
+            {hideShareableListModerationReasonOptions.map(
+              (modReasonOpt: DropdownOption) => {
                 return (
-                  <option value={modStatus.code} key={modStatus.code}>
-                    {modStatus.name}
+                  <option value={modReasonOpt.code} key={modReasonOpt.code}>
+                    {modReasonOpt.name}
                   </option>
                 );
               }
@@ -84,10 +101,10 @@ export const ShareableListModerationForm: React.FC<
         </Grid>
         <Grid item xs={12}>
           <FormikTextField
-            id="shareableListModerationReason"
-            label="Moderation Reason"
-            fieldProps={formik.getFieldProps('moderationReason')}
-            fieldMeta={formik.getFieldMeta('moderationReason')}
+            id="moderationDetails"
+            label="Moderation Details"
+            fieldProps={formik.getFieldProps('moderationDetails')}
+            fieldMeta={formik.getFieldMeta('moderationDetails')}
             autoFocus
           />
         </Grid>
