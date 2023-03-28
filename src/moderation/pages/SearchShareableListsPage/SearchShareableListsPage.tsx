@@ -1,5 +1,9 @@
 import React from 'react';
-import { ShareableListCard, ShareableListsSearchForm } from '../../components';
+import {
+  ShareableListCard,
+  ShareableListItemCard,
+  ShareableListsSearchForm,
+} from '../../components';
 import { useSearchShareableListLazyQuery } from '../../../api/generatedTypes';
 import { FormikValues } from 'formik';
 import { Box, Paper } from '@mui/material';
@@ -34,7 +38,17 @@ export const SearchShareableListsPage = (): JSX.Element => {
           {!data && <HandleApiResponse loading={loading} error={error} />}
 
           {data && data.searchShareableList && (
-            <ShareableListCard list={data.searchShareableList} />
+            <>
+              <ShareableListCard list={data.searchShareableList} />
+              {data.searchShareableList.listItems.map((item) => {
+                return (
+                  <ShareableListItemCard
+                    key={item.externalId}
+                    listItem={item}
+                  />
+                );
+              })}
+            </>
           )}
         </Box>
       </Paper>
