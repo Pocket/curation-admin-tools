@@ -125,6 +125,7 @@ export const ShareableListCard: React.FC<ShareableListCardProps> = (
               startIcon={<VisibilityOffIcon />}
               variant="text"
               onClick={toggleShareableListModal}
+              data-testid="hide-list-button"
             >
               Hide List
             </Button>
