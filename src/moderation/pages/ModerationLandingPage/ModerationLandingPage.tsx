@@ -9,6 +9,7 @@ import {
 } from '../../../_shared/components';
 import { StyledContainer } from '../../../_shared/styled';
 import { client } from '../../../api/client';
+import { SearchShareableListsPage } from '../';
 
 /**
  * Moderation landing page
@@ -51,15 +52,15 @@ export const ModerationLandingPage = (): JSX.Element => {
               </ListItem>
               <ListItem>
                 <ListItemText>
-                  The <Link to={`${path}/users/`}>Users</Link> will allow you to
-                  manage access to the feature during the Pilot phase.
+                  The <Link to={`${path}/users/`}>Users</Link> page will allow
+                  you to manage access to the feature during the Pilot phase.
                 </ListItemText>
               </ListItem>
             </List>
           </Route>
-          {/*<Route exact path={`${path}/search/`}>*/}
-          {/*  <SearchShareableListsPage />*/}
-          {/*</Route>*/}
+          <Route exact path={`${path}/search/`}>
+            <SearchShareableListsPage />
+          </Route>
           {/*<Route exact path={`${path}/users/`}>*/}
           {/*  <ManagePilotUsersPage />*/}
           {/*</Route>*/}
