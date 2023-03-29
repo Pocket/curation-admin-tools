@@ -65,7 +65,6 @@ export const ShareableListFormConnector: React.FC<
         moderationReason: values.moderationReason,
         moderationDetails: values.moderationDetails,
       };
-      console.log(input);
       runMutation(
         moderateShareableListMutation,
         { variables: { data: input } },

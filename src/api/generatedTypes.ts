@@ -1710,7 +1710,7 @@ export type ShareableListItem = {
   /** The URL of the thumbnail image illustrating the story. Supplied by the Parser. */
   imageUrl?: Maybe<Scalars['Url']>;
   /** The Parser Item ID. */
-  itemId?: Maybe<Scalars['Float']>;
+  itemId?: Maybe<Scalars['ID']>;
   /** The name of the publisher for this story. Supplied by the Parser. */
   publisher?: Maybe<Scalars['String']>;
   /** The custom sort order of stories within a list. Defaults to 1. */
@@ -2152,7 +2152,7 @@ export type ShareableListCompletePropsFragment = {
   listItems: Array<{
     __typename?: 'ShareableListItem';
     externalId: string;
-    itemId?: number | null;
+    itemId?: string | null;
     url: any;
     title?: string | null;
     excerpt?: string | null;
@@ -2169,7 +2169,7 @@ export type ShareableListCompletePropsFragment = {
 export type ShareableListItemPropsFragment = {
   __typename?: 'ShareableListItem';
   externalId: string;
-  itemId?: number | null;
+  itemId?: string | null;
   url: any;
   title?: string | null;
   excerpt?: string | null;
@@ -2801,7 +2801,7 @@ export type ModerateShareableListMutation = {
     listItems: Array<{
       __typename?: 'ShareableListItem';
       externalId: string;
-      itemId?: number | null;
+      itemId?: string | null;
       url: any;
       title?: string | null;
       excerpt?: string | null;
@@ -4207,7 +4207,7 @@ export type SearchShareableListQuery = {
     listItems: Array<{
       __typename?: 'ShareableListItem';
       externalId: string;
-      itemId?: number | null;
+      itemId?: string | null;
       url: any;
       title?: string | null;
       excerpt?: string | null;
