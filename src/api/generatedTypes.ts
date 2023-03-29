@@ -207,6 +207,10 @@ export type BulletedListElement = ListElement & {
   level: Scalars['Int'];
 };
 
+/**
+ * Apollo Server @cacheControl directive caching behavior either for a single field, or for all fields that
+ * return a particular type
+ */
 export enum CacheControlScope {
   Private = 'PRIVATE',
   Public = 'PUBLIC',
@@ -944,7 +948,8 @@ export type MarticleText = {
 /** Input data for removing (moderating) a ShareableList */
 export type ModerateShareableListInput = {
   externalId: Scalars['ID'];
-  moderationReason: Scalars['String'];
+  moderationDetails?: InputMaybe<Scalars['String']>;
+  moderationReason: ShareableListModerationReason;
   moderationStatus: ShareableListModerationStatus;
 };
 
@@ -1638,8 +1643,10 @@ export type ShareableListComplete = ShareableListInterface & {
    * that violates the Pocket content moderation policy.
    */
   moderatedBy?: Maybe<Scalars['String']>;
+  /** The optional details why the list was moderated. */
+  moderationDetails?: Maybe<Scalars['String']>;
   /** The reason why the moderator took down the list. */
-  moderationReason?: Maybe<Scalars['String']>;
+  moderationReason?: Maybe<ShareableListModerationReason>;
   /** The moderation status of the list. Defaults to VISIBLE. */
   moderationStatus: ShareableListModerationStatus;
   /**
@@ -1720,6 +1727,29 @@ export type ShareableListItem = {
   /** The URL of the story saved to a list. */
   url: Scalars['Url'];
 };
+
+export enum ShareableListModerationReason {
+  AbusiveBehavior = 'ABUSIVE_BEHAVIOR',
+  AdultSexualContent = 'ADULT_SEXUAL_CONTENT',
+  Copyright = 'COPYRIGHT',
+  Counterfeit = 'COUNTERFEIT',
+  CsamImages = 'CSAM_IMAGES',
+  CsamSolicitation = 'CSAM_SOLICITATION',
+  Fraud = 'FRAUD',
+  HateSpeech = 'HATE_SPEECH',
+  IllegalGoodsAndServices = 'ILLEGAL_GOODS_AND_SERVICES',
+  IncitementToViolence = 'INCITEMENT_TO_VIOLENCE',
+  InstructionsForViolence = 'INSTRUCTIONS_FOR_VIOLENCE',
+  Malware = 'MALWARE',
+  MisleadingInformation = 'MISLEADING_INFORMATION',
+  Phishing = 'PHISHING',
+  PostingPrivateInformation = 'POSTING_PRIVATE_INFORMATION',
+  SelfHarm = 'SELF_HARM',
+  Spam = 'SPAM',
+  Terrorism = 'TERRORISM',
+  Trademark = 'TRADEMARK',
+  ViolenceAndGore = 'VIOLENCE_AND_GORE',
+}
 
 /** The moderation status of a Shareable List. Defaults to VISIBLE. */
 export enum ShareableListModerationStatus {
@@ -2117,7 +2147,8 @@ export type ShareableListCompletePropsFragment = {
   createdAt: any;
   updatedAt: any;
   moderatedBy?: string | null;
-  moderationReason?: string | null;
+  moderationReason?: ShareableListModerationReason | null;
+  moderationDetails?: string | null;
   listItems: Array<{
     __typename?: 'ShareableListItem';
     externalId: string;
@@ -2765,7 +2796,8 @@ export type ModerateShareableListMutation = {
     createdAt: any;
     updatedAt: any;
     moderatedBy?: string | null;
-    moderationReason?: string | null;
+    moderationReason?: ShareableListModerationReason | null;
+    moderationDetails?: string | null;
     listItems: Array<{
       __typename?: 'ShareableListItem';
       externalId: string;
@@ -4170,7 +4202,8 @@ export type SearchShareableListQuery = {
     createdAt: any;
     updatedAt: any;
     moderatedBy?: string | null;
-    moderationReason?: string | null;
+    moderationReason?: ShareableListModerationReason | null;
+    moderationDetails?: string | null;
     listItems: Array<{
       __typename?: 'ShareableListItem';
       externalId: string;
@@ -4308,6 +4341,7 @@ export const ShareableListCompletePropsFragmentDoc = gql`
     updatedAt
     moderatedBy
     moderationReason
+    moderationDetails
     listItems {
       ...ShareableListItemProps
     }

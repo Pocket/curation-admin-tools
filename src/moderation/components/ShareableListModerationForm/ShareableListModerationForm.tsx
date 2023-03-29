@@ -20,7 +20,9 @@ interface ShareableListModerationFormProps {
     formikHelpers: FormikHelpers<any>
   ) => void | Promise<any>;
 
-  // show/hide the loading bar on submissions
+  /**
+   * Show/hide the loading bar on submissions
+   */
   isLoaderShowing: boolean;
 
   /**
@@ -41,13 +43,8 @@ export const ShareableListModerationForm: React.FC<
   // set up formik object for this form
   const formik = useFormik({
     initialValues: {
-      moderationStatus: shareableList.moderationStatus ?? '',
-      moderationReason: shareableList.moderationReason
-        ? JSON.parse(shareableList.moderationReason!).reason
-        : '',
-      moderationDetails: shareableList.moderationReason
-        ? JSON.parse(shareableList.moderationReason!).details
-        : '',
+      moderationReason: shareableList.moderationReason ?? '',
+      moderationDetails: shareableList.moderationDetails ?? '',
     },
     validateOnBlur: false,
     validateOnChange: false,
@@ -67,19 +64,6 @@ export const ShareableListModerationForm: React.FC<
           },
         }}
       >
-        <Grid item xs={12}>
-          <FormikSelectField
-            id="moderationStatus"
-            label="Moderation Status"
-            fieldProps={formik.getFieldProps('moderationStatus')}
-            fieldMeta={formik.getFieldMeta('moderationStatus')}
-          >
-            <option value="VISIBLE" disabled={true}>
-              Visible
-            </option>
-            <option value="HIDDEN">Hidden</option>
-          </FormikSelectField>
-        </Grid>
         <Grid item xs={12}>
           <FormikSelectField
             id="moderationReason"

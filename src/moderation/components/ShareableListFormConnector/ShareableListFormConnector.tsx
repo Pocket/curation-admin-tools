@@ -6,6 +6,7 @@ import {
   useModerateShareableListMutation,
   ModerateShareableListInput,
   ShareableListComplete,
+  ShareableListModerationStatus,
 } from '../../../api/generatedTypes';
 
 interface ShareableListFormConnectorProps {
@@ -58,24 +59,11 @@ export const ShareableListFormConnector: React.FC<
     // if runModerateShareableListMutation flag is true, moderateShareableList
     if (runModerateShareableListMutation) {
       // construct the ModerateShareableListInput
-      let moderationReason;
-      // we need to construct a stringified JSON obj to pass in the moderation reason and the details (optional)
-      // the list of moderation reasons is not stored in the back-end db, so we keep track of the current reason
-      // from the constructed JSON obj. This also makes it easier to retrieve and display the values.
-      if (values.moderationDetails) {
-        moderationReason = {
-          reason: values.moderationReason,
-          details: values.moderationDetails,
-        };
-      } else {
-        moderationReason = {
-          reason: values.moderationReason,
-        };
-      }
       const input: ModerateShareableListInput = {
         externalId: shareableList.externalId,
-        moderationStatus: values.moderationStatus,
-        moderationReason: JSON.stringify(moderationReason),
+        moderationStatus: ShareableListModerationStatus.Hidden,
+        moderationReason: values.moderationReason,
+        moderationDetails: values.moderationDetails,
       };
       console.log(input);
       runMutation(

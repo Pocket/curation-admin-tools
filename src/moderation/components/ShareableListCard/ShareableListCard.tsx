@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Card, CardContent, Link, Typography } from '@mui/material';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 import { ShareableListModal } from '../../components';
 import { Button } from '../../../_shared/components';
@@ -63,17 +64,18 @@ export const ShareableListCard: React.FC<ShareableListCardProps> = (
           <ShareableListModal
             isOpen={shareableListModalOpen}
             toggleModal={toggleShareableListModal}
-            modalTitle="Moderate List"
+            modalTitle="Hide List"
             refetch={refetch}
             shareableList={list}
             runModerateShareableListMutation={true} // this modal is in charge of moderating a list, so passing flag
           />
           <Button
-            buttonType="positive"
+            buttonType="negative"
+            startIcon={<VisibilityOffIcon />}
             variant="text"
             onClick={toggleShareableListModal}
           >
-            Moderate List
+            Hide List
           </Button>
         </Box>
       </CardContent>
