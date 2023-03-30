@@ -6,6 +6,7 @@ import { SnackbarProvider } from 'notistack';
 import { ShareableListModerationForm } from './ShareableListModerationForm';
 import {
   list,
+  moderationDetailsMultiLineText,
   moderateShareableList1SuccessMock,
 } from '../../integration-test-mocks/moderateShareableLists';
 
@@ -86,7 +87,7 @@ describe('The ShareableListModerationForm component', () => {
     const moderationDetailsField = screen.getByLabelText(/moderation details/i);
     expect(moderationDetailsField).toBeInTheDocument();
     // enter moderationDetails
-    userEvent.type(moderationDetailsField, 'more details here');
+    userEvent.type(moderationDetailsField, moderationDetailsMultiLineText);
 
     userEvent.click(saveButton);
     await waitFor(() => expect(onSubmit).toHaveBeenCalled());

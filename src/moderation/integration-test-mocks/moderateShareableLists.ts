@@ -5,6 +5,10 @@ import {
   ShareableListStatus,
 } from '../../api/generatedTypes';
 
+export const moderationDetailsMultiLineText =
+  'Incidunt corrupti earum. Quasi aut qui magnam eum. ' +
+  'Quia non dolores voluptatem est aut. Id officiis nulla est.\n' +
+  'Harum et velit debitis. Quia assumenda commodi et dolor. ';
 export const list: ShareableListComplete = {
   externalId: '12345-qwerty',
   user: { id: '12345' },
@@ -26,7 +30,7 @@ export const moderateShareableList1SuccessMock = {
         externalId: list.externalId,
         moderationStatus: ShareableListModerationStatus.Hidden,
         moderationReason: 'SPAM',
-        moderationDetails: 'more details here',
+        moderationDetails: moderationDetailsMultiLineText,
       },
     },
   },
@@ -36,7 +40,7 @@ export const moderateShareableList1SuccessMock = {
         ...list,
         moderationStatus: ShareableListModerationStatus.Hidden,
         moderationReason: 'SPAM',
-        moderationDetails: 'more details here',
+        moderationDetails: moderationDetailsMultiLineText,
         updatedAt: new Date(),
       },
     },

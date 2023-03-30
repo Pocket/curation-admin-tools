@@ -68,7 +68,7 @@ describe('The ShareableListCard component', () => {
     expect(screen.getByText(/this list is private/i)).toBeInTheDocument();
   });
 
-  it('does not show the "Hide List" button if the list moderationStatus is Hidden', () => {
+  it('the "Hide List" button is disabled if the list moderationStatus is Hidden', () => {
     // set up a different list that is private
     const privateList = {
       ...list,
@@ -78,7 +78,7 @@ describe('The ShareableListCard component', () => {
     render(<ShareableListCard list={privateList} />);
 
     const hideListButton = screen.queryByRole('button');
-    expect(hideListButton).not.toBeInTheDocument();
+    expect(hideListButton).toHaveAttribute('disabled');
   });
 
   it('shows the "Hide List" button if the list moderationStatus is Visible', () => {
@@ -106,15 +106,13 @@ describe('The ShareableListCard component', () => {
 
     // let make sure hide list button is not present
     const hideListButton = screen.queryByRole('button');
-    expect(hideListButton).not.toBeInTheDocument();
+    expect(hideListButton).toHaveAttribute('disabled');
 
-    // make sure the rest of thes are present
-    const listHiddenMessage = screen.getByText(/this list has been hidden/i);
-    expect(listHiddenMessage).toBeInTheDocument();
-
+    // expect moderationReason to be present
     const moderationReason = screen.getByText(/FRAUD/i);
     expect(moderationReason).toBeInTheDocument();
 
+    // expect moderationDetails to be present
     const moderationDetails = screen.getByText(/more details/i);
     expect(moderationDetails).toBeInTheDocument();
   });
@@ -131,10 +129,7 @@ describe('The ShareableListCard component', () => {
 
     // let make sure hide list button is not present
     const hideListButton = screen.queryByRole('button');
-    expect(hideListButton).not.toBeInTheDocument();
-
-    const listHiddenMessage = screen.getByText(/this list has been hidden/i);
-    expect(listHiddenMessage).toBeInTheDocument();
+    expect(hideListButton).toHaveAttribute('disabled');
 
     const moderationReason = screen.getByText(/FRAUD/i);
     expect(moderationReason).toBeInTheDocument();

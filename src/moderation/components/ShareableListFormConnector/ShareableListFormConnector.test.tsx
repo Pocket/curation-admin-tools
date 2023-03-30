@@ -6,6 +6,7 @@ import userEvent from '@testing-library/user-event';
 import { ShareableListFormConnector } from './ShareableListFormConnector';
 import {
   list,
+  moderationDetailsMultiLineText,
   moderateShareableList1SuccessMock,
 } from '../../integration-test-mocks/moderateShareableLists';
 
@@ -115,7 +116,7 @@ describe('ShareableListFormConnector', () => {
     // select moderationReason
     userEvent.selectOptions(moderationReasonField, 'Spam');
     // enter moderationDetails
-    userEvent.type(moderationDetailsField, 'more details here');
+    userEvent.type(moderationDetailsField, moderationDetailsMultiLineText);
 
     // click save button
     userEvent.click(saveButton);

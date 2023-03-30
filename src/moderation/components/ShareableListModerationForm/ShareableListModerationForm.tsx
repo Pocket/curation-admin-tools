@@ -90,6 +90,8 @@ export const ShareableListModerationForm: React.FC<
             fieldProps={formik.getFieldProps('moderationDetails')}
             fieldMeta={formik.getFieldMeta('moderationDetails')}
             autoFocus
+            multiline
+            minRows={4}
           />
         </Grid>
         <Grid item xs={12}>

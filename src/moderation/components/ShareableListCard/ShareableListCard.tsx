@@ -12,7 +12,6 @@ import { Button, Chip } from '../../../_shared/components';
 import { DateTime } from 'luxon';
 import { StyledListCard } from '../../../_shared/styled';
 import { useToggle } from '../../../_shared/hooks';
-import { curationPalette } from '../../../theme';
 
 interface ShareableListCardProps {
   /**
@@ -34,6 +33,13 @@ export const ShareableListCard: React.FC<ShareableListCardProps> = (
   props
 ): JSX.Element => {
   const { list, refetch } = props;
+
+  // flag to disable or enable hide list button
+  let disableHideListButton = false;
+
+  if (list.moderationStatus === ShareableListModerationStatus.Hidden) {
+    disableHideListButton = true;
+  }
 
   const [shareableListModalOpen, toggleShareableListModal] = useToggle(false);
 
@@ -66,11 +72,6 @@ export const ShareableListCard: React.FC<ShareableListCardProps> = (
           )}
         </Typography>
         <Box sx={{ lineHeight: 2 }}>
-          {list.moderationStatus === ShareableListModerationStatus.Hidden && (
-            <Box sx={{ lineHeight: 2, color: curationPalette.secondary }}>
-              <strong>This list has been hidden.</strong>
-            </Box>
-          )}
           {list.status == ShareableListStatus.Public && (
             <Link
               href={fullUrlToList}
@@ -110,27 +111,26 @@ export const ShareableListCard: React.FC<ShareableListCardProps> = (
           <strong>Updated at</strong>:{' '}
           {DateTime.fromISO(list.updatedAt).toFormat(dateFormat)}
         </Box>
-        {list.moderationStatus === ShareableListModerationStatus.Visible && (
-          <Box display="flex">
-            <ShareableListModal
-              isOpen={shareableListModalOpen}
-              toggleModal={toggleShareableListModal}
-              modalTitle="Hide List"
-              refetch={refetch}
-              shareableList={list}
-              runModerateShareableListMutation={true} // this modal is in charge of moderating a list, so passing flag
-            />
-            <Button
-              buttonType="negative"
-              startIcon={<VisibilityOffIcon />}
-              variant="text"
-              onClick={toggleShareableListModal}
-              data-testid="hide-list-button"
-            >
-              Hide List
-            </Button>
-          </Box>
-        )}
+        <Box display="flex">
+          <ShareableListModal
+            isOpen={shareableListModalOpen}
+            toggleModal={toggleShareableListModal}
+            modalTitle="Hide List"
+            refetch={refetch}
+            shareableList={list}
+            runModerateShareableListMutation={true} // this modal is in charge of moderating a list, so passing flag
+          />
+          <Button
+            buttonType="negative"
+            disabled={disableHideListButton}
+            startIcon={<VisibilityOffIcon />}
+            variant="text"
+            onClick={toggleShareableListModal}
+            data-testid="hide-list-button"
+          >
+            Hide List
+          </Button>
+        </Box>
       </CardContent>
     </StyledListCard>
   );
