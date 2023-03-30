@@ -14,7 +14,7 @@ import { HandleApiResponse } from '../../../_shared/components';
  */
 export const SearchShareableListsPage = (): JSX.Element => {
   // prepare the query for executing in the handleSubmit callback below
-  const [searchShareableLists, { loading, error, data }] =
+  const [searchShareableLists, { loading, error, data, refetch }] =
     useSearchShareableListLazyQuery(
       // Make sure search results are never served from the cache.
       { fetchPolicy: 'no-cache' }
@@ -39,7 +39,10 @@ export const SearchShareableListsPage = (): JSX.Element => {
 
           {data && data.searchShareableList && (
             <>
-              <ShareableListCard list={data.searchShareableList} />
+              <ShareableListCard
+                list={data.searchShareableList}
+                refetch={refetch}
+              />
               {data.searchShareableList.listItems.map((item) => {
                 return (
                   <ShareableListItemCard

@@ -67,4 +67,75 @@ describe('The ShareableListCard component', () => {
     // There should be an explanatory note instead
     expect(screen.getByText(/this list is private/i)).toBeInTheDocument();
   });
+
+  it('the "Hide List" button is disabled if the list moderationStatus is Hidden', () => {
+    // set up a different list that is private
+    const privateList = {
+      ...list,
+      moderationStatus: ShareableListModerationStatus.Hidden,
+      slug: undefined,
+    };
+    render(<ShareableListCard list={privateList} />);
+
+    const hideListButton = screen.queryByRole('button');
+    expect(hideListButton).toHaveAttribute('disabled');
+  });
+
+  it('shows the "Hide List" button if the list moderationStatus is Visible', () => {
+    // set up a different list that is private
+    const privateList = {
+      ...list,
+      slug: undefined,
+    };
+    render(<ShareableListCard list={privateList} />);
+
+    const hideListButton = screen.getByTestId('hide-list-button');
+    expect(hideListButton).toBeInTheDocument();
+  });
+
+  it('shows moderationStatus and moderationDetails if list moderationStatus is Hidden', () => {
+    // set up a different list that is private
+    const privateList = {
+      ...list,
+      moderationStatus: ShareableListModerationStatus.Hidden,
+      moderationReason: 'FRAUD',
+      moderationDetails: 'more details',
+      slug: undefined,
+    };
+    render(<ShareableListCard list={privateList} />);
+
+    // let make sure hide list button is not present
+    const hideListButton = screen.queryByRole('button');
+    expect(hideListButton).toHaveAttribute('disabled');
+
+    // expect moderationReason to be present
+    const moderationReason = screen.getByText(/FRAUD/i);
+    expect(moderationReason).toBeInTheDocument();
+
+    // expect moderationDetails to be present
+    const moderationDetails = screen.getByText(/more details/i);
+    expect(moderationDetails).toBeInTheDocument();
+  });
+
+  it('shows moderationStatus and does not show moderationDetails if list moderationStatus is Hidden and moderationDetails is null', () => {
+    // set up a different list that is private
+    const privateList = {
+      ...list,
+      moderationStatus: ShareableListModerationStatus.Hidden,
+      moderationReason: 'FRAUD',
+      slug: undefined,
+    };
+    render(<ShareableListCard list={privateList} />);
+
+    // let make sure hide list button is not present
+    const hideListButton = screen.queryByRole('button');
+    expect(hideListButton).toHaveAttribute('disabled');
+
+    const moderationReason = screen.getByText(/FRAUD/i);
+    expect(moderationReason).toBeInTheDocument();
+
+    // make sure moderationDetails is not present if null
+    const moderationDetails = screen.queryByText(/more details/i);
+    expect(moderationDetails).not.toBeInTheDocument();
+  });
 });
