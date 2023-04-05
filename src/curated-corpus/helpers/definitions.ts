@@ -51,6 +51,9 @@ export const prospectFilterOptions: DropdownOption[] = prospectFilters;
 export const languages: DropdownOption[] = [
   { code: CorpusLanguage.En, name: 'English' },
   { code: CorpusLanguage.De, name: 'German' },
+  { code: CorpusLanguage.Es, name: 'Spanish' },
+  { code: CorpusLanguage.Fr, name: 'French' },
+  { code: CorpusLanguage.It, name: 'Italian' },
 ];
 
 // This maps to the status (CuratedStatus type) field in DB for an ApprovedItem
