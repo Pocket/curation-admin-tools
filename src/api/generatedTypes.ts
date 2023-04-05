@@ -436,6 +436,12 @@ export enum CorpusLanguage {
   De = 'DE',
   /** English */
   En = 'EN',
+  /** Spanish */
+  Es = 'ES',
+  /** French */
+  Fr = 'FR',
+  /** Italian */
+  It = 'IT',
 }
 
 /** Input data for creating an Approved Item and optionally scheduling this item to appear on a Scheduled Surface. */
@@ -1710,7 +1716,7 @@ export type ShareableListItem = {
   /** The URL of the thumbnail image illustrating the story. Supplied by the Parser. */
   imageUrl?: Maybe<Scalars['Url']>;
   /** The Parser Item ID. */
-  itemId?: Maybe<Scalars['ID']>;
+  itemId: Scalars['ID'];
   /** The name of the publisher for this story. Supplied by the Parser. */
   publisher?: Maybe<Scalars['String']>;
   /** The custom sort order of stories within a list. Defaults to 1. */
@@ -2152,7 +2158,7 @@ export type ShareableListCompletePropsFragment = {
   listItems: Array<{
     __typename?: 'ShareableListItem';
     externalId: string;
-    itemId?: string | null;
+    itemId: string;
     url: any;
     title?: string | null;
     excerpt?: string | null;
@@ -2169,7 +2175,7 @@ export type ShareableListCompletePropsFragment = {
 export type ShareableListItemPropsFragment = {
   __typename?: 'ShareableListItem';
   externalId: string;
-  itemId?: string | null;
+  itemId: string;
   url: any;
   title?: string | null;
   excerpt?: string | null;
@@ -2801,7 +2807,7 @@ export type ModerateShareableListMutation = {
     listItems: Array<{
       __typename?: 'ShareableListItem';
       externalId: string;
-      itemId?: string | null;
+      itemId: string;
       url: any;
       title?: string | null;
       excerpt?: string | null;
@@ -4207,7 +4213,7 @@ export type SearchShareableListQuery = {
     listItems: Array<{
       __typename?: 'ShareableListItem';
       externalId: string;
-      itemId?: string | null;
+      itemId: string;
       url: any;
       title?: string | null;
       excerpt?: string | null;
