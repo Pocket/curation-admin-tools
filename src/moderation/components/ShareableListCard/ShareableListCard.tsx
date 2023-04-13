@@ -5,7 +5,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { ShareableListModal } from '../';
 import {
   ShareableListComplete,
-  ShareableListStatus,
+  ShareableListVisibility,
   ShareableListModerationStatus,
 } from '../../../api/generatedTypes';
 import { Button, Chip } from '../../../_shared/components';
@@ -72,7 +72,7 @@ export const ShareableListCard: React.FC<ShareableListCardProps> = (
           )}
         </Typography>
         <Box sx={{ lineHeight: 2 }}>
-          {list.status == ShareableListStatus.Public && (
+          {list.status == ShareableListVisibility.Public && (
             <Link
               href={fullUrlToList}
               target="_blank"
@@ -83,7 +83,7 @@ export const ShareableListCard: React.FC<ShareableListCardProps> = (
               {fullUrlToList}
             </Link>
           )}
-          {list.status == ShareableListStatus.Private && (
+          {list.status == ShareableListVisibility.Private && (
             <Box sx={{ lineHeight: 2 }}>
               <em>This list is private (no public link).</em>
             </Box>

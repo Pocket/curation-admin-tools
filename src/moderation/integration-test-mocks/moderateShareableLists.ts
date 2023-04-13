@@ -2,7 +2,7 @@ import { moderateShareableList } from '../../api/mutations/moderateShareableList
 import {
   ShareableListComplete,
   ShareableListModerationStatus,
-  ShareableListStatus,
+  ShareableListVisibility,
 } from '../../api/generatedTypes';
 
 export const moderationDetailsMultiLineText =
@@ -15,7 +15,7 @@ export const list: ShareableListComplete = {
   title: 'Test list title',
   description: 'Some description',
   slug: 'test-list-title',
-  status: ShareableListStatus.Public,
+  status: ShareableListVisibility.Public,
   moderationStatus: ShareableListModerationStatus.Visible,
   createdAt: '2023-03-27T11:54:03.000Z',
   updatedAt: '2023-03-28T23:09:57.000Z',

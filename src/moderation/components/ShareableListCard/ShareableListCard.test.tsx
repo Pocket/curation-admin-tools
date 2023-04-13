@@ -4,7 +4,7 @@ import { dateFormat, ShareableListCard } from './ShareableListCard';
 import {
   ShareableListComplete,
   ShareableListModerationStatus,
-  ShareableListStatus,
+  ShareableListVisibility,
 } from '../../../api/generatedTypes';
 import { DateTime } from 'luxon';
 
@@ -15,7 +15,7 @@ describe('The ShareableListCard component', () => {
     title: 'Test list title',
     description: 'Some description',
     slug: 'test-list-title',
-    status: ShareableListStatus.Public,
+    status: ShareableListVisibility.Public,
     moderationStatus: ShareableListModerationStatus.Visible,
     createdAt: '2023-03-27T11:54:03.000Z',
     updatedAt: '2023-03-28T23:09:57.000Z',
@@ -55,7 +55,7 @@ describe('The ShareableListCard component', () => {
     // set up a different list that is private
     const privateList = {
       ...list,
-      status: ShareableListStatus.Private,
+      status: ShareableListVisibility.Private,
       slug: undefined,
     };
     render(<ShareableListCard list={privateList} />);

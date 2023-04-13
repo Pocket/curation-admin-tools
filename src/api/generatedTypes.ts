@@ -24,11 +24,7 @@ export type Scalars = {
   Date: any;
   /** A String representing a date in the format of `yyyy-MM-dd HH:mm:ss` */
   DateString: any;
-  /**
-   * ISOString scalar - all datetime fields are Typescript Date objects on this server &
-   * returned as ISO-8601 encoded date strings (e.g. ISOString scalars) to GraphQL clients.
-   * See Section 5.6 of the RFC 3339 profile of the ISO 8601 standard: https://www.ietf.org/rfc/rfc3339.txt.
-   */
+  /** ISOString custom scalar type */
   ISOString: any;
   /**
    * A string formatted with CommonMark markdown,
@@ -407,6 +403,16 @@ export type CollectionsResult = {
   pagination: Pagination;
 };
 
+export type CorpusItem = {
+  __typename?: 'CorpusItem';
+  /**
+   * Provides short url for the given_url in the format: https://pocket.co/<identifier>.
+   * marked as beta because it's not ready yet for large client request.
+   */
+  shortUrl?: Maybe<Scalars['Url']>;
+  url: Scalars['Url'];
+};
+
 /** An author associated with a CorpusItem. */
 export type CorpusItemAuthor = {
   __typename?: 'CorpusItemAuthor';
@@ -606,6 +612,16 @@ export type DomainMetadata = {
 };
 
 export type GetProspectsFilters = {
+  /**
+   * Filter out any prospects by the name or part-match of the name of a publisher, e.g. 'The Onion'.
+   * Note that this filter is case-sensitive due to DynamoDB limitations.
+   */
+  excludePublisher?: InputMaybe<Scalars['String']>;
+  /**
+   * Filter the returned prospects by the name or part-match of the name of a publisher, e.g. 'The Onion'.
+   * Note that this filter is case-sensitive due to DynamoDB limitations.
+   */
+  includePublisher?: InputMaybe<Scalars['String']>;
   /** string GUID of the prospect type to further filter prospects, e.g. 'GLOBAL' or 'ORGANIC_TIMESPENT' */
   prospectType?: InputMaybe<Scalars['String']>;
   /** string GUID of the scheduled surface being prospected, e.g. 'NEW_TAB_EN_US' or 'POCKET_HITS_DE_DE' */
@@ -829,6 +845,11 @@ export type Item = {
    * @deprecated Clients should not use this
    */
   responseCode?: Maybe<Scalars['Int']>;
+  /**
+   * Provides short url for the given_url in the format: https://pocket.co/<identifier>.
+   * marked as beta because it's not ready yet for large client request.
+   */
+  shortUrl?: Maybe<Scalars['Url']>;
   /**
    * Date this item was first parsed in Pocket
    * @deprecated Clients should not use this
@@ -1303,15 +1324,16 @@ export type Prospect = {
  * by the Curation Admin Tools frontend to filter prospects.
  */
 export enum ProspectType {
-  Approved = 'APPROVED',
-  CountsLogisticApproval = 'COUNTS_LOGISTIC_APPROVAL',
+  CountsLearning = 'COUNTS_LEARNING',
+  Dismissed = 'DISMISSED',
   DomainAllowlist = 'DOMAIN_ALLOWLIST',
   Global = 'GLOBAL',
-  HybridLogisticApproval = 'HYBRID_LOGISTIC_APPROVAL',
-  OrganicTimespent = 'ORGANIC_TIMESPENT',
+  Recommended = 'RECOMMENDED',
   SyndicatedNew = 'SYNDICATED_NEW',
   SyndicatedRerun = 'SYNDICATED_RERUN',
-  TimespentLogisticApproval = 'TIMESPENT_LOGISTIC_APPROVAL',
+  Timespent = 'TIMESPENT',
+  TimespentLearning = 'TIMESPENT_LEARNING',
+  TitleUrlLearning = 'TITLE_URL_LEARNING',
   TopSaved = 'TOP_SAVED',
 }
 
@@ -1642,6 +1664,8 @@ export type ShareableListComplete = ShareableListInterface & {
   description?: Maybe<Scalars['String']>;
   /** A unique string identifier in UUID format. */
   externalId: Scalars['ID'];
+  /** The visibility of notes added to list items for this list. */
+  listItemNoteVisibility: ShareableListVisibility;
   /** Pocket Saves that have been added to this list by the Pocket user. */
   listItems: Array<ShareableListItem>;
   /**
@@ -1661,7 +1685,7 @@ export type ShareableListComplete = ShareableListInterface & {
    */
   slug?: Maybe<Scalars['String']>;
   /** The status of the list. Defaults to PRIVATE. */
-  status: ShareableListStatus;
+  status: ShareableListVisibility;
   /** The title of the list. Provided by the Pocket user. */
   title: Scalars['String'];
   /**
@@ -1690,7 +1714,7 @@ export type ShareableListInterface = {
    */
   slug?: Maybe<Scalars['String']>;
   /** The status of the list. Defaults to PRIVATE. */
-  status: ShareableListStatus;
+  status: ShareableListVisibility;
   /** The title of the list. Provided by the Pocket user. */
   title: Scalars['String'];
   /**
@@ -1768,11 +1792,11 @@ export enum ShareableListModerationStatus {
   Visible = 'VISIBLE',
 }
 
-/** The status of a Shareable List. Defaults to PRIVATE - visible only to its owner. */
-export enum ShareableListStatus {
-  /** The list is only visible to its owner - the Pocket user who created it. */
+/** The visibility levels used (e.g. list, list item note) in the Shareable List API. Defaults to PRIVATE - visible only to its owner. */
+export enum ShareableListVisibility {
+  /** Only visible to its owner - the Pocket user who created it. */
   Private = 'PRIVATE',
-  /** The list has been shared and can be viewed by anyone in the world. */
+  /** Can be viewed by anyone in the world. */
   Public = 'PUBLIC',
 }
 
@@ -2148,7 +2172,7 @@ export type ShareableListCompletePropsFragment = {
   title: string;
   description?: string | null;
   slug?: string | null;
-  status: ShareableListStatus;
+  status: ShareableListVisibility;
   moderationStatus: ShareableListModerationStatus;
   createdAt: any;
   updatedAt: any;
@@ -2797,7 +2821,7 @@ export type ModerateShareableListMutation = {
     title: string;
     description?: string | null;
     slug?: string | null;
-    status: ShareableListStatus;
+    status: ShareableListVisibility;
     moderationStatus: ShareableListModerationStatus;
     createdAt: any;
     updatedAt: any;
@@ -4203,7 +4227,7 @@ export type SearchShareableListQuery = {
     title: string;
     description?: string | null;
     slug?: string | null;
-    status: ShareableListStatus;
+    status: ShareableListVisibility;
     moderationStatus: ShareableListModerationStatus;
     createdAt: any;
     updatedAt: any;
