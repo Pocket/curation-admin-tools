@@ -79,7 +79,7 @@
     "@types/chai": "4.3.4",
     "@types/jest": "29.5.0",
     "@types/node": "16.18.23",
-    "@types/react": "17.0.57",
+    "@types/react": "17.0.58",
     "@types/uuid": "9.0.1",
     "@typescript-eslint/eslint-plugin": "5.58.0",
     "@typescript-eslint/parser": "5.58.0",
