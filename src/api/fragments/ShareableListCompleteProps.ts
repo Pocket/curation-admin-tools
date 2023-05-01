@@ -18,6 +18,8 @@ export const ShareableListCompleteProps = gql`
     moderatedBy
     moderationReason
     moderationDetails
+    restorationReason
+    listItemNoteVisibility
     listItems {
       ...ShareableListItemProps
     }
