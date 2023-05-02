@@ -26,7 +26,7 @@ describe('The ExistingProspectCard component', () => {
       prospectId: '123-abc',
       title: 'How To Win Friends And Influence People with DynamoDB',
       scheduledSurfaceGuid: 'NEW_TAB_EN_US',
-      prospectType: ProspectType.OrganicTimespent,
+      prospectType: ProspectType.Counts,
       url: 'http://www.test.com/how-to',
       imageUrl: 'https://placeimg.com/640/480/people?random=495',
       excerpt:
