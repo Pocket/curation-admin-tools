@@ -5,7 +5,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { SnackbarProvider } from 'notistack';
 import { ShareableListModerationForm } from './ShareableListModerationForm';
 import {
-  list,
+  visibleList,
   moderationDetailsMultiLineText,
   moderateShareableList1SuccessMock,
 } from '../../integration-test-mocks/moderateShareableLists';
@@ -21,7 +21,7 @@ describe('The ShareableListModerationForm component', () => {
         onSubmit={onSubmit}
         onCancel={onCancel}
         isLoaderShowing={false}
-        shareableList={list}
+        shareableList={visibleList}
       />
     );
 
@@ -44,7 +44,7 @@ describe('The ShareableListModerationForm component', () => {
             onSubmit={onSubmit}
             onCancel={onCancel}
             isLoaderShowing={false}
-            shareableList={list}
+            shareableList={visibleList}
           />
         </SnackbarProvider>
       </MockedProvider>
@@ -69,7 +69,7 @@ describe('The ShareableListModerationForm component', () => {
             onSubmit={onSubmit}
             onCancel={onCancel}
             isLoaderShowing={false}
-            shareableList={list}
+            shareableList={visibleList}
           />
         </SnackbarProvider>
       </MockedProvider>
@@ -102,7 +102,7 @@ describe('The ShareableListModerationForm component', () => {
             onSubmit={onSubmit}
             onCancel={onCancel}
             isLoaderShowing={false}
-            shareableList={list}
+            shareableList={visibleList}
           />
         </SnackbarProvider>
       </MockedProvider>
@@ -129,7 +129,7 @@ describe('The ShareableListModerationForm component', () => {
             onSubmit={onSubmit}
             onCancel={onCancel}
             isLoaderShowing={false}
-            shareableList={list}
+            shareableList={visibleList}
           />
         </SnackbarProvider>
       </MockedProvider>

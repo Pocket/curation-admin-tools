@@ -32,9 +32,14 @@ interface ShareableListsModalProps {
   shareableList: ShareableListComplete;
 
   /**
-   * Whether or not to run the moderateShareableList mutation.
+   * Whether or not to run the moderateShareableList mutation (for hiding list).
    */
-  runModerateShareableListMutation?: boolean;
+  hideList?: boolean;
+
+  /**
+   * Whether or not to run the moderateShareableList mutation (for restoring list).
+   */
+  restoreList?: boolean;
 }
 
 /**
@@ -49,7 +54,8 @@ export const ShareableListModal: React.FC<ShareableListsModalProps> = (
     modalTitle,
     refetch,
     shareableList,
-    runModerateShareableListMutation,
+    hideList,
+    restoreList,
   } = props;
 
   return (
@@ -63,7 +69,8 @@ export const ShareableListModal: React.FC<ShareableListsModalProps> = (
           toggleModal={toggleModal}
           refetch={refetch}
           shareableList={shareableList}
-          runModerateShareableListMutation={runModerateShareableListMutation}
+          hideList={hideList}
+          restoreList={restoreList}
         />
       </Grid>
     </Modal>

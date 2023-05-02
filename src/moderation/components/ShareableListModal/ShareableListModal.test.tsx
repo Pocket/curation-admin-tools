@@ -6,7 +6,7 @@ import { ShareableListModal } from './ShareableListModal';
 import {
   ShareableListComplete,
   ShareableListModerationStatus,
-  ShareableListStatus,
+  ShareableListVisibility,
 } from '../../../api/generatedTypes';
 
 describe('The ShareableListModal component', () => {
@@ -18,7 +18,7 @@ describe('The ShareableListModal component', () => {
     title: 'Test list title',
     description: 'Some description',
     slug: 'test-list-title',
-    status: ShareableListStatus.Public,
+    status: ShareableListVisibility.Public,
     moderationStatus: ShareableListModerationStatus.Visible,
     createdAt: '2023-03-27T11:54:03.000Z',
     updatedAt: '2023-03-28T23:09:57.000Z',
@@ -35,6 +35,7 @@ describe('The ShareableListModal component', () => {
             modalTitle={'Hide List'}
             refetch={refetch}
             shareableList={list}
+            hideList={true} // this modal is in charge of moderating a list (hide), so passing flag
           />
         </SnackbarProvider>
       </MockedProvider>
@@ -50,5 +51,31 @@ describe('The ShareableListModal component', () => {
     expect(shareableListModal).toBeInTheDocument();
     expect(moderationReasonLabel).toBeInTheDocument();
     expect(moderationDetailsLabel).toBeInTheDocument();
+  });
+
+  it('should render the modal and the ShareableListRestorationForm component for restoring a list', () => {
+    render(
+      <MockedProvider>
+        <SnackbarProvider maxSnack={3}>
+          <ShareableListModal
+            isOpen={true}
+            toggleModal={toggleModal}
+            modalTitle={'Hide List'}
+            refetch={refetch}
+            shareableList={list}
+            restoreList={true} // this modal is in charge of moderating a list (hide), so passing flag
+          />
+        </SnackbarProvider>
+      </MockedProvider>
+    );
+
+    // using the modal heading to fetch it
+    const shareableListModal = screen.getByText(/hide list/i);
+
+    // fetching the form component that is rendered within this modal component
+    const restorationReasonLabel = screen.getByLabelText(/restoration reason/i);
+
+    expect(shareableListModal).toBeInTheDocument();
+    expect(restorationReasonLabel).toBeInTheDocument();
   });
 });
