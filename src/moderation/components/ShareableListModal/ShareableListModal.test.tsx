@@ -36,6 +36,7 @@ describe('The ShareableListModal component', () => {
             modalTitle={'Hide List'}
             refetch={refetch}
             shareableList={list}
+            hideList={true} // this modal is in charge of moderating a list (hide), so passing flag
           />
         </SnackbarProvider>
       </MockedProvider>
@@ -51,5 +52,31 @@ describe('The ShareableListModal component', () => {
     expect(shareableListModal).toBeInTheDocument();
     expect(moderationReasonLabel).toBeInTheDocument();
     expect(moderationDetailsLabel).toBeInTheDocument();
+  });
+
+  it('should render the modal and the ShareableListRestorationForm component for restoring a list', () => {
+    render(
+      <MockedProvider>
+        <SnackbarProvider maxSnack={3}>
+          <ShareableListModal
+            isOpen={true}
+            toggleModal={toggleModal}
+            modalTitle={'Hide List'}
+            refetch={refetch}
+            shareableList={list}
+            restoreList={true} // this modal is in charge of moderating a list (hide), so passing flag
+          />
+        </SnackbarProvider>
+      </MockedProvider>
+    );
+
+    // using the modal heading to fetch it
+    const shareableListModal = screen.getByText(/hide list/i);
+
+    // fetching the form component that is rendered within this modal component
+    const restorationReasonLabel = screen.getByLabelText(/restoration reason/i);
+
+    expect(shareableListModal).toBeInTheDocument();
+    expect(restorationReasonLabel).toBeInTheDocument();
   });
 });

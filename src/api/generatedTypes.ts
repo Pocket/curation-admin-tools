@@ -1,5 +1,6 @@
-import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+import { gql } from '@apollo/client';
+
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -261,6 +262,11 @@ export type Collection = {
   language: CollectionLanguage;
   partnership?: Maybe<CollectionPartnership>;
   publishedAt?: Maybe<Scalars['DateString']>;
+  /**
+   * Provides short url for the given_url in the format: https://pocket.co/<identifier>.
+   * marked as beta because it's not ready yet for large client request.
+   */
+  shortUrl?: Maybe<Scalars['Url']>;
   slug: Scalars['String'];
   status: CollectionStatus;
   stories: Array<CollectionStory>;
@@ -662,7 +668,7 @@ export type Image = {
   credit?: Maybe<Scalars['String']>;
   /** The determined height of the image at the url */
   height?: Maybe<Scalars['Int']>;
-  /** The id for placing within an Article View. {articleView.article} will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view. */
+  /** The id for placing within an Article View. Item.article will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view. */
   imageId: Scalars['Int'];
   /**
    * Absolute url to the image
@@ -776,7 +782,7 @@ export type Item = {
   datePublished?: Maybe<Scalars['DateString']>;
   /** The date the parser resolved this item */
   dateResolved?: Maybe<Scalars['DateString']>;
-  /** The domain, such as 'getpocket.com' of the {.resolved_url} */
+  /** The domain, such as 'getpocket.com' of the resolved_url */
   domain?: Maybe<Scalars['String']>;
   /**
    * The primary database id of the domain this article is from
@@ -811,7 +817,7 @@ export type Item = {
   isArticle?: Maybe<Scalars['Boolean']>;
   /** true if the item is an index / home page, rather than a specific single piece of content */
   isIndex?: Maybe<Scalars['Boolean']>;
-  /** A server generated unique id for this item. Item's whose {.normalUrl} are the same will have the same item_id. Most likely numeric, but to ensure future proofing this can be treated as a String in apps. */
+  /** A server generated unique id for this item. Item's whose normalUrl are the same will have the same item_id. Most likely numeric, but to ensure future proofing this can be treated as a String in apps. */
   itemId: Scalars['String'];
   /** The detected language of the article */
   language?: Maybe<Scalars['String']>;
@@ -983,8 +989,9 @@ export type MarticleText = {
 export type ModerateShareableListInput = {
   externalId: Scalars['ID'];
   moderationDetails?: InputMaybe<Scalars['String']>;
-  moderationReason: ShareableListModerationReason;
+  moderationReason?: InputMaybe<ShareableListModerationReason>;
   moderationStatus: ShareableListModerationStatus;
+  restorationReason?: InputMaybe<Scalars['String']>;
 };
 
 export type Mutation = {
@@ -1033,7 +1040,7 @@ export type Mutation = {
   importApprovedCorpusItem: ImportApprovedCorpusItemPayload;
   /** Removes (moderates) a Shareable List. */
   moderateShareableList?: Maybe<ShareableListComplete>;
-  /** Refresh an {Item}'s article content. */
+  /** Refresh an Item's article content. */
   refreshItemArticle: Item;
   /** Rejects an Approved Item: deletes it from the corpus and creates a Rejected Item instead. */
   rejectApprovedCorpusItem: ApprovedCorpusItem;
@@ -1375,12 +1382,12 @@ export type Query = {
   /** Retrieves the nested list of IAB top/sub categories. */
   getIABCategories: Array<IabParentCategory>;
   /**
-   * Look up {Item} info by ID.
+   * Look up Item info by ID.
    * @deprecated Use itemById instead
    */
   getItemByItemId?: Maybe<Item>;
   /**
-   * Look up {Item} info by a url.
+   * Look up Item info by a url.
    * @deprecated Use itemByUrl instead
    */
   getItemByUrl?: Maybe<Item>;
@@ -1396,9 +1403,9 @@ export type Query = {
   getScheduledSurfacesForUser: Array<ScheduledSurface>;
   /** returns parser meta data for a given url */
   getUrlMetadata: UrlMetadata;
-  /** Look up {Item} info by ID. */
+  /** Look up Item info by ID. */
   itemByItemId?: Maybe<Item>;
-  /** Look up {Item} info by a url. */
+  /** Look up Item info by a url. */
   itemByUrl?: Maybe<Item>;
   /** Retrieves all available Labels */
   labels: Array<Label>;
@@ -1685,6 +1692,8 @@ export type ShareableListComplete = ShareableListInterface & {
   moderationReason?: Maybe<ShareableListModerationReason>;
   /** The moderation status of the list. Defaults to VISIBLE. */
   moderationStatus: ShareableListModerationStatus;
+  /** The reason why a list was restored (set from hidden to visible). */
+  restorationReason?: Maybe<Scalars['String']>;
   /**
    * A URL-ready identifier of the list. Generated from the title
    * of the list when it's first made public. Unique per user.
@@ -1747,6 +1756,8 @@ export type ShareableListItem = {
   imageUrl?: Maybe<Scalars['Url']>;
   /** The Parser Item ID. */
   itemId: Scalars['ID'];
+  /** User generated note to accompany this list item. */
+  note?: Maybe<Scalars['String']>;
   /** The name of the publisher for this story. Supplied by the Parser. */
   publisher?: Maybe<Scalars['String']>;
   /** The custom sort order of stories within a list. Defaults to 1. */
@@ -1984,7 +1995,7 @@ export type User = {
   id: Scalars['ID'];
 };
 
-/** A Video, typically within an Article View of an {Item} or if the Item is a video itself. */
+/** A Video, typically within an Article View of an Item or if the Item is a video itself. */
 export type Video = {
   __typename?: 'Video';
   /** If known, the height of the video in px */
@@ -1997,7 +2008,7 @@ export type Video = {
   type: VideoType;
   /** The video's id within the service defined by type */
   vid?: Maybe<Scalars['String']>;
-  /** The id of the video within Article View. {articleView.article} will have placeholders of <div id='RIL_VID_X' /> where X is this id. Apps can download those images as needed and populate them in their article view. */
+  /** The id of the video within Article View. Item.article will have placeholders of <div id='RIL_VID_X' /> where X is this id. Apps can download those images as needed and populate them in their article view. */
   videoId: Scalars['Int'];
   /** If known, the width of the video in px */
   width?: Maybe<Scalars['Int']>;
@@ -2185,6 +2196,7 @@ export type ShareableListCompletePropsFragment = {
   moderatedBy?: string | null;
   moderationReason?: ShareableListModerationReason | null;
   moderationDetails?: string | null;
+  restorationReason?: string | null;
   listItemNoteVisibility: ShareableListVisibility;
   listItems: Array<{
     __typename?: 'ShareableListItem';
@@ -2196,6 +2208,7 @@ export type ShareableListCompletePropsFragment = {
     imageUrl?: any | null;
     publisher?: string | null;
     authors?: string | null;
+    note?: string | null;
     sortOrder: number;
     createdAt: any;
     updatedAt: any;
@@ -2213,6 +2226,7 @@ export type ShareableListItemPropsFragment = {
   imageUrl?: any | null;
   publisher?: string | null;
   authors?: string | null;
+  note?: string | null;
   sortOrder: number;
   createdAt: any;
   updatedAt: any;
@@ -2835,6 +2849,7 @@ export type ModerateShareableListMutation = {
     moderatedBy?: string | null;
     moderationReason?: ShareableListModerationReason | null;
     moderationDetails?: string | null;
+    restorationReason?: string | null;
     listItemNoteVisibility: ShareableListVisibility;
     listItems: Array<{
       __typename?: 'ShareableListItem';
@@ -2846,6 +2861,7 @@ export type ModerateShareableListMutation = {
       imageUrl?: any | null;
       publisher?: string | null;
       authors?: string | null;
+      note?: string | null;
       sortOrder: number;
       createdAt: any;
       updatedAt: any;
@@ -4242,6 +4258,7 @@ export type SearchShareableListQuery = {
     moderatedBy?: string | null;
     moderationReason?: ShareableListModerationReason | null;
     moderationDetails?: string | null;
+    restorationReason?: string | null;
     listItemNoteVisibility: ShareableListVisibility;
     listItems: Array<{
       __typename?: 'ShareableListItem';
@@ -4253,6 +4270,7 @@ export type SearchShareableListQuery = {
       imageUrl?: any | null;
       publisher?: string | null;
       authors?: string | null;
+      note?: string | null;
       sortOrder: number;
       createdAt: any;
       updatedAt: any;
@@ -4363,6 +4381,7 @@ export const ShareableListItemPropsFragmentDoc = gql`
     imageUrl
     publisher
     authors
+    note
     sortOrder
     createdAt
     updatedAt
@@ -4381,6 +4400,7 @@ export const ShareableListCompletePropsFragmentDoc = gql`
     moderatedBy
     moderationReason
     moderationDetails
+    restorationReason
     listItemNoteVisibility
     listItems {
       ...ShareableListItemProps

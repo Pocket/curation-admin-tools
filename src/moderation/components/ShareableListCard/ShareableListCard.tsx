@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, CardContent, Link, Typography } from '@mui/material';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 import { ShareableListModal } from '../';
 import {
@@ -37,8 +38,15 @@ export const ShareableListCard: React.FC<ShareableListCardProps> = (
   // flag to disable or enable hide list button
   let disableHideListButton = false;
 
+  // flag to disable or enable restore list button
+  let disableRestoreListButton = false;
+
   if (list.moderationStatus === ShareableListModerationStatus.Hidden) {
     disableHideListButton = true;
+  }
+
+  if (list.moderationStatus === ShareableListModerationStatus.Visible) {
+    disableRestoreListButton = true;
   }
 
   const [shareableListModalOpen, toggleShareableListModal] = useToggle(false);
@@ -89,20 +97,26 @@ export const ShareableListCard: React.FC<ShareableListCardProps> = (
             </Box>
           )}
         </Box>
-        {list.moderationStatus === ShareableListModerationStatus.Hidden && (
+        {list.moderationReason && (
           <Box sx={{ lineHeight: 2 }}>
             <strong>Moderation Reason</strong>: {list.moderationReason}
           </Box>
         )}
-        {list.moderationStatus === ShareableListModerationStatus.Hidden &&
-          list.moderationDetails && (
-            <Box sx={{ lineHeight: 2 }}>
-              <strong>Moderation Details</strong>: {list.moderationDetails}
-            </Box>
-          )}
-        <Box sx={{ lineHeight: 2 }}>
-          <strong>Description</strong>: {list.description}
-        </Box>
+        {list.moderationDetails && (
+          <Box sx={{ lineHeight: 2 }}>
+            <strong>Moderation Details</strong>: {list.moderationDetails}
+          </Box>
+        )}
+        {list.restorationReason && (
+          <Box sx={{ lineHeight: 2 }}>
+            <strong>Restoration Reason</strong>: {list.restorationReason}
+          </Box>
+        )}
+        {list.description && (
+          <Box sx={{ lineHeight: 2 }}>
+            <strong>Description</strong>: {list.description}
+          </Box>
+        )}
         <Box sx={{ lineHeight: 2 }}>
           <strong>Created at</strong>:{' '}
           {DateTime.fromISO(list.createdAt).toFormat(dateFormat)}
@@ -111,26 +125,50 @@ export const ShareableListCard: React.FC<ShareableListCardProps> = (
           <strong>Updated at</strong>:{' '}
           {DateTime.fromISO(list.updatedAt).toFormat(dateFormat)}
         </Box>
-        <Box display="flex">
+
+        {/*hide list button*/}
+        {disableRestoreListButton && (
           <ShareableListModal
             isOpen={shareableListModalOpen}
             toggleModal={toggleShareableListModal}
             modalTitle="Hide List"
             refetch={refetch}
             shareableList={list}
-            runModerateShareableListMutation={true} // this modal is in charge of moderating a list, so passing flag
+            hideList={true} // this modal is in charge of moderating a list (hide), so passing flag
           />
-          <Button
-            buttonType="negative"
-            disabled={disableHideListButton}
-            startIcon={<VisibilityOffIcon />}
-            variant="text"
-            onClick={toggleShareableListModal}
-            data-testid="hide-list-button"
-          >
-            Hide List
-          </Button>
-        </Box>
+        )}
+        <Button
+          buttonType="negative"
+          disabled={disableHideListButton}
+          startIcon={<VisibilityOffIcon />}
+          variant="text"
+          onClick={toggleShareableListModal}
+          data-testid="hide-list-button"
+        >
+          Hide List
+        </Button>
+
+        {/*restore list button*/}
+        {disableHideListButton && (
+          <ShareableListModal
+            isOpen={shareableListModalOpen}
+            toggleModal={toggleShareableListModal}
+            modalTitle="Restore List"
+            refetch={refetch}
+            shareableList={list}
+            restoreList={true} // this modal is in charge of moderating a list (hide), so passing flag
+          />
+        )}
+        <Button
+          buttonType="positive"
+          disabled={disableRestoreListButton}
+          startIcon={<VisibilityIcon />}
+          variant="text"
+          onClick={toggleShareableListModal}
+          data-testid="restore-list-button"
+        >
+          Restore List
+        </Button>
       </CardContent>
     </StyledListCard>
   );

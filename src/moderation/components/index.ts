@@ -4,3 +4,4 @@ export { ShareableListItemCard } from './ShareableListItemCard/ShareableListItem
 export { ShareableListsSearchForm } from './ShareableListsSearchForm/ShareableListsSearchForm';
 export { ShareableListFormConnector } from './ShareableListFormConnector/ShareableListFormConnector';
 export { ShareableListModerationForm } from './ShareableListModerationForm/ShareableListModerationForm';
+export { ShareableListRestorationForm } from './ShareableListRestorationForm/ShareableListRestorationForm';

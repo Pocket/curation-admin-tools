@@ -79,7 +79,7 @@ describe('The ShareableListCard component', () => {
     };
     render(<ShareableListCard list={privateList} refetch={jest.fn()} />);
 
-    const hideListButton = screen.queryByRole('button');
+    const hideListButton = screen.getByTestId('hide-list-button');
     expect(hideListButton).toHaveAttribute('disabled');
   });
 
@@ -95,7 +95,7 @@ describe('The ShareableListCard component', () => {
     expect(hideListButton).toBeInTheDocument();
   });
 
-  it('shows moderationStatus and moderationDetails if list moderationStatus is Hidden', () => {
+  it('the "Restore List" button is disabled if the list moderationStatus is Visible', () => {
     // set up a different list that is private
     const privateList = {
       ...list,
@@ -106,15 +106,46 @@ describe('The ShareableListCard component', () => {
     };
     render(<ShareableListCard list={privateList} refetch={jest.fn()} />);
 
-    // let make sure hide list button is not present
-    const hideListButton = screen.queryByRole('button');
-    expect(hideListButton).toHaveAttribute('disabled');
+    const restoreListButton = screen.getByTestId('restore-list-button');
+    expect(restoreListButton).toHaveAttribute('disabled');
+  });
+
+  it('shows the "Restore List" button if the list moderationStatus is Hidden', () => {
+    // set up a different list that is private
+    const privateList = {
+      ...list,
+      moderationStatus: ShareableListModerationStatus.Hidden,
+      slug: undefined,
+    };
+    render(<ShareableListCard list={privateList} refetch={jest.fn()} />);
+
+    const restoreListButton = screen.getByTestId('restore-list-button');
+    expect(restoreListButton).toBeInTheDocument();
+  });
+
+  it('shows moderationStatus, moderationDetails and restorationReason if properties are present', () => {
+    // set up a different list that is private
+    const privateList = {
+      ...list,
+      listItemNoteVisibility: ShareableListVisibility.Public,
+      status: ShareableListVisibility.Public,
+      moderationStatus: ShareableListModerationStatus.Visible,
+      moderationReason: ShareableListModerationReason.Copyright,
+      moderationDetails: 'more details',
+      restorationReason: 'restored, restored',
+      slug: undefined,
+    };
+    render(<ShareableListCard list={privateList} refetch={jest.fn()} />);
+
+    // let make sure restore list button is not present
+    const restoreListButton = screen.getByTestId('restore-list-button');
+    expect(restoreListButton).toHaveAttribute('disabled');
 
     // expect moderationReason to be present
     const moderationReason = screen.getByText(/FRAUD/i);
     expect(moderationReason).toBeInTheDocument();
 
-    // expect moderationDetails to be present
+    //expect moderationDetails to be present
     const moderationDetails = screen.getByText(/more details/i);
     expect(moderationDetails).toBeInTheDocument();
   });
@@ -139,5 +170,9 @@ describe('The ShareableListCard component', () => {
     // make sure moderationDetails is not present if null
     const moderationDetails = screen.queryByText(/more details/i);
     expect(moderationDetails).not.toBeInTheDocument();
+
+    // expect restorationReason to be present
+    const restorationReason = screen.getByText(/restored, restored/i);
+    expect(restorationReason).toBeInTheDocument();
   });
 });
