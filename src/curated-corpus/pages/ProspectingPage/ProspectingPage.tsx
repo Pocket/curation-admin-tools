@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
-import { Box, Button, Grid, Hidden } from '@mui/material';
+import {
+  Box,
+  Button,
+  FormControlLabel,
+  FormGroup,
+  Grid,
+  Hidden,
+  Switch,
+  TextField,
+} from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import AddIcon from '@mui/icons-material/Add';
@@ -71,6 +80,13 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   // Is needed when the user switches from surface to surface or
   // when they schedule something for the date chosen in the sidebar.
   const [refreshSidebarData, setRefreshSidebarData] = useState(false);
+
+  const [filterByPublisherSwitchChecked, setFilterByPublisherSwitchChecked] =
+    useState(true);
+
+  const toggleFilterByPublisherSwitchChecked = () => {
+    setFilterByPublisherSwitchChecked((prev) => !prev);
+  };
 
   // Get a list of prospects on the page
   const [callGetProspectsQuery, { loading, error, data, refetch }] =
@@ -691,6 +707,31 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                   />
                 )}
               </Box>
+            </Grid>
+            <Grid item xs={12}>
+              <Grid container justifyContent={'flex-end'}>
+                <Grid>
+                  <TextField
+                    id="filterByPublisher"
+                    label="Filter by Publisher"
+                    size="small"
+                    variant="outlined"
+                  ></TextField>
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={filterByPublisherSwitchChecked}
+                          onChange={toggleFilterByPublisherSwitchChecked}
+                        />
+                      }
+                      label={
+                        filterByPublisherSwitchChecked ? 'Exclude' : 'Include'
+                      }
+                    />
+                  </FormGroup>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
 
