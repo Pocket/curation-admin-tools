@@ -1,6 +1,6 @@
 import React from 'react';
 import { ShareableListItem } from '../../../api/generatedTypes';
-import { CardMedia, Grid, Hidden, Typography } from '@mui/material';
+import { Box, CardMedia, Grid, Hidden, Typography } from '@mui/material';
 import { StyledListCard } from '../../../_shared/styled';
 
 interface ShareableListItemCardProps {
@@ -68,6 +68,11 @@ export const ShareableListItemCard: React.FC<ShareableListItemCardProps> = (
               {listItem.excerpt ?? 'No excerpt'}
             </Typography>
           </Hidden>
+          {listItem.note && (
+            <Box sx={{ lineHeight: 2 }}>
+              <strong>Note</strong>: {listItem.note}
+            </Box>
+          )}
         </Grid>
       </Grid>
     </StyledListCard>
