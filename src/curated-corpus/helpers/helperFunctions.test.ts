@@ -91,7 +91,7 @@ describe('helperFunctions ', () => {
       name: 'en-US',
       guid: 'NEW_TAB_EN_US',
       ianaTimezone: 'America/New_York',
-      prospectTypes: [ProspectType.Global],
+      prospectTypes: [ProspectType.Timespent],
     };
 
     const mockGetScheduledSurfacesForUserQueryData = {
