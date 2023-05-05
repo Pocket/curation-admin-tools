@@ -149,7 +149,7 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
             sx={{ fontWeight: 400 }}
           >
             <span>{prospect.authors ? prospect.authors : 'Authors: N/A'}</span>{' '}
-            &middot; <span>{prospect.publisher}</span> &middot;
+            &middot; <span>{prospect.publisher}</span> &middot;{' '}
             <span>{prospect.domain}</span>
           </Typography>
           <Grid container sx={{ paddingTop: '0.5em', paddingBottom: '0.5em' }}>
