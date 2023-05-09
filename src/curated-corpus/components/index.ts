@@ -12,6 +12,7 @@ export { ExistingProspectCard } from './ExistingProspectCard/ExistingProspectCar
 export { DuplicateProspectModal } from './DuplicateProspectModal/DuplicateProspectModal';
 export { NextPrevPagination } from './NextPrevPagination/NextPrevPagination';
 export { ProspectListCard } from './ProspectListCard/ProspectListCard';
+export { ProspectPublisherFilter } from './ProspectPublisherFilter/ProspectPublisherFilter';
 export { RejectCorpusItemAction } from './actions/RejectCorpusItemAction/RejectCorpusItemAction';
 export { RejectedItemListCard } from './RejectedItemListCard/RejectedItemListCard';
 export { RejectedItemSearchForm } from './RejectedItemSearchForm/RejectedItemSearchForm';

@@ -13,6 +13,7 @@ import {
   DuplicateProspectModal,
   ExistingProspectCard,
   ProspectListCard,
+  ProspectPublisherFilter,
   RefreshProspectsModal,
   RejectItemModal,
   ScheduleItemModal,
@@ -571,6 +572,18 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     setDisableScheduledSurface(false), toggleScheduleModal();
   };
 
+  // Filter prospects by Publisher (frontend only)
+  // This switch has a negative name ("exclude..." because that's the default,
+  // and most useful to curators, option
+  const [excludePublisherSwitch, setExcludePublisherSwitch] = useState(true);
+
+  // Toggle the exclude/include switch - passed on to the ProspectPublisherFilter component
+  const toggleExcludePublisherSwitch = () => {
+    setExcludePublisherSwitch((prev) => !prev);
+  };
+  // The value of the publisher filter (min two characters), e.g. "cnbc". Case-insensitive.
+  const [filterByPublisher, setFilterByPublisher] = useState('');
+
   return (
     <>
       {currentProspect && (
@@ -692,20 +705,50 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                 )}
               </Box>
             </Grid>
+            <Grid item xs={12}>
+              <ProspectPublisherFilter
+                filterByPublisher={filterByPublisher}
+                setFilterByPublisher={setFilterByPublisher}
+                onChange={toggleExcludePublisherSwitch}
+                excludePublisherSwitch={excludePublisherSwitch}
+              />
+            </Grid>
           </Grid>
 
           {!prospects && <HandleApiResponse loading={loading} error={error} />}
           {showEmptyState && <EmptyState />}
 
           {prospects &&
-            prospects.map((prospect) => {
+            prospects.map((prospect: Prospect) => {
               if (prospect.rejectedCorpusItem) {
                 // If an item was rejected, lets just not show it
                 return;
               }
 
-              // if the prospect has an approvedItem meaning it is in the corpus
+              // Filter the prospects already pre-loaded on the page
+              if (filterByPublisher.length > 2 && prospect.publisher) {
+                // Exclude prospects that match the filter
+                if (
+                  excludePublisherSwitch &&
+                  prospect.publisher
+                    .toLowerCase()
+                    .includes(filterByPublisher.toLowerCase())
+                ) {
+                  return;
+                }
+                // Include prospects that match the filter
+                else if (
+                  !excludePublisherSwitch &&
+                  !prospect.publisher
+                    .toLowerCase()
+                    .includes(filterByPublisher.toLowerCase())
+                ) {
+                  return;
+                }
+              }
+
               if (prospect.approvedCorpusItem) {
+                // if the prospect has an approvedItem meaning it is in the corpus
                 // check if it has a schedule history
                 if (
                   prospect.approvedCorpusItem.scheduledSurfaceHistory.length

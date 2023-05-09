@@ -26,6 +26,7 @@ import { getCuratorNameFromLdap } from '../../helpers/helperFunctions';
 import { ScheduleHistory } from '../ScheduleHistory/ScheduleHistory';
 import { getDisplayTopic } from '../../helpers/topics';
 import { DismissProspectAction } from '../actions/DismissProspectAction/DismissProspectAction';
+import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 
 interface ExistingProspectCardProps {
   /**
@@ -146,7 +147,10 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
             align="left"
             sx={{ fontWeight: 400 }}
           >
-            <span>{item.publisher}</span>
+            <span>
+              {item.authors ? flattenAuthors(item.authors) : 'Authors: N/A'}
+            </span>{' '}
+            &middot; <span>{item.publisher}</span>
           </Typography>
           <Grid
             container
