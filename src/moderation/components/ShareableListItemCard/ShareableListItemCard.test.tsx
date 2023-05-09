@@ -14,6 +14,7 @@ describe('The ShareableListItemCard component', () => {
     imageUrl: 'https://image-domain.com/image.png',
     authors: 'A.B. Cdefg',
     publisher: 'Random Penguin',
+    note: 'some note here',
     sortOrder: 0,
     createdAt: '2023-03-27T11:55:03.000Z',
     updatedAt: '2023-03-28T23:19:57.000Z',
@@ -46,6 +47,9 @@ describe('The ShareableListItemCard component', () => {
     expect(excerpt).toBeInTheDocument();
 
     expect(screen.getByText(listItem.publisher!)).toBeInTheDocument();
+
+    const note = screen.getByText(/some note here/i);
+    expect(note).toBeInTheDocument();
 
     // The image
     expect(screen.getByAltText(listItem.title!)).toBeInTheDocument();
