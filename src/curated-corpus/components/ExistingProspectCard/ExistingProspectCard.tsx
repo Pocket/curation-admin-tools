@@ -118,13 +118,13 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
                 }}
               >
                 <Typography
-                  variant="h3"
+                  variant="h5"
                   align="left"
                   gutterBottom
                   sx={{
                     fontSize: {
-                      sm: '1rem',
-                      md: '1.25rem',
+                      xs: '1rem',
+                      sm: '1.25rem',
                     },
                     fontWeight: 500,
                   }}

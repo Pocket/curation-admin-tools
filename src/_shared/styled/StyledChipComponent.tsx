@@ -1,5 +1,5 @@
 import { Chip } from '@mui/material';
-import { styled } from '@mui/styles';
+import { styled } from '@mui/system';
 
 /**
  * A custom styled <Chip> element. Currently, used to display labels on CollectionListCard and CollectionInfo components.

@@ -1,5 +1,5 @@
 import { Link } from '@mui/material';
-import { styled } from '@mui/styles';
+import { styled } from '@mui/system';
 
 /**
  * A styled link to elsewhere in the app that wraps around a MUI Card element

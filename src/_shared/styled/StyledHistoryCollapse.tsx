@@ -1,5 +1,5 @@
 import { Collapse } from '@mui/material';
-import { styled } from '@mui/styles';
+import { styled } from '@mui/system';
 
 /**
  * A styled <Collapse> element for the "Recently scheduled" info for curated items.
