@@ -1,10 +1,5 @@
 import { createTheme, Theme } from '@mui/material/styles';
 
-declare module '@mui/styles' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface DefaultTheme extends Theme {}
-}
-
 /* Curation frontend colors */
 export const curationPalette = {
   primary: '#008078', // dark green

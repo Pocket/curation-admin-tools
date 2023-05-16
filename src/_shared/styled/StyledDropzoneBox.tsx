@@ -1,4 +1,4 @@
-import { styled } from '@mui/styles';
+import { styled } from '@mui/system';
 import { Box } from '@mui/material';
 import { curationPalette } from '../../theme';
 

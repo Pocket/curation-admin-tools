@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { styled } from '@mui/styles';
+import { styled } from '@mui/system';
 
 /**
  * A styled link for React Router links (for example, icons on the Landing page)

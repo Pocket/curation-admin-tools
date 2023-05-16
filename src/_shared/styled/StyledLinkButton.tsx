@@ -1,5 +1,5 @@
 import { Link } from '@mui/material';
-import { styled } from '@mui/styles';
+import { styled } from '@mui/system';
 
 /**
  * A link within a button, e.g. "View" to go to the Corpus Item page.
