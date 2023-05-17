@@ -1,5 +1,5 @@
 import { CardActions } from '@mui/material';
-import { styled } from '@mui/styles';
+import { styled } from '@mui/system';
 
 /**
  * A styled <CardActions> element for the cards on the Corpus and Schedule pages

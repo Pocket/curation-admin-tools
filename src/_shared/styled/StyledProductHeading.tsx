@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import { styled } from '@mui/styles';
+import { styled } from '@mui/system';
 import { curationPalette } from '../../theme';
 
 /**

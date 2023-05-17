@@ -1,5 +1,5 @@
 import { AppBar } from '@mui/material';
-import { styled } from '@mui/styles';
+import { styled } from '@mui/system';
 
 /**
  * A styled <AppBar> element for the Header component.
