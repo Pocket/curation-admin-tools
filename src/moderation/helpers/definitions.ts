@@ -25,3 +25,9 @@ export const hideShareableListModerationReasonOptions: DropdownOption[] = [
   { code: 'MALWARE', name: 'Malware' },
   { code: 'PHISHING', name: 'Phishing' },
 ];
+
+export const GT_DECODED = '>'; // &gt;
+export const LT_DECODED = '<'; // &lt;
+
+export const htmlEncodedCharsToFindArr = ['&gt;', '&lt;']; // find these chars
+export const replaceWithDecodedCharsArr = [GT_DECODED, LT_DECODED]; // replace with these chars

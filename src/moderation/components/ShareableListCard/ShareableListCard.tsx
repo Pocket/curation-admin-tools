@@ -13,6 +13,11 @@ import { Button, Chip } from '../../../_shared/components';
 import { DateTime } from 'luxon';
 import { StyledListCard } from '../../../_shared/styled';
 import { useToggle } from '../../../_shared/hooks';
+import {
+  htmlEncodedCharsToFindArr,
+  replaceWithDecodedCharsArr,
+} from '../../helpers/definitions';
+import { replaceCharsInStr } from '../../helpers/helperFunctions';
 
 interface ShareableListCardProps {
   /**
@@ -70,7 +75,11 @@ export const ShareableListCard: React.FC<ShareableListCardProps> = (
             fontWeight: 500,
           }}
         >
-          {list.title}
+          {replaceCharsInStr(
+            list.title,
+            htmlEncodedCharsToFindArr,
+            replaceWithDecodedCharsArr
+          )}
           <Chip label={list.status} color="primary" />
           {list.moderationStatus === ShareableListModerationStatus.Visible && (
             <Chip label={list.moderationStatus} color="primary" />
@@ -104,17 +113,32 @@ export const ShareableListCard: React.FC<ShareableListCardProps> = (
         )}
         {list.moderationDetails && (
           <Box sx={{ lineHeight: 2 }}>
-            <strong>Moderation Details</strong>: {list.moderationDetails}
+            <strong>Moderation Details</strong>:{' '}
+            {replaceCharsInStr(
+              list.moderationDetails,
+              htmlEncodedCharsToFindArr,
+              replaceWithDecodedCharsArr
+            )}
           </Box>
         )}
         {list.restorationReason && (
           <Box sx={{ lineHeight: 2 }}>
-            <strong>Restoration Reason</strong>: {list.restorationReason}
+            <strong>Restoration Reason</strong>:{' '}
+            {replaceCharsInStr(
+              list.restorationReason,
+              htmlEncodedCharsToFindArr,
+              replaceWithDecodedCharsArr
+            )}
           </Box>
         )}
         {list.description && (
           <Box sx={{ lineHeight: 2 }}>
-            <strong>Description</strong>: {list.description}
+            <strong>Description</strong>:{' '}
+            {replaceCharsInStr(
+              list.description,
+              htmlEncodedCharsToFindArr,
+              replaceWithDecodedCharsArr
+            )}
           </Box>
         )}
         <Box sx={{ lineHeight: 2 }}>
