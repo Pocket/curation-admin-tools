@@ -1,13 +1,18 @@
 import React from 'react';
-import { ShareableListItem } from '../../../api/generatedTypes';
+import { ShareableListItemAdmin } from '../../../api/generatedTypes';
 import { Box, CardMedia, Grid, Hidden, Typography } from '@mui/material';
 import { StyledListCard } from '../../../_shared/styled';
+import {
+  htmlEncodedCharsToFindArr,
+  replaceWithDecodedCharsArr,
+} from '../../helpers/definitions';
+import { replaceCharsInStr } from '../../helpers/helperFunctions';
 
 interface ShareableListItemCardProps {
   /**
    * An object with everything shareable-list related in it.
    */
-  listItem: ShareableListItem;
+  listItem: ShareableListItemAdmin;
 }
 
 export const ShareableListItemCard: React.FC<ShareableListItemCardProps> = (
@@ -49,7 +54,13 @@ export const ShareableListItemCard: React.FC<ShareableListItemCardProps> = (
             }}
           >
             <a href={listItem.url} target="_blank" rel="noreferrer">
-              {listItem.title ?? 'No title'}
+              {(listItem.title &&
+                replaceCharsInStr(
+                  listItem.title,
+                  htmlEncodedCharsToFindArr,
+                  replaceWithDecodedCharsArr
+                )) ??
+                'No title'}
             </a>
           </Typography>
 
@@ -65,12 +76,23 @@ export const ShareableListItemCard: React.FC<ShareableListItemCardProps> = (
           </Typography>
           <Hidden smDown implementation="css">
             <Typography component="div">
-              {listItem.excerpt ?? 'No excerpt'}
+              {(listItem.excerpt &&
+                replaceCharsInStr(
+                  listItem.excerpt,
+                  htmlEncodedCharsToFindArr,
+                  replaceWithDecodedCharsArr
+                )) ??
+                'No excerpt'}
             </Typography>
           </Hidden>
           {listItem.note && (
             <Box sx={{ lineHeight: 2 }}>
-              <strong>Note</strong>: {listItem.note}
+              <strong>Note</strong>:{' '}
+              {replaceCharsInStr(
+                listItem.note,
+                htmlEncodedCharsToFindArr,
+                replaceWithDecodedCharsArr
+              )}
             </Box>
           )}
         </Grid>

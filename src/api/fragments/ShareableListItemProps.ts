@@ -2,10 +2,10 @@ import { gql } from 'graphql-tag';
 
 /**
  * This GraphQL fragment contains all the properties that must be available
- * in the Public Pocket Graph for a Shareable List Item.
+ * in the Admin Pocket Graph for a Shareable List Item.
  */
 export const ShareableListItemProps = gql`
-  fragment ShareableListItemProps on ShareableListItem {
+  fragment ShareableListItemProps on ShareableListItemAdmin {
     externalId
     itemId
     url

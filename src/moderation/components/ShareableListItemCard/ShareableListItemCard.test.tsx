@@ -1,16 +1,16 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { ShareableListItem } from '../../../api/generatedTypes';
+import { ShareableListItemAdmin } from '../../../api/generatedTypes';
 import { ShareableListItemCard } from './ShareableListItemCard';
 
 describe('The ShareableListItemCard component', () => {
-  const listItem: ShareableListItem = {
+  const listItem: ShareableListItemAdmin = {
     externalId: '123-abc',
     title: 'This is a story',
     url: 'https://this-is-a-domain.com/a-story',
     itemId: 123456789,
-    excerpt: 'A short description of said story',
+    excerpt: 'A short description of said &lt;&gt; story',
     imageUrl: 'https://image-domain.com/image.png',
     authors: 'A.B. Cdefg',
     publisher: 'Random Penguin',
@@ -43,7 +43,8 @@ describe('The ShareableListItemCard component', () => {
     expect(screen.getByText(listItem.title!)).toBeInTheDocument();
     expect(screen.getByText(listItem.authors!)).toBeInTheDocument();
 
-    const excerpt = screen.getByText(new RegExp(listItem.excerpt!, 'i'));
+    // check also that the encoded HTML chars are decoded
+    const excerpt = screen.getByText(/A short description of said <> story/i);
     expect(excerpt).toBeInTheDocument();
 
     expect(screen.getByText(listItem.publisher!)).toBeInTheDocument();

@@ -1669,7 +1669,7 @@ export type SearchCollectionsFilters = {
   title?: InputMaybe<Scalars['String']>;
 };
 
-export type ShareableListComplete = ShareableListInterface & {
+export type ShareableListComplete = {
   __typename?: 'ShareableListComplete';
   /** The timestamp of when the list was created by its owner. */
   createdAt: Scalars['ISOString'];
@@ -1680,7 +1680,7 @@ export type ShareableListComplete = ShareableListInterface & {
   /** The visibility of notes added to list items for this list. */
   listItemNoteVisibility: ShareableListVisibility;
   /** Pocket Saves that have been added to this list by the Pocket user. */
-  listItems: Array<ShareableListItem>;
+  listItems: Array<ShareableListItemAdmin>;
   /**
    * The LDAP username of the moderator who took down a list
    * that violates the Pocket content moderation policy.
@@ -1712,38 +1712,48 @@ export type ShareableListComplete = ShareableListInterface & {
   user: User;
 };
 
-export type ShareableListInterface = {
-  /** The timestamp of when the list was created by its owner. */
-  createdAt: Scalars['ISOString'];
-  /** Optional text description of a Shareable List. Provided by the Pocket user. */
-  description?: Maybe<Scalars['String']>;
-  /** A unique string identifier in UUID format. */
-  externalId: Scalars['ID'];
-  /** Pocket Saves that have been added to this list by the Pocket user. */
-  listItems: Array<ShareableListItem>;
-  /** The moderation status of the list. Defaults to VISIBLE. */
-  moderationStatus: ShareableListModerationStatus;
-  /**
-   * A URL-ready identifier of the list. Generated from the title
-   * of the list when it's first made public. Unique per user.
-   */
-  slug?: Maybe<Scalars['String']>;
-  /** The status of the list. Defaults to PRIVATE. */
-  status: ShareableListVisibility;
-  /** The title of the list. Provided by the Pocket user. */
-  title: Scalars['String'];
-  /**
-   * The timestamp of when the list was last updated by its owner
-   * or a member of the moderation team.
-   */
-  updatedAt: Scalars['ISOString'];
-  /** The user who created this shareable list. */
-  user: User;
-};
-
 /** A Pocket Save (story) that has been added to a Shareable List. */
 export type ShareableListItem = {
   __typename?: 'ShareableListItem';
+  /** A comma-separated list of story authors. Supplied by the Parser. */
+  authors?: Maybe<Scalars['String']>;
+  /** The timestamp of when this story was added to the list by its owner. */
+  createdAt: Scalars['ISOString'];
+  /** The excerpt of the story. Supplied by the Parser. */
+  excerpt?: Maybe<Scalars['String']>;
+  /** A unique string identifier in UUID format. */
+  externalId: Scalars['ID'];
+  /** The URL of the thumbnail image illustrating the story. Supplied by the Parser. */
+  imageUrl?: Maybe<Scalars['Url']>;
+  /** The Parser Item */
+  item: Item;
+  /** The Parser Item ID. */
+  itemId: Scalars['ID'];
+  /** User generated note to accompany this list item. */
+  note?: Maybe<Scalars['String']>;
+  /** The name of the publisher for this story. Supplied by the Parser. */
+  publisher?: Maybe<Scalars['String']>;
+  /** The custom sort order of stories within a list. Defaults to 1. */
+  sortOrder: Scalars['Int'];
+  /**
+   * The title of the story. Supplied by the Parser.
+   * May not be available for URLs that cannot be resolved.
+   * Not editable by the Pocket user, as are all the other
+   * Parser-supplied story properties below.
+   */
+  title?: Maybe<Scalars['String']>;
+  /** The timestamp of when the story was last updated. Not used for the MVP. */
+  updatedAt: Scalars['ISOString'];
+  /** The URL of the story saved to a list. */
+  url: Scalars['Url'];
+};
+
+/**
+ * A Pocket Save (story) that has been added to a Shareable List. This is the admin version which
+ * does not include the Parser Item.
+ */
+export type ShareableListItemAdmin = {
+  __typename?: 'ShareableListItemAdmin';
   /** A comma-separated list of story authors. Supplied by the Parser. */
   authors?: Maybe<Scalars['String']>;
   /** The timestamp of when this story was added to the list by its owner. */
@@ -2199,7 +2209,7 @@ export type ShareableListCompletePropsFragment = {
   restorationReason?: string | null;
   listItemNoteVisibility: ShareableListVisibility;
   listItems: Array<{
-    __typename?: 'ShareableListItem';
+    __typename?: 'ShareableListItemAdmin';
     externalId: string;
     itemId: string;
     url: any;
@@ -2217,7 +2227,7 @@ export type ShareableListCompletePropsFragment = {
 };
 
 export type ShareableListItemPropsFragment = {
-  __typename?: 'ShareableListItem';
+  __typename?: 'ShareableListItemAdmin';
   externalId: string;
   itemId: string;
   url: any;
@@ -2852,7 +2862,7 @@ export type ModerateShareableListMutation = {
     restorationReason?: string | null;
     listItemNoteVisibility: ShareableListVisibility;
     listItems: Array<{
-      __typename?: 'ShareableListItem';
+      __typename?: 'ShareableListItemAdmin';
       externalId: string;
       itemId: string;
       url: any;
@@ -4261,7 +4271,7 @@ export type SearchShareableListQuery = {
     restorationReason?: string | null;
     listItemNoteVisibility: ShareableListVisibility;
     listItems: Array<{
-      __typename?: 'ShareableListItem';
+      __typename?: 'ShareableListItemAdmin';
       externalId: string;
       itemId: string;
       url: any;
@@ -4372,7 +4382,7 @@ export const CollectionStoryDataFragmentDoc = gql`
   }
 `;
 export const ShareableListItemPropsFragmentDoc = gql`
-  fragment ShareableListItemProps on ShareableListItem {
+  fragment ShareableListItemProps on ShareableListItemAdmin {
     externalId
     itemId
     url

@@ -13,7 +13,7 @@ describe('The ShareableListCard component', () => {
     externalId: '12345-qwerty',
     user: { id: '12345' },
     title: 'Test list title',
-    description: 'Some description',
+    description: 'Some description &lt;tag&gt;testing&lt;/tag&gt;',
     slug: 'test-list-title',
     status: ShareableListVisibility.Public,
     moderationStatus: ShareableListModerationStatus.Visible,
@@ -29,9 +29,9 @@ describe('The ShareableListCard component', () => {
 
     expect(screen.getByText(list.title)).toBeInTheDocument();
     // Some punctuation/line breaks are in the same node, so a regex match is needed
-    expect(
-      screen.getByText(new RegExp(list.description, 'i'))
-    ).toBeInTheDocument();
+    // check that HTML chars are decoded
+    const description = `Some description <tag>testing</tag>`;
+    expect(screen.getByText(new RegExp(description, 'i'))).toBeInTheDocument();
     expect(screen.getByText(list.status)).toBeInTheDocument();
     expect(screen.getByText(list.moderationStatus)).toBeInTheDocument();
 
