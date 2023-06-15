@@ -3,6 +3,8 @@ export const STOP_WORDS =
 
 export const SEPARATORS = /(\s+|[-‑–—,:;!?()])/;
 
+export const stop = STOP_WORDS.split(' ');
+
 /**
  * Capitalize first character for string
  *
@@ -30,7 +32,6 @@ export const applyApTitleCase = (value: string): string => {
   }
   // split by separators, check if word is first or last
   // or not blacklisted, then capitalize
-  const stop = STOP_WORDS.split(' ');
   return value
     .split(SEPARATORS)
     .map((word, index, all) => {
