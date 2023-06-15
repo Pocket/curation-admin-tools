@@ -10,20 +10,24 @@ export const SEPARATORS = /(\s+|[-‑–—,:;!?()])/;
  * @returns {string}
  */
 const capitalize = (value: string) => {
-  if (!value) return '';
+  if (!value) {
+    return '';
+  }
   return value.charAt(0).toUpperCase() + value.slice(1);
 };
 
 /**
  * Helper to convert text to AP title case
  * adapted from https://github.com/words/ap-style-title-case
- * should match https://headlinecapitalization.com/
+ * text should match https://headlinecapitalization.com/
  *
  * @param {string} [value]
  * @returns {string}
  */
 export const applyApTitleCase = (value: string): string => {
-  if (!value) return '';
+  if (!value) {
+    return '';
+  }
   // split by separators, check if word is first or last
   // or not blacklisted, then capitalize
   const stop = STOP_WORDS.split(' ');
