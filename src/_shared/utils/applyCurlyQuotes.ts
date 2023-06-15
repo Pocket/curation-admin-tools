@@ -1,3 +1,10 @@
+/**
+ * Helper to replace opening and closing curly single and double quotes
+ *
+ * @param text
+ * @returns {string}
+ */
+
 export const applyCurlyQuotes = (text: string): string => {
   if (!text) return '';
   return text

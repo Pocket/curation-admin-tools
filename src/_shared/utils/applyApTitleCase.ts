@@ -4,30 +4,29 @@ export const STOP_WORDS =
 export const SEPARATORS = /(\s+|[-‑–—,:;!?()])/;
 
 /**
+ * Capitalize first character for string
  *
  * @param {string} value
  * @returns {string}
  */
 const capitalize = (value: string) => {
+  if (!value) return '';
   return value.charAt(0).toUpperCase() + value.slice(1);
 };
 
 /**
- * Convert a value to AP/APA title case.
+ * Helper to convert text to AP title case
  * adapted from https://github.com/words/ap-style-title-case
+ * should match https://headlinecapitalization.com/
  *
  * @param {string} [value]
- *   Short text of unknown casing.
  * @returns {string}
- *   Title-cased version of `value`.
  */
 export const applyApTitleCase = (value: string): string => {
   if (!value) return '';
-
+  // split by separators, check if word is first or last
+  // or not blacklisted, then capitalize
   const stop = STOP_WORDS.split(' ');
-
-  // first split by separators, check if word is first or last or should be added
-  // then capitalize otherwise ignore
   return value
     .split(SEPARATORS)
     .map((word, index, all) => {

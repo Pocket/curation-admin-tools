@@ -27,7 +27,7 @@ import {
   useGetStoryFromParserLazyQuery,
 } from '../../../api/generatedTypes';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
-import { applyApTitleCase } from '../../../_shared/utils/apStyleTitleCase';
+import { applyApTitleCase } from '../../../_shared/utils/applyApTitleCase';
 import { applyCurlyQuotes } from '../../../_shared/utils/applyCurlyQuotes';
 
 interface StoryFormProps {
