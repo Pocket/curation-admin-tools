@@ -27,6 +27,8 @@ import {
   useGetStoryFromParserLazyQuery,
 } from '../../../api/generatedTypes';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
+import { applyApTitleCase } from '../../../_shared/utils/applyApTitleCase';
+import { applyCurlyQuotes } from '../../../_shared/utils/applyCurlyQuotes';
 
 interface StoryFormProps {
   /**
@@ -214,6 +216,17 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
     }
   };
 
+  const fixTitle = () => {
+    formik.setFieldValue(
+      'title',
+      applyCurlyQuotes(applyApTitleCase(formik.values.title))
+    );
+  };
+
+  const fixExcerpt = () => {
+    formik.setFieldValue('excerpt', applyCurlyQuotes(formik.values.excerpt));
+  };
+
   return (
     <form name="story-form" onSubmit={formik.handleSubmit}>
       <Grid container spacing={3}>
@@ -250,12 +263,21 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
         {showOtherFields && (
           <>
             <Grid item xs={12}>
-              <FormikTextField
-                id="title"
-                label="Title"
-                fieldProps={formik.getFieldProps('title')}
-                fieldMeta={formik.getFieldMeta('title')}
-              />
+              <Box display="flex">
+                <Box flexGrow={1} alignSelf="center" textOverflow="ellipsis">
+                  <FormikTextField
+                    id="title"
+                    label="Title"
+                    fieldProps={formik.getFieldProps('title')}
+                    fieldMeta={formik.getFieldMeta('title')}
+                  />
+                </Box>
+                <Box alignSelf="baseline" ml={1}>
+                  <Button buttonType="hollow" onClick={fixTitle}>
+                    Fix title
+                  </Button>
+                </Box>
+              </Box>
             </Grid>
             <Grid item xs={12} sm={3}>
               <CardMedia
@@ -312,6 +334,11 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
                   minRows={4}
                 />
               </MarkdownPreview>
+            </Grid>
+            <Grid item xs={12}>
+              <Button buttonType="hollow" onClick={fixExcerpt}>
+                Fix excerpt
+              </Button>
             </Grid>
             {formik.isSubmitting && (
               <Grid item xs={12}>
