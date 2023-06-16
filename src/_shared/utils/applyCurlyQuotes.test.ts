@@ -8,16 +8,30 @@ describe('applyCurlyQuotes', () => {
 
   it('adds single open curly apostrophe for straight apostrophe', () => {
     const result = applyCurlyQuotes("Here's to the great ones!");
-    expect(result).toEqual('Here‘s to the great ones!');
+    expect(result).toEqual('Here’s to the great ones!');
   });
 
   it('adds double curly apostrophes for straight apostrophe wrapping text', () => {
     const result = applyCurlyQuotes('Here\'s a quote - "To be or not to be"');
-    expect(result).toEqual('Here‘s a quote - “To be or not to be”');
+    expect(result).toEqual('Here’s a quote - “To be or not to be”');
   });
 
   it('adds single curly apostrophes for straight apostrophes wrapping text', () => {
     const result = applyCurlyQuotes("Here's a quote - 'To be or not to be'");
-    expect(result).toEqual('Here‘s a quote - ‘To be or not to be’');
+    expect(result).toEqual('Here’s a quote - ‘To be or not to be’');
+  });
+
+  it('adds single curly apostrophes at the end of quotes', () => {
+    const result = applyCurlyQuotes("Here's a quote - 'To be or not to be.'");
+    expect(result).toEqual('Here’s a quote - ‘To be or not to be.’');
+  });
+
+  it('adds double curly apostrophes at the end of quotes', () => {
+    const result = applyCurlyQuotes(
+      'I tried the workout, and it did more than expected. "Fitness is for Everyone."'
+    );
+    expect(result).toEqual(
+      'I tried the workout, and it did more than expected. “Fitness is for Everyone.”'
+    );
   });
 });

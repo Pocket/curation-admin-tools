@@ -223,6 +223,10 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
     );
   };
 
+  const fixExcerpt = () => {
+    formik.setFieldValue('excerpt', applyCurlyQuotes(formik.values.excerpt));
+  };
+
   return (
     <form name="story-form" onSubmit={formik.handleSubmit}>
       <Grid container spacing={3}>
@@ -330,6 +334,11 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
                   minRows={4}
                 />
               </MarkdownPreview>
+            </Grid>
+            <Grid item xs={12}>
+              <Button buttonType="hollow" onClick={fixExcerpt}>
+                Fix excerpt
+              </Button>
             </Grid>
             {formik.isSubmitting && (
               <Grid item xs={12}>

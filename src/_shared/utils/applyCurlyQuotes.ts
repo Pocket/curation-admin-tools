@@ -1,15 +1,18 @@
 /**
  * Helper to replace opening and closing curly single and double quotes
+ * adapted from https://gist.github.com/drdrang/705071
  *
  * @param text
  * @returns {string}
  */
 
 export const applyCurlyQuotes = (text: string): string => {
-  if (!text) return '';
+  if (!text) {
+    return '';
+  }
   return text
-    .replace(/'\b/g, '\u2018') // Opening singles
-    .replace(/\b'/g, '\u2019') // Closing singles
-    .replace(/"\b/g, '\u201c') // Opening doubles
-    .replace(/\b"/g, '\u201d'); // Closing doubles
+    .replace(/(^|[-\u2014/([{"\s])'/g, '$1\u2018') // Opening singles
+    .replace(/'/g, '\u2019') // Closing singles & apostrophes
+    .replace(/(^|[-\u2014/([{\u2018\s])"/g, '$1\u201c') // Opening doubles
+    .replace(/"/g, '\u201d'); // Closing doubles
 };
