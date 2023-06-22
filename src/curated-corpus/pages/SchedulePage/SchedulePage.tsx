@@ -19,6 +19,7 @@ import {
   HandleApiResponse,
 } from '../../../_shared/components';
 import {
+  EditCorpusItemAction,
   RemoveItemFromScheduledSurfaceModal,
   ScheduledItemCardWrapper,
   ScheduleItemModal,
@@ -99,6 +100,11 @@ export const SchedulePage: React.FC = (): JSX.Element => {
    * Keep track of whether the "Schedule Item Modal" is open or not
    */
   const [scheduleItemModalOpen, toggleScheduleItemModal] = useToggle(false);
+
+  /**
+   * Keep track of whether the "Edit item modal" is open or not
+   */
+  const [editItemModalOpen, toggleEditModal] = useToggle(false);
 
   // Get the list of Scheduled Surfaces the currently logged-in user has access to.
   const { data: scheduledSurfaceData } = useGetScheduledSurfacesForUserQuery();
@@ -356,6 +362,15 @@ export const SchedulePage: React.FC = (): JSX.Element => {
         />
       )}
 
+      {currentItem && (
+        <EditCorpusItemAction
+          item={currentItem?.approvedItem!}
+          modalOpen={editItemModalOpen}
+          toggleModal={toggleEditModal}
+          refetch={refetch}
+        />
+      )}
+
       {scheduledSurfaceOptions.length > 0 && (
         <Grid container spacing={2}>
           <Grid item>
@@ -484,6 +499,10 @@ export const SchedulePage: React.FC = (): JSX.Element => {
                           <ScheduledItemCardWrapper
                             key={item.externalId}
                             item={item}
+                            onEdit={() => {
+                              setCurrentItem(item);
+                              toggleEditModal();
+                            }}
                             onRemove={() => {
                               setCurrentItem(item);
                               toggleRemoveModal();
