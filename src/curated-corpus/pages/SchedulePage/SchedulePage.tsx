@@ -364,7 +364,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
 
       {currentItem && (
         <EditCorpusItemAction
-          item={currentItem?.approvedItem!}
+          item={currentItem.approvedItem}
           modalOpen={editItemModalOpen}
           toggleModal={toggleEditModal}
           refetch={refetch}
