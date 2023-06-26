@@ -1330,6 +1330,7 @@ export type Prospect = {
   title?: Maybe<Scalars['String']>;
   topic?: Maybe<Scalars['String']>;
   url: Scalars['String'];
+  item?: Maybe<Item>;
 };
 
 /**
@@ -3947,6 +3948,13 @@ export type GetProspectsQuery = {
     saveCount?: number | null;
     isSyndicated?: boolean | null;
     isCollection?: boolean | null;
+    item?: {
+        __typename?: 'Item';
+        givenUrl: string;
+        itemId: string;
+        normalUrl: string;
+        datePublished?: Maybe<Scalars['DateString']>;
+    }
     approvedCorpusItem?: {
       __typename?: 'ApprovedCorpusItem';
       externalId: string;
@@ -4512,6 +4520,11 @@ export const ProspectDataWithCorpusItemsFragmentDoc = gql`
     }
     rejectedCorpusItem {
       ...RejectedItemData
+    }
+    item {
+        givenUrl,
+        normalUrl,
+        datePublished
     }
   }
   ${CuratedItemDataWithHistoryFragmentDoc}

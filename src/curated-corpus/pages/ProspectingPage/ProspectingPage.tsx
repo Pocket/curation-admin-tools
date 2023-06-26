@@ -772,6 +772,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                   <ExistingProspectCard
                     key={prospect.id}
                     item={prospect.approvedCorpusItem}
+                    realItem={prospect.item!}
                     prospectId={prospect.id}
                     onSchedule={() => {
                       setCurrentProspect(prospect);
