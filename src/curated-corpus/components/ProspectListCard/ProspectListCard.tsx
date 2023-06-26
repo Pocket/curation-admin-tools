@@ -172,7 +172,10 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
               )}
             </Grid>
           </Grid>
-          <Typography component="div">{prospect.excerpt}</Typography>
+          <Typography component="div">
+            {prospect?.item?.datePublished}
+            {prospect.excerpt}
+          </Typography>
         </Grid>
       </Grid>
       <CardActions sx={{ margin: 'auto' }}>
