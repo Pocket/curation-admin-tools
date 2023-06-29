@@ -1,5 +1,5 @@
 import React from 'react';
-import { Prospect } from '../../../api/generatedTypes';
+import { Item, Prospect } from '../../../api/generatedTypes';
 import {
   Card,
   CardActions,
@@ -22,6 +22,7 @@ import { curationPalette } from '../../../theme';
 import { Button } from '../../../_shared/components';
 import { getDisplayTopic } from '../../helpers/topics';
 import { DismissProspectAction } from '../actions/DismissProspectAction/DismissProspectAction';
+import { DateTime } from 'luxon';
 
 interface ProspectListCardProps {
   /**
@@ -29,6 +30,7 @@ interface ProspectListCardProps {
    */
   prospect: Prospect;
 
+  parserItem: Item;
   /**
    * Function called when "Add to Corpus" button is clicked
    */
@@ -52,8 +54,14 @@ interface ProspectListCardProps {
 export const ProspectListCard: React.FC<ProspectListCardProps> = (
   props
 ): JSX.Element => {
-  const { prospect, onAddToCorpus, onDismissProspect, onRecommend, onReject } =
-    props;
+  const {
+    prospect,
+    parserItem,
+    onAddToCorpus,
+    onDismissProspect,
+    onRecommend,
+    onReject,
+  } = props;
 
   return (
     <Card
@@ -102,6 +110,17 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
                 <MyLocationIcon fontSize="small" />
               </ListItemIcon>
               <ListItemText secondary={prospect.prospectType.toLowerCase()} />
+            </ListItem>
+
+            <ListItem disableGutters>
+              <ListItemText
+                secondary={
+                  parserItem?.datePublished &&
+                  `Published ${DateTime.fromJSDate(
+                    new Date(parserItem?.datePublished)
+                  ).toFormat('MMMM dd, yyyy')}`
+                }
+              />
             </ListItem>
           </List>
         </Grid>
