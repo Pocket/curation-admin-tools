@@ -34,7 +34,7 @@ interface ExistingProspectCardProps {
    */
   item: ApprovedCorpusItem;
 
-  realItem: Item;
+  parserItem: Item;
   /**
    * This is the prospect.id and NOT prospect.prospectId
    */
@@ -61,7 +61,7 @@ interface ExistingProspectCardProps {
 export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
   props
 ): JSX.Element => {
-  const { item, realItem, onSchedule, onDismissProspect, prospectId } = props;
+  const { item, parserItem, onSchedule, onDismissProspect, prospectId } = props;
   const showScheduleHistory = item.scheduledSurfaceHistory.length != 0;
 
   return (
@@ -96,9 +96,9 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
             <ListItem disableGutters>
               <ListItemText
                 secondary={
-                  realItem?.datePublished &&
+                  parserItem?.datePublished &&
                   `Published ${DateTime.fromJSDate(
-                    new Date(realItem?.datePublished)
+                    new Date(parserItem?.datePublished)
                   ).toFormat('MMMM dd, yyyy')}`
                 }
               />
