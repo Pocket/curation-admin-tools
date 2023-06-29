@@ -862,6 +862,8 @@ export type Item = {
    * marked as beta because it's not ready yet for large client request.
    */
   shortUrl?: Maybe<Scalars['Url']>;
+  /** If the url is an Article, the text in SSML format for speaking, i.e. Listen */
+  ssml?: Maybe<Scalars['String']>;
   /**
    * Date this item was first parsed in Pocket
    * @deprecated Clients should not use this
@@ -1320,6 +1322,7 @@ export type Prospect = {
   imageUrl?: Maybe<Scalars['String']>;
   isCollection?: Maybe<Scalars['Boolean']>;
   isSyndicated?: Maybe<Scalars['Boolean']>;
+  item?: Maybe<Item>;
   language?: Maybe<CorpusLanguage>;
   prospectId: Scalars['ID'];
   prospectType: Scalars['String'];
@@ -1330,7 +1333,6 @@ export type Prospect = {
   title?: Maybe<Scalars['String']>;
   topic?: Maybe<Scalars['String']>;
   url: Scalars['String'];
-  item?: Maybe<Item>;
 };
 
 /**
@@ -3948,13 +3950,6 @@ export type GetProspectsQuery = {
     saveCount?: number | null;
     isSyndicated?: boolean | null;
     isCollection?: boolean | null;
-    item?: {
-        __typename?: 'Item';
-        givenUrl: string;
-        itemId: string;
-        normalUrl: string;
-        datePublished?: Maybe<Scalars['DateString']>;
-    }
     approvedCorpusItem?: {
       __typename?: 'ApprovedCorpusItem';
       externalId: string;
@@ -4520,11 +4515,6 @@ export const ProspectDataWithCorpusItemsFragmentDoc = gql`
     }
     rejectedCorpusItem {
       ...RejectedItemData
-    }
-    item {
-        givenUrl,
-        normalUrl,
-        datePublished
     }
   }
   ${CuratedItemDataWithHistoryFragmentDoc}
