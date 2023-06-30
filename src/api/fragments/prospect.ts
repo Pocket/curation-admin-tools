@@ -22,5 +22,8 @@ export const ProspectData = gql`
     saveCount
     isSyndicated
     isCollection
+    item {
+      ...BasicParserItemData
+    }
   }
 `;
