@@ -786,7 +786,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
               return (
                 <ProspectListCard
                   key={prospect.id}
-                  parserItem={prospect.item}
+                  parserItem={prospect.item!}
                   prospect={prospect}
                   onAddToCorpus={() => {
                     setCurrentProspect(prospect);

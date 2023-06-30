@@ -2055,6 +2055,14 @@ export enum Videoness {
   NoVideos = 'NO_VIDEOS',
 }
 
+export type BasicParserItemDataFragment = {
+  __typename?: 'Item';
+  givenUrl: any;
+  itemId: string;
+  normalUrl: string;
+  datePublished?: any | null;
+};
+
 export type CollectionAuthorDataFragment = {
   __typename?: 'CollectionAuthor';
   externalId: string;
@@ -2298,6 +2306,13 @@ export type ProspectDataFragment = {
   saveCount?: number | null;
   isSyndicated?: boolean | null;
   isCollection?: boolean | null;
+  item?: {
+    __typename?: 'Item';
+    givenUrl: any;
+    itemId: string;
+    normalUrl: string;
+    datePublished?: any | null;
+  } | null;
 };
 
 export type ProspectDataWithCorpusItemsFragment = {
@@ -2364,6 +2379,13 @@ export type ProspectDataWithCorpusItemsFragment = {
     reason: string;
     createdBy: string;
     createdAt: number;
+  } | null;
+  item?: {
+    __typename?: 'Item';
+    givenUrl: any;
+    itemId: string;
+    normalUrl: string;
+    datePublished?: any | null;
   } | null;
 };
 
@@ -2828,6 +2850,13 @@ export type DismissProspectMutation = {
     saveCount?: number | null;
     isSyndicated?: boolean | null;
     isCollection?: boolean | null;
+    item?: {
+      __typename?: 'Item';
+      givenUrl: any;
+      itemId: string;
+      normalUrl: string;
+      datePublished?: any | null;
+    } | null;
   } | null;
 };
 
@@ -3457,6 +3486,13 @@ export type UpdateProspectAsCuratedMutation = {
       createdBy: string;
       createdAt: number;
     } | null;
+    item?: {
+      __typename?: 'Item';
+      givenUrl: any;
+      itemId: string;
+      normalUrl: string;
+      datePublished?: any | null;
+    } | null;
   } | null;
 };
 
@@ -3996,6 +4032,13 @@ export type GetProspectsQuery = {
       createdBy: string;
       createdAt: number;
     } | null;
+    item?: {
+      __typename?: 'Item';
+      givenUrl: any;
+      itemId: string;
+      normalUrl: string;
+      datePublished?: any | null;
+    } | null;
   }>;
 };
 
@@ -4424,6 +4467,14 @@ export const ShareableListCompletePropsFragmentDoc = gql`
   }
   ${ShareableListItemPropsFragmentDoc}
 `;
+export const BasicParserItemDataFragmentDoc = gql`
+  fragment BasicParserItemData on Item {
+    givenUrl
+    itemId
+    normalUrl
+    datePublished
+  }
+`;
 export const ProspectDataFragmentDoc = gql`
   fragment ProspectData on Prospect {
     id
@@ -4443,7 +4494,11 @@ export const ProspectDataFragmentDoc = gql`
     saveCount
     isSyndicated
     isCollection
+    item {
+      ...BasicParserItemData
+    }
   }
+  ${BasicParserItemDataFragmentDoc}
 `;
 export const CuratedItemDataWithHistoryFragmentDoc = gql`
   fragment CuratedItemDataWithHistory on ApprovedCorpusItem {
@@ -4516,9 +4571,13 @@ export const ProspectDataWithCorpusItemsFragmentDoc = gql`
     rejectedCorpusItem {
       ...RejectedItemData
     }
+    item {
+      ...BasicParserItemData
+    }
   }
   ${CuratedItemDataWithHistoryFragmentDoc}
   ${RejectedItemDataFragmentDoc}
+  ${BasicParserItemDataFragmentDoc}
 `;
 export const CuratedItemDataFragmentDoc = gql`
   fragment CuratedItemData on ApprovedCorpusItem {
