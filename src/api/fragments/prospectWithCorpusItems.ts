@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 import { CuratedItemDataWithHistory } from './CuratedItemWithHistory';
 import { RejectedItemData } from './rejectedItemData';
-import {BasicParserItemData} from './BasicParserItemData'
+import { BasicParserItemData } from './BasicParserItemData';
 
 /**
  * Everything we need to fetch for a Prospect, including optional
