@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { BasicParserItemData } from './BasicParserItemData';
 
 /**
  * Everything we need to fetch for a Prospect
@@ -26,4 +27,5 @@ export const ProspectData = gql`
       ...BasicParserItemData
     }
   }
+  ${BasicParserItemData}
 `;
