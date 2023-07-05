@@ -114,3 +114,4 @@ Now that the generated code is ready to use, you can:
 
 - Use the generated types elsewhere in the code to type hint the shape of the returned data or data that is expected by components in the app, for example, `Collection` or `CollectionAuthor`.
 - Use strongly typed custom Apollo hooks to fetch and manipulate data. Apollo Client has generic `useQuery`, `useLazyQuery`, `useMutation` and `useSubscription` hooks. GraphQL Code Generator builds on that by providing hooks that are specific to the queries and mutations you need to run, for example, `useGetCollectionByExternalIdQuery`.
+
