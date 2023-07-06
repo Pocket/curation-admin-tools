@@ -30,6 +30,7 @@ describe('The ScheduledItemCardWrapper component', () => {
         <ThemeProvider theme={theme}>
           <ScheduledItemCardWrapper
             item={item}
+            onEdit={jest.fn()}
             onMoveToBottom={jest.fn()}
             onReschedule={jest.fn()}
             onRemove={jest.fn()}
@@ -50,6 +51,7 @@ describe('The ScheduledItemCardWrapper component', () => {
         <ThemeProvider theme={theme}>
           <ScheduledItemCardWrapper
             item={item}
+            onEdit={jest.fn()}
             onMoveToBottom={jest.fn()}
             onReschedule={jest.fn()}
             onRemove={jest.fn()}
@@ -58,7 +60,9 @@ describe('The ScheduledItemCardWrapper component', () => {
       </MemoryRouter>
     );
 
-    const viewButton = screen.getByRole('button', { name: /View/i });
+    const editButton = screen.getByRole('button', {
+      name: /Edit/i,
+    });
 
     const removeButton = screen.getByRole('button', {
       name: /Remove/i,
@@ -72,7 +76,7 @@ describe('The ScheduledItemCardWrapper component', () => {
       name: /move to bottom/i,
     });
 
-    expect(viewButton).toBeInTheDocument();
+    expect(editButton).toBeInTheDocument();
     expect(removeButton).toBeInTheDocument();
     expect(rescheduleButton).toBeInTheDocument();
     expect(moveButton).toBeInTheDocument();
@@ -86,6 +90,7 @@ describe('The ScheduledItemCardWrapper component', () => {
         <ThemeProvider theme={theme}>
           <ScheduledItemCardWrapper
             item={item}
+            onEdit={jest.fn()}
             onMoveToBottom={jest.fn()}
             onReschedule={jest.fn()}
             onRemove={onRemove}
@@ -111,6 +116,7 @@ describe('The ScheduledItemCardWrapper component', () => {
         <ThemeProvider theme={theme}>
           <ScheduledItemCardWrapper
             item={item}
+            onEdit={jest.fn()}
             onMoveToBottom={jest.fn()}
             onReschedule={onReschedule}
             onRemove={jest.fn()}
@@ -136,6 +142,7 @@ describe('The ScheduledItemCardWrapper component', () => {
         <ThemeProvider theme={theme}>
           <ScheduledItemCardWrapper
             item={item}
+            onEdit={jest.fn()}
             onMoveToBottom={onMoveToBottom}
             onReschedule={jest.fn()}
             onRemove={jest.fn()}
@@ -153,12 +160,15 @@ describe('The ScheduledItemCardWrapper component', () => {
     expect(onMoveToBottom).toHaveBeenCalled();
   });
 
-  it('should have the correct link to corpus item page', () => {
+  it('should run an action on pressing the "Edit" button', () => {
+    const onEdit = jest.fn();
+
     render(
       <MemoryRouter>
         <ThemeProvider theme={theme}>
           <ScheduledItemCardWrapper
             item={item}
+            onEdit={onEdit}
             onMoveToBottom={jest.fn()}
             onReschedule={jest.fn()}
             onRemove={jest.fn()}
@@ -167,12 +177,12 @@ describe('The ScheduledItemCardWrapper component', () => {
       </MemoryRouter>
     );
 
-    // The link to the corpus item page is present and is well-formed
-    const linkToItemPage = screen.getByText(/view/i) as HTMLAnchorElement;
-    expect(linkToItemPage).toBeInTheDocument();
-    expect(linkToItemPage).toHaveAttribute(
-      'href',
-      expect.stringContaining(item.approvedItem.externalId)
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /Edit/i,
+      })
     );
+
+    expect(onEdit).toHaveBeenCalled();
   });
 });
