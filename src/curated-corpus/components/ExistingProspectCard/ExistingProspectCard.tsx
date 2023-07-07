@@ -20,7 +20,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { DateTime } from 'luxon';
 
 import { curationPalette } from '../../../theme';
-import { ApprovedCorpusItem } from '../../../api/generatedTypes';
+import { ApprovedCorpusItem, Item } from '../../../api/generatedTypes';
 import { Button } from '../../../_shared/components';
 import { getCuratorNameFromLdap } from '../../helpers/helperFunctions';
 import { ScheduleHistory } from '../ScheduleHistory/ScheduleHistory';
@@ -34,6 +34,7 @@ interface ExistingProspectCardProps {
    */
   item: ApprovedCorpusItem;
 
+  parserItem: Item;
   /**
    * This is the prospect.id and NOT prospect.prospectId
    */
@@ -60,7 +61,7 @@ interface ExistingProspectCardProps {
 export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
   props
 ): JSX.Element => {
-  const { item, onSchedule, onDismissProspect, prospectId } = props;
+  const { item, parserItem, onSchedule, onDismissProspect, prospectId } = props;
   const showScheduleHistory = item.scheduledSurfaceHistory.length != 0;
 
   return (
@@ -91,6 +92,16 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
                 <LanguageIcon fontSize="small" />
               </ListItemIcon>
               <ListItemText secondary={item.language} />
+            </ListItem>
+            <ListItem disableGutters>
+              <ListItemText
+                secondary={
+                  parserItem?.datePublished &&
+                  `Published ${DateTime.fromJSDate(
+                    new Date(parserItem?.datePublished)
+                  ).toFormat('MMMM dd, yyyy')}`
+                }
+              />
             </ListItem>
             <ListItem disableGutters>
               <ListItemIcon sx={{ minWidth: '1.5rem' }}>
