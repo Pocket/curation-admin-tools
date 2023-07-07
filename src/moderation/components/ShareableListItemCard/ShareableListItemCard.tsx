@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShareableListItemAdmin } from '../../../api/generatedTypes';
+import { ShareableListItem } from '../../../api/generatedTypes';
 import { Box, CardMedia, Grid, Hidden, Typography } from '@mui/material';
 import { StyledListCard } from '../../../_shared/styled';
 import {
@@ -12,7 +12,7 @@ interface ShareableListItemCardProps {
   /**
    * An object with everything shareable-list related in it.
    */
-  listItem: ShareableListItemAdmin;
+  listItem: ShareableListItem;
 }
 
 export const ShareableListItemCard: React.FC<ShareableListItemCardProps> = (
