@@ -233,7 +233,6 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   // processed.
   useEffect(() => {
     const fetchedProspects = data?.getProspects!;
-    console.log('FETCHING', sortByPublishedDate);
     if (!sortByPublishedDate) {
       setProspects(fetchedProspects);
       return;
