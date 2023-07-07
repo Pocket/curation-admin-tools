@@ -49,6 +49,8 @@ import { DropdownOption } from '../../helpers/definitions';
 import { EmptyState } from './EmptyState';
 import { transformAuthors } from '../../../_shared/utils/transformAuthors';
 
+const distantPast = new Date('1970-01-01Z00:00:00:000').getTime();
+
 export const ProspectingPage: React.FC = (): JSX.Element => {
   // set up the initial scheduled surface guid value (nothing at this point)
   const [currentScheduledSurfaceGuid, setCurrentScheduledSurfaceGuid] =
@@ -223,13 +225,24 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   // Instead of working off Apollo Client's cache for the `getProspects` query
   // let's set up another variable for the prospect card list.
   const [prospects, setProspects] = useState<Prospect[]>([]);
+  const [unsortedProspects, setUnsortedProspects] = useState<Prospect[]>([]);
 
   // When the batch of random prospects has loaded, update our `prospects` variable
   // with the contents of the API response. This will allow us to remove items from
   // the response array and unmount the relevant prospect cards when they have been
   // processed.
   useEffect(() => {
-    setProspects(data?.getProspects!);
+    const fetchedProspects = data?.getProspects!;
+    console.log('FETCHING', sortByPublishedDate);
+    if (!sortByPublishedDate) {
+      setProspects(fetchedProspects);
+      return;
+    }
+
+    // the sort by published date toggle is on, so we'll do the sorting
+    // make sure we have a copy of the ranked prospects if the user toggles
+    // 'sortByPublishedDate' off
+    handleSortByPublishedDate(fetchedProspects);
   }, [data]);
 
   // For filtering on prospects, we can pass additional variables to the `refetch()`
@@ -583,6 +596,34 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   };
   // The value of the publisher filter (min two characters), e.g. "cnbc". Case-insensitive.
   const [filterByPublisher, setFilterByPublisher] = useState('');
+  const [sortByPublishedDate, setSortByPublishedDate] = useState(false);
+
+  const handleSortByPublishedDate = (prospectList: Prospect[]) => {
+    setUnsortedProspects([...(prospectList || [])]);
+    const sortedProspects = [...(prospectList || [])].sort((a, b) => {
+      return (
+        new Date(b.item?.datePublished ?? distantPast).getTime() -
+        new Date(a.item?.datePublished ?? distantPast).getTime()
+      );
+    });
+    setProspects(sortedProspects);
+  };
+
+  const onSortByPublishedDate = () => {
+    // from not sorted to sorted
+    if (!sortByPublishedDate) {
+      handleSortByPublishedDate(prospects);
+      setSortByPublishedDate((prev) => !prev);
+      return;
+    }
+    const mappedProspectIds = prospects.map((p) => p.id);
+    setProspects(
+      unsortedProspects.filter((up: { id: string }) =>
+        mappedProspectIds.includes(up.id)
+      )
+    );
+    setSortByPublishedDate((prev) => !prev);
+  };
 
   return (
     <>
@@ -711,6 +752,8 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                 setFilterByPublisher={setFilterByPublisher}
                 onChange={toggleExcludePublisherSwitch}
                 excludePublisherSwitch={excludePublisherSwitch}
+                onSortByPublishedDate={onSortByPublishedDate}
+                sortByPublishedDate={sortByPublishedDate}
               />
             </Grid>
           </Grid>

@@ -34,6 +34,9 @@ interface ExistingProspectCardProps {
    */
   item: ApprovedCorpusItem;
 
+  /**
+   * An object with details from the parser
+   */
   parserItem: Item;
   /**
    * This is the prospect.id and NOT prospect.prospectId
