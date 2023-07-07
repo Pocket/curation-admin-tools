@@ -862,6 +862,8 @@ export type Item = {
    * marked as beta because it's not ready yet for large client request.
    */
   shortUrl?: Maybe<Scalars['Url']>;
+  /** If the url is an Article, the text in SSML format for speaking, i.e. Listen */
+  ssml?: Maybe<Scalars['String']>;
   /**
    * Date this item was first parsed in Pocket
    * @deprecated Clients should not use this
@@ -1320,6 +1322,7 @@ export type Prospect = {
   imageUrl?: Maybe<Scalars['String']>;
   isCollection?: Maybe<Scalars['Boolean']>;
   isSyndicated?: Maybe<Scalars['Boolean']>;
+  item?: Maybe<Item>;
   language?: Maybe<CorpusLanguage>;
   prospectId: Scalars['ID'];
   prospectType: Scalars['String'];
@@ -1680,7 +1683,7 @@ export type ShareableListComplete = {
   /** The visibility of notes added to list items for this list. */
   listItemNoteVisibility: ShareableListVisibility;
   /** Pocket Saves that have been added to this list by the Pocket user. */
-  listItems: Array<ShareableListItemAdmin>;
+  listItems: Array<ShareableListItem>;
   /**
    * The LDAP username of the moderator who took down a list
    * that violates the Pocket content moderation policy.
@@ -1715,45 +1718,6 @@ export type ShareableListComplete = {
 /** A Pocket Save (story) that has been added to a Shareable List. */
 export type ShareableListItem = {
   __typename?: 'ShareableListItem';
-  /** A comma-separated list of story authors. Supplied by the Parser. */
-  authors?: Maybe<Scalars['String']>;
-  /** The timestamp of when this story was added to the list by its owner. */
-  createdAt: Scalars['ISOString'];
-  /** The excerpt of the story. Supplied by the Parser. */
-  excerpt?: Maybe<Scalars['String']>;
-  /** A unique string identifier in UUID format. */
-  externalId: Scalars['ID'];
-  /** The URL of the thumbnail image illustrating the story. Supplied by the Parser. */
-  imageUrl?: Maybe<Scalars['Url']>;
-  /** The Parser Item */
-  item: Item;
-  /** The Parser Item ID. */
-  itemId: Scalars['ID'];
-  /** User generated note to accompany this list item. */
-  note?: Maybe<Scalars['String']>;
-  /** The name of the publisher for this story. Supplied by the Parser. */
-  publisher?: Maybe<Scalars['String']>;
-  /** The custom sort order of stories within a list. Defaults to 1. */
-  sortOrder: Scalars['Int'];
-  /**
-   * The title of the story. Supplied by the Parser.
-   * May not be available for URLs that cannot be resolved.
-   * Not editable by the Pocket user, as are all the other
-   * Parser-supplied story properties below.
-   */
-  title?: Maybe<Scalars['String']>;
-  /** The timestamp of when the story was last updated. Not used for the MVP. */
-  updatedAt: Scalars['ISOString'];
-  /** The URL of the story saved to a list. */
-  url: Scalars['Url'];
-};
-
-/**
- * A Pocket Save (story) that has been added to a Shareable List. This is the admin version which
- * does not include the Parser Item.
- */
-export type ShareableListItemAdmin = {
-  __typename?: 'ShareableListItemAdmin';
   /** A comma-separated list of story authors. Supplied by the Parser. */
   authors?: Maybe<Scalars['String']>;
   /** The timestamp of when this story was added to the list by its owner. */
@@ -2209,7 +2173,7 @@ export type ShareableListCompletePropsFragment = {
   restorationReason?: string | null;
   listItemNoteVisibility: ShareableListVisibility;
   listItems: Array<{
-    __typename?: 'ShareableListItemAdmin';
+    __typename?: 'ShareableListItem';
     externalId: string;
     itemId: string;
     url: any;
@@ -2227,7 +2191,7 @@ export type ShareableListCompletePropsFragment = {
 };
 
 export type ShareableListItemPropsFragment = {
-  __typename?: 'ShareableListItemAdmin';
+  __typename?: 'ShareableListItem';
   externalId: string;
   itemId: string;
   url: any;
@@ -2862,7 +2826,7 @@ export type ModerateShareableListMutation = {
     restorationReason?: string | null;
     listItemNoteVisibility: ShareableListVisibility;
     listItems: Array<{
-      __typename?: 'ShareableListItemAdmin';
+      __typename?: 'ShareableListItem';
       externalId: string;
       itemId: string;
       url: any;
@@ -4271,7 +4235,7 @@ export type SearchShareableListQuery = {
     restorationReason?: string | null;
     listItemNoteVisibility: ShareableListVisibility;
     listItems: Array<{
-      __typename?: 'ShareableListItemAdmin';
+      __typename?: 'ShareableListItem';
       externalId: string;
       itemId: string;
       url: any;
@@ -4382,7 +4346,7 @@ export const CollectionStoryDataFragmentDoc = gql`
   }
 `;
 export const ShareableListItemPropsFragmentDoc = gql`
-  fragment ShareableListItemProps on ShareableListItemAdmin {
+  fragment ShareableListItemProps on ShareableListItem {
     externalId
     itemId
     url
