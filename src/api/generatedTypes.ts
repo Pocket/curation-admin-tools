@@ -1252,6 +1252,11 @@ export type NumberedListElement = ListElement & {
   level: Scalars['Int'];
 };
 
+export type OpenGraphFields = {
+  __typename?: 'OpenGraphFields';
+  description?: Maybe<Scalars['String']>;
+};
+
 /** Options for returning items sorted by the supplied field. */
 export enum OrderBy {
   /** Return items in ascending order. */
@@ -1396,6 +1401,8 @@ export type Query = {
   getItemByUrl?: Maybe<Item>;
   /** Retrieves the languages currently supported. */
   getLanguages: Array<CollectionLanguage>;
+  /** Tool to get OG description of URL that is not yet implemented in parser */
+  getOpenGraphFields: OpenGraphFields;
   /** returns a set of at most 20 prospects (number may be smaller depending on available data) */
   getProspects: Array<Prospect>;
   /** Retrieves a paginated, filterable list of Rejected Items. */
@@ -1470,6 +1477,10 @@ export type QueryGetItemByItemIdArgs = {
 
 export type QueryGetItemByUrlArgs = {
   url: Scalars['String'];
+};
+
+export type QueryGetOpenGraphFieldsArgs = {
+  url: Scalars['Url'];
 };
 
 export type QueryGetProspectsArgs = {
@@ -1683,7 +1694,7 @@ export type ShareableListComplete = {
   /** The visibility of notes added to list items for this list. */
   listItemNoteVisibility: ShareableListVisibility;
   /** Pocket Saves that have been added to this list by the Pocket user. */
-  listItems: Array<ShareableListItemAdmin>;
+  listItems: Array<ShareableListItem>;
   /**
    * The LDAP username of the moderator who took down a list
    * that violates the Pocket content moderation policy.
@@ -1718,45 +1729,6 @@ export type ShareableListComplete = {
 /** A Pocket Save (story) that has been added to a Shareable List. */
 export type ShareableListItem = {
   __typename?: 'ShareableListItem';
-  /** A comma-separated list of story authors. Supplied by the Parser. */
-  authors?: Maybe<Scalars['String']>;
-  /** The timestamp of when this story was added to the list by its owner. */
-  createdAt: Scalars['ISOString'];
-  /** The excerpt of the story. Supplied by the Parser. */
-  excerpt?: Maybe<Scalars['String']>;
-  /** A unique string identifier in UUID format. */
-  externalId: Scalars['ID'];
-  /** The URL of the thumbnail image illustrating the story. Supplied by the Parser. */
-  imageUrl?: Maybe<Scalars['Url']>;
-  /** The Parser Item */
-  item: Item;
-  /** The Parser Item ID. */
-  itemId: Scalars['ID'];
-  /** User generated note to accompany this list item. */
-  note?: Maybe<Scalars['String']>;
-  /** The name of the publisher for this story. Supplied by the Parser. */
-  publisher?: Maybe<Scalars['String']>;
-  /** The custom sort order of stories within a list. Defaults to 1. */
-  sortOrder: Scalars['Int'];
-  /**
-   * The title of the story. Supplied by the Parser.
-   * May not be available for URLs that cannot be resolved.
-   * Not editable by the Pocket user, as are all the other
-   * Parser-supplied story properties below.
-   */
-  title?: Maybe<Scalars['String']>;
-  /** The timestamp of when the story was last updated. Not used for the MVP. */
-  updatedAt: Scalars['ISOString'];
-  /** The URL of the story saved to a list. */
-  url: Scalars['Url'];
-};
-
-/**
- * A Pocket Save (story) that has been added to a Shareable List. This is the admin version which
- * does not include the Parser Item.
- */
-export type ShareableListItemAdmin = {
-  __typename?: 'ShareableListItemAdmin';
   /** A comma-separated list of story authors. Supplied by the Parser. */
   authors?: Maybe<Scalars['String']>;
   /** The timestamp of when this story was added to the list by its owner. */
@@ -2220,7 +2192,7 @@ export type ShareableListCompletePropsFragment = {
   restorationReason?: string | null;
   listItemNoteVisibility: ShareableListVisibility;
   listItems: Array<{
-    __typename?: 'ShareableListItemAdmin';
+    __typename?: 'ShareableListItem';
     externalId: string;
     itemId: string;
     url: any;
@@ -2238,7 +2210,7 @@ export type ShareableListCompletePropsFragment = {
 };
 
 export type ShareableListItemPropsFragment = {
-  __typename?: 'ShareableListItemAdmin';
+  __typename?: 'ShareableListItem';
   externalId: string;
   itemId: string;
   url: any;
@@ -2880,7 +2852,7 @@ export type ModerateShareableListMutation = {
     restorationReason?: string | null;
     listItemNoteVisibility: ShareableListVisibility;
     listItems: Array<{
-      __typename?: 'ShareableListItemAdmin';
+      __typename?: 'ShareableListItem';
       externalId: string;
       itemId: string;
       url: any;
@@ -3945,6 +3917,18 @@ export type GetInitialCollectionFormDataQuery = {
   }>;
 };
 
+export type GetOpenGraphFieldsQueryVariables = Exact<{
+  url: Scalars['Url'];
+}>;
+
+export type GetOpenGraphFieldsQuery = {
+  __typename?: 'Query';
+  getOpenGraphFields: {
+    __typename?: 'OpenGraphFields';
+    description?: string | null;
+  };
+};
+
 export type GetProspectsQueryVariables = Exact<{
   scheduledSurfaceGuid: Scalars['String'];
   prospectType?: InputMaybe<Scalars['String']>;
@@ -4303,7 +4287,7 @@ export type SearchShareableListQuery = {
     restorationReason?: string | null;
     listItemNoteVisibility: ShareableListVisibility;
     listItems: Array<{
-      __typename?: 'ShareableListItemAdmin';
+      __typename?: 'ShareableListItem';
       externalId: string;
       itemId: string;
       url: any;
@@ -4414,7 +4398,7 @@ export const CollectionStoryDataFragmentDoc = gql`
   }
 `;
 export const ShareableListItemPropsFragmentDoc = gql`
-  fragment ShareableListItemProps on ShareableListItemAdmin {
+  fragment ShareableListItemProps on ShareableListItem {
     externalId
     itemId
     url
@@ -7314,6 +7298,64 @@ export type GetInitialCollectionFormDataLazyQueryHookResult = ReturnType<
 export type GetInitialCollectionFormDataQueryResult = Apollo.QueryResult<
   GetInitialCollectionFormDataQuery,
   GetInitialCollectionFormDataQueryVariables
+>;
+export const GetOpenGraphFieldsDocument = gql`
+  query getOpenGraphFields($url: Url!) {
+    getOpenGraphFields(url: $url) {
+      description
+    }
+  }
+`;
+
+/**
+ * __useGetOpenGraphFieldsQuery__
+ *
+ * To run a query within a React component, call `useGetOpenGraphFieldsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetOpenGraphFieldsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetOpenGraphFieldsQuery({
+ *   variables: {
+ *      url: // value for 'url'
+ *   },
+ * });
+ */
+export function useGetOpenGraphFieldsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetOpenGraphFieldsQuery,
+    GetOpenGraphFieldsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetOpenGraphFieldsQuery,
+    GetOpenGraphFieldsQueryVariables
+  >(GetOpenGraphFieldsDocument, options);
+}
+export function useGetOpenGraphFieldsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetOpenGraphFieldsQuery,
+    GetOpenGraphFieldsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetOpenGraphFieldsQuery,
+    GetOpenGraphFieldsQueryVariables
+  >(GetOpenGraphFieldsDocument, options);
+}
+export type GetOpenGraphFieldsQueryHookResult = ReturnType<
+  typeof useGetOpenGraphFieldsQuery
+>;
+export type GetOpenGraphFieldsLazyQueryHookResult = ReturnType<
+  typeof useGetOpenGraphFieldsLazyQuery
+>;
+export type GetOpenGraphFieldsQueryResult = Apollo.QueryResult<
+  GetOpenGraphFieldsQuery,
+  GetOpenGraphFieldsQueryVariables
 >;
 export const GetProspectsDocument = gql`
   query getProspects(
