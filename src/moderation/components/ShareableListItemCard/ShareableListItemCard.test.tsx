@@ -1,11 +1,11 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { ShareableListItemAdmin } from '../../../api/generatedTypes';
+import { ShareableListItem } from '../../../api/generatedTypes';
 import { ShareableListItemCard } from './ShareableListItemCard';
 
 describe('The ShareableListItemCard component', () => {
-  const listItem: ShareableListItemAdmin = {
+  const listItem: ShareableListItem = {
     externalId: '123-abc',
     title: 'This is a story',
     url: 'https://this-is-a-domain.com/a-story',
