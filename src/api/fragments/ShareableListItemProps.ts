@@ -5,7 +5,7 @@ import { gql } from 'graphql-tag';
  * in the Admin Pocket Graph for a Shareable List Item.
  */
 export const ShareableListItemProps = gql`
-  fragment ShareableListItemProps on ShareableListItemAdmin {
+  fragment ShareableListItemProps on ShareableListItem {
     externalId
     itemId
     url
