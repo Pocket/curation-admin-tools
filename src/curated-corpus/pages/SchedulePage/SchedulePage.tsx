@@ -418,7 +418,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
                       date && setEndDate(date);
                     }}
                     openTo="day"
-                    maxDate={startDate.plus({ days: 30 })}
+                    maxDate={startDate.plus({ days: 365 })}
                     renderInput={(params: any) => (
                       <TextField
                         fullWidth
