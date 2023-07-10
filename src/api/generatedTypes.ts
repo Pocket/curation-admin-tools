@@ -2016,6 +2016,14 @@ export enum Videoness {
   NoVideos = 'NO_VIDEOS',
 }
 
+export type BasicParserItemDataFragment = {
+  __typename?: 'Item';
+  givenUrl: any;
+  itemId: string;
+  normalUrl: string;
+  datePublished?: any | null;
+};
+
 export type CollectionAuthorDataFragment = {
   __typename?: 'CollectionAuthor';
   externalId: string;
@@ -2325,6 +2333,13 @@ export type ProspectDataWithCorpusItemsFragment = {
     reason: string;
     createdBy: string;
     createdAt: number;
+  } | null;
+  item?: {
+    __typename?: 'Item';
+    givenUrl: any;
+    itemId: string;
+    normalUrl: string;
+    datePublished?: any | null;
   } | null;
 };
 
@@ -3418,6 +3433,13 @@ export type UpdateProspectAsCuratedMutation = {
       createdBy: string;
       createdAt: number;
     } | null;
+    item?: {
+      __typename?: 'Item';
+      givenUrl: any;
+      itemId: string;
+      normalUrl: string;
+      datePublished?: any | null;
+    } | null;
   } | null;
 };
 
@@ -3957,6 +3979,13 @@ export type GetProspectsQuery = {
       createdBy: string;
       createdAt: number;
     } | null;
+    item?: {
+      __typename?: 'Item';
+      givenUrl: any;
+      itemId: string;
+      normalUrl: string;
+      datePublished?: any | null;
+    } | null;
   }>;
 };
 
@@ -4452,6 +4481,14 @@ export const RejectedItemDataFragmentDoc = gql`
     createdAt
   }
 `;
+export const BasicParserItemDataFragmentDoc = gql`
+  fragment BasicParserItemData on Item {
+    givenUrl
+    itemId
+    normalUrl
+    datePublished
+  }
+`;
 export const ProspectDataWithCorpusItemsFragmentDoc = gql`
   fragment ProspectDataWithCorpusItems on Prospect {
     id
@@ -4477,9 +4514,13 @@ export const ProspectDataWithCorpusItemsFragmentDoc = gql`
     rejectedCorpusItem {
       ...RejectedItemData
     }
+    item {
+      ...BasicParserItemData
+    }
   }
   ${CuratedItemDataWithHistoryFragmentDoc}
   ${RejectedItemDataFragmentDoc}
+  ${BasicParserItemDataFragmentDoc}
 `;
 export const CuratedItemDataFragmentDoc = gql`
   fragment CuratedItemData on ApprovedCorpusItem {

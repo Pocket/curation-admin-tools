@@ -7,6 +7,8 @@ describe('The ProspectPublisherFilter component', () => {
   const filterByPublisher = '';
   const setFilterByPublisher = jest.fn();
   const onChange = jest.fn();
+  const onSortByPublishedDate = jest.fn();
+  const sortByPublishedDate = false;
 
   it('renders the "exclude" label correctly', () => {
     render(
@@ -15,6 +17,8 @@ describe('The ProspectPublisherFilter component', () => {
         filterByPublisher={filterByPublisher}
         setFilterByPublisher={setFilterByPublisher}
         onChange={onChange}
+        onSortByPublishedDate={onSortByPublishedDate}
+        sortByPublishedDate={sortByPublishedDate}
       />
     );
 
@@ -36,6 +40,8 @@ describe('The ProspectPublisherFilter component', () => {
         filterByPublisher={filterByPublisher}
         setFilterByPublisher={setFilterByPublisher}
         onChange={onChange}
+        onSortByPublishedDate={onSortByPublishedDate}
+        sortByPublishedDate={sortByPublishedDate}
       />
     );
 
