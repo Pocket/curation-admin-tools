@@ -149,7 +149,7 @@ export const ScheduleItemForm: React.FC<
               onChange={handleDateChange}
               disablePast
               openTo="day"
-              maxDate={tomorrow.plus({ days: 59 })}
+              maxDate={tomorrow.plus({ days: 365 })}
               renderInput={(params: any) => (
                 <TextField
                   fullWidth
