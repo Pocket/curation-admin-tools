@@ -8,8 +8,10 @@ import {
   Grid,
   LinearProgress,
   Link,
+  styled,
   Switch,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { FormikValues, useFormik } from 'formik';
@@ -31,6 +33,22 @@ import {
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 import { applyApTitleCase } from '../../../_shared/utils/applyApTitleCase';
 import { applyCurlyQuotes } from '../../../_shared/utils/applyCurlyQuotes';
+
+/**
+ * Options for choosing between two possible text descriptions in the 'excerpt' field
+ * By default OpenGraph description is used, but the user can restore the parser description
+ */
+enum DescriptionTextStates {
+  // Means we don't have both Parser and Opengraph desription so there is no UI to show
+  IncompleteDescription,
+  CanInsertParserDesc,
+  CanRestoreOGDesc,
+  MatchingDescriptions,
+}
+
+const StyledLink = styled(Link)({
+  cursor: 'pointer',
+});
 
 interface StoryFormProps {
   /**
@@ -88,6 +106,23 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
   const [ogExcerptText, setOgExcerptText] = useState<string>('');
   const [parserItemExcerptText, setParserItemExcerptText] =
     useState<string>('');
+  const [descriptionState, setDescriptionState] =
+    useState<DescriptionTextStates>(
+      DescriptionTextStates.IncompleteDescription
+    );
+
+  useEffect(() => {
+    console.log(`OG: ${ogExcerptText} Parser: ${parserItemExcerptText}`);
+    if (ogExcerptText && parserItemExcerptText) {
+      if (ogExcerptText === parserItemExcerptText) {
+        setDescriptionState(DescriptionTextStates.MatchingDescriptions);
+      } else {
+        setDescriptionState(DescriptionTextStates.CanInsertParserDesc);
+      }
+    } else {
+      setDescriptionState(DescriptionTextStates.IncompleteDescription);
+    }
+  }, [ogExcerptText, parserItemExcerptText]);
 
   // Listen for when the "Add Story" form opens up to show the rest of the fields
   // and scroll to the bottom to bring the entire form into view.
@@ -365,18 +400,57 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
                     multiline
                     minRows={4}
                   />
-                  {parserItemExcerptText &&
-                    ogExcerptText &&
-                    parserItemExcerptText !== ogExcerptText && (
-                      <Link
-                        onClick={() =>
-                          formik.setFieldValue('excerpt', parserItemExcerptText)
-                        }
+                    const showTextSwitchLink = (description, textToInsert, newState) => {
+
+                }
+                                        {descriptionState ==
+                    DescriptionTextStates.CanInsertParserDesc &&
+                        showTextSwitchLink("Use Parser Excerpt Instead",
+                            parserItemExcerptText,
+                            DescriptionTextStates.CanRestoreOGDesc)}
+
+                  {descriptionState ==
+                    DescriptionTextStates.CanInsertParserDesc && (
+                    <Tooltip title={parserItemExcerptText} arrow>
+                      <StyledLink
+                        onClick={() => {
+                          formik.setFieldValue(
+                            'excerpt',
+                            parserItemExcerptText
+                          );
+                          setDescriptionState(
+                            DescriptionTextStates.CanRestoreOGDesc
+                          );
+                        }}
                         sx={{ textDecoration: 'none' }}
                       >
                         Use Parser Excerpt Instead
-                      </Link>
-                    )}
+                      </StyledLink>
+                    </Tooltip>
+                  )}
+                    {descriptionState ==
+                    DescriptionTextStates.CanRestoreOGDesc &&
+                        showTextSwitchLink("Restore OpenGraph Description",
+                            ogExcerptText,
+                            DescriptionTextStates.CanInsertParserDesc)}
+
+                  {descriptionState ==
+                    DescriptionTextStates.CanRestoreOGDesc && (
+                    <Tooltip title={ogExcerptText} arrow>
+                      <StyledLink
+                        href="#"
+                        onClick={() => {
+                          formik.setFieldValue('excerpt', ogExcerptText);
+                          setDescriptionState(
+                            DescriptionTextStates.CanInsertParserDesc
+                          );
+                        }}
+                        sx={{ textDecoration: 'none' }}
+                      >
+                        Restore OpenGraph Description
+                      </StyledLink>
+                    </Tooltip>
+                  )}
                 </Grid>
               </MarkdownPreview>
             </Grid>
