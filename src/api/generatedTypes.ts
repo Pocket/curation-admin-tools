@@ -1254,7 +1254,7 @@ export type NumberedListElement = ListElement & {
 
 export type OpenGraphFields = {
   __typename?: 'OpenGraphFields';
-  description?: Maybe<Scalars['String']>;
+  description: Scalars['String'];
 };
 
 /** Options for returning items sorted by the supplied field. */
@@ -1402,7 +1402,7 @@ export type Query = {
   /** Retrieves the languages currently supported. */
   getLanguages: Array<CollectionLanguage>;
   /** Tool to get OG description of URL that is not yet implemented in parser */
-  getOpenGraphFields: OpenGraphFields;
+  getOpenGraphFields?: Maybe<OpenGraphFields>;
   /** returns a set of at most 20 prospects (number may be smaller depending on available data) */
   getProspects: Array<Prospect>;
   /** Retrieves a paginated, filterable list of Rejected Items. */
@@ -3923,10 +3923,10 @@ export type GetOpenGraphFieldsQueryVariables = Exact<{
 
 export type GetOpenGraphFieldsQuery = {
   __typename?: 'Query';
-  getOpenGraphFields: {
+  getOpenGraphFields?: {
     __typename?: 'OpenGraphFields';
-    description?: string | null;
-  };
+    description: string;
+  } | null;
 };
 
 export type GetProspectsQueryVariables = Exact<{
