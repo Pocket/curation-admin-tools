@@ -7,11 +7,8 @@ import {
   FormControlLabel,
   Grid,
   LinearProgress,
-  Link,
-  styled,
   Switch,
   TextField,
-  Tooltip,
   Typography,
 } from '@mui/material';
 import { FormikValues, useFormik } from 'formik';
@@ -33,22 +30,10 @@ import {
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 import { applyApTitleCase } from '../../../_shared/utils/applyApTitleCase';
 import { applyCurlyQuotes } from '../../../_shared/utils/applyCurlyQuotes';
-
-/**
- * Options for choosing between two possible text descriptions in the 'excerpt' field
- * By default OpenGraph description is used, but the user can restore the parser description
- */
-enum DescriptionTextStates {
-  // Means we don't have both Parser and Opengraph desription so there is no UI to show
-  IncompleteDescription,
-  CanInsertParserDesc,
-  CanRestoreOGDesc,
-  MatchingDescriptions,
-}
-
-const StyledLink = styled(Link)({
-  cursor: 'pointer',
-});
+import {
+  DescriptionTextStates,
+  TextSwitchLink,
+} from '../TextSwitchLink/TextSwitchLink';
 
 interface StoryFormProps {
   /**
@@ -111,9 +96,10 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
       DescriptionTextStates.IncompleteDescription
     );
 
-  useEffect(() => {
-    console.log(`OG: ${ogExcerptText} Parser: ${parserItemExcerptText}`);
+  const manageDescriptionStateForServerInput = () => {
+    // Constructs the text insertion link state based on data from the server
     if (ogExcerptText && parserItemExcerptText) {
+      // Both fields match, so we need no UI to pull in other states
       if (ogExcerptText === parserItemExcerptText) {
         setDescriptionState(DescriptionTextStates.MatchingDescriptions);
       } else {
@@ -122,7 +108,11 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
     } else {
       setDescriptionState(DescriptionTextStates.IncompleteDescription);
     }
-  }, [ogExcerptText, parserItemExcerptText]);
+  };
+  useEffect(manageDescriptionStateForServerInput, [
+    ogExcerptText,
+    parserItemExcerptText,
+  ]);
 
   // Listen for when the "Add Story" form opens up to show the rest of the fields
   // and scroll to the bottom to bring the entire form into view.
@@ -292,24 +282,6 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
     formik.setFieldValue('excerpt', applyCurlyQuotes(formik.values.excerpt));
   };
 
-  const showTextSwitchLink = (
-    linkDescriptionText: string,
-    textToInsert: string,
-    newDescriptionState: DescriptionTextStates
-  ) => (
-    <Tooltip title={textToInsert} arrow>
-      <StyledLink
-        onClick={() => {
-          formik.setFieldValue('excerpt', textToInsert);
-          setDescriptionState(newDescriptionState);
-        }}
-        sx={{ textDecoration: 'none' }}
-      >
-        {linkDescriptionText}
-      </StyledLink>
-    </Tooltip>
-  );
-
   return (
     <form name="story-form" onSubmit={formik.handleSubmit}>
       <Grid container spacing={3}>
@@ -417,20 +389,15 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
                     multiline
                     minRows={4}
                   />
-
-                  {descriptionState ==
-                    DescriptionTextStates.CanInsertParserDesc &&
-                    showTextSwitchLink(
-                      'Use Parser Excerpt Instead',
-                      parserItemExcerptText,
-                      DescriptionTextStates.CanRestoreOGDesc
-                    )}
-                  {descriptionState == DescriptionTextStates.CanRestoreOGDesc &&
-                    showTextSwitchLink(
-                      'Restore OpenGraph Description',
-                      ogExcerptText,
-                      DescriptionTextStates.CanInsertParserDesc
-                    )}
+                  <TextSwitchLink
+                    descriptionState={descriptionState}
+                    parserItemExcerptText={parserItemExcerptText}
+                    ogExcerptText={ogExcerptText}
+                    actionCallback={(textToInsert, newDescriptionState) => {
+                      formik.setFieldValue('excerpt', textToInsert);
+                      setDescriptionState(newDescriptionState);
+                    }}
+                  />
                 </Grid>
               </MarkdownPreview>
             </Grid>
