@@ -30,8 +30,8 @@ export const TextSwitchLink = ({
   const manageDescriptionStateForServerInput = () => {
     // Constructs the text insertion link state based on data from the server
     if (ogExcerptText && parserItemExcerptText) {
-      // Both fields match, so we need no UI to pull in other states
       if (ogExcerptText === parserItemExcerptText) {
+        // Both fields match, so No UI needed at all
         setDescriptionState(DescriptionTextStates.MatchingDescriptions);
       } else {
         setDescriptionState(DescriptionTextStates.CanInsertParserDesc);
