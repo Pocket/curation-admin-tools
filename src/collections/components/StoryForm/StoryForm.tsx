@@ -30,10 +30,7 @@ import {
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 import { applyApTitleCase } from '../../../_shared/utils/applyApTitleCase';
 import { applyCurlyQuotes } from '../../../_shared/utils/applyCurlyQuotes';
-import {
-  DescriptionTextStates,
-  TextSwitchLink,
-} from '../TextSwitchLink/TextSwitchLink';
+import { TextSwitchLink } from '../TextSwitchLink/TextSwitchLink';
 
 interface StoryFormProps {
   /**
@@ -91,28 +88,6 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
   const [ogExcerptText, setOgExcerptText] = useState<string>('');
   const [parserItemExcerptText, setParserItemExcerptText] =
     useState<string>('');
-  const [descriptionState, setDescriptionState] =
-    useState<DescriptionTextStates>(
-      DescriptionTextStates.IncompleteDescription
-    );
-
-  const manageDescriptionStateForServerInput = () => {
-    // Constructs the text insertion link state based on data from the server
-    if (ogExcerptText && parserItemExcerptText) {
-      // Both fields match, so we need no UI to pull in other states
-      if (ogExcerptText === parserItemExcerptText) {
-        setDescriptionState(DescriptionTextStates.MatchingDescriptions);
-      } else {
-        setDescriptionState(DescriptionTextStates.CanInsertParserDesc);
-      }
-    } else {
-      setDescriptionState(DescriptionTextStates.IncompleteDescription);
-    }
-  };
-  useEffect(manageDescriptionStateForServerInput, [
-    ogExcerptText,
-    parserItemExcerptText,
-  ]);
 
   // Listen for when the "Add Story" form opens up to show the rest of the fields
   // and scroll to the bottom to bring the entire form into view.
@@ -390,12 +365,10 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
                     minRows={4}
                   />
                   <TextSwitchLink
-                    descriptionState={descriptionState}
                     parserItemExcerptText={parserItemExcerptText}
                     ogExcerptText={ogExcerptText}
-                    actionCallback={(textToInsert, newDescriptionState) => {
-                      formik.setFieldValue('excerpt', textToInsert);
-                      setDescriptionState(newDescriptionState);
+                    updateExcerptText={(textToInsert) => {
+                      return formik.setFieldValue('excerpt', textToInsert);
                     }}
                   />
                 </Grid>

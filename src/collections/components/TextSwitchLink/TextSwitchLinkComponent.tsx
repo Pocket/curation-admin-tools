@@ -1,6 +1,6 @@
 import { Link, styled, Tooltip } from '@mui/material';
 import React from 'react';
-import { DescriptionTextStates, ShowTextLinkCallback } from './TextSwitchLink';
+import { DescriptionTextStates } from './TextSwitchLink';
 
 const StyledLink = styled(Link)({
   cursor: 'pointer',
@@ -10,7 +10,7 @@ interface TextSwitchLinkComponentParams {
   linkDescriptionText: string;
   textToInsert: string;
   nextDescriptionState: DescriptionTextStates;
-  actionCallback: ShowTextLinkCallback;
+  actionCallback: any;
 }
 
 export const TextSwitchLinkComponent = ({

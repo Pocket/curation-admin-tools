@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { TextSwitchLinkComponent } from './TextSwitchLinkComponent';
 
 /**
@@ -12,23 +12,45 @@ export enum DescriptionTextStates {
   CanRestoreOGDesc,
   MatchingDescriptions,
 }
-export interface ShowTextLinkCallback {
-  (textToInsert: string, newDescriptionState: DescriptionTextStates): void;
+export interface SetExceptTextInterface {
+  (textToInsert: string): void;
 }
 
 interface TextSwitchLinkParams {
-  descriptionState: DescriptionTextStates;
   parserItemExcerptText: string;
   ogExcerptText: string;
-  actionCallback: ShowTextLinkCallback;
+  updateExcerptText: SetExceptTextInterface;
 }
 
 export const TextSwitchLink = ({
-  descriptionState,
   parserItemExcerptText,
   ogExcerptText,
-  actionCallback,
+  updateExcerptText,
 }: TextSwitchLinkParams): JSX.Element | null => {
+  const manageDescriptionStateForServerInput = () => {
+    // Constructs the text insertion link state based on data from the server
+    if (ogExcerptText && parserItemExcerptText) {
+      // Both fields match, so we need no UI to pull in other states
+      if (ogExcerptText === parserItemExcerptText) {
+        setDescriptionState(DescriptionTextStates.MatchingDescriptions);
+      } else {
+        setDescriptionState(DescriptionTextStates.CanInsertParserDesc);
+      }
+    } else {
+      setDescriptionState(DescriptionTextStates.IncompleteDescription);
+    }
+  };
+
+  useEffect(manageDescriptionStateForServerInput, [
+    ogExcerptText,
+    parserItemExcerptText,
+  ]);
+
+  const [descriptionState, setDescriptionState] =
+    useState<DescriptionTextStates>(
+      DescriptionTextStates.IncompleteDescription
+    );
+
   let nextDescriptionState = null;
   let uiText = null;
   let textToInsert = null;
@@ -47,6 +69,14 @@ export const TextSwitchLink = ({
     default:
       return null;
   }
+
+  const actionCallback = (
+    textToInsert: string,
+    newDescriptionState: DescriptionTextStates
+  ) => {
+    setDescriptionState(newDescriptionState);
+    updateExcerptText(textToInsert);
+  };
 
   return (
     <TextSwitchLinkComponent
