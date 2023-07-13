@@ -43,6 +43,9 @@ interface ProspectPublisherFilterProps {
    * in the parent component (Prospecting page).
    */
   sortByPublishedDate: boolean;
+
+  sortByTimeToRead: boolean;
+  handleSortByTimeToRead: VoidFunction;
 }
 
 /**
@@ -62,6 +65,8 @@ export const ProspectPublisherFilter: React.FC<ProspectPublisherFilterProps> = (
     setFilterByPublisher,
     onChange,
     onSortByPublishedDate,
+    sortByTimeToRead,
+    handleSortByTimeToRead,
   } = props;
 
   return (
@@ -95,6 +100,18 @@ export const ProspectPublisherFilter: React.FC<ProspectPublisherFilterProps> = (
             />
           }
           label={'Sort by Published Date'}
+        />
+      </FormGroup>
+      <FormGroup>
+        <FormControlLabel
+          sx={{ mx: 2, mb: 2 }}
+          control={
+            <Switch
+              checked={sortByTimeToRead}
+              onChange={handleSortByTimeToRead}
+            />
+          }
+          label={'Sort by Time to Read'}
         />
       </FormGroup>
     </Grid>

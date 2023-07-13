@@ -222,26 +222,35 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   // Prepare the "update prospect as curated" mutation
   const [updateProspectAsCurated] = useUpdateProspectAsCuratedMutation();
 
-  // Instead of working off Apollo Client's cache for the `getProspects` query
-  // let's set up another variable for the prospect card list.
+  // Instead of working off Apollo Client's cache for the `getProspects` query,
+  // storing the prospects here which will be shown in the UI.
   const [prospects, setProspects] = useState<Prospect[]>([]);
+
+  // Unsorted prospects. This represents our source of truth and what is received from the api call.
+  // We use the above `prospects` state variable to render the UI.
+  // NOTE: this state variable should NOT be mutated.
   const [unsortedProspects, setUnsortedProspects] = useState<Prospect[]>([]);
 
-  // When the batch of random prospects has loaded, update our `prospects` variable
+  // When the batch of random prospects has loaded, update our `unsortedProspects` variable
   // with the contents of the API response. This will allow us to remove items from
   // the response array and unmount the relevant prospect cards when they have been
   // processed.
   useEffect(() => {
-    const fetchedProspects = data?.getProspects!;
-    if (!sortByPublishedDate) {
-      setProspects(fetchedProspects);
-      return;
-    }
+    if (data) {
+      const fetchedProspects = data.getProspects;
+      setUnsortedProspects(fetchedProspects);
 
-    // the sort by published date toggle is on, so we'll do the sorting
-    // make sure we have a copy of the ranked prospects if the user toggles
-    // 'sortByPublishedDate' off
-    handleSortByPublishedDate(fetchedProspects);
+      // if `sortByPublishedDate` is set, sort by published date
+      sortByPublishedDate && handleSortByPublishedDate(fetchedProspects);
+
+      // if `sortByTimeToRead` is set, sort by time to read (descending)
+      sortByTimeToRead && handleSortByTimeToRead(fetchedProspects);
+
+      // if both sort filters are unset(initial paeg load), render the received prospects.
+      !sortByPublishedDate && !sortByTimeToRead
+        ? setProspects(fetchedProspects)
+        : null;
+    }
   }, [data]);
 
   // For filtering on prospects, we can pass additional variables to the `refetch()`
@@ -595,10 +604,15 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   };
   // The value of the publisher filter (min two characters), e.g. "cnbc". Case-insensitive.
   const [filterByPublisher, setFilterByPublisher] = useState('');
+
+  // Sorts by descending published date
   const [sortByPublishedDate, setSortByPublishedDate] = useState(false);
 
+  // Sorts by descending time to read
+  const [sortByTimeToRead, setSortByTimeToRead] = useState(false);
+
   const handleSortByPublishedDate = (prospectList: Prospect[]) => {
-    setUnsortedProspects([...(prospectList || [])]);
+    // setUnsortedProspects([...(prospectList || [])]);
     const sortedProspects = [...(prospectList || [])].sort((a, b) => {
       return (
         new Date(b.item?.datePublished ?? distantPast).getTime() -
@@ -611,10 +625,14 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   const onSortByPublishedDate = () => {
     // from not sorted to sorted
     if (!sortByPublishedDate) {
+      // toggle off sort by time to read filter and restore prospects to default sort order
+      sortByTimeToRead && handleSortByTimeToRead(unsortedProspects);
+
       handleSortByPublishedDate(prospects);
       setSortByPublishedDate((prev) => !prev);
       return;
     }
+
     const mappedProspectIds = prospects.map((p) => p.id);
     setProspects(
       unsortedProspects.filter((up: { id: string }) =>
@@ -622,6 +640,34 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       )
     );
     setSortByPublishedDate((prev) => !prev);
+  };
+
+  const handleSortByTimeToRead = (unsortedProspects: Prospect[]): void => {
+    if (sortByTimeToRead) {
+      // toggle off, reset to unsorted prospects
+      setSortByTimeToRead(false);
+      setProspects(unsortedProspects);
+
+      return;
+    }
+
+    // reset sort by published date filter
+    if (sortByPublishedDate) {
+      setSortByPublishedDate(false);
+      handleSortByPublishedDate(prospects);
+    }
+
+    // create a copy of the unsorted prospects.
+    // we don't want to mutate the original unsorted prospect array.
+    const prospectsToSort = [...unsortedProspects];
+
+    // apply sort by time to read
+    setSortByTimeToRead(true);
+    setProspects(
+      prospectsToSort.sort((a, b) => {
+        return (b.item?.timeToRead ?? 0) - (a.item?.timeToRead ?? 0);
+      })
+    );
   };
 
   return (
@@ -753,6 +799,10 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                 excludePublisherSwitch={excludePublisherSwitch}
                 onSortByPublishedDate={onSortByPublishedDate}
                 sortByPublishedDate={sortByPublishedDate}
+                sortByTimeToRead={sortByTimeToRead}
+                handleSortByTimeToRead={() =>
+                  handleSortByTimeToRead(unsortedProspects)
+                }
               />
             </Grid>
           </Grid>

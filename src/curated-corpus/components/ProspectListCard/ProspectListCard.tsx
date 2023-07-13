@@ -18,6 +18,8 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CategoryIcon from '@mui/icons-material/Category';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+
 import { curationPalette } from '../../../theme';
 import { Button } from '../../../_shared/components';
 import { getDisplayTopic } from '../../helpers/topics';
@@ -29,6 +31,10 @@ interface ProspectListCardProps {
    * An object with everything prospect-related in it.
    */
   prospect: Prospect;
+
+  /**
+   * Parser Item type representation of this Prospect item
+   */
 
   parserItem: Item;
   /**
@@ -62,6 +68,12 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
     onRecommend,
     onReject,
   } = props;
+
+  const timeToRead = parserItem.timeToRead ? (
+    `${parserItem.timeToRead} min(s)`
+  ) : (
+    <span> &mdash;</span>
+  );
 
   return (
     <Card
@@ -110,6 +122,13 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
                 <MyLocationIcon fontSize="small" />
               </ListItemIcon>
               <ListItemText secondary={prospect.prospectType.toLowerCase()} />
+            </ListItem>
+
+            <ListItem disableGutters>
+              <ListItemIcon sx={{ minWidth: '1.5rem' }}>
+                <AccessTimeIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText secondary={timeToRead} />
             </ListItem>
 
             <ListItem disableGutters>

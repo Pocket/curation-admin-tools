@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 
 /**
- * Everything we need to fetch for a Curated Item
+ * A fragment for the Parser Item type. Being resolved on the Prospect type.
  */
 export const BasicParserItemData = gql`
   fragment BasicParserItemData on Item {
@@ -9,5 +9,6 @@ export const BasicParserItemData = gql`
     itemId
     normalUrl
     datePublished
+    timeToRead
   }
 `;

@@ -1252,6 +1252,11 @@ export type NumberedListElement = ListElement & {
   level: Scalars['Int'];
 };
 
+export type OpenGraphFields = {
+  __typename?: 'OpenGraphFields';
+  description?: Maybe<Scalars['String']>;
+};
+
 /** Options for returning items sorted by the supplied field. */
 export enum OrderBy {
   /** Return items in ascending order. */
@@ -1396,6 +1401,8 @@ export type Query = {
   getItemByUrl?: Maybe<Item>;
   /** Retrieves the languages currently supported. */
   getLanguages: Array<CollectionLanguage>;
+  /** Tool to get OG description of URL that is not yet implemented in parser */
+  getOpenGraphFields: OpenGraphFields;
   /** returns a set of at most 20 prospects (number may be smaller depending on available data) */
   getProspects: Array<Prospect>;
   /** Retrieves a paginated, filterable list of Rejected Items. */
@@ -1470,6 +1477,10 @@ export type QueryGetItemByItemIdArgs = {
 
 export type QueryGetItemByUrlArgs = {
   url: Scalars['String'];
+};
+
+export type QueryGetOpenGraphFieldsArgs = {
+  url: Scalars['Url'];
 };
 
 export type QueryGetProspectsArgs = {
@@ -2022,6 +2033,7 @@ export type BasicParserItemDataFragment = {
   itemId: string;
   normalUrl: string;
   datePublished?: any | null;
+  timeToRead?: number | null;
 };
 
 export type CollectionAuthorDataFragment = {
@@ -2340,6 +2352,7 @@ export type ProspectDataWithCorpusItemsFragment = {
     itemId: string;
     normalUrl: string;
     datePublished?: any | null;
+    timeToRead?: number | null;
   } | null;
 };
 
@@ -3439,6 +3452,7 @@ export type UpdateProspectAsCuratedMutation = {
       itemId: string;
       normalUrl: string;
       datePublished?: any | null;
+      timeToRead?: number | null;
     } | null;
   } | null;
 };
@@ -3985,6 +3999,7 @@ export type GetProspectsQuery = {
       itemId: string;
       normalUrl: string;
       datePublished?: any | null;
+      timeToRead?: number | null;
     } | null;
   }>;
 };
@@ -4487,6 +4502,7 @@ export const BasicParserItemDataFragmentDoc = gql`
     itemId
     normalUrl
     datePublished
+    timeToRead
   }
 `;
 export const ProspectDataWithCorpusItemsFragmentDoc = gql`
