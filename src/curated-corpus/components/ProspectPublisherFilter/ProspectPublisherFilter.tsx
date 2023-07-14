@@ -44,7 +44,15 @@ interface ProspectPublisherFilterProps {
    */
   sortByPublishedDate: boolean;
 
+  /**
+   * Boolean flag to represent the state of sortByTimeToRead toggle in the parent component
+   * (prospecting page)
+   */
   sortByTimeToRead: boolean;
+
+  /**
+   * Function to toggle sortByTimeToRead in the parent component (prospecting page)
+   */
   handleSortByTimeToRead: VoidFunction;
 }
 
@@ -70,7 +78,7 @@ export const ProspectPublisherFilter: React.FC<ProspectPublisherFilterProps> = (
   } = props;
 
   return (
-    <Grid container justifyContent={'flex-end'}>
+    <Grid container justifyContent={'flex-start'}>
       <TextField
         id="filterByPublisher"
         label="Filter by Publisher"
@@ -99,7 +107,7 @@ export const ProspectPublisherFilter: React.FC<ProspectPublisherFilterProps> = (
               onChange={onSortByPublishedDate}
             />
           }
-          label={'Sort by Published Date'}
+          label={'Published Date'}
         />
       </FormGroup>
       <FormGroup>
@@ -111,7 +119,7 @@ export const ProspectPublisherFilter: React.FC<ProspectPublisherFilterProps> = (
               onChange={handleSortByTimeToRead}
             />
           }
-          label={'Sort by Time to Read'}
+          label={'Time to Read'}
         />
       </FormGroup>
     </Grid>

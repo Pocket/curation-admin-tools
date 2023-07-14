@@ -240,16 +240,17 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       const fetchedProspects = data.getProspects;
       setUnsortedProspects(fetchedProspects);
 
+      // if both sort filters are unset(initial page load), render the received prospects and early exit
+      if (!sortByPublishedDate && !sortByTimeToRead) {
+        setProspects(fetchedProspects);
+        return;
+      }
+
       // if `sortByPublishedDate` is set, sort by published date
       sortByPublishedDate && handleSortByPublishedDate(fetchedProspects);
 
-      // if `sortByTimeToRead` is set, sort by time to read (descending)
+      // if `sortByTimeToRead` is set, sort by time to read
       sortByTimeToRead && handleSortByTimeToRead(fetchedProspects);
-
-      // if both sort filters are unset(initial paeg load), render the received prospects.
-      !sortByPublishedDate && !sortByTimeToRead
-        ? setProspects(fetchedProspects)
-        : null;
     }
   }, [data]);
 
@@ -625,8 +626,8 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   const onSortByPublishedDate = () => {
     // from not sorted to sorted
     if (!sortByPublishedDate) {
-      // toggle off sort by time to read filter and restore prospects to default sort order
-      sortByTimeToRead && handleSortByTimeToRead(unsortedProspects);
+      // if sortByTimeToRead is set, toggle it off
+      sortByTimeToRead && setSortByTimeToRead(false);
 
       handleSortByPublishedDate(prospects);
       setSortByPublishedDate((prev) => !prev);
@@ -643,22 +644,19 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   };
 
   const handleSortByTimeToRead = (unsortedProspects: Prospect[]): void => {
+    // if toggled on, toggle off and reset to unsorted prospects
     if (sortByTimeToRead) {
-      // toggle off, reset to unsorted prospects
       setSortByTimeToRead(false);
       setProspects(unsortedProspects);
 
       return;
     }
 
-    // reset sort by published date filter
-    if (sortByPublishedDate) {
-      setSortByPublishedDate(false);
-      handleSortByPublishedDate(prospects);
-    }
+    // if sortByPublishedDate is set, toggle it off before sorting by time to read below
+    sortByPublishedDate && setSortByPublishedDate(false);
 
-    // create a copy of the unsorted prospects.
-    // we don't want to mutate the original unsorted prospect array.
+    // create a copy of the unsorted prospects
+    // we don't want to mutate the original unsorted prospect array
     const prospectsToSort = [...unsortedProspects];
 
     // apply sort by time to read
