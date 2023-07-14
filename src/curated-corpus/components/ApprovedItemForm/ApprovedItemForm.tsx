@@ -19,6 +19,7 @@ import {
   topics,
 } from '../../helpers/definitions';
 import {
+  Button,
   FormikSelectField,
   FormikTextField,
   ImageUpload,
@@ -26,6 +27,8 @@ import {
   SharedFormButtonsProps,
 } from '../../../_shared/components';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
+import { applyCurlyQuotes } from '../../../_shared/utils/applyCurlyQuotes';
+import { applyApTitleCase } from '../../../_shared/utils/applyApTitleCase';
 
 interface ApprovedItemFormProps {
   /**
@@ -103,6 +106,17 @@ export const ApprovedItemForm: React.FC<
     formik.setFieldValue('imageUrl', url);
   };
 
+  const fixTitle = () => {
+    formik.setFieldValue(
+      'title',
+      applyCurlyQuotes(applyApTitleCase(formik.values.title))
+    );
+  };
+
+  const fixExcerpt = () => {
+    formik.setFieldValue('excerpt', applyCurlyQuotes(formik.values.excerpt));
+  };
+
   return (
     <form name="approved-item-edit-form" onSubmit={formik.handleSubmit}>
       <Grid container spacing={3}>
@@ -116,12 +130,21 @@ export const ApprovedItemForm: React.FC<
           />
         </Grid>
         <Grid item xs={12}>
-          <FormikTextField
-            id="title"
-            label="Title"
-            fieldProps={formik.getFieldProps('title')}
-            fieldMeta={formik.getFieldMeta('title')}
-          />
+          <Box display="flex">
+            <Box flexGrow={1} alignSelf="center" textOverflow="ellipsis">
+              <FormikTextField
+                id="title"
+                label="Title"
+                fieldProps={formik.getFieldProps('title')}
+                fieldMeta={formik.getFieldMeta('title')}
+              />
+            </Box>
+            <Box alignSelf="baseline" ml={1}>
+              <Button buttonType="hollow" onClick={fixTitle}>
+                Fix title
+              </Button>
+            </Box>
+          </Box>
         </Grid>
         <Grid item md={12} xs={12}>
           <FormikTextField
@@ -147,6 +170,11 @@ export const ApprovedItemForm: React.FC<
             fieldProps={formik.getFieldProps('excerpt')}
             fieldMeta={formik.getFieldMeta('excerpt')}
           />
+        </Grid>
+        <Grid item xs={12}>
+          <Button buttonType="hollow" onClick={fixExcerpt}>
+            Fix excerpt
+          </Button>
         </Grid>
         <Grid item xs={12}>
           <Grid container direction="row" spacing={3}>
