@@ -613,7 +613,6 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   const [sortByTimeToRead, setSortByTimeToRead] = useState(false);
 
   const handleSortByPublishedDate = (prospectList: Prospect[]) => {
-    // setUnsortedProspects([...(prospectList || [])]);
     const sortedProspects = [...(prospectList || [])].sort((a, b) => {
       return (
         new Date(b.item?.datePublished ?? distantPast).getTime() -
