@@ -25,10 +25,12 @@ import { validationSchema } from './StoryForm.validation';
 import {
   CollectionStory,
   useGetStoryFromParserLazyQuery,
+  useGetOpenGraphFieldsLazyQuery,
 } from '../../../api/generatedTypes';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 import { applyApTitleCase } from '../../../_shared/utils/applyApTitleCase';
 import { applyCurlyQuotes } from '../../../_shared/utils/applyCurlyQuotes';
+import { TextSwitchLink } from '../TextSwitchLink/TextSwitchLink';
 
 interface StoryFormProps {
   /**
@@ -82,6 +84,11 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
   const [showOtherFields, setShowOtherFields] =
     useState<boolean>(showAllFields);
 
+  // Whether to show the full form or just the URL field with the "Populate" button
+  const [ogExcerptText, setOgExcerptText] = useState<string>('');
+  const [parserItemExcerptText, setParserItemExcerptText] =
+    useState<string>('');
+
   // Listen for when the "Add Story" form opens up to show the rest of the fields
   // and scroll to the bottom to bring the entire form into view.
   useEffect(() => {
@@ -121,78 +128,96 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
     },
   });
 
-  const [getStory, { loading }] = useGetStoryFromParserLazyQuery({
+  const [getOGExcerpt] = useGetOpenGraphFieldsLazyQuery({
     fetchPolicy: 'no-cache',
-    onCompleted: (data) => {
-      // Rather than return errors if it can't parse a URL, the parser
-      // returns a null object instead
-      if (data.getItemByUrl) {
-        // This is the success path
-
-        // If the parser returns multiple authors for the story,
-        // combine them in one comma-separated string
-        const commaSeparatedAuthors = data.getItemByUrl.authors
-          ?.map((author) => {
-            return author?.name;
-          })
-          .join(', ');
-
-        // set field values with data returned by the parser
-        formik.setFieldValue('authors', commaSeparatedAuthors);
-
-        // make sure to use the 'resolvedUrl returned from the parser instead of the URL
-        // submitted by the user
-        formik.setFieldValue('url', data.getItemByUrl.resolvedUrl);
-        formik.setFieldValue('title', data.getItemByUrl.title);
-        formik.setFieldValue(
-          'publisher',
-          data.getItemByUrl.domainMetadata?.name
-        );
-        formik.setFieldValue('excerpt', data.getItemByUrl.excerpt);
-
-        // Work out the image URL, if any
-        let imageUrl = '';
-
-        if (
-          data.getItemByUrl.topImageUrl &&
-          data.getItemByUrl.topImageUrl.length > 0
-        ) {
-          // Use the publisher's preferred thumbnail image if it exists
-          imageUrl = data.getItemByUrl.topImageUrl;
-          setImageSrc(imageUrl);
-        } else {
-          // Try the images array - for YouTube, for example, this returns
-          // the correct thumbnail
-          if (data.getItemByUrl.images && data.getItemByUrl.images[0]) {
-            imageUrl = data.getItemByUrl.images[0].src!;
-            setImageSrc(imageUrl);
-          } else {
-            // Use the placeholder to display something on the frontend
-            // while the imageUrl field remains empty as set initially
-            setImageSrc('/placeholders/story.svg');
-          }
-        }
-
-        // Save the normalised imageUrl value in a hidden input field
-        // to upload to S3 later
-        formik.setFieldValue('imageUrl', imageUrl);
-
-        // And we're done!
-        showNotification('Story parsed successfully', 'success');
-      } else {
-        // This is the error path
-        showNotification(`Story couldn't be parsed`, 'error');
+    onCompleted: ({ getOpenGraphFields }) => {
+      if (getOpenGraphFields?.description) {
+        const excerpt = getOpenGraphFields.description;
+        formik.setFieldValue('excerpt', excerpt);
+        setOgExcerptText(excerpt);
       }
-      // If this is used to add a story and only the URL is visible,
-      // show the other fields now that they contain something
-      // even if the parser can't process the URL at all.
-      setShowOtherFields(true);
     },
-    onError: (error: ApolloError) => {
-      // Show any other errors, i.e. cannot reach the API, etc.
-      showNotification(error.message, 'error');
+    onError: () => {
+      // Errors are silent as this is an optional service
     },
   });
+
+  const [getStory, { loading: loadingStoryFromParser }] =
+    useGetStoryFromParserLazyQuery({
+      fetchPolicy: 'no-cache',
+      onCompleted: (data) => {
+        // Rather than return errors if it can't parse a URL, the parser
+        // returns a null object instead
+        if (data.getItemByUrl) {
+          // This is the success path
+
+          // If the parser returns multiple authors for the story,
+          // combine them in one comma-separated string
+          const commaSeparatedAuthors = data.getItemByUrl.authors
+            ?.map((author) => {
+              return author?.name;
+            })
+            .join(', ');
+
+          // set field values with data returned by the parser
+          formik.setFieldValue('authors', commaSeparatedAuthors);
+
+          // make sure to use the 'resolvedUrl returned from the parser instead of the URL
+          // submitted by the user
+          formik.setFieldValue('url', data.getItemByUrl.resolvedUrl);
+          formik.setFieldValue('title', data.getItemByUrl.title);
+          formik.setFieldValue(
+            'publisher',
+            data.getItemByUrl.domainMetadata?.name
+          );
+          setParserItemExcerptText(data.getItemByUrl.excerpt || '');
+          if (!ogExcerptText) {
+            formik.setFieldValue('excerpt', data.getItemByUrl.excerpt);
+          }
+
+          // Work out the image URL, if any
+          let imageUrl = '';
+
+          if (
+            data.getItemByUrl.topImageUrl &&
+            data.getItemByUrl.topImageUrl.length > 0
+          ) {
+            // Use the publisher's preferred thumbnail image if it exists
+            imageUrl = data.getItemByUrl.topImageUrl;
+            setImageSrc(imageUrl);
+          } else {
+            // Try the images array - for YouTube, for example, this returns
+            // the correct thumbnail
+            if (data.getItemByUrl.images && data.getItemByUrl.images[0]) {
+              imageUrl = data.getItemByUrl.images[0].src!;
+              setImageSrc(imageUrl);
+            } else {
+              // Use the placeholder to display something on the frontend
+              // while the imageUrl field remains empty as set initially
+              setImageSrc('/placeholders/story.svg');
+            }
+          }
+
+          // Save the normalised imageUrl value in a hidden input field
+          // to upload to S3 later
+          formik.setFieldValue('imageUrl', imageUrl);
+
+          // And we're done!
+          showNotification('Story parsed successfully', 'success');
+        } else {
+          // This is the error path
+          showNotification(`Story couldn't be parsed`, 'error');
+        }
+        // If this is used to add a story and only the URL is visible,
+        // show the other fields now that they contain something
+        // even if the parser can't process the URL at all.
+        setShowOtherFields(true);
+      },
+      onError: (error: ApolloError) => {
+        // Show any other errors, i.e. cannot reach the API, etc.
+        showNotification(error.message, 'error');
+      },
+    });
 
   const fetchStoryData = async () => {
     // Make sure we don't send an empty string to the parser
@@ -209,6 +234,11 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
       // Get story data from the parser. 'onComplete' callback specified
       // in the prepared query above will fill in the form with the returned data
       getStory({
+        variables: {
+          url: formik.values.url,
+        },
+      });
+      getOGExcerpt({
         variables: {
           url: formik.values.url,
         },
@@ -245,10 +275,10 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
                 <Button
                   buttonType="hollow"
                   onClick={fetchStoryData}
-                  disabled={loading}
+                  disabled={loadingStoryFromParser}
                 >
                   Populate
-                  {loading && (
+                  {loadingStoryFromParser && (
                     <>
                       &nbsp;
                       <CircularProgress size={14} />
@@ -325,19 +355,28 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
 
             <Grid item xs={12}>
               <MarkdownPreview minHeight={6.5} source={formik.values.excerpt}>
-                <FormikTextField
-                  id="excerpt"
-                  label="Excerpt"
-                  fieldProps={formik.getFieldProps('excerpt')}
-                  fieldMeta={formik.getFieldMeta('excerpt')}
-                  multiline
-                  minRows={4}
-                />
+                <Grid>
+                  <FormikTextField
+                    id="excerpt"
+                    label="Excerpt"
+                    fieldProps={formik.getFieldProps('excerpt')}
+                    fieldMeta={formik.getFieldMeta('excerpt')}
+                    multiline
+                    minRows={4}
+                  />
+                  <TextSwitchLink
+                    parserItemExcerptText={parserItemExcerptText}
+                    ogExcerptText={ogExcerptText}
+                    updateExcerptText={(textToInsert) => {
+                      return formik.setFieldValue('excerpt', textToInsert);
+                    }}
+                  />
+                </Grid>
               </MarkdownPreview>
             </Grid>
             <Grid item xs={12}>
               <Button buttonType="hollow" onClick={fixExcerpt}>
-                Fix excerpt
+                Fix quotes
               </Button>
             </Grid>
             {formik.isSubmitting && (

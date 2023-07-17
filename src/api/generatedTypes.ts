@@ -1254,7 +1254,7 @@ export type NumberedListElement = ListElement & {
 
 export type OpenGraphFields = {
   __typename?: 'OpenGraphFields';
-  description?: Maybe<Scalars['String']>;
+  description: Scalars['String'];
 };
 
 /** Options for returning items sorted by the supplied field. */
@@ -1402,7 +1402,7 @@ export type Query = {
   /** Retrieves the languages currently supported. */
   getLanguages: Array<CollectionLanguage>;
   /** Tool to get OG description of URL that is not yet implemented in parser */
-  getOpenGraphFields: OpenGraphFields;
+  getOpenGraphFields?: Maybe<OpenGraphFields>;
   /** returns a set of at most 20 prospects (number may be smaller depending on available data) */
   getProspects: Array<Prospect>;
   /** Retrieves a paginated, filterable list of Rejected Items. */
@@ -3918,6 +3918,18 @@ export type GetInitialCollectionFormDataQuery = {
       slug: string;
     }>;
   }>;
+};
+
+export type GetOpenGraphFieldsQueryVariables = Exact<{
+  url: Scalars['Url'];
+}>;
+
+export type GetOpenGraphFieldsQuery = {
+  __typename?: 'Query';
+  getOpenGraphFields?: {
+    __typename?: 'OpenGraphFields';
+    description: string;
+  } | null;
 };
 
 export type GetProspectsQueryVariables = Exact<{
@@ -7291,6 +7303,64 @@ export type GetInitialCollectionFormDataLazyQueryHookResult = ReturnType<
 export type GetInitialCollectionFormDataQueryResult = Apollo.QueryResult<
   GetInitialCollectionFormDataQuery,
   GetInitialCollectionFormDataQueryVariables
+>;
+export const GetOpenGraphFieldsDocument = gql`
+  query getOpenGraphFields($url: Url!) {
+    getOpenGraphFields(url: $url) {
+      description
+    }
+  }
+`;
+
+/**
+ * __useGetOpenGraphFieldsQuery__
+ *
+ * To run a query within a React component, call `useGetOpenGraphFieldsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetOpenGraphFieldsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetOpenGraphFieldsQuery({
+ *   variables: {
+ *      url: // value for 'url'
+ *   },
+ * });
+ */
+export function useGetOpenGraphFieldsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetOpenGraphFieldsQuery,
+    GetOpenGraphFieldsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetOpenGraphFieldsQuery,
+    GetOpenGraphFieldsQueryVariables
+  >(GetOpenGraphFieldsDocument, options);
+}
+export function useGetOpenGraphFieldsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetOpenGraphFieldsQuery,
+    GetOpenGraphFieldsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetOpenGraphFieldsQuery,
+    GetOpenGraphFieldsQueryVariables
+  >(GetOpenGraphFieldsDocument, options);
+}
+export type GetOpenGraphFieldsQueryHookResult = ReturnType<
+  typeof useGetOpenGraphFieldsQuery
+>;
+export type GetOpenGraphFieldsLazyQueryHookResult = ReturnType<
+  typeof useGetOpenGraphFieldsLazyQuery
+>;
+export type GetOpenGraphFieldsQueryResult = Apollo.QueryResult<
+  GetOpenGraphFieldsQuery,
+  GetOpenGraphFieldsQueryVariables
 >;
 export const GetProspectsDocument = gql`
   query getProspects(
