@@ -50,7 +50,6 @@ export const CorpusItemPage: React.FC = (): JSX.Element => {
    * Keep track of whether the "Edit this item" modal is open or not.
    */
   const [editModalOpen, toggleEditModal] = useToggle(false);
-
   return (
     <>
       {!data && <HandleApiResponse loading={loading} error={error} />}

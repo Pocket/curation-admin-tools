@@ -24,6 +24,7 @@ import {
   ScheduledItemCardWrapper,
   ScheduleItemModal,
   ScheduleSummaryLayout,
+  SidebarWrapper,
   SplitButton,
 } from '../../components';
 import {
@@ -82,6 +83,16 @@ export const SchedulePage: React.FC = (): JSX.Element => {
     string | undefined
   >();
 
+  // This is the date used in the sidebar. Defaults to tomorrow
+  const [sidebarDate, setSidebarDate] = useState<DateTime | null>(
+    DateTime.local().plus({ days: 1 })
+  );
+
+  // Whether the data in the sidebar needs to be refreshed.
+  // Is needed when the user switches from surface to surface or
+  // when they schedule something for the date chosen in the sidebar.
+  const [refreshSidebarData, setRefreshSidebarData] = useState(false);
+
   /**
    * ##########
    * ########## gql and other useful hooks start here
@@ -107,7 +118,24 @@ export const SchedulePage: React.FC = (): JSX.Element => {
   const [editItemModalOpen, toggleEditModal] = useToggle(false);
 
   // Get the list of Scheduled Surfaces the currently logged-in user has access to.
-  const { data: scheduledSurfaceData } = useGetScheduledSurfacesForUserQuery();
+
+  // Get the list of Scheduled Surfaces the currently logged-in user has access to.
+  const {
+    data: scheduledSurfaceData,
+    loading: scheduledSurfaceLoading,
+    error: scheduledSurfaceError,
+  } = useGetScheduledSurfacesForUserQuery({
+    onCompleted: (data) => {
+      const options = data.getScheduledSurfacesForUser.map(
+        (scheduledSurface) => {
+          return { code: scheduledSurface.guid, name: scheduledSurface.name };
+        }
+      );
+      if (options.length > 0) {
+        setCurrentScheduledSurfaceGuid(options[0].code);
+      }
+    },
+  });
 
   // Get a helper function that will execute each mutation, show standard notifications
   // and execute any additional actions in a callback
@@ -453,14 +481,14 @@ export const SchedulePage: React.FC = (): JSX.Element => {
 
       {/** Page Contents Below */}
 
-      <Grid container>
+      <Grid container spacing={2}>
         {!data && (
           <Grid item xs={12}>
             <HandleApiResponse loading={loading} error={error} />
           </Grid>
         )}
 
-        <Grid item xs={12}>
+        <Grid item xs={8.7}>
           {data &&
             data.getScheduledCorpusItems.map(
               (data: ScheduledCorpusItemsResult) => (
@@ -524,6 +552,24 @@ export const SchedulePage: React.FC = (): JSX.Element => {
                 </Grid>
               )
             )}
+        </Grid>
+        {!scheduledSurfaceData && (
+          <HandleApiResponse
+            loading={scheduledSurfaceLoading}
+            error={scheduledSurfaceError}
+          />
+        )}
+        {/* need weird spacing below so all buttons are visible */}
+        <Grid item sm={3.3}>
+          {currentScheduledSurfaceGuid.length > 0 && (
+            <SidebarWrapper
+              date={sidebarDate!}
+              setSidebarDate={setSidebarDate}
+              scheduledSurfaceGuid={currentScheduledSurfaceGuid}
+              refreshData={refreshSidebarData}
+              setRefreshData={setRefreshSidebarData}
+            />
+          )}
         </Grid>
         <FloatingActionButton
           onClick={() => {
