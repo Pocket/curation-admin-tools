@@ -1,19 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { ApolloError } from '@apollo/client';
+import React, { useState } from 'react';
 import { FormikHelpers, FormikValues } from 'formik';
 import { DateTime } from 'luxon';
-import { CircularProgress } from '@mui/material';
 import {
   HandleApiResponse,
   SharedFormButtonsProps,
 } from '../../../_shared/components';
-import {
-  ScheduledCorpusItemsFilterInput,
-  useGetScheduledItemCountsLazyQuery,
-  useGetScheduledSurfacesForUserQuery,
-} from '../../../api/generatedTypes';
+import { useGetScheduledSurfacesForUserQuery } from '../../../api/generatedTypes';
 
-import { useNotifications } from '../../../_shared/hooks';
 import { ScheduleItemForm } from '../';
 
 interface ScheduleItemFormConnectorProps {
@@ -66,74 +59,11 @@ export const ScheduleItemFormConnector: React.FC<
   // object instead of parsing the date from string.
   const [selectedDate, setSelectedDate] = useState<DateTime | null>(tomorrow);
 
-  // Start with no copy underneath the form that shows if there are any other
-  // scheduled items for the chosen date.
-  const [lookupCopy, setLookupCopy] = useState<JSX.Element | string>('');
-
-  // get a helper function to show an error in case scheduled item lookup fails.
-  const { showNotification } = useNotifications();
-
-  // Get the usual API response vars and a helper method to retrieve data
-  // that can be used inside hooks.
-  const [getScheduledItemCounts, { loading: loadingCounts }] =
-    useGetScheduledItemCountsLazyQuery({
-      fetchPolicy: 'no-cache',
-      notifyOnNetworkStatusChange: true,
-      onCompleted: (data) => {
-        // If there's something already scheduled for the chosen date,
-        // let the user know.
-        if (data.getScheduledCorpusItems.length > 0) {
-          const totalCount = data.getScheduledCorpusItems[0].totalCount;
-
-          setLookupCopy(
-            <>
-              Already scheduled: {totalCount}{' '}
-              {totalCount === 1 ? 'story' : 'stories'} (
-              {data.getScheduledCorpusItems[0].syndicatedCount} syndicated).
-            </>
-          );
-        } else {
-          setLookupCopy('Nothing has been scheduled for this date yet.');
-        }
-      },
-      onError: (error: ApolloError) => {
-        showNotification(error.message, 'error');
-      },
-    });
-
   // What to do when the user clicks on a date in the calendar.
   const handleDateChange = (date: any, value?: string | null | undefined) => {
     // Keep track of the chosen date.
     setSelectedDate(date);
-
-    // If the Scheduled Surface has been specified, run a lookup query.
-    // Realistically, this means that the lookup will be available on the Prospecting
-    // page but not on the Corpus page.
-    if (scheduledSurfaceGuid) {
-      // Look up any other scheduled items for this date + scheduled surface combination.
-      // Start with the filters. Note `startDate` and `endDate` is the same as we're
-      // interested in single day data only.
-      const filters: ScheduledCorpusItemsFilterInput = {
-        scheduledSurfaceGuid,
-        startDate: date?.toFormat('yyyy-MM-dd'),
-        endDate: date?.toFormat('yyyy-MM-dd'),
-      };
-
-      getScheduledItemCounts({ variables: { filters } });
-    }
   };
-
-  // There seems to be no better way of tracking this and passing it
-  // to the child form component ¯\_(ツ)_/¯.
-  useEffect(() => {
-    if (loadingCounts) {
-      setLookupCopy(
-        <>
-          <CircularProgress /> Checking...
-        </>
-      );
-    }
-  }, [loadingCounts]);
 
   return (
     <>
@@ -142,7 +72,6 @@ export const ScheduleItemFormConnector: React.FC<
         <ScheduleItemForm
           approvedItemExternalId={approvedItemExternalId}
           handleDateChange={handleDateChange}
-          lookupCopy={lookupCopy}
           scheduledSurfaces={data?.getScheduledSurfacesForUser}
           scheduledSurfaceGuid={scheduledSurfaceGuid}
           disableScheduledSurface={disableScheduledSurface}

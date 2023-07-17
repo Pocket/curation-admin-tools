@@ -488,7 +488,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
           </Grid>
         )}
 
-        <Grid item xs={8.7}>
+        <Grid item xs={8.8}>
           {data &&
             data.getScheduledCorpusItems.map(
               (data: ScheduledCorpusItemsResult) => (
@@ -560,7 +560,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
           />
         )}
         {/* need weird spacing below so all buttons are visible */}
-        <Grid item sm={3.3}>
+        <Grid item sm={3.2}>
           {currentScheduledSurfaceGuid.length > 0 && (
             <SidebarWrapper
               date={sidebarDate!}

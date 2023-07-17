@@ -116,7 +116,11 @@ export const ScheduleSummaryConnector: React.FC<
         <>
           <Typography
             variant="h4"
-            sx={{ fontSize: '1rem', fontWeight: 500, padding: '0.75rem 0' }}
+            sx={{
+              fontSize: '1rem',
+              fontWeight: 500,
+              padding: '0.75rem 0',
+            }}
           >
             {data.getScheduledCorpusItems[0]?.totalCount}{' '}
             {data.getScheduledCorpusItems[0]?.totalCount === 1
