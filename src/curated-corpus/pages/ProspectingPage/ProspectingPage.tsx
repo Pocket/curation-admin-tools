@@ -89,6 +89,13 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
           scheduledSurfaceGuid: currentScheduledSurfaceGuid,
         },
       },
+      onCompleted: (data) => {
+        // after this query has finished fetching, if no data and no errors returned
+        // show empty state
+        if (!data && !error) {
+          setShowEmptyState(true);
+        }
+      },
     });
 
   // Get the list of Scheduled Surfaces the currently logged-in user has access to.
@@ -222,26 +229,36 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   // Prepare the "update prospect as curated" mutation
   const [updateProspectAsCurated] = useUpdateProspectAsCuratedMutation();
 
-  // Instead of working off Apollo Client's cache for the `getProspects` query
-  // let's set up another variable for the prospect card list.
+  // Instead of working off Apollo Client's cache for the `getProspects` query,
+  // storing the prospects here which will be shown in the UI.
   const [prospects, setProspects] = useState<Prospect[]>([]);
+
+  // Unsorted prospects. This represents our source of truth and what is received from the api call.
+  // We use the above `prospects` state variable to render the UI.
+  // NOTE: this state variable should NOT be mutated.
   const [unsortedProspects, setUnsortedProspects] = useState<Prospect[]>([]);
 
-  // When the batch of random prospects has loaded, update our `prospects` variable
+  // When the batch of random prospects has loaded, update our `unsortedProspects` variable
   // with the contents of the API response. This will allow us to remove items from
   // the response array and unmount the relevant prospect cards when they have been
   // processed.
   useEffect(() => {
-    const fetchedProspects = data?.getProspects!;
-    if (!sortByPublishedDate) {
-      setProspects(fetchedProspects);
-      return;
-    }
+    if (data) {
+      const fetchedProspects = data.getProspects;
+      setUnsortedProspects(fetchedProspects);
 
-    // the sort by published date toggle is on, so we'll do the sorting
-    // make sure we have a copy of the ranked prospects if the user toggles
-    // 'sortByPublishedDate' off
-    handleSortByPublishedDate(fetchedProspects);
+      // if both sort filters are unset(initial page load), render the received prospects and early exit
+      if (!sortByPublishedDate && !sortByTimeToRead) {
+        setProspects(fetchedProspects);
+        return;
+      }
+
+      // if `sortByPublishedDate` is set, sort by published date
+      sortByPublishedDate && handleSortByPublishedDate(fetchedProspects);
+
+      // if `sortByTimeToRead` is set, sort by time to read
+      sortByTimeToRead && handleSortByTimeToRead(fetchedProspects);
+    }
   }, [data]);
 
   // For filtering on prospects, we can pass additional variables to the `refetch()`
@@ -573,8 +590,9 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     showNotification('Prospect dismissed', 'success');
   };
 
-  // check if no prospects are returned in the api call
-  const showEmptyState = prospects && !loading && prospects.length === 0;
+  // state variable to toggle on or off the empty state component
+  // if the callGetProspects query returns no data and no errors, this will be set to true
+  const [showEmptyState, setShowEmptyState] = useState<boolean>(false);
 
   const toggleScheduleModalAndDisableScheduledSurface = () => {
     setDisableScheduledSurface(true), toggleScheduleModal();
@@ -595,10 +613,14 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   };
   // The value of the publisher filter (min two characters), e.g. "cnbc". Case-insensitive.
   const [filterByPublisher, setFilterByPublisher] = useState('');
+
+  // Sorts by descending published date
   const [sortByPublishedDate, setSortByPublishedDate] = useState(false);
 
+  // Sorts by descending time to read
+  const [sortByTimeToRead, setSortByTimeToRead] = useState(false);
+
   const handleSortByPublishedDate = (prospectList: Prospect[]) => {
-    setUnsortedProspects([...(prospectList || [])]);
     const sortedProspects = [...(prospectList || [])].sort((a, b) => {
       return (
         new Date(b.item?.datePublished ?? distantPast).getTime() -
@@ -611,10 +633,14 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   const onSortByPublishedDate = () => {
     // from not sorted to sorted
     if (!sortByPublishedDate) {
+      // if sortByTimeToRead is set, toggle it off
+      sortByTimeToRead && setSortByTimeToRead(false);
+
       handleSortByPublishedDate(prospects);
       setSortByPublishedDate((prev) => !prev);
       return;
     }
+
     const mappedProspectIds = prospects.map((p) => p.id);
     setProspects(
       unsortedProspects.filter((up: { id: string }) =>
@@ -622,6 +648,31 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       )
     );
     setSortByPublishedDate((prev) => !prev);
+  };
+
+  const handleSortByTimeToRead = (unsortedProspects: Prospect[]): void => {
+    // if toggled on, toggle off and reset to unsorted prospects
+    if (sortByTimeToRead) {
+      setSortByTimeToRead(false);
+      setProspects(unsortedProspects);
+
+      return;
+    }
+
+    // if sortByPublishedDate is set, toggle it off before sorting by time to read below
+    sortByPublishedDate && setSortByPublishedDate(false);
+
+    // create a copy of the unsorted prospects
+    // we don't want to mutate the original unsorted prospect array
+    const prospectsToSort = [...unsortedProspects];
+
+    // apply sort by time to read
+    setSortByTimeToRead(true);
+    setProspects(
+      prospectsToSort.sort((a, b) => {
+        return (b.item?.timeToRead ?? 0) - (a.item?.timeToRead ?? 0);
+      })
+    );
   };
 
   return (
@@ -753,6 +804,10 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                 excludePublisherSwitch={excludePublisherSwitch}
                 onSortByPublishedDate={onSortByPublishedDate}
                 sortByPublishedDate={sortByPublishedDate}
+                sortByTimeToRead={sortByTimeToRead}
+                handleSortByTimeToRead={() =>
+                  handleSortByTimeToRead(unsortedProspects)
+                }
               />
             </Grid>
           </Grid>

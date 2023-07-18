@@ -2033,6 +2033,7 @@ export type BasicParserItemDataFragment = {
   itemId: string;
   normalUrl: string;
   datePublished?: any | null;
+  timeToRead?: number | null;
 };
 
 export type CollectionAuthorDataFragment = {
@@ -2351,6 +2352,7 @@ export type ProspectDataWithCorpusItemsFragment = {
     itemId: string;
     normalUrl: string;
     datePublished?: any | null;
+    timeToRead?: number | null;
   } | null;
 };
 
@@ -3450,6 +3452,7 @@ export type UpdateProspectAsCuratedMutation = {
       itemId: string;
       normalUrl: string;
       datePublished?: any | null;
+      timeToRead?: number | null;
     } | null;
   } | null;
 };
@@ -4008,6 +4011,7 @@ export type GetProspectsQuery = {
       itemId: string;
       normalUrl: string;
       datePublished?: any | null;
+      timeToRead?: number | null;
     } | null;
   }>;
 };
@@ -4510,6 +4514,7 @@ export const BasicParserItemDataFragmentDoc = gql`
     itemId
     normalUrl
     datePublished
+    timeToRead
   }
 `;
 export const ProspectDataWithCorpusItemsFragmentDoc = gql`

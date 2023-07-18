@@ -9,8 +9,10 @@ describe('The ProspectPublisherFilter component', () => {
   const onChange = jest.fn();
   const onSortByPublishedDate = jest.fn();
   const sortByPublishedDate = false;
+  const sortByTimeToRead = false;
+  const handleSortByTimeToRead = jest.fn();
 
-  it('renders the "exclude" label correctly', () => {
+  const renderComponent = () => {
     render(
       <ProspectPublisherFilter
         excludePublisherSwitch={excludePublisherSwitch}
@@ -19,8 +21,14 @@ describe('The ProspectPublisherFilter component', () => {
         onChange={onChange}
         onSortByPublishedDate={onSortByPublishedDate}
         sortByPublishedDate={sortByPublishedDate}
+        sortByTimeToRead={sortByTimeToRead}
+        handleSortByTimeToRead={handleSortByTimeToRead}
       />
     );
+  };
+
+  it('renders the "exclude" label correctly', () => {
+    renderComponent();
 
     // The default switch label is present
     const switchLabel = screen.getByText(/exclude/i);
@@ -34,19 +42,24 @@ describe('The ProspectPublisherFilter component', () => {
   it('renders the "include" label correctly', () => {
     excludePublisherSwitch = false;
 
-    render(
-      <ProspectPublisherFilter
-        excludePublisherSwitch={excludePublisherSwitch}
-        filterByPublisher={filterByPublisher}
-        setFilterByPublisher={setFilterByPublisher}
-        onChange={onChange}
-        onSortByPublishedDate={onSortByPublishedDate}
-        sortByPublishedDate={sortByPublishedDate}
-      />
-    );
+    renderComponent();
 
     // The "include" switch label is present
     const switchLabel = screen.getByText(/include/i);
     expect(switchLabel).toBeInTheDocument();
+  });
+
+  it('should render the sort by published date filter', () => {
+    renderComponent();
+
+    const publishedDate = screen.getByText(/Published Date/i);
+    expect(publishedDate).toBeInTheDocument();
+  });
+
+  it('should render the sort by time to read filter', () => {
+    renderComponent();
+
+    const timeToRead = screen.getByText(/Time to Read/i);
+    expect(timeToRead).toBeInTheDocument();
   });
 });
