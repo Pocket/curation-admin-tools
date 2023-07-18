@@ -89,6 +89,13 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
           scheduledSurfaceGuid: currentScheduledSurfaceGuid,
         },
       },
+      onCompleted: (data) => {
+        // after this query has finished fetching, if no data and no errors returned
+        // show empty state
+        if (!data && !error) {
+          setShowEmptyState(true);
+        }
+      },
     });
 
   // Get the list of Scheduled Surfaces the currently logged-in user has access to.
@@ -583,8 +590,9 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     showNotification('Prospect dismissed', 'success');
   };
 
-  // check if no prospects are returned in the api call
-  const showEmptyState = prospects && !loading && prospects.length === 0;
+  // state variable to toggle on or off the empty state component
+  // if the callGetProspects query returns no data and no errors, this will be set to true
+  const [showEmptyState, setShowEmptyState] = useState<boolean>(false);
 
   const toggleScheduleModalAndDisableScheduledSurface = () => {
     setDisableScheduledSurface(true), toggleScheduleModal();
