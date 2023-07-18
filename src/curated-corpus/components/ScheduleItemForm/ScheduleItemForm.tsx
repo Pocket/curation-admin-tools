@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Grid, LinearProgress, TextField } from '@mui/material';
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
@@ -11,6 +11,7 @@ import {
 } from '../../../_shared/components';
 import { getValidationSchema } from './ScheduleItemForm.validation';
 import { ScheduledSurface } from '../../../api/generatedTypes';
+import { ScheduleSummaryConnector } from '../ScheduleSummaryConnector/ScheduleSummaryConnector';
 
 interface ScheduleItemFormProps {
   /**
@@ -22,13 +23,6 @@ interface ScheduleItemFormProps {
    * What to do when the user picks a date.
    */
   handleDateChange: (date: any, value?: string | null | undefined) => void;
-
-  /**
-   * The copy/JSX to show underneath the form when the user picks a date
-   * and a call to the API is triggered to look up whether any other
-   * items have been scheduled for this date.
-   */
-  lookupCopy: JSX.Element | string;
 
   /**
    * The list of Scheduled Surfaces the logged-in user has access to.
@@ -68,7 +62,6 @@ export const ScheduleItemForm: React.FC<
   const {
     approvedItemExternalId,
     handleDateChange,
-    lookupCopy,
     scheduledSurfaces,
     scheduledSurfaceGuid,
     disableScheduledSurface = false,
@@ -82,7 +75,10 @@ export const ScheduleItemForm: React.FC<
   // Run the lookup query for scheduled items on loading the component,
   // so that users can see straight away how many stories have already
   // been scheduled for the default date (tomorrow).
+  const [refreshData, setRefreshData] = useState(false);
+
   useEffect(() => {
+    setRefreshData(true);
     handleDateChange(tomorrow);
   }, []);
 
@@ -161,7 +157,17 @@ export const ScheduleItemForm: React.FC<
               )}
             />
           </Grid>
-
+          {formik.values.scheduledSurfaceGuid &&
+            formik.values.scheduledSurfaceGuid.length > 0 && (
+              <Grid item xs={12}>
+                <ScheduleSummaryConnector
+                  date={selectedDate!}
+                  scheduledSurfaceGuid={formik.values.scheduledSurfaceGuid}
+                  refreshData={refreshData}
+                  setRefreshData={setRefreshData}
+                />
+              </Grid>
+            )}
           {formik.isSubmitting && (
             <Grid item xs={12}>
               <Box mb={3}>
@@ -181,13 +187,6 @@ export const ScheduleItemForm: React.FC<
 
         <SharedFormButtons onCancel={onCancel} />
       </form>
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Box display="flex" justifyContent="center" mt={2} mb={1}>
-            <h3>{lookupCopy}</h3>
-          </Box>
-        </Grid>
-      </Grid>
     </LocalizationProvider>
   );
 };

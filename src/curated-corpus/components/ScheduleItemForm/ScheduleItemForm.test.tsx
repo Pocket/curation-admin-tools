@@ -1,8 +1,9 @@
 import React from 'react';
 import { DateTime } from 'luxon';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from "@testing-library/react";
 import { ScheduleItemForm } from './ScheduleItemForm';
 import { ProspectType, ScheduledSurface } from '../../../api/generatedTypes';
+import { MockedProvider } from '@apollo/client/testing';
 
 describe('The ScheduleItemForm component', () => {
   const handleSubmit = jest.fn();
@@ -31,7 +32,6 @@ describe('The ScheduleItemForm component', () => {
     render(
       <ScheduleItemForm
         handleDateChange={jest.fn()}
-        lookupCopy=""
         selectedDate={DateTime.local()}
         onSubmit={handleSubmit}
         scheduledSurfaces={scheduledSurfaces}
@@ -48,7 +48,6 @@ describe('The ScheduleItemForm component', () => {
     render(
       <ScheduleItemForm
         handleDateChange={jest.fn()}
-        lookupCopy=""
         selectedDate={DateTime.local()}
         onSubmit={handleSubmit}
         scheduledSurfaces={scheduledSurfaces}
@@ -67,7 +66,6 @@ describe('The ScheduleItemForm component', () => {
       <ScheduleItemForm
         data-testId="surface-selector"
         handleDateChange={jest.fn()}
-        lookupCopy=""
         selectedDate={DateTime.local()}
         onSubmit={handleSubmit}
         scheduledSurfaces={scheduledSurfaces}
@@ -88,16 +86,17 @@ describe('The ScheduleItemForm component', () => {
 
   it('pre-selects the passed in scheduled surface', () => {
     render(
-      <ScheduleItemForm
-        data-testId="surface-selector"
-        handleDateChange={jest.fn()}
-        lookupCopy=""
-        selectedDate={DateTime.local()}
-        onSubmit={handleSubmit}
-        scheduledSurfaces={scheduledSurfaces}
-        scheduledSurfaceGuid="NEW_TAB_EN_US"
-        approvedItemExternalId={'123abc'}
-      />
+      <MockedProvider>
+        <ScheduleItemForm
+          data-testId="surface-selector"
+          handleDateChange={jest.fn()}
+          selectedDate={DateTime.local()}
+          onSubmit={handleSubmit}
+          scheduledSurfaces={scheduledSurfaces}
+          scheduledSurfaceGuid="NEW_TAB_EN_US"
+          approvedItemExternalId={'123abc'}
+        />
+      </MockedProvider>
     );
 
     const select = screen.getByLabelText(
@@ -114,15 +113,16 @@ describe('The ScheduleItemForm component', () => {
 
   it('pre-selects the only available scheduled surface if none was specified and the user only has access to a single one', () => {
     render(
-      <ScheduleItemForm
-        data-testId="surface-selector"
-        handleDateChange={jest.fn()}
-        lookupCopy=""
-        selectedDate={DateTime.local()}
-        onSubmit={handleSubmit}
-        scheduledSurfaces={[scheduledSurfaces[0]]}
-        approvedItemExternalId={'123abc'}
-      />
+      <MockedProvider>
+        <ScheduleItemForm
+          data-testId="surface-selector"
+          handleDateChange={jest.fn()}
+          selectedDate={DateTime.local()}
+          onSubmit={handleSubmit}
+          scheduledSurfaces={[scheduledSurfaces[0]]}
+          approvedItemExternalId={'123abc'}
+        />
+      </MockedProvider>
     );
 
     const select = screen.getByLabelText(
@@ -134,5 +134,26 @@ describe('The ScheduleItemForm component', () => {
 
     // the scheduled surface should be selected
     expect(select.options[1].selected).toBeTruthy();
+  });
+
+  it('ensure that the schedule context is rendered when scheduled surface is populated', async () => {
+    render(
+      <MockedProvider>
+        <ScheduleItemForm
+          data-testId="surface-selector"
+          handleDateChange={jest.fn()}
+          selectedDate={DateTime.local()}
+          onSubmit={handleSubmit}
+          scheduledSurfaces={scheduledSurfaces}
+          scheduledSurfaceGuid="NEW_TAB_EN_US"
+          approvedItemExternalId={'123abc'}
+        />
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText(/story/i)).toBeInTheDocument();
+      expect(screen.getByText(/syndicated/i)).toBeInTheDocument();
+    });
   });
 });
