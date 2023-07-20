@@ -121,7 +121,7 @@ describe('The CollectionForm component', () => {
     expect(form).toBeInTheDocument();
   });
 
-  it('shows five action buttons by default', () => {
+  it('shows six action buttons by default', () => {
     render(
       <CollectionForm
         authors={authors}
@@ -136,11 +136,11 @@ describe('The CollectionForm component', () => {
 
     const buttons = screen.getAllByRole('button');
 
-    // The sixth button is part of the MUI Autocomplete component
-    expect(buttons.length).toEqual(6);
+    // The seventh button is part of the MUI Autocomplete component
+    expect(buttons.length).toEqual(7);
   });
 
-  it('only shows four buttons if not in edit mode', () => {
+  it('only shows five buttons if not in edit mode', () => {
     render(
       <CollectionForm
         authors={authors}
@@ -156,8 +156,8 @@ describe('The CollectionForm component', () => {
 
     const buttons = screen.getAllByRole('button');
 
-    // The fifth button is part of the MUI Autocomplete component
-    expect(buttons.length).toEqual(5);
+    // The sixth button is part of the MUI Autocomplete component
+    expect(buttons.length).toEqual(6);
   });
 
   it('displays collection information', () => {
