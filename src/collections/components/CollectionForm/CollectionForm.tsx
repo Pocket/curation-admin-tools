@@ -30,6 +30,8 @@ import {
   IabParentCategory,
   Label,
 } from '../../../api/generatedTypes';
+import { applyCurlyQuotes } from '../../../_shared/utils/applyCurlyQuotes';
+import { applyApTitleCase } from '../../../_shared/utils/applyApTitleCase';
 
 interface CollectionFormProps {
   /**
@@ -169,6 +171,13 @@ export const CollectionForm: React.FC<
     formik.setFieldValue('slug', newSlug);
   };
 
+  const fixTitle = () => {
+    formik.setFieldValue(
+      'title',
+      applyCurlyQuotes(applyApTitleCase(formik.values.title))
+    );
+  };
+
   /**
    * Work out which IAB child category to show when an IAB parent category is chosen
    */
@@ -199,12 +208,21 @@ export const CollectionForm: React.FC<
     <form name="collection-form" onSubmit={formik.handleSubmit}>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <FormikTextField
-            id="title"
-            label="Title"
-            fieldProps={formik.getFieldProps('title')}
-            fieldMeta={formik.getFieldMeta('title')}
-          />
+          <Box display="flex">
+            <Box flexGrow={1} alignSelf="center" textOverflow="ellipsis">
+              <FormikTextField
+                id="title"
+                label="Title"
+                fieldProps={formik.getFieldProps('title')}
+                fieldMeta={formik.getFieldMeta('title')}
+              />
+            </Box>
+            <Box alignSelf="baseline" ml={1}>
+              <Button buttonType="hollow" onClick={fixTitle}>
+                Fix&nbsp;Title
+              </Button>
+            </Box>
+          </Box>
         </Grid>
 
         <Grid item xs={12}>
@@ -370,6 +388,19 @@ export const CollectionForm: React.FC<
             />
           </MarkdownPreview>
         </Grid>
+        <Grid item xs={12}>
+          <Button
+            buttonType="hollow"
+            onClick={() =>
+              formik.setFieldValue(
+                'excerpt',
+                applyCurlyQuotes(formik.values.excerpt)
+              )
+            }
+          >
+            Fix quotes
+          </Button>
+        </Grid>
 
         <Grid item xs={12}>
           <MarkdownPreview minHeight={15.5} source={formik.values.intro}>
@@ -382,6 +413,19 @@ export const CollectionForm: React.FC<
               minRows={12}
             />
           </MarkdownPreview>
+        </Grid>
+        <Grid item xs={12}>
+          <Button
+            buttonType="hollow"
+            onClick={() =>
+              formik.setFieldValue(
+                'intro',
+                applyCurlyQuotes(formik.values.intro)
+              )
+            }
+          >
+            Fix quotes
+          </Button>
         </Grid>
 
         {formik.isSubmitting && (
