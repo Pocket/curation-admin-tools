@@ -30,6 +30,7 @@ import {
   IabParentCategory,
   Label,
 } from '../../../api/generatedTypes';
+import { applyCurlyQuotes } from '../../../_shared/utils/applyCurlyQuotes';
 
 interface CollectionFormProps {
   /**
@@ -370,6 +371,19 @@ export const CollectionForm: React.FC<
             />
           </MarkdownPreview>
         </Grid>
+        <Grid item xs={12}>
+          <Button
+            buttonType="hollow"
+            onClick={() =>
+              formik.setFieldValue(
+                'excerpt',
+                applyCurlyQuotes(formik.values.excerpt)
+              )
+            }
+          >
+            Fix quotes
+          </Button>
+        </Grid>
 
         <Grid item xs={12}>
           <MarkdownPreview minHeight={15.5} source={formik.values.intro}>
@@ -382,6 +396,19 @@ export const CollectionForm: React.FC<
               minRows={12}
             />
           </MarkdownPreview>
+        </Grid>
+        <Grid item xs={12}>
+          <Button
+            buttonType="hollow"
+            onClick={() =>
+              formik.setFieldValue(
+                'intro',
+                applyCurlyQuotes(formik.values.intro)
+              )
+            }
+          >
+            Fix quotes
+          </Button>
         </Grid>
 
         {formik.isSubmitting && (
