@@ -7,7 +7,6 @@ import {
   ApprovedCorpusItemEdge,
   ApprovedCorpusItemFilter,
   useGetApprovedItemsLazyQuery,
-  useGetScheduledSurfacesForUserQuery,
 } from '../../../api/generatedTypes';
 import { HandleApiResponse } from '../../../_shared/components';
 import {
@@ -17,10 +16,8 @@ import {
   NextPrevPagination,
   RejectCorpusItemAction,
   ScheduleCorpusItemAction,
-  SidebarWrapper,
 } from '../../components';
 import { useToggle } from '../../../_shared/hooks';
-import { DateTime } from 'luxon';
 
 export const CorpusPage: React.FC = (): JSX.Element => {
   // Get the usual API response vars and a helper method to retrieve data
@@ -39,38 +36,6 @@ export const CorpusPage: React.FC = (): JSX.Element => {
   // paginating through results.
   const [before, setBefore] = useState<string | null | undefined>(undefined);
   const [after, setAfter] = useState<string | null | undefined>(undefined);
-
-  // set up the initial scheduled surface guid value (nothing at this point)
-  const [currentScheduledSurfaceGuid, setCurrentScheduledSurfaceGuid] =
-    useState('');
-
-  // This is the date used in the sidebar. Defaults to tomorrow
-  const [sidebarDate, setSidebarDate] = useState<DateTime | null>(
-    DateTime.local().plus({ days: 1 })
-  );
-
-  // Whether the data in the sidebar needs to be refreshed.
-  // Is needed when the user switches from surface to surface or
-  // when they schedule something for the date chosen in the sidebar.
-  const [refreshSidebarData, setRefreshSidebarData] = useState(false);
-
-  // Get the list of Scheduled Surfaces the currently logged-in user has access to.
-  const {
-    data: scheduledSurfaceData,
-    loading: scheduledSurfaceLoading,
-    error: scheduledSurfaceError,
-  } = useGetScheduledSurfacesForUserQuery({
-    onCompleted: (data) => {
-      const options = data.getScheduledSurfacesForUser.map(
-        (scheduledSurface) => {
-          return { code: scheduledSurface.guid, name: scheduledSurface.name };
-        }
-      );
-      if (options.length > 0) {
-        setCurrentScheduledSurfaceGuid(options[0].code);
-      }
-    },
-  });
 
   // On the initial page load, load most recently added Curated Items -
   // the first page of results, no filters applied.
@@ -175,7 +140,7 @@ export const CorpusPage: React.FC = (): JSX.Element => {
     <>
       <h1>Corpus</h1>
       <Grid container spacing={2}>
-        <Grid item xs={8}>
+        <Grid item xs={12}>
           <ApprovedItemSearchForm onSubmit={handleSubmit} />
 
           {!data && <HandleApiResponse loading={loading} error={error} />}
@@ -225,7 +190,7 @@ export const CorpusPage: React.FC = (): JSX.Element => {
                       item
                       xs={12}
                       sm={6}
-                      md={4}
+                      md={3}
                       key={`grid-${edge.node.externalId}`}
                     >
                       <ApprovedItemCardWrapper
@@ -249,23 +214,6 @@ export const CorpusPage: React.FC = (): JSX.Element => {
                 }
               )}
           </Grid>
-        </Grid>
-        {!scheduledSurfaceData && (
-          <HandleApiResponse
-            loading={scheduledSurfaceLoading}
-            error={scheduledSurfaceError}
-          />
-        )}
-        <Grid item sm={4}>
-          {currentScheduledSurfaceGuid.length > 0 && (
-            <SidebarWrapper
-              date={sidebarDate!}
-              setSidebarDate={setSidebarDate}
-              scheduledSurfaceGuid={currentScheduledSurfaceGuid}
-              refreshData={refreshSidebarData}
-              setRefreshData={setRefreshSidebarData}
-            />
-          )}
         </Grid>
       </Grid>
       {data && (
