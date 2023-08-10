@@ -32,10 +32,10 @@ function createPagerDuty(scope: Construct) {
     prefix: config.prefix,
     service: {
       criticalEscalationPolicyId: incidentManagement
-        .get('policy_backend_product_critical_id')
+        .get('policy_default_critical_id')
         .toString(),
       nonCriticalEscalationPolicyId: incidentManagement
-        .get('policy_backend_product_non_critical_id')
+        .get('policy_default_non_critical_id')
         .toString(),
     },
   });
