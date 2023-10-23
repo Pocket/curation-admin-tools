@@ -51,7 +51,7 @@ describe('The ScheduleCorpusItemAction', () => {
     // The solution is to add an extra day to ensure that MUI does not fetch
     // the days from a previous month when running the test case on the
     // last day of a month.
-    const today = DateTime.local().plus({ days: 2 });
+    const today = DateTime.local().setZone('America/New_York');
 
     mocks = [
       mock_AllScheduledSurfaces,
