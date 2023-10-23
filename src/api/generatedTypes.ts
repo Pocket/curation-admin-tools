@@ -421,6 +421,8 @@ export type CorpusItem = {
    * marked as beta because it's not ready yet for large client request.
    */
   shortUrl?: Maybe<Scalars['Url']>;
+  /** Time to read in minutes. Is nullable. */
+  timeToRead?: Maybe<Scalars['Int']>;
   /** The URL of the Approved Item. */
   url: Scalars['Url'];
 };
