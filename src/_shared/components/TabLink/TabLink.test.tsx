@@ -42,6 +42,6 @@ describe('The TabLink component', () => {
     );
 
     const tabLink = screen.getByRole('link');
-    expect(within(tabLink).getByText('999+')).toBeInTheDocument();
+    expect(within(tabLink).getByText('1235')).toBeInTheDocument();
   });
 });
