@@ -1,16 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   FormControlLabel,
   FormHelperText,
   Grid,
   LinearProgress,
+  Link,
   Switch,
   TextField,
+  Tooltip,
+  styled,
 } from '@mui/material';
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import { validationSchema } from './ApprovedItemForm.validation';
-import { ApprovedCorpusItem, CuratedStatus } from '../../../api/generatedTypes';
+import {
+  ApprovedCorpusItem,
+  CuratedStatus,
+  useGetOpenGraphFieldsQuery,
+} from '../../../api/generatedTypes';
 import {
   ApprovedItemFromProspect,
   curationStatusOptions,
@@ -29,6 +36,7 @@ import {
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 import { applyCurlyQuotes } from '../../../_shared/utils/applyCurlyQuotes';
 import { applyApTitleCase } from '../../../_shared/utils/applyApTitleCase';
+import { curationPalette } from '../../../theme';
 
 interface ApprovedItemFormProps {
   /**
@@ -44,6 +52,9 @@ interface ApprovedItemFormProps {
     formikHelpers: FormikHelpers<any>
   ) => void | Promise<any>;
 
+  /**
+   * On Cancel function closes the form / modal
+   */
   onCancel: VoidFunction;
 
   /**
@@ -106,6 +117,34 @@ export const ApprovedItemForm: React.FC<
     formik.setFieldValue('imageUrl', url);
   };
 
+  // state variable to store and set Open Graph excerpt
+  const [ogExcerpt, setOgExcerpt] = useState<string>('');
+
+  /**
+   * This calls the query on component mount. This isn't ideal because the editors might not even want the OG excerpt so we
+   * are making an unnecessary fetch request. However, this doesn't impact the UX (render performance) right now
+   * but should be refactored whenever possible.
+   */
+  useGetOpenGraphFieldsQuery({
+    variables: { url: approvedItem.url },
+    fetchPolicy: 'no-cache',
+    onCompleted: ({ getOpenGraphFields }) => {
+      const OGExcerpt = getOpenGraphFields?.description;
+
+      OGExcerpt && setOgExcerpt(OGExcerpt);
+    },
+  });
+
+  /**
+   * Using this hook to clean up the state i.e reset the state ogExcerpt variable
+   * component unmount
+   */
+  useEffect(() => {
+    return () => {
+      setOgExcerpt('');
+    };
+  }, [approvedItem.url]);
+
   const fixTitle = () => {
     formik.setFieldValue(
       'title',
@@ -116,6 +155,33 @@ export const ApprovedItemForm: React.FC<
   const fixExcerpt = () => {
     formik.setFieldValue('excerpt', applyCurlyQuotes(formik.values.excerpt));
   };
+
+  const isUsingOGExcerpt = formik.getFieldMeta('excerpt').value === ogExcerpt;
+
+  const hasSameParserAndOGExcerpt = approvedItem.excerpt === ogExcerpt;
+
+  const getExcerptToggleText = (): string => {
+    if (hasSameParserAndOGExcerpt) {
+      return 'Parser excerpt matches OG excerpt';
+    }
+
+    return isUsingOGExcerpt ? 'Use Parser Excerpt' : 'Use Open Graph Excerpt';
+  };
+
+  const toggleParserAndOGExcerpt = () => {
+    isUsingOGExcerpt
+      ? formik.setFieldValue('excerpt', approvedItem.excerpt)
+      : formik.setFieldValue('excerpt', ogExcerpt);
+  };
+
+  const StyledExcerptToggleLink = styled(Link)({
+    textDecoration: 'none',
+    cursor: 'pointer',
+    color: hasSameParserAndOGExcerpt
+      ? curationPalette.neutral
+      : curationPalette.primary,
+    pointerEvents: hasSameParserAndOGExcerpt ? 'none' : 'auto',
+  });
 
   return (
     <form name="approved-item-edit-form" onSubmit={formik.handleSubmit}>
@@ -171,11 +237,31 @@ export const ApprovedItemForm: React.FC<
             fieldMeta={formik.getFieldMeta('excerpt')}
           />
         </Grid>
-        <Grid item xs={12}>
-          <Button buttonType="hollow" onClick={fixExcerpt}>
-            Fix excerpt
-          </Button>
+
+        <Grid
+          container
+          item
+          direction="row"
+          justifyContent="flex-start"
+          columnSpacing={3}
+        >
+          <Grid item>
+            <Button buttonType="hollow" onClick={fixExcerpt}>
+              Fix Quotes
+            </Button>
+          </Grid>
+          <Grid item>
+            <Tooltip
+              title={isUsingOGExcerpt ? approvedItem.excerpt : ogExcerpt}
+              arrow
+            >
+              <StyledExcerptToggleLink onClick={toggleParserAndOGExcerpt}>
+                {getExcerptToggleText()}
+              </StyledExcerptToggleLink>
+            </Tooltip>
+          </Grid>
         </Grid>
+
         <Grid item xs={12}>
           <Grid container direction="row" spacing={3}>
             <Grid item md={3}>
