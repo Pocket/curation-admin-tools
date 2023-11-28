@@ -1353,6 +1353,7 @@ export enum ProspectType {
   DomainAllowlist = 'DOMAIN_ALLOWLIST',
   Recommended = 'RECOMMENDED',
   RssLogistic = 'RSS_LOGISTIC',
+  RssLogisticRecent = 'RSS_LOGISTIC_RECENT',
   SyndicatedNew = 'SYNDICATED_NEW',
   SyndicatedRerun = 'SYNDICATED_RERUN',
   Timespent = 'TIMESPENT',
