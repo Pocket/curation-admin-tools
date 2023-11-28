@@ -23,6 +23,7 @@ const allScheduledSurfaces: ScheduledSurface[] = [
       ProspectType.TimespentModeled,
       ProspectType.TitleUrlModeled,
       ProspectType.RssLogistic,
+      ProspectType.RssLogisticRecent,
     ],
   },
   {
