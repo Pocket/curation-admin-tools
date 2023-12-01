@@ -117,11 +117,15 @@ export const transformUrlMetaDataToProspect = (
 ): Prospect => {
   // set language to undefined if metadata.language is an empty string or undefined.
   // if not, then map it from string to its corresponding CorpusLanguage enum value
-  const language = !metadata.language
-    ? undefined
-    : metadata.language === 'en'
-    ? CorpusLanguage.En
-    : CorpusLanguage.De;
+  let language: CorpusLanguage | undefined = undefined;
+
+  if (metadata.language) {
+    // CorpusLanguage values are upper-case. metadata.language is lower-case.
+    const upperCaseLanguage = metadata.language.toUpperCase() as CorpusLanguage;
+    if (Object.values(CorpusLanguage).includes(upperCaseLanguage)) {
+      language = upperCaseLanguage;
+    }
+  }
 
   return {
     // manually added items don't have a prospect id!

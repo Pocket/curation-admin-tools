@@ -142,26 +142,27 @@ describe('helper functions related to prospects', () => {
 
   describe('transformUrlMetaDataToProspect function', () => {
     const urlMetadata: UrlMetadata = { url: 'www.test-url.com' };
+    const defaultExpectedProspect: Prospect = {
+      id: '',
+      prospectId: '',
+      url: urlMetadata.url,
+      title: '',
+      imageUrl: '',
+      authors: '',
+      publisher: '',
+      language: undefined,
+      isSyndicated: false,
+      isCollection: false,
+      excerpt: '',
+      topic: '',
+      prospectType: '',
+      scheduledSurfaceGuid: '',
+    };
 
     it('should return the default values when metadata is lacking most of the fields', () => {
       const prospect = transformUrlMetaDataToProspect(urlMetadata);
 
-      expect(prospect).to.deep.equal({
-        id: '',
-        prospectId: '',
-        url: urlMetadata.url,
-        title: '',
-        imageUrl: '',
-        authors: '',
-        publisher: '',
-        language: undefined,
-        isSyndicated: false,
-        isCollection: false,
-        excerpt: '',
-        topic: '',
-        prospectType: '',
-        scheduledSurfaceGuid: '',
-      });
+      expect(prospect).to.deep.equal(defaultExpectedProspect);
     });
 
     it('should return correctly formatted prospect with values derived from the metadata', () => {
@@ -182,8 +183,7 @@ describe('helper functions related to prospects', () => {
       );
 
       expect(prospect).to.deep.equal({
-        id: '',
-        prospectId: '',
+        ...defaultExpectedProspect,
         url: metaDataWithPopulatedFields.url,
         title: metaDataWithPopulatedFields.title,
         imageUrl: metaDataWithPopulatedFields.imageUrl,
@@ -193,10 +193,31 @@ describe('helper functions related to prospects', () => {
         isSyndicated: true,
         isCollection: true,
         excerpt: metaDataWithPopulatedFields.excerpt,
-        topic: '',
-        prospectType: '',
-        scheduledSurfaceGuid: '',
       });
     });
+
+    it.each`
+      languageCode | expectedLanguage
+      ${'de'}      | ${CorpusLanguage.De}
+      ${'en'}      | ${CorpusLanguage.En}
+      ${'es'}      | ${CorpusLanguage.Es}
+      ${'fr'}      | ${CorpusLanguage.Fr}
+      ${'it'}      | ${CorpusLanguage.It}
+    `(
+      'should transform $languageCode from the metadata as $expectedLanguage',
+      ({ languageCode, expectedLanguage }) => {
+        const metaDataWithLanguage = {
+          ...urlMetadata,
+          language: languageCode,
+        };
+
+        const prospect = transformUrlMetaDataToProspect(metaDataWithLanguage);
+
+        expect(prospect).to.deep.equal({
+          ...defaultExpectedProspect,
+          language: expectedLanguage,
+        });
+      }
+    );
   });
 });
