@@ -1,7 +1,7 @@
 export const STOP_WORDS =
   'a an and at but by for in nor of on or so the to up yet';
 
-export const SEPARATORS = /(\s+|[-‑–—,:;!?()])/;
+export const SEPARATORS = /(\s+|[-‑–—,:;!?()“”‘’'"])/;
 
 export const stop = STOP_WORDS.split(' ');
 
