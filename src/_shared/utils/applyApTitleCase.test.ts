@@ -81,4 +81,36 @@ describe('applyApTitleCase', () => {
       expect(applyApTitleCase(type.result)).toEqual(type.expected);
     });
   });
+
+  it('words after curly apostrophes should be uppercase', () => {
+    const sentencesWithApostrophe = [
+      {
+        result:
+          '“Integrated thriving” can fix unhelpful buzz words like “girlboss” and “snail girl”',
+        expected:
+          '“Integrated Thriving” Can Fix Unhelpful Buzz Words Like “Girlboss” and “Snail Girl”',
+      },
+      {
+        result:
+          '‘Integrated thriving’ can fix unhelpful buzz words like ‘girlboss’ and ‘snail girl’',
+        expected:
+          '‘Integrated Thriving’ Can Fix Unhelpful Buzz Words Like ‘Girlboss’ and ‘Snail Girl’',
+      },
+      {
+        result:
+          "'Integrated thriving' can fix unhelpful buzz words like 'girlboss' and 'snail girl'",
+        expected:
+          "'Integrated Thriving' Can Fix Unhelpful Buzz Words Like 'Girlboss' and 'Snail Girl'",
+      },
+      {
+        result:
+          '"Integrated thriving" can fix unhelpful buzz words like "girlboss" and "snail girl"',
+        expected:
+          '"Integrated Thriving" Can Fix Unhelpful Buzz Words Like "Girlboss" and "Snail Girl"',
+      },
+    ];
+    sentencesWithApostrophe.forEach((swa) => {
+      expect(applyApTitleCase(swa.result)).toEqual(swa.expected);
+    });
+  });
 });
