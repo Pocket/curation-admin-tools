@@ -17,6 +17,7 @@ import {
   ApprovedCorpusItem,
   CuratedStatus,
   useGetOpenGraphFieldsQuery,
+  useGetUrlMetadataLazyQuery,
 } from '../../../api/generatedTypes';
 import {
   ApprovedItemFromProspect,
@@ -120,6 +121,9 @@ export const ApprovedItemForm: React.FC<
   // state variable to store and set Open Graph excerpt
   const [ogExcerpt, setOgExcerpt] = useState<string>('');
 
+  // state
+  const [parserExcerpt, setParserExcerpt] = useState<string>('');
+
   /**
    * This calls the query on component mount. This isn't ideal because the editors might not even want the OG excerpt so we
    * are making an unnecessary fetch request. However, this doesn't impact the UX (render performance) right now
@@ -127,11 +131,25 @@ export const ApprovedItemForm: React.FC<
    */
   useGetOpenGraphFieldsQuery({
     variables: { url: approvedItem.url },
-    fetchPolicy: 'no-cache',
+    fetchPolicy: 'cache-first',
     onCompleted: ({ getOpenGraphFields }) => {
-      const OGExcerpt = getOpenGraphFields?.description;
+      console.log('og call completed');
+      const ogExcerpt = getOpenGraphFields?.description;
 
-      OGExcerpt && setOgExcerpt(OGExcerpt);
+      ogExcerpt && setOgExcerpt(ogExcerpt);
+
+      if (ogExcerpt === approvedItem.excerpt) {
+        fetchAndSetParserExcerpt();
+      }
+    },
+  });
+
+  const [fetchAndSetParserExcerpt] = useGetUrlMetadataLazyQuery({
+    variables: { url: approvedItem.url },
+    fetchPolicy: 'cache-first',
+    onCompleted: ({ getUrlMetadata }) => {
+      console.log('parser call completed');
+      setParserExcerpt(getUrlMetadata.excerpt || '');
     },
   });
 
@@ -156,33 +174,41 @@ export const ApprovedItemForm: React.FC<
     formik.setFieldValue('excerpt', applyCurlyQuotes(formik.values.excerpt));
   };
 
-  const isUsingOGExcerpt = formik.getFieldMeta('excerpt').value === ogExcerpt;
+  // const isCurrentExcerptSameAsOGExcerpt = approvedItem.excerpt === ogExcerpt;
 
-  const hasSameParserAndOGExcerpt = approvedItem.excerpt === ogExcerpt;
+  // set this in state if it doesnt work
+  const isViewingOGExcerpt = formik.getFieldMeta('excerpt').value === ogExcerpt;
 
   const getExcerptToggleText = (): string => {
-    if (hasSameParserAndOGExcerpt) {
-      return 'Parser excerpt matches OG excerpt';
-    }
-
-    return isUsingOGExcerpt ? 'Use Parser Excerpt' : 'Use Open Graph Excerpt';
+    return isViewingOGExcerpt ? 'Use Parser Excerpt' : 'Use Open Graph Excerpt';
   };
 
   const toggleParserAndOGExcerpt = () => {
-    isUsingOGExcerpt
-      ? formik.setFieldValue('excerpt', approvedItem.excerpt)
+    // console.log('isViewingOGExcerpt', isViewingOGExcerpt);
+    // console.log(
+    //   'parserExcerpt || approvedItem.excerpt',
+    //   parserExcerpt || approvedItem.excerpt
+    // );
+
+    isViewingOGExcerpt
+      ? formik.setFieldValue('excerpt', parserExcerpt || approvedItem.excerpt)
       : formik.setFieldValue('excerpt', ogExcerpt);
+  };
+
+  const getExcerptToolTipText = () => {
+    return isViewingOGExcerpt
+      ? parserExcerpt || approvedItem.excerpt
+      : ogExcerpt;
   };
 
   const StyledExcerptToggleLink = styled(Link)({
     textDecoration: 'none',
     cursor: 'pointer',
-    color: hasSameParserAndOGExcerpt
-      ? curationPalette.neutral
-      : curationPalette.primary,
-    pointerEvents: hasSameParserAndOGExcerpt ? 'none' : 'auto',
+    color: curationPalette.primary,
   });
 
+  //TODO: fix equal excerpts logic
+  //TODO: move into custom hook and clean up
   return (
     <form name="approved-item-edit-form" onSubmit={formik.handleSubmit}>
       <Grid container spacing={3}>
@@ -251,10 +277,7 @@ export const ApprovedItemForm: React.FC<
             </Button>
           </Grid>
           <Grid item>
-            <Tooltip
-              title={isUsingOGExcerpt ? approvedItem.excerpt : ogExcerpt}
-              arrow
-            >
+            <Tooltip title={getExcerptToolTipText()} arrow>
               <StyledExcerptToggleLink onClick={toggleParserAndOGExcerpt}>
                 {getExcerptToggleText()}
               </StyledExcerptToggleLink>
