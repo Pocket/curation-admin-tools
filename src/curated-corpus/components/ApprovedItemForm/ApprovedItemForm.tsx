@@ -118,22 +118,44 @@ export const ApprovedItemForm: React.FC<
     formik.setFieldValue('imageUrl', url);
   };
 
-  // state variable to store and set Open Graph excerpt
+  // state variable to store and set Open Graph excerpt fetched by the query
   const [ogExcerpt, setOgExcerpt] = useState<string>('');
 
-  // state
+  // state variable to store and set parser excerpt fetched by the query
   const [parserExcerpt, setParserExcerpt] = useState<string>('');
+
+  // state variable to keep track if the fetched og excerpt and parser excerpts match
+  const [hasSameParserAndOGExcerpt, setHasSameParserAndOGExcerpt] =
+    useState(false);
+
+  /**
+   * Query to fetch the Parser excerpt for this approved item. Checks the cache first before making a request.
+   * This is called after the OG excerpt fetch request is completed. When completed, compares the two excerpts
+   * and sets hasSameParserAndOGExcerpt state.
+   */
+  const [fetchAndSetParserExcerpt] = useGetUrlMetadataLazyQuery({
+    variables: { url: approvedItem.url },
+    fetchPolicy: 'cache-first',
+    onCompleted: ({ getUrlMetadata }) => {
+      const parserExcerpt = getUrlMetadata.excerpt;
+      setParserExcerpt(parserExcerpt || '');
+
+      if (parserExcerpt === ogExcerpt) {
+        setHasSameParserAndOGExcerpt(true);
+      }
+    },
+  });
 
   /**
    * This calls the query on component mount. This isn't ideal because the editors might not even want the OG excerpt so we
    * are making an unnecessary fetch request. However, this doesn't impact the UX (render performance) right now
-   * but should be refactored whenever possible.
+   * but should be refactored whenever possible. Calls the parser query on complete only if the current item's excerpt is the
+   * same as the fetched og excerpt.
    */
   useGetOpenGraphFieldsQuery({
     variables: { url: approvedItem.url },
     fetchPolicy: 'cache-first',
     onCompleted: ({ getOpenGraphFields }) => {
-      console.log('og call completed');
       const ogExcerpt = getOpenGraphFields?.description;
 
       ogExcerpt && setOgExcerpt(ogExcerpt);
@@ -144,22 +166,14 @@ export const ApprovedItemForm: React.FC<
     },
   });
 
-  const [fetchAndSetParserExcerpt] = useGetUrlMetadataLazyQuery({
-    variables: { url: approvedItem.url },
-    fetchPolicy: 'cache-first',
-    onCompleted: ({ getUrlMetadata }) => {
-      console.log('parser call completed');
-      setParserExcerpt(getUrlMetadata.excerpt || '');
-    },
-  });
-
   /**
-   * Using this hook to clean up the state i.e reset the state ogExcerpt variable
-   * component unmount
+   * Using this hook to clean up the state variables on component unmount
    */
   useEffect(() => {
     return () => {
       setOgExcerpt('');
+      setParserExcerpt('');
+      setHasSameParserAndOGExcerpt(false);
     };
   }, [approvedItem.url]);
 
@@ -174,22 +188,19 @@ export const ApprovedItemForm: React.FC<
     formik.setFieldValue('excerpt', applyCurlyQuotes(formik.values.excerpt));
   };
 
-  // const isCurrentExcerptSameAsOGExcerpt = approvedItem.excerpt === ogExcerpt;
-
-  // set this in state if it doesnt work
+  // Boolean. Set to true if the current excerpt in the form excerpt input field is the og excerpt.
   const isViewingOGExcerpt = formik.getFieldMeta('excerpt').value === ogExcerpt;
 
+  // Gets the toggle link text
   const getExcerptToggleText = (): string => {
+    if (hasSameParserAndOGExcerpt) {
+      return 'Parser excerpt matches OG excerpt';
+    }
+
     return isViewingOGExcerpt ? 'Use Parser Excerpt' : 'Use Open Graph Excerpt';
   };
 
   const toggleParserAndOGExcerpt = () => {
-    // console.log('isViewingOGExcerpt', isViewingOGExcerpt);
-    // console.log(
-    //   'parserExcerpt || approvedItem.excerpt',
-    //   parserExcerpt || approvedItem.excerpt
-    // );
-
     isViewingOGExcerpt
       ? formik.setFieldValue('excerpt', parserExcerpt || approvedItem.excerpt)
       : formik.setFieldValue('excerpt', ogExcerpt);
@@ -202,13 +213,15 @@ export const ApprovedItemForm: React.FC<
   };
 
   const StyledExcerptToggleLink = styled(Link)({
+    verticalAlign: 'middle',
     textDecoration: 'none',
     cursor: 'pointer',
-    color: curationPalette.primary,
+    color: hasSameParserAndOGExcerpt
+      ? curationPalette.neutral
+      : curationPalette.primary,
+    pointerEvents: hasSameParserAndOGExcerpt ? 'none' : 'auto',
   });
 
-  //TODO: fix equal excerpts logic
-  //TODO: move into custom hook and clean up
   return (
     <form name="approved-item-edit-form" onSubmit={formik.handleSubmit}>
       <Grid container spacing={3}>
@@ -269,6 +282,7 @@ export const ApprovedItemForm: React.FC<
           item
           direction="row"
           justifyContent="flex-start"
+          alignItems="center"
           columnSpacing={3}
         >
           <Grid item>
