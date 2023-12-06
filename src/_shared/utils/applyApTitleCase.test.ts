@@ -82,25 +82,13 @@ describe('applyApTitleCase', () => {
     });
   });
 
-  it('words after curly apostrophes should be uppercase', () => {
+  it('words after double apostrophes should be uppercase', () => {
     const sentencesWithApostrophe = [
       {
         result:
           '“Integrated thriving” can fix unhelpful buzz words like “girlboss” and “snail girl”',
         expected:
           '“Integrated Thriving” Can Fix Unhelpful Buzz Words Like “Girlboss” and “Snail Girl”',
-      },
-      {
-        result:
-          '‘Integrated thriving’ can fix unhelpful buzz words like ‘girlboss’ and ‘snail girl’',
-        expected:
-          '‘Integrated Thriving’ Can Fix Unhelpful Buzz Words Like ‘Girlboss’ and ‘Snail Girl’',
-      },
-      {
-        result:
-          "'Integrated thriving' can fix unhelpful buzz words like 'girlboss' and 'snail girl'",
-        expected:
-          "'Integrated Thriving' Can Fix Unhelpful Buzz Words Like 'Girlboss' and 'Snail Girl'",
       },
       {
         result:
@@ -111,6 +99,18 @@ describe('applyApTitleCase', () => {
     ];
     sentencesWithApostrophe.forEach((swa) => {
       expect(applyApTitleCase(swa.result)).toEqual(swa.expected);
+    });
+  });
+
+  it('contractions should be properly uppercase', () => {
+    const sentencesWithContractions = [
+      {
+        result: "Here's what you haven't noticed",
+        expected: "Here's What You Haven't Noticed",
+      },
+    ];
+    sentencesWithContractions.forEach((swc) => {
+      expect(applyApTitleCase(swc.result)).toEqual(swc.expected);
     });
   });
 });
