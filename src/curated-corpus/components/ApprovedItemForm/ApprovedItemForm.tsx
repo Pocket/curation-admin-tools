@@ -1,16 +1,24 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   FormControlLabel,
   FormHelperText,
   Grid,
   LinearProgress,
+  Link,
   Switch,
   TextField,
+  Tooltip,
+  styled,
 } from '@mui/material';
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import { validationSchema } from './ApprovedItemForm.validation';
-import { ApprovedCorpusItem, CuratedStatus } from '../../../api/generatedTypes';
+import {
+  ApprovedCorpusItem,
+  CuratedStatus,
+  useGetOpenGraphFieldsQuery,
+  useGetUrlMetadataLazyQuery,
+} from '../../../api/generatedTypes';
 import {
   ApprovedItemFromProspect,
   curationStatusOptions,
@@ -29,6 +37,7 @@ import {
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 import { applyCurlyQuotes } from '../../../_shared/utils/applyCurlyQuotes';
 import { applyApTitleCase } from '../../../_shared/utils/applyApTitleCase';
+import { curationPalette } from '../../../theme';
 
 interface ApprovedItemFormProps {
   /**
@@ -44,6 +53,9 @@ interface ApprovedItemFormProps {
     formikHelpers: FormikHelpers<any>
   ) => void | Promise<any>;
 
+  /**
+   * On Cancel function closes the form / modal
+   */
   onCancel: VoidFunction;
 
   /**
@@ -106,6 +118,65 @@ export const ApprovedItemForm: React.FC<
     formik.setFieldValue('imageUrl', url);
   };
 
+  // state variable to store and set Open Graph excerpt fetched by the query
+  const [ogExcerpt, setOgExcerpt] = useState<string>('');
+
+  // state variable to store and set parser excerpt fetched by the query
+  const [parserExcerpt, setParserExcerpt] = useState<string>('');
+
+  // state variable to keep track if the fetched og excerpt and parser excerpts match
+  const [hasSameParserAndOGExcerpt, setHasSameParserAndOGExcerpt] =
+    useState(false);
+
+  /**
+   * Query to fetch the Parser excerpt for this approved item. Checks the cache first before making a request.
+   * This is called after the OG excerpt fetch request is completed. When completed, compares the two excerpts
+   * and sets hasSameParserAndOGExcerpt state.
+   */
+  const [fetchAndSetParserExcerpt] = useGetUrlMetadataLazyQuery({
+    variables: { url: approvedItem.url },
+    fetchPolicy: 'cache-first',
+    onCompleted: ({ getUrlMetadata }) => {
+      const parserExcerpt = getUrlMetadata.excerpt;
+      setParserExcerpt(parserExcerpt || '');
+
+      if (parserExcerpt === ogExcerpt) {
+        setHasSameParserAndOGExcerpt(true);
+      }
+    },
+  });
+
+  /**
+   * This calls the query on component mount. This isn't ideal because the editors might not even want the OG excerpt so we
+   * are making an unnecessary fetch request. However, this doesn't impact the UX (render performance) right now
+   * but should be refactored whenever possible. Calls the parser query on complete only if the current item's excerpt is the
+   * same as the fetched og excerpt.
+   */
+  useGetOpenGraphFieldsQuery({
+    variables: { url: approvedItem.url },
+    fetchPolicy: 'cache-first',
+    onCompleted: ({ getOpenGraphFields }) => {
+      const ogExcerpt = getOpenGraphFields?.description;
+
+      ogExcerpt && setOgExcerpt(ogExcerpt);
+
+      if (ogExcerpt === approvedItem.excerpt) {
+        fetchAndSetParserExcerpt();
+      }
+    },
+  });
+
+  /**
+   * Using this hook to clean up the state variables on component unmount
+   */
+  useEffect(() => {
+    return () => {
+      setOgExcerpt('');
+      setParserExcerpt('');
+      setHasSameParserAndOGExcerpt(false);
+    };
+  }, [approvedItem.url]);
+
   const fixTitle = () => {
     formik.setFieldValue(
       'title',
@@ -116,6 +187,40 @@ export const ApprovedItemForm: React.FC<
   const fixExcerpt = () => {
     formik.setFieldValue('excerpt', applyCurlyQuotes(formik.values.excerpt));
   };
+
+  // Boolean. Set to true if the current excerpt in the form excerpt input field is the og excerpt.
+  const isViewingOGExcerpt = formik.getFieldMeta('excerpt').value === ogExcerpt;
+
+  // Gets the toggle link text
+  const getExcerptToggleText = (): string => {
+    if (hasSameParserAndOGExcerpt) {
+      return 'Parser excerpt matches OG excerpt';
+    }
+
+    return isViewingOGExcerpt ? 'Use Parser Excerpt' : 'Use Open Graph Excerpt';
+  };
+
+  const toggleParserAndOGExcerpt = () => {
+    isViewingOGExcerpt
+      ? formik.setFieldValue('excerpt', parserExcerpt || approvedItem.excerpt)
+      : formik.setFieldValue('excerpt', ogExcerpt);
+  };
+
+  const getExcerptToolTipText = () => {
+    return isViewingOGExcerpt
+      ? parserExcerpt || approvedItem.excerpt
+      : ogExcerpt;
+  };
+
+  const StyledExcerptToggleLink = styled(Link)({
+    verticalAlign: 'middle',
+    textDecoration: 'none',
+    cursor: 'pointer',
+    color: hasSameParserAndOGExcerpt
+      ? curationPalette.neutral
+      : curationPalette.primary,
+    pointerEvents: hasSameParserAndOGExcerpt ? 'none' : 'auto',
+  });
 
   return (
     <form name="approved-item-edit-form" onSubmit={formik.handleSubmit}>
@@ -171,11 +276,29 @@ export const ApprovedItemForm: React.FC<
             fieldMeta={formik.getFieldMeta('excerpt')}
           />
         </Grid>
-        <Grid item xs={12}>
-          <Button buttonType="hollow" onClick={fixExcerpt}>
-            Fix excerpt
-          </Button>
+
+        <Grid
+          container
+          item
+          direction="row"
+          justifyContent="flex-start"
+          alignItems="center"
+          columnSpacing={3}
+        >
+          <Grid item>
+            <Button buttonType="hollow" onClick={fixExcerpt}>
+              Fix Quotes
+            </Button>
+          </Grid>
+          <Grid item>
+            <Tooltip title={getExcerptToolTipText()} arrow>
+              <StyledExcerptToggleLink onClick={toggleParserAndOGExcerpt}>
+                {getExcerptToggleText()}
+              </StyledExcerptToggleLink>
+            </Tooltip>
+          </Grid>
         </Grid>
+
         <Grid item xs={12}>
           <Grid container direction="row" spacing={3}>
             <Grid item md={3}>
