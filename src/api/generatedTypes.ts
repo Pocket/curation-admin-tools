@@ -1344,6 +1344,7 @@ export type Prospect = {
  * by the Curation Admin Tools frontend to filter prospects.
  */
 export enum ProspectType {
+  ConstraintSchedule = 'CONSTRAINT_SCHEDULE',
   Counts = 'COUNTS',
   CountsModeled = 'COUNTS_MODELED',
   Dismissed = 'DISMISSED',
