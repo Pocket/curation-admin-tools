@@ -96,7 +96,7 @@ export type ApprovedCorpusItem = {
   updatedAt: Scalars['Int'];
   /** A single sign-on user identifier of the user who last updated this entity. Null on creation. */
   updatedBy?: Maybe<Scalars['String']>;
-  /** The URL of the story. */
+  /** key field to identify the Approved Corpus Item entity in the Curated Corpus service */
   url: Scalars['Url'];
 };
 
@@ -755,10 +755,7 @@ export type ImportApprovedCorpusItemPayload = {
   scheduledItem: ScheduledCorpusItem;
 };
 
-/**
- * The heart of Pocket
- * A url and meta data related to it.
- */
+/** Resolve by reference the Item entity to connect Prospect to Items. */
 export type Item = {
   __typename?: 'Item';
   /** If available, the url to an AMP version of this article */
@@ -1394,11 +1391,6 @@ export type Query = {
   /** Retrieves the nested list of IAB top/sub categories. */
   getIABCategories: Array<IabParentCategory>;
   /**
-   * Look up Item info by ID.
-   * @deprecated Use itemById instead
-   */
-  getItemByItemId?: Maybe<Item>;
-  /**
    * Look up Item info by a url.
    * @deprecated Use itemByUrl instead
    */
@@ -1417,8 +1409,6 @@ export type Query = {
   getScheduledSurfacesForUser: Array<ScheduledSurface>;
   /** returns parser meta data for a given url */
   getUrlMetadata: UrlMetadata;
-  /** Look up Item info by ID. */
-  itemByItemId?: Maybe<Item>;
   /** Look up Item info by a url. */
   itemByUrl?: Maybe<Item>;
   /** Retrieves all available Labels */
@@ -1475,10 +1465,6 @@ export type QueryGetCollectionStoryArgs = {
   externalId: Scalars['String'];
 };
 
-export type QueryGetItemByItemIdArgs = {
-  id: Scalars['ID'];
-};
-
 export type QueryGetItemByUrlArgs = {
   url: Scalars['String'];
 };
@@ -1502,10 +1488,6 @@ export type QueryGetScheduledCorpusItemsArgs = {
 
 export type QueryGetUrlMetadataArgs = {
   url: Scalars['String'];
-};
-
-export type QueryItemByItemIdArgs = {
-  id: Scalars['ID'];
 };
 
 export type QueryItemByUrlArgs = {
@@ -1554,7 +1536,7 @@ export type RejectedCorpusItem = {
    * Temporarily a string value that will be provided by Prospect API, possibly an enum in the future.
    */
   topic?: Maybe<Scalars['String']>;
-  /** The URL of the story. */
+  /** key field to identify the Rejected Corpus Item entity in the Curated Corpus service */
   url: Scalars['Url'];
 };
 
