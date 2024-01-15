@@ -1,12 +1,13 @@
 import React from 'react';
 import { Grid } from '@mui/material';
 import { ScheduledCorpusItem } from '../../../api/generatedTypes';
-import { Button } from '../../../_shared/components';
+// import { Button } from '../../../_shared/components';
 import {
-  StyledCardActions,
+  // StyledCardActions,
   StyledCorpusItemCard,
 } from '../../../_shared/styled';
-import { ApprovedItemListCard } from '../';
+import { SuggestedScheduleItemListCard } from '../SuggestedScheduleItemListCard/SuggestedScheduleItemListCard';
+// import { ApprovedItemListCard } from '../';
 
 interface ScheduledItemCardWrapperProps {
   /**
@@ -50,37 +51,28 @@ export const ScheduledItemCardWrapper: React.FC<
 > = (props): JSX.Element => {
   const {
     item,
-    onMoveToBottom,
+    // onMoveToBottom,
     onRemove,
     onReschedule,
     onEdit,
-    showLanguageIcon,
-    showRecommendedOverlay,
+    // showLanguageIcon,
+    // showRecommendedOverlay,
   } = props;
 
   return (
     <Grid item xs={12} sm={6} md={3}>
       <StyledCorpusItemCard>
-        <ApprovedItemListCard
+        {/* <ApprovedItemListCard
           item={item.approvedItem}
           showLanguageIcon={showLanguageIcon}
           showRecommendedOverlay={showRecommendedOverlay}
+        /> */}
+        <SuggestedScheduleItemListCard
+          item={item.approvedItem}
+          onEdit={onEdit}
+          onRemove={onRemove}
+          onReschedule={onReschedule}
         />
-
-        <StyledCardActions>
-          <Button buttonType="positive" variant="text" onClick={onEdit}>
-            Edit
-          </Button>
-          <Button buttonType="positive" variant="text" onClick={onReschedule}>
-            Reschedule
-          </Button>
-          <Button buttonType="positive" variant="text" onClick={onMoveToBottom}>
-            Move to bottom
-          </Button>
-          <Button buttonType="negative" variant="text" onClick={onRemove}>
-            Remove
-          </Button>
-        </StyledCardActions>
       </StyledCorpusItemCard>
     </Grid>
   );
