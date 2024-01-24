@@ -8,18 +8,17 @@ import { ScheduleHistory } from '..';
 import { curationPalette } from '../../../theme';
 import {
   CardActionButtonRow,
-  // CardImageOverlay,
   CorpusItemCardImage,
 } from '../../../_shared/components';
 
 interface SuggestedScheduleItemListCardProps {
   /**
-   * //TODO add comment
+   * An approved corpus item object
    */
   item: ApprovedCorpusItem;
 
   /**
-   * What to do when the "Remove" button is clicked.
+   * Callback for the "Remove" button
    */
   onRemove: VoidFunction;
 

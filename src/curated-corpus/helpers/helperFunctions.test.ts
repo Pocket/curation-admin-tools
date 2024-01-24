@@ -7,6 +7,7 @@ import {
   getCuratorNameFromLdap,
   getLocalDateTimeForGuid,
   getScheduledSurfaceName,
+  getFormattedImageUrl,
   readImageFileFromDisk,
 } from './helperFunctions';
 
@@ -218,6 +219,21 @@ describe('helperFunctions ', () => {
           }
         );
       }).rejects.toThrow('Failed to upload image, please try again');
+    });
+  });
+
+  describe('getFormattedImageUrl function', () => {
+    it('should return the url with pocket image cache prefix', () => {
+      const testUrl = 'www.test-image.com';
+      const formattedUrl = `https://pocket-image-cache.com/600x300/filters:format(jpg):extract_focal()/${testUrl}`;
+
+      expect(getFormattedImageUrl(testUrl)).toEqual(formattedUrl);
+    });
+
+    it('should return fallback url when an empty string is passed', () => {
+      expect(getFormattedImageUrl('')).toEqual(
+        '/placeholders/collectionSmall.svg'
+      );
     });
   });
 });
