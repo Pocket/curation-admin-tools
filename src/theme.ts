@@ -9,6 +9,8 @@ export const curationPalette = {
   white: '#FFFFFF',
   lightGrey: '#cccccc', // for borders here and there
   pocketBlack: '#1a1a1a', // for not-quite-black text
+  solidPink: '#C50042',
+  translucentPink: '#C50042CC',
 };
 
 const theme: Theme = createTheme({

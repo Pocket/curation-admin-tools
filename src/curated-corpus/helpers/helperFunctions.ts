@@ -122,3 +122,17 @@ export const getScheduledSurfaceName = (surfaceGuid: string): string => {
     surfaceGuid
   );
 };
+
+/**
+ * Pass an original item image url through the pocket-image-cache to extract 600x300 version of it
+ * @param imageUrl
+ * @returns image url prefixed with 'pocket-image-cache' or default placeholder
+ */
+export const getFormattedImageUrl = (imageUrl: string): string => {
+  if (imageUrl && imageUrl.length > 0) {
+    return `https://pocket-image-cache.com/600x300/filters:format(jpg):extract_focal()/`.concat(
+      encodeURIComponent(imageUrl)
+    );
+  }
+  return '/placeholders/collectionSmall.svg';
+};
