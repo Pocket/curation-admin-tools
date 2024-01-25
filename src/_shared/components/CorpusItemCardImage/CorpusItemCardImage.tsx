@@ -3,7 +3,7 @@ import { CardMedia, Typography } from '@mui/material';
 import { Box, Stack, SxProps } from '@mui/system';
 
 //TODO @Herraj -- uncomment this when ready to render 'ML' label overlay and new schedule history modal
-import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
+// import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
 import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
 import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
 import BookmarksOutlinedIcon from '@mui/icons-material/BookmarksOutlined';
@@ -41,11 +41,11 @@ const topOverlayContainerSxStyles: SxProps = {
 };
 
 //TODO @Herraj -- read comment on line 100
-const bottomOverlayContainerSxStyles: SxProps = {
-  position: 'absolute',
-  bottom: 0,
-  width: '100%',
-};
+// const bottomOverlayContainerSxStyles: SxProps = {
+//   position: 'absolute',
+//   bottom: 0,
+//   width: '100%',
+// };
 
 /**
  * This component combines the MUI CardMedia and other MUI components to build
@@ -129,7 +129,7 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
       </Box>
 
       {/**TODO @Herraj -- enable once new schedule history modal component is complete */}
-      <Box sx={bottomOverlayContainerSxStyles}>
+      {/* <Box sx={bottomOverlayContainerSxStyles}>
         <Stack
           direction="row"
           alignItems="flex-start"
@@ -142,11 +142,11 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
             }}
           >
             <EventAvailableOutlinedIcon fontSize="small" />
-            {/* <button onClick={toggleScheduleHistoryModal}></button> */}
+            <button onClick={toggleScheduleHistoryModal}></button>
             <Typography variant="caption">Last Scheduled 2 days ago</Typography>
           </Box>
         </Stack>
-      </Box>
+      </Box> */}
     </Box>
   );
 };
