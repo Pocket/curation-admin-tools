@@ -3,8 +3,10 @@ import { CardMedia, Typography } from '@mui/material';
 import { Box, Stack, SxProps } from '@mui/system';
 
 //TODO @Herraj -- uncomment this when ready to render 'ML' label overlay and new schedule history modal
-// import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
-// import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
+import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
+import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
+import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
+import BookmarksOutlinedIcon from '@mui/icons-material/BookmarksOutlined';
 
 import { curationPalette } from '../../../theme';
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
@@ -16,6 +18,8 @@ interface CorpusItemCardImageProps {
    * An object with everything approved curated item-related in it.
    */
   item: ApprovedCorpusItem;
+
+  toggleScheduleHistoryModal: VoidFunction;
 }
 
 // Mui sx css for the individual label overlay container elements
@@ -37,11 +41,11 @@ const topOverlayContainerSxStyles: SxProps = {
 };
 
 //TODO @Herraj -- read comment on line 100
-// const bottomOverlayContainerSxStyles: SxProps = {
-//   position: 'absolute',
-//   bottom: 0,
-//   width: '100%',
-// };
+const bottomOverlayContainerSxStyles: SxProps = {
+  position: 'absolute',
+  bottom: 0,
+  width: '100%',
+};
 
 /**
  * This component combines the MUI CardMedia and other MUI components to build
@@ -55,6 +59,35 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
   const { item } = props;
 
   const displayTopic = getDisplayTopic(item.topic);
+
+  const getTopRightLabel = () => {
+    if (item.createdBy === 'ML') {
+      return (
+        <>
+          <AutoFixHighOutlinedIcon fontSize="small" />
+          <Typography variant="caption">ML</Typography>
+        </>
+      );
+    }
+
+    if (item.isSyndicated) {
+      return (
+        <>
+          <PaidOutlinedIcon fontSize="small" sx={{ color: '#A8FF1A' }} />
+          <Typography variant="caption">Syndicated</Typography>
+        </>
+      );
+    }
+
+    if (item.isCollection) {
+      return (
+        <>
+          <BookmarksOutlinedIcon fontSize="small" sx={{ color: '#FFB800' }} />
+          <Typography variant="caption">Collection</Typography>
+        </>
+      );
+    }
+  };
 
   return (
     <Box position="relative">
@@ -73,11 +106,8 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
           <Box sx={labelContainerSxStyles}>
             <Typography variant="caption">{displayTopic}</Typography>
           </Box>
-          {/* TODO @Herraj -- enable this once `createdBy` field has the relevant value to render this on
-           <Box sx={labelContainerSxStyles}>
-            <AutoFixHighOutlinedIcon fontSize="small" />
-            <Typography variant="caption">ML</Typography>
-          </Box> */}
+
+          <Box sx={labelContainerSxStyles}>{getTopRightLabel()}</Box>
         </Stack>
 
         <Stack
@@ -99,7 +129,7 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
       </Box>
 
       {/**TODO @Herraj -- enable once new schedule history modal component is complete */}
-      {/* <Box sx={bottomOverlayContainerSxStyles}>
+      <Box sx={bottomOverlayContainerSxStyles}>
         <Stack
           direction="row"
           alignItems="flex-start"
@@ -112,10 +142,11 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
             }}
           >
             <EventAvailableOutlinedIcon fontSize="small" />
+            {/* <button onClick={toggleScheduleHistoryModal}></button> */}
             <Typography variant="caption">Last Scheduled 2 days ago</Typography>
           </Box>
         </Stack>
-      </Box> */}
+      </Box>
     </Box>
   );
 };
