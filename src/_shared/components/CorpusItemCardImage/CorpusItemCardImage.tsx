@@ -2,8 +2,7 @@ import React from 'react';
 import { CardMedia, Typography } from '@mui/material';
 import { Box, Stack, SxProps } from '@mui/system';
 
-//TODO @Herraj -- uncomment this when ready to render 'ML' label overlay and new schedule history modal
-// import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
+import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
 import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
 import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
 import BookmarksOutlinedIcon from '@mui/icons-material/BookmarksOutlined';
@@ -19,6 +18,9 @@ interface CorpusItemCardImageProps {
    */
   item: ApprovedCorpusItem;
 
+  /**
+   * Callback to toggle on and off recent scheduled modal
+   */
   toggleScheduleHistoryModal: VoidFunction;
 }
 
@@ -26,7 +28,7 @@ interface CorpusItemCardImageProps {
 const labelContainerSxStyles: SxProps = {
   display: 'flex',
   color: curationPalette.white,
-  backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  backgroundColor: curationPalette.overlayBgBlack,
   padding: '0.2rem',
   margin: '0.1rem',
   borderRadius: '8px',
@@ -40,12 +42,61 @@ const topOverlayContainerSxStyles: SxProps = {
   width: '100%',
 };
 
-//TODO @Herraj -- read comment on line 100
-// const bottomOverlayContainerSxStyles: SxProps = {
-//   position: 'absolute',
-//   bottom: 0,
-//   width: '100%',
-// };
+const bottomOverlayContainerSxStyles: SxProps = {
+  position: 'absolute',
+  bottom: 0,
+  width: '100%',
+  cursor: 'pointer',
+};
+
+const getLastScheduledDayDiff = (item: ApprovedCorpusItem): number | null => {
+  const currentDate = new Date();
+  const mostRecentLastScheduledDate = item.scheduledSurfaceHistory.find(
+    (history) => new Date(history.scheduledDate) < currentDate
+  );
+
+  if (!mostRecentLastScheduledDate) {
+    return null;
+  }
+
+  //TODO @Herraj -- date is sometimes off by one day, probably have to standardize the TZ
+
+  const timeDifference =
+    currentDate.getTime() -
+    new Date(mostRecentLastScheduledDate.scheduledDate).getTime();
+  return Math.abs(Math.ceil(timeDifference / (1000 * 3600 * 24)));
+};
+
+const getTopRightLabel = (item: ApprovedCorpusItem): JSX.Element | null => {
+  if (item.createdBy === 'ML') {
+    return (
+      <>
+        <AutoFixHighOutlinedIcon fontSize="small" />
+        <Typography variant="caption">ML</Typography>
+      </>
+    );
+  }
+
+  if (item.isSyndicated) {
+    return (
+      <>
+        <PaidOutlinedIcon fontSize="small" sx={{ color: '#A8FF1A' }} />
+        <Typography variant="caption">Syndicated</Typography>
+      </>
+    );
+  }
+
+  if (item.isCollection) {
+    return (
+      <>
+        <BookmarksOutlinedIcon fontSize="small" sx={{ color: '#FFB800' }} />
+        <Typography variant="caption">Collection</Typography>
+      </>
+    );
+  }
+
+  return null;
+};
 
 /**
  * This component combines the MUI CardMedia and other MUI components to build
@@ -56,38 +107,13 @@ const topOverlayContainerSxStyles: SxProps = {
 export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
   props
 ): JSX.Element => {
-  const { item } = props;
+  const { item, toggleScheduleHistoryModal } = props;
 
   const displayTopic = getDisplayTopic(item.topic);
 
-  const getTopRightLabel = () => {
-    if (item.createdBy === 'ML') {
-      return (
-        <>
-          <AutoFixHighOutlinedIcon fontSize="small" />
-          <Typography variant="caption">ML</Typography>
-        </>
-      );
-    }
+  const topRightLabel = getTopRightLabel(item);
 
-    if (item.isSyndicated) {
-      return (
-        <>
-          <PaidOutlinedIcon fontSize="small" sx={{ color: '#A8FF1A' }} />
-          <Typography variant="caption">Syndicated</Typography>
-        </>
-      );
-    }
-
-    if (item.isCollection) {
-      return (
-        <>
-          <BookmarksOutlinedIcon fontSize="small" sx={{ color: '#FFB800' }} />
-          <Typography variant="caption">Collection</Typography>
-        </>
-      );
-    }
-  };
+  const lastScheduledDayDiff = getLastScheduledDayDiff(item);
 
   return (
     <Box position="relative">
@@ -107,7 +133,9 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
             <Typography variant="caption">{displayTopic}</Typography>
           </Box>
 
-          <Box sx={labelContainerSxStyles}>{getTopRightLabel()}</Box>
+          {topRightLabel && (
+            <Box sx={labelContainerSxStyles}>{topRightLabel}</Box>
+          )}
         </Stack>
 
         <Stack
@@ -128,25 +156,33 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
         </Stack>
       </Box>
 
-      {/**TODO @Herraj -- enable once new schedule history modal component is complete */}
-      {/* <Box sx={bottomOverlayContainerSxStyles}>
+      <Box
+        sx={bottomOverlayContainerSxStyles}
+        onClick={toggleScheduleHistoryModal}
+      >
         <Stack
           direction="row"
           alignItems="flex-start"
           justifyContent="space-between"
         >
-          <Box
-            sx={{
-              ...labelContainerSxStyles,
-              backgroundColor: curationPalette.solidPink,
-            }}
-          >
-            <EventAvailableOutlinedIcon fontSize="small" />
-            <button onClick={toggleScheduleHistoryModal}></button>
-            <Typography variant="caption">Last Scheduled 2 days ago</Typography>
-          </Box>
+          {lastScheduledDayDiff && (
+            <Box
+              sx={{
+                ...labelContainerSxStyles,
+                backgroundColor:
+                  lastScheduledDayDiff === 2
+                    ? curationPalette.solidPink
+                    : curationPalette.overlayBgBlack,
+              }}
+            >
+              <EventAvailableOutlinedIcon fontSize="small" />
+              <Typography variant="caption">
+                {`Last scheduled ${lastScheduledDayDiff} days ago`}
+              </Typography>
+            </Box>
+          )}
         </Stack>
-      </Box> */}
+      </Box>
     </Box>
   );
 };

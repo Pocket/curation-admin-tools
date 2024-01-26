@@ -4,6 +4,8 @@ import { Stack } from '@mui/system';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import EventBusyOutlinedIcon from '@mui/icons-material/EventBusyOutlined';
+import KeyboardDoubleArrowDownOutlinedIcon from '@mui/icons-material/KeyboardDoubleArrowDownOutlined';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 
 // TODO: @Herraj -- See line 35 comment below
 //import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -23,26 +25,36 @@ interface CardActionButtonRowProps {
    * Callback for the "Edit" button
    */
   onEdit: VoidFunction;
+
+  /**
+   * Callback for the "Move to bottom" button
+   */
+  onMoveToBottom: VoidFunction;
 }
 
 export const CardActionButtonRow: React.FC<CardActionButtonRowProps> = (
   props
 ): JSX.Element => {
-  const { onEdit, onRemove, onReschedule } = props;
+  const { onEdit, onRemove, onReschedule, onMoveToBottom } = props;
 
   return (
-    <Stack direction="row" justifyContent="flex-end">
-      {/** TODO: @Herraj -- enable when reject suggested item flow is ready */}
-      {/** TODO: @Herraj -- change above <Stack>'s justifyContent to 'space-between' */}
-      {/* <Stack direction="row" justifyContent="flex-start">
+    <Stack direction="row" justifyContent="space-between">
+      <Stack direction="row" justifyContent="flex-start">
         <Tooltip title="Reject" placement="bottom">
-          <IconButton aria-label="remove">
-            <DeleteOutlineIcon />
+          {/** TODO: @Herraj -- enable when reject suggested item flow is ready */}
+          <IconButton aria-label="remove" disabled>
+            <DeleteOutlinedIcon />
           </IconButton>
         </Tooltip>
-      </Stack> */}
+      </Stack>
 
       <Stack direction="row" justifyContent="flex-start">
+        <Tooltip title="Move to bottom" placement="bottom">
+          <IconButton aria-label="move to bottom" onClick={onMoveToBottom}>
+            <KeyboardDoubleArrowDownOutlinedIcon />
+          </IconButton>
+        </Tooltip>
+
         <Tooltip title="Edit" placement="bottom">
           <IconButton aria-label="edit" onClick={onEdit}>
             <EditOutlinedIcon />

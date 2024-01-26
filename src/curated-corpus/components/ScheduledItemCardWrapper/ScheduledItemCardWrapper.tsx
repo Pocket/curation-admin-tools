@@ -51,7 +51,7 @@ export const ScheduledItemCardWrapper: React.FC<
 > = (props): JSX.Element => {
   const {
     item,
-    // onMoveToBottom,
+    onMoveToBottom,
     onRemove,
     onReschedule,
     onEdit,
@@ -72,6 +72,7 @@ export const ScheduledItemCardWrapper: React.FC<
           onEdit={onEdit}
           onRemove={onRemove}
           onReschedule={onReschedule}
+          onMoveToBottom={onMoveToBottom}
         />
       </StyledCorpusItemCard>
     </Grid>

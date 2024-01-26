@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, CardContent, Link, Typography } from '@mui/material';
 
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
-import { ScheduleHistory } from '..';
 
 import { curationPalette } from '../../../theme';
 import {
   CardActionButtonRow,
   CorpusItemCardImage,
 } from '../../../_shared/components';
+import { ScheduleHistoryModal } from '../ScheduleHistoryModal/ScheduleHistoryModal';
 
 interface SuggestedScheduleItemListCardProps {
   /**
@@ -31,18 +31,38 @@ interface SuggestedScheduleItemListCardProps {
    * Callback for the "Edit" button
    */
   onEdit: VoidFunction;
+
+  /**
+   * Callback for the "Move to bottom" button
+   */
+  onMoveToBottom: VoidFunction;
 }
 
 export const SuggestedScheduleItemListCard: React.FC<
   SuggestedScheduleItemListCardProps
 > = (props): JSX.Element => {
-  const { item, onRemove, onReschedule, onEdit } = props;
+  const { item, onRemove, onReschedule, onEdit, onMoveToBottom } = props;
 
-  const showScheduleHistory = item.scheduledSurfaceHistory.length != 0;
+  const [isScheduleHistoryModalOpen, setScheduleHistoryModalOpen] =
+    useState(false);
+
+  const toggleScheduleHistoryModal = () => {
+    setScheduleHistoryModalOpen(!isScheduleHistoryModalOpen);
+  };
 
   return (
     <>
-      <CorpusItemCardImage item={item} />
+      <CorpusItemCardImage
+        item={item}
+        toggleScheduleHistoryModal={toggleScheduleHistoryModal}
+      />
+      {isScheduleHistoryModalOpen && (
+        <ScheduleHistoryModal
+          item={item}
+          isOpen={isScheduleHistoryModalOpen}
+          toggleModal={toggleScheduleHistoryModal}
+        />
+      )}
 
       <CardContent
         sx={{
@@ -85,15 +105,8 @@ export const SuggestedScheduleItemListCard: React.FC<
           {item.excerpt}
         </Typography>
       </CardContent>
-      <CardContent>
-        {showScheduleHistory && (
-          <ScheduleHistory
-            data={item.scheduledSurfaceHistory}
-            isProspect={false}
-          />
-        )}
-      </CardContent>
 
+      {/* {TODO @Herraj rework this to use flex parents vs hacking it */}
       {/* Push the rest of the elements to the bottom of the card. */}
       <Box sx={{ flexGrow: 1 }} />
 
@@ -102,6 +115,7 @@ export const SuggestedScheduleItemListCard: React.FC<
           onEdit={onEdit}
           onRemove={onRemove}
           onReschedule={onReschedule}
+          onMoveToBottom={onMoveToBottom}
         />
       </CardContent>
     </>

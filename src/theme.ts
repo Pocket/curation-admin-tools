@@ -11,6 +11,7 @@ export const curationPalette = {
   pocketBlack: '#1a1a1a', // for not-quite-black text
   solidPink: '#C50042',
   translucentPink: '#C50042CC',
+  overlayBgBlack: '#000000',
 };
 
 const theme: Theme = createTheme({
