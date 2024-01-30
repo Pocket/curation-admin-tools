@@ -5,7 +5,6 @@ import { curationPalette } from '../../../../theme';
 import {
   ProspectType,
   RemoveProspectInput,
-  useDismissProspectMutation,
   useRemoveProspectMutation,
 } from '../../../../api/generatedTypes';
 import { RemoveProspectModal } from '../../RemoveProspectModal/RemoveProspectModal';
@@ -60,13 +59,15 @@ export const DismissProspectAction: React.FC<DismissProspectActionProps> = (
     isProspectSlateScheduler = true;
   }
 
-  const [dismissProspect] = useDismissProspectMutation();
   const [removeProspect] = useRemoveProspectMutation();
 
   const onClick = async () => {
+    const input: RemoveProspectInput = {
+      id: prospectId,
+    };
     // call the dismissProspect mutation function and only extract the errors object
-    const { errors } = await dismissProspect({
-      variables: { id: prospectId },
+    const { errors } = await removeProspect({
+      variables: { data: input },
     });
 
     let errorMessage;

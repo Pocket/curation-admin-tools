@@ -580,6 +580,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     prospectId: string,
     errorMessage?: string
   ): void => {
+    console.log('onDismissProspect');
     if (errorMessage) {
       showNotification(errorMessage, 'error');
       return;

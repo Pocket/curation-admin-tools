@@ -7,13 +7,15 @@ import {
   successMock,
   errorMock,
   errorMessage,
-} from '../../../integration-test-mocks/dismissProspect';
+} from '../../../integration-test-mocks/removeProspect';
 import userEvent from '@testing-library/user-event';
 import { apolloCache } from '../../../../api/client';
 import { getTestProspect } from '../../../helpers/prospects';
 
 describe('The DismissProspectAction', () => {
   const prospectId = getTestProspect().id;
+  const prospectTitle = getTestProspect().title;
+  const prospectType = getTestProspect().prospectType;
   const onDismissProspect = jest.fn();
 
   const renderComponent = (mocks?: MockedResponse[]) => {
@@ -22,6 +24,10 @@ describe('The DismissProspectAction', () => {
         <SnackbarProvider maxSnack={1}>
           <DismissProspectAction
             prospectId={prospectId}
+            prospectTitle={prospectTitle as string}
+            prospectType={prospectType}
+            modalOpen={false}
+            toggleModal={jest.fn()}
             onDismissProspect={onDismissProspect}
           />
         </SnackbarProvider>
