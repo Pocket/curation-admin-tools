@@ -3,11 +3,11 @@ import { ProspectType } from '../../api/generatedTypes';
 import { ScheduledSurfaces } from './definitions';
 import {
   downloadAndUploadApprovedItemImageToS3,
-  fetchFileFromUrl,
+  fetchFileFromUrl, formatFormLabel,
   getCuratorNameFromLdap,
   getLocalDateTimeForGuid,
   getScheduledSurfaceName,
-  readImageFileFromDisk,
+  readImageFileFromDisk
 } from './helperFunctions';
 
 describe('helperFunctions ', () => {
@@ -218,6 +218,13 @@ describe('helperFunctions ', () => {
           }
         );
       }).rejects.toThrow('Failed to upload image, please try again');
+    });
+  });
+  describe('formatFormLabel function', () => {
+    it('should return the correctly formatted string', () => {
+      expect(formatFormLabel('floRAL_street')).toEqual('Floral street');
+      expect(formatFormLabel('Article_Quality')).toEqual('Article quality');
+      expect(formatFormLabel('MatheMatics')).toEqual('Mathematics');
     });
   });
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Prospect } from '../../../api/generatedTypes';
+import { Item, Prospect } from '../../../api/generatedTypes';
 import {
   Card,
   CardActions,
@@ -18,13 +18,14 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CategoryIcon from '@mui/icons-material/Category';
-// import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 import { curationPalette } from '../../../theme';
 import { Button } from '../../../_shared/components';
 import { getDisplayTopic } from '../../helpers/topics';
 import { DismissProspectAction } from '../actions/DismissProspectAction/DismissProspectAction';
-// import { DateTime } from 'luxon';
+import { useToggle } from '../../../_shared/hooks';
+import { DateTime } from 'luxon';
 
 interface ProspectListCardProps {
   /**
@@ -36,7 +37,7 @@ interface ProspectListCardProps {
    * Parser Item type representation of this Prospect item
    */
 
-  // parserItem: Item;
+  parserItem: Item;
   /**
    * Function called when "Add to Corpus" button is clicked
    */
@@ -62,20 +63,23 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
 ): JSX.Element => {
   const {
     prospect,
-    // parserItem,
+    parserItem,
     onAddToCorpus,
     onDismissProspect,
     onRecommend,
     onReject,
   } = props;
-  console.log('prospect type: ', prospect.prospectType);
+  /**
+   * Keep track of whether the "Reject this item" modal is open or not.
+   */
+  const [dismissSlateSchedulerModalOpen, toggleDismissSlateSchedulerModal] =
+    useToggle(false);
 
-  // const timeToRead = 30 ? (
-  //   // `${parserItem.timeToRead} min(s)`
-  //     `temp min(s)`
-  // ) : (
-  //   <span> &mdash;</span>
-  // );
+  const timeToRead = parserItem.timeToRead ? (
+    `${parserItem.timeToRead} min(s)`
+  ) : (
+    <span> &mdash;</span>
+  );
 
   return (
     <Card
@@ -126,23 +130,23 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
               <ListItemText secondary={prospect.prospectType.toLowerCase()} />
             </ListItem>
 
-            {/*<ListItem disableGutters>*/}
-            {/*  <ListItemIcon sx={{ minWidth: '1.5rem' }}>*/}
-            {/*    <AccessTimeIcon fontSize="small" />*/}
-            {/*  </ListItemIcon>*/}
-            {/*  <ListItemText secondary={timeToRead} />*/}
-            {/*</ListItem>*/}
+            <ListItem disableGutters>
+              <ListItemIcon sx={{ minWidth: '1.5rem' }}>
+                <AccessTimeIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText secondary={timeToRead} />
+            </ListItem>
 
-            {/*<ListItem disableGutters>*/}
-            {/*  <ListItemText*/}
-            {/*    secondary={*/}
-            {/*      parserItem?.datePublished &&*/}
-            {/*      `Published ${DateTime.fromJSDate(*/}
-            {/*        new Date(parserItem?.datePublished)*/}
-            {/*      ).toFormat('MMMM dd, yyyy')}`*/}
-            {/*    }*/}
-            {/*  />*/}
-            {/*</ListItem>*/}
+            <ListItem disableGutters>
+              <ListItemText
+                secondary={
+                  parserItem?.datePublished &&
+                  `Published ${DateTime.fromJSDate(
+                    new Date(parserItem?.datePublished)
+                  ).toFormat('MMMM dd, yyyy')}`
+                }
+              />
+            </ListItem>
           </List>
         </Grid>
         <Grid item xs={12} sm={9}>
@@ -178,6 +182,10 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
               <DismissProspectAction
                 onDismissProspect={onDismissProspect}
                 prospectId={prospect.id}
+                prospectType={prospect.prospectType}
+                prospectTitle={prospect.title as string}
+                modalOpen={dismissSlateSchedulerModalOpen}
+                toggleModal={toggleDismissSlateSchedulerModal}
               />
             </Grid>
           </Grid>

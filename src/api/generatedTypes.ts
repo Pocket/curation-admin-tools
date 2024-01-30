@@ -1044,6 +1044,13 @@ export type Mutation = {
   refreshItemArticle: Item;
   /** Rejects an Approved Item: deletes it from the corpus and creates a Rejected Item instead. */
   rejectApprovedCorpusItem: ApprovedCorpusItem;
+  /**
+   * Marks a prospect as 'curated' in the database, preventing it from being displayed for prospecting.
+   * Returns the prospect if the operation succeeds, and null if not (almost surely due to an incorrect id).
+   *
+   * Called when removing a prospect from the list - specifically not approving or rejecting into the corpus.
+   */
+  removeProspect?: Maybe<Prospect>;
   /** Updates the scheduled date of a Scheduled Surface Scheduled Item. */
   rescheduleScheduledCorpusItem: ScheduledCorpusItem;
   /** Updates an Approved Item. */
@@ -1171,6 +1178,10 @@ export type MutationRefreshItemArticleArgs = {
 
 export type MutationRejectApprovedCorpusItemArgs = {
   data: RejectApprovedCorpusItemInput;
+};
+
+export type MutationRemoveProspectArgs = {
+  data: RemoveProspectInput;
 };
 
 export type MutationRescheduleScheduledCorpusItemArgs = {
@@ -1589,6 +1600,48 @@ export enum RejectionReason {
   PoliticalOpinion = 'POLITICAL_OPINION',
   TimeSensitive = 'TIME_SENSITIVE',
 }
+
+/**
+ * 2024-01-29
+ *
+ * these reasons are used when dismissing prospects only for the
+ * SLATE_SCHEDULER prospect type. this is a preliminary step towards ML
+ * scheduling items, and this reason set will *likely* be used when removing ML
+ * scheduled items as well.
+ *
+ * these reasons *may* also be used more widely in the prospecting view in the
+ * future, but would be blocked on removal count going down significantly.
+ *
+ * as of today, 2024-01-29, these reasons have been finalized.
+ */
+export enum RemovalReason {
+  ArticleQuality = 'ARTICLE_QUALITY',
+  Commercial = 'COMMERCIAL',
+  Controversial = 'CONTROVERSIAL',
+  HeadlineQuality = 'HEADLINE_QUALITY',
+  Inappropriate = 'INAPPROPRIATE',
+  Niche = 'NICHE',
+  NoImage = 'NO_IMAGE',
+  OneSided = 'ONE_SIDED',
+  Outdated = 'OUTDATED',
+  Paywall = 'PAYWALL',
+  PoliticalOpinion = 'POLITICAL_OPINION',
+  Publisher = 'PUBLISHER',
+  Redundant = 'REDUNDANT',
+  SetSimilarity = 'SET_SIMILARITY',
+  TimeSensitive = 'TIME_SENSITIVE',
+  Topic = 'TOPIC',
+}
+
+/** Input data for removing a prospect. */
+export type RemoveProspectInput = {
+  /** The GUID of the corresponding Prospect. */
+  id: Scalars['ID'];
+  /** Free-text entered by the curator to give further detail to the reason(s) provided. */
+  reasonComment?: InputMaybe<Scalars['String']>;
+  /** A comma-separated list of removal reasons. */
+  reasons?: InputMaybe<Scalars['String']>;
+};
 
 /** Input data for rescheduling a scheduled item for a Scheduled Surface. */
 export type RescheduleScheduledCorpusItemInput = {
@@ -2920,6 +2973,34 @@ export type RejectProspectMutation = {
     createdBy: string;
     createdAt: number;
   };
+};
+
+export type RemoveProspectMutationVariables = Exact<{
+  data: RemoveProspectInput;
+}>;
+
+export type RemoveProspectMutation = {
+  __typename?: 'Mutation';
+  removeProspect?: {
+    __typename?: 'Prospect';
+    id: string;
+    prospectId: string;
+    scheduledSurfaceGuid: string;
+    topic?: string | null;
+    prospectType: string;
+    url: string;
+    createdAt?: number | null;
+    imageUrl?: string | null;
+    authors?: string | null;
+    publisher?: string | null;
+    domain?: string | null;
+    title?: string | null;
+    excerpt?: string | null;
+    language?: CorpusLanguage | null;
+    saveCount?: number | null;
+    isSyndicated?: boolean | null;
+    isCollection?: boolean | null;
+  } | null;
 };
 
 export type RescheduleScheduledCorpusItemMutationVariables = Exact<{
@@ -5544,6 +5625,57 @@ export type RejectProspectMutationResult =
 export type RejectProspectMutationOptions = Apollo.BaseMutationOptions<
   RejectProspectMutation,
   RejectProspectMutationVariables
+>;
+export const RemoveProspectDocument = gql`
+  mutation RemoveProspect($data: RemoveProspectInput!) {
+    removeProspect(data: $data) {
+      ...ProspectData
+    }
+  }
+  ${ProspectDataFragmentDoc}
+`;
+export type RemoveProspectMutationFn = Apollo.MutationFunction<
+  RemoveProspectMutation,
+  RemoveProspectMutationVariables
+>;
+
+/**
+ * __useRemoveProspectMutation__
+ *
+ * To run a mutation, you first call `useRemoveProspectMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveProspectMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeProspectMutation, { data, loading, error }] = useRemoveProspectMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useRemoveProspectMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    RemoveProspectMutation,
+    RemoveProspectMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    RemoveProspectMutation,
+    RemoveProspectMutationVariables
+  >(RemoveProspectDocument, options);
+}
+export type RemoveProspectMutationHookResult = ReturnType<
+  typeof useRemoveProspectMutation
+>;
+export type RemoveProspectMutationResult =
+  Apollo.MutationResult<RemoveProspectMutation>;
+export type RemoveProspectMutationOptions = Apollo.BaseMutationOptions<
+  RemoveProspectMutation,
+  RemoveProspectMutationVariables
 >;
 export const RescheduleScheduledCorpusItemDocument = gql`
   mutation rescheduleScheduledCorpusItem(

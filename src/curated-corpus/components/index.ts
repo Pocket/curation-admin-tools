@@ -21,6 +21,8 @@ export { RejectItemModal } from './RejectItemModal/RejectItemModal';
 export { RejectItemForm } from './RejectItemForm/RejectItemForm';
 export { RemoveItemFromScheduledSurfaceForm } from './RemoveItemFromScheduledSurfaceForm/RemoveItemFromScheduledSurfaceForm';
 export { RemoveItemFromScheduledSurfaceModal } from './RemoveItemFromScheduledSurfaceModal/RemoveItemFromScheduledSurfaceModal';
+export { RemoveProspectForm } from './RemoveProspectForm/RemoveProspectForm';
+export { RemoveProspectModal } from './RemoveProspectModal/RemoveProspectModal';
 export { ScheduleCorpusItemAction } from './actions/ScheduleCorpusItemAction/ScheduleCorpusItemAction';
 export { ScheduleHistory } from './ScheduleHistory/ScheduleHistory';
 export { ScheduleHistoryEntries } from './ScheduleHistoryEntries/ScheduleHistoryEntries';
