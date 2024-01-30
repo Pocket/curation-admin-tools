@@ -70,7 +70,7 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
     onReject,
   } = props;
   /**
-   * Keep track of whether the "Reject this item" modal is open or not.
+   * Keep track of whether the RemoveProspectModal is open or not.
    */
   const [removeProspectModalOpen, toggleRemoveProspectModal] = useToggle(false);
 
