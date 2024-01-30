@@ -576,11 +576,10 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
    * @param errorMessage
    * @returns void
    */
-  const onDismissProspect = (
+  const onRemoveProspect = (
     prospectId: string,
     errorMessage?: string
   ): void => {
-    console.log('onDismissProspect');
     if (errorMessage) {
       showNotification(errorMessage, 'error');
       return;
@@ -877,7 +876,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                       setApprovedItem(prospect.approvedCorpusItem!);
                       toggleScheduleModalAndDisableScheduledSurface();
                     }}
-                    onDismissProspect={onDismissProspect}
+                    onRemoveProspect={onRemoveProspect}
                   />
                 );
               }
@@ -892,7 +891,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                     setIsRecommendation(false);
                     toggleApprovedItemModal();
                   }}
-                  onDismissProspect={onDismissProspect}
+                  onRemoveProspect={onRemoveProspect}
                   onRecommend={() => {
                     setCurrentProspect(prospect);
                     setIsManualSubmission(false);

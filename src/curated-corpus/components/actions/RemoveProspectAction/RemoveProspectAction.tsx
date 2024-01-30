@@ -8,42 +8,42 @@ import {
   useRemoveProspectMutation,
 } from '../../../../api/generatedTypes';
 import { RemoveProspectModal } from '../../RemoveProspectModal/RemoveProspectModal';
-import { FormikHelpers, FormikValues } from 'formik';
+import { FormikValues } from 'formik';
 
-interface DismissProspectActionProps {
+interface RemoveProspectActionProps {
   // sent by prospectListCard
   prospectId: string;
 
   // sent by prospectListCard
-  prospectType: string;
+  prospectType?: string;
 
   // sent by prospectListCard
-  prospectTitle: string;
+  prospectTitle?: string;
   /**
-   * A state variable that tracks whether the RejectItemModal is visible
+   * A state variable that tracks whether the RemoveProspectModal is visible
    * on the page or not.
    * This has to be passed down from the parent component as other components
    * may need to use it, too.
    */
-  modalOpen: boolean;
+  modalOpen?: boolean;
 
   /**
-   * A function that toggles the RejectItemModal's visibility on and off.
+   * A function that toggles the RemoveProspectModal's visibility on and off.
    * This has to be passed down from the parent component as other components
    * may need to use it, too.
    */
-  toggleModal: VoidFunction;
+  toggleModal?: VoidFunction;
 
   // sent by prospecting page
-  onDismissProspect: (prospectId: string, errorMessage?: string) => void;
+  onRemoveProspect: (prospectId: string, errorMessage?: string) => void;
 }
 
 /**
- * This component renders a cross (close) button and calls the dismissProspect mutation
+ * This component renders a cross (close) button and calls the removeProspect mutation
  * @param props
  * @returns
  */
-export const DismissProspectAction: React.FC<DismissProspectActionProps> = (
+export const RemoveProspectAction: React.FC<RemoveProspectActionProps> = (
   props
 ) => {
   let isProspectSlateScheduler = false;
@@ -53,7 +53,7 @@ export const DismissProspectAction: React.FC<DismissProspectActionProps> = (
     prospectTitle,
     modalOpen,
     toggleModal,
-    onDismissProspect,
+    onRemoveProspect,
   } = props;
   if (prospectType === ProspectType.SlateScheduler) {
     isProspectSlateScheduler = true;
@@ -61,38 +61,7 @@ export const DismissProspectAction: React.FC<DismissProspectActionProps> = (
 
   const [removeProspect] = useRemoveProspectMutation();
 
-  const onClick = async () => {
-    const input: RemoveProspectInput = {
-      id: prospectId,
-    };
-    // call the dismissProspect mutation function and only extract the errors object
-    const { errors } = await removeProspect({
-      variables: { data: input },
-    });
-
-    let errorMessage;
-
-    if (errors?.length) {
-      errorMessage = errors?.[0].message ?? 'Could not dismiss prospect';
-    }
-
-    // call the function that was passed in as a prop by the parents component
-    onDismissProspect(prospectId, errorMessage);
-  };
-
-  const removeProspectOnSave = async (
-    values: FormikValues,
-    formikHelpers: FormikHelpers<any>
-  ) => {
-    console.log('prospectId: ', prospectId);
-    console.log('prospectTitle: ', prospectTitle);
-    console.log('removalReason: ', values.removalReason);
-    console.log('otherReason: ', values.otherReason);
-    const input: RemoveProspectInput = {
-      id: prospectId,
-      reasons: values.removalReason,
-      reasonComment: values.otherReason,
-    };
+  const runRemoveProspect = async (input: RemoveProspectInput) => {
     // call the removeProspect mutation function and only extract the errors object
     const { errors } = await removeProspect({
       variables: { data: input },
@@ -105,11 +74,26 @@ export const DismissProspectAction: React.FC<DismissProspectActionProps> = (
     }
 
     // call the function that was passed in as a prop by the parents component
-    onDismissProspect(prospectId, errorMessage);
+    onRemoveProspect(prospectId, errorMessage);
+  };
+
+  const onClick = async () => {
+    const input: RemoveProspectInput = {
+      id: prospectId,
+    };
+    await runRemoveProspect(input);
+  };
+
+  const removeProspectOnSave = async (values: FormikValues) => {
+    const input: RemoveProspectInput = {
+      id: prospectId,
+      reasons: values.removalReason,
+      reasonComment: values.otherReason,
+    };
+    await runRemoveProspect(input);
   };
   const removeProspectModal = async () => {
-    console.log('removeProspectModal');
-    if (!modalOpen) {
+    if (!modalOpen && toggleModal) {
       toggleModal();
     }
   };
@@ -125,10 +109,10 @@ export const DismissProspectAction: React.FC<DismissProspectActionProps> = (
     >
       <CloseIcon fontSize="medium" />
       <RemoveProspectModal
-        prospectTitle={prospectTitle}
-        isOpen={modalOpen}
+        prospectTitle={prospectTitle as string}
+        isOpen={modalOpen as boolean}
         onSave={removeProspectOnSave}
-        toggleModal={toggleModal}
+        toggleModal={toggleModal as VoidFunction}
       />
     </IconButton>
   );

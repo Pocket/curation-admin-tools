@@ -6,7 +6,7 @@ import { ShareableListModal } from './ShareableListModal';
 import {
   ShareableListComplete,
   ShareableListModerationStatus,
-  ShareableListVisibility,
+  ShareableListVisibility
 } from '../../../api/generatedTypes';
 
 describe('The ShareableListModal component', () => {
@@ -20,6 +20,7 @@ describe('The ShareableListModal component', () => {
     slug: 'test-list-title',
     status: ShareableListVisibility.Public,
     moderationStatus: ShareableListModerationStatus.Visible,
+    listItemNoteVisibility: ShareableListVisibility.Public,
     createdAt: '2023-03-27T11:54:03.000Z',
     updatedAt: '2023-03-28T23:09:57.000Z',
     listItems: [],
