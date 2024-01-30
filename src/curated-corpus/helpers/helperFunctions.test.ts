@@ -3,11 +3,12 @@ import { ProspectType } from '../../api/generatedTypes';
 import { ScheduledSurfaces } from './definitions';
 import {
   downloadAndUploadApprovedItemImageToS3,
-  fetchFileFromUrl, formatFormLabel,
+  fetchFileFromUrl,
+  formatFormLabel,
   getCuratorNameFromLdap,
   getLocalDateTimeForGuid,
   getScheduledSurfaceName,
-  readImageFileFromDisk
+  readImageFileFromDisk,
 } from './helperFunctions';
 
 describe('helperFunctions ', () => {
