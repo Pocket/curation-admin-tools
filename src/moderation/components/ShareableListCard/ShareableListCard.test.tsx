@@ -2,9 +2,9 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { dateFormat, ShareableListCard } from './ShareableListCard';
 import {
-  ShareableListComplete,
+  ShareableListComplete, ShareableListModerationReason,
   ShareableListModerationStatus,
-  ShareableListVisibility,
+  ShareableListVisibility
 } from '../../../api/generatedTypes';
 import { DateTime } from 'luxon';
 
@@ -17,6 +17,7 @@ describe('The ShareableListCard component', () => {
     slug: 'test-list-title',
     status: ShareableListVisibility.Public,
     moderationStatus: ShareableListModerationStatus.Visible,
+    listItemNoteVisibility: ShareableListVisibility.Public,
     createdAt: '2023-03-27T11:54:03.000Z',
     updatedAt: '2023-03-28T23:09:57.000Z',
     listItems: [],
@@ -25,7 +26,7 @@ describe('The ShareableListCard component', () => {
   const listUrl = `https://getpocket.com/sharedlists/${list.externalId}/${list.slug}/`;
 
   it('displays basic list properties', () => {
-    render(<ShareableListCard list={list} />);
+    render(<ShareableListCard list={list} refetch={jest.fn} />);
 
     expect(screen.getByText(list.title)).toBeInTheDocument();
     // Some punctuation/line breaks are in the same node, so a regex match is needed
@@ -44,7 +45,7 @@ describe('The ShareableListCard component', () => {
   });
 
   it('forms the list URL correctly and shows it if the list is public', () => {
-    render(<ShareableListCard list={list} />);
+    render(<ShareableListCard list={list} refetch={jest.fn} />);
 
     const link = screen.getByRole('link', { name: listUrl });
     expect(link).toBeInTheDocument();
@@ -58,7 +59,7 @@ describe('The ShareableListCard component', () => {
       status: ShareableListVisibility.Private,
       slug: undefined,
     };
-    render(<ShareableListCard list={privateList} />);
+    render(<ShareableListCard list={privateList} refetch={jest.fn} />);
 
     // Let's look for a link to the list... in vain
     const link = screen.queryByRole('link');
@@ -75,7 +76,7 @@ describe('The ShareableListCard component', () => {
       moderationStatus: ShareableListModerationStatus.Hidden,
       slug: undefined,
     };
-    render(<ShareableListCard list={privateList} />);
+    render(<ShareableListCard list={privateList} refetch={jest.fn} />);
 
     const hideListButton = screen.getByTestId('hide-list-button');
     expect(hideListButton).toHaveAttribute('disabled');
@@ -87,7 +88,7 @@ describe('The ShareableListCard component', () => {
       ...list,
       slug: undefined,
     };
-    render(<ShareableListCard list={privateList} />);
+    render(<ShareableListCard list={privateList} refetch={jest.fn} />);
 
     const hideListButton = screen.getByTestId('hide-list-button');
     expect(hideListButton).toBeInTheDocument();
@@ -99,7 +100,7 @@ describe('The ShareableListCard component', () => {
       ...list,
       slug: undefined,
     };
-    render(<ShareableListCard list={privateList} />);
+    render(<ShareableListCard list={privateList} refetch={jest.fn} />);
 
     const restoreListButton = screen.getByTestId('restore-list-button');
     expect(restoreListButton).toHaveAttribute('disabled');
@@ -112,7 +113,7 @@ describe('The ShareableListCard component', () => {
       moderationStatus: ShareableListModerationStatus.Hidden,
       slug: undefined,
     };
-    render(<ShareableListCard list={privateList} />);
+    render(<ShareableListCard list={privateList} refetch={jest.fn} />);
 
     const restoreListButton = screen.getByTestId('restore-list-button');
     expect(restoreListButton).toBeInTheDocument();
@@ -123,12 +124,12 @@ describe('The ShareableListCard component', () => {
     const privateList = {
       ...list,
       moderationStatus: ShareableListModerationStatus.Visible,
-      moderationReason: 'FRAUD',
+      moderationReason: ShareableListModerationReason.Fraud,
       moderationDetails: 'more details',
       restorationReason: 'restored, restored',
       slug: undefined,
     };
-    render(<ShareableListCard list={privateList} />);
+    render(<ShareableListCard list={privateList} refetch={jest.fn} />);
 
     // let make sure restore list button is not present
     const restoreListButton = screen.getByTestId('restore-list-button');

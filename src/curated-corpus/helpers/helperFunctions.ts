@@ -122,3 +122,15 @@ export const getScheduledSurfaceName = (surfaceGuid: string): string => {
     surfaceGuid
   );
 };
+
+/**
+ * Formats string for a form label: mathEMa_tics -> Mathematics
+ * @param str
+ * @returns formatter string (First letter uppercase, the rest lowercase, removes underscore)
+ */
+export const formatFormLabel = (str: string): string => {
+  return (
+    str.charAt(0).toUpperCase() +
+    str.substring(1).toLowerCase().replace(/_/g, ' ')
+  );
+};
