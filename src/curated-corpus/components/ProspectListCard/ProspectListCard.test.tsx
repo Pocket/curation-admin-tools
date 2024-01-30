@@ -167,6 +167,19 @@ describe('The ProspectListCard component', () => {
     ).not.toBeInTheDocument();
   });
 
+  it('should render when prospect does not have a parser object', () => {
+    prospect = {
+      ...prospect,
+      item: null,
+    };
+
+    renderComponent();
+
+    expect(
+      screen.queryByText(`${prospect.item?.timeToRead} min(s)`)
+    ).not.toBeInTheDocument();
+  });
+
   it('should render prospect card with the action buttons', () => {
     renderComponent();
 

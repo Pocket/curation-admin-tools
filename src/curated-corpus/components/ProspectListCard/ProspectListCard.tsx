@@ -68,14 +68,9 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
     onRecommend,
     onReject,
   } = props;
-
-  let _parserItem = parserItem;
-  if (!parserItem) {
-    _parserItem = {};
-  }
-
-  const timeToRead = _parserItem.timeToRead ? (
-    `${_parserItem.timeToRead} min(s)`
+  
+  const timeToRead = parserItem?.timeToRead ? (
+    `${parserItem.timeToRead} min(s)`
   ) : (
     <span> &mdash;</span>
   );
@@ -139,9 +134,9 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
             <ListItem disableGutters>
               <ListItemText
                 secondary={
-                  _parserItem?.datePublished &&
+                  parserItem?.datePublished &&
                   `Published ${DateTime.fromJSDate(
-                    new Date(_parserItem?.datePublished)
+                    new Date(parserItem?.datePublished)
                   ).toFormat('MMMM dd, yyyy')}`
                 }
               />
