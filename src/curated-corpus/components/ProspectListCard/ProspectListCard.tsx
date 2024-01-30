@@ -68,7 +68,7 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
     onRecommend,
     onReject,
   } = props;
-  
+
   const timeToRead = parserItem?.timeToRead ? (
     `${parserItem.timeToRead} min(s)`
   ) : (
