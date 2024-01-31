@@ -26,6 +26,7 @@ const allScheduledSurfaces: ScheduledSurface[] = [
       ProspectType.RssLogistic,
       ProspectType.RssLogisticRecent,
       ProspectType.SlateScheduler,
+      ProspectType.SlateSchedulerV2,
     ],
   },
   {
