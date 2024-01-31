@@ -3,13 +3,13 @@ import { render, screen } from '@testing-library/react';
 
 import { Prospect, ProspectType } from '../../../api/generatedTypes';
 import { ScheduledSurfaces } from '../../helpers/definitions';
-import { RejectItemModal } from './RejectItemModal';
+import { RemoveProspectModal } from './RemoveProspectModal';
 
-describe('The RejectItemModal component', () => {
+describe('The RemoveProspectModal component', () => {
   const prospect: Prospect = {
     id: 'test-id',
     prospectId: 'test-prospect-id',
-    prospectType: ProspectType.TopSaved,
+    prospectType: ProspectType.SlateScheduler,
     scheduledSurfaceGuid: ScheduledSurfaces[0].guid,
     url: 'www.test-prospect-url.com',
     title: 'test-title',
@@ -19,8 +19,8 @@ describe('The RejectItemModal component', () => {
 
   it('should render successfully', () => {
     render(
-      <RejectItemModal
-        prospect={prospect}
+      <RemoveProspectModal
+        prospectTitle={prospect.title as string}
         isOpen={true}
         onSave={onSave}
         toggleModal={toggleModal}
@@ -28,8 +28,9 @@ describe('The RejectItemModal component', () => {
     );
 
     // fetch the modal's heading and assert it renders successfully
-    expect(
-      screen.getByText(/reject this item from inclusion in the curated corpus/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/remove this prospect/i)).toBeInTheDocument();
+    // check for the prospect title
+    const prospectTitle = screen.getByText(/test-title/i);
+    expect(prospectTitle).toBeInTheDocument();
   });
 });

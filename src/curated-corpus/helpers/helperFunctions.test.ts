@@ -4,6 +4,7 @@ import { ScheduledSurfaces } from './definitions';
 import {
   downloadAndUploadApprovedItemImageToS3,
   fetchFileFromUrl,
+  formatFormLabel,
   getCuratorNameFromLdap,
   getLocalDateTimeForGuid,
   getScheduledSurfaceName,
@@ -218,6 +219,13 @@ describe('helperFunctions ', () => {
           }
         );
       }).rejects.toThrow('Failed to upload image, please try again');
+    });
+  });
+  describe('formatFormLabel function', () => {
+    it('should return the correctly formatted string', () => {
+      expect(formatFormLabel('floRAL_street')).toEqual('Floral street');
+      expect(formatFormLabel('Article_Quality')).toEqual('Article quality');
+      expect(formatFormLabel('MatheMatics')).toEqual('Mathematics');
     });
   });
 });

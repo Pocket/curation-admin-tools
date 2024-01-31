@@ -2,34 +2,40 @@ import React from 'react';
 import { MockedProvider, MockedResponse } from '@apollo/client/testing';
 import { render, screen, waitFor } from '@testing-library/react';
 import { SnackbarProvider } from 'notistack';
-import { DismissProspectAction } from './DismissProspectAction';
+import { RemoveProspectAction } from './RemoveProspectAction';
 import {
   successMock,
   errorMock,
   errorMessage,
-} from '../../../integration-test-mocks/dismissProspect';
+} from '../../../integration-test-mocks/removeProspect';
 import userEvent from '@testing-library/user-event';
 import { apolloCache } from '../../../../api/client';
 import { getTestProspect } from '../../../helpers/prospects';
 
-describe('The DismissProspectAction', () => {
+describe('The RemoveProspectAction', () => {
   const prospectId = getTestProspect().id;
-  const onDismissProspect = jest.fn();
+  const prospectTitle = getTestProspect().title;
+  const prospectType = getTestProspect().prospectType;
+  const onRemoveProspect = jest.fn();
 
   const renderComponent = (mocks?: MockedResponse[]) => {
     render(
       <MockedProvider mocks={mocks} cache={apolloCache}>
         <SnackbarProvider maxSnack={1}>
-          <DismissProspectAction
+          <RemoveProspectAction
             prospectId={prospectId}
-            onDismissProspect={onDismissProspect}
+            prospectTitle={prospectTitle as string}
+            prospectType={prospectType}
+            modalOpen={false}
+            toggleModal={jest.fn()}
+            onRemoveProspect={onRemoveProspect}
           />
         </SnackbarProvider>
       </MockedProvider>
     );
   };
 
-  it('should render the dismiss button and call the onDismissProspect function without an error message', async () => {
+  it('should render the dismiss button and call the onRemoveProspect function without an error message', async () => {
     renderComponent([successMock]);
 
     const dismissBtn = screen.getByTestId('dismissButton');
@@ -38,11 +44,11 @@ describe('The DismissProspectAction', () => {
 
     userEvent.click(dismissBtn);
 
-    await waitFor(() => expect(onDismissProspect).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(onRemoveProspect).toHaveBeenCalledTimes(1));
 
-    // asserting that onDismissProspect is called with the correct arguments - error message should be undefined for a successful mutation call
+    // asserting that onRemoveProspect is called with the correct arguments - error message should be undefined for a successful mutation call
     await waitFor(() =>
-      expect(onDismissProspect).toHaveBeenCalledWith(prospectId, undefined)
+      expect(onRemoveProspect).toHaveBeenCalledWith(prospectId, undefined)
     );
   });
 
@@ -51,8 +57,8 @@ describe('The DismissProspectAction', () => {
    * Similar issue as one of the RejectCorpusItemAction test. Refer to the block comment there.
    *
    */
-  xit('should render the dismiss button and call the onDismissProspect function with an error message', async () => {
-    //This test asserts that the onDismissProspect callback is called
+  xit('should render the dismiss button and call the onRemoveProspect function with an error message', async () => {
+    //This test asserts that the onRemoveProspect callback is called
     //with the correct prospectId and errorMessage argument
 
     renderComponent([errorMock]);
@@ -63,11 +69,11 @@ describe('The DismissProspectAction', () => {
 
     userEvent.click(dismissBtn);
 
-    await waitFor(() => expect(onDismissProspect).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(onRemoveProspect).toHaveBeenCalledTimes(1));
 
-    // asserting that onDismissProspect is called with the correct arguments
+    // asserting that onRemoveProspect is called with the correct arguments
     await waitFor(() =>
-      expect(onDismissProspect).toHaveBeenCalledWith(prospectId, errorMessage)
+      expect(onRemoveProspect).toHaveBeenCalledWith(prospectId, errorMessage)
     );
   });
 });

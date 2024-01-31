@@ -18,7 +18,7 @@ import theme from '../../../theme';
 describe('The ExistingProspectCard component', () => {
   let prospect: Prospect;
   const onSchedule = jest.fn();
-  const onDismissProspect = jest.fn();
+  const onRemoveProspect = jest.fn();
 
   beforeEach(() => {
     prospect = {
@@ -69,7 +69,7 @@ describe('The ExistingProspectCard component', () => {
               parserItem={prospect.item!}
               prospectId={prospect.prospectId}
               onSchedule={onSchedule}
-              onDismissProspect={onDismissProspect}
+              onRemoveProspect={onRemoveProspect}
             />
           </MemoryRouter>
         </ThemeProvider>
@@ -102,7 +102,7 @@ describe('The ExistingProspectCard component', () => {
               parserItem={prospect.item!}
               prospectId={prospect.prospectId}
               onSchedule={onSchedule}
-              onDismissProspect={onDismissProspect}
+              onRemoveProspect={onRemoveProspect}
             />
           </MemoryRouter>
         </ThemeProvider>
@@ -122,7 +122,7 @@ describe('The ExistingProspectCard component', () => {
               parserItem={prospect.item!}
               prospectId={prospect.prospectId}
               onSchedule={onSchedule}
-              onDismissProspect={onDismissProspect}
+              onRemoveProspect={onRemoveProspect}
             />
           </MemoryRouter>
         </ThemeProvider>
@@ -142,7 +142,7 @@ describe('The ExistingProspectCard component', () => {
               parserItem={prospect.item!}
               prospectId={prospect.prospectId}
               onSchedule={onSchedule}
-              onDismissProspect={onDismissProspect}
+              onRemoveProspect={onRemoveProspect}
             />
           </MemoryRouter>
         </ThemeProvider>
@@ -162,7 +162,7 @@ describe('The ExistingProspectCard component', () => {
               parserItem={prospect.item!}
               prospectId={prospect.prospectId}
               onSchedule={onSchedule}
-              onDismissProspect={onDismissProspect}
+              onRemoveProspect={onRemoveProspect}
             />
           </MemoryRouter>
         </ThemeProvider>
@@ -185,7 +185,7 @@ describe('The ExistingProspectCard component', () => {
               parserItem={prospect.item!}
               prospectId={prospect.prospectId}
               onSchedule={onSchedule}
-              onDismissProspect={onDismissProspect}
+              onRemoveProspect={onRemoveProspect}
             />
           </MemoryRouter>
         </ThemeProvider>
@@ -205,7 +205,7 @@ describe('The ExistingProspectCard component', () => {
               parserItem={prospect.item!}
               prospectId={prospect.prospectId}
               onSchedule={onSchedule}
-              onDismissProspect={onDismissProspect}
+              onRemoveProspect={onRemoveProspect}
             />
           </MemoryRouter>
         </ThemeProvider>
@@ -253,7 +253,7 @@ describe('The ExistingProspectCard component', () => {
               parserItem={prospect.item!}
               prospectId={prospect.prospectId}
               onSchedule={onSchedule}
-              onDismissProspect={onDismissProspect}
+              onRemoveProspect={onRemoveProspect}
             />
           </MemoryRouter>
         </ThemeProvider>

@@ -25,7 +25,7 @@ import { Button } from '../../../_shared/components';
 import { getCuratorNameFromLdap } from '../../helpers/helperFunctions';
 import { ScheduleHistory } from '../ScheduleHistory/ScheduleHistory';
 import { getDisplayTopic } from '../../helpers/topics';
-import { DismissProspectAction } from '../actions/DismissProspectAction/DismissProspectAction';
+import { RemoveProspectAction } from '../actions/RemoveProspectAction/RemoveProspectAction';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 
 interface ExistingProspectCardProps {
@@ -51,7 +51,7 @@ interface ExistingProspectCardProps {
   /**
    * Function called when the dismiss (cross) button is clicked.
    */
-  onDismissProspect: (prospectId: string, errorMessage?: string) => void;
+  onRemoveProspect: (prospectId: string, errorMessage?: string) => void;
 }
 
 /**
@@ -64,7 +64,7 @@ interface ExistingProspectCardProps {
 export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
   props
 ): JSX.Element => {
-  const { item, parserItem, onSchedule, onDismissProspect, prospectId } = props;
+  const { item, parserItem, onSchedule, onRemoveProspect, prospectId } = props;
   const showScheduleHistory = item.scheduledSurfaceHistory.length != 0;
 
   return (
@@ -148,8 +148,8 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
               </Link>
             </Grid>
             <Grid item xs={1} sx={{ textAlign: 'center' }}>
-              <DismissProspectAction
-                onDismissProspect={onDismissProspect}
+              <RemoveProspectAction
+                onRemoveProspect={onRemoveProspect}
                 prospectId={prospectId}
               />
             </Grid>
