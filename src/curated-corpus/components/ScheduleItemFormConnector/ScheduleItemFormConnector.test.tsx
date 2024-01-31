@@ -161,7 +161,7 @@ describe('ScheduleItemFormConnector', () => {
 
     // Find today's date on the monthly calendar (in MUI 5, it's a grid cell)
     /*
-     * !-- Flakey test --!
+     * !-- Flaky test --!
      * Jan 31, 2024 -- When running the test case on the last day of a month,
      * the UI renders the calendar component with the a day pushed ahead. That makes it render February.
      * Since February does not have 31 days, this test fails. We also have to adjust for the timezone because
