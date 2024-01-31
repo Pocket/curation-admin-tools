@@ -1,4 +1,3 @@
-// import { dismissProspect } from '../../api/mutations/dismissProspect';
 import { getTestProspect } from '../helpers/prospects';
 import { removeProspect } from '../../api/mutations/removeProspect';
 import { RemoveProspectInput } from '../../api/generatedTypes';
