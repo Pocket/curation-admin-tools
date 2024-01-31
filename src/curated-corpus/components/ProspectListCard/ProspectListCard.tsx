@@ -23,7 +23,8 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { curationPalette } from '../../../theme';
 import { Button } from '../../../_shared/components';
 import { getDisplayTopic } from '../../helpers/topics';
-import { DismissProspectAction } from '../actions/DismissProspectAction/DismissProspectAction';
+import { RemoveProspectAction } from '../actions/RemoveProspectAction/RemoveProspectAction';
+import { useToggle } from '../../../_shared/hooks';
 import { DateTime } from 'luxon';
 
 interface ProspectListCardProps {
@@ -45,7 +46,7 @@ interface ProspectListCardProps {
   /**
    * Function called when the dismiss (cross) button is clicked
    */
-  onDismissProspect: (prospectId: string, errorMessage?: string) => void;
+  onRemoveProspect: (prospectId: string, errorMessage?: string) => void;
 
   /**
    * Function called when "Recommend" button is clicked
@@ -64,10 +65,14 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
     prospect,
     parserItem,
     onAddToCorpus,
-    onDismissProspect,
+    onRemoveProspect,
     onRecommend,
     onReject,
   } = props;
+  /**
+   * Keep track of whether the RemoveProspectModal is open or not.
+   */
+  const [removeProspectModalOpen, toggleRemoveProspectModal] = useToggle(false);
 
   const timeToRead = parserItem.timeToRead ? (
     `${parserItem.timeToRead} min(s)`
@@ -173,9 +178,13 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
               </Link>
             </Grid>
             <Grid item xs={1} sx={{ textAlign: 'center' }}>
-              <DismissProspectAction
-                onDismissProspect={onDismissProspect}
+              <RemoveProspectAction
+                onRemoveProspect={onRemoveProspect}
                 prospectId={prospect.id}
+                prospectType={prospect.prospectType}
+                prospectTitle={prospect.title as string}
+                modalOpen={removeProspectModalOpen}
+                toggleModal={toggleRemoveProspectModal}
               />
             </Grid>
           </Grid>

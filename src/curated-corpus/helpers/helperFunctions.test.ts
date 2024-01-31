@@ -4,6 +4,7 @@ import { ScheduledSurfaces } from './definitions';
 import {
   downloadAndUploadApprovedItemImageToS3,
   fetchFileFromUrl,
+  formatFormLabel,
   getCuratorNameFromLdap,
   getLocalDateTimeForGuid,
   getScheduledSurfaceName,
@@ -234,6 +235,13 @@ describe('helperFunctions ', () => {
       expect(getFormattedImageUrl('')).toEqual(
         '/placeholders/collectionSmall.svg'
       );
+
+  describe('formatFormLabel function', () => {
+    it('should return the correctly formatted string', () => {
+      expect(formatFormLabel('floRAL_street')).toEqual('Floral street');
+      expect(formatFormLabel('Article_Quality')).toEqual('Article quality');
+      expect(formatFormLabel('MatheMatics')).toEqual('Mathematics');
+
     });
   });
 });

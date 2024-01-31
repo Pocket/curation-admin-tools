@@ -124,6 +124,7 @@ export const getScheduledSurfaceName = (surfaceGuid: string): string => {
 };
 
 /**
+
  * Pass an original item image url through the pocket-image-cache to extract 600x300 version of it
  * @param imageUrl
  * @returns image url prefixed with 'pocket-image-cache' or default placeholder
@@ -135,4 +136,15 @@ export const getFormattedImageUrl = (imageUrl: string): string => {
     );
   }
   return '/placeholders/collectionSmall.svg';
+
+ * Formats string for a form label: mathEMa_tics -> Mathematics
+ * @param str
+ * @returns formatter string (First letter uppercase, the rest lowercase, removes underscore)
+ */
+export const formatFormLabel = (str: string): string => {
+  return (
+    str.charAt(0).toUpperCase() +
+    str.substring(1).toLowerCase().replace(/_/g, ' ')
+  );
+
 };

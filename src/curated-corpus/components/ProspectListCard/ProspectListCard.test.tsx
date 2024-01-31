@@ -18,7 +18,7 @@ describe('The ProspectListCard component', () => {
   const onAddToCorpus = jest.fn();
   const onRecommend = jest.fn();
   const onReject = jest.fn();
-  const onDismissProspect = jest.fn();
+  const onRemoveProspect = jest.fn();
 
   beforeEach(() => {
     parserItem = {
@@ -59,7 +59,7 @@ describe('The ProspectListCard component', () => {
             onAddToCorpus={onAddToCorpus}
             onRecommend={onRecommend}
             onReject={onReject}
-            onDismissProspect={onDismissProspect}
+            onRemoveProspect={onRemoveProspect}
             parserItem={prospect.item!}
           />
         </MemoryRouter>
