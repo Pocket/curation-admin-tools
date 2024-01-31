@@ -42,9 +42,16 @@ describe('The ScheduleCorpusItemAction', () => {
   });
 
   it('completes the action successfully', async () => {
-    // setting a fixed timezone since this test has a tendency of passing locally but failing
-    // on CI due to server and local timezone discrepancies
-    const today = DateTime.local().setZone('America/New_York');
+    /*
+     * !-- Flakey test --!
+     * Jan 31, 2024 -- When running the test case on the last day of a month,
+     * the UI renders the calendar component with the a day pushed ahead. That makes it render February.
+     * Since February does not have 31 days, this test fails. We also have to adjust for the timezone because
+     * this also happens sometimes due to a mismatch of local (developer's machine) timezone and the CI server time zone.
+     */
+    const today = DateTime.local()
+      .plus({ days: 1 })
+      .setZone('America/New_York');
 
     mocks = [
       mock_AllScheduledSurfaces,
