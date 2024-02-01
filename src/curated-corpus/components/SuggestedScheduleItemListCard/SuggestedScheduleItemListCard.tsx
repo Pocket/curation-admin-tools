@@ -10,6 +10,7 @@ import {
   CorpusItemCardImage,
 } from '../../../_shared/components';
 import { ScheduleHistoryModal } from '../ScheduleHistoryModal/ScheduleHistoryModal';
+// import { DateTime } from 'luxon';
 
 interface SuggestedScheduleItemListCardProps {
   /**
@@ -50,6 +51,12 @@ export const SuggestedScheduleItemListCard: React.FC<
     setScheduleHistoryModalOpen(!isScheduleHistoryModalOpen);
   };
 
+  // const getDisplayDate = (date: string) => {
+  //   return DateTime.fromFormat(date, 'yyyy-MM-dd')
+  //     .setLocale('en')
+  //     .toLocaleString(DateTime.DATE_FULL);
+  // };
+
   return (
     <>
       <CorpusItemCardImage
@@ -67,6 +74,9 @@ export const SuggestedScheduleItemListCard: React.FC<
       <CardContent
         sx={{
           padding: '0.5rem',
+          marginLeft: '0.5rem',
+          marginRight: '0.5rem',
+          marginBottom: '0.5rem',
         }}
       >
         <Typography
@@ -74,20 +84,24 @@ export const SuggestedScheduleItemListCard: React.FC<
           sx={{
             marginTop: '0.25rem',
             fontWeight: 400,
-            fontSize: '0.875rem',
-            color: curationPalette.neutral,
+            fontSize: '0.775rem',
+            color: curationPalette.jetBlack,
+            lineHeight: '1.1rem',
           }}
         >
           <span>{item.publisher}</span> &middot;{' '}
-          <span>{flattenAuthors(item.authors)}</span>
+          <span>{flattenAuthors(item.authors)}</span> &middot;{' '}
+          <span>Jan 31, 2024</span>
         </Typography>
         <Typography
           variant="h5"
           align="left"
           gutterBottom
           sx={{
-            fontSize: '1rem',
+            marginTop: '0.5rem',
+            fontSize: '1.1rem',
             fontWeight: 500,
+            lineHeight: '1.3rem',
           }}
         >
           <Link
@@ -101,7 +115,16 @@ export const SuggestedScheduleItemListCard: React.FC<
             {item.title}
           </Link>
         </Typography>
-        <Typography variant="body2" component="p" gutterBottom>
+        <Typography
+          variant="body2"
+          component="p"
+          gutterBottom
+          sx={{
+            marginTop: '0.5rem',
+            color: curationPalette.jetBlack,
+            lineHeight: '1.1rem',
+          }}
+        >
           {item.excerpt}
         </Typography>
       </CardContent>
@@ -110,14 +133,12 @@ export const SuggestedScheduleItemListCard: React.FC<
       {/* Push the rest of the elements to the bottom of the card. */}
       <Box sx={{ flexGrow: 1 }} />
 
-      <CardContent>
-        <CardActionButtonRow
-          onEdit={onEdit}
-          onRemove={onRemove}
-          onReschedule={onReschedule}
-          onMoveToBottom={onMoveToBottom}
-        />
-      </CardContent>
+      <CardActionButtonRow
+        onEdit={onEdit}
+        onRemove={onRemove}
+        onReschedule={onReschedule}
+        onMoveToBottom={onMoveToBottom}
+      />
     </>
   );
 };

@@ -29,7 +29,10 @@ const labelContainerSxStyles: SxProps = {
   display: 'flex',
   color: curationPalette.white,
   backgroundColor: curationPalette.overlayBgBlack,
-  padding: '0.2rem',
+  paddingTop: '0.1rem',
+  paddingBottom: '0.1rem',
+  paddingRight: '0.2rem',
+  paddingLeft: '0.2rem',
   margin: '0.1rem',
   borderRadius: '8px',
   gap: 1,
@@ -50,20 +53,19 @@ const bottomOverlayContainerSxStyles: SxProps = {
 };
 
 const getLastScheduledDayDiff = (item: ApprovedCorpusItem): number | null => {
-  const currentDate = new Date();
-  const mostRecentLastScheduledDate = item.scheduledSurfaceHistory.find(
-    (history) => new Date(history.scheduledDate) < currentDate
-  );
+  if (item.scheduledSurfaceHistory.length < 2) {
+    return null;
+  }
 
-  if (!mostRecentLastScheduledDate) {
+  if (!item.scheduledSurfaceHistory[1].scheduledDate) {
     return null;
   }
 
   //TODO @Herraj -- date is sometimes off by one day, probably have to standardize the TZ
 
   const timeDifference =
-    currentDate.getTime() -
-    new Date(mostRecentLastScheduledDate.scheduledDate).getTime();
+    new Date(item.scheduledSurfaceHistory[0].scheduledDate).getTime() -
+    new Date(item.scheduledSurfaceHistory[1].scheduledDate).getTime();
   return Math.abs(Math.ceil(timeDifference / (1000 * 3600 * 24)));
 };
 
@@ -80,7 +82,7 @@ const getTopRightLabel = (item: ApprovedCorpusItem): JSX.Element | null => {
   if (item.isSyndicated) {
     return (
       <>
-        <PaidOutlinedIcon fontSize="small" sx={{ color: '#A8FF1A' }} />
+        <PaidOutlinedIcon fontSize="small" />
         <Typography variant="caption">Syndicated</Typography>
       </>
     );
@@ -89,7 +91,7 @@ const getTopRightLabel = (item: ApprovedCorpusItem): JSX.Element | null => {
   if (item.isCollection) {
     return (
       <>
-        <BookmarksOutlinedIcon fontSize="small" sx={{ color: '#FFB800' }} />
+        <BookmarksOutlinedIcon fontSize="small" />
         <Typography variant="caption">Collection</Typography>
       </>
     );
@@ -115,6 +117,8 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
 
   const lastScheduledDayDiff = getLastScheduledDayDiff(item);
 
+  // TODO fix spacing between collection/syndicated icon and text
+
   return (
     <Box position="relative">
       <CardMedia
@@ -128,13 +132,17 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
           direction="row"
           alignItems="flex-start"
           justifyContent="space-between"
+          ml="0.1rem"
+          mr="0.1rem"
         >
           <Box sx={labelContainerSxStyles}>
             <Typography variant="caption">{displayTopic}</Typography>
           </Box>
 
           {topRightLabel && (
-            <Box sx={labelContainerSxStyles}>{topRightLabel}</Box>
+            <Box sx={{ ...labelContainerSxStyles, right: '0.1rem' }}>
+              {topRightLabel}
+            </Box>
           )}
         </Stack>
 
@@ -142,6 +150,7 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
           direction="column"
           alignItems="flex-start"
           justifyContent="space-between"
+          ml="0.1rem"
         >
           {item.isTimeSensitive && (
             <Box
@@ -164,6 +173,8 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
           direction="row"
           alignItems="flex-start"
           justifyContent="space-between"
+          ml="0.1rem"
+          mb="0.1rem"
         >
           {lastScheduledDayDiff && (
             <Box

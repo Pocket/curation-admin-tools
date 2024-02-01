@@ -1,17 +1,15 @@
 import React from 'react';
-import {
-  Avatar,
-  Dialog,
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  Divider,
-  Card,
-  CardHeader,
-  CardContent,
-  SxProps,
-} from '@mui/material';
+import Avatar from '@mui/material/Avatar';
+import Dialog from '@mui/material/Dialog';
+import Typography from '@mui/material/Typography';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Divider from '@mui/material/Divider';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardContent from '@mui/material/CardContent';
+import { SxProps } from '@mui/system';
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import {
   getFormattedImageUrl,
@@ -32,14 +30,15 @@ interface ScheduleHistoryModalProps {
 }
 
 const cardSxCssStyles: SxProps = {
-  width: '100%',
+  maxWidth: '100%',
   borderRadius: '8px',
 };
 
 const cardHeaderSxCssStyles: SxProps = {
   display: 'flex',
-  width: '100%',
   alignItems: 'start',
+  maxWidth: '100%',
+  height: '20%',
   backgroundColor: '#F9F9FB',
 };
 
@@ -48,14 +47,12 @@ export const ScheduleHistoryModal: React.FC<ScheduleHistoryModalProps> = (
 ): JSX.Element => {
   const { item, isOpen, toggleModal } = props;
 
-  console.log(getFormattedImageUrl(item.imageUrl));
-  //TODO look into image cache dimensions for avatar image
   const avatar = (
     <Avatar
       srcSet={getFormattedImageUrl(item.imageUrl)}
       variant="rounded"
       alt={item.title}
-      sx={{ width: '200px', height: '150px' }}
+      sx={{ width: '200px', height: '100%' }}
     />
   );
 
@@ -95,26 +92,30 @@ export const ScheduleHistoryModal: React.FC<ScheduleHistoryModalProps> = (
             {item.scheduledSurfaceHistory.map((history) => {
               return (
                 <>
-                  <ListItem key={history.externalId}>
+                  <ListItem
+                    key={history.externalId}
+                    alignItems="flex-start"
+                    sx={{ justifyContent: 'space-between' }}
+                  >
                     <ListItemText
                       primary={getDisplayDate(history.scheduledDate)}
+                      primaryTypographyProps={{ fontWeight: '500' }}
+                      sx={{ width: '30%' }}
                     />
 
                     <ListItemText
                       primary={getCuratorNameFromLdap(history.createdBy)}
+                      sx={{ width: '30%' }}
                     />
 
                     <ListItemText
                       primary={getScheduledSurfaceName(
                         history.scheduledSurfaceGuid
                       )}
+                      sx={{ width: '30%' }}
                     />
                   </ListItem>
-                  <Divider
-                    variant="middle"
-                    component="li"
-                    sx={{ bgcolor: '#E0E0E6', height: 1.1 }}
-                  />
+                  <Divider variant="middle" sx={{ bgcolor: '#E0E0E6' }} />
                 </>
               );
             })}

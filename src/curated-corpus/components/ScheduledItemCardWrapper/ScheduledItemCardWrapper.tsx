@@ -4,7 +4,8 @@ import { ScheduledCorpusItem } from '../../../api/generatedTypes';
 // import { Button } from '../../../_shared/components';
 import {
   // StyledCardActions,
-  StyledCorpusItemCard,
+  // StyledCorpusItemCard,
+  StyledScheduledItemCard,
 } from '../../../_shared/styled';
 import { SuggestedScheduleItemListCard } from '../SuggestedScheduleItemListCard/SuggestedScheduleItemListCard';
 // import { ApprovedItemListCard } from '../';
@@ -61,12 +62,14 @@ export const ScheduledItemCardWrapper: React.FC<
 
   return (
     <Grid item xs={12} sm={6} md={3}>
-      <StyledCorpusItemCard>
-        {/* <ApprovedItemListCard
+      {/* <StyledCorpusItemCard>
+        <ApprovedItemListCard
           item={item.approvedItem}
           showLanguageIcon={showLanguageIcon}
           showRecommendedOverlay={showRecommendedOverlay}
-        /> */}
+        />
+      </StyledCorpusItemCard> */}
+      <StyledScheduledItemCard variant="outlined">
         <SuggestedScheduleItemListCard
           item={item.approvedItem}
           onEdit={onEdit}
@@ -74,7 +77,7 @@ export const ScheduledItemCardWrapper: React.FC<
           onReschedule={onReschedule}
           onMoveToBottom={onMoveToBottom}
         />
-      </StyledCorpusItemCard>
+      </StyledScheduledItemCard>
     </Grid>
   );
 };
