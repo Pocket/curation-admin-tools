@@ -1613,25 +1613,26 @@ export enum RejectionReason {
  * these reasons *may* also be used more widely in the prospecting view in the
  * future, but would be blocked on removal count going down significantly.
  *
- * as of today, 2024-01-29, these reasons have been finalized.
+ * As of today, 2024-01-29, these reasons have been finalized.
+ * 1.31.2024 - Reasons have been modified (https://docs.google.com/spreadsheets/d/1HWLpoiKh-CPXkMKrfHKBSohrR8C8o0StcMucF0C0vEk)
  */
 export enum RemovalReason {
   ArticleQuality = 'ARTICLE_QUALITY',
   Commercial = 'COMMERCIAL',
   Controversial = 'CONTROVERSIAL',
-  HeadlineQuality = 'HEADLINE_QUALITY',
-  Inappropriate = 'INAPPROPRIATE',
+  HedDekQuality = 'HED_DEK_QUALITY',
+  ImageQuality = 'IMAGE_QUALITY',
   Niche = 'NICHE',
   NoImage = 'NO_IMAGE',
   OneSided = 'ONE_SIDED',
-  Outdated = 'OUTDATED',
+  Partisan = 'PARTISAN',
   Paywall = 'PAYWALL',
-  PoliticalOpinion = 'POLITICAL_OPINION',
-  Publisher = 'PUBLISHER',
-  Redundant = 'REDUNDANT',
-  SetSimilarity = 'SET_SIMILARITY',
+  PublisherDiversity = 'PUBLISHER_DIVERSITY',
+  PublisherQuality = 'PUBLISHER_QUALITY',
+  PublishDate = 'PUBLISH_DATE',
+  SetDiversity = 'SET_DIVERSITY',
   TimeSensitive = 'TIME_SENSITIVE',
-  Topic = 'TOPIC',
+  TopicDiversity = 'TOPIC_DIVERSITY',
 }
 
 /** Input data for removing a prospect. */
@@ -2832,34 +2833,6 @@ export type DeleteScheduledItemMutation = {
       }>;
     };
   };
-};
-
-export type DismissProspectMutationVariables = Exact<{
-  id: Scalars['ID'];
-}>;
-
-export type DismissProspectMutation = {
-  __typename?: 'Mutation';
-  dismissProspect?: {
-    __typename?: 'Prospect';
-    id: string;
-    prospectId: string;
-    scheduledSurfaceGuid: string;
-    topic?: string | null;
-    prospectType: string;
-    url: string;
-    createdAt?: number | null;
-    imageUrl?: string | null;
-    authors?: string | null;
-    publisher?: string | null;
-    domain?: string | null;
-    title?: string | null;
-    excerpt?: string | null;
-    language?: CorpusLanguage | null;
-    saveCount?: number | null;
-    isSyndicated?: boolean | null;
-    isCollection?: boolean | null;
-  } | null;
 };
 
 export type ImageUploadMutationVariables = Exact<{
@@ -5357,57 +5330,6 @@ export type DeleteScheduledItemMutationResult =
 export type DeleteScheduledItemMutationOptions = Apollo.BaseMutationOptions<
   DeleteScheduledItemMutation,
   DeleteScheduledItemMutationVariables
->;
-export const DismissProspectDocument = gql`
-  mutation dismissProspect($id: ID!) {
-    dismissProspect(id: $id) {
-      ...ProspectData
-    }
-  }
-  ${ProspectDataFragmentDoc}
-`;
-export type DismissProspectMutationFn = Apollo.MutationFunction<
-  DismissProspectMutation,
-  DismissProspectMutationVariables
->;
-
-/**
- * __useDismissProspectMutation__
- *
- * To run a mutation, you first call `useDismissProspectMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDismissProspectMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [dismissProspectMutation, { data, loading, error }] = useDismissProspectMutation({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useDismissProspectMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    DismissProspectMutation,
-    DismissProspectMutationVariables
-  >
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    DismissProspectMutation,
-    DismissProspectMutationVariables
-  >(DismissProspectDocument, options);
-}
-export type DismissProspectMutationHookResult = ReturnType<
-  typeof useDismissProspectMutation
->;
-export type DismissProspectMutationResult =
-  Apollo.MutationResult<DismissProspectMutation>;
-export type DismissProspectMutationOptions = Apollo.BaseMutationOptions<
-  DismissProspectMutation,
-  DismissProspectMutationVariables
 >;
 export const ImageUploadDocument = gql`
   mutation imageUpload(

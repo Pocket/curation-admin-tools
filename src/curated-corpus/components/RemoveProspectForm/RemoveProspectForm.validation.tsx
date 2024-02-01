@@ -6,19 +6,19 @@ export const validationSchema = yup
     [RemovalReason.ArticleQuality]: yup.boolean(),
     [RemovalReason.Commercial]: yup.boolean(),
     [RemovalReason.Controversial]: yup.boolean(),
-    [RemovalReason.HeadlineQuality]: yup.boolean(),
-    [RemovalReason.Inappropriate]: yup.boolean(),
+    [RemovalReason.HedDekQuality]: yup.boolean(),
+    [RemovalReason.ImageQuality]: yup.boolean(),
     [RemovalReason.Niche]: yup.boolean(),
     [RemovalReason.NoImage]: yup.boolean(),
     [RemovalReason.OneSided]: yup.boolean(),
-    [RemovalReason.Outdated]: yup.boolean(),
+    [RemovalReason.Partisan]: yup.boolean(),
     [RemovalReason.Paywall]: yup.boolean(),
-    [RemovalReason.PoliticalOpinion]: yup.boolean(),
-    [RemovalReason.Publisher]: yup.boolean(),
-    [RemovalReason.Redundant]: yup.boolean(),
-    [RemovalReason.SetSimilarity]: yup.boolean(),
+    [RemovalReason.PublisherDiversity]: yup.boolean(),
+    [RemovalReason.PublisherQuality]: yup.boolean(),
+    [RemovalReason.PublishDate]: yup.boolean(),
+    [RemovalReason.SetDiversity]: yup.boolean(),
     [RemovalReason.TimeSensitive]: yup.boolean(),
-    [RemovalReason.Topic]: yup.boolean(),
+    [RemovalReason.TopicDiversity]: yup.boolean(),
     otherReason: yup
       .string()
       .max(100, 'Reason is too long, cannot exceed 100 characters.'), // max 50 chars for now
@@ -29,19 +29,19 @@ export const validationSchema = yup
       obj[RemovalReason.ArticleQuality] ||
       obj[RemovalReason.Commercial] ||
       obj[RemovalReason.Controversial] ||
-      obj[RemovalReason.HeadlineQuality] ||
-      obj[RemovalReason.Inappropriate] ||
+      obj[RemovalReason.HedDekQuality] ||
+      obj[RemovalReason.ImageQuality] ||
       obj[RemovalReason.Niche] ||
       obj[RemovalReason.NoImage] ||
       obj[RemovalReason.OneSided] ||
-      obj[RemovalReason.Outdated] ||
+      obj[RemovalReason.Partisan] ||
       obj[RemovalReason.Paywall] ||
-      obj[RemovalReason.PoliticalOpinion] ||
-      obj[RemovalReason.Publisher] ||
-      obj[RemovalReason.Redundant] ||
-      obj[RemovalReason.SetSimilarity] ||
+      obj[RemovalReason.PublisherDiversity] ||
+      obj[RemovalReason.PublisherQuality] ||
+      obj[RemovalReason.PublishDate] ||
+      obj[RemovalReason.SetDiversity] ||
       obj[RemovalReason.TimeSensitive] ||
-      obj[RemovalReason.Topic]
+      obj[RemovalReason.TopicDiversity]
     ) {
       return true;
     }
