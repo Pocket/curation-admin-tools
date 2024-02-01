@@ -31,7 +31,7 @@ export const RemoveProspectModal: React.FC<RemoveProspectModalProps> = (
           </Box>
         </Grid>
         <Grid item xs={12}>
-          <Box p={3}>
+          <Box p={3} mt={-3.5}>
             <RemoveProspectForm onSubmit={onSave} onCancel={toggleModal} />
           </Box>
         </Grid>

@@ -74,7 +74,7 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
    */
   const [removeProspectModalOpen, toggleRemoveProspectModal] = useToggle(false);
 
-  const timeToRead = parserItem.timeToRead ? (
+  const timeToRead = parserItem?.timeToRead ? (
     `${parserItem.timeToRead} min(s)`
   ) : (
     <span> &mdash;</span>
