@@ -70,19 +70,19 @@ export const ScheduleHistoryModal: React.FC<ScheduleHistoryModalProps> = (
           avatar={avatar}
           title={item.publisher}
           titleTypographyProps={{
-            variant: 'h6',
+            variant: 'h7',
             fontWeight: 'regular',
           }}
           subheader={item.title}
           subheaderTypographyProps={{
-            variant: 'h5',
+            variant: 'h6',
             fontWeight: '500',
             color: curationPalette.pocketBlack,
           }}
         />
         <CardContent>
           <Typography
-            variant="h4"
+            variant="h5"
             fontWeight="medium"
             sx={{ marginLeft: '0.7rem' }}
           >
