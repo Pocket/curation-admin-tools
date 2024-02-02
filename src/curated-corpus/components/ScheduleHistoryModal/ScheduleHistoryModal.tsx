@@ -22,10 +22,19 @@ import { curationPalette } from '../../../theme';
 import { DateTime } from 'luxon';
 
 interface ScheduleHistoryModalProps {
+  /**
+   * An approved corpus item object
+   */
   item: ApprovedCorpusItem;
 
+  /**
+   * Boolean flag to open or close this modal
+   */
   isOpen: boolean;
 
+  /**
+   * Callback to toggle this modal on or off
+   */
   toggleModal: VoidFunction;
 }
 
