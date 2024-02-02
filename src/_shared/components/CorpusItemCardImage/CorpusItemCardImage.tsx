@@ -45,6 +45,7 @@ const labelContainerSxStyles: SxProps = {
   borderRadius: '8px',
   gap: 1,
   alignItems: 'center',
+  justifyContent: 'space-around',
 };
 
 const topOverlayContainerSxStyles: SxProps = {
@@ -92,6 +93,26 @@ const getTopRightLabel = (item: ApprovedCorpusItem): JSX.Element | null => {
   return null;
 };
 
+const getBottomLeftLabel = (lastScheduledDayDiff: number): JSX.Element => {
+  return (
+    <Box
+      sx={{
+        ...labelContainerSxStyles,
+        backgroundColor:
+          lastScheduledDayDiff === 2
+            ? curationPalette.solidPink
+            : curationPalette.overlayBgBlack,
+      }}
+      data-testid="last-scheduled-overlay"
+    >
+      <EventAvailableOutlinedIcon fontSize="small" />
+      <Typography variant="caption">
+        {`Last scheduled ${lastScheduledDayDiff} days ago`}
+      </Typography>
+    </Box>
+  );
+};
+
 /**
  * This component combines the MUI CardMedia and other MUI components to build
  * a custom component with a card image with some overlay labels
@@ -119,8 +140,6 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
     currentDateViewingScheduleFor,
     scheduledHistoryDates
   );
-
-  // TODO fix spacing between collection/syndicated icon and text
 
   return (
     <Box position="relative">
@@ -179,23 +198,7 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
           ml="0.1rem"
           mb="0.1rem"
         >
-          {lastScheduledDayDiff && (
-            <Box
-              sx={{
-                ...labelContainerSxStyles,
-                backgroundColor:
-                  lastScheduledDayDiff === 2
-                    ? curationPalette.solidPink
-                    : curationPalette.overlayBgBlack,
-              }}
-              data-testid="last-scheduled-overlay"
-            >
-              <EventAvailableOutlinedIcon fontSize="small" />
-              <Typography variant="caption">
-                {`Last scheduled ${lastScheduledDayDiff} days ago`}
-              </Typography>
-            </Box>
-          )}
+          {lastScheduledDayDiff && getBottomLeftLabel(lastScheduledDayDiff)}
         </Stack>
       </Box>
     </Box>
