@@ -1,14 +1,9 @@
 import React from 'react';
 import { Grid } from '@mui/material';
 import { ScheduledCorpusItem } from '../../../api/generatedTypes';
-// import { Button } from '../../../_shared/components';
-import {
-  // StyledCardActions,
-  // StyledCorpusItemCard,
-  StyledScheduledItemCard,
-} from '../../../_shared/styled';
+
+import { StyledScheduledItemCard } from '../../../_shared/styled';
 import { SuggestedScheduleItemListCard } from '../SuggestedScheduleItemListCard/SuggestedScheduleItemListCard';
-// import { ApprovedItemListCard } from '../';
 
 interface ScheduledItemCardWrapperProps {
   /**
@@ -22,9 +17,9 @@ interface ScheduledItemCardWrapperProps {
   onMoveToBottom: VoidFunction;
 
   /**
-   * What to do when the "Remove" button is clicked.
+   * What to do when the "Unschedule" button is clicked.
    */
-  onRemove: VoidFunction;
+  onUnschedule: VoidFunction;
 
   /**
    * Callback for the "Reschedule" button
@@ -37,14 +32,9 @@ interface ScheduledItemCardWrapperProps {
   onEdit: VoidFunction;
 
   /**
-   * Optional boolean prop to show/hide the language icon on the ApprovedItemListCard component
+   * Current date that the schedule is being viewed for
    */
-  showLanguageIcon?: boolean;
-
-  /**
-   * Optional boolean prop to show/hide the "Rec." overlay on the ApprovedItemListCard component
-   */
-  showRecommendedOverlay?: boolean;
+  currentScheduledDate: string;
 }
 
 export const ScheduledItemCardWrapper: React.FC<
@@ -53,27 +43,20 @@ export const ScheduledItemCardWrapper: React.FC<
   const {
     item,
     onMoveToBottom,
-    onRemove,
+    onUnschedule,
     onReschedule,
     onEdit,
-    // showLanguageIcon,
-    // showRecommendedOverlay,
+    currentScheduledDate,
   } = props;
 
   return (
     <Grid item xs={12} sm={6} md={3}>
-      {/* <StyledCorpusItemCard>
-        <ApprovedItemListCard
-          item={item.approvedItem}
-          showLanguageIcon={showLanguageIcon}
-          showRecommendedOverlay={showRecommendedOverlay}
-        />
-      </StyledCorpusItemCard> */}
       <StyledScheduledItemCard variant="outlined">
         <SuggestedScheduleItemListCard
           item={item.approvedItem}
+          currentScheduledDate={currentScheduledDate}
           onEdit={onEdit}
-          onRemove={onRemove}
+          onUnschedule={onUnschedule}
           onReschedule={onReschedule}
           onMoveToBottom={onMoveToBottom}
         />

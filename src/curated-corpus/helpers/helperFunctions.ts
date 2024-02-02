@@ -1,6 +1,9 @@
 import { DateTime } from 'luxon';
 import { FileWithPath } from 'react-dropzone';
-import { GetScheduledSurfacesForUserQuery } from '../../api/generatedTypes';
+import {
+  // ApprovedCorpusItem,
+  GetScheduledSurfacesForUserQuery,
+} from '../../api/generatedTypes';
 import { ScheduledSurfaces } from './definitions';
 
 // downloads image from source url
@@ -147,4 +150,31 @@ export const formatFormLabel = (str: string): string => {
     str.charAt(0).toUpperCase() +
     str.substring(1).toLowerCase().replace(/_/g, ' ')
   );
+};
+
+/**
+ * Finds the number of days a scheduled item was scheduled for most recently before
+ * the current date the scheduled is being viewed for.
+ * E.g when viewing schedule for Jan 25, 2024, it will return "5 days ago" for an item that was scheduled on 25th (current) and on Jan 20, 2024
+ * @param item
+ * @param currentDateViewingScheduleFor
+ * @returns
+ */
+export const getLastScheduledDayDiff = (
+  currentDateViewingScheduleFor: string,
+  listOfScheduleDates: string[]
+): number | null => {
+  // find the most recent scheduled date before the current date that the schedule is being viewed for
+  const mostRecentScheduleDate = listOfScheduleDates.find(
+    (scheduledDate) => scheduledDate < currentDateViewingScheduleFor
+  );
+
+  if (!mostRecentScheduleDate) {
+    return null;
+  }
+
+  const daysDifference =
+    new Date(currentDateViewingScheduleFor).getTime() -
+    new Date(mostRecentScheduleDate).getTime();
+  return Math.abs(Math.ceil(daysDifference / (1000 * 3600 * 24)));
 };

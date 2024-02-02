@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CardMedia, Typography } from '@mui/material';
 import { Box, Stack, SxProps } from '@mui/system';
 
@@ -10,13 +10,21 @@ import BookmarksOutlinedIcon from '@mui/icons-material/BookmarksOutlined';
 import { curationPalette } from '../../../theme';
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { getDisplayTopic } from '../../../curated-corpus/helpers/topics';
-import { getFormattedImageUrl } from '../../../curated-corpus/helpers/helperFunctions';
+import {
+  getFormattedImageUrl,
+  getLastScheduledDayDiff,
+} from '../../../curated-corpus/helpers/helperFunctions';
 
 interface CorpusItemCardImageProps {
   /**
    * An object with everything approved curated item-related in it.
    */
   item: ApprovedCorpusItem;
+
+  /**
+   * Current date that the schedule is being viewed for
+   */
+  currentScheduledDate: string;
 
   /**
    * Callback to toggle on and off recent scheduled modal
@@ -52,24 +60,8 @@ const bottomOverlayContainerSxStyles: SxProps = {
   cursor: 'pointer',
 };
 
-const getLastScheduledDayDiff = (item: ApprovedCorpusItem): number | null => {
-  if (item.scheduledSurfaceHistory.length < 2) {
-    return null;
-  }
-
-  if (!item.scheduledSurfaceHistory[1].scheduledDate) {
-    return null;
-  }
-
-  //TODO @Herraj -- date is sometimes off by one day, probably have to standardize the TZ
-
-  const timeDifference =
-    new Date(item.scheduledSurfaceHistory[0].scheduledDate).getTime() -
-    new Date(item.scheduledSurfaceHistory[1].scheduledDate).getTime();
-  return Math.abs(Math.ceil(timeDifference / (1000 * 3600 * 24)));
-};
-
 const getTopRightLabel = (item: ApprovedCorpusItem): JSX.Element | null => {
+  //TODO @Herraj replace the string value being asserted on once MC-550 is complete
   if (item.createdBy === 'ML') {
     return (
       <>
@@ -109,13 +101,24 @@ const getTopRightLabel = (item: ApprovedCorpusItem): JSX.Element | null => {
 export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
   props
 ): JSX.Element => {
-  const { item, toggleScheduleHistoryModal } = props;
+  const { item, toggleScheduleHistoryModal, currentScheduledDate } = props;
+
+  const [currentDateViewingScheduleFor] =
+    useState<string>(currentScheduledDate);
 
   const displayTopic = getDisplayTopic(item.topic);
 
   const topRightLabel = getTopRightLabel(item);
 
-  const lastScheduledDayDiff = getLastScheduledDayDiff(item);
+  // extract the scheduled history dates into an string array
+  const scheduledHistoryDates = item.scheduledSurfaceHistory.map(
+    (scheduledHistory) => scheduledHistory.scheduledDate
+  );
+
+  const lastScheduledDayDiff = getLastScheduledDayDiff(
+    currentDateViewingScheduleFor,
+    scheduledHistoryDates
+  );
 
   // TODO fix spacing between collection/syndicated icon and text
 
@@ -185,6 +188,7 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
                     ? curationPalette.solidPink
                     : curationPalette.overlayBgBlack,
               }}
+              data-testid="last-scheduled-overlay"
             >
               <EventAvailableOutlinedIcon fontSize="small" />
               <Typography variant="caption">

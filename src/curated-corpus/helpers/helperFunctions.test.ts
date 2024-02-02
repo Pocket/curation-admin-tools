@@ -10,6 +10,7 @@ import {
   getScheduledSurfaceName,
   getFormattedImageUrl,
   readImageFileFromDisk,
+  getLastScheduledDayDiff,
 } from './helperFunctions';
 
 describe('helperFunctions ', () => {
@@ -235,13 +236,70 @@ describe('helperFunctions ', () => {
       expect(getFormattedImageUrl('')).toEqual(
         '/placeholders/collectionSmall.svg'
       );
+    });
+  });
 
   describe('formatFormLabel function', () => {
     it('should return the correctly formatted string', () => {
       expect(formatFormLabel('floRAL_street')).toEqual('Floral street');
       expect(formatFormLabel('Article_Quality')).toEqual('Article quality');
       expect(formatFormLabel('MatheMatics')).toEqual('Mathematics');
+    });
+  });
 
+  describe('getLastScheduledDayDiff function', () => {
+    const currentScheduleDate = '2024-01-20';
+
+    it('should return null if the item has no schedule history', () => {
+      const scheduledDates: string[] = [];
+
+      expect(
+        getLastScheduledDayDiff(currentScheduleDate, scheduledDates)
+      ).toBeNull();
+    });
+
+    it('should return null if the item has less than 2 schedule history entries', () => {
+      const scheduledDates: string[] = ['2024-01-25'];
+
+      expect(
+        getLastScheduledDayDiff(currentScheduleDate, scheduledDates)
+      ).toBeNull();
+    });
+
+    it('should return null if no scheduled date is found before the given date', () => {
+      const scheduledDates: string[] = [
+        '2024-01-21',
+        '2024-02-20',
+        '2025-03-15',
+      ];
+
+      // current scheduled date is Jan 20, 2024. scheduled dates array has no dates before that
+      expect(
+        getLastScheduledDayDiff(currentScheduleDate, scheduledDates)
+      ).toBeNull();
+    });
+
+    it('should return the correct day difference for the most recent scheduled date before current schedule date', () => {
+      const scheduledDates: string[] = [
+        '2024-02-20',
+        '2024-03-20',
+        '2022-03-15',
+      ];
+
+      const result = getLastScheduledDayDiff(
+        currentScheduleDate,
+        scheduledDates
+      );
+
+      // current scheduled date is Jan 20, 2024. scheduled dates array has Mar 15, 2022
+      const expected = Math.abs(
+        Math.ceil(
+          (new Date(currentScheduleDate).getTime() -
+            new Date(scheduledDates[2]).getTime()) /
+            (1000 * 3600 * 24)
+        )
+      );
+      expect(result).toBe(expected);
     });
   });
 });

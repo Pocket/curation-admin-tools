@@ -12,20 +12,24 @@ import theme from '../../../theme';
 
 describe('The SuggestedScheduleItemListCard component', () => {
   let item: ApprovedCorpusItem = getTestApprovedItem();
+  const currentScheduledDate = '2024-01-20';
 
-  const onEdit: VoidFunction = () => {};
-  const onRemove: VoidFunction = () => {};
-  const onReschedule: VoidFunction = () => {};
+  const onMoveToBottom = jest.fn();
+  const onEdit = jest.fn();
+  const onReschedule = jest.fn();
+  const onUnschedule = jest.fn();
 
-  it('shows basic approved item information', () => {
+  it('shows basic scheduled item information', () => {
     render(
       <MemoryRouter>
         <ThemeProvider theme={theme}>
           <SuggestedScheduleItemListCard
             item={item}
+            currentScheduledDate={currentScheduledDate}
             onEdit={onEdit}
-            onRemove={onRemove}
+            onUnschedule={onUnschedule}
             onReschedule={onReschedule}
+            onMoveToBottom={onMoveToBottom}
           />
         </ThemeProvider>
       </MemoryRouter>
@@ -47,15 +51,17 @@ describe('The SuggestedScheduleItemListCard component', () => {
     expect(excerpt).toBeInTheDocument();
   });
 
-  it('should render topic label', () => {
+  it('should render topic overlay label', () => {
     render(
       <MemoryRouter>
         <ThemeProvider theme={theme}>
           <SuggestedScheduleItemListCard
             item={item}
+            currentScheduledDate={currentScheduledDate}
             onEdit={onEdit}
-            onRemove={onRemove}
+            onUnschedule={onUnschedule}
             onReschedule={onReschedule}
+            onMoveToBottom={onMoveToBottom}
           />
         </ThemeProvider>
       </MemoryRouter>
@@ -70,9 +76,11 @@ describe('The SuggestedScheduleItemListCard component', () => {
         <ThemeProvider theme={theme}>
           <SuggestedScheduleItemListCard
             item={item}
+            currentScheduledDate={currentScheduledDate}
             onEdit={onEdit}
-            onRemove={onRemove}
+            onUnschedule={onUnschedule}
             onReschedule={onReschedule}
+            onMoveToBottom={onMoveToBottom}
           />
         </ThemeProvider>
       </MemoryRouter>
@@ -87,9 +95,11 @@ describe('The SuggestedScheduleItemListCard component', () => {
         <ThemeProvider theme={theme}>
           <SuggestedScheduleItemListCard
             item={item}
+            currentScheduledDate={currentScheduledDate}
             onEdit={onEdit}
-            onRemove={onRemove}
+            onUnschedule={onUnschedule}
             onReschedule={onReschedule}
+            onMoveToBottom={onMoveToBottom}
           />
         </ThemeProvider>
       </MemoryRouter>
@@ -111,9 +121,11 @@ describe('The SuggestedScheduleItemListCard component', () => {
         <ThemeProvider theme={theme}>
           <SuggestedScheduleItemListCard
             item={item}
+            currentScheduledDate={currentScheduledDate}
             onEdit={onEdit}
-            onRemove={onRemove}
+            onUnschedule={onUnschedule}
             onReschedule={onReschedule}
+            onMoveToBottom={onMoveToBottom}
           />
         </ThemeProvider>
       </MemoryRouter>
@@ -128,9 +140,11 @@ describe('The SuggestedScheduleItemListCard component', () => {
         <ThemeProvider theme={theme}>
           <SuggestedScheduleItemListCard
             item={item}
+            currentScheduledDate={currentScheduledDate}
             onEdit={onEdit}
-            onRemove={onRemove}
+            onUnschedule={onUnschedule}
             onReschedule={onReschedule}
+            onMoveToBottom={onMoveToBottom}
           />
         </ThemeProvider>
       </MemoryRouter>
@@ -150,9 +164,11 @@ describe('The SuggestedScheduleItemListCard component', () => {
         <ThemeProvider theme={theme}>
           <SuggestedScheduleItemListCard
             item={item}
+            currentScheduledDate={currentScheduledDate}
             onEdit={onEdit}
-            onRemove={onRemove}
+            onUnschedule={onUnschedule}
             onReschedule={onReschedule}
+            onMoveToBottom={onMoveToBottom}
           />
         </ThemeProvider>
       </MemoryRouter>
@@ -160,6 +176,9 @@ describe('The SuggestedScheduleItemListCard component', () => {
 
     expect(screen.getByText('Agatha Christie')).toBeInTheDocument();
   });
+
+  // TODO implement once we have publicationDate property on a corpus item in the corpus DB
+  it.todo('should render publication date next to author and publisher');
 
   it('should render ScheduleHistory component', () => {
     item = {
@@ -185,24 +204,25 @@ describe('The SuggestedScheduleItemListCard component', () => {
         <ThemeProvider theme={theme}>
           <SuggestedScheduleItemListCard
             item={item}
+            currentScheduledDate={currentScheduledDate}
             onEdit={onEdit}
-            onRemove={onRemove}
+            onUnschedule={onUnschedule}
             onReschedule={onReschedule}
+            onMoveToBottom={onMoveToBottom}
           />
         </ThemeProvider>
       </MemoryRouter>
     );
 
-    // fetch the view recently scheduled button
-    const scheduleHistoryButton = screen.getByText(/view recently scheduled/i);
+    // fetch the recently scheduled clickable overlay / button
+    const recentlyScheduledButton = screen.getByTestId(
+      /last-scheduled-overlay/i
+    );
 
-    // assert that ScheduleHistory component rendered successfully
-    expect(scheduleHistoryButton).toBeInTheDocument();
+    // assert that the "last scheduled ..." overlay is rendered
+    expect(recentlyScheduledButton).toBeInTheDocument();
 
-    userEvent.click(scheduleHistoryButton);
-
-    // assert that the copy changed on the above button
-    expect(screen.getByText(/hide recently scheduled/i)).toBeInTheDocument();
+    userEvent.click(recentlyScheduledButton);
 
     // fetch and assert that the first scheduled history entry details are rendered successfully
     expect(screen.getByText(/aperson/i)).toBeInTheDocument();
@@ -214,21 +234,21 @@ describe('The SuggestedScheduleItemListCard component', () => {
     expect(screen.getByText(/August 2, 2022/i)).toBeInTheDocument();
     expect(screen.getByText('New Tab (de-DE)')).toBeInTheDocument();
 
-    userEvent.click(scheduleHistoryButton);
-
     // assert that the copy changed to the original one on the above button
-    expect(screen.getByText(/view recently scheduled/i)).toBeInTheDocument();
+    expect(screen.getByText(/recently scheduled/i)).toBeInTheDocument();
   });
 
-  it('should render card action buttons', () => {
+  it('should render all four card action buttons', () => {
     render(
       <MemoryRouter>
         <ThemeProvider theme={theme}>
           <SuggestedScheduleItemListCard
             item={item}
+            currentScheduledDate={currentScheduledDate}
             onEdit={onEdit}
-            onRemove={onRemove}
+            onUnschedule={onUnschedule}
             onReschedule={onReschedule}
+            onMoveToBottom={onMoveToBottom}
           />
         </ThemeProvider>
       </MemoryRouter>
@@ -238,6 +258,116 @@ describe('The SuggestedScheduleItemListCard component', () => {
     expect(
       screen.getByRole('button', { name: 're-schedule' })
     ).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'remove' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'unschedule' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'move to bottom' })
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'reject' })).toBeInTheDocument();
   });
+
+  it('should call onUnschedule when "Unschedule" button is clicked', () => {
+    render(
+      <MemoryRouter>
+        <ThemeProvider theme={theme}>
+          <SuggestedScheduleItemListCard
+            item={item}
+            currentScheduledDate={currentScheduledDate}
+            onEdit={onEdit}
+            onUnschedule={onUnschedule}
+            onReschedule={onReschedule}
+            onMoveToBottom={onMoveToBottom}
+          />
+        </ThemeProvider>
+      </MemoryRouter>
+    );
+
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /unschedule/i,
+      })
+    );
+
+    expect(onUnschedule).toHaveBeenCalled();
+  });
+
+  it('should call onReschedule when "Re-schedule" button is clicked', () => {
+    render(
+      <MemoryRouter>
+        <ThemeProvider theme={theme}>
+          <SuggestedScheduleItemListCard
+            item={item}
+            currentScheduledDate={currentScheduledDate}
+            onEdit={onEdit}
+            onUnschedule={onUnschedule}
+            onReschedule={onReschedule}
+            onMoveToBottom={onMoveToBottom}
+          />
+        </ThemeProvider>
+      </MemoryRouter>
+    );
+
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /re-schedule/i,
+      })
+    );
+
+    expect(onReschedule).toHaveBeenCalled();
+  });
+
+  it('should call onMoveToBottom when "Move to bottom" button is clicked', () => {
+    render(
+      <MemoryRouter>
+        <ThemeProvider theme={theme}>
+          <SuggestedScheduleItemListCard
+            item={item}
+            currentScheduledDate={currentScheduledDate}
+            onEdit={onEdit}
+            onUnschedule={onUnschedule}
+            onReschedule={onReschedule}
+            onMoveToBottom={onMoveToBottom}
+          />
+        </ThemeProvider>
+      </MemoryRouter>
+    );
+
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /move to bottom/i,
+      })
+    );
+
+    expect(onMoveToBottom).toHaveBeenCalled();
+  });
+
+  it('should call onEdit when "Edit" button is clicked', () => {
+    const onEdit = jest.fn();
+
+    render(
+      <MemoryRouter>
+        <ThemeProvider theme={theme}>
+          <SuggestedScheduleItemListCard
+            item={item}
+            currentScheduledDate={currentScheduledDate}
+            onEdit={onEdit}
+            onUnschedule={onUnschedule}
+            onReschedule={onReschedule}
+            onMoveToBottom={onMoveToBottom}
+          />
+        </ThemeProvider>
+      </MemoryRouter>
+    );
+
+    userEvent.click(
+      screen.getByRole('button', {
+        name: /Edit/i,
+      })
+    );
+
+    expect(onEdit).toHaveBeenCalled();
+  });
+
+  it.todo('should call onReject when "Reject" button is clicked');
 });

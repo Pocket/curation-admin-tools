@@ -10,7 +10,6 @@ import {
   CorpusItemCardImage,
 } from '../../../_shared/components';
 import { ScheduleHistoryModal } from '../ScheduleHistoryModal/ScheduleHistoryModal';
-// import { DateTime } from 'luxon';
 
 interface SuggestedScheduleItemListCardProps {
   /**
@@ -19,9 +18,14 @@ interface SuggestedScheduleItemListCardProps {
   item: ApprovedCorpusItem;
 
   /**
-   * Callback for the "Remove" button
+   * Current date that the schedule is being viewed for
    */
-  onRemove: VoidFunction;
+  currentScheduledDate: string;
+
+  /**
+   * Callback for the "Unschedule" button
+   */
+  onUnschedule: VoidFunction;
 
   /**
    * Callback for the "Reschedule" button
@@ -42,7 +46,14 @@ interface SuggestedScheduleItemListCardProps {
 export const SuggestedScheduleItemListCard: React.FC<
   SuggestedScheduleItemListCardProps
 > = (props): JSX.Element => {
-  const { item, onRemove, onReschedule, onEdit, onMoveToBottom } = props;
+  const {
+    item,
+    currentScheduledDate,
+    onUnschedule,
+    onReschedule,
+    onEdit,
+    onMoveToBottom,
+  } = props;
 
   const [isScheduleHistoryModalOpen, setScheduleHistoryModalOpen] =
     useState(false);
@@ -51,17 +62,12 @@ export const SuggestedScheduleItemListCard: React.FC<
     setScheduleHistoryModalOpen(!isScheduleHistoryModalOpen);
   };
 
-  // const getDisplayDate = (date: string) => {
-  //   return DateTime.fromFormat(date, 'yyyy-MM-dd')
-  //     .setLocale('en')
-  //     .toLocaleString(DateTime.DATE_FULL);
-  // };
-
   return (
     <>
       <CorpusItemCardImage
         item={item}
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
+        currentScheduledDate={currentScheduledDate}
       />
       {isScheduleHistoryModalOpen && (
         <ScheduleHistoryModal
@@ -135,7 +141,7 @@ export const SuggestedScheduleItemListCard: React.FC<
 
       <CardActionButtonRow
         onEdit={onEdit}
-        onRemove={onRemove}
+        onUnschedule={onUnschedule}
         onReschedule={onReschedule}
         onMoveToBottom={onMoveToBottom}
       />

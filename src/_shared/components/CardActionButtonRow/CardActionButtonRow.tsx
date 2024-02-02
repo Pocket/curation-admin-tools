@@ -10,9 +10,9 @@ import { curationPalette } from '../../../theme';
 
 interface CardActionButtonRowProps {
   /**
-   * Callback for the "Remove" button
+   * Callback for the "Unschedule" button
    */
-  onRemove: VoidFunction;
+  onUnschedule: VoidFunction;
 
   /**
    * Callback for the "Reschedule" button
@@ -33,7 +33,7 @@ interface CardActionButtonRowProps {
 export const CardActionButtonRow: React.FC<CardActionButtonRowProps> = (
   props
 ): JSX.Element => {
-  const { onEdit, onRemove, onReschedule, onMoveToBottom } = props;
+  const { onEdit, onUnschedule, onReschedule, onMoveToBottom } = props;
 
   return (
     <Stack
@@ -45,9 +45,9 @@ export const CardActionButtonRow: React.FC<CardActionButtonRowProps> = (
     >
       <Stack direction="row" justifyContent="flex-start">
         <Tooltip title="Reject" placement="bottom">
-          {/** TODO: @Herraj -- enable when reject suggested item flow is ready */}
+          {/** TODO: @Herraj -- enable when reject suggested item flow is ready, need to pass in an onClick */}
           <IconButton
-            aria-label="remove"
+            aria-label="reject"
             disabled
             sx={{ color: curationPalette.jetBlack }}
           >
@@ -87,10 +87,10 @@ export const CardActionButtonRow: React.FC<CardActionButtonRowProps> = (
       </Stack>
 
       <Stack direction="row" justifyContent="flex-start">
-        <Tooltip title="Remove" placement="bottom">
+        <Tooltip title="Unschedule" placement="bottom">
           <IconButton
-            aria-label="remove"
-            onClick={onRemove}
+            aria-label="unschedule"
+            onClick={onUnschedule}
             sx={{ color: curationPalette.jetBlack }}
           >
             <EventBusyOutlinedIcon />
