@@ -96,7 +96,7 @@ export const SuggestedScheduleItemListCard: React.FC<
           }}
         >
           <span>{item.publisher}</span> &middot;{' '}
-          <span>{flattenAuthors(item.authors)}</span> &middot;{' '}
+          <span>{flattenAuthors(item.authors)}</span>
           {/* <span>TODO add published date</span> */}
         </Typography>
         <Typography

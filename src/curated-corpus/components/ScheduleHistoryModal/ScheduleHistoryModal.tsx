@@ -70,7 +70,7 @@ export const ScheduleHistoryModal: React.FC<ScheduleHistoryModalProps> = (
           avatar={avatar}
           title={item.publisher}
           titleTypographyProps={{
-            variant: 'h7',
+            variant: 'subtitle2',
             fontWeight: 'regular',
           }}
           subheader={item.title}
