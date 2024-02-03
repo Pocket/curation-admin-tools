@@ -14,7 +14,6 @@ describe('The ScheduleHistoryModal component', () => {
 
   const toggleModal = jest.fn();
 
-
   it('should render ScheduleHistoryModal component', () => {
     item = {
       ...item,
@@ -64,6 +63,5 @@ describe('The ScheduleHistoryModal component', () => {
     expect(screen.getByText(/bperson/i)).toBeInTheDocument();
     expect(screen.getByText(/August 2, 2022/i)).toBeInTheDocument();
     expect(screen.getByText('New Tab (de-DE)')).toBeInTheDocument();
-
   });
 });

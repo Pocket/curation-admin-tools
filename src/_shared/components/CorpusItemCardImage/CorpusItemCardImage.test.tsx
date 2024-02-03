@@ -6,7 +6,7 @@ import { CorpusItemCardImage } from './CorpusItemCardImage';
 import { getTestApprovedItem } from '../../../curated-corpus/helpers/approvedItem';
 import { ScheduledSurfaces } from '../../../curated-corpus/helpers/definitions';
 
-describe('The SuggestedScheduleItemListCard component', () => {
+describe('The CorpusItemCardImage component', () => {
   let item: ApprovedCorpusItem = getTestApprovedItem();
   const currentScheduledDate = '2024-01-20';
 

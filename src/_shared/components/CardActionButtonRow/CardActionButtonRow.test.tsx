@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import { CardActionButtonRow } from './CardActionButtonRow';
 
-describe('The SuggestedScheduleItemListCard component', () => {
+describe('The CardActionButtonRow component', () => {
   const onMoveToBottom = jest.fn();
   const onEdit = jest.fn();
   const onReschedule = jest.fn();
