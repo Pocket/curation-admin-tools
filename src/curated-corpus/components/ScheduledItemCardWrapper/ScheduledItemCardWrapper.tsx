@@ -1,12 +1,9 @@
 import React from 'react';
 import { Grid } from '@mui/material';
 import { ScheduledCorpusItem } from '../../../api/generatedTypes';
-import { Button } from '../../../_shared/components';
-import {
-  StyledCardActions,
-  StyledCorpusItemCard,
-} from '../../../_shared/styled';
-import { ApprovedItemListCard } from '../';
+
+import { StyledScheduledItemCard } from '../../../_shared/styled';
+import { SuggestedScheduleItemListCard } from '../SuggestedScheduleItemListCard/SuggestedScheduleItemListCard';
 
 interface ScheduledItemCardWrapperProps {
   /**
@@ -20,9 +17,9 @@ interface ScheduledItemCardWrapperProps {
   onMoveToBottom: VoidFunction;
 
   /**
-   * What to do when the "Remove" button is clicked.
+   * What to do when the "Unschedule" button is clicked.
    */
-  onRemove: VoidFunction;
+  onUnschedule: VoidFunction;
 
   /**
    * Callback for the "Reschedule" button
@@ -35,14 +32,9 @@ interface ScheduledItemCardWrapperProps {
   onEdit: VoidFunction;
 
   /**
-   * Optional boolean prop to show/hide the language icon on the ApprovedItemListCard component
+   * Current date that the schedule is being viewed for
    */
-  showLanguageIcon?: boolean;
-
-  /**
-   * Optional boolean prop to show/hide the "Rec." overlay on the ApprovedItemListCard component
-   */
-  showRecommendedOverlay?: boolean;
+  currentScheduledDate: string;
 }
 
 export const ScheduledItemCardWrapper: React.FC<
@@ -51,37 +43,24 @@ export const ScheduledItemCardWrapper: React.FC<
   const {
     item,
     onMoveToBottom,
-    onRemove,
+    onUnschedule,
     onReschedule,
     onEdit,
-    showLanguageIcon,
-    showRecommendedOverlay,
+    currentScheduledDate,
   } = props;
 
   return (
     <Grid item xs={12} sm={6} md={3}>
-      <StyledCorpusItemCard>
-        <ApprovedItemListCard
+      <StyledScheduledItemCard variant="outlined">
+        <SuggestedScheduleItemListCard
           item={item.approvedItem}
-          showLanguageIcon={showLanguageIcon}
-          showRecommendedOverlay={showRecommendedOverlay}
+          currentScheduledDate={currentScheduledDate}
+          onEdit={onEdit}
+          onUnschedule={onUnschedule}
+          onReschedule={onReschedule}
+          onMoveToBottom={onMoveToBottom}
         />
-
-        <StyledCardActions>
-          <Button buttonType="positive" variant="text" onClick={onEdit}>
-            Edit
-          </Button>
-          <Button buttonType="positive" variant="text" onClick={onReschedule}>
-            Reschedule
-          </Button>
-          <Button buttonType="positive" variant="text" onClick={onMoveToBottom}>
-            Move to bottom
-          </Button>
-          <Button buttonType="negative" variant="text" onClick={onRemove}>
-            Remove
-          </Button>
-        </StyledCardActions>
-      </StyledCorpusItemCard>
+      </StyledScheduledItemCard>
     </Grid>
   );
 };

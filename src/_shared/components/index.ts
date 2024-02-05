@@ -22,3 +22,5 @@ export type { CustomTabType } from './TabSet/TabSet';
 export { ImageUpload } from '../../curated-corpus/components/ImageUpload/ImageUpload';
 export { PageNotFound } from '../components/PageNotFound/PageNotFound';
 export { FloatingActionButton } from '../components/FloatingActionButton/FloatingActionButton';
+export { CardActionButtonRow } from '../components/CardActionButtonRow/CardActionButtonRow';
+export { CorpusItemCardImage } from '../components/CorpusItemCardImage/CorpusItemCardImage';

@@ -516,7 +516,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
                               setCurrentItem(item);
                               toggleEditModal();
                             }}
-                            onRemove={() => {
+                            onUnschedule={() => {
                               setCurrentItem(item);
                               toggleRemoveModal();
                             }}
@@ -527,8 +527,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
                               setCurrentItem(item);
                               toggleScheduleItemModal();
                             }}
-                            showLanguageIcon={false}
-                            showRecommendedOverlay={false}
+                            currentScheduledDate={data.scheduledDate}
                           />
                         );
                       })}

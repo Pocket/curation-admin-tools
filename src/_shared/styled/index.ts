@@ -13,3 +13,4 @@ export { StyledListCard } from './StyledListCard';
 export { StyledProductHeading } from './StyledProductHeading';
 export { StyledProductHeadingLink } from './StyledProductHeadingLink';
 export { StyledRouterLink } from './StyledRouterLink';
+export { StyledScheduledItemCard } from './StyledScheduledItemCard';
