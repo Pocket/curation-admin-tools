@@ -42,7 +42,7 @@
   "scripts": {
     "start": "NODE_ENV=local react-scripts start",
     "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --transformIgnorePatterns \"node_modules/(?!@apollo/client/link/core/ApolloLink.js)/\"",
     "test:nowatch": "react-scripts test --watchAll=false",
     "eject": "react-scripts eject",
     "lint-check": "tsc --noEmit && eslint src/**/*.ts{,x}",
