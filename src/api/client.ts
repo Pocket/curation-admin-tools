@@ -1,5 +1,5 @@
-import { ApolloClient, InMemoryCache } from '@apollo/client';
-import { createUploadLink } from 'apollo-upload-client';
+import { ApolloClient, ApolloLink, InMemoryCache } from '@apollo/client';
+import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
 import { config } from '../config';
 import {
   getCollectionAuthorsFieldPolicy,
@@ -53,7 +53,7 @@ const apolloOptions = {
 export const client = new ApolloClient({
   link: createUploadLink({
     uri: config.adminApiEndpoint,
-    headers: { 'Apollo-Require-Preflight': true },
-  }),
+    headers: { 'Apollo-Require-Preflight': 'true' },
+  }) as unknown as ApolloLink,
   ...apolloOptions,
 });
