@@ -3,10 +3,10 @@ import { Box, Grid, Typography } from '@mui/material';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import { Modal } from '../../../_shared/components';
-import { RemoveProspectForm } from '../';
+import { RemoveItemForm } from '../';
 
-interface RemoveProspectModalProps {
-  prospectTitle: string;
+interface RemoveItemModalProps {
+  itemTitle: string;
   isOpen: boolean;
   onSave: (
     values: FormikValues,
@@ -15,24 +15,22 @@ interface RemoveProspectModalProps {
   toggleModal: VoidFunction;
 }
 
-export const RemoveProspectModal: React.FC<RemoveProspectModalProps> = (
-  props
-) => {
-  const { prospectTitle, isOpen, onSave, toggleModal } = props;
+export const RemoveItemModal: React.FC<RemoveItemModalProps> = (props) => {
+  const { itemTitle, isOpen, onSave, toggleModal } = props;
   return (
     <Modal open={isOpen} handleClose={toggleModal}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <h2>Remove this prospect</h2>
+          <h2>Remove this item</h2>
           <Box mb={1}>
             <Typography variant="subtitle1">
-              <em>Title</em>: {prospectTitle}
+              <em>Title</em>: {itemTitle}
             </Typography>
           </Box>
         </Grid>
         <Grid item xs={12}>
           <Box p={3} mt={-3.5}>
-            <RemoveProspectForm onSubmit={onSave} onCancel={toggleModal} />
+            <RemoveItemForm onSubmit={onSave} onCancel={toggleModal} />
           </Box>
         </Grid>
       </Grid>

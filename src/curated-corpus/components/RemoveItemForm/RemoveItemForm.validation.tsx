@@ -24,7 +24,7 @@ export const validationSchema = yup
       .max(100, 'Reason is too long, cannot exceed 100 characters.'), // max 50 chars for now
   })
   .test('removalReason', '', (obj) => {
-    // If at least one checkbox was selected, let the form validation pass
+    // If at least one checkbox was selected or other reason, let the form validation pass
     if (
       obj[RemovalReason.ArticleQuality] ||
       obj[RemovalReason.Commercial] ||
@@ -41,7 +41,8 @@ export const validationSchema = yup
       obj[RemovalReason.PublishDate] ||
       obj[RemovalReason.SetDiversity] ||
       obj[RemovalReason.TimeSensitive] ||
-      obj[RemovalReason.TopicDiversity]
+      obj[RemovalReason.TopicDiversity] ||
+      obj['otherReason']
     ) {
       return true;
     }

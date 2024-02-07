@@ -1,13 +1,13 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
-import { RemoveProspectForm } from './RemoveProspectForm';
+import { RemoveItemForm } from './RemoveItemForm';
 import userEvent from '@testing-library/user-event';
 
-describe('The RemoveProspectForm component', () => {
+describe('The RemoveItemForm component', () => {
   const handleSubmit = jest.fn();
 
   it('renders successfully', () => {
-    render(<RemoveProspectForm onSubmit={handleSubmit} />);
+    render(<RemoveItemForm onSubmit={handleSubmit} />);
 
     // there is at least a form and nothing falls over
     const form = screen.getByRole('form');
@@ -15,7 +15,7 @@ describe('The RemoveProspectForm component', () => {
   });
 
   it('has the requisite fields and buttons', () => {
-    render(<RemoveProspectForm onSubmit={handleSubmit} />);
+    render(<RemoveItemForm onSubmit={handleSubmit} />);
 
     const checkboxes = screen.getAllByRole('checkbox');
     // We have 16 removal reasons. They come from an enum in the Curated Corpus
@@ -30,8 +30,8 @@ describe('The RemoveProspectForm component', () => {
     expect(otherReasonLabel).toBeInTheDocument();
   });
 
-  it('displays an error message if no checkboxes have been selected', async () => {
-    render(<RemoveProspectForm onSubmit={handleSubmit} />);
+  it('displays an error message if no checkboxes or other reason have been selected', async () => {
+    render(<RemoveItemForm onSubmit={handleSubmit} />);
 
     await waitFor(() => {
       userEvent.click(screen.getByText(/save/i));
@@ -45,12 +45,26 @@ describe('The RemoveProspectForm component', () => {
   });
 
   it('submits the form if at least one checkbox was selected', async () => {
-    render(<RemoveProspectForm onSubmit={handleSubmit} />);
+    render(<RemoveItemForm onSubmit={handleSubmit} />);
 
     const chosenReason = screen.getByLabelText(/niche/i);
     await waitFor(() => {
       userEvent.click(chosenReason);
     });
+
+    await waitFor(() => {
+      userEvent.click(screen.getByText(/save/i));
+    });
+
+    expect(handleSubmit).toHaveBeenCalled();
+  });
+
+  it('submits the form if at least the other reason was entered', async () => {
+    render(<RemoveItemForm onSubmit={handleSubmit} />);
+
+    const chosenReason = screen.getByLabelText(/other/i);
+    // enter restorationReason
+    userEvent.type(chosenReason, 'other reason');
 
     await waitFor(() => {
       userEvent.click(screen.getByText(/save/i));

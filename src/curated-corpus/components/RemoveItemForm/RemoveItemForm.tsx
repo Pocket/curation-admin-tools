@@ -16,9 +16,9 @@ import {
 } from '../../../_shared/components';
 import { RemovalReason } from '../../../api/generatedTypes';
 import { formatFormLabel } from '../../helpers/helperFunctions';
-import { validationSchema } from './RemoveProspectForm.validation';
+import { validationSchema } from './RemoveItemForm.validation';
 
-interface RemoveProspectFormProps {
+interface RemoveItemFormProps {
   /**
    * What do we do with the submitted data?
    */
@@ -28,8 +28,8 @@ interface RemoveProspectFormProps {
   ) => void | Promise<any>;
 }
 
-export const RemoveProspectForm: React.FC<
-  RemoveProspectFormProps & SharedFormButtonsProps
+export const RemoveItemForm: React.FC<
+  RemoveItemFormProps & SharedFormButtonsProps
 > = (props): JSX.Element => {
   const { onCancel, onSubmit } = props;
   const formik = useFormik({
