@@ -20,10 +20,8 @@ export const RemoveItemFromScheduledSurfaceModal: React.FC<
   RemoveItemFromScheduledSurfaceModalProps
 > = (props): JSX.Element => {
   const { item, isOpen, onSave, toggleModal } = props;
-  let isSurfaceEN = false;
-  if (item.scheduledSurfaceGuid === 'NEW_TAB_EN_US') {
-    isSurfaceEN = true;
-  }
+  // whether to show the remove item form
+  const isSurfaceEN = item.scheduledSurfaceGuid === 'NEW_TAB_EN_US';
 
   return (
     <Modal

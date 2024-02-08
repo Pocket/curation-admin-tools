@@ -71,5 +71,11 @@ describe('The RemoveItemForm component', () => {
     });
 
     expect(handleSubmit).toHaveBeenCalled();
+    // error message
+    const errorMessage = screen.queryByText(
+      /Please choose at least one removal reason./i
+    );
+    // check that error message is not in the form
+    expect(errorMessage).not.toBeInTheDocument();
   });
 });
