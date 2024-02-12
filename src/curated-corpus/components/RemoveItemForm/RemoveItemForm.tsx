@@ -54,7 +54,7 @@ export const RemoveItemForm: React.FC<
       [RemovalReason.TopicDiversity]: false,
       Other: false,
       removalReason: '',
-      otherReason: '',
+      reasonComment: '',
     },
     validateOnBlur: false,
     validateOnChange: false,
@@ -136,10 +136,10 @@ export const RemoveItemForm: React.FC<
             />
             <FormikTextField
               disabled={!isOtherSelected}
-              id="otherReason"
-              label="Other Reason"
-              fieldProps={formik.getFieldProps('otherReason')}
-              fieldMeta={formik.getFieldMeta('otherReason')}
+              id="reasonComment"
+              label="Reason Comment"
+              fieldProps={formik.getFieldProps('reasonComment')}
+              fieldMeta={formik.getFieldMeta('reasonComment')}
               autoFocus
               multiline
               minRows={1}

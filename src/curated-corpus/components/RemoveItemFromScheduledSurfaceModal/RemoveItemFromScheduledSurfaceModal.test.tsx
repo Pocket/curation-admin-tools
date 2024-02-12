@@ -43,9 +43,7 @@ describe('The RemoveItemFromScheduledSurfaceModal component', () => {
     );
 
     // fetching the modal heading and asserting it renders
-    expect(
-      screen.getByText(/remove this item from this scheduled surface/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/for Unscheduling this item/i)).toBeInTheDocument();
 
     // fetch and assert the RemoveItemForm component is rendered within this component
     expect(screen.getByRole('form')).toBeInTheDocument();
