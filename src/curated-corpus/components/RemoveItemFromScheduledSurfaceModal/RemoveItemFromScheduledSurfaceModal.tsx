@@ -31,23 +31,27 @@ export const RemoveItemFromScheduledSurfaceModal: React.FC<
       }}
     >
       <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <h2>Remove this item from this scheduled surface</h2>
-          {isSurfaceEN && (
+        {/*<h2>Remove this item from this scheduled surface</h2>*/}
+        {isSurfaceEN && (
+          <Grid item xs={12}>
+            <h2>Reason(s) for Unscheduling this item</h2>
             <Box mb={1}>
               <Typography variant="subtitle1">
                 <em>Title</em>: {item.approvedItem.title}
               </Typography>
             </Box>
-          )}
-        </Grid>
-        <Grid item xs={12}>
-          {isSurfaceEN && (
+          </Grid>
+        )}
+        {isSurfaceEN && (
+          <Grid item xs={12}>
             <Box p={3} mt={-3.5}>
               <RemoveItemForm onSubmit={onSave} onCancel={toggleModal} />
             </Box>
-          )}
-          {!isSurfaceEN && (
+          </Grid>
+        )}
+        {!isSurfaceEN && (
+          <Grid item xs={12}>
+            <h2>Remove this item from this scheduled surface</h2>
             <RemoveItemFromScheduledSurfaceForm
               onSubmit={onSave}
               onCancel={() => {
@@ -55,8 +59,8 @@ export const RemoveItemFromScheduledSurfaceModal: React.FC<
               }}
               title={item.approvedItem.title}
             />
-          )}
-        </Grid>
+          </Grid>
+        )}
       </Grid>
     </Modal>
   );

@@ -300,7 +300,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
     // Run the mutation
     runMutation(
       deleteScheduledItem,
-      { variables: input },
+      { variables: { data: input } },
       `Item removed successfully.`,
       () => {
         toggleRemoveModal();

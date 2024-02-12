@@ -17,6 +17,7 @@ import {
 import { RemovalReason } from '../../../api/generatedTypes';
 import { formatFormLabel } from '../../helpers/helperFunctions';
 import { validationSchema } from './RemoveItemForm.validation';
+import { useToggle } from '../../../_shared/hooks';
 
 interface RemoveItemFormProps {
   /**
@@ -32,6 +33,7 @@ export const RemoveItemForm: React.FC<
   RemoveItemFormProps & SharedFormButtonsProps
 > = (props): JSX.Element => {
   const { onCancel, onSubmit } = props;
+  const [isOtherSelected, setOtherReason] = useToggle(false);
   const formik = useFormik({
     initialValues: {
       [RemovalReason.ArticleQuality]: false,
@@ -50,6 +52,7 @@ export const RemoveItemForm: React.FC<
       [RemovalReason.SetDiversity]: false,
       [RemovalReason.TimeSensitive]: false,
       [RemovalReason.TopicDiversity]: false,
+      Other: false,
       removalReason: '',
       otherReason: '',
     },
@@ -71,6 +74,9 @@ export const RemoveItemForm: React.FC<
       onSubmit(values, formikHelpers);
     },
   });
+  const handleOtherCheckbox = () => {
+    setOtherReason();
+  };
   return (
     <form name="reject-item-form" onSubmit={formik.handleSubmit}>
       <Grid container spacing={3}>
@@ -116,9 +122,22 @@ export const RemoveItemForm: React.FC<
                   />
                 );
               })}
-            <FormikTextField
-              id="otherReason"
+            <FormControlLabel
+              control={
+                <Checkbox
+                  color="primary"
+                  {...formik.getFieldProps({
+                    name: 'Other',
+                  })}
+                  onClick={handleOtherCheckbox}
+                />
+              }
               label="Other"
+            />
+            <FormikTextField
+              disabled={!isOtherSelected}
+              id="otherReason"
+              label="Other Reason"
               fieldProps={formik.getFieldProps('otherReason')}
               fieldMeta={formik.getFieldMeta('otherReason')}
               autoFocus

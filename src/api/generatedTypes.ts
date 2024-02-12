@@ -2812,7 +2812,7 @@ export type DeleteCollectionStoryMutation = {
 };
 
 export type DeleteScheduledItemMutationVariables = Exact<{
-  externalId: Scalars['ID'];
+  data: DeleteScheduledCorpusItemInput;
 }>;
 
 export type DeleteScheduledItemMutation = {
@@ -5299,8 +5299,8 @@ export type DeleteCollectionStoryMutationOptions = Apollo.BaseMutationOptions<
   DeleteCollectionStoryMutationVariables
 >;
 export const DeleteScheduledItemDocument = gql`
-  mutation deleteScheduledItem($externalId: ID!) {
-    deleteScheduledCorpusItem(data: { externalId: $externalId }) {
+  mutation deleteScheduledItem($data: DeleteScheduledCorpusItemInput!) {
+    deleteScheduledCorpusItem(data: $data) {
       externalId
       createdAt
       createdBy
@@ -5332,7 +5332,7 @@ export type DeleteScheduledItemMutationFn = Apollo.MutationFunction<
  * @example
  * const [deleteScheduledItemMutation, { data, loading, error }] = useDeleteScheduledItemMutation({
  *   variables: {
- *      externalId: // value for 'externalId'
+ *      data: // value for 'data'
  *   },
  * });
  */
