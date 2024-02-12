@@ -2,8 +2,8 @@ import { gql } from '@apollo/client';
 import { CuratedItemData } from '../fragments/curatedItemData';
 
 export const deleteScheduledItem = gql`
-  mutation deleteScheduledItem($data: DeleteScheduledCorpusItemInput!) {
-    deleteScheduledCorpusItem(data: $data) {
+  mutation deleteScheduledItem($externalId: ID!) {
+    deleteScheduledCorpusItem(data: { externalId: $externalId }) {
       externalId
       createdAt
       createdBy

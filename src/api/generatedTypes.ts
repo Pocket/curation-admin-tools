@@ -612,10 +612,6 @@ export type DeleteCollectionPartnerAssociationInput = {
 export type DeleteScheduledCorpusItemInput = {
   /** ID of the scheduled item. A string in UUID format. */
   externalId: Scalars['ID'];
-  /** Free-text entered by the curator to give further detail to the reason(s) provided. */
-  reasonComment?: InputMaybe<Scalars['String']>;
-  /** A comma-separated list of unschedule reasons. */
-  reasons?: InputMaybe<Scalars['String']>;
 };
 
 /** Metadata from a domain, originally populated from ClearBit */
@@ -906,26 +902,6 @@ export type ListElement = {
   content: Scalars['Markdown'];
   /** Zero-indexed level, for handling nested lists. */
   level: Scalars['Int'];
-};
-
-/** The Connection type for ListItem */
-export type ListItemConnection = {
-  __typename?: 'ListItemConnection';
-  /** A list of edges. */
-  edges?: Maybe<Array<ListItemEdge>>;
-  /** Information to aid in pagination. */
-  pageInfo: PageInfo;
-  /** Identifies the total count of SavedItems in the connection. */
-  totalCount: Scalars['Int'];
-};
-
-/** An Edge in a Connection */
-export type ListItemEdge = {
-  __typename?: 'ListItemEdge';
-  /** A cursor for use in pagination. */
-  cursor: Scalars['String'];
-  /** The ListItem at the end of the edge. */
-  node: ShareableListItem;
 };
 
 export type MarkdownImagePosition = {
@@ -1388,7 +1364,7 @@ export enum ProspectType {
   RssLogistic = 'RSS_LOGISTIC',
   RssLogisticRecent = 'RSS_LOGISTIC_RECENT',
   SlateScheduler = 'SLATE_SCHEDULER',
-  SlateSchedulerV2 = 'SLATE_SCHEDULER_V2',
+  SlateScheduler_V2 = 'SLATE_SCHEDULER_V2',
   SyndicatedNew = 'SYNDICATED_NEW',
   SyndicatedRerun = 'SYNDICATED_RERUN',
   Timespent = 'TIMESPENT',
@@ -1618,13 +1594,11 @@ export type RejectedCorpusItemFilter = {
  * however it is used by the Curation Admin Tools frontend to specify rejection reasons.
  */
 export enum RejectionReason {
-  Commercial = 'COMMERCIAL',
   Misinformation = 'MISINFORMATION',
   OffensiveMaterial = 'OFFENSIVE_MATERIAL',
   Other = 'OTHER',
   Paywall = 'PAYWALL',
   PoliticalOpinion = 'POLITICAL_OPINION',
-  PublisherQuality = 'PUBLISHER_QUALITY',
   TimeSensitive = 'TIME_SENSITIVE',
 }
 
@@ -2812,7 +2786,7 @@ export type DeleteCollectionStoryMutation = {
 };
 
 export type DeleteScheduledItemMutationVariables = Exact<{
-  data: DeleteScheduledCorpusItemInput;
+  externalId: Scalars['ID'];
 }>;
 
 export type DeleteScheduledItemMutation = {
@@ -5299,8 +5273,8 @@ export type DeleteCollectionStoryMutationOptions = Apollo.BaseMutationOptions<
   DeleteCollectionStoryMutationVariables
 >;
 export const DeleteScheduledItemDocument = gql`
-  mutation deleteScheduledItem($data: DeleteScheduledCorpusItemInput!) {
-    deleteScheduledCorpusItem(data: $data) {
+  mutation deleteScheduledItem($externalId: ID!) {
+    deleteScheduledCorpusItem(data: { externalId: $externalId }) {
       externalId
       createdAt
       createdBy
@@ -5332,7 +5306,7 @@ export type DeleteScheduledItemMutationFn = Apollo.MutationFunction<
  * @example
  * const [deleteScheduledItemMutation, { data, loading, error }] = useDeleteScheduledItemMutation({
  *   variables: {
- *      data: // value for 'data'
+ *      externalId: // value for 'externalId'
  *   },
  * });
  */
