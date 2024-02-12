@@ -33,6 +33,8 @@ export const RemoveItemForm: React.FC<
   RemoveItemFormProps & SharedFormButtonsProps
 > = (props): JSX.Element => {
   const { onCancel, onSubmit } = props;
+  // whether the "Other" checkbox is selected, this will give us
+  // an indication if the reason comment field should be enabled or disabled
   const [isOtherSelected, setOtherReason] = useToggle(false);
   const formik = useFormik({
     initialValues: {
@@ -74,6 +76,7 @@ export const RemoveItemForm: React.FC<
       onSubmit(values, formikHelpers);
     },
   });
+  // update "Other" checkbox status
   const handleOtherCheckbox = () => {
     setOtherReason();
   };
@@ -129,6 +132,7 @@ export const RemoveItemForm: React.FC<
                   {...formik.getFieldProps({
                     name: 'Other',
                   })}
+                  // onChange doesn't always work, onClick does the job
                   onClick={handleOtherCheckbox}
                 />
               }
