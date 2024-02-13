@@ -27,7 +27,6 @@ import {
   SplitButton,
 } from '../../components';
 import {
-  DeleteScheduledCorpusItemInput,
   ScheduledCorpusItem,
   ScheduledCorpusItemsResult,
   useDeleteScheduledItemMutation,
@@ -291,16 +290,15 @@ export const SchedulePage: React.FC = (): JSX.Element => {
     values: FormikValues,
     formikHelpers: FormikHelpers<any>
   ): void => {
-    // Setup the input
-    const input: DeleteScheduledCorpusItemInput = {
-      externalId: currentItem?.externalId as string,
-      reasonComment: values.otherReason,
-      reasons: values.removalReason,
+    // Set out all the variables we need to pass to the mutation
+    const variables = {
+      externalId: currentItem?.externalId,
     };
+
     // Run the mutation
     runMutation(
       deleteScheduledItem,
-      { variables: { data: input } },
+      { variables },
       `Item removed successfully.`,
       () => {
         toggleRemoveModal();

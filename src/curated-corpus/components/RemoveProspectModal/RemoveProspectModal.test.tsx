@@ -3,10 +3,9 @@ import { render, screen } from '@testing-library/react';
 
 import { Prospect, ProspectType } from '../../../api/generatedTypes';
 import { ScheduledSurfaces } from '../../helpers/definitions';
-import { RemoveItemModal } from './RemoveItemModal';
+import { RemoveProspectModal } from './RemoveProspectModal';
 
-describe('The RemoveItemModal component', () => {
-  // test for prospect item
+describe('The RemoveProspectModal component', () => {
   const prospect: Prospect = {
     id: 'test-id',
     prospectId: 'test-prospect-id',
@@ -20,8 +19,8 @@ describe('The RemoveItemModal component', () => {
 
   it('should render successfully', () => {
     render(
-      <RemoveItemModal
-        itemTitle={prospect.title as string}
+      <RemoveProspectModal
+        prospectTitle={prospect.title as string}
         isOpen={true}
         onSave={onSave}
         toggleModal={toggleModal}
@@ -29,7 +28,7 @@ describe('The RemoveItemModal component', () => {
     );
 
     // fetch the modal's heading and assert it renders successfully
-    expect(screen.getByText(/remove this item/i)).toBeInTheDocument();
+    expect(screen.getByText(/remove this prospect/i)).toBeInTheDocument();
     // check for the prospect title
     const prospectTitle = screen.getByText(/test-title/i);
     expect(prospectTitle).toBeInTheDocument();

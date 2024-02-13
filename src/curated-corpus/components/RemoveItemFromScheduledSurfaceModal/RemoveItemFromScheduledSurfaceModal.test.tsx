@@ -8,58 +8,24 @@ import userEvent from '@testing-library/user-event';
 
 describe('The RemoveItemFromScheduledSurfaceModal component', () => {
   const approvedItem = getTestApprovedItem();
-  const germanItem: ScheduledCorpusItem = {
+  const item: ScheduledCorpusItem = {
     approvedItem,
     createdAt: 1635014926,
     createdBy: 'jdoe',
     externalId: '123-test-id',
     scheduledDate: '2022-05-24',
-    scheduledSurfaceGuid: ScheduledSurfaces[1].guid,
+    scheduledSurfaceGuid: ScheduledSurfaces[0].guid,
     updatedAt: 1635114926,
     updatedBy: 'jdoe',
-  };
-  const usItem: ScheduledCorpusItem = {
-    approvedItem,
-    createdAt: 1935014924,
-    createdBy: 'klm',
-    externalId: '1234-test-id',
-    scheduledDate: '2022-05-24',
-    scheduledSurfaceGuid: ScheduledSurfaces[0].guid,
-    updatedAt: 1935114924,
-    updatedBy: 'klm',
   };
   const isOpen = true;
   const onSave = jest.fn();
   const toggleModal = jest.fn();
 
-  it('should render this component successfully for new tab en-us item', async () => {
+  it('should render this component successfully', async () => {
     render(
       <RemoveItemFromScheduledSurfaceModal
-        item={usItem}
-        isOpen={isOpen}
-        onSave={onSave}
-        toggleModal={toggleModal}
-      />
-    );
-
-    // fetching the modal heading and asserting it renders
-    expect(screen.getByText(/for Unscheduling this item/i)).toBeInTheDocument();
-
-    // fetch and assert the RemoveItemForm component is rendered within this component
-    expect(screen.getByRole('form')).toBeInTheDocument();
-    // check for the item title
-    const itemTitle = screen.getByText(
-      /How To Win Friends And Influence People with React/i
-    );
-    expect(itemTitle).toBeInTheDocument();
-    // check that one of the reasons is present (this indicates that the removal reason form is rendered)
-    expect(screen.getByText('Niche')).toBeInTheDocument();
-  });
-
-  it('should render this component successfully for german item', async () => {
-    render(
-      <RemoveItemFromScheduledSurfaceModal
-        item={germanItem}
+        item={item}
         isOpen={isOpen}
         onSave={onSave}
         toggleModal={toggleModal}
@@ -73,14 +39,12 @@ describe('The RemoveItemFromScheduledSurfaceModal component', () => {
 
     // fetch and assert the RemoveItemFromScheduleSurfaceForm component is rendered within this component
     expect(screen.getByRole('form')).toBeInTheDocument();
-    // expect the single checkbox to be present
-    expect(screen.getByRole('checkbox')).toBeInTheDocument();
   });
 
-  it('should call the onSave function when the checkbox is checked and "Save" form button is clicked for german item', async () => {
+  it('should call the onSave function when the checkbox is checked and "Save" form button is clicked', async () => {
     render(
       <RemoveItemFromScheduledSurfaceModal
-        item={germanItem}
+        item={item}
         isOpen={isOpen}
         onSave={onSave}
         toggleModal={toggleModal}
@@ -105,17 +69,17 @@ describe('The RemoveItemFromScheduledSurfaceModal component', () => {
     expect(onSave).toHaveBeenCalled();
   });
 
-  it('should not call the onSave function when the checkbox is not checked and "Save" form button is clicked for german item', async () => {
+  it('should not call the onSave function when the checkbox is not checked and "Save" form button is clicked', async () => {
     render(
       <RemoveItemFromScheduledSurfaceModal
-        item={germanItem}
+        item={item}
         isOpen={isOpen}
         onSave={onSave}
         toggleModal={toggleModal}
       />
     );
 
-    const errorMessage = `Yes, I want to remove ${germanItem.approvedItem.title} from this scheduled surface`;
+    const errorMessage = `Yes, I want to remove ${item.approvedItem.title} from this scheduled surface`;
 
     // fetch the button elements
     const saveButton = screen.getByRole('button', { name: /save/i });
