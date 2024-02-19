@@ -16,9 +16,10 @@ import {
 } from '../../../_shared/components';
 import { RemovalReason } from '../../../api/generatedTypes';
 import { formatFormLabel } from '../../helpers/helperFunctions';
-import { validationSchema } from './RemoveProspectForm.validation';
+import { validationSchema } from './RemoveItemForm.validation';
+import { useToggle } from '../../../_shared/hooks';
 
-interface RemoveProspectFormProps {
+interface RemoveItemFormProps {
   /**
    * What do we do with the submitted data?
    */
@@ -28,10 +29,13 @@ interface RemoveProspectFormProps {
   ) => void | Promise<any>;
 }
 
-export const RemoveProspectForm: React.FC<
-  RemoveProspectFormProps & SharedFormButtonsProps
+export const RemoveItemForm: React.FC<
+  RemoveItemFormProps & SharedFormButtonsProps
 > = (props): JSX.Element => {
   const { onCancel, onSubmit } = props;
+  // whether the "Other" checkbox is selected, this will give us
+  // an indication if the reason comment field should be enabled or disabled
+  const [isOtherSelected, setOtherReason] = useToggle(false);
   const formik = useFormik({
     initialValues: {
       [RemovalReason.ArticleQuality]: false,
@@ -50,8 +54,9 @@ export const RemoveProspectForm: React.FC<
       [RemovalReason.SetDiversity]: false,
       [RemovalReason.TimeSensitive]: false,
       [RemovalReason.TopicDiversity]: false,
+      Other: false,
       removalReason: '',
-      otherReason: '',
+      reasonComment: '',
     },
     validateOnBlur: false,
     validateOnChange: false,
@@ -71,6 +76,10 @@ export const RemoveProspectForm: React.FC<
       onSubmit(values, formikHelpers);
     },
   });
+  // update "Other" checkbox status
+  const handleOtherCheckbox = () => {
+    setOtherReason();
+  };
   return (
     <form name="reject-item-form" onSubmit={formik.handleSubmit}>
       <Grid container spacing={3}>
@@ -116,11 +125,25 @@ export const RemoveProspectForm: React.FC<
                   />
                 );
               })}
-            <FormikTextField
-              id="otherReason"
+            <FormControlLabel
+              control={
+                <Checkbox
+                  color="primary"
+                  {...formik.getFieldProps({
+                    name: 'Other',
+                  })}
+                  // onChange doesn't always work, onClick does the job
+                  onClick={handleOtherCheckbox}
+                />
+              }
               label="Other"
-              fieldProps={formik.getFieldProps('otherReason')}
-              fieldMeta={formik.getFieldMeta('otherReason')}
+            />
+            <FormikTextField
+              disabled={!isOtherSelected}
+              id="reasonComment"
+              label="Reason Comment"
+              fieldProps={formik.getFieldProps('reasonComment')}
+              fieldMeta={formik.getFieldMeta('reasonComment')}
               autoFocus
               multiline
               minRows={1}

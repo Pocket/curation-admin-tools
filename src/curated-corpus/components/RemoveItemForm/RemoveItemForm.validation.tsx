@@ -19,12 +19,29 @@ export const validationSchema = yup
     [RemovalReason.SetDiversity]: yup.boolean(),
     [RemovalReason.TimeSensitive]: yup.boolean(),
     [RemovalReason.TopicDiversity]: yup.boolean(),
-    otherReason: yup
+    ['Other']: yup.boolean(),
+    reasonComment: yup
       .string()
       .max(100, 'Reason is too long, cannot exceed 100 characters.'), // max 50 chars for now
   })
   .test('removalReason', '', (obj) => {
-    // If at least one checkbox was selected, let the form validation pass
+    // If Other checkbox was selected but no reason entered, fail validation
+    if (obj['Other'] && obj['reasonComment'] === undefined) {
+      return new yup.ValidationError(
+        'Please provide a comment for removing this item.',
+        null,
+        'reasonComment'
+      );
+    }
+    // If Other checkbox was NOT selected but a reason was entered, fail validation
+    if (!obj['Other'] && obj['reasonComment']) {
+      return new yup.ValidationError(
+        'Please select the "Other" reason checkbox.',
+        null,
+        'removalReason'
+      );
+    }
+    // If at least one checkbox was selected & above conditions satisfied, pass validation
     if (
       obj[RemovalReason.ArticleQuality] ||
       obj[RemovalReason.Commercial] ||
@@ -41,7 +58,8 @@ export const validationSchema = yup
       obj[RemovalReason.PublishDate] ||
       obj[RemovalReason.SetDiversity] ||
       obj[RemovalReason.TimeSensitive] ||
-      obj[RemovalReason.TopicDiversity]
+      obj[RemovalReason.TopicDiversity] ||
+      (obj['Other'] && obj['reasonComment'])
     ) {
       return true;
     }

@@ -7,7 +7,7 @@ import {
   RemoveProspectInput,
   useRemoveProspectMutation,
 } from '../../../../api/generatedTypes';
-import { RemoveProspectModal } from '../../RemoveProspectModal/RemoveProspectModal';
+import { RemoveItemModal } from '../../RemoveItemModal/RemoveItemModal';
 import { FormikValues } from 'formik';
 
 interface RemoveProspectActionProps {
@@ -20,7 +20,7 @@ interface RemoveProspectActionProps {
   // sent by prospectListCard
   prospectTitle?: string;
   /**
-   * A state variable that tracks whether the RemoveProspectModal is visible
+   * A state variable that tracks whether the RemoveItemModal is visible
    * on the page or not.
    * This has to be passed down from the parent component as other components
    * may need to use it, too.
@@ -28,7 +28,7 @@ interface RemoveProspectActionProps {
   modalOpen?: boolean;
 
   /**
-   * A function that toggles the RemoveProspectModal's visibility on and off.
+   * A function that toggles the RemoveItemModal's visibility on and off.
    * This has to be passed down from the parent component as other components
    * may need to use it, too.
    */
@@ -108,8 +108,8 @@ export const RemoveProspectAction: React.FC<RemoveProspectActionProps> = (
       }}
     >
       <CloseIcon fontSize="medium" />
-      <RemoveProspectModal
-        prospectTitle={prospectTitle as string}
+      <RemoveItemModal
+        itemTitle={prospectTitle as string}
         isOpen={modalOpen as boolean}
         onSave={removeProspectOnSave}
         toggleModal={toggleModal as VoidFunction}
