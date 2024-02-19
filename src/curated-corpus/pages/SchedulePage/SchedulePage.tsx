@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import {
   Accordion,
   AccordionDetails,
@@ -43,7 +43,7 @@ import { DropdownOption } from '../../helpers/definitions';
 import { getLocalDateTimeForGuid } from '../../helpers/helperFunctions';
 import { curationPalette } from '../../../theme';
 
-export const SchedulePage: React.FC = (): JSX.Element => {
+export const SchedulePage: React.FC = (): ReactElement => {
   /**
    * ##########
    * ########## State variables start here
@@ -528,6 +528,7 @@ export const SchedulePage: React.FC = (): JSX.Element => {
                               toggleScheduleItemModal();
                             }}
                             currentScheduledDate={data.scheduledDate}
+                            scheduledSurfaceGuid={currentScheduledSurfaceGuid}
                           />
                         );
                       })}

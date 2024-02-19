@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { CardMedia, Typography } from '@mui/material';
 import { Box, Stack, SxProps } from '@mui/system';
 
@@ -25,6 +25,11 @@ interface CorpusItemCardImageProps {
    * Current date that the schedule is being viewed for
    */
   currentScheduledDate: string;
+
+  /**
+   * The surface the card is displayed on, e.g. EN_US
+   */
+  scheduledSurfaceGuid: string;
 
   /**
    * Callback to toggle on and off recent scheduled modal
@@ -61,7 +66,7 @@ const bottomOverlayContainerSxStyles: SxProps = {
   cursor: 'pointer',
 };
 
-const getTopRightLabel = (item: ApprovedCorpusItem): JSX.Element | null => {
+const getTopRightLabel = (item: ApprovedCorpusItem): ReactElement | null => {
   //TODO @Herraj replace the string value being asserted on once MC-550 is complete
   if (item.createdBy === 'ML') {
     return (
@@ -93,15 +98,17 @@ const getTopRightLabel = (item: ApprovedCorpusItem): JSX.Element | null => {
   return null;
 };
 
-const getBottomLeftLabel = (lastScheduledDayDiff: number): JSX.Element => {
+const getBottomLeftLabel = (
+  lastScheduledDayDiff: number,
+  highlightLastScheduled?: boolean
+): ReactElement => {
   return (
     <Box
       sx={{
         ...labelContainerSxStyles,
-        backgroundColor:
-          lastScheduledDayDiff === 2
-            ? curationPalette.solidPink
-            : curationPalette.overlayBgBlack,
+        backgroundColor: highlightLastScheduled
+          ? curationPalette.solidPink
+          : curationPalette.overlayBgBlack,
       }}
       data-testid="last-scheduled-overlay"
     >
@@ -121,8 +128,13 @@ const getBottomLeftLabel = (lastScheduledDayDiff: number): JSX.Element => {
  */
 export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
   props
-): JSX.Element => {
-  const { item, toggleScheduleHistoryModal, currentScheduledDate } = props;
+): ReactElement => {
+  const {
+    item,
+    toggleScheduleHistoryModal,
+    currentScheduledDate,
+    scheduledSurfaceGuid,
+  } = props;
 
   const [currentDateViewingScheduleFor] =
     useState<string>(currentScheduledDate);
@@ -131,7 +143,7 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
 
   const topRightLabel = getTopRightLabel(item);
 
-  // extract the scheduled history dates into an string array
+  // extract the scheduled history dates into a string array
   const scheduledHistoryDates = item.scheduledSurfaceHistory.map(
     (scheduledHistory) => scheduledHistory.scheduledDate
   );
@@ -139,6 +151,21 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
   const lastScheduledDayDiff = getLastScheduledDayDiff(
     currentDateViewingScheduleFor,
     scheduledHistoryDates
+  );
+
+  // Find the most recent date this item was scheduled on this surface
+  const datesForCurrentSurface = item.scheduledSurfaceHistory
+    .filter((history) => history.scheduledSurfaceGuid == scheduledSurfaceGuid)
+    .map((history) => history.scheduledDate);
+
+  const lastScheduledOnThisSurface = getLastScheduledDayDiff(
+    currentDateViewingScheduleFor,
+    datesForCurrentSurface
+  );
+
+  // Determine whether to highlight the "Last scheduled X days ago" overlay
+  const highlightLastScheduled = !!(
+    lastScheduledOnThisSurface && lastScheduledOnThisSurface <= 2
   );
 
   return (
@@ -156,6 +183,7 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
           justifyContent="space-between"
           ml="0.1rem"
           mr="0.1rem"
+          component="div"
         >
           <Box sx={labelContainerSxStyles}>
             <Typography variant="caption">{displayTopic}</Typography>
@@ -173,6 +201,7 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
           alignItems="flex-start"
           justifyContent="space-between"
           ml="0.1rem"
+          component="div"
         >
           {item.isTimeSensitive && (
             <Box
@@ -197,8 +226,10 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
           justifyContent="space-between"
           ml="0.1rem"
           mb="0.1rem"
+          component="div"
         >
-          {lastScheduledDayDiff && getBottomLeftLabel(lastScheduledDayDiff)}
+          {lastScheduledDayDiff &&
+            getBottomLeftLabel(lastScheduledDayDiff, highlightLastScheduled)}
         </Stack>
       </Box>
     </Box>

@@ -1,9 +1,6 @@
 import { DateTime } from 'luxon';
 import { FileWithPath } from 'react-dropzone';
-import {
-  // ApprovedCorpusItem,
-  GetScheduledSurfacesForUserQuery,
-} from '../../api/generatedTypes';
+import { GetScheduledSurfacesForUserQuery } from '../../api/generatedTypes';
 import { ScheduledSurfaces } from './definitions';
 
 // downloads image from source url
@@ -156,8 +153,8 @@ export const formatFormLabel = (str: string): string => {
  * Finds the number of days a scheduled item was scheduled for most recently before
  * the current date the scheduled is being viewed for.
  * E.g when viewing schedule for Jan 25, 2024, it will return "5 days ago" for an item that was scheduled on 25th (current) and on Jan 20, 2024
- * @param item
  * @param currentDateViewingScheduleFor
+ * @param listOfScheduleDates
  * @returns
  */
 export const getLastScheduledDayDiff = (

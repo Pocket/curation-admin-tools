@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { Grid } from '@mui/material';
 import { ScheduledCorpusItem } from '../../../api/generatedTypes';
 
@@ -35,11 +35,16 @@ interface ScheduledItemCardWrapperProps {
    * Current date that the schedule is being viewed for
    */
   currentScheduledDate: string;
+
+  /**
+   * The surface the card is displayed on, e.g. EN_US
+   */
+  scheduledSurfaceGuid: string;
 }
 
 export const ScheduledItemCardWrapper: React.FC<
   ScheduledItemCardWrapperProps
-> = (props): JSX.Element => {
+> = (props): ReactElement => {
   const {
     item,
     onMoveToBottom,
@@ -47,6 +52,7 @@ export const ScheduledItemCardWrapper: React.FC<
     onReschedule,
     onEdit,
     currentScheduledDate,
+    scheduledSurfaceGuid,
   } = props;
 
   return (
@@ -55,6 +61,7 @@ export const ScheduledItemCardWrapper: React.FC<
         <SuggestedScheduleItemListCard
           item={item.approvedItem}
           currentScheduledDate={currentScheduledDate}
+          scheduledSurfaceGuid={scheduledSurfaceGuid}
           onEdit={onEdit}
           onUnschedule={onUnschedule}
           onReschedule={onReschedule}
