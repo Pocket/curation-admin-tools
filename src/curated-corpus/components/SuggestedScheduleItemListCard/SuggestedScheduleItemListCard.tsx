@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { Box, CardContent, Link, Typography } from '@mui/material';
 
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
@@ -23,6 +23,11 @@ interface SuggestedScheduleItemListCardProps {
   currentScheduledDate: string;
 
   /**
+   * The surface the card is displayed on, e.g. EN_US
+   */
+  scheduledSurfaceGuid: string;
+
+  /**
    * Callback for the "Unschedule" button
    */
   onUnschedule: VoidFunction;
@@ -45,10 +50,11 @@ interface SuggestedScheduleItemListCardProps {
 
 export const SuggestedScheduleItemListCard: React.FC<
   SuggestedScheduleItemListCardProps
-> = (props): JSX.Element => {
+> = (props): ReactElement => {
   const {
     item,
     currentScheduledDate,
+    scheduledSurfaceGuid,
     onUnschedule,
     onReschedule,
     onEdit,
@@ -68,6 +74,7 @@ export const SuggestedScheduleItemListCard: React.FC<
         item={item}
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
         currentScheduledDate={currentScheduledDate}
+        scheduledSurfaceGuid={scheduledSurfaceGuid}
       />
       {isScheduleHistoryModalOpen && (
         <ScheduleHistoryModal

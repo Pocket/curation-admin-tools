@@ -24,6 +24,7 @@ describe('The SuggestedScheduleItemListCard component', () => {
         onUnschedule={onUnschedule}
         onReschedule={onReschedule}
         onMoveToBottom={onMoveToBottom}
+        scheduledSurfaceGuid="NEW_TAB_EN_US"
       />
     );
 
@@ -52,6 +53,7 @@ describe('The SuggestedScheduleItemListCard component', () => {
         onUnschedule={onUnschedule}
         onReschedule={onReschedule}
         onMoveToBottom={onMoveToBottom}
+        scheduledSurfaceGuid="NEW_TAB_EN_US"
       />
     );
 
@@ -67,6 +69,7 @@ describe('The SuggestedScheduleItemListCard component', () => {
         onUnschedule={onUnschedule}
         onReschedule={onReschedule}
         onMoveToBottom={onMoveToBottom}
+        scheduledSurfaceGuid="NEW_TAB_EN_US"
       />
     );
 
@@ -87,6 +90,7 @@ describe('The SuggestedScheduleItemListCard component', () => {
         onUnschedule={onUnschedule}
         onReschedule={onReschedule}
         onMoveToBottom={onMoveToBottom}
+        scheduledSurfaceGuid="NEW_TAB_EN_US"
       />
     );
 

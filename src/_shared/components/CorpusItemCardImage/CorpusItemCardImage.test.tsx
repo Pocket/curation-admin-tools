@@ -17,6 +17,7 @@ describe('The CorpusItemCardImage component', () => {
       <CorpusItemCardImage
         item={item}
         currentScheduledDate={currentScheduledDate}
+        scheduledSurfaceGuid="NEW_TAB_EN_US"
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
       />
     );
@@ -39,6 +40,7 @@ describe('The CorpusItemCardImage component', () => {
       <CorpusItemCardImage
         item={item}
         currentScheduledDate={currentScheduledDate}
+        scheduledSurfaceGuid="NEW_TAB_EN_US"
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
       />
     );
@@ -56,6 +58,7 @@ describe('The CorpusItemCardImage component', () => {
       <CorpusItemCardImage
         item={item}
         currentScheduledDate={currentScheduledDate}
+        scheduledSurfaceGuid="NEW_TAB_EN_US"
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
       />
     );
@@ -73,6 +76,7 @@ describe('The CorpusItemCardImage component', () => {
       <CorpusItemCardImage
         item={item}
         currentScheduledDate={currentScheduledDate}
+        scheduledSurfaceGuid="NEW_TAB_EN_US"
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
       />
     );
@@ -103,6 +107,7 @@ describe('The CorpusItemCardImage component', () => {
       <CorpusItemCardImage
         item={item}
         currentScheduledDate={currentScheduledDate}
+        scheduledSurfaceGuid="NEW_TAB_EN_US"
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
       />
     );
