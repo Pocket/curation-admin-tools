@@ -55,7 +55,7 @@ export const RemoveProspectAction: React.FC<RemoveProspectActionProps> = (
     toggleModal,
     onRemoveProspect,
   } = props;
-  if (prospectType === ProspectType.SlateScheduler) {
+  if (prospectType === ProspectType.SlateSchedulerV2) {
     isProspectSlateScheduler = true;
   }
 
