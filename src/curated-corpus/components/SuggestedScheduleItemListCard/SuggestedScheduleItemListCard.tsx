@@ -18,6 +18,11 @@ interface SuggestedScheduleItemListCardProps {
   item: ApprovedCorpusItem;
 
   /**
+   * If this Scheduled item was scheduled by ML
+   */
+  isMlScheduled: boolean;
+
+  /**
    * Current date that the schedule is being viewed for
    */
   currentScheduledDate: string;
@@ -53,6 +58,7 @@ export const SuggestedScheduleItemListCard: React.FC<
 > = (props): ReactElement => {
   const {
     item,
+    isMlScheduled,
     currentScheduledDate,
     scheduledSurfaceGuid,
     onUnschedule,

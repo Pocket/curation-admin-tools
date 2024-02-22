@@ -16,6 +16,7 @@ export const ScheduledItemData = gql`
     scheduledDate
     updatedAt
     updatedBy
+    source
   }
   ${CuratedItemData}
 `;
