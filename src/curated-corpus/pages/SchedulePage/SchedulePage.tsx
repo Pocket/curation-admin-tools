@@ -146,7 +146,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
   /**
    * Another variable set during adding a new curated item manually.
    */
-  const [isRecommendation, setIsRecommendation] = useState<boolean>(false);
+  const [isRecommendation, setIsRecommendation] = useState<boolean>(true);
 
   /**
    * The "add new item" workflow also needs this variable and setter.
@@ -156,7 +156,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
   /**
    * Keeps track of whether the "Add a New Item" modal is open or not.
    */
-  const [addProspectModalOpen, toggleAddProspectModal] = useToggle(true);
+  const [addProspectModalOpen, toggleAddProspectModal] = useToggle(false);
 
   /**
    * Keep track of whether the "Duplicate item" modal is open or not.
