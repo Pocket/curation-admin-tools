@@ -183,7 +183,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
 
   /**
    * Set a state variable to track whether the Scheduled Surface dropdown on the
-   * "Optional: Schedule this prospect" form should be locked to the current
+   * "Schedule this item" form should be locked to the current
    * scheduled surface.
    */
   const [disableScheduledSurface, setDisableScheduledSurface] =
@@ -722,7 +722,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       {approvedItem && (
         <ScheduleItemModal
           approvedItem={approvedItem}
-          headingCopy="Optional: schedule this item"
+          headingCopy="Schedule this item"
           isOpen={scheduleModalOpen}
           scheduledSurfaceGuid={currentScheduledSurfaceGuid}
           disableScheduledSurface={disableScheduledSurface}
