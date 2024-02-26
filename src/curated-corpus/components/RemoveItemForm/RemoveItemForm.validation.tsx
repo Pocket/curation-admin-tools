@@ -19,14 +19,14 @@ export const validationSchema = yup
     [RemovalReason.SetDiversity]: yup.boolean(),
     [RemovalReason.TimeSensitive]: yup.boolean(),
     [RemovalReason.TopicDiversity]: yup.boolean(),
-    ['Other']: yup.boolean(),
+    ['OTHER']: yup.boolean(),
     reasonComment: yup
       .string()
       .max(100, 'Reason is too long, cannot exceed 100 characters.'), // max 50 chars for now
   })
   .test('removalReason', '', (obj) => {
     // If Other checkbox was selected but no reason entered, fail validation
-    if (obj['Other'] && obj['reasonComment'] === undefined) {
+    if (obj['OTHER'] && obj['reasonComment'] === undefined) {
       return new yup.ValidationError(
         'Please provide a comment for removing this item.',
         null,
@@ -34,9 +34,9 @@ export const validationSchema = yup
       );
     }
     // If Other checkbox was NOT selected but a reason was entered, fail validation
-    if (!obj['Other'] && obj['reasonComment']) {
+    if (!obj['OTHER'] && obj['reasonComment']) {
       return new yup.ValidationError(
-        'Please select the "Other" reason checkbox.',
+        'Please select the "OTHER" reason checkbox.',
         null,
         'removalReason'
       );
@@ -59,7 +59,7 @@ export const validationSchema = yup
       obj[RemovalReason.SetDiversity] ||
       obj[RemovalReason.TimeSensitive] ||
       obj[RemovalReason.TopicDiversity] ||
-      (obj['Other'] && obj['reasonComment'])
+      (obj['OTHER'] && obj['reasonComment'])
     ) {
       return true;
     }
