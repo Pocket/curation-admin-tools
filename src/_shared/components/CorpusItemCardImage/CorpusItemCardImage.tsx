@@ -22,6 +22,11 @@ interface CorpusItemCardImageProps {
   item: ApprovedCorpusItem;
 
   /**
+   * If this Scheduled item was scheduled by ML
+   */
+  isMlScheduled: boolean;
+
+  /**
    * Current date that the schedule is being viewed for
    */
   currentScheduledDate: string;
@@ -66,9 +71,11 @@ const bottomOverlayContainerSxStyles: SxProps = {
   cursor: 'pointer',
 };
 
-const getTopRightLabel = (item: ApprovedCorpusItem): ReactElement | null => {
-  //TODO @Herraj replace the string value being asserted on once MC-550 is complete
-  if (item.createdBy === 'ML') {
+const getTopRightLabel = (
+  item: ApprovedCorpusItem,
+  isMlScheduled: boolean
+): ReactElement | null => {
+  if (isMlScheduled) {
     return (
       <>
         <AutoFixHighOutlinedIcon fontSize="small" />
@@ -131,6 +138,7 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
 ): ReactElement => {
   const {
     item,
+    isMlScheduled,
     toggleScheduleHistoryModal,
     currentScheduledDate,
     scheduledSurfaceGuid,
@@ -141,7 +149,7 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
 
   const displayTopic = getDisplayTopic(item.topic);
 
-  const topRightLabel = getTopRightLabel(item);
+  const topRightLabel = getTopRightLabel(item, isMlScheduled);
 
   // extract the scheduled history dates into a string array
   const scheduledHistoryDates = item.scheduledSurfaceHistory.map(

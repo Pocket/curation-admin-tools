@@ -446,6 +446,8 @@ export enum CorpusItemSource {
   Backfill = 'BACKFILL',
   /** Manually entered through the curation admin tool */
   Manual = 'MANUAL',
+  /** Created by ML */
+  Ml = 'ML',
   /** Originated as a prospect in the curation admin tool */
   Prospect = 'PROSPECT',
 }
@@ -483,6 +485,10 @@ export type CreateApprovedCorpusItemInput = {
   isTimeSensitive: Scalars['Boolean'];
   /** What language this item is in. This is a two-letter code, for example, 'EN' for English. */
   language: CorpusLanguage;
+  /** Free-text entered by the curator to give further detail to the manual addition reason(s) provided. */
+  manualAdditionReasonComment?: InputMaybe<Scalars['String']>;
+  /** A comma-separated list of reasons for manually adding an item (only supplied when `source` is MANUAL). */
+  manualAdditionReasons?: InputMaybe<Scalars['String']>;
   /** The GUID of the corresponding Prospect ID. Will be empty for manually added items. */
   prospectId?: InputMaybe<Scalars['ID']>;
   /** The name of the online publication that published this story. */
@@ -587,6 +593,8 @@ export type CreateScheduledCorpusItemInput = {
   scheduledDate: Scalars['Date'];
   /** The GUID of the Scheduled Surface the Approved Item is going to appear on. Example: 'NEW_TAB_EN_US'. */
   scheduledSurfaceGuid: Scalars['ID'];
+  /** Source of the Scheduled Item. Could be one of: MANUAL or ML */
+  source?: InputMaybe<ScheduledItemSource>;
 };
 
 /** The outcome of the curators reviewing a prospective story. */
@@ -1700,6 +1708,8 @@ export type ScheduledCorpusItem = {
   scheduledDate: Scalars['Date'];
   /** The GUID of this scheduledSurface to which this item is scheduled. Example: 'NEW_TAB_EN_US'. */
   scheduledSurfaceGuid: Scalars['ID'];
+  /** Source of the Scheduled Item. Could be one of: MANUAL or ML */
+  source?: Maybe<ScheduledItemSource>;
   /** A Unix timestamp of when the entity was last updated. */
   updatedAt: Scalars['Int'];
   /** A single sign-on user identifier of the user who last updated this entity. Null on creation. */
@@ -1730,6 +1740,14 @@ export type ScheduledCorpusItemsResult = {
   /** The total number of items for the scheduled date. */
   totalCount: Scalars['Int'];
 };
+
+/** The source of the Scheduled item */
+export enum ScheduledItemSource {
+  /** Manually entered through the curation admin tool */
+  Manual = 'MANUAL',
+  /** Created by ML */
+  Ml = 'ML',
+}
 
 /** A Scheduled Surface, including its associated Prospect Types. */
 export type ScheduledSurface = {
@@ -2448,6 +2466,7 @@ export type ScheduledItemDataFragment = {
   scheduledDate: any;
   updatedAt: number;
   updatedBy?: string | null;
+  source?: ScheduledItemSource | null;
   approvedItem: {
     __typename?: 'ApprovedCorpusItem';
     externalId: string;
@@ -3019,6 +3038,7 @@ export type RescheduleScheduledCorpusItemMutation = {
     scheduledDate: any;
     updatedAt: number;
     updatedBy?: string | null;
+    source?: ScheduledItemSource | null;
     approvedItem: {
       __typename?: 'ApprovedCorpusItem';
       externalId: string;
@@ -4663,6 +4683,7 @@ export const ScheduledItemDataFragmentDoc = gql`
     scheduledDate
     updatedAt
     updatedBy
+    source
   }
   ${CuratedItemDataFragmentDoc}
 `;
