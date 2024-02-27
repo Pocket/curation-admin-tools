@@ -54,7 +54,7 @@ export const RemoveItemForm: React.FC<
       [RemovalReason.SetDiversity]: false,
       [RemovalReason.TimeSensitive]: false,
       [RemovalReason.TopicDiversity]: false,
-      Other: false,
+      OTHER: false,
       removalReason: '',
       reasonComment: '',
     },
@@ -130,13 +130,13 @@ export const RemoveItemForm: React.FC<
                 <Checkbox
                   color="primary"
                   {...formik.getFieldProps({
-                    name: 'Other',
+                    name: 'OTHER',
                   })}
                   // onChange doesn't always work, onClick does the job
                   onClick={handleOtherCheckbox}
                 />
               }
-              label="Other"
+              label="OTHER"
             />
             <FormikTextField
               disabled={!isOtherSelected}

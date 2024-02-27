@@ -9,6 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import AddIcon from '@mui/icons-material/Add';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { DateTime } from 'luxon';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
@@ -19,6 +20,9 @@ import {
   HandleApiResponse,
 } from '../../../_shared/components';
 import {
+  AddProspectModal,
+  ApprovedItemModal,
+  DuplicateProspectModal,
   EditCorpusItemAction,
   RemoveItemFromScheduledSurfaceModal,
   ScheduledItemCardWrapper,
@@ -27,13 +31,19 @@ import {
   SplitButton,
 } from '../../components';
 import {
+  ApprovedCorpusItem,
+  CreateApprovedCorpusItemMutation,
   DeleteScheduledCorpusItemInput,
+  Prospect,
   ScheduledCorpusItem,
   ScheduledCorpusItemsResult,
+  useCreateApprovedCorpusItemMutation,
+  useCreateScheduledCorpusItemMutation,
   useDeleteScheduledItemMutation,
   useGetScheduledItemsLazyQuery,
   useGetScheduledSurfacesForUserQuery,
   useRescheduleScheduledCorpusItemMutation,
+  useUploadApprovedCorpusItemImageMutation,
 } from '../../../api/generatedTypes';
 import {
   useNotifications,
@@ -41,8 +51,13 @@ import {
   useToggle,
 } from '../../../_shared/hooks';
 import { DropdownOption } from '../../helpers/definitions';
-import { getLocalDateTimeForGuid } from '../../helpers/helperFunctions';
+import {
+  downloadAndUploadApprovedItemImageToS3,
+  getLocalDateTimeForGuid,
+} from '../../helpers/helperFunctions';
 import { curationPalette } from '../../../theme';
+import { transformProspectToApprovedItem } from '../../helpers/prospects';
+import { transformAuthors } from '../../../_shared/utils/transformAuthors';
 
 export const SchedulePage: React.FC = (): ReactElement => {
   /**
@@ -107,7 +122,52 @@ export const SchedulePage: React.FC = (): ReactElement => {
    */
   const [editItemModalOpen, toggleEditModal] = useToggle(false);
 
-  // Get the list of Scheduled Surfaces the currently logged-in user has access to.
+  /**
+   * Set the current Prospect to be worked on - this is used to manually add
+   * a curated item.
+   */
+  const [currentProspect, setCurrentProspect] = useState<Prospect | undefined>(
+    undefined
+  );
+
+  /**
+   * Set the current Curated Item to be worked on (e.g., to add to Scheduled Surface).
+   */
+  const [approvedItem, setApprovedItem] = useState<
+    ApprovedCorpusItem | undefined
+  >(undefined);
+
+  /**
+   * Keep track of whether the "Edit Item" modal is open or not
+   * in the manual addition workflow.
+   */
+  const [approvedItemModalOpen, toggleApprovedItemModal] = useToggle(false);
+
+  /**
+   * Another variable set during adding a new curated item manually.
+   */
+  const [isRecommendation, setIsRecommendation] = useState<boolean>(true);
+
+  /**
+   * The "add new item" workflow also needs this variable and setter.
+   */
+  const [isManualSubmission, setIsManualSubmission] = useState<boolean>(true);
+
+  /**
+   * Keeps track of whether the "Add a New Item" modal is open or not.
+   */
+  const [addProspectModalOpen, toggleAddProspectModal] = useToggle(false);
+
+  /**
+   * Keep track of whether the "Duplicate item" modal is open or not.
+   */
+  const [duplicateProspectModalOpen, toggleDuplicateProspectModal] =
+    useToggle(false);
+
+  // state variable to store s3 image url when user uploads a new image
+  const [userUploadedS3ImageUrl, setUserUploadedS3ImageUrl] = useState<
+    undefined | string
+  >();
 
   // Get the list of Scheduled Surfaces the currently logged-in user has access to.
   const { data: scheduledSurfaceData } = useGetScheduledSurfacesForUserQuery({
@@ -132,6 +192,12 @@ export const SchedulePage: React.FC = (): ReactElement => {
 
   // Prepare the "reschedule scheduled curated corpus item" mutation
   const [rescheduleItem] = useRescheduleScheduledCorpusItemMutation();
+
+  // Prepare the create approved item mutation
+  const [createApprovedItem] = useCreateApprovedCorpusItemMutation();
+
+  // Prepare the upload approved item image mutation
+  const [uploadApprovedItemImage] = useUploadApprovedCorpusItemImageMutation();
 
   /**
    * ##########
@@ -353,6 +419,126 @@ export const SchedulePage: React.FC = (): ReactElement => {
       .concat(` (${data.syndicatedCount}/${data.totalCount} syndicated)`);
   };
 
+  /**
+   * This function gets called by the onCuratedItemSave function
+   */
+  const createCuratedItem = async (
+    s3ImageUrl: string,
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ): Promise<void> => {
+    //build an approved item
+
+    const imageUrl: string = s3ImageUrl;
+
+    const approvedItem = {
+      prospectId: null,
+      url: values.url,
+      title: values.title,
+      excerpt: values.excerpt,
+      status: values.curationStatus,
+      language: values.language,
+      authors: transformAuthors(values.authors),
+      publisher: values.publisher,
+      source: values.source,
+      imageUrl,
+      topic: values.topic,
+      isCollection: values.collection,
+      isTimeSensitive: values.timeSensitive,
+      isSyndicated: values.syndicated,
+    };
+
+    // call the create approved item mutation
+    runMutation(
+      createApprovedItem,
+      { variables: { data: { ...approvedItem } } },
+      'Item successfully added to the curated corpus.',
+      (approvedItemData: CreateApprovedCorpusItemMutation) => {
+        toggleApprovedItemModal();
+        formikHelpers.setSubmitting(false);
+
+        setApprovedItem(approvedItemData.createApprovedCorpusItem);
+        // transition to scheduling it
+        toggleScheduleItemModal();
+      }
+    );
+  };
+
+  /**
+   *
+   * This function gets called when the user saves(approves) a prospect
+   */
+  const onCuratedItemSave = async (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ) => {
+    try {
+      // set s3ImageUrl variable to the user uploaded s3 image url
+      let s3ImageUrl = userUploadedS3ImageUrl;
+
+      // if user uploaded s3 url does not exist
+      // download the image from the publisher and upload it to s3
+      if (!s3ImageUrl) {
+        s3ImageUrl = await downloadAndUploadApprovedItemImageToS3(
+          values.imageUrl,
+          uploadApprovedItemImage
+        );
+      }
+
+      // create an item
+      await createCuratedItem(s3ImageUrl, values, formikHelpers);
+
+      // reset the userUploadedS3ImageUrl state variable so that the
+      // manually uploaded image from a previous item does not persist
+      setUserUploadedS3ImageUrl(undefined);
+    } catch (error: any) {
+      showNotification(error.message, 'error');
+      return;
+    }
+  };
+
+  // 1. Prepare the "schedule curated item" mutation
+  const [scheduleCuratedItem] = useCreateScheduledCorpusItemMutation();
+  // 2. Schedule the curated item when the user saves a scheduling request
+  const onScheduleSave = (
+    values: FormikValues,
+    formikHelpers: FormikHelpers<any>
+  ): void => {
+    // DE items migrated from the old system don't have a topic. This check forces to add a topic before scheduling
+    if (!approvedItem?.topic) {
+      showNotification('Cannot schedule item without topic', 'error');
+      return;
+    }
+
+    // Set out all the variables we need to pass to the mutation
+    const variables = {
+      approvedItemExternalId: approvedItem?.externalId,
+      scheduledSurfaceGuid: values.scheduledSurfaceGuid,
+      scheduledDate: values.scheduledDate.toISODate(),
+    };
+
+    // Run the mutation
+    runMutation(
+      scheduleCuratedItem,
+      { variables },
+      `Item scheduled successfully for ${values.scheduledDate
+        .setLocale('en')
+        .toLocaleString(DateTime.DATE_FULL)}`,
+      () => {
+        // Hide the loading indicator
+        formikHelpers.setSubmitting(false);
+
+        // Hide the Schedule Item Form modal
+        toggleScheduleItemModal();
+      },
+      () => {
+        // Hide the loading indicator
+        formikHelpers.setSubmitting(false);
+      },
+      refetch
+    );
+  };
+
   return (
     <>
       <h1>Schedule</h1>
@@ -383,6 +569,52 @@ export const SchedulePage: React.FC = (): ReactElement => {
           modalOpen={editItemModalOpen}
           toggleModal={toggleEditModal}
           refetch={refetch}
+        />
+      )}
+
+      <AddProspectModal
+        isOpen={addProspectModalOpen}
+        toggleModal={toggleAddProspectModal}
+        toggleApprovedItemModal={toggleApprovedItemModal}
+        toggleDuplicateProspectModal={toggleDuplicateProspectModal}
+        setCurrentProspect={setCurrentProspect}
+        setApprovedItem={setApprovedItem}
+        setIsRecommendation={setIsRecommendation}
+        setIsManualSubmission={setIsManualSubmission}
+      />
+
+      {currentProspect && (
+        <ApprovedItemModal
+          approvedItem={transformProspectToApprovedItem(
+            currentProspect,
+            isRecommendation,
+            isManualSubmission
+          )}
+          heading={isRecommendation ? 'Recommend' : 'Add to Corpus'}
+          isOpen={approvedItemModalOpen}
+          onSave={onCuratedItemSave}
+          toggleModal={toggleApprovedItemModal}
+          onImageSave={setUserUploadedS3ImageUrl}
+          isRecommendation={isRecommendation}
+        />
+      )}
+
+      {approvedItem && (
+        <ScheduleItemModal
+          approvedItem={approvedItem}
+          headingCopy="Schedule this item"
+          isOpen={scheduleItemModalOpen}
+          scheduledSurfaceGuid={currentScheduledSurfaceGuid}
+          onSave={onScheduleSave}
+          toggleModal={toggleScheduleItemModal}
+        />
+      )}
+
+      {approvedItem && (
+        <DuplicateProspectModal
+          approvedItem={approvedItem}
+          isOpen={duplicateProspectModalOpen}
+          toggleModal={toggleDuplicateProspectModal}
         />
       )}
 
@@ -462,6 +694,22 @@ export const SchedulePage: React.FC = (): ReactElement => {
                 </Grid>
               </Grid>
             </LocalizationProvider>
+          </Grid>
+        </Grid>
+      )}
+
+      {scheduledSurfaceOptions.length > 0 && (
+        <Grid container spacing={2} mb={2} justifyContent="flex-end">
+          <Grid item>
+            <Button
+              onClick={() => {
+                // toggle the add prospect modal
+                toggleAddProspectModal();
+              }}
+            >
+              <AddIcon />
+              Add Item
+            </Button>
           </Grid>
         </Grid>
       )}
