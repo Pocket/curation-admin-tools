@@ -1,3 +1,5 @@
+import { ScheduledItemSource } from '../../api/generatedTypes';
+
 import { createScheduledCorpusItem } from '../../api/mutations/createScheduledCorpusItem';
 import { getTestApprovedItem } from '../helpers/approvedItem';
 
@@ -16,6 +18,7 @@ export const successMock = (scheduledDate: string) => {
         approvedItemExternalId: '123-abc',
         scheduledSurfaceGuid: 'NEW_TAB_EN_US',
         scheduledDate,
+        source: ScheduledItemSource.Manual,
       },
     },
     result: {

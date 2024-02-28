@@ -4,6 +4,7 @@ import { DateTime } from 'luxon';
 import {
   ApprovedCorpusItem,
   CreateScheduledCorpusItemInput,
+  ScheduledItemSource,
   useCreateScheduledCorpusItemMutation,
 } from '../../../../api/generatedTypes';
 import { useNotifications, useRunMutation } from '../../../../_shared/hooks';
@@ -77,6 +78,7 @@ export const ScheduleCorpusItemAction: React.FC<
       approvedItemExternalId: item.externalId,
       scheduledSurfaceGuid: values.scheduledSurfaceGuid,
       scheduledDate: values.scheduledDate.toISODate(),
+      source: ScheduledItemSource.Manual,
     };
     // Run the mutation
     runMutation(

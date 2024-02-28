@@ -37,6 +37,7 @@ import {
   Prospect,
   ScheduledCorpusItem,
   ScheduledCorpusItemsResult,
+  ScheduledItemSource,
   useCreateApprovedCorpusItemMutation,
   useCreateScheduledCorpusItemMutation,
   useDeleteScheduledItemMutation,
@@ -515,6 +516,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
       approvedItemExternalId: approvedItem?.externalId,
       scheduledSurfaceGuid: values.scheduledSurfaceGuid,
       scheduledDate: values.scheduledDate.toISODate(),
+      source: ScheduledItemSource.Manual,
     };
 
     // Run the mutation

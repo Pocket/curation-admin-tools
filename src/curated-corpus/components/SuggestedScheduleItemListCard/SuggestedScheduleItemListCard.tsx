@@ -81,6 +81,7 @@ export const SuggestedScheduleItemListCard: React.FC<
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
         currentScheduledDate={currentScheduledDate}
         scheduledSurfaceGuid={scheduledSurfaceGuid}
+        isMlScheduled={isMlScheduled}
       />
       {isScheduleHistoryModalOpen && (
         <ScheduleHistoryModal
