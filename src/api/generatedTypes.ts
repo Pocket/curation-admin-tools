@@ -2733,6 +2733,7 @@ export type CreateScheduledCorpusItemMutationVariables = Exact<{
   approvedItemExternalId: Scalars['ID'];
   scheduledSurfaceGuid: Scalars['ID'];
   scheduledDate: Scalars['Date'];
+  source?: InputMaybe<ScheduledItemSource>;
 }>;
 
 export type CreateScheduledCorpusItemMutation = {
@@ -5148,12 +5149,14 @@ export const CreateScheduledCorpusItemDocument = gql`
     $approvedItemExternalId: ID!
     $scheduledSurfaceGuid: ID!
     $scheduledDate: Date!
+    $source: ScheduledItemSource
   ) {
     createScheduledCorpusItem(
       data: {
         approvedItemExternalId: $approvedItemExternalId
         scheduledSurfaceGuid: $scheduledSurfaceGuid
         scheduledDate: $scheduledDate
+        source: $source
       }
     ) {
       externalId
@@ -5190,6 +5193,7 @@ export type CreateScheduledCorpusItemMutationFn = Apollo.MutationFunction<
  *      approvedItemExternalId: // value for 'approvedItemExternalId'
  *      scheduledSurfaceGuid: // value for 'scheduledSurfaceGuid'
  *      scheduledDate: // value for 'scheduledDate'
+ *      source: // value for 'source'
  *   },
  * });
  */

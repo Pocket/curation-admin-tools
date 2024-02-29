@@ -18,6 +18,7 @@ describe('The SuggestedScheduleItemListCard component', () => {
   it('shows basic scheduled item information', () => {
     render(
       <SuggestedScheduleItemListCard
+        isMlScheduled={false}
         item={item}
         currentScheduledDate={currentScheduledDate}
         onEdit={onEdit}
@@ -47,6 +48,7 @@ describe('The SuggestedScheduleItemListCard component', () => {
   it('should render excerpt', () => {
     render(
       <SuggestedScheduleItemListCard
+        isMlScheduled={false}
         item={item}
         currentScheduledDate={currentScheduledDate}
         onEdit={onEdit}
@@ -63,6 +65,7 @@ describe('The SuggestedScheduleItemListCard component', () => {
   it('should show multiple authors as a comma-separated string', () => {
     render(
       <SuggestedScheduleItemListCard
+        isMlScheduled={false}
         item={item}
         currentScheduledDate={currentScheduledDate}
         onEdit={onEdit}
@@ -84,6 +87,7 @@ describe('The SuggestedScheduleItemListCard component', () => {
 
     render(
       <SuggestedScheduleItemListCard
+        isMlScheduled={false}
         item={item}
         currentScheduledDate={currentScheduledDate}
         onEdit={onEdit}

@@ -26,6 +26,7 @@ import {
   CuratedStatus,
   Prospect,
   RejectProspectMutationVariables,
+  ScheduledItemSource,
   useCreateApprovedCorpusItemMutation,
   useCreateScheduledCorpusItemMutation,
   useGetProspectsLazyQuery,
@@ -521,6 +522,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       approvedItemExternalId: approvedItem?.externalId,
       scheduledSurfaceGuid: values.scheduledSurfaceGuid,
       scheduledDate: values.scheduledDate.toISODate(),
+      source: ScheduledItemSource.Manual,
     };
 
     // Run the mutation
