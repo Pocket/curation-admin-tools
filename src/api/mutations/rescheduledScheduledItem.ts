@@ -5,9 +5,14 @@ export const rescheduleScheduledItem = gql`
   mutation rescheduleScheduledCorpusItem(
     $externalId: ID!
     $scheduledDate: Date!
+    $source: ScheduledItemSource!
   ) {
     rescheduleScheduledCorpusItem(
-      data: { externalId: $externalId, scheduledDate: $scheduledDate }
+      data: {
+        externalId: $externalId
+        scheduledDate: $scheduledDate
+        source: $source
+      }
     ) {
       ...ScheduledItemData
     }

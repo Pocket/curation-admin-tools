@@ -55,6 +55,8 @@ export type ApprovedCorpusItem = {
   createdAt: Scalars['Int'];
   /** A single sign-on user identifier of the user who created this entity. */
   createdBy: Scalars['String'];
+  /** The publication date for this story. */
+  datePublished?: Maybe<Scalars['Date']>;
   /** The excerpt of the story. */
   excerpt: Scalars['String'];
   /** An alternative primary key in UUID format that is generated on creation. */
@@ -470,6 +472,8 @@ export enum CorpusLanguage {
 export type CreateApprovedCorpusItemInput = {
   /** A name and sort order for each author. */
   authors: Array<CorpusItemAuthorInput>;
+  /** The publication date for this story. */
+  datePublished?: InputMaybe<Scalars['Date']>;
   /** The excerpt of the Approved Item. */
   excerpt: Scalars['String'];
   /** The image URL for this item's accompanying picture. */
@@ -495,6 +499,8 @@ export type CreateApprovedCorpusItemInput = {
   publisher: Scalars['String'];
   /** Optionally, specify the date this item should be appearing on a Scheduled Surface. Format: YYYY-MM-DD */
   scheduledDate?: InputMaybe<Scalars['Date']>;
+  /** Optionally, specify the source of the Scheduled Item. Could be one of: MANUAL or ML */
+  scheduledSource?: InputMaybe<ScheduledItemSource>;
   /** Optionally, specify the GUID of the Scheduled Surface this item should be scheduled for. */
   scheduledSurfaceGuid?: InputMaybe<Scalars['ID']>;
   /** The source of the corpus item. */
@@ -594,7 +600,7 @@ export type CreateScheduledCorpusItemInput = {
   /** The GUID of the Scheduled Surface the Approved Item is going to appear on. Example: 'NEW_TAB_EN_US'. */
   scheduledSurfaceGuid: Scalars['ID'];
   /** Source of the Scheduled Item. Could be one of: MANUAL or ML */
-  source?: InputMaybe<ScheduledItemSource>;
+  source: ScheduledItemSource;
 };
 
 /** The outcome of the curators reviewing a prospective story. */
@@ -726,6 +732,8 @@ export type ImportApprovedCorpusItemInput = {
   createdAt: Scalars['Int'];
   /** A single sign-on user identifier of the user who created this entity. */
   createdBy: Scalars['String'];
+  /** The publication date for this story. */
+  datePublished?: InputMaybe<Scalars['Date']>;
   /** The excerpt of the Approved Item. */
   excerpt: Scalars['String'];
   /** The image URL for this item's accompanying picture. */
@@ -740,6 +748,12 @@ export type ImportApprovedCorpusItemInput = {
   publisher: Scalars['String'];
   /** The date this item should be appearing on a Scheduled Surface. Format: YYYY-MM-DD */
   scheduledDate: Scalars['Date'];
+  /**
+   * Source of the Scheduled Item. Could be one of: MANUAL or ML
+   *
+   * This field was added after this import mutation was created. We may need to expand the enum value list if this mutation is used in the future.
+   */
+  scheduledSource: ScheduledItemSource;
   /** The GUID of the Scheduled Surface this item should be scheduled for. */
   scheduledSurfaceGuid: Scalars['ID'];
   /** The source of the corpus item. */
@@ -1685,6 +1699,8 @@ export type RescheduleScheduledCorpusItemInput = {
   externalId: Scalars['ID'];
   /** The new scheduled date for the scheduled item to appear on a Scheduled Surface. Format: YYYY-MM-DD. */
   scheduledDate: Scalars['Date'];
+  /** Source of the Scheduled Item. Could be one of: MANUAL or ML */
+  source: ScheduledItemSource;
 };
 
 /**
@@ -1709,7 +1725,7 @@ export type ScheduledCorpusItem = {
   /** The GUID of this scheduledSurface to which this item is scheduled. Example: 'NEW_TAB_EN_US'. */
   scheduledSurfaceGuid: Scalars['ID'];
   /** Source of the Scheduled Item. Could be one of: MANUAL or ML */
-  source?: Maybe<ScheduledItemSource>;
+  source: ScheduledItemSource;
   /** A Unix timestamp of when the entity was last updated. */
   updatedAt: Scalars['Int'];
   /** A single sign-on user identifier of the user who last updated this entity. Null on creation. */
@@ -1931,6 +1947,8 @@ export type UpdateApprovedCorpusItemAuthorsInput = {
 export type UpdateApprovedCorpusItemInput = {
   /** A name and sort order for each author. */
   authors: Array<CorpusItemAuthorInput>;
+  /** The publication date for this story. */
+  datePublished?: InputMaybe<Scalars['Date']>;
   /** The excerpt of the Approved Item. */
   excerpt: Scalars['String'];
   /** Approved Item ID. */
@@ -2466,7 +2484,7 @@ export type ScheduledItemDataFragment = {
   scheduledDate: any;
   updatedAt: number;
   updatedBy?: string | null;
-  source?: ScheduledItemSource | null;
+  source: ScheduledItemSource;
   approvedItem: {
     __typename?: 'ApprovedCorpusItem';
     externalId: string;
@@ -2733,7 +2751,7 @@ export type CreateScheduledCorpusItemMutationVariables = Exact<{
   approvedItemExternalId: Scalars['ID'];
   scheduledSurfaceGuid: Scalars['ID'];
   scheduledDate: Scalars['Date'];
-  source?: InputMaybe<ScheduledItemSource>;
+  source: ScheduledItemSource;
 }>;
 
 export type CreateScheduledCorpusItemMutation = {
@@ -3026,6 +3044,7 @@ export type RemoveProspectMutation = {
 export type RescheduleScheduledCorpusItemMutationVariables = Exact<{
   externalId: Scalars['ID'];
   scheduledDate: Scalars['Date'];
+  source: ScheduledItemSource;
 }>;
 
 export type RescheduleScheduledCorpusItemMutation = {
@@ -3039,7 +3058,7 @@ export type RescheduleScheduledCorpusItemMutation = {
     scheduledDate: any;
     updatedAt: number;
     updatedBy?: string | null;
-    source?: ScheduledItemSource | null;
+    source: ScheduledItemSource;
     approvedItem: {
       __typename?: 'ApprovedCorpusItem';
       externalId: string;
@@ -5149,7 +5168,7 @@ export const CreateScheduledCorpusItemDocument = gql`
     $approvedItemExternalId: ID!
     $scheduledSurfaceGuid: ID!
     $scheduledDate: Date!
-    $source: ScheduledItemSource
+    $source: ScheduledItemSource!
   ) {
     createScheduledCorpusItem(
       data: {
@@ -5655,9 +5674,14 @@ export const RescheduleScheduledCorpusItemDocument = gql`
   mutation rescheduleScheduledCorpusItem(
     $externalId: ID!
     $scheduledDate: Date!
+    $source: ScheduledItemSource!
   ) {
     rescheduleScheduledCorpusItem(
-      data: { externalId: $externalId, scheduledDate: $scheduledDate }
+      data: {
+        externalId: $externalId
+        scheduledDate: $scheduledDate
+        source: $source
+      }
     ) {
       ...ScheduledItemData
     }
@@ -5684,6 +5708,7 @@ export type RescheduleScheduledCorpusItemMutationFn = Apollo.MutationFunction<
  *   variables: {
  *      externalId: // value for 'externalId'
  *      scheduledDate: // value for 'scheduledDate'
+ *      source: // value for 'source'
  *   },
  * });
  */
