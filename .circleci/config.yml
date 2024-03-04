@@ -69,7 +69,7 @@ jobs:
       remote_docker_version:
         description: 'Remote version of docker'
         type: string
-        default: 20.10.2
+        default: docker24
     docker:
       - image: cimg/base:2021.04@sha256:28cd3680dd07a8c889b836b8b8ef56f48dd1a0a349881aede5b2b50c20f50398
     steps:
@@ -211,4 +211,3 @@ workflows:
           workspace-path: /tmp/workspace
           requires:
             - deploy_dev
-
