@@ -337,7 +337,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
     const variables = {
       externalId: item.externalId,
       scheduledDate: item.scheduledDate,
-      source: ScheduledItemSource.Ml,
+      source: ScheduledItemSource.Manual,
     };
 
     // Run the mutation
