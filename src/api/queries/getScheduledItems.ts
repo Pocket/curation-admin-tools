@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { CuratedItemData } from '../fragments/curatedItemData';
+import { ScheduledItemData } from '../fragments/scheduledItemData';
 
 export const getScheduledItems = gql`
   query getScheduledItems($filters: ScheduledCorpusItemsFilterInput!) {
@@ -9,18 +9,9 @@ export const getScheduledItems = gql`
       totalCount
       scheduledDate
       items {
-        externalId
-        createdAt
-        createdBy
-        updatedAt
-        updatedBy
-        scheduledDate
-        scheduledSurfaceGuid
-        approvedItem {
-          ...CuratedItemData
-        }
+        ...ScheduledItemData
       }
     }
   }
-  ${CuratedItemData}
+  ${ScheduledItemData}
 `;
