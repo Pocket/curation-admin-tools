@@ -333,9 +333,11 @@ export const SchedulePage: React.FC = (): ReactElement => {
   const moveItemToBottom = (item: ScheduledCorpusItem): void => {
     // Run the "reschedule" mutation with the same variables
     // it already has. All we want from it is to update `updatedAt` timestamp.
+    console.log('move to bottom');
     const variables = {
       externalId: item.externalId,
       scheduledDate: item.scheduledDate,
+      source: ScheduledItemSource.Ml,
     };
 
     // Run the mutation
