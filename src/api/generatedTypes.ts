@@ -4190,13 +4190,14 @@ export type GetScheduledItemsQuery = {
     scheduledDate: any;
     items: Array<{
       __typename?: 'ScheduledCorpusItem';
-      externalId: string;
+      scheduledSurfaceGuid: string;
       createdAt: number;
       createdBy: string;
+      externalId: string;
+      scheduledDate: any;
       updatedAt: number;
       updatedBy?: string | null;
-      scheduledDate: any;
-      scheduledSurfaceGuid: string;
+      source: ScheduledItemSource;
       approvedItem: {
         __typename?: 'ApprovedCorpusItem';
         externalId: string;
@@ -7694,20 +7695,11 @@ export const GetScheduledItemsDocument = gql`
       totalCount
       scheduledDate
       items {
-        externalId
-        createdAt
-        createdBy
-        updatedAt
-        updatedBy
-        scheduledDate
-        scheduledSurfaceGuid
-        approvedItem {
-          ...CuratedItemData
-        }
+        ...ScheduledItemData
       }
     }
   }
-  ${CuratedItemDataFragmentDoc}
+  ${ScheduledItemDataFragmentDoc}
 `;
 
 /**
