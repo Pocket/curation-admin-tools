@@ -13,6 +13,8 @@ export { DuplicateProspectModal } from './DuplicateProspectModal/DuplicateProspe
 export { NextPrevPagination } from './NextPrevPagination/NextPrevPagination';
 export { ProspectListCard } from './ProspectListCard/ProspectListCard';
 export { ProspectPublisherFilter } from './ProspectPublisherFilter/ProspectPublisherFilter';
+export { ReasonsToAddForm } from './ReasonsToAddForm/ReasonsToAddForm';
+export { ReasonsToAddModal } from './ReasonsToAddModal/ReasonsToAddModal';
 export { RejectCorpusItemAction } from './actions/RejectCorpusItemAction/RejectCorpusItemAction';
 export { RejectedItemListCard } from './RejectedItemListCard/RejectedItemListCard';
 export { RejectedItemSearchForm } from './RejectedItemSearchForm/RejectedItemSearchForm';
