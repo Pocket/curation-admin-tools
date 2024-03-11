@@ -99,6 +99,10 @@ export const SchedulePage: React.FC = (): ReactElement => {
     string | undefined
   >();
 
+  // Track which scheduled date to use by default when a curator
+  // adds a new item manually.
+  const [addItemDate, setAddItemDate] = useState<DateTime>();
+
   /**
    * ##########
    * ########## gql and other useful hooks start here
@@ -606,6 +610,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
       {approvedItem && (
         <ScheduleItemModal
           approvedItem={approvedItem}
+          date={addItemDate}
           headingCopy="Schedule this item"
           isOpen={scheduleItemModalOpen}
           scheduledSurfaceGuid={currentScheduledSurfaceGuid}
@@ -702,22 +707,6 @@ export const SchedulePage: React.FC = (): ReactElement => {
         </Grid>
       )}
 
-      {scheduledSurfaceOptions.length > 0 && (
-        <Grid container spacing={2} mb={2} justifyContent="flex-end">
-          <Grid item>
-            <Button
-              onClick={() => {
-                // toggle the add prospect modal
-                toggleAddProspectModal();
-              }}
-            >
-              <AddIcon />
-              Add Item
-            </Button>
-          </Grid>
-        </Grid>
-      )}
-
       {/** Page Contents Below */}
 
       <Grid container spacing={2}>
@@ -738,13 +727,16 @@ export const SchedulePage: React.FC = (): ReactElement => {
                   justifyContent="flex-start"
                   key={data.scheduledDate}
                 >
-                  <Grid item xs={12}>
+                  <Grid item xs={10}>
                     <Box mt={3}>
                       <Accordion>
-                        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <AccordionSummary
+                          expandIcon={<ExpandMoreIcon />}
+                          sx={{ maxHeight: '2.5rem' }}
+                        >
                           <Typography
                             sx={{
-                              fontSize: '1.5rem',
+                              fontSize: '1.25rem',
                               fontWeight: 500,
                               textTransform: 'capitalize',
                               color: curationPalette.primary,
@@ -757,6 +749,28 @@ export const SchedulePage: React.FC = (): ReactElement => {
                           <ScheduleSummaryLayout scheduledItems={data.items} />
                         </AccordionDetails>
                       </Accordion>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Box mt={3}>
+                      <Button
+                        size="large"
+                        onClick={() => {
+                          // toggle the add prospect modal
+                          toggleAddProspectModal();
+                          // set the default date to use when this manual addition
+                          // is scheduled
+                          setAddItemDate(
+                            DateTime.fromFormat(
+                              data.scheduledDate,
+                              'yyyy-MM-dd'
+                            )
+                          );
+                        }}
+                      >
+                        <AddIcon />
+                        Add Item
+                      </Button>
                     </Box>
                   </Grid>
                   <Grid item xs={12}>

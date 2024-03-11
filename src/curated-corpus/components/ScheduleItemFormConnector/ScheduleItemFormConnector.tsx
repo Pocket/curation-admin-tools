@@ -16,6 +16,11 @@ interface ScheduleItemFormConnectorProps {
   approvedItemExternalId: string;
 
   /**
+   * Use this date as the default date if it's provided.
+   */
+  date?: DateTime;
+
+  /**
    * The GUID of the Scheduled Surface if one's been sent through.
    */
   scheduledSurfaceGuid?: string;
@@ -40,6 +45,7 @@ export const ScheduleItemFormConnector: React.FC<
 > = (props) => {
   const {
     approvedItemExternalId,
+    date,
     disableScheduledSurface,
     scheduledSurfaceGuid,
     onCancel,
@@ -57,7 +63,11 @@ export const ScheduleItemFormConnector: React.FC<
   // Save the date in a state var as the submitted form will contain
   // a formatted string instead of a luxon object. Would like to work with the luxon
   // object instead of parsing the date from string.
-  const [selectedDate, setSelectedDate] = useState<DateTime | null>(tomorrow);
+  // Use the date provided; otherwise, use tomorrow's date in the curator's time zone
+
+  const [selectedDate, setSelectedDate] = useState<DateTime | null>(
+    date ? date : tomorrow
+  );
 
   // What to do when the user clicks on a date in the calendar.
   const handleDateChange = (date: any, value?: string | null | undefined) => {

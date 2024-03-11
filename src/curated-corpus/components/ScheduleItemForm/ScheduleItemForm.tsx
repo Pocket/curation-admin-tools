@@ -70,6 +70,7 @@ export const ScheduleItemForm: React.FC<
     onSubmit,
   } = props;
 
+  // Default to tomorrow if no selected date is passed through the props.
   const tomorrow = DateTime.local().plus({ days: 1 });
 
   // Run the lookup query for scheduled items on loading the component,
@@ -79,7 +80,7 @@ export const ScheduleItemForm: React.FC<
 
   useEffect(() => {
     setRefreshData(true);
-    handleDateChange(tomorrow);
+    handleDateChange(selectedDate ? selectedDate : tomorrow);
   }, []);
 
   // if a scheduledSurfaceGuid was not supplied (meaning this is a manually
