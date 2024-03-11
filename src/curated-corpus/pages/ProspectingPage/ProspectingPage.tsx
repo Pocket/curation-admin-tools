@@ -873,6 +873,8 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                     item={prospect.approvedCorpusItem}
                     parserItem={prospect.item!}
                     prospectId={prospect.id}
+                    prospectType={prospect.prospectType}
+                    prospectTitle={prospect.title as string}
                     onSchedule={() => {
                       setCurrentProspect(prospect);
                       setApprovedItem(prospect.approvedCorpusItem!);
