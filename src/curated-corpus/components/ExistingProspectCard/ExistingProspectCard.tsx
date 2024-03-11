@@ -27,6 +27,7 @@ import { ScheduleHistory } from '../ScheduleHistory/ScheduleHistory';
 import { getDisplayTopic } from '../../helpers/topics';
 import { RemoveProspectAction } from '../actions/RemoveProspectAction/RemoveProspectAction';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
+import { useToggle } from '../../../_shared/hooks';
 
 interface ExistingProspectCardProps {
   /**
@@ -42,6 +43,12 @@ interface ExistingProspectCardProps {
    * This is the prospect.id and NOT prospect.prospectId
    */
   prospectId: string;
+
+  // sent by prospecting page
+  prospectType?: string;
+
+  // sent by prospecting page
+  prospectTitle?: string;
 
   /**
    * Function called when the scheduled button is clicked.
@@ -64,8 +71,20 @@ interface ExistingProspectCardProps {
 export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
   props
 ): JSX.Element => {
-  const { item, parserItem, onSchedule, onRemoveProspect, prospectId } = props;
+  const {
+    item,
+    parserItem,
+    onSchedule,
+    onRemoveProspect,
+    prospectId,
+    prospectType,
+    prospectTitle,
+  } = props;
   const showScheduleHistory = item.scheduledSurfaceHistory.length != 0;
+  /**
+   * Keep track of whether the RemoveItemModal is open or not.
+   */
+  const [removeProspectModalOpen, toggleRemoveProspectModal] = useToggle(false);
 
   return (
     <Card
@@ -151,6 +170,10 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
               <RemoveProspectAction
                 onRemoveProspect={onRemoveProspect}
                 prospectId={prospectId}
+                prospectType={prospectType}
+                prospectTitle={prospectTitle}
+                modalOpen={removeProspectModalOpen}
+                toggleModal={toggleRemoveProspectModal}
               />
             </Grid>
           </Grid>
