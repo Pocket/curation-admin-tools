@@ -1,16 +1,22 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import { Box, Grid, Typography } from '@mui/material';
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { Modal } from '../../../_shared/components';
 import { ScheduleItemFormConnector } from '../';
+import { DateTime } from 'luxon';
 
 interface ScheduleItemModalProps {
   /**
    * The approved corpus item the impending scheduling action is meant for.
    */
   approvedItem: ApprovedCorpusItem;
+
+  /**
+   * Use this date as the default date if it's provided.
+   */
+  date?: DateTime;
 
   /**
    * The copy that shows up at the top of the schedule item modal. This is different
@@ -59,9 +65,10 @@ interface ScheduleItemModalProps {
  */
 export const ScheduleItemModal: React.FC<ScheduleItemModalProps> = (
   props
-): JSX.Element => {
+): ReactElement => {
   const {
     approvedItem,
+    date,
     disableScheduledSurface,
     headingCopy = 'Schedule this item',
     isOpen,
@@ -89,6 +96,7 @@ export const ScheduleItemModal: React.FC<ScheduleItemModalProps> = (
         <Grid item xs={12}>
           <ScheduleItemFormConnector
             approvedItemExternalId={approvedItem.externalId}
+            date={date}
             scheduledSurfaceGuid={scheduledSurfaceGuid}
             disableScheduledSurface={disableScheduledSurface}
             onSubmit={onSave}
