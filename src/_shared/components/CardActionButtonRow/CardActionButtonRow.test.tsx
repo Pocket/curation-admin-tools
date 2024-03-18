@@ -9,6 +9,7 @@ describe('The CardActionButtonRow component', () => {
   const onEdit = jest.fn();
   const onReschedule = jest.fn();
   const onUnschedule = jest.fn();
+  const onReject = jest.fn();
 
   //TODO update when reject button flow ready
   it('should render all four card action buttons and call their callbacks', () => {
@@ -18,6 +19,7 @@ describe('The CardActionButtonRow component', () => {
         onUnschedule={onUnschedule}
         onReschedule={onReschedule}
         onMoveToBottom={onMoveToBottom}
+        onReject={onReject}
       />
     );
 
@@ -49,6 +51,12 @@ describe('The CardActionButtonRow component', () => {
     userEvent.click(moveToBottomButton);
     expect(onMoveToBottom).toHaveBeenCalled();
 
-    //TODO assert for reject button and onReject callback
+    //assert for reject button and onReject callback
+    const rejectButton = screen.getByRole('button', {
+      name: 'reject',
+    });
+    expect(rejectButton).toBeInTheDocument();
+    userEvent.click(rejectButton);
+    expect(onReject).toHaveBeenCalled();
   });
 });

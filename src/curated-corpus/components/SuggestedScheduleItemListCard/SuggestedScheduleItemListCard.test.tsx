@@ -14,6 +14,7 @@ describe('The SuggestedScheduleItemListCard component', () => {
   const onEdit = jest.fn();
   const onReschedule = jest.fn();
   const onUnschedule = jest.fn();
+  const onReject = jest.fn();
 
   it('shows basic scheduled item information', () => {
     render(
@@ -25,6 +26,7 @@ describe('The SuggestedScheduleItemListCard component', () => {
         onUnschedule={onUnschedule}
         onReschedule={onReschedule}
         onMoveToBottom={onMoveToBottom}
+        onReject={onReject}
         scheduledSurfaceGuid="NEW_TAB_EN_US"
       />
     );
@@ -55,6 +57,7 @@ describe('The SuggestedScheduleItemListCard component', () => {
         onUnschedule={onUnschedule}
         onReschedule={onReschedule}
         onMoveToBottom={onMoveToBottom}
+        onReject={onReject}
         scheduledSurfaceGuid="NEW_TAB_EN_US"
       />
     );
@@ -72,6 +75,7 @@ describe('The SuggestedScheduleItemListCard component', () => {
         onUnschedule={onUnschedule}
         onReschedule={onReschedule}
         onMoveToBottom={onMoveToBottom}
+        onReject={onReject}
         scheduledSurfaceGuid="NEW_TAB_EN_US"
       />
     );
@@ -94,6 +98,7 @@ describe('The SuggestedScheduleItemListCard component', () => {
         onUnschedule={onUnschedule}
         onReschedule={onReschedule}
         onMoveToBottom={onMoveToBottom}
+        onReject={onReject}
         scheduledSurfaceGuid="NEW_TAB_EN_US"
       />
     );

@@ -51,6 +51,11 @@ interface SuggestedScheduleItemListCardProps {
    * Callback for the "Move to bottom" button
    */
   onMoveToBottom: VoidFunction;
+
+  /**
+   * Callback for the "Reject" (trash) button
+   */
+  onReject: VoidFunction;
 }
 
 export const SuggestedScheduleItemListCard: React.FC<
@@ -65,6 +70,7 @@ export const SuggestedScheduleItemListCard: React.FC<
     onReschedule,
     onEdit,
     onMoveToBottom,
+    onReject,
   } = props;
 
   const [isScheduleHistoryModalOpen, setScheduleHistoryModalOpen] =
@@ -158,6 +164,7 @@ export const SuggestedScheduleItemListCard: React.FC<
         onUnschedule={onUnschedule}
         onReschedule={onReschedule}
         onMoveToBottom={onMoveToBottom}
+        onReject={onReject}
       />
     </>
   );
