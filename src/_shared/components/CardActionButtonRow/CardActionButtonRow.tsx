@@ -28,12 +28,18 @@ interface CardActionButtonRowProps {
    * Callback for the "Move to bottom" button
    */
   onMoveToBottom: VoidFunction;
+
+  /**
+   * Callback for the "Reject" (trash) button
+   */
+  onReject: VoidFunction;
 }
 
 export const CardActionButtonRow: React.FC<CardActionButtonRowProps> = (
   props
 ): JSX.Element => {
-  const { onEdit, onUnschedule, onReschedule, onMoveToBottom } = props;
+  const { onEdit, onUnschedule, onReschedule, onMoveToBottom, onReject } =
+    props;
 
   return (
     <Stack
@@ -45,10 +51,9 @@ export const CardActionButtonRow: React.FC<CardActionButtonRowProps> = (
     >
       <Stack direction="row" justifyContent="flex-start">
         <Tooltip title="Reject" placement="bottom">
-          {/** TODO: @Herraj -- enable when reject suggested item flow is ready, need to pass in an onClick */}
           <IconButton
             aria-label="reject"
-            disabled
+            onClick={onReject}
             sx={{ color: curationPalette.jetBlack }}
           >
             <DeleteOutlinedIcon />
