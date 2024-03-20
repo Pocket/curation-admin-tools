@@ -7,8 +7,12 @@ import { ScheduledSurface } from '../../../api/generatedTypes';
  * that come from the `getScheduledSurfacesForUser` query.
  *
  * @param scheduledSurfaces
+ * @param showManualScheduleReasons
  */
-export const getValidationSchema = (scheduledSurfaces: ScheduledSurface[]) => {
+export const getValidationSchema = (
+  scheduledSurfaces: ScheduledSurface[],
+  showManualScheduleReasons = false
+) => {
   const accessibleScheduledSurfaces = scheduledSurfaces.map(
     (surface: ScheduledSurface) => {
       return surface.guid;
@@ -31,5 +35,7 @@ export const getValidationSchema = (scheduledSurfaces: ScheduledSurface[]) => {
       .max(DateTime.local().plus({ days: 60 }))
       .required('Please choose a date no more than 60 days in advance.')
       .nullable(),
+
+    manualScheduleReason,
   });
 };

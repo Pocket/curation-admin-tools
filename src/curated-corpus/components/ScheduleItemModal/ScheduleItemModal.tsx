@@ -41,6 +41,11 @@ interface ScheduleItemModalProps {
   disableScheduledSurface?: boolean;
 
   /**
+   * Whether to show the optional manual schedule reasons.
+   */
+  showManualScheduleReasons?: boolean;
+
+  /**
    * The action to run when the user hits the "Save" button at the bottom of the modal.
    * @param values
    * @param formikHelpers
@@ -73,6 +78,7 @@ export const ScheduleItemModal: React.FC<ScheduleItemModalProps> = (
     headingCopy = 'Schedule this item',
     isOpen,
     scheduledSurfaceGuid,
+    showManualScheduleReasons,
     onSave,
     toggleModal,
   } = props;
@@ -99,6 +105,7 @@ export const ScheduleItemModal: React.FC<ScheduleItemModalProps> = (
             date={date}
             scheduledSurfaceGuid={scheduledSurfaceGuid}
             disableScheduledSurface={disableScheduledSurface}
+            showManualScheduleReasons={showManualScheduleReasons}
             onSubmit={onSave}
             onCancel={() => {
               toggleModal();

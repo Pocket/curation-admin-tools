@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Grid, LinearProgress, TextField } from '@mui/material';
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  Grid,
+  LinearProgress,
+  TextField,
+} from '@mui/material';
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { DateTime } from 'luxon';
@@ -10,8 +18,12 @@ import {
   SharedFormButtonsProps,
 } from '../../../_shared/components';
 import { getValidationSchema } from './ScheduleItemForm.validation';
-import { ScheduledSurface } from '../../../api/generatedTypes';
+import {
+  ManualScheduleReason,
+  ScheduledSurface,
+} from '../../../api/generatedTypes';
 import { ScheduleSummaryConnector } from '../ScheduleSummaryConnector/ScheduleSummaryConnector';
+import { formatFormLabel } from '../../helpers/helperFunctions';
 
 interface ScheduleItemFormProps {
   /**
@@ -42,6 +54,11 @@ interface ScheduleItemFormProps {
   disableScheduledSurface?: boolean;
 
   /**
+   * Whether to show the optional manual schedule reasons.
+   */
+  showManualScheduleReasons?: boolean;
+
+  /**
    *
    * Note that null is an option here to keep MUI types happy, nothing else.
    */
@@ -65,6 +82,7 @@ export const ScheduleItemForm: React.FC<
     scheduledSurfaces,
     scheduledSurfaceGuid,
     disableScheduledSurface = false,
+    showManualScheduleReasons = false,
     selectedDate,
     onCancel,
     onSubmit,
@@ -169,6 +187,55 @@ export const ScheduleItemForm: React.FC<
                 />
               </Grid>
             )}
+          {showManualScheduleReasons && (
+            <>
+              <Grid item xs={12} sm={6}>
+                <FormGroup>
+                  {Object.values(ManualScheduleReason)
+                    .slice(0, 4) // first four reasons in the first column
+                    .map((value) => {
+                      return (
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              color="primary"
+                              {...formik.getFieldProps({
+                                name: value,
+                              })}
+                            />
+                          }
+                          label={formatFormLabel(value)}
+                          key={value}
+                        />
+                      );
+                    })}
+                </FormGroup>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormGroup>
+                  {Object.values(ManualScheduleReason)
+                    .slice(4, 8) // remaining four reasons in the second column
+                    .map((value) => {
+                      return (
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              color="primary"
+                              {...formik.getFieldProps({
+                                name: value,
+                              })}
+                            />
+                          }
+                          label={formatFormLabel(value)}
+                          key={value}
+                        />
+                      );
+                    })}
+                </FormGroup>
+              </Grid>
+            </>
+          )}
+
           {formik.isSubmitting && (
             <Grid item xs={12}>
               <Box mb={3}>

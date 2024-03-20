@@ -489,10 +489,6 @@ export type CreateApprovedCorpusItemInput = {
   isTimeSensitive: Scalars['Boolean'];
   /** What language this item is in. This is a two-letter code, for example, 'EN' for English. */
   language: CorpusLanguage;
-  /** Free-text entered by the curator to give further detail to the manual addition reason(s) provided. */
-  manualAdditionReasonComment?: InputMaybe<Scalars['String']>;
-  /** A comma-separated list of reasons for manually adding an item (only supplied when `source` is MANUAL). */
-  manualAdditionReasons?: InputMaybe<Scalars['String']>;
   /** The GUID of the corresponding Prospect ID. Will be empty for manually added items. */
   prospectId?: InputMaybe<Scalars['ID']>;
   /** The name of the online publication that published this story. */
@@ -595,6 +591,10 @@ export type CreateRejectedCorpusItemInput = {
 export type CreateScheduledCorpusItemInput = {
   /** The ID of the Approved Item that needs to be scheduled. */
   approvedItemExternalId: Scalars['ID'];
+  /** Free-text entered by the curator to give further detail to the manual schedule reason(s) provided. */
+  manualScheduleReasonComment?: InputMaybe<Scalars['String']>;
+  /** A comma-separated list of reasons for manually scheduling an item. Helps ML improve models for sets of scheduled items. */
+  manualScheduleReasons?: InputMaybe<Scalars['String']>;
   /** The date the associated Approved Item is scheduled to appear on a Scheduled Surface. Format: YYYY-MM-DD. */
   scheduledDate: Scalars['Date'];
   /** The GUID of the Scheduled Surface the Approved Item is going to appear on. Example: 'NEW_TAB_EN_US'. */
@@ -830,6 +830,8 @@ export type Item = {
   hasOldDupes?: Maybe<Scalars['Boolean']>;
   /** 0=no videos, 1=contains video, 2=is a video */
   hasVideo?: Maybe<Videoness>;
+  /** A server generated unique id for this item based on itemId */
+  id: Scalars['ID'];
   /** Array of images within an article */
   images?: Maybe<Array<Maybe<Image>>>;
   /**
@@ -949,6 +951,22 @@ export type ListItemEdge = {
   /** The ListItem at the end of the edge. */
   node: ShareableListItem;
 };
+
+/**
+ * Reasons for manually scheduling a corpus item.
+ *
+ * This is used by ML downstream to improve their modeling.
+ */
+export enum ManualScheduleReason {
+  Evergreen = 'EVERGREEN',
+  FormatDiversity = 'FORMAT_DIVERSITY',
+  PublisherDiversity = 'PUBLISHER_DIVERSITY',
+  TimeSensitiveExplainer = 'TIME_SENSITIVE_EXPLAINER',
+  TimeSensitiveNews = 'TIME_SENSITIVE_NEWS',
+  TopicDiversity = 'TOPIC_DIVERSITY',
+  Trending = 'TRENDING',
+  UnderTheRadar = 'UNDER_THE_RADAR',
+}
 
 export type MarkdownImagePosition = {
   __typename?: 'MarkdownImagePosition';

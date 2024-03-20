@@ -24,7 +24,6 @@ import {
   ApprovedItemModal,
   DuplicateProspectModal,
   EditCorpusItemAction,
-  ReasonsToAddModal,
   RemoveItemFromScheduledSurfaceModal,
   ScheduledItemCardWrapper,
   ScheduleItemModal,
@@ -127,11 +126,6 @@ export const SchedulePage: React.FC = (): ReactElement => {
    * Keep track of whether the "Edit item modal" is open or not
    */
   const [editItemModalOpen, toggleEditModal] = useToggle(false);
-
-  /**
-   * Keep track of whether the "Reasons to add (item manually)" modal is open or not
-   */
-  const [reasonsToAddModalOpen, toggleReasonsToAddModal] = useToggle(false);
 
   /**
    * Set the current Prospect to be worked on - this is used to manually add
@@ -471,8 +465,8 @@ export const SchedulePage: React.FC = (): ReactElement => {
         formikHelpers.setSubmitting(false);
 
         setApprovedItem(approvedItemData.createApprovedCorpusItem);
-        // transition to adding reasons for adding it
-        toggleReasonsToAddModal();
+        // transition to scheduling it and specifying manual addition reasons
+        toggleScheduleItemModal();
       }
     );
   };
@@ -612,25 +606,16 @@ export const SchedulePage: React.FC = (): ReactElement => {
           isRecommendation={isRecommendation}
         />
       )}
-
-      {approvedItem && (
-        <ReasonsToAddModal
-          isOpen={reasonsToAddModalOpen}
-          approvedItem={approvedItem}
-          onSave={() => {
-            alert('we get here');
-          }}
-          toggleModal={toggleReasonsToAddModal}
-        />
-      )}
-
+      {/* This modified schedule modal/form appears on manually scheduling an item.
+      It has a different heading and the form reveals reasons to manually schedule an item. */}
       {approvedItem && (
         <ScheduleItemModal
           approvedItem={approvedItem}
           date={addItemDate}
-          headingCopy="Schedule this item"
+          headingCopy="Confirm Schedule"
           isOpen={scheduleItemModalOpen}
           scheduledSurfaceGuid={currentScheduledSurfaceGuid}
+          showManualScheduleReasons={true}
           onSave={onScheduleSave}
           toggleModal={toggleScheduleItemModal}
         />

@@ -32,6 +32,11 @@ interface ScheduleItemFormConnectorProps {
   disableScheduledSurface?: boolean;
 
   /**
+   * Whether to show the optional manual schedule reasons.
+   */
+  showManualScheduleReasons?: boolean;
+
+  /**
    * What do we do with the submitted data?
    */
   onSubmit: (
@@ -48,6 +53,7 @@ export const ScheduleItemFormConnector: React.FC<
     date,
     disableScheduledSurface,
     scheduledSurfaceGuid,
+    showManualScheduleReasons,
     onCancel,
     onSubmit,
   } = props;
@@ -85,6 +91,7 @@ export const ScheduleItemFormConnector: React.FC<
           scheduledSurfaces={data?.getScheduledSurfacesForUser}
           scheduledSurfaceGuid={scheduledSurfaceGuid}
           disableScheduledSurface={disableScheduledSurface}
+          showManualScheduleReasons={showManualScheduleReasons}
           selectedDate={selectedDate}
           onSubmit={onSubmit}
           onCancel={onCancel}
