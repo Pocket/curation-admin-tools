@@ -518,12 +518,10 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       return;
     }
 
-    let scheduledSource;
-    if (approvedItem.source === CorpusItemSource.Ml) {
-      scheduledSource = ScheduledItemSource.Ml;
-    } else {
-      scheduledSource = ScheduledItemSource.Manual;
-    }
+    const scheduledSource =
+      approvedItem.source === CorpusItemSource.Ml
+        ? ScheduledItemSource.Ml
+        : ScheduledItemSource.Manual;
     // Set out all the variables we need to pass to the mutation
     const variables = {
       approvedItemExternalId: approvedItem?.externalId,

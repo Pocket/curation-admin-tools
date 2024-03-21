@@ -73,12 +73,10 @@ export const ScheduleCorpusItemAction: React.FC<
       showNotification('Cannot schedule item without topic', 'error');
       return;
     }
-    let scheduledSource;
-    if (item.source === CorpusItemSource.Ml) {
-      scheduledSource = ScheduledItemSource.Ml;
-    } else {
-      scheduledSource = ScheduledItemSource.Manual;
-    }
+    const scheduledSource =
+      item.source === CorpusItemSource.Ml
+        ? ScheduledItemSource.Ml
+        : ScheduledItemSource.Manual;
     // Set out all the variables we need to pass to the mutation
     const variables: CreateScheduledCorpusItemInput = {
       approvedItemExternalId: item.externalId,
