@@ -22,6 +22,7 @@ import {
 } from '../../components';
 import {
   ApprovedCorpusItem,
+  CorpusItemSource,
   CreateApprovedCorpusItemMutation,
   CuratedStatus,
   Prospect,
@@ -517,12 +518,18 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       return;
     }
 
+    let scheduledSource;
+    if (approvedItem.source === CorpusItemSource.Ml) {
+      scheduledSource = ScheduledItemSource.Ml;
+    } else {
+      scheduledSource = ScheduledItemSource.Manual;
+    }
     // Set out all the variables we need to pass to the mutation
     const variables = {
       approvedItemExternalId: approvedItem?.externalId,
       scheduledSurfaceGuid: values.scheduledSurfaceGuid,
       scheduledDate: values.scheduledDate.toISODate(),
-      source: ScheduledItemSource.Manual,
+      source: scheduledSource,
     };
 
     // Run the mutation
