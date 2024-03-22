@@ -3,7 +3,6 @@ import { FormikHelpers, FormikValues } from 'formik';
 import { DateTime } from 'luxon';
 import {
   ApprovedCorpusItem,
-  CorpusItemSource,
   CreateScheduledCorpusItemInput,
   ScheduledItemSource,
   useCreateScheduledCorpusItemMutation,
@@ -73,16 +72,12 @@ export const ScheduleCorpusItemAction: React.FC<
       showNotification('Cannot schedule item without topic', 'error');
       return;
     }
-    const scheduledSource =
-      item.source === CorpusItemSource.Ml
-        ? ScheduledItemSource.Ml
-        : ScheduledItemSource.Manual;
     // Set out all the variables we need to pass to the mutation
     const variables: CreateScheduledCorpusItemInput = {
       approvedItemExternalId: item.externalId,
       scheduledSurfaceGuid: values.scheduledSurfaceGuid,
       scheduledDate: values.scheduledDate.toISODate(),
-      source: scheduledSource,
+      source: ScheduledItemSource.Manual,
     };
     // Run the mutation
     runMutation(
