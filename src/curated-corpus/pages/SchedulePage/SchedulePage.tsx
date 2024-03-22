@@ -33,7 +33,6 @@ import {
 } from '../../components';
 import {
   ApprovedCorpusItem,
-  CorpusItemSource,
   CreateApprovedCorpusItemMutation,
   DeleteScheduledCorpusItemInput,
   Prospect,
@@ -524,16 +523,13 @@ export const SchedulePage: React.FC = (): ReactElement => {
       showNotification('Cannot schedule item without topic', 'error');
       return;
     }
-    const scheduledSource =
-      approvedItem.source === CorpusItemSource.Ml
-        ? ScheduledItemSource.Ml
-        : ScheduledItemSource.Manual;
+
     // Set out all the variables we need to pass to the mutation
     const variables = {
       approvedItemExternalId: approvedItem?.externalId,
       scheduledSurfaceGuid: values.scheduledSurfaceGuid,
       scheduledDate: values.scheduledDate.toISODate(),
-      source: scheduledSource,
+      source: ScheduledItemSource.Manual,
     };
 
     // Run the mutation
