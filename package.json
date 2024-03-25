@@ -31,20 +31,20 @@
     "react-dom": "17.0.2",
     "react-dropzone": "11.5.3",
     "react-markdown": "6.0.3",
+    "react-oauth2-code-pkce": "^1.17.2",
     "react-oauth2-pkce": "2.0.7",
     "react-router-dom": "5.3.4",
-    "react-scripts": "4.0.3",
     "slugify": "1.6.6",
-    "typescript": "4.5.5",
+    "typescript": "^5.4.3",
     "web-vitals": "2.1.4",
     "yup": "0.32.11"
   },
   "scripts": {
-    "start": "NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=local react-scripts start",
-    "build": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
+    "start": "vite --port=3000",
+    "build": "DISABLE_ESLINT_PLUGIN=true vite build",
+    "serve": "vite preview --port=3000",
     "test": "react-scripts test --transformIgnorePatterns \"node_modules/(?!@apollo/client/link/core/ApolloLink.js)/\"",
     "test:nowatch": "react-scripts test --watchAll=false",
-    "eject": "react-scripts eject",
     "lint-check": "tsc --noEmit && eslint src/**/*.ts{,x}",
     "lint-fix": "tsc --noEmit && eslint src/**/*.ts{,x} --fix",
     "api:generate-types": "graphql-codegen --config src/config/admin-api-codegen.json -r dotenv/config"
@@ -78,11 +78,12 @@
     "@testing-library/user-event": "13.5.0",
     "@types/chai": "4.3.5",
     "@types/jest": "29.5.3",
-    "@types/node": "16.18.38",
-    "@types/react": "17.0.62",
+    "@types/node": "^20.11.30",
+    "@types/react": "^18.2.69",
     "@types/uuid": "9.0.2",
     "@typescript-eslint/eslint-plugin": "6.0.0",
     "@typescript-eslint/parser": "6.0.0",
+    "@vitejs/plugin-react": "^4.2.1",
     "chai": "4.3.7",
     "eslint": "7.32.0",
     "eslint-config-prettier": "8.8.0",
@@ -90,6 +91,8 @@
     "eslint-plugin-react": "7.32.2",
     "husky": "^8.0.1",
     "prettier": "2.8.8",
-    "react-error-overlay": "6.0.11"
+    "react-error-overlay": "6.0.11",
+    "vite": "5.1.6",
+    "vite-plugin-node-polyfills": "^0.21.0"
   }
 }
