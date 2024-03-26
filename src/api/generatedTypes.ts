@@ -1419,7 +1419,6 @@ export type Prospect = {
  * by the Curation Admin Tools frontend to filter prospects.
  */
 export enum ProspectType {
-  ConstraintSchedule = 'CONSTRAINT_SCHEDULE',
   Counts = 'COUNTS',
   CountsModeled = 'COUNTS_MODELED',
   Dismissed = 'DISMISSED',
@@ -1427,7 +1426,6 @@ export enum ProspectType {
   Recommended = 'RECOMMENDED',
   RssLogistic = 'RSS_LOGISTIC',
   RssLogisticRecent = 'RSS_LOGISTIC_RECENT',
-  SlateScheduler = 'SLATE_SCHEDULER',
   SlateSchedulerV2 = 'SLATE_SCHEDULER_V2',
   SyndicatedNew = 'SYNDICATED_NEW',
   SyndicatedRerun = 'SYNDICATED_RERUN',
@@ -1672,7 +1670,7 @@ export enum RejectionReason {
  * 2024-01-29
  *
  * these reasons are used when dismissing prospects only for the
- * SLATE_SCHEDULER prospect type. this is a preliminary step towards ML
+ * SLATE_SCHEDULE_V2 prospect type. this is a preliminary step towards ML
  * scheduling items, and this reason set will *likely* be used when removing ML
  * scheduled items as well.
  *
