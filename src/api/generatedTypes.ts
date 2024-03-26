@@ -1,5 +1,6 @@
-import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+import { gql } from '@apollo/client';
+
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -2355,6 +2356,7 @@ export type CuratedItemDataFragment = {
   title: string;
   language: CorpusLanguage;
   publisher: string;
+  datePublished?: any | null;
   url: any;
   imageUrl: any;
   excerpt: string;
@@ -2509,6 +2511,7 @@ export type ScheduledItemDataFragment = {
     title: string;
     language: CorpusLanguage;
     publisher: string;
+    datePublished?: any | null;
     url: any;
     imageUrl: any;
     excerpt: string;
@@ -2542,6 +2545,7 @@ export type UrlMetadataFragment = {
   url: string;
   imageUrl?: string | null;
   publisher?: string | null;
+  datePublished?: string | null;
   domain?: string | null;
   title?: string | null;
   excerpt?: string | null;
@@ -2564,6 +2568,7 @@ export type CreateApprovedCorpusItemMutation = {
     title: string;
     language: CorpusLanguage;
     publisher: string;
+    datePublished?: any | null;
     url: any;
     imageUrl: any;
     excerpt: string;
@@ -2788,6 +2793,7 @@ export type CreateScheduledCorpusItemMutation = {
       title: string;
       language: CorpusLanguage;
       publisher: string;
+      datePublished?: any | null;
       url: any;
       imageUrl: any;
       excerpt: string;
@@ -2887,6 +2893,7 @@ export type DeleteScheduledItemMutation = {
       title: string;
       language: CorpusLanguage;
       publisher: string;
+      datePublished?: any | null;
       url: any;
       imageUrl: any;
       excerpt: string;
@@ -2981,6 +2988,7 @@ export type RejectApprovedItemMutation = {
     title: string;
     language: CorpusLanguage;
     publisher: string;
+    datePublished?: any | null;
     url: any;
     imageUrl: any;
     excerpt: string;
@@ -3083,6 +3091,7 @@ export type RescheduleScheduledCorpusItemMutation = {
       title: string;
       language: CorpusLanguage;
       publisher: string;
+      datePublished?: any | null;
       url: any;
       imageUrl: any;
       excerpt: string;
@@ -3125,6 +3134,7 @@ export type UpdateApprovedCorpusItemMutation = {
     title: string;
     language: CorpusLanguage;
     publisher: string;
+    datePublished?: any | null;
     url: any;
     imageUrl: any;
     excerpt: string;
@@ -3650,6 +3660,7 @@ export type GetApprovedItemByUrlQuery = {
     title: string;
     language: CorpusLanguage;
     publisher: string;
+    datePublished?: any | null;
     url: any;
     imageUrl: any;
     excerpt: string;
@@ -3705,6 +3716,7 @@ export type GetApprovedItemsQuery = {
         title: string;
         language: CorpusLanguage;
         publisher: string;
+        datePublished?: any | null;
         url: any;
         imageUrl: any;
         excerpt: string;
@@ -4222,6 +4234,7 @@ export type GetScheduledItemsQuery = {
         title: string;
         language: CorpusLanguage;
         publisher: string;
+        datePublished?: any | null;
         url: any;
         imageUrl: any;
         excerpt: string;
@@ -4379,6 +4392,7 @@ export type GetUrlMetadataQuery = {
     url: string;
     imageUrl?: string | null;
     publisher?: string | null;
+    datePublished?: string | null;
     domain?: string | null;
     title?: string | null;
     excerpt?: string | null;
@@ -4684,6 +4698,7 @@ export const CuratedItemDataFragmentDoc = gql`
     title
     language
     publisher
+    datePublished
     authors {
       name
       sortOrder
@@ -4730,6 +4745,7 @@ export const UrlMetadataFragmentDoc = gql`
     url
     imageUrl
     publisher
+    datePublished
     domain
     title
     excerpt

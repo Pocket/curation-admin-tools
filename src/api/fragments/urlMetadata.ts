@@ -8,6 +8,7 @@ export const urlMetadata = gql`
     url
     imageUrl
     publisher
+    datePublished
     domain
     title
     excerpt

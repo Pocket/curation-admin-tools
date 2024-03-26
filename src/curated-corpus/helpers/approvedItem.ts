@@ -16,6 +16,7 @@ export const approvedCorpusItem: ApprovedCorpusItem = {
   language: CorpusLanguage.De,
   authors: [{ name: 'One Author', sortOrder: 0 }],
   publisher: 'Amazing Inventions',
+  datePublished: '2024-01-03',
   topic: Topics.HealthFitness,
   source: CorpusItemSource.Prospect,
   status: CuratedStatus.Recommendation,

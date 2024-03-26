@@ -454,6 +454,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
       language: values.language,
       authors: transformAuthors(values.authors),
       publisher: values.publisher,
+      datePublished: values.datePublished,
       source: values.source,
       imageUrl,
       topic: values.topic,

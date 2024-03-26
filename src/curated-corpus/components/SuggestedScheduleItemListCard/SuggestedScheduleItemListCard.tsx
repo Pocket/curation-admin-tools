@@ -1,5 +1,6 @@
 import React, { ReactElement, useState } from 'react';
 import { Box, CardContent, Link, Typography } from '@mui/material';
+import { DateTime } from 'luxon';
 
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
@@ -80,6 +81,13 @@ export const SuggestedScheduleItemListCard: React.FC<
     setScheduleHistoryModalOpen(!isScheduleHistoryModalOpen);
   };
 
+  // Display the date this story was published on if it's avaiable
+  const humanReadableDatePublished = item.datePublished
+    ? DateTime.fromFormat(item.datePublished, 'yyyy-MM-dd')
+        .setLocale('en')
+        .toLocaleString(DateTime.DATE_FULL)
+    : null;
+
   return (
     <>
       <CorpusItemCardImage
@@ -117,7 +125,12 @@ export const SuggestedScheduleItemListCard: React.FC<
         >
           <span>{item.publisher}</span> &middot;{' '}
           <span>{flattenAuthors(item.authors)}</span>
-          {/* <span>TODO add published date</span> */}
+          {item.datePublished && (
+            <>
+              {' '}
+              &middot; <span>{humanReadableDatePublished}</span>
+            </>
+          )}
         </Typography>
         <Typography
           variant="h5"
