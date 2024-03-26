@@ -312,7 +312,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
     const variables = {
       externalId: currentItem?.externalId,
       scheduledDate: values.scheduledDate.toISODate(),
-      source: ScheduledItemSource.Manual,
+      source: currentItem.source,
     };
 
     // Run the mutation
@@ -347,7 +347,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
     const variables = {
       externalId: item.externalId,
       scheduledDate: item.scheduledDate,
-      source: ScheduledItemSource.Manual,
+      source: item.source,
     };
 
     // Run the mutation

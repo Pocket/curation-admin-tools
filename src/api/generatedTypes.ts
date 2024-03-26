@@ -831,6 +831,8 @@ export type Item = {
   hasOldDupes?: Maybe<Scalars['Boolean']>;
   /** 0=no videos, 1=contains video, 2=is a video */
   hasVideo?: Maybe<Videoness>;
+  /** A server generated unique id for this item based on itemId */
+  id: Scalars['ID'];
   /** Array of images within an article */
   images?: Maybe<Array<Maybe<Image>>>;
   /**
