@@ -10,6 +10,7 @@ export const CuratedItemData = gql`
     title
     language
     publisher
+    datePublished
     authors {
       name
       sortOrder

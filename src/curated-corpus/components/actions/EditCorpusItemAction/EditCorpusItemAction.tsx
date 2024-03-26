@@ -69,6 +69,7 @@ export const EditCorpusItemAction: React.FC<EditCorpusItemActionProps> = (
         language: values.language,
         authors: transformAuthors(values.authors),
         publisher: values.publisher,
+        datePublished: values.datePublished,
         imageUrl: values.imageUrl,
         topic: values.topic,
         isTimeSensitive: values.timeSensitive,

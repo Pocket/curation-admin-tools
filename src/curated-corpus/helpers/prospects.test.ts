@@ -57,7 +57,7 @@ describe('helper functions related to prospects', () => {
 
   describe('transformProspectToApprovedItem function', () => {
     it('should create an ApprovedCorpusItem with all the provided fields', () => {
-      const prospect: Prospect = {
+      const prospect: Prospect & { datePublished?: string | null } = {
         id: 'test-id',
         prospectId: 'test-prospect-id',
         scheduledSurfaceGuid: 'en-us',
@@ -71,6 +71,7 @@ describe('helper functions related to prospects', () => {
         isSyndicated: true,
         language: CorpusLanguage.En,
         publisher: 'test-prospect-publisher',
+        datePublished: '2024-01-01',
         saveCount: 10,
         title: 'test-prospect-title',
         topic: 'test-prospect-topic',
@@ -89,6 +90,7 @@ describe('helper functions related to prospects', () => {
         title: prospect.title,
         imageUrl: prospect.imageUrl,
         publisher: prospect.publisher,
+        datePublished: prospect.datePublished,
         language: CorpusLanguage.En,
         topic: prospect.topic,
         status: CuratedStatus.Recommendation,
@@ -109,7 +111,7 @@ describe('helper functions related to prospects', () => {
         url: 'test-prospect-url',
         prospectId: 'test-prospect-id',
         scheduledSurfaceGuid: 'en-us',
-        prospectType: ProspectType.Global,
+        prospectType: ProspectType.Recommended,
       };
 
       const approvedItemFromProspect = transformProspectToApprovedItem(
@@ -125,6 +127,7 @@ describe('helper functions related to prospects', () => {
         title: '',
         imageUrl: '',
         publisher: '',
+        datePublished: null,
         language: undefined,
         topic: '',
         status: CuratedStatus.Corpus,
@@ -142,7 +145,9 @@ describe('helper functions related to prospects', () => {
 
   describe('transformUrlMetaDataToProspect function', () => {
     const urlMetadata: UrlMetadata = { url: 'www.test-url.com' };
-    const defaultExpectedProspect: Prospect = {
+    const defaultExpectedProspect: Prospect & {
+      datePublished?: string | null;
+    } = {
       id: '',
       prospectId: '',
       url: urlMetadata.url,
@@ -150,6 +155,7 @@ describe('helper functions related to prospects', () => {
       imageUrl: '',
       authors: '',
       publisher: '',
+      datePublished: null,
       language: undefined,
       isSyndicated: false,
       isCollection: false,

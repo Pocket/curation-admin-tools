@@ -76,7 +76,7 @@ export const getProspectFilterOptions = (
  * ProspectItemModal
  */
 export const transformProspectToApprovedItem = (
-  prospect: Prospect,
+  prospect: Prospect & { datePublished?: string | null },
   isRecommendation: boolean,
   isManual: boolean
 ): ApprovedItemFromProspect => {
@@ -88,6 +88,7 @@ export const transformProspectToApprovedItem = (
     imageUrl: prospect.imageUrl ?? '',
     authors: transformAuthors(prospect.authors),
     publisher: prospect.publisher ?? '',
+    datePublished: prospect.datePublished ?? null,
     language: prospect.language || undefined,
     source: isManual ? CorpusItemSource.Manual : CorpusItemSource.Prospect,
     topic: prospect.topic ?? '',
@@ -114,7 +115,7 @@ export const transformProspectToApprovedItem = (
  */
 export const transformUrlMetaDataToProspect = (
   metadata: UrlMetadata
-): Prospect => {
+): Prospect & { datePublished?: string | null } => {
   // set language to undefined if metadata.language is an empty string or undefined.
   // if not, then map it from string to its corresponding CorpusLanguage enum value
   let language: CorpusLanguage | undefined = undefined;
@@ -137,6 +138,13 @@ export const transformUrlMetaDataToProspect = (
     imageUrl: metadata.imageUrl ?? '',
     authors: metadata.authors ?? '',
     publisher: metadata.publisher ?? '',
+    // Only take the first 10 characters of the date value:
+    // if it comes from the Parser, it will look like a full timestamp.
+    // For collections and syndicated items, it will be a date
+    // in YYYY-MM-DD format, which is what we save to curated corpus data store.
+    datePublished: metadata.datePublished
+      ? metadata.datePublished.substring(0, 10)
+      : null,
     language,
     isSyndicated: metadata.isSyndicated ?? false,
     isCollection: metadata.isCollection ?? false,

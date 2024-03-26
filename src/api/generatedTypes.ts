@@ -1,5 +1,6 @@
-import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+import { gql } from '@apollo/client';
+
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -489,10 +490,6 @@ export type CreateApprovedCorpusItemInput = {
   isTimeSensitive: Scalars['Boolean'];
   /** What language this item is in. This is a two-letter code, for example, 'EN' for English. */
   language: CorpusLanguage;
-  /** Free-text entered by the curator to give further detail to the manual addition reason(s) provided. */
-  manualAdditionReasonComment?: InputMaybe<Scalars['String']>;
-  /** A comma-separated list of reasons for manually adding an item (only supplied when `source` is MANUAL). */
-  manualAdditionReasons?: InputMaybe<Scalars['String']>;
   /** The GUID of the corresponding Prospect ID. Will be empty for manually added items. */
   prospectId?: InputMaybe<Scalars['ID']>;
   /** The name of the online publication that published this story. */
@@ -595,6 +592,10 @@ export type CreateRejectedCorpusItemInput = {
 export type CreateScheduledCorpusItemInput = {
   /** The ID of the Approved Item that needs to be scheduled. */
   approvedItemExternalId: Scalars['ID'];
+  /** Free-text entered by the curator to give further detail to the manual schedule reason(s) provided. */
+  manualScheduleReasonComment?: InputMaybe<Scalars['String']>;
+  /** A comma-separated list of reasons for manually scheduling an item. Helps ML improve models for sets of scheduled items. */
+  manualScheduleReasons?: InputMaybe<Scalars['String']>;
   /** The date the associated Approved Item is scheduled to appear on a Scheduled Surface. Format: YYYY-MM-DD. */
   scheduledDate: Scalars['Date'];
   /** The GUID of the Scheduled Surface the Approved Item is going to appear on. Example: 'NEW_TAB_EN_US'. */
@@ -949,6 +950,22 @@ export type ListItemEdge = {
   /** The ListItem at the end of the edge. */
   node: ShareableListItem;
 };
+
+/**
+ * Reasons for manually scheduling a corpus item.
+ *
+ * This is used by ML downstream to improve their modeling.
+ */
+export enum ManualScheduleReason {
+  Evergreen = 'EVERGREEN',
+  FormatDiversity = 'FORMAT_DIVERSITY',
+  PublisherDiversity = 'PUBLISHER_DIVERSITY',
+  TimeSensitiveExplainer = 'TIME_SENSITIVE_EXPLAINER',
+  TimeSensitiveNews = 'TIME_SENSITIVE_NEWS',
+  TopicDiversity = 'TOPIC_DIVERSITY',
+  Trending = 'TRENDING',
+  UnderTheRadar = 'UNDER_THE_RADAR',
+}
 
 export type MarkdownImagePosition = {
   __typename?: 'MarkdownImagePosition';
@@ -2068,6 +2085,7 @@ export type UpdateLabelInput = {
 export type UrlMetadata = {
   __typename?: 'UrlMetadata';
   authors?: Maybe<Scalars['String']>;
+  datePublished?: Maybe<Scalars['String']>;
   domain?: Maybe<Scalars['String']>;
   excerpt?: Maybe<Scalars['String']>;
   imageUrl?: Maybe<Scalars['String']>;
@@ -2338,6 +2356,7 @@ export type CuratedItemDataFragment = {
   title: string;
   language: CorpusLanguage;
   publisher: string;
+  datePublished?: any | null;
   url: any;
   imageUrl: any;
   excerpt: string;
@@ -2492,6 +2511,7 @@ export type ScheduledItemDataFragment = {
     title: string;
     language: CorpusLanguage;
     publisher: string;
+    datePublished?: any | null;
     url: any;
     imageUrl: any;
     excerpt: string;
@@ -2525,6 +2545,7 @@ export type UrlMetadataFragment = {
   url: string;
   imageUrl?: string | null;
   publisher?: string | null;
+  datePublished?: string | null;
   domain?: string | null;
   title?: string | null;
   excerpt?: string | null;
@@ -2547,6 +2568,7 @@ export type CreateApprovedCorpusItemMutation = {
     title: string;
     language: CorpusLanguage;
     publisher: string;
+    datePublished?: any | null;
     url: any;
     imageUrl: any;
     excerpt: string;
@@ -2771,6 +2793,7 @@ export type CreateScheduledCorpusItemMutation = {
       title: string;
       language: CorpusLanguage;
       publisher: string;
+      datePublished?: any | null;
       url: any;
       imageUrl: any;
       excerpt: string;
@@ -2870,6 +2893,7 @@ export type DeleteScheduledItemMutation = {
       title: string;
       language: CorpusLanguage;
       publisher: string;
+      datePublished?: any | null;
       url: any;
       imageUrl: any;
       excerpt: string;
@@ -2964,6 +2988,7 @@ export type RejectApprovedItemMutation = {
     title: string;
     language: CorpusLanguage;
     publisher: string;
+    datePublished?: any | null;
     url: any;
     imageUrl: any;
     excerpt: string;
@@ -3066,6 +3091,7 @@ export type RescheduleScheduledCorpusItemMutation = {
       title: string;
       language: CorpusLanguage;
       publisher: string;
+      datePublished?: any | null;
       url: any;
       imageUrl: any;
       excerpt: string;
@@ -3108,6 +3134,7 @@ export type UpdateApprovedCorpusItemMutation = {
     title: string;
     language: CorpusLanguage;
     publisher: string;
+    datePublished?: any | null;
     url: any;
     imageUrl: any;
     excerpt: string;
@@ -3633,6 +3660,7 @@ export type GetApprovedItemByUrlQuery = {
     title: string;
     language: CorpusLanguage;
     publisher: string;
+    datePublished?: any | null;
     url: any;
     imageUrl: any;
     excerpt: string;
@@ -3688,6 +3716,7 @@ export type GetApprovedItemsQuery = {
         title: string;
         language: CorpusLanguage;
         publisher: string;
+        datePublished?: any | null;
         url: any;
         imageUrl: any;
         excerpt: string;
@@ -4205,6 +4234,7 @@ export type GetScheduledItemsQuery = {
         title: string;
         language: CorpusLanguage;
         publisher: string;
+        datePublished?: any | null;
         url: any;
         imageUrl: any;
         excerpt: string;
@@ -4362,6 +4392,7 @@ export type GetUrlMetadataQuery = {
     url: string;
     imageUrl?: string | null;
     publisher?: string | null;
+    datePublished?: string | null;
     domain?: string | null;
     title?: string | null;
     excerpt?: string | null;
@@ -4667,6 +4698,7 @@ export const CuratedItemDataFragmentDoc = gql`
     title
     language
     publisher
+    datePublished
     authors {
       name
       sortOrder
@@ -4713,6 +4745,7 @@ export const UrlMetadataFragmentDoc = gql`
     url
     imageUrl
     publisher
+    datePublished
     domain
     title
     excerpt

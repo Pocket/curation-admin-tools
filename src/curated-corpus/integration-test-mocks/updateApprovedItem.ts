@@ -15,6 +15,7 @@ export const successMock = {
         language: item.language,
         authors: item.authors,
         publisher: item.publisher,
+        datePublished: item.datePublished,
         imageUrl: item.imageUrl,
         topic: item.topic,
         isTimeSensitive: item.isTimeSensitive,
