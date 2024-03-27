@@ -29,7 +29,7 @@ export const validationSchema = yup.object({
 
   // This value may not be present in initial curated corpus data,
   // so it's not a required field.
-  datePublished: yup.date(),
+  datePublished: yup.date().nullable().default(null),
 
   language: yup.string().required('Please select a language.'),
 
