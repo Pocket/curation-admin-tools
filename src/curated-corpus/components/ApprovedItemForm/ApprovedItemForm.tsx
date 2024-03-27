@@ -93,7 +93,7 @@ export const ApprovedItemForm: React.FC<
       publisher: approvedItem.publisher,
       // A read-only value we may get back from the Pocket Graph
       // for some stories + all collections and syndicated items.
-      datePublished: approvedItem.datePublished ?? '',
+      datePublished: approvedItem.datePublished ?? null,
       language: approvedItem.language ?? '',
       topic: approvedItem.topic ?? '',
       curationStatus: isRecommendation
