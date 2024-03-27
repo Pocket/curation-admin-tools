@@ -5,6 +5,7 @@ import {
   CuratedStatus,
   GetScheduledItemsQuery,
   ScheduledCorpusItem,
+  ScheduledItemSource,
   Topics,
 } from '../../api/generatedTypes';
 import { getScheduledItems } from '../../api/queries/getScheduledItems';
@@ -20,6 +21,7 @@ const approvedItem: ApprovedCorpusItem = {
   excerpt: 'Everything You Wanted to Know About React and Were Afraid To Ask',
   language: CorpusLanguage.De,
   publisher: 'Amazing Inventions',
+  datePublished: null,
   topic: Topics.Politics,
   status: CuratedStatus.Recommendation,
   isCollection: false,
@@ -47,6 +49,7 @@ export const scheduledItems: ScheduledCorpusItem[] = [
     updatedAt: 1635014926,
     updatedBy: 'Amy',
     scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+    source: ScheduledItemSource.Manual,
     approvedItem,
   },
   {
@@ -57,6 +60,7 @@ export const scheduledItems: ScheduledCorpusItem[] = [
     updatedAt: 1635014926,
     updatedBy: 'Amy',
     scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+    source: ScheduledItemSource.Manual,
     // Tweak topic & publisher to test ScheduleSummaryConnector
     approvedItem: {
       ...approvedItem,
@@ -73,6 +77,7 @@ export const scheduledItems: ScheduledCorpusItem[] = [
     updatedAt: 1635014926,
     updatedBy: 'Amy',
     scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+    source: ScheduledItemSource.Ml,
     approvedItem: {
       ...approvedItem,
       topic: Topics.HealthFitness,

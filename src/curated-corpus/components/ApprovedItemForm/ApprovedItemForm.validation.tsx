@@ -27,6 +27,10 @@ export const validationSchema = yup.object({
     .min(2, 'Publisher needs to be longer than 2 characters.')
     .max(255, 'Publisher is too long, cannot exceed 255 characters.'),
 
+  // This value may not be present in initial curated corpus data,
+  // so it's not a required field.
+  datePublished: yup.date().nullable().default(null),
+
   language: yup.string().required('Please select a language.'),
 
   topic: yup.string().required('Please select a topic.'),

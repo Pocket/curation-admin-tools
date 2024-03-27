@@ -388,6 +388,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       language: values.language,
       authors: transformAuthors(values.authors),
       publisher: values.publisher,
+      datePublished: values.datePublished,
       source: values.source,
       imageUrl,
       topic: values.topic,

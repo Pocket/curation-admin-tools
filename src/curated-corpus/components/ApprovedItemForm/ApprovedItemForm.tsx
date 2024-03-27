@@ -6,10 +6,10 @@ import {
   Grid,
   LinearProgress,
   Link,
+  styled,
   Switch,
   TextField,
   Tooltip,
-  styled,
 } from '@mui/material';
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import { validationSchema } from './ApprovedItemForm.validation';
@@ -91,6 +91,9 @@ export const ApprovedItemForm: React.FC<
       title: approvedItem.title,
       authors: flattenAuthors(approvedItem.authors),
       publisher: approvedItem.publisher,
+      // A read-only value we may get back from the Pocket Graph
+      // for some stories + all collections and syndicated items.
+      datePublished: approvedItem.datePublished ?? null,
       language: approvedItem.language ?? '',
       topic: approvedItem.topic ?? '',
       curationStatus: isRecommendation
@@ -432,7 +435,14 @@ export const ApprovedItemForm: React.FC<
           label="source"
           {...formik.getFieldProps('source')}
         />
+        <TextField
+          type="hidden"
+          id="datePublished"
+          label="datePublished"
+          {...formik.getFieldProps('datePublished')}
+        />
       </Box>
+
       {formik.isSubmitting && (
         <Grid item xs={12}>
           <Box mb={3}>

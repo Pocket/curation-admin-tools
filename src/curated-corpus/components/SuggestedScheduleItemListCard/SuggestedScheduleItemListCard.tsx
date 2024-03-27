@@ -1,5 +1,6 @@
 import React, { ReactElement, useState } from 'react';
 import { Box, CardContent, Link, Typography } from '@mui/material';
+import { DateTime } from 'luxon';
 
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
@@ -51,6 +52,11 @@ interface SuggestedScheduleItemListCardProps {
    * Callback for the "Move to bottom" button
    */
   onMoveToBottom: VoidFunction;
+
+  /**
+   * Callback for the "Reject" (trash) button
+   */
+  onReject: VoidFunction;
 }
 
 export const SuggestedScheduleItemListCard: React.FC<
@@ -65,6 +71,7 @@ export const SuggestedScheduleItemListCard: React.FC<
     onReschedule,
     onEdit,
     onMoveToBottom,
+    onReject,
   } = props;
 
   const [isScheduleHistoryModalOpen, setScheduleHistoryModalOpen] =
@@ -73,6 +80,13 @@ export const SuggestedScheduleItemListCard: React.FC<
   const toggleScheduleHistoryModal = () => {
     setScheduleHistoryModalOpen(!isScheduleHistoryModalOpen);
   };
+
+  // Display the date this story was published on if it's avaiable
+  const humanReadableDatePublished = item.datePublished
+    ? DateTime.fromFormat(item.datePublished, 'yyyy-MM-dd')
+        .setLocale('en')
+        .toLocaleString(DateTime.DATE_FULL)
+    : null;
 
   return (
     <>
@@ -111,7 +125,12 @@ export const SuggestedScheduleItemListCard: React.FC<
         >
           <span>{item.publisher}</span> &middot;{' '}
           <span>{flattenAuthors(item.authors)}</span>
-          {/* <span>TODO add published date</span> */}
+          {item.datePublished && (
+            <>
+              {' '}
+              &middot; <span>{humanReadableDatePublished}</span>
+            </>
+          )}
         </Typography>
         <Typography
           variant="h5"
@@ -158,6 +177,7 @@ export const SuggestedScheduleItemListCard: React.FC<
         onUnschedule={onUnschedule}
         onReschedule={onReschedule}
         onMoveToBottom={onMoveToBottom}
+        onReject={onReject}
       />
     </>
   );

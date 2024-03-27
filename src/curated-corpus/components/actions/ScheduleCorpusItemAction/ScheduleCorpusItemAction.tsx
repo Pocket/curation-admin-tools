@@ -72,7 +72,6 @@ export const ScheduleCorpusItemAction: React.FC<
       showNotification('Cannot schedule item without topic', 'error');
       return;
     }
-
     // Set out all the variables we need to pass to the mutation
     const variables: CreateScheduledCorpusItemInput = {
       approvedItemExternalId: item.externalId,

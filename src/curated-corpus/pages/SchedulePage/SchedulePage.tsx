@@ -24,6 +24,7 @@ import {
   ApprovedItemModal,
   DuplicateProspectModal,
   EditCorpusItemAction,
+  RejectAndUnscheduleItemAction,
   RemoveItemFromScheduledSurfaceModal,
   ScheduledItemCardWrapper,
   ScheduleItemModal,
@@ -169,6 +170,12 @@ export const SchedulePage: React.FC = (): ReactElement => {
   const [duplicateProspectModalOpen, toggleDuplicateProspectModal] =
     useToggle(false);
 
+  /**
+   * Keep track of whether the "Reject this item" modal is open or not.
+   */
+  const [rejectAndUnscheduleModalOpen, toggleRejectAndUnscheduleModal] =
+    useToggle(false);
+
   // state variable to store s3 image url when user uploads a new image
   const [userUploadedS3ImageUrl, setUserUploadedS3ImageUrl] = useState<
     undefined | string
@@ -305,7 +312,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
     const variables = {
       externalId: currentItem?.externalId,
       scheduledDate: values.scheduledDate.toISODate(),
-      source: ScheduledItemSource.Manual,
+      source: currentItem.source,
     };
 
     // Run the mutation
@@ -340,7 +347,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
     const variables = {
       externalId: item.externalId,
       scheduledDate: item.scheduledDate,
-      source: ScheduledItemSource.Manual,
+      source: item.source,
     };
 
     // Run the mutation
@@ -447,6 +454,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
       language: values.language,
       authors: transformAuthors(values.authors),
       publisher: values.publisher,
+      datePublished: values.datePublished,
       source: values.source,
       imageUrl,
       topic: values.topic,
@@ -552,32 +560,34 @@ export const SchedulePage: React.FC = (): ReactElement => {
       <h1>Schedule</h1>
 
       {currentItem && (
-        <RemoveItemFromScheduledSurfaceModal
-          item={currentItem}
-          isOpen={removeModalOpen}
-          onSave={onRemoveSave}
-          toggleModal={toggleRemoveModal}
-        />
-      )}
-
-      {currentItem && (
-        <ScheduleItemModal
-          approvedItem={currentItem.approvedItem}
-          headingCopy={'Reschedule Item'}
-          isOpen={scheduleItemModalOpen}
-          toggleModal={toggleScheduleItemModal}
-          onSave={onRescheduleItem}
-          scheduledSurfaceGuid={currentScheduledSurfaceGuid}
-        />
-      )}
-
-      {currentItem && (
-        <EditCorpusItemAction
-          item={currentItem.approvedItem}
-          modalOpen={editItemModalOpen}
-          toggleModal={toggleEditModal}
-          refetch={refetch}
-        />
+        <>
+          <RemoveItemFromScheduledSurfaceModal
+            item={currentItem}
+            isOpen={removeModalOpen}
+            onSave={onRemoveSave}
+            toggleModal={toggleRemoveModal}
+          />
+          <ScheduleItemModal
+            approvedItem={currentItem.approvedItem}
+            headingCopy={'Reschedule Item'}
+            isOpen={scheduleItemModalOpen}
+            toggleModal={toggleScheduleItemModal}
+            onSave={onRescheduleItem}
+            scheduledSurfaceGuid={currentScheduledSurfaceGuid}
+          />
+          <EditCorpusItemAction
+            item={currentItem.approvedItem}
+            modalOpen={editItemModalOpen}
+            toggleModal={toggleEditModal}
+            refetch={refetch}
+          />
+          <RejectAndUnscheduleItemAction
+            item={currentItem}
+            modalOpen={rejectAndUnscheduleModalOpen}
+            toggleModal={toggleRejectAndUnscheduleModal}
+            refetch={refetch}
+          />
+        </>
       )}
 
       <AddProspectModal
@@ -796,6 +806,24 @@ export const SchedulePage: React.FC = (): ReactElement => {
                             onReschedule={() => {
                               setCurrentItem(item);
                               toggleScheduleItemModal();
+                            }}
+                            onReject={() => {
+                              setCurrentItem(item);
+
+                              // If this item is also scheduled elsewhere, show an error.
+                              if (
+                                item.approvedItem.scheduledSurfaceHistory
+                                  .length > 1
+                              ) {
+                                showNotification(
+                                  'Cannot reject and unschedule this item - multiple scheduled entries exist.',
+                                  'error'
+                                );
+                              }
+                              // Otherwise, proceed with rejecting and unscheduling this item
+                              else {
+                                toggleRejectAndUnscheduleModal();
+                              }
                             }}
                             currentScheduledDate={data.scheduledDate}
                             scheduledSurfaceGuid={currentScheduledSurfaceGuid}

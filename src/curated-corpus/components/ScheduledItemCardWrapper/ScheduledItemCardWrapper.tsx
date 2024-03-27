@@ -35,6 +35,11 @@ interface ScheduledItemCardWrapperProps {
   onEdit: VoidFunction;
 
   /**
+   * Callback for the "Reject" (trash) button
+   */
+  onReject: VoidFunction;
+
+  /**
    * Current date that the schedule is being viewed for
    */
   currentScheduledDate: string;
@@ -54,6 +59,7 @@ export const ScheduledItemCardWrapper: React.FC<
     onUnschedule,
     onReschedule,
     onEdit,
+    onReject,
     currentScheduledDate,
     scheduledSurfaceGuid,
   } = props;
@@ -70,6 +76,7 @@ export const ScheduledItemCardWrapper: React.FC<
           onUnschedule={onUnschedule}
           onReschedule={onReschedule}
           onMoveToBottom={onMoveToBottom}
+          onReject={onReject}
         />
       </StyledScheduledItemCard>
     </Grid>
