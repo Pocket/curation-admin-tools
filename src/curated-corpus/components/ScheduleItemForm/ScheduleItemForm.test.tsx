@@ -1,9 +1,11 @@
 import React from 'react';
 import { DateTime } from 'luxon';
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from '@testing-library/react';
 import { ScheduleItemForm } from './ScheduleItemForm';
 import { ProspectType, ScheduledSurface } from '../../../api/generatedTypes';
 import { MockedProvider } from '@apollo/client/testing';
+import userEvent from '@testing-library/user-event';
+import { mock_scheduledItems } from '../../integration-test-mocks/getScheduledItems';
 
 describe('The ScheduleItemForm component', () => {
   const handleSubmit = jest.fn();
@@ -15,8 +17,8 @@ describe('The ScheduleItemForm component', () => {
       guid: 'NEW_TAB_EN_US',
       ianaTimezone: 'America/New_York',
       prospectTypes: [
-        ProspectType.Global,
-        ProspectType.OrganicTimespent,
+        ProspectType.Timespent,
+        ProspectType.TopSaved,
         ProspectType.SyndicatedNew,
       ],
     },
@@ -24,7 +26,7 @@ describe('The ScheduleItemForm component', () => {
       name: 'de-DE',
       guid: 'NEW_TAB_DE_DE',
       ianaTimezone: 'Europe/Berlin',
-      prospectTypes: [ProspectType.Global],
+      prospectTypes: [ProspectType.TopSaved],
     },
   ];
 
@@ -44,7 +46,7 @@ describe('The ScheduleItemForm component', () => {
     expect(form).toBeInTheDocument();
   });
 
-  it('has three buttons', () => {
+  it('has three buttons and an accordion widget', () => {
     render(
       <ScheduleItemForm
         handleDateChange={jest.fn()}
@@ -58,7 +60,9 @@ describe('The ScheduleItemForm component', () => {
     const buttons = screen.getAllByRole('button');
     // "Save" and "Cancel" buttons, plus the "DatePicker"
     // button in the far right of the date picker field
-    expect(buttons).toHaveLength(3);
+    // Plus the accordion element (that expands to show topic & publisher
+    // distribution), part of which is also a button...
+    expect(buttons).toHaveLength(4);
   });
 
   it('does not pre-select a scheduled surface if none was passed in and the user has access to many', () => {
@@ -155,5 +159,110 @@ describe('The ScheduleItemForm component', () => {
       expect(screen.getByText(/story/i)).toBeInTheDocument();
       expect(screen.getByText(/syndicated/i)).toBeInTheDocument();
     });
+  });
+
+  it('does not show manual scheduling reasons by default', async () => {
+    render(
+      <MockedProvider>
+        <ScheduleItemForm
+          data-testId="surface-selector"
+          handleDateChange={jest.fn()}
+          selectedDate={DateTime.local()}
+          onSubmit={handleSubmit}
+          scheduledSurfaces={[scheduledSurfaces[0]]}
+          approvedItemExternalId={'123abc'}
+        />
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      // Should there be a pre-defined reason? No
+      expect(screen.queryByLabelText('Trending')).not.toBeInTheDocument();
+
+      // Should there be a "Reason Comment" field for other reasons? No
+      expect(screen.queryByLabelText('Reason Comment')).not.toBeInTheDocument();
+    });
+  });
+
+  it('shows manual scheduling reasons if necessary', async () => {
+    render(
+      <MockedProvider>
+        <ScheduleItemForm
+          data-testId="surface-selector"
+          handleDateChange={jest.fn()}
+          selectedDate={DateTime.local()}
+          onSubmit={handleSubmit}
+          scheduledSurfaces={[scheduledSurfaces[0]]}
+          approvedItemExternalId={'123abc'}
+          showManualScheduleReasons={true}
+        />
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      // Should there be a pre-defined reason? This time around, yes
+      expect(screen.queryByLabelText('Evergreen')).toBeInTheDocument();
+
+      // Should there be a "Reason Comment" field for other reasons? Yes
+      expect(screen.queryByLabelText('Reason Comment')).toBeInTheDocument();
+    });
+  });
+
+  it('displays an error message if no checkboxes have been selected', async () => {
+    render(
+      <MockedProvider>
+        <ScheduleItemForm
+          data-testId="surface-selector"
+          handleDateChange={jest.fn()}
+          selectedDate={DateTime.local()}
+          onSubmit={handleSubmit}
+          scheduledSurfaces={[scheduledSurfaces[0]]}
+          approvedItemExternalId={'123abc'}
+          showManualScheduleReasons={true}
+        />
+      </MockedProvider>
+    );
+
+    await waitFor(() => {
+      userEvent.click(screen.getByText(/save/i));
+    });
+
+    const errorMessage = screen.getByText(
+      /Please choose at least one reason to schedule this item manually./i
+    );
+    expect(errorMessage).toBeInTheDocument();
+    expect(handleSubmit).not.toHaveBeenCalled();
+  });
+
+  // TODO: fix the test below. possibly failing due to apollo query mocks mismatch?
+  it.skip('submits the form if at least one checkbox was selected', async () => {
+    render(
+      // TODO: fix. This mock contains dates in the past, while the form
+      // specifies today's date.
+      <MockedProvider mocks={[mock_scheduledItems]}>
+        <ScheduleItemForm
+          data-testId="surface-selector"
+          handleDateChange={jest.fn()}
+          selectedDate={DateTime.local()}
+          onSubmit={handleSubmit}
+          scheduledSurfaces={[scheduledSurfaces[0]]}
+          scheduledSurfaceGuid={scheduledSurfaces[0].guid}
+          approvedItemExternalId={'123abc'}
+          showManualScheduleReasons={true}
+        />
+      </MockedProvider>
+    );
+
+    const chosenReason = screen.getByLabelText(/under the radar/i);
+
+    await waitFor(() => {
+      userEvent.click(chosenReason);
+    });
+
+    await waitFor(() => {
+      userEvent.click(screen.getByText(/save/i));
+    });
+
+    expect(handleSubmit).toHaveBeenCalled();
   });
 });

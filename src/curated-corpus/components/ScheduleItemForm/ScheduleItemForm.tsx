@@ -1,17 +1,38 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Grid, LinearProgress, TextField } from '@mui/material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+  FormHelperText,
+  Grid,
+  LinearProgress,
+  TextField,
+  Typography,
+} from '@mui/material';
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { DateTime } from 'luxon';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import {
   FormikSelectField,
+  FormikTextField,
   SharedFormButtons,
   SharedFormButtonsProps,
 } from '../../../_shared/components';
 import { getValidationSchema } from './ScheduleItemForm.validation';
-import { ScheduledSurface } from '../../../api/generatedTypes';
+import {
+  ManualScheduleReason,
+  ScheduledSurface,
+} from '../../../api/generatedTypes';
 import { ScheduleSummaryConnector } from '../ScheduleSummaryConnector/ScheduleSummaryConnector';
+import { formatFormLabel } from '../../helpers/helperFunctions';
+import { useToggle } from '../../../_shared/hooks';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { curationPalette } from '../../../theme';
 
 interface ScheduleItemFormProps {
   /**
@@ -42,6 +63,11 @@ interface ScheduleItemFormProps {
   disableScheduledSurface?: boolean;
 
   /**
+   * Whether to show the optional manual schedule reasons.
+   */
+  showManualScheduleReasons?: boolean;
+
+  /**
    *
    * Note that null is an option here to keep MUI types happy, nothing else.
    */
@@ -65,6 +91,7 @@ export const ScheduleItemForm: React.FC<
     scheduledSurfaces,
     scheduledSurfaceGuid,
     disableScheduledSurface = false,
+    showManualScheduleReasons = false,
     selectedDate,
     onCancel,
     onSubmit,
@@ -92,19 +119,52 @@ export const ScheduleItemForm: React.FC<
     scheduledSurfaceGuid ||
     (scheduledSurfaces.length === 1 ? scheduledSurfaces[0].guid : '');
 
+  // whether the "Other" checkbox is selected, this will give us
+  // an indication if the reason comment field should be enabled or disabled
+  const [isOtherSelected, setOtherReason] = useToggle(false);
+
+  // update "Other" checkbox status
+  const handleOtherCheckbox = () => {
+    setOtherReason();
+  };
+
   const formik = useFormik({
     initialValues: {
       scheduledSurfaceGuid: selectedScheduledSurfaceGuid,
       approvedItemExternalId,
       scheduledDate: selectedDate,
+      [ManualScheduleReason.Evergreen]: false,
+      [ManualScheduleReason.FormatDiversity]: false,
+      [ManualScheduleReason.PublisherDiversity]: false,
+      [ManualScheduleReason.TimeSensitiveExplainer]: false,
+      [ManualScheduleReason.TimeSensitiveNews]: false,
+      [ManualScheduleReason.TopicDiversity]: false,
+      [ManualScheduleReason.Trending]: false,
+      [ManualScheduleReason.UnderTheRadar]: false,
+      OTHER: false,
+      manualScheduleReason: '',
+      reasonComment: '',
     },
     validateOnBlur: false,
     validateOnChange: false,
-    validationSchema: getValidationSchema(scheduledSurfaces),
+    validationSchema: getValidationSchema(
+      scheduledSurfaces,
+      showManualScheduleReasons
+    ),
     onSubmit: (values, formikHelpers) => {
       // Make sure the date is the one selected by the user
       // (Without this, Formik passes on the initial date = tomorrow.)
       values.scheduledDate = selectedDate;
+
+      // Populate the 'manualScheduleReason' field value with
+      // a comma-separated list of reasons.
+      const reasons: string[] = [];
+      for (const [key, value] of Object.entries(values)) {
+        if (value === true) {
+          reasons.push(key);
+        }
+      }
+      values.manualScheduleReason = reasons.join(',');
 
       onSubmit(values, formikHelpers);
     },
@@ -114,7 +174,7 @@ export const ScheduleItemForm: React.FC<
     <LocalizationProvider dateAdapter={AdapterLuxon}>
       <form name="schedule-item-form" onSubmit={formik.handleSubmit}>
         <Grid container spacing={3}>
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={8}>
             <FormikSelectField
               id="scheduledSurfaceGuid"
               label="Choose a Scheduled Surface"
@@ -138,7 +198,7 @@ export const ScheduleItemForm: React.FC<
               })}
             </FormikSelectField>
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} sm={4}>
             <DatePicker
               label="Choose a date"
               inputFormat="MMMM d, yyyy"
@@ -158,17 +218,127 @@ export const ScheduleItemForm: React.FC<
               )}
             />
           </Grid>
-          {formik.values.scheduledSurfaceGuid &&
-            formik.values.scheduledSurfaceGuid.length > 0 && (
+
+          <Grid
+            container
+            alignItems="stretch"
+            spacing={3}
+            justifyContent="center"
+          >
+            <Grid item xs={12}>
+              <Box mt={3}>
+                <Accordion>
+                  <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    sx={{ maxHeight: '2rem' }}
+                  >
+                    <Typography
+                      sx={{
+                        fontSize: '1rem',
+                        fontWeight: 500,
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      Expand to see Topic &amp; Publisher distribution
+                    </Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    {formik.values.scheduledSurfaceGuid &&
+                      formik.values.scheduledSurfaceGuid.length > 0 && (
+                        <Grid item xs={12}>
+                          <ScheduleSummaryConnector
+                            date={selectedDate!}
+                            scheduledSurfaceGuid={
+                              formik.values.scheduledSurfaceGuid
+                            }
+                            refreshData={refreshData}
+                            setRefreshData={setRefreshData}
+                          />
+                        </Grid>
+                      )}
+                  </AccordionDetails>
+                </Accordion>
+              </Box>
+            </Grid>
+          </Grid>
+
+          {showManualScheduleReasons && (
+            <>
               <Grid item xs={12}>
-                <ScheduleSummaryConnector
-                  date={selectedDate!}
-                  scheduledSurfaceGuid={formik.values.scheduledSurfaceGuid}
-                  refreshData={refreshData}
-                  setRefreshData={setRefreshData}
-                />
+                <hr color={curationPalette.primary} />
+                <h2>Select Reason for Manually Adding Item</h2>
               </Grid>
-            )}
+              <Grid item xs={12} sm={6}>
+                <FormGroup>
+                  {Object.values(ManualScheduleReason)
+                    .slice(0, 4) // first four reasons in the first column
+                    .map((value) => {
+                      return (
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              color="primary"
+                              {...formik.getFieldProps({
+                                name: value,
+                              })}
+                            />
+                          }
+                          label={formatFormLabel(value)}
+                          key={value}
+                        />
+                      );
+                    })}
+                </FormGroup>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormGroup>
+                  {Object.values(ManualScheduleReason)
+                    .slice(4, 8) // remaining four reasons in the second column
+                    .map((value) => {
+                      return (
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              color="primary"
+                              {...formik.getFieldProps({
+                                name: value,
+                              })}
+                            />
+                          }
+                          label={formatFormLabel(value)}
+                          key={value}
+                        />
+                      );
+                    })}
+
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        color="primary"
+                        {...formik.getFieldProps({
+                          name: 'OTHER',
+                        })}
+                        // onChange doesn't always work, onClick does the job
+                        onClick={handleOtherCheckbox}
+                      />
+                    }
+                    label="OTHER"
+                  />
+                  <FormikTextField
+                    disabled={!isOtherSelected}
+                    id="reasonComment"
+                    label="Reason Comment"
+                    fieldProps={formik.getFieldProps('reasonComment')}
+                    fieldMeta={formik.getFieldMeta('reasonComment')}
+                    autoFocus
+                    multiline
+                    minRows={1}
+                  />
+                </FormGroup>
+              </Grid>
+            </>
+          )}
+
           {formik.isSubmitting && (
             <Grid item xs={12}>
               <Box mb={3}>
@@ -184,6 +354,14 @@ export const ScheduleItemForm: React.FC<
             label="approvedItemExternalId"
             {...formik.getFieldProps('approvedItemExternalId')}
           />
+        </Box>
+
+        <Box mb={2}>
+          {formik.errors && formik.errors.manualScheduleReason && (
+            <FormHelperText error>
+              {formik.errors.manualScheduleReason}
+            </FormHelperText>
+          )}
         </Box>
 
         <SharedFormButtons onCancel={onCancel} />

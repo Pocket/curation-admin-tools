@@ -473,7 +473,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
         formikHelpers.setSubmitting(false);
 
         setApprovedItem(approvedItemData.createApprovedCorpusItem);
-        // transition to scheduling it
+        // transition to scheduling it and specifying manual addition reasons
         toggleScheduleItemModal();
       }
     );
@@ -531,6 +531,13 @@ export const SchedulePage: React.FC = (): ReactElement => {
       scheduledSurfaceGuid: values.scheduledSurfaceGuid,
       scheduledDate: values.scheduledDate.toISODate(),
       source: ScheduledItemSource.Manual,
+      // Refrain from sending empty strings (form defaults) to the mutation
+      // if no data has been supplied for these fields: for example, when they're
+      // not needed for the Pocket Hits surface or any other surface where
+      // these fields are not shown.
+      reason:
+        values.manualScheduleReason == '' ? null : values.manualScheduleReason,
+      reasonComment: values.reasonComment == '' ? null : values.reasonComment,
     };
 
     // Run the mutation
@@ -616,14 +623,19 @@ export const SchedulePage: React.FC = (): ReactElement => {
           isRecommendation={isRecommendation}
         />
       )}
-
+      {/* This modified schedule modal/form appears on manually scheduling an item.
+      It has a different heading and the form reveals reasons to manually schedule an item. */}
       {approvedItem && (
         <ScheduleItemModal
           approvedItem={approvedItem}
           date={addItemDate}
-          headingCopy="Schedule this item"
+          headingCopy="Confirm Schedule"
           isOpen={scheduleItemModalOpen}
           scheduledSurfaceGuid={currentScheduledSurfaceGuid}
+          showManualScheduleReasons={
+            /* Only ask for manual schedule reasons if the curator is working on the US New Tab */
+            currentScheduledSurfaceGuid === 'NEW_TAB_EN_US'
+          }
           onSave={onScheduleSave}
           toggleModal={toggleScheduleItemModal}
         />

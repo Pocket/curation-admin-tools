@@ -22,7 +22,7 @@ export const validationSchema = yup
     ['OTHER']: yup.boolean(),
     reasonComment: yup
       .string()
-      .max(100, 'Reason is too long, cannot exceed 100 characters.'), // max 50 chars for now
+      .max(100, 'Reason is too long, cannot exceed 100 characters.'), // max 100 chars for now
   })
   .test('removalReason', '', (obj) => {
     // If Other checkbox was selected but no reason entered, fail validation
