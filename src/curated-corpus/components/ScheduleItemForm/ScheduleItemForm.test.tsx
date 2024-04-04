@@ -234,37 +234,35 @@ describe('The ScheduleItemForm component', () => {
     expect(handleSubmit).not.toHaveBeenCalled();
   });
 
-  it.todo(
-    'submits the form if at least one checkbox was selected',
-    async () => {
-      render(
-        // TODO: fix. This mock contains dates in the past, while the form
-        // specifies today's date.
-        <MockedProvider mocks={[mock_scheduledItems]}>
-          <ScheduleItemForm
-            data-testId="surface-selector"
-            handleDateChange={jest.fn()}
-            selectedDate={DateTime.local()}
-            onSubmit={handleSubmit}
-            scheduledSurfaces={[scheduledSurfaces[0]]}
-            scheduledSurfaceGuid={scheduledSurfaces[0].guid}
-            approvedItemExternalId={'123abc'}
-            showManualScheduleReasons={true}
-          />
-        </MockedProvider>
-      );
+  // TODO: fix the test below. possibly failing due to apollo query mocks mismatch?
+  it.skip('submits the form if at least one checkbox was selected', async () => {
+    render(
+      // TODO: fix. This mock contains dates in the past, while the form
+      // specifies today's date.
+      <MockedProvider mocks={[mock_scheduledItems]}>
+        <ScheduleItemForm
+          data-testId="surface-selector"
+          handleDateChange={jest.fn()}
+          selectedDate={DateTime.local()}
+          onSubmit={handleSubmit}
+          scheduledSurfaces={[scheduledSurfaces[0]]}
+          scheduledSurfaceGuid={scheduledSurfaces[0].guid}
+          approvedItemExternalId={'123abc'}
+          showManualScheduleReasons={true}
+        />
+      </MockedProvider>
+    );
 
-      const chosenReason = screen.getByLabelText(/under the radar/i);
+    const chosenReason = screen.getByLabelText(/under the radar/i);
 
-      await waitFor(() => {
-        userEvent.click(chosenReason);
-      });
+    await waitFor(() => {
+      userEvent.click(chosenReason);
+    });
 
-      await waitFor(() => {
-        userEvent.click(screen.getByText(/save/i));
-      });
+    await waitFor(() => {
+      userEvent.click(screen.getByText(/save/i));
+    });
 
-      expect(handleSubmit).toHaveBeenCalled();
-    }
-  );
+    expect(handleSubmit).toHaveBeenCalled();
+  });
 });
