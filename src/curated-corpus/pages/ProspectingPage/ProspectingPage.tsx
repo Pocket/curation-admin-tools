@@ -524,6 +524,13 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       scheduledSurfaceGuid: values.scheduledSurfaceGuid,
       scheduledDate: values.scheduledDate.toISODate(),
       source: ScheduledItemSource.Manual,
+      // Refrain from sending empty strings (form defaults) to the mutation
+      // if no data has been supplied for these fields: for example, when they're
+      // not needed for the Pocket Hits surface or any other surface where
+      // these fields are not shown.
+      reason:
+        values.manualScheduleReason == '' ? null : values.manualScheduleReason,
+      reasonComment: values.reasonComment == '' ? null : values.reasonComment,
     };
 
     // Run the mutation
@@ -729,6 +736,10 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
           isOpen={scheduleModalOpen}
           scheduledSurfaceGuid={currentScheduledSurfaceGuid}
           disableScheduledSurface={disableScheduledSurface}
+          showManualScheduleReasons={
+            /* Only ask for manual schedule reasons if the curator is working on the US New Tab */
+            currentScheduledSurfaceGuid === 'NEW_TAB_EN_US'
+          }
           onSave={onScheduleSave}
           toggleModal={toggleScheduleModalAndDisableScheduledSurface}
         />

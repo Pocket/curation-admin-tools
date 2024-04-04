@@ -7,6 +7,8 @@ export const createScheduledCorpusItem = gql`
     $scheduledSurfaceGuid: ID!
     $scheduledDate: Date!
     $source: ScheduledItemSource!
+    $reasons: String
+    $reasonComment: String
   ) {
     createScheduledCorpusItem(
       data: {
@@ -14,6 +16,8 @@ export const createScheduledCorpusItem = gql`
         scheduledSurfaceGuid: $scheduledSurfaceGuid
         scheduledDate: $scheduledDate
         source: $source
+        reasons: $reasons
+        reasonComment: $reasonComment
       }
     ) {
       externalId

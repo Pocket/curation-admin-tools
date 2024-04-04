@@ -1,6 +1,5 @@
-import * as Apollo from '@apollo/client';
 import { gql } from '@apollo/client';
-
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -593,9 +592,9 @@ export type CreateScheduledCorpusItemInput = {
   /** The ID of the Approved Item that needs to be scheduled. */
   approvedItemExternalId: Scalars['ID'];
   /** Free-text entered by the curator to give further detail to the manual schedule reason(s) provided. */
-  manualScheduleReasonComment?: InputMaybe<Scalars['String']>;
+  reasonComment?: InputMaybe<Scalars['String']>;
   /** A comma-separated list of reasons for manually scheduling an item. Helps ML improve models for sets of scheduled items. */
-  manualScheduleReasons?: InputMaybe<Scalars['String']>;
+  reasons?: InputMaybe<Scalars['String']>;
   /** The date the associated Approved Item is scheduled to appear on a Scheduled Surface. Format: YYYY-MM-DD. */
   scheduledDate: Scalars['Date'];
   /** The GUID of the Scheduled Surface the Approved Item is going to appear on. Example: 'NEW_TAB_EN_US'. */
@@ -848,6 +847,8 @@ export type Item = {
   itemId: Scalars['String'];
   /** The detected language of the article */
   language?: Maybe<Scalars['String']>;
+  /** Estimated time to listen to the article, in seconds */
+  listenDuration?: Maybe<Scalars['Int']>;
   /**
    * Indicates if the url requires a login
    * @deprecated Clients should not use this
@@ -2774,6 +2775,8 @@ export type CreateScheduledCorpusItemMutationVariables = Exact<{
   scheduledSurfaceGuid: Scalars['ID'];
   scheduledDate: Scalars['Date'];
   source: ScheduledItemSource;
+  reasons?: InputMaybe<Scalars['String']>;
+  reasonComment?: InputMaybe<Scalars['String']>;
 }>;
 
 export type CreateScheduledCorpusItemMutation = {
@@ -5203,6 +5206,8 @@ export const CreateScheduledCorpusItemDocument = gql`
     $scheduledSurfaceGuid: ID!
     $scheduledDate: Date!
     $source: ScheduledItemSource!
+    $reasons: String
+    $reasonComment: String
   ) {
     createScheduledCorpusItem(
       data: {
@@ -5210,6 +5215,8 @@ export const CreateScheduledCorpusItemDocument = gql`
         scheduledSurfaceGuid: $scheduledSurfaceGuid
         scheduledDate: $scheduledDate
         source: $source
+        reasons: $reasons
+        reasonComment: $reasonComment
       }
     ) {
       externalId
@@ -5247,6 +5254,8 @@ export type CreateScheduledCorpusItemMutationFn = Apollo.MutationFunction<
  *      scheduledSurfaceGuid: // value for 'scheduledSurfaceGuid'
  *      scheduledDate: // value for 'scheduledDate'
  *      source: // value for 'source'
+ *      reasons: // value for 'reasons'
+ *      reasonComment: // value for 'reasonComment'
  *   },
  * });
  */
