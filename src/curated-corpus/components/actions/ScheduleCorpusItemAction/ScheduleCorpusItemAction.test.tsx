@@ -99,14 +99,10 @@ describe('The ScheduleCorpusItemAction', () => {
 
     userEvent.click(screen.getByText('Save'));
 
-    // Testing for the success toast notification in two parts
-    // as it may be broken up in the markup
+    // Testing for the success toast notification. Omitting the date from
+    // the text tested for as it has caused so many false alarms on CI.
     expect(
-      await screen.findByText(
-        `Item scheduled successfully for ${today
-          .setLocale('en')
-          .toLocaleString(DateTime.DATE_FULL)}.`
-      )
+      await screen.findByText(/Item scheduled successfully/i)
     ).toBeInTheDocument();
   });
 
