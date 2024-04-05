@@ -9,6 +9,7 @@ export const createScheduledCorpusItem = gql`
     $source: ScheduledItemSource!
     $reasons: String
     $reasonComment: String
+    $actionScreen: ActionScreen
   ) {
     createScheduledCorpusItem(
       data: {
@@ -18,6 +19,7 @@ export const createScheduledCorpusItem = gql`
         source: $source
         reasons: $reasons
         reasonComment: $reasonComment
+        actionScreen: $actionScreen
       }
     ) {
       externalId
