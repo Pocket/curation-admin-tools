@@ -374,7 +374,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
     // Setup the input
     const input: DeleteScheduledCorpusItemInput = {
       externalId: currentItem?.externalId as string,
-      reasonComment: values.otherReason,
+      reasonComment: values.reasonComment,
       reasons: values.removalReason,
     };
     // Run the mutation
@@ -535,7 +535,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
       // if no data has been supplied for these fields: for example, when they're
       // not needed for the Pocket Hits surface or any other surface where
       // these fields are not shown.
-      reason:
+      reasons:
         values.manualScheduleReason == '' ? null : values.manualScheduleReason,
       reasonComment: values.reasonComment == '' ? null : values.reasonComment,
     };
