@@ -633,8 +633,10 @@ export const SchedulePage: React.FC = (): ReactElement => {
           isOpen={scheduleItemModalOpen}
           scheduledSurfaceGuid={currentScheduledSurfaceGuid}
           showManualScheduleReasons={
-            /* Only ask for manual schedule reasons if the curator is working on the US New Tab */
-            currentScheduledSurfaceGuid === 'NEW_TAB_EN_US'
+            /* Only ask for manual schedule reasons if the curator is working on the US New Tab
+             * and if it's not a syndicated item */
+            currentScheduledSurfaceGuid === 'NEW_TAB_EN_US' &&
+            !approvedItem.isSyndicated
           }
           onSave={onScheduleSave}
           toggleModal={toggleScheduleItemModal}
