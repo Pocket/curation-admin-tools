@@ -2,13 +2,16 @@ import React from 'react';
 import { MockedProvider, MockedResponse } from '@apollo/client/testing';
 import { render, screen } from '@testing-library/react';
 import { SnackbarProvider } from 'notistack';
+import { DateTime } from 'luxon';
 import userEvent from '@testing-library/user-event';
+
+import { ActionScreen } from '../../../../api/generatedTypes';
+
 import { getTestApprovedItem } from '../../../helpers/approvedItem';
 import { successMock } from '../../../integration-test-mocks/createScheduledCorpusItem';
 import { apolloCache } from '../../../../api/client';
 import { ScheduleCorpusItemAction } from './ScheduleCorpusItemAction';
 import { mock_AllScheduledSurfaces } from '../../../integration-test-mocks/getScheduledSurfacesForUser';
-import { DateTime } from 'luxon';
 
 describe('The ScheduleCorpusItemAction', () => {
   let mocks: MockedResponse[] = [];
@@ -25,6 +28,7 @@ describe('The ScheduleCorpusItemAction', () => {
         <SnackbarProvider maxSnack={3}>
           <ScheduleCorpusItemAction
             item={getTestApprovedItem()}
+            actionScreen={ActionScreen.Schedule}
             toggleModal={jest.fn()}
             modalOpen={true}
           />
@@ -58,6 +62,7 @@ describe('The ScheduleCorpusItemAction', () => {
         <SnackbarProvider maxSnack={3}>
           <ScheduleCorpusItemAction
             item={getTestApprovedItem()}
+            actionScreen={ActionScreen.Schedule}
             toggleModal={jest.fn()}
             modalOpen={true}
           />

@@ -2,6 +2,7 @@ import React from 'react';
 import { FormikHelpers, FormikValues } from 'formik';
 import { DateTime } from 'luxon';
 import {
+  ActionScreen,
   ApprovedCorpusItem,
   CreateScheduledCorpusItemInput,
   ScheduledItemSource,
@@ -15,6 +16,11 @@ interface ScheduleCorpusItemActionProps {
    * The approved item that is to be scheduled onto a surface.
    */
   item: ApprovedCorpusItem;
+
+  /**
+   * Indicates from which page the scheduling happened. (Analytics)
+   */
+  actionScreen: ActionScreen;
 
   /**
    * A state variable that tracks whether the ScheduleItemModal is visible
@@ -48,7 +54,7 @@ interface ScheduleCorpusItemActionProps {
 export const ScheduleCorpusItemAction: React.FC<
   ScheduleCorpusItemActionProps
 > = (props) => {
-  const { item, toggleModal, modalOpen, refetch } = props;
+  const { item, actionScreen, toggleModal, modalOpen, refetch } = props;
 
   // set up the hook for toast notification
   const { showNotification } = useNotifications();
@@ -57,7 +63,7 @@ export const ScheduleCorpusItemAction: React.FC<
   // and execute any additional actions in a callback
   const { runMutation } = useRunMutation();
 
-  // 1. Prepare the "reject curated item" mutation
+  // 1. Prepare the "schedule curated item" mutation
   const [scheduleCuratedItem] = useCreateScheduledCorpusItemMutation();
 
   const onSave = (
@@ -78,6 +84,7 @@ export const ScheduleCorpusItemAction: React.FC<
       scheduledSurfaceGuid: values.scheduledSurfaceGuid,
       scheduledDate: values.scheduledDate.toISODate(),
       source: ScheduledItemSource.Manual,
+      actionScreen,
     };
     // Run the mutation
     runMutation(

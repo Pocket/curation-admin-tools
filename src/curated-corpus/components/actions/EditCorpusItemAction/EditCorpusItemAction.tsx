@@ -1,6 +1,7 @@
 import React from 'react';
 import { FormikHelpers, FormikValues } from 'formik';
 import {
+  ActionScreen,
   ApprovedCorpusItem,
   useUpdateApprovedCorpusItemMutation,
 } from '../../../../api/generatedTypes';
@@ -13,6 +14,11 @@ interface EditCorpusItemActionProps {
    * The approved item that is about to become a rejected item instead.
    */
   item: ApprovedCorpusItem;
+
+  /**
+   * Indicates from which page the edit happened. (Analytics)
+   */
+  actionScreen: ActionScreen;
 
   /**
    * A state variable that tracks whether the ApprovedIteModal is visible
@@ -46,7 +52,7 @@ interface EditCorpusItemActionProps {
 export const EditCorpusItemAction: React.FC<EditCorpusItemActionProps> = (
   props
 ) => {
-  const { item, toggleModal, modalOpen, refetch } = props;
+  const { item, actionScreen, toggleModal, modalOpen, refetch } = props;
 
   // Get a helper function that will execute each mutation, show standard notifications
   // and execute any additional actions in a callback
@@ -73,6 +79,7 @@ export const EditCorpusItemAction: React.FC<EditCorpusItemActionProps> = (
         imageUrl: values.imageUrl,
         topic: values.topic,
         isTimeSensitive: values.timeSensitive,
+        actionScreen,
       },
     };
 

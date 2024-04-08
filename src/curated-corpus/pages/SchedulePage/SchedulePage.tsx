@@ -32,6 +32,7 @@ import {
   SplitButton,
 } from '../../components';
 import {
+  ActionScreen,
   ApprovedCorpusItem,
   CreateApprovedCorpusItemMutation,
   DeleteScheduledCorpusItemInput,
@@ -313,6 +314,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
       externalId: currentItem?.externalId,
       scheduledDate: values.scheduledDate.toISODate(),
       source: currentItem.source,
+      actionScreen: ActionScreen.Schedule,
     };
 
     // Run the mutation
@@ -376,6 +378,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
       externalId: currentItem?.externalId as string,
       reasonComment: values.reasonComment,
       reasons: values.removalReason,
+      actionScreen: ActionScreen.Schedule,
     };
     // Run the mutation
     runMutation(
@@ -461,6 +464,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
       isCollection: values.collection,
       isTimeSensitive: values.timeSensitive,
       isSyndicated: values.syndicated,
+      actionScreen: ActionScreen.Schedule,
     };
 
     // call the create approved item mutation
@@ -538,6 +542,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
       reasons:
         values.manualScheduleReason == '' ? null : values.manualScheduleReason,
       reasonComment: values.reasonComment == '' ? null : values.reasonComment,
+      actionScreen: ActionScreen.Schedule,
     };
 
     // Run the mutation
@@ -584,12 +589,14 @@ export const SchedulePage: React.FC = (): ReactElement => {
           />
           <EditCorpusItemAction
             item={currentItem.approvedItem}
+            actionScreen={ActionScreen.Schedule}
             modalOpen={editItemModalOpen}
             toggleModal={toggleEditModal}
             refetch={refetch}
           />
           <RejectAndUnscheduleItemAction
             item={currentItem}
+            actionScreen={ActionScreen.Schedule}
             modalOpen={rejectAndUnscheduleModalOpen}
             toggleModal={toggleRejectAndUnscheduleModal}
             refetch={refetch}
