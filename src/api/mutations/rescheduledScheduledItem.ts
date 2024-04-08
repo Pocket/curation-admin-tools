@@ -6,12 +6,14 @@ export const rescheduleScheduledItem = gql`
     $externalId: ID!
     $scheduledDate: Date!
     $source: ScheduledItemSource!
+    $actionScreen: ActionScreen
   ) {
     rescheduleScheduledCorpusItem(
       data: {
         externalId: $externalId
         scheduledDate: $scheduledDate
         source: $source
+        actionScreen: $actionScreen
       }
     ) {
       ...ScheduledItemData

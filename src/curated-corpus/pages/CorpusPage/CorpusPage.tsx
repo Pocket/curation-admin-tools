@@ -3,6 +3,7 @@ import { Grid, Typography } from '@mui/material';
 import { FormikValues } from 'formik';
 import { config } from '../../../config';
 import {
+  ActionScreen,
   ApprovedCorpusItem,
   ApprovedCorpusItemEdge,
   ApprovedCorpusItemFilter,
@@ -152,15 +153,18 @@ export const CorpusPage: React.FC = (): JSX.Element => {
                 modalOpen={scheduleModalOpen}
                 toggleModal={toggleScheduleModal}
                 refetch={refetch}
+                actionScreen={ActionScreen.Corpus}
               />
               <EditCorpusItemAction
                 item={currentItem}
+                actionScreen={ActionScreen.Corpus}
                 modalOpen={editModalOpen}
                 toggleModal={toggleEditModal}
                 refetch={refetch}
               />
               <RejectCorpusItemAction
                 item={currentItem}
+                actionScreen={ActionScreen.Corpus}
                 modalOpen={rejectModalOpen}
                 toggleModal={toggleRejectModal}
                 refetch={refetch}

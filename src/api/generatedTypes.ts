@@ -40,6 +40,16 @@ export type Scalars = {
   Url: any;
 };
 
+/** Indicates where in the Curation Tools UI the action took place */
+export enum ActionScreen {
+  /** This action took place from the corpus screen in the admin tool */
+  Corpus = 'CORPUS',
+  /** This action took place from the prospecting screen in the admin tool */
+  Prospecting = 'PROSPECTING',
+  /** This action took place from the schedule screen in the admin tool */
+  Schedule = 'SCHEDULE',
+}
+
 export type ApprovedCorpusImageUrl = {
   __typename?: 'ApprovedCorpusImageUrl';
   /** The url of the image stored in the s3 bucket */
@@ -470,6 +480,8 @@ export enum CorpusLanguage {
 
 /** Input data for creating an Approved Item and optionally scheduling this item to appear on a Scheduled Surface. */
 export type CreateApprovedCorpusItemInput = {
+  /** The UI screen where the approved corpus item is being created from. */
+  actionScreen?: InputMaybe<ActionScreen>;
   /** A name and sort order for each author. */
   authors: Array<CorpusItemAuthorInput>;
   /** The publication date for this story. */
@@ -568,6 +580,11 @@ export type CreateCollectionStoryInput = {
 
 /** Input data for creating a Rejected Item. */
 export type CreateRejectedCorpusItemInput = {
+  /**
+   * The UI screen where the rejected corpus item is being created from.
+   * Currently only available on prospect screen.
+   */
+  actionScreen?: InputMaybe<ActionScreen>;
   /** What language this item is in. This is a two-letter code, for example, 'EN' for English. */
   language?: InputMaybe<CorpusLanguage>;
   /** The GUID of the corresponding Prospect ID. Will be empty for manually added item. */
@@ -589,6 +606,11 @@ export type CreateRejectedCorpusItemInput = {
 
 /** Input data for creating a scheduled entry for an Approved Item on a Scheduled Surface. */
 export type CreateScheduledCorpusItemInput = {
+  /**
+   * The UI screen where the scheduled corpus item is being created from.
+   * Can be from the prospecting, corpus, or schedule screens.
+   */
+  actionScreen?: InputMaybe<ActionScreen>;
   /** The ID of the Approved Item that needs to be scheduled. */
   approvedItemExternalId: Scalars['ID'];
   /** Free-text entered by the curator to give further detail to the manual schedule reason(s) provided. */
@@ -624,6 +646,11 @@ export type DeleteCollectionPartnerAssociationInput = {
 
 /** Input data for deleting a scheduled item for a Scheduled Surface. */
 export type DeleteScheduledCorpusItemInput = {
+  /**
+   * The UI screen where the scheduled corpus item is being deleted from.
+   * Can only be from the schedule screen.
+   */
+  actionScreen?: InputMaybe<ActionScreen>;
   /** ID of the scheduled item. A string in UUID format. */
   externalId: Scalars['ID'];
   /** Free-text entered by the curator to give further detail to the reason(s) provided. */
@@ -1584,6 +1611,11 @@ export type QuerySearchShareableListArgs = {
 
 /** Input data for rejecting an Approved Item. */
 export type RejectApprovedCorpusItemInput = {
+  /**
+   * The UI screen where the approved corpus item is being rejected from.
+   * Can be the schedule screen or the corpus screen.
+   */
+  actionScreen?: InputMaybe<ActionScreen>;
   /** Approved Item ID. */
   externalId: Scalars['ID'];
   /** A comma-separated list of rejection reasons. */
@@ -1713,6 +1745,11 @@ export type RemoveProspectInput = {
 
 /** Input data for rescheduling a scheduled item for a Scheduled Surface. */
 export type RescheduleScheduledCorpusItemInput = {
+  /**
+   * The UI screen where the scheduled corpus item is being resceduled from.
+   * Can only be from the schedule screen.
+   */
+  actionScreen?: InputMaybe<ActionScreen>;
   /** ID of the scheduled item. A string in UUID format. */
   externalId: Scalars['ID'];
   /** The new scheduled date for the scheduled item to appear on a Scheduled Surface. Format: YYYY-MM-DD. */
@@ -1963,6 +2000,11 @@ export type UpdateApprovedCorpusItemAuthorsInput = {
 
 /** Input data for updating an Approved Item. */
 export type UpdateApprovedCorpusItemInput = {
+  /**
+   * The UI screen where the approved corpus item is being updated from.
+   * Can be on the corpus screen or the schedule screen.
+   */
+  actionScreen?: InputMaybe<ActionScreen>;
   /** A name and sort order for each author. */
   authors: Array<CorpusItemAuthorInput>;
   /** The publication date for this story. */
@@ -2777,6 +2819,7 @@ export type CreateScheduledCorpusItemMutationVariables = Exact<{
   source: ScheduledItemSource;
   reasons?: InputMaybe<Scalars['String']>;
   reasonComment?: InputMaybe<Scalars['String']>;
+  actionScreen?: InputMaybe<ActionScreen>;
 }>;
 
 export type CreateScheduledCorpusItemMutation = {
@@ -3073,6 +3116,7 @@ export type RescheduleScheduledCorpusItemMutationVariables = Exact<{
   externalId: Scalars['ID'];
   scheduledDate: Scalars['Date'];
   source: ScheduledItemSource;
+  actionScreen?: InputMaybe<ActionScreen>;
 }>;
 
 export type RescheduleScheduledCorpusItemMutation = {
@@ -5208,6 +5252,7 @@ export const CreateScheduledCorpusItemDocument = gql`
     $source: ScheduledItemSource!
     $reasons: String
     $reasonComment: String
+    $actionScreen: ActionScreen
   ) {
     createScheduledCorpusItem(
       data: {
@@ -5217,6 +5262,7 @@ export const CreateScheduledCorpusItemDocument = gql`
         source: $source
         reasons: $reasons
         reasonComment: $reasonComment
+        actionScreen: $actionScreen
       }
     ) {
       externalId
@@ -5256,6 +5302,7 @@ export type CreateScheduledCorpusItemMutationFn = Apollo.MutationFunction<
  *      source: // value for 'source'
  *      reasons: // value for 'reasons'
  *      reasonComment: // value for 'reasonComment'
+ *      actionScreen: // value for 'actionScreen'
  *   },
  * });
  */
@@ -5718,12 +5765,14 @@ export const RescheduleScheduledCorpusItemDocument = gql`
     $externalId: ID!
     $scheduledDate: Date!
     $source: ScheduledItemSource!
+    $actionScreen: ActionScreen
   ) {
     rescheduleScheduledCorpusItem(
       data: {
         externalId: $externalId
         scheduledDate: $scheduledDate
         source: $source
+        actionScreen: $actionScreen
       }
     ) {
       ...ScheduledItemData
@@ -5752,6 +5801,7 @@ export type RescheduleScheduledCorpusItemMutationFn = Apollo.MutationFunction<
  *      externalId: // value for 'externalId'
  *      scheduledDate: // value for 'scheduledDate'
  *      source: // value for 'source'
+ *      actionScreen: // value for 'actionScreen'
  *   },
  * });
  */

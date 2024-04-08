@@ -1,6 +1,9 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { useApprovedCorpusItemByExternalIdQuery } from '../../../api/generatedTypes';
+import {
+  ActionScreen,
+  useApprovedCorpusItemByExternalIdQuery,
+} from '../../../api/generatedTypes';
 import { HandleApiResponse } from '../../../_shared/components';
 import {
   Alert,
@@ -110,6 +113,7 @@ export const CorpusItemPage: React.FC = (): JSX.Element => {
           </Grid>
           <RejectCorpusItemAction
             item={data.approvedCorpusItemByExternalId!}
+            actionScreen={ActionScreen.Corpus}
             modalOpen={rejectModalOpen}
             toggleModal={toggleRejectModal}
             refetch={refetch}
@@ -119,9 +123,11 @@ export const CorpusItemPage: React.FC = (): JSX.Element => {
             modalOpen={scheduleModalOpen}
             toggleModal={toggleScheduleModal}
             refetch={refetch}
+            actionScreen={ActionScreen.Corpus}
           />
           <EditCorpusItemAction
             item={data.approvedCorpusItemByExternalId!}
+            actionScreen={ActionScreen.Corpus}
             modalOpen={editModalOpen}
             toggleModal={toggleEditModal}
             refetch={refetch}

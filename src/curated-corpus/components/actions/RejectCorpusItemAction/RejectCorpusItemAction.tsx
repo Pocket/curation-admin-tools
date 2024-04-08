@@ -1,6 +1,7 @@
 import React from 'react';
 import { FormikHelpers, FormikValues } from 'formik';
 import {
+  ActionScreen,
   ApprovedCorpusItem,
   useRejectApprovedItemMutation,
 } from '../../../../api/generatedTypes';
@@ -12,6 +13,11 @@ interface RejectCorpusItemActionProps {
    * The approved item that is about to become a rejected item instead.
    */
   item: ApprovedCorpusItem;
+
+  /**
+   * Identify from which screen the rejection action happened.
+   */
+  actionScreen: ActionScreen;
 
   /**
    * A state variable that tracks whether the RejectItemModal is visible
@@ -47,7 +53,7 @@ interface RejectCorpusItemActionProps {
 export const RejectCorpusItemAction: React.FC<RejectCorpusItemActionProps> = (
   props
 ) => {
-  const { item, toggleModal, modalOpen, refetch } = props;
+  const { item, actionScreen, toggleModal, modalOpen, refetch } = props;
 
   // Get a helper function that will execute each mutation, show standard notifications
   // and execute any additional actions in a callback
@@ -67,6 +73,7 @@ export const RejectCorpusItemAction: React.FC<RejectCorpusItemActionProps> = (
       data: {
         externalId: item.externalId,
         reason: values.reason,
+        actionScreen,
       },
     };
 

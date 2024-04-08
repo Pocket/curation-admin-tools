@@ -10,6 +10,7 @@ import {
 } from '../../../integration-test-mocks/rejectApprovedItem';
 import userEvent from '@testing-library/user-event';
 import { apolloCache } from '../../../../api/client';
+import { ActionScreen } from '../../../../api/generatedTypes';
 
 describe('The RejectCorpusItemAction', () => {
   let mocks: MockedResponse[] = [];
@@ -22,6 +23,7 @@ describe('The RejectCorpusItemAction', () => {
         <SnackbarProvider maxSnack={3}>
           <RejectCorpusItemAction
             item={getTestApprovedItem()}
+            actionScreen={ActionScreen.Schedule}
             toggleModal={jest.fn()}
             modalOpen={true}
           />
@@ -44,6 +46,7 @@ describe('The RejectCorpusItemAction', () => {
         <SnackbarProvider maxSnack={3}>
           <RejectCorpusItemAction
             item={getTestApprovedItem()}
+            actionScreen={ActionScreen.Schedule}
             toggleModal={jest.fn()}
             modalOpen={true}
           />
@@ -85,6 +88,7 @@ describe('The RejectCorpusItemAction', () => {
         <SnackbarProvider maxSnack={3}>
           <RejectCorpusItemAction
             item={getTestApprovedItem({ externalId: '456-cde' })}
+            actionScreen={ActionScreen.Schedule}
             toggleModal={jest.fn()}
             modalOpen={true}
           />

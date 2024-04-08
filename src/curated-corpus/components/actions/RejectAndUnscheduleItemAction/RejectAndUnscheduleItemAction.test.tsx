@@ -2,11 +2,15 @@ import React from 'react';
 import { MockedProvider, MockedResponse } from '@apollo/client/testing';
 import { render, screen } from '@testing-library/react';
 import { SnackbarProvider } from 'notistack';
+import userEvent from '@testing-library/user-event';
+
+import { ActionScreen } from '../../../../api/generatedTypes';
+
 import { RejectAndUnscheduleItemAction } from './RejectAndUnscheduleItemAction';
 import { getTestScheduledItem } from '../../../helpers/scheduledItem';
 import { successMock as unscheduleItemSuccessMock } from '../../../integration-test-mocks/deleteScheduledCorpusItem';
 import { successMock as rejectItemSuccessMock } from '../../../integration-test-mocks/rejectApprovedItem';
-import userEvent from '@testing-library/user-event';
+
 import { apolloCache } from '../../../../api/client';
 
 describe('The RejectAndUnscheduleItemAction', () => {
@@ -20,6 +24,7 @@ describe('The RejectAndUnscheduleItemAction', () => {
         <SnackbarProvider maxSnack={3}>
           <RejectAndUnscheduleItemAction
             item={getTestScheduledItem()}
+            actionScreen={ActionScreen.Schedule}
             toggleModal={jest.fn()}
             modalOpen={true}
           />
@@ -42,6 +47,7 @@ describe('The RejectAndUnscheduleItemAction', () => {
         <SnackbarProvider maxSnack={3}>
           <RejectAndUnscheduleItemAction
             item={getTestScheduledItem()}
+            actionScreen={ActionScreen.Schedule}
             toggleModal={jest.fn()}
             modalOpen={true}
           />

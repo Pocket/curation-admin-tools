@@ -21,6 +21,7 @@ import {
   SplitButton,
 } from '../../components';
 import {
+  ActionScreen,
   ApprovedCorpusItem,
   CreateApprovedCorpusItemMutation,
   CuratedStatus,
@@ -304,6 +305,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         publisher: currentProspect?.publisher,
         reason: values.reason,
         prospectId: currentProspect?.prospectId,
+        actionScreen: ActionScreen.Prospecting,
       },
     };
 
@@ -395,6 +397,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       isCollection: values.collection,
       isTimeSensitive: values.timeSensitive,
       isSyndicated: values.syndicated,
+      actionScreen: ActionScreen.Prospecting,
     };
 
     // call the create approved item mutation
@@ -531,6 +534,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       reason:
         values.manualScheduleReason == '' ? null : values.manualScheduleReason,
       reasonComment: values.reasonComment == '' ? null : values.reasonComment,
+      actionScreen: ActionScreen.Prospecting,
     };
 
     // Run the mutation

@@ -1,4 +1,4 @@
-import { ScheduledItemSource } from '../../api/generatedTypes';
+import { ActionScreen, ScheduledItemSource } from '../../api/generatedTypes';
 
 import { createScheduledCorpusItem } from '../../api/mutations/createScheduledCorpusItem';
 import { getTestApprovedItem } from '../helpers/approvedItem';
@@ -19,6 +19,7 @@ export const successMock = (scheduledDate: string) => {
         scheduledSurfaceGuid: 'NEW_TAB_EN_US',
         scheduledDate,
         source: ScheduledItemSource.Manual,
+        actionScreen: ActionScreen.Schedule,
       },
     },
     result: {

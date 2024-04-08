@@ -1,6 +1,7 @@
 import React from 'react';
 import { FormikHelpers, FormikValues } from 'formik';
 import {
+  ActionScreen,
   DeleteScheduledCorpusItemInput,
   RejectApprovedCorpusItemInput,
   ScheduledCorpusItem,
@@ -15,6 +16,11 @@ interface RejectAndUnscheduleItemActionProps {
    * The scheduled item that is about to be rejected and unscheduled in one go.
    */
   item: ScheduledCorpusItem;
+
+  /**
+   * Indicate on which screen the action was performed.
+   */
+  actionScreen: ActionScreen;
 
   /**
    * A state variable that tracks whether the RejectItemModal is visible
@@ -50,7 +56,7 @@ interface RejectAndUnscheduleItemActionProps {
 export const RejectAndUnscheduleItemAction: React.FC<
   RejectAndUnscheduleItemActionProps
 > = (props) => {
-  const { item, toggleModal, modalOpen, refetch } = props;
+  const { item, actionScreen, toggleModal, modalOpen, refetch } = props;
 
   // Get a helper function that will execute each mutation, show standard notifications
   // and execute any additional actions in a callback
@@ -71,12 +77,14 @@ export const RejectAndUnscheduleItemAction: React.FC<
     // Set up all the variables we need to pass to the unschedule mutation
     const unscheduleInput: DeleteScheduledCorpusItemInput = {
       externalId: item.externalId as string,
+      actionScreen,
     };
 
     // Set out all the variables we need to pass to the reject mutation
     const rejectInput: RejectApprovedCorpusItemInput = {
       externalId: item.approvedItem!.externalId,
       reason: values.reason,
+      actionScreen,
     };
 
     // First unschedule the item, otherwise the rejection will fail
