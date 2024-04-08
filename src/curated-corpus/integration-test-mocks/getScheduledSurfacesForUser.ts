@@ -11,7 +11,6 @@ const allScheduledSurfaces: ScheduledSurface[] = [
     guid: 'NEW_TAB_EN_US',
     ianaTimezone: 'America/New_York',
     prospectTypes: [
-      ProspectType.ConstraintSchedule,
       ProspectType.Counts,
       ProspectType.Timespent,
       ProspectType.Recommended,
@@ -25,7 +24,6 @@ const allScheduledSurfaces: ScheduledSurface[] = [
       ProspectType.TitleUrlModeled,
       ProspectType.RssLogistic,
       ProspectType.RssLogisticRecent,
-      ProspectType.SlateScheduler,
       ProspectType.SlateSchedulerV2,
     ],
   },

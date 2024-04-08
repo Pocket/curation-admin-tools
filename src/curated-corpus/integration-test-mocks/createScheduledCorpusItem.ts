@@ -10,13 +10,16 @@ import { getTestApprovedItem } from '../helpers/approvedItem';
  *
  * @param scheduledDate
  */
-export const successMock = (scheduledDate: string) => {
+export const successMock = (
+  scheduledDate: string,
+  scheduledSurfaceGuid = 'NEW_TAB_EN_US'
+) => {
   return {
     request: {
       query: createScheduledCorpusItem,
       variables: {
         approvedItemExternalId: '123-abc',
-        scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+        scheduledSurfaceGuid,
         scheduledDate,
         source: ScheduledItemSource.Manual,
         actionScreen: ActionScreen.Schedule,
@@ -31,7 +34,7 @@ export const successMock = (scheduledDate: string) => {
           createdBy: 'Amy',
           updatedAt: 1635014926,
           updatedBy: 'Amy',
-          scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+          scheduledSurfaceGuid,
           approvedItem: getTestApprovedItem(),
         },
       },
