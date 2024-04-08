@@ -11,4 +11,5 @@ services:
       - NODE_ENV=development
       - AWS_XRAY_LOG_LEVEL=silent
       - AWS_XRAY_CONTEXT_MISSING=LOG_ERROR
+      - TZ=America/New_York
     platform: linux/amd64

@@ -48,13 +48,15 @@ describe('The ScheduleCorpusItemAction', () => {
   it('completes the action successfully', async () => {
     // setting a fixed timezone since this test has a tendency of passing locally but failing
     // on CI due to server and local timezone discrepancies
-    const today = DateTime.local()
-      .setZone('America/New_York')
+    const chosenDate = DateTime.local()
+      .setZone('Europe/London')
       .plus({ days: 1 });
+
+    const chosenSurfaceGuid = 'NEW_TAB_EN_GB';
 
     mocks = [
       mock_AllScheduledSurfaces,
-      successMock(today.toFormat('yyyy-MM-dd')),
+      successMock(chosenDate.toFormat('yyyy-MM-dd'), chosenSurfaceGuid),
     ];
 
     render(
@@ -80,7 +82,7 @@ describe('The ScheduleCorpusItemAction', () => {
     ) as HTMLSelectElement;
 
     // Select a scheduled surface
-    userEvent.selectOptions(surfaceSelect, 'NEW_TAB_EN_US');
+    userEvent.selectOptions(surfaceSelect, chosenSurfaceGuid);
 
     const datePicker = screen.getByRole('button', {
       name: /choose date/i,
@@ -89,18 +91,18 @@ describe('The ScheduleCorpusItemAction', () => {
     // Click on the date field to bring up the calendar
     userEvent.click(datePicker);
 
-    // Find today's date on the monthly calendar (in MUI 5, it's a grid cell)
-    const todaysMonthYear = screen.getAllByRole('grid', {
-      name: today.toFormat('MMMM yyyy'),
+    // Find the chosen date on the monthly calendar (in MUI 5, it's a grid cell)
+    const monthYear = screen.getAllByRole('grid', {
+      name: chosenDate.toFormat('MMMM yyyy'),
     });
-    expect(todaysMonthYear).toHaveLength(1);
+    expect(monthYear).toHaveLength(1);
 
-    const todaysDate = screen.getAllByRole('gridcell', {
-      name: today.toFormat('d'),
+    const day = screen.getAllByRole('gridcell', {
+      name: chosenDate.toFormat('d'),
     })[0];
 
     // Choose it
-    userEvent.click(todaysDate);
+    userEvent.click(day);
 
     userEvent.click(screen.getByText('Save'));
 
