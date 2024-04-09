@@ -26,6 +26,7 @@ import { getDisplayTopic } from '../../helpers/topics';
 import { RemoveProspectAction } from '../actions/RemoveProspectAction/RemoveProspectAction';
 import { useToggle } from '../../../_shared/hooks';
 import { DateTime } from 'luxon';
+import { applyApTitleCase } from '../../../_shared/utils/applyApTitleCase';
 
 interface ProspectListCardProps {
   /**
@@ -173,7 +174,7 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
                     fontWeight: 500,
                   }}
                 >
-                  {prospect.title}
+                  {applyApTitleCase(prospect.title as string)}
                 </Typography>
               </Link>
             </Grid>

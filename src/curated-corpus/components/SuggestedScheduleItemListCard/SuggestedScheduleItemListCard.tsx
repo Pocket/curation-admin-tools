@@ -11,6 +11,7 @@ import {
   CorpusItemCardImage,
 } from '../../../_shared/components';
 import { ScheduleHistoryModal } from '../ScheduleHistoryModal/ScheduleHistoryModal';
+import { applyApTitleCase } from '../../../_shared/utils/applyApTitleCase';
 
 interface SuggestedScheduleItemListCardProps {
   /**
@@ -151,7 +152,7 @@ export const SuggestedScheduleItemListCard: React.FC<
               color: curationPalette.pocketBlack,
             }}
           >
-            {item.title}
+            {applyApTitleCase(item.title)}
           </Link>
         </Typography>
         <Typography

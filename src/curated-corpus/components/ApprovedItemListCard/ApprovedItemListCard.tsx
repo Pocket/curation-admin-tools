@@ -21,6 +21,7 @@ import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 import { ScheduleHistory } from '../';
 
 import { curationPalette } from '../../../theme';
+import { applyApTitleCase } from '../../../_shared/utils/applyApTitleCase';
 
 interface ApprovedItemListCardProps {
   /**
@@ -121,7 +122,7 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
               color: curationPalette.pocketBlack,
             }}
           >
-            {item.title}
+            {applyApTitleCase(item.title)}
           </Link>
         </Typography>
         <Typography variant="body2" component="p" gutterBottom>
