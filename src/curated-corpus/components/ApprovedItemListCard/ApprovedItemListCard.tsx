@@ -128,6 +128,7 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
             }}
           >
             {isItemEnglish && applyApTitleCase(item.title)}
+            {!isItemEnglish && item.title}
           </Link>
         </Typography>
         <Typography variant="body2" component="p" gutterBottom>

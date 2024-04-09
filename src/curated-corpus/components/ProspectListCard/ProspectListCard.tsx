@@ -177,6 +177,7 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
                   }}
                 >
                   {isItemEnglish && applyApTitleCase(prospect.title as string)}
+                  {!isItemEnglish && prospect.title}
                 </Typography>
               </Link>
             </Grid>

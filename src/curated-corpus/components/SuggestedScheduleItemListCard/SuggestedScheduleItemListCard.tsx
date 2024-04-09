@@ -158,6 +158,7 @@ export const SuggestedScheduleItemListCard: React.FC<
             }}
           >
             {isItemEnglish && applyApTitleCase(item.title)}
+            {!isItemEnglish && item.title}
           </Link>
         </Typography>
         <Typography
