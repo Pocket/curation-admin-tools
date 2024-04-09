@@ -127,8 +127,7 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
               color: curationPalette.pocketBlack,
             }}
           >
-            {isItemEnglish && applyApTitleCase(item.title)}
-            {!isItemEnglish && item.title}
+            {isItemEnglish ? applyApTitleCase(item.title) : item.title}
           </Link>
         </Typography>
         <Typography variant="body2" component="p" gutterBottom>

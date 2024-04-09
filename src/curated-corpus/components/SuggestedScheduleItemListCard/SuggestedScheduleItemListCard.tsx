@@ -157,8 +157,7 @@ export const SuggestedScheduleItemListCard: React.FC<
               color: curationPalette.pocketBlack,
             }}
           >
-            {isItemEnglish && applyApTitleCase(item.title)}
-            {!isItemEnglish && item.title}
+            {isItemEnglish ? applyApTitleCase(item.title) : item.title}
           </Link>
         </Typography>
         <Typography
