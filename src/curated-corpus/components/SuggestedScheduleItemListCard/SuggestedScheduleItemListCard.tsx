@@ -2,7 +2,10 @@ import React, { ReactElement, useState } from 'react';
 import { Box, CardContent, Link, Typography } from '@mui/material';
 import { DateTime } from 'luxon';
 
-import { ApprovedCorpusItem } from '../../../api/generatedTypes';
+import {
+  ApprovedCorpusItem,
+  CorpusLanguage,
+} from '../../../api/generatedTypes';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 
 import { curationPalette } from '../../../theme';
@@ -89,6 +92,8 @@ export const SuggestedScheduleItemListCard: React.FC<
         .toLocaleString(DateTime.DATE_FULL)
     : null;
 
+  const isItemEnglish = item.language.toUpperCase() === CorpusLanguage.En;
+
   return (
     <>
       <CorpusItemCardImage
@@ -152,7 +157,7 @@ export const SuggestedScheduleItemListCard: React.FC<
               color: curationPalette.pocketBlack,
             }}
           >
-            {applyApTitleCase(item.title)}
+            {isItemEnglish && applyApTitleCase(item.title)}
           </Link>
         </Typography>
         <Typography

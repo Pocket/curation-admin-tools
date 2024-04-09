@@ -1,5 +1,5 @@
 import React from 'react';
-import { Item, Prospect } from '../../../api/generatedTypes';
+import { CorpusLanguage, Item, Prospect } from '../../../api/generatedTypes';
 import {
   Card,
   CardActions,
@@ -80,6 +80,8 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
   ) : (
     <span> &mdash;</span>
   );
+
+  const isItemEnglish = prospect.language?.toUpperCase() === CorpusLanguage.En;
 
   return (
     <Card
@@ -174,7 +176,7 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
                     fontWeight: 500,
                   }}
                 >
-                  {applyApTitleCase(prospect.title as string)}
+                  {isItemEnglish && applyApTitleCase(prospect.title as string)}
                 </Typography>
               </Link>
             </Grid>

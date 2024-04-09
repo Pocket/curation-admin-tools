@@ -15,7 +15,11 @@ import BookmarksIcon from '@mui/icons-material/Bookmarks';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CategoryIcon from '@mui/icons-material/Category';
 import LanguageIcon from '@mui/icons-material/Language';
-import { ApprovedCorpusItem, CuratedStatus } from '../../../api/generatedTypes';
+import {
+  ApprovedCorpusItem,
+  CorpusLanguage,
+  CuratedStatus,
+} from '../../../api/generatedTypes';
 import { getDisplayTopic } from '../../helpers/topics';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 import { ScheduleHistory } from '../';
@@ -59,6 +63,7 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
     );
 
   const showScheduleHistory = item.scheduledSurfaceHistory.length != 0;
+  const isItemEnglish = item.language.toUpperCase() === CorpusLanguage.En;
 
   return (
     <>
@@ -122,7 +127,7 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
               color: curationPalette.pocketBlack,
             }}
           >
-            {applyApTitleCase(item.title)}
+            {isItemEnglish && applyApTitleCase(item.title)}
           </Link>
         </Typography>
         <Typography variant="body2" component="p" gutterBottom>
