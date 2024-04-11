@@ -558,6 +558,12 @@ export const SchedulePage: React.FC = (): ReactElement => {
 
         // Hide the Schedule Item Form modal
         toggleScheduleItemModal();
+
+        // Unset the corpus item that was added manually so that
+        // the ScheduleItemModal specific to manually added stories
+        // (with reasons for scheduling for the New Tab (US) surface)
+        // does not show up when a reorder/reschedule action is triggered.
+        setApprovedItem(undefined);
       },
       () => {
         // Hide the loading indicator
