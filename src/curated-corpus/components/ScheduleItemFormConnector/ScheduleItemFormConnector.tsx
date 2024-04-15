@@ -37,6 +37,11 @@ interface ScheduleItemFormConnectorProps {
   showManualScheduleReasons?: boolean;
 
   /**
+   * Whether to expand the Topic & Publisher summary.
+   */
+  expandSummary?: boolean;
+
+  /**
    * What do we do with the submitted data?
    */
   onSubmit: (
@@ -54,6 +59,7 @@ export const ScheduleItemFormConnector: React.FC<
     disableScheduledSurface,
     scheduledSurfaceGuid,
     showManualScheduleReasons,
+    expandSummary,
     onCancel,
     onSubmit,
   } = props;
@@ -92,6 +98,7 @@ export const ScheduleItemFormConnector: React.FC<
           scheduledSurfaceGuid={scheduledSurfaceGuid}
           disableScheduledSurface={disableScheduledSurface}
           showManualScheduleReasons={showManualScheduleReasons}
+          expandSummary={expandSummary}
           selectedDate={selectedDate}
           onSubmit={onSubmit}
           onCancel={onCancel}

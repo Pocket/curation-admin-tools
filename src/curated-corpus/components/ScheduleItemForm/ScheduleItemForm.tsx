@@ -68,6 +68,11 @@ interface ScheduleItemFormProps {
   showManualScheduleReasons?: boolean;
 
   /**
+   * Whether to expand the Topic & Publisher summary.
+   */
+  expandSummary?: boolean;
+
+  /**
    *
    * Note that null is an option here to keep MUI types happy, nothing else.
    */
@@ -92,6 +97,7 @@ export const ScheduleItemForm: React.FC<
     scheduledSurfaceGuid,
     disableScheduledSurface = false,
     showManualScheduleReasons = false,
+    expandSummary = false,
     selectedDate,
     onCancel,
     onSubmit,
@@ -227,7 +233,7 @@ export const ScheduleItemForm: React.FC<
           >
             <Grid item xs={12}>
               <Box mt={3}>
-                <Accordion>
+                <Accordion defaultExpanded={expandSummary}>
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     sx={{ maxHeight: '2rem' }}
