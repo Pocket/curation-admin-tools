@@ -826,6 +826,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
                               toggleRemoveModal();
                             }}
                             onMoveToBottom={() => {
+                              setCurrentItem(item);
                               moveItemToBottom(item);
                             }}
                             onReschedule={() => {
