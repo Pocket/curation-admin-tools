@@ -125,6 +125,13 @@ export const SchedulePage: React.FC = (): ReactElement => {
   const [scheduleItemModalOpen, toggleScheduleItemModal] = useToggle(false);
 
   /**
+   * Set up a separate toggle for an identical modal that is used for
+   * manually scheduled items.
+   */
+  const [manualScheduleItemModalOpen, toggleManualScheduleItemModal] =
+    useToggle(false);
+
+  /**
    * Keep track of whether the "Edit item modal" is open or not
    */
   const [editItemModalOpen, toggleEditModal] = useToggle(false);
@@ -478,7 +485,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
 
         setApprovedItem(approvedItemData.createApprovedCorpusItem);
         // transition to scheduling it and specifying manual addition reasons
-        toggleScheduleItemModal();
+        toggleManualScheduleItemModal();
       }
     );
   };
@@ -557,13 +564,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
         formikHelpers.setSubmitting(false);
 
         // Hide the Schedule Item Form modal
-        toggleScheduleItemModal();
-
-        // Unset the corpus item that was added manually so that
-        // the ScheduleItemModal specific to manually added stories
-        // (with reasons for scheduling for the New Tab (US) surface)
-        // does not show up when a reorder/reschedule action is triggered.
-        setApprovedItem(undefined);
+        toggleManualScheduleItemModal();
       },
       () => {
         // Hide the loading indicator
@@ -643,7 +644,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
           approvedItem={approvedItem}
           date={addItemDate}
           headingCopy="Confirm Schedule"
-          isOpen={scheduleItemModalOpen}
+          isOpen={manualScheduleItemModalOpen}
           scheduledSurfaceGuid={currentScheduledSurfaceGuid}
           showManualScheduleReasons={
             /* Only ask for manual schedule reasons if the curator is working on the US New Tab
@@ -652,7 +653,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
             !approvedItem.isSyndicated
           }
           onSave={onScheduleSave}
-          toggleModal={toggleScheduleItemModal}
+          toggleModal={toggleManualScheduleItemModal}
         />
       )}
 
