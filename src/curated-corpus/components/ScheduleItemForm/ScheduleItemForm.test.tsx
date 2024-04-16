@@ -234,6 +234,31 @@ describe('The ScheduleItemForm component', () => {
     expect(handleSubmit).not.toHaveBeenCalled();
   });
 
+  it('expands the Topic & Publisher summary by default if requested', async () => {
+    render(
+      <MockedProvider mocks={[mock_scheduledItems]}>
+        <ScheduleItemForm
+          data-testId="surface-selector"
+          handleDateChange={jest.fn()}
+          selectedDate={DateTime.fromFormat('2023-01-01', 'yyyy-MM-dd')}
+          onSubmit={handleSubmit}
+          scheduledSurfaces={[scheduledSurfaces[0]]}
+          approvedItemExternalId={'123abc'}
+          showManualScheduleReasons={true}
+          expandSummary={true}
+        />
+      </MockedProvider>
+    );
+
+    // Wait for the summary to load, then expect to see the main headings
+    // (full functionality of the summary is tested in ScheduleSummaryConnector tests,
+    // we just want to make sure here it's visible to the user)
+    await waitFor(() => {
+      expect(screen.getByText(/Publishers/i)).toBeInTheDocument();
+      expect(screen.getByText(/Topics/i)).toBeInTheDocument();
+    });
+  });
+
   // TODO: fix the test below. possibly failing due to apollo query mocks mismatch?
   it.skip('submits the form if at least one checkbox was selected', async () => {
     render(
