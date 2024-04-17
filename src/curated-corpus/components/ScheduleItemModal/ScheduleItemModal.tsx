@@ -46,6 +46,11 @@ interface ScheduleItemModalProps {
   showManualScheduleReasons?: boolean;
 
   /**
+   * Whether to expand the Topic & Publisher summary.
+   */
+  expandSummary?: boolean;
+
+  /**
    * The action to run when the user hits the "Save" button at the bottom of the modal.
    * @param values
    * @param formikHelpers
@@ -79,6 +84,7 @@ export const ScheduleItemModal: React.FC<ScheduleItemModalProps> = (
     isOpen,
     scheduledSurfaceGuid,
     showManualScheduleReasons,
+    expandSummary,
     onSave,
     toggleModal,
   } = props;
@@ -106,6 +112,7 @@ export const ScheduleItemModal: React.FC<ScheduleItemModalProps> = (
             scheduledSurfaceGuid={scheduledSurfaceGuid}
             disableScheduledSurface={disableScheduledSurface}
             showManualScheduleReasons={showManualScheduleReasons}
+            expandSummary={expandSummary}
             onSubmit={onSave}
             onCancel={() => {
               toggleModal();

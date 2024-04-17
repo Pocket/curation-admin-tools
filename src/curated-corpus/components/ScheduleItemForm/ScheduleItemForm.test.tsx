@@ -43,7 +43,7 @@ describe('The ScheduleItemForm component', () => {
 
     // there is at least a form and nothing falls over
     const form = screen.getByRole('form');
-    expect(form).toBeInTheDocument();
+    expect(form).toBeVisible();
   });
 
   it('has three buttons and an accordion widget', () => {
@@ -140,27 +140,6 @@ describe('The ScheduleItemForm component', () => {
     expect(select.options[1].selected).toBeTruthy();
   });
 
-  it('ensure that the schedule context is rendered when scheduled surface is populated', async () => {
-    render(
-      <MockedProvider>
-        <ScheduleItemForm
-          data-testId="surface-selector"
-          handleDateChange={jest.fn()}
-          selectedDate={DateTime.local()}
-          onSubmit={handleSubmit}
-          scheduledSurfaces={scheduledSurfaces}
-          scheduledSurfaceGuid="NEW_TAB_EN_US"
-          approvedItemExternalId={'123abc'}
-        />
-      </MockedProvider>
-    );
-
-    await waitFor(() => {
-      expect(screen.getByText(/story/i)).toBeInTheDocument();
-      expect(screen.getByText(/syndicated/i)).toBeInTheDocument();
-    });
-  });
-
   it('does not show manual scheduling reasons by default', async () => {
     render(
       <MockedProvider>
@@ -201,10 +180,10 @@ describe('The ScheduleItemForm component', () => {
 
     await waitFor(() => {
       // Should there be a pre-defined reason? This time around, yes
-      expect(screen.queryByLabelText('Evergreen')).toBeInTheDocument();
+      expect(screen.getByText('Evergreen')).toBeVisible();
 
       // Should there be a "Reason Comment" field for other reasons? Yes
-      expect(screen.queryByLabelText('Reason Comment')).toBeInTheDocument();
+      expect(screen.getByLabelText('Reason Comment')).toBeVisible();
     });
   });
 
@@ -230,8 +209,58 @@ describe('The ScheduleItemForm component', () => {
     const errorMessage = screen.getByText(
       /Please choose at least one reason to schedule this item manually./i
     );
-    expect(errorMessage).toBeInTheDocument();
+    expect(errorMessage).toBeVisible();
     expect(handleSubmit).not.toHaveBeenCalled();
+  });
+
+  it('expands the Topic & Publisher summary by default if requested', async () => {
+    render(
+      <MockedProvider mocks={[mock_scheduledItems]}>
+        <ScheduleItemForm
+          data-testId="surface-selector"
+          handleDateChange={jest.fn()}
+          selectedDate={DateTime.fromFormat('2023-01-01', 'yyyy-MM-dd')}
+          onSubmit={handleSubmit}
+          scheduledSurfaces={[scheduledSurfaces[0]]}
+          approvedItemExternalId={'123abc'}
+          showManualScheduleReasons={true}
+          expandSummary={true}
+        />
+      </MockedProvider>
+    );
+
+    // Wait for the summary to load, then expect to see the main headings
+    // (full functionality of the summary is tested in ScheduleSummaryConnector tests,
+    // we just want to make sure here it's visible to the user)
+    await waitFor(() => {
+      expect(screen.getByText(/Publishers/i)).toBeVisible();
+      expect(screen.getByText(/Topics/i)).toBeVisible();
+    });
+  });
+
+  it('does not expand the Topic & Publisher summary by default if not requested', async () => {
+    render(
+      <MockedProvider mocks={[mock_scheduledItems]}>
+        <ScheduleItemForm
+          data-testId="surface-selector"
+          handleDateChange={jest.fn()}
+          selectedDate={DateTime.fromFormat('2023-01-01', 'yyyy-MM-dd')}
+          onSubmit={handleSubmit}
+          scheduledSurfaces={[scheduledSurfaces[0]]}
+          approvedItemExternalId={'123abc'}
+          showManualScheduleReasons={true}
+          expandSummary={false}
+        />
+      </MockedProvider>
+    );
+
+    // Wait for the summary to load, then expect to see the main headings
+    // (full functionality of the summary is tested in ScheduleSummaryConnector tests,
+    // we just want to make sure here it's visible to the user)
+    await waitFor(() => {
+      expect(screen.getByText(/Publishers/i)).not.toBeVisible();
+      expect(screen.getByText(/Topics/i)).not.toBeVisible();
+    });
   });
 
   // TODO: fix the test below. possibly failing due to apollo query mocks mismatch?

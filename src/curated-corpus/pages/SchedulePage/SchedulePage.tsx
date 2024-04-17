@@ -652,6 +652,10 @@ export const SchedulePage: React.FC = (): ReactElement => {
             currentScheduledSurfaceGuid === 'NEW_TAB_EN_US' &&
             !approvedItem.isSyndicated
           }
+          expandSummary={
+            /* Expand the Topic & Publisher Summary for syndicated articles */
+            approvedItem.isSyndicated
+          }
           onSave={onScheduleSave}
           toggleModal={toggleManualScheduleItemModal}
         />
