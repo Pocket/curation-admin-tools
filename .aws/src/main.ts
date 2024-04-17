@@ -1,5 +1,5 @@
 import { Construct } from 'constructs';
-import { App, RemoteBackend, TerraformStack } from 'cdktf';
+import { App, S3Backend, TerraformStack } from 'cdktf';
 import { AwsProvider } from '@cdktf/provider-aws';
 import { config } from './config';
 import { PagerdutyProvider } from '@cdktf/provider-pagerduty';
@@ -20,10 +20,11 @@ class CurationAdminTools extends TerraformStack {
     new LocalProvider(this, 'local_provider');
     new NullProvider(this, 'null_provider');
 
-    new RemoteBackend(this, {
-      hostname: 'app.terraform.io',
-      organization: 'Pocket',
-      workspaces: [{ prefix: `${config.name}-` }],
+    new S3Backend(this, {
+      bucket: `mozilla-content-team-${config.environment.toLowerCase()}-terraform-state`,
+      dynamodbTable: `mozilla-content-team-${config.environment.toLowerCase()}-terraform-state`,
+      key: config.name,
+      region: 'us-east-1',
     });
 
     const pocketApp = createPocketAlbApplication(this);
