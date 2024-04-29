@@ -15,8 +15,8 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { Link } from 'react-router-dom';
-import pocketLogo from '../../assets/PKTLogoRounded_RGB.png';
-import pocketShield from '../../assets/pocket-shield.svg';
+import mozillaLogo from '../../assets/mozilla-logo-bw-rgb.png';
+import mozillaIcon from '../../assets/mozilla-icon-bw-rgb.svg';
 import { IDToken } from '../../hooks';
 import { curationPalette } from '../../../theme';
 import {
@@ -130,12 +130,12 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
                   <Grid item sm={4}>
                     <Link to="/">
                       <img
-                        src={pocketLogo}
+                        src={mozillaLogo}
                         alt="Home Page"
                         style={{
                           width: '100px',
-                          paddingRight: '0.25rem',
-                          marginTop: '0.5rem',
+                          paddingRight: '0.5rem',
+                          marginTop: '0.25rem',
                         }}
                       />
                     </Link>
@@ -189,10 +189,10 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
                   <Grid item xs={1}>
                     <Link to="/">
                       <img
-                        src={pocketShield}
-                        alt="Pocket Logo"
+                        src={mozillaIcon}
+                        alt="Mozilla Logo"
                         style={{
-                          width: '1.25rem',
+                          width: '2rem',
                           paddingTop: '0.375rem',
                         }}
                       />
@@ -200,7 +200,7 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
                   </Grid>
                 </Hidden>
 
-                <Grid item xs={8} sm={6}>
+                <Grid item xs={6} sm={6}>
                   <StyledProductHeading
                     variant="h5"
                     sx={
