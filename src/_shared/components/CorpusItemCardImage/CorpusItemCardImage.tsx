@@ -69,7 +69,6 @@ const bottomOverlayContainerSxStyles: SxProps = {
   position: 'absolute',
   bottom: 0,
   width: '100%',
-  cursor: 'pointer',
 };
 
 const getTopRightLabel = (
@@ -115,6 +114,7 @@ const getBottomLeftLastScheduledLabel = (
     <Box
       sx={{
         ...labelContainerSxStyles,
+        cursor: 'pointer',
         backgroundColor: highlightLastScheduled
           ? curationPalette.solidPink
           : curationPalette.overlayBgBlack,
