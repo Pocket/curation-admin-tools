@@ -9,6 +9,7 @@ import { getTestApprovedItem } from '../helpers/approvedItem';
  * from the MUI date picker.
  *
  * @param scheduledDate
+ * @param scheduledSurfaceGuid
  */
 export const successMock = (
   scheduledDate: string,

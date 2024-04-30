@@ -12,6 +12,7 @@ import { successMock } from '../../../integration-test-mocks/createScheduledCorp
 import { apolloCache } from '../../../../api/client';
 import { ScheduleCorpusItemAction } from './ScheduleCorpusItemAction';
 import { mock_AllScheduledSurfaces } from '../../../integration-test-mocks/getScheduledSurfacesForUser';
+import { mock_scheduledItemsWithParams } from '../../../integration-test-mocks/getScheduledItems';
 
 describe('The ScheduleCorpusItemAction', () => {
   let mocks: MockedResponse[] = [];
@@ -56,6 +57,10 @@ describe('The ScheduleCorpusItemAction', () => {
 
     mocks = [
       mock_AllScheduledSurfaces,
+      mock_scheduledItemsWithParams(
+        chosenDate.toFormat('yyyy-MM-dd'),
+        chosenSurfaceGuid
+      ),
       successMock(chosenDate.toFormat('yyyy-MM-dd'), chosenSurfaceGuid),
     ];
 
