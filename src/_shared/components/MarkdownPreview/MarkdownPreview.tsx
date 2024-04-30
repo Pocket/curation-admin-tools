@@ -65,7 +65,7 @@ export const MarkdownPreview: React.FC<MarkdownPreviewProps> = (
         </Box>
       </TabPanel>
       <Link
-        href="https://getpocket.atlassian.net/wiki/spaces/PE/pages/2105606280/Pocket+Markdown"
+        href="https://mozilla-hub.atlassian.net/wiki/spaces/PE/pages/390636109/Pocket+Markdown"
         target="_blank"
         rel="noreferrer"
         sx={{ textDecoration: 'none' }}
