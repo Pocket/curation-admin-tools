@@ -3,6 +3,7 @@ import { CardMedia, Typography } from '@mui/material';
 import { Box, Stack, SxProps } from '@mui/system';
 
 import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
 import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
 import BookmarksOutlinedIcon from '@mui/icons-material/BookmarksOutlined';
@@ -68,7 +69,6 @@ const bottomOverlayContainerSxStyles: SxProps = {
   position: 'absolute',
   bottom: 0,
   width: '100%',
-  cursor: 'pointer',
 };
 
 const getTopRightLabel = (
@@ -105,19 +105,22 @@ const getTopRightLabel = (
   return null;
 };
 
-const getBottomLeftLabel = (
+const getBottomLeftLastScheduledLabel = (
   lastScheduledDayDiff: number,
+  toggleScheduleHistoryModal: VoidFunction,
   highlightLastScheduled?: boolean
 ): ReactElement => {
   return (
     <Box
       sx={{
         ...labelContainerSxStyles,
+        cursor: 'pointer',
         backgroundColor: highlightLastScheduled
           ? curationPalette.solidPink
           : curationPalette.overlayBgBlack,
       }}
       data-testid="last-scheduled-overlay"
+      onClick={toggleScheduleHistoryModal}
     >
       <EventAvailableOutlinedIcon fontSize="small" />
       <Typography variant="caption">
@@ -224,10 +227,7 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
         </Stack>
       </Box>
 
-      <Box
-        sx={bottomOverlayContainerSxStyles}
-        onClick={toggleScheduleHistoryModal}
-      >
+      <Box sx={bottomOverlayContainerSxStyles}>
         <Stack
           direction="row"
           alignItems="flex-start"
@@ -237,7 +237,33 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
           component="div"
         >
           {lastScheduledDayDiff &&
-            getBottomLeftLabel(lastScheduledDayDiff, highlightLastScheduled)}
+            getBottomLeftLastScheduledLabel(
+              lastScheduledDayDiff,
+              toggleScheduleHistoryModal,
+              highlightLastScheduled
+            )}
+        </Stack>
+
+        <Stack
+          direction="row"
+          alignItems="flex-start"
+          justifyContent="space-between"
+          component="div"
+          ml="0.1rem"
+          mb="0.1rem"
+        >
+          {!item.hasTrustedDomain && (
+            <Box
+              sx={{
+                ...labelContainerSxStyles,
+                backgroundColor: curationPalette.solidPink,
+                textTransform: 'uppercase',
+              }}
+            >
+              <WarningAmberIcon fontSize="small" />
+              <Typography variant="caption">New domain</Typography>
+            </Box>
+          )}
         </Stack>
       </Box>
     </Box>

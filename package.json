@@ -49,6 +49,9 @@
     "lint-fix": "tsc --noEmit && eslint src/**/*.ts{,x} --fix",
     "api:generate-types": "graphql-codegen --config src/config/admin-api-codegen.json -r dotenv/config"
   },
+  "jest": {
+    "globalSetup": "./jest.global-setup.js"
+  },
   "eslintConfig": {
     "extends": [
       "react-app",

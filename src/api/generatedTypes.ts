@@ -24,7 +24,11 @@ export type Scalars = {
   Date: any;
   /** A String representing a date in the format of `yyyy-MM-dd HH:mm:ss` */
   DateString: any;
-  /** ISOString custom scalar type */
+  /**
+   * ISOString scalar - all datetimes fields are Typescript Date objects on this server &
+   * returned as ISO-8601 encoded date strings (e.g. ISOString scalars) to GraphQL clients.
+   * See Section 5.6 of the RFC 3339 profile of the ISO 8601 standard: https://www.ietf.org/rfc/rfc3339.txt.
+   */
   ISOString: any;
   /**
    * A string formatted with CommonMark markdown,
@@ -38,6 +42,7 @@ export type Scalars = {
   Upload: any;
   /** A URL - usually, for an interesting story on the internet that's worth saving to Pocket. */
   Url: any;
+  ValidUrl: any;
 };
 
 /** Indicates where in the Curation Tools UI the action took place */
@@ -71,6 +76,8 @@ export type ApprovedCorpusItem = {
   excerpt: Scalars['String'];
   /** An alternative primary key in UUID format that is generated on creation. */
   externalId: Scalars['ID'];
+  /** True if the domain of the corpus item has been scheduled in the past. */
+  hasTrustedDomain: Scalars['Boolean'];
   /**
    * The image URL associated with the story.
    * This is a link to an S3 bucket - the image will have been pre-uploaded to S3 before saving a curated item.
@@ -899,6 +906,10 @@ export type Item = {
    * @deprecated Use a domain as the identifier instead
    */
   originDomainId?: Maybe<Scalars['String']>;
+  /** The client preview/display logic for this url */
+  preview?: Maybe<PocketMetadata>;
+  /** A server generated unique reader slug for this item based on itemId */
+  readerSlug: Scalars['String'];
   /** The item id of the resolved_url */
   resolvedId?: Maybe<Scalars['String']>;
   /**
@@ -946,6 +957,30 @@ export type Item = {
   /** Number of words in the article */
   wordCount?: Maybe<Scalars['Int']>;
 };
+
+export type ItemNotFound = {
+  __typename?: 'ItemNotFound';
+  message?: Maybe<Scalars['String']>;
+};
+
+export type ItemSummary = PocketMetadata & {
+  __typename?: 'ItemSummary';
+  authors?: Maybe<Array<Author>>;
+  datePublished?: Maybe<Scalars['ISOString']>;
+  domain?: Maybe<DomainMetadata>;
+  excerpt?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  image?: Maybe<Image>;
+  item?: Maybe<Item>;
+  source: ItemSummarySource;
+  title?: Maybe<Scalars['String']>;
+  url: Scalars['Url'];
+};
+
+export enum ItemSummarySource {
+  Opengraph = 'OPENGRAPH',
+  PocketParser = 'POCKET_PARSER',
+}
 
 /** A label used to mark and categorize an Entity (e.g. Collection). */
 export type Label = {
@@ -1148,8 +1183,6 @@ export type Mutation = {
   rescheduleScheduledCorpusItem: ScheduledCorpusItem;
   /** Updates an Approved Item. */
   updateApprovedCorpusItem: ApprovedCorpusItem;
-  /** Updates authors for an Approved Item. */
-  updateApprovedCorpusItemAuthors: ApprovedCorpusItem;
   /** Updates a Collection. */
   updateCollection: Collection;
   /** Updates a CollectionAuthor. */
@@ -1285,10 +1318,6 @@ export type MutationUpdateApprovedCorpusItemArgs = {
   data: UpdateApprovedCorpusItemInput;
 };
 
-export type MutationUpdateApprovedCorpusItemAuthorsArgs = {
-  data: UpdateApprovedCorpusItemAuthorsInput;
-};
-
 export type MutationUpdateCollectionArgs = {
   data: UpdateCollectionInput;
 };
@@ -1419,6 +1448,25 @@ export type PaginationInput = {
   last?: InputMaybe<Scalars['Int']>;
 };
 
+export type PocketMetadata = {
+  authors?: Maybe<Array<Author>>;
+  datePublished?: Maybe<Scalars['ISOString']>;
+  domain?: Maybe<DomainMetadata>;
+  excerpt?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  image?: Maybe<Image>;
+  item?: Maybe<Item>;
+  source: ItemSummarySource;
+  title?: Maybe<Scalars['String']>;
+  url: Scalars['Url'];
+};
+
+export type PocketShare = {
+  __typename?: 'PocketShare';
+  preview?: Maybe<ItemSummary>;
+  targetUrl: Scalars['ValidUrl'];
+};
+
 export type Prospect = {
   __typename?: 'Prospect';
   approvedCorpusItem?: Maybe<ApprovedCorpusItem>;
@@ -1518,6 +1566,14 @@ export type Query = {
   itemByUrl?: Maybe<Item>;
   /** Retrieves all available Labels */
   labels: Array<Label>;
+  /**
+   * Resolve Reader View links which might point to SavedItems that do not
+   * exist, aren't in the Pocket User's list, or are requested by a logged-out
+   * user (or user without a Pocket Account).
+   * Fetches data to create an interstitial page/modal so the visitor can click
+   * through to the shared site.
+   */
+  readerSlug: ReaderViewResult;
   searchCollections: CollectionsResult;
   /** Looks up and returns a Shareable List with a given external ID for any user. */
   searchShareableList?: Maybe<ShareableListComplete>;
@@ -1599,6 +1655,10 @@ export type QueryItemByUrlArgs = {
   url: Scalars['String'];
 };
 
+export type QueryReaderSlugArgs = {
+  slug: Scalars['ID'];
+};
+
 export type QuerySearchCollectionsArgs = {
   filters: SearchCollectionsFilters;
   page?: InputMaybe<Scalars['Int']>;
@@ -1607,6 +1667,19 @@ export type QuerySearchCollectionsArgs = {
 
 export type QuerySearchShareableListArgs = {
   externalId: Scalars['ID'];
+};
+
+export type ReaderFallback = ItemNotFound | ReaderInterstitial;
+
+export type ReaderInterstitial = {
+  __typename?: 'ReaderInterstitial';
+  itemCard?: Maybe<ItemSummary>;
+};
+
+export type ReaderViewResult = {
+  __typename?: 'ReaderViewResult';
+  fallbackPage?: Maybe<ReaderFallback>;
+  slug: Scalars['ID'];
 };
 
 /** Input data for rejecting an Approved Item. */
@@ -1988,14 +2061,6 @@ export type UnMarseable = {
   __typename?: 'UnMarseable';
   /** The html that could not be parsed into a Marticle* component. */
   html: Scalars['String'];
-};
-
-/** Input data for updating an Approved Item's author data. */
-export type UpdateApprovedCorpusItemAuthorsInput = {
-  /** A name and sort order for each author. */
-  authors: Array<CorpusItemAuthorInput>;
-  /** Approved Item ID. */
-  externalId: Scalars['ID'];
 };
 
 /** Input data for updating an Approved Item. */
@@ -2401,6 +2466,7 @@ export type CuratedItemDataFragment = {
   publisher: string;
   datePublished?: any | null;
   url: any;
+  hasTrustedDomain: boolean;
   imageUrl: any;
   excerpt: string;
   status: CuratedStatus;
@@ -2556,6 +2622,7 @@ export type ScheduledItemDataFragment = {
     publisher: string;
     datePublished?: any | null;
     url: any;
+    hasTrustedDomain: boolean;
     imageUrl: any;
     excerpt: string;
     status: CuratedStatus;
@@ -2613,6 +2680,7 @@ export type CreateApprovedCorpusItemMutation = {
     publisher: string;
     datePublished?: any | null;
     url: any;
+    hasTrustedDomain: boolean;
     imageUrl: any;
     excerpt: string;
     status: CuratedStatus;
@@ -2841,6 +2909,7 @@ export type CreateScheduledCorpusItemMutation = {
       publisher: string;
       datePublished?: any | null;
       url: any;
+      hasTrustedDomain: boolean;
       imageUrl: any;
       excerpt: string;
       status: CuratedStatus;
@@ -2941,6 +3010,7 @@ export type DeleteScheduledItemMutation = {
       publisher: string;
       datePublished?: any | null;
       url: any;
+      hasTrustedDomain: boolean;
       imageUrl: any;
       excerpt: string;
       status: CuratedStatus;
@@ -3036,6 +3106,7 @@ export type RejectApprovedItemMutation = {
     publisher: string;
     datePublished?: any | null;
     url: any;
+    hasTrustedDomain: boolean;
     imageUrl: any;
     excerpt: string;
     status: CuratedStatus;
@@ -3140,6 +3211,7 @@ export type RescheduleScheduledCorpusItemMutation = {
       publisher: string;
       datePublished?: any | null;
       url: any;
+      hasTrustedDomain: boolean;
       imageUrl: any;
       excerpt: string;
       status: CuratedStatus;
@@ -3183,6 +3255,7 @@ export type UpdateApprovedCorpusItemMutation = {
     publisher: string;
     datePublished?: any | null;
     url: any;
+    hasTrustedDomain: boolean;
     imageUrl: any;
     excerpt: string;
     status: CuratedStatus;
@@ -3709,6 +3782,7 @@ export type GetApprovedItemByUrlQuery = {
     publisher: string;
     datePublished?: any | null;
     url: any;
+    hasTrustedDomain: boolean;
     imageUrl: any;
     excerpt: string;
     status: CuratedStatus;
@@ -3765,6 +3839,7 @@ export type GetApprovedItemsQuery = {
         publisher: string;
         datePublished?: any | null;
         url: any;
+        hasTrustedDomain: boolean;
         imageUrl: any;
         excerpt: string;
         status: CuratedStatus;
@@ -4283,6 +4358,7 @@ export type GetScheduledItemsQuery = {
         publisher: string;
         datePublished?: any | null;
         url: any;
+        hasTrustedDomain: boolean;
         imageUrl: any;
         excerpt: string;
         status: CuratedStatus;
@@ -4751,6 +4827,7 @@ export const CuratedItemDataFragmentDoc = gql`
       sortOrder
     }
     url
+    hasTrustedDomain
     imageUrl
     excerpt
     status

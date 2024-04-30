@@ -28,6 +28,7 @@ describe('The CorpusItemCardImage component', () => {
     expect(screen.queryByText(/collection/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/syndicated/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/time sensitive/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/NEW DOMAIN/i)).not.toBeInTheDocument();
   });
 
   it('should render time sensitive label if item has this prop', () => {
@@ -113,5 +114,23 @@ describe('The CorpusItemCardImage component', () => {
     );
 
     expect(screen.getByText(/last scheduled 2 days ago/i)).toBeInTheDocument();
+  });
+
+  it('should render a new domain warning label if item.hasTrustedDomain is false', () => {
+    item = {
+      ...item,
+      hasTrustedDomain: false,
+    };
+
+    render(
+      <CorpusItemCardImage
+        item={item}
+        currentScheduledDate={currentScheduledDate}
+        scheduledSurfaceGuid="NEW_TAB_EN_US"
+        toggleScheduleHistoryModal={toggleScheduleHistoryModal}
+      />
+    );
+
+    expect(screen.getByText(/NEW DOMAIN/i)).toBeVisible();
   });
 });

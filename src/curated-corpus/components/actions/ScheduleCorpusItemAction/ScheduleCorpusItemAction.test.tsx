@@ -49,9 +49,7 @@ describe('The ScheduleCorpusItemAction', () => {
   it('completes the action successfully', async () => {
     // setting a fixed timezone since this test has a tendency of passing locally but failing
     // on CI due to server and local timezone discrepancies
-    const chosenDate = DateTime.local()
-      .setZone('Europe/London')
-      .plus({ days: 1 });
+    const chosenDate = DateTime.local().plus({ days: 1 });
 
     const chosenSurfaceGuid = 'NEW_TAB_EN_GB';
 
