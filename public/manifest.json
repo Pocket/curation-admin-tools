@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Curation Tools",
+  "name": "Curation Admin Tools",
   "icons": [
     {
       "src": "favicon.ico",
@@ -8,9 +8,9 @@
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
+      "src": "mozilla-favicon.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "196x196"
     }
   ],
   "start_url": ".",

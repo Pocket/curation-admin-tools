@@ -7,7 +7,7 @@ import { Box, Grid } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { Button } from './_shared/components';
 import theme from './theme';
-import pocketLogo from './_shared/assets/PKTLogoRounded_RGB.png';
+import mozillaLogo from './_shared/assets/mozilla-logo-bw-rgb.png';
 
 const authService = new AuthService({
   location: window.location,
@@ -44,8 +44,8 @@ const SecuredApp = (): JSX.Element => {
           <Grid item xs={12}>
             <Box display="flex" justifyContent="center">
               <img
-                style={{ width: '200px' }}
-                src={pocketLogo}
+                style={{ width: '180px', padding: '1em' }}
+                src={mozillaLogo}
                 alt="Home Page"
               />
             </Box>
