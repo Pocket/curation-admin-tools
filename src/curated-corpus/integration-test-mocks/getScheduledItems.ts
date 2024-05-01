@@ -128,3 +128,29 @@ export const mock_scheduledItemsNoResults = constructMock(
     },
   ]
 );
+
+export const mock_scheduledItemsWithParams = (
+  scheduledDate: string,
+  scheduledSurfaceGuid = 'NEW_TAB_EN_US'
+) => {
+  return constructMock(
+    'getScheduledCorpusItems',
+    getScheduledItems,
+    {
+      filters: {
+        scheduledSurfaceGuid,
+        startDate: scheduledDate,
+        endDate: scheduledDate,
+      },
+    },
+    [
+      {
+        scheduledDate,
+        collectionCount: 0,
+        syndicatedCount: 0,
+        totalCount: 1,
+        items: scheduledItems,
+      },
+    ]
+  );
+};
