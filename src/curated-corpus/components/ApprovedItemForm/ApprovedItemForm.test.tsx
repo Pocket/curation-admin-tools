@@ -31,6 +31,7 @@ describe('The ApprovedItemForm component', () => {
       imageUrl: 'https://placeimg.com/640/480/people?random=494',
       excerpt:
         'Everything You Wanted to Know About React and Were Afraid To Ask',
+      hasTrustedDomain: true,
       language: CorpusLanguage.De,
       authors: [
         { name: 'One Author', sortOrder: 1 },
