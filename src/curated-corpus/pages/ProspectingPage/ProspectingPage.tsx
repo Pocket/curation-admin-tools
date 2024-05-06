@@ -744,7 +744,8 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
             /* Only ask for manual schedule reasons if the curator is working on the US New Tab or German New Tab
              * and if it's not a syndicated item */
             (currentScheduledSurfaceGuid === 'NEW_TAB_EN_US' ||
-              currentScheduledSurfaceGuid === 'NEW_TAB_DE_DE') &&
+              (currentScheduledSurfaceGuid === 'NEW_TAB_DE_DE' &&
+                !approvedItem.prospectId)) &&
             !approvedItem.isSyndicated
           }
           expandSummary={
