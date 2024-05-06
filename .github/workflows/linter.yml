@@ -57,7 +57,7 @@ jobs:
       - name: Lint Code Base
 
         # We use the Github super linter, it can be cranky at times, so in that moment here are the docs https://github.com/github/super-linter
-        uses: super-linter/super-linter/slim@v6.4.1
+        uses: super-linter/super-linter@v6
 
         # All Environment variables are defined here https://github.com/github/super-linter#environment-variables
         env:
