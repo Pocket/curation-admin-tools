@@ -11,7 +11,7 @@ import { FieldFunctionOptions } from '@apollo/client/cache/inmemory/policies';
 export const readPaginatedDataFromCache = (
   existing: SafeReadonly<any>,
   options: FieldFunctionOptions,
-  dataPropName: string
+  dataPropName: string,
 ) => {
   const { args } = options;
 

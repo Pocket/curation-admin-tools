@@ -102,7 +102,7 @@ export const mock_AllScheduledSurfaces = constructMock(
   'getScheduledSurfacesForUser',
   getScheduledSurfacesForUser,
   undefined,
-  allScheduledSurfaces
+  allScheduledSurfaces,
 );
 
 /**
@@ -113,7 +113,7 @@ export const mock_TwoScheduledSurfaces = constructMock(
   'getScheduledSurfacesForUser',
   getScheduledSurfacesForUser,
   undefined,
-  allScheduledSurfaces.slice(0, 2)
+  allScheduledSurfaces.slice(0, 2),
 );
 
 /**
@@ -123,5 +123,5 @@ export const mock_OneScheduledSurface = constructMock(
   'getScheduledSurfacesForUser',
   getScheduledSurfacesForUser,
   undefined,
-  allScheduledSurfaces.slice(4, 5)
+  allScheduledSurfaces.slice(4, 5),
 );

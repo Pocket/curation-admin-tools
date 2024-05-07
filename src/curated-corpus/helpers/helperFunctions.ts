@@ -5,7 +5,7 @@ import { ScheduledSurfaces } from './definitions';
 
 // downloads image from source url
 export const fetchFileFromUrl = async (
-  url: string
+  url: string,
 ): Promise<Blob | undefined> => {
   const response = await fetch(url);
 
@@ -20,17 +20,17 @@ export const fetchFileFromUrl = async (
  */
 export const downloadAndUploadApprovedItemImageToS3 = async (
   imageUrl: string,
-  uploadApprovedItemMutation: any
+  uploadApprovedItemMutation: any,
 ): Promise<string> => {
   // bypassing CORS and downloading
   const image = await fetchFileFromUrl(
     'https://pocket-image-cache.com/x/filters:no_upscale():format(jpg)/' +
-      encodeURIComponent(imageUrl)
+      encodeURIComponent(imageUrl),
   );
 
   if (!image) {
     throw new Error(
-      'Failed to download image, please upload a new image manually'
+      'Failed to download image, please upload a new image manually',
     );
   }
   // upload downloaded image to s3
@@ -56,7 +56,7 @@ export const downloadAndUploadApprovedItemImageToS3 = async (
 export const readImageFileFromDisk = (
   file: FileWithPath,
   onloadCallBack?: VoidFunction,
-  fileReader?: FileReader
+  fileReader?: FileReader,
 ) => {
   const reader: FileReader = fileReader || new FileReader();
 
@@ -82,10 +82,10 @@ export const readImageFileFromDisk = (
 
 export const getLocalDateTimeForGuid = (
   guidCode: string,
-  scheduledSurfacesForUser: GetScheduledSurfacesForUserQuery
+  scheduledSurfacesForUser: GetScheduledSurfacesForUserQuery,
 ) => {
   const guid = scheduledSurfacesForUser.getScheduledSurfacesForUser.find(
-    (item) => item.guid === guidCode
+    (item) => item.guid === guidCode,
   );
 
   if (!guid) {
@@ -132,7 +132,7 @@ export const getScheduledSurfaceName = (surfaceGuid: string): string => {
 export const getFormattedImageUrl = (imageUrl: string): string => {
   if (imageUrl && imageUrl.length > 0) {
     return `https://pocket-image-cache.com/600x300/filters:format(jpg):extract_focal()/`.concat(
-      encodeURIComponent(imageUrl)
+      encodeURIComponent(imageUrl),
     );
   }
   return '/placeholders/collectionSmall.svg';
@@ -159,11 +159,11 @@ export const formatFormLabel = (str: string): string => {
  */
 export const getLastScheduledDayDiff = (
   currentDateViewingScheduleFor: string,
-  listOfScheduleDates: string[]
+  listOfScheduleDates: string[],
 ): number | null => {
   // find the most recent scheduled date before the current date that the schedule is being viewed for
   const mostRecentScheduleDate = listOfScheduleDates.find(
-    (scheduledDate) => scheduledDate < currentDateViewingScheduleFor
+    (scheduledDate) => scheduledDate < currentDateViewingScheduleFor,
   );
 
   if (!mostRecentScheduleDate) {

@@ -22,5 +22,5 @@ export const mock_ScheduledItemCountsZero = constructMock(
   'getScheduledCorpusItems',
   getScheduledItemCounts,
   variables,
-  scheduledItemCounts
+  scheduledItemCounts,
 );

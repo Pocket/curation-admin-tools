@@ -32,7 +32,7 @@ export const searchCollectionsFieldPolicy: FieldPolicy<
       existing,
       incoming,
       options,
-      'collections'
+      'collections',
     );
   },
 
