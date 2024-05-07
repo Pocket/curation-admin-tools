@@ -6,8 +6,11 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:prettier/recommended',
   ],
-  // Ignore generated types, but check infra files under the `.aws` folder.
-  ignorePatterns: ['src/api/generatedTypes.ts', '!/.aws'],
+  ignorePatterns: [
+    'src/api/generatedTypes.ts', // Ignore generated types
+    'react-app-env.d.ts', // Ignore Create React App setup file
+    '!/.aws', // Do check infra files under the `.aws` folder
+  ],
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
