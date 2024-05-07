@@ -19,6 +19,8 @@ on:
   # https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows#pull_request
   pull_request:
 
+permissions: { }
+
 ###############
 # Set the Job #
 ###############
@@ -29,6 +31,12 @@ jobs:
     # Set the agent to run on
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+      packages: read
+      # To report GitHub Actions status checks
+      statuses: write
+
     ##################
     # Load all steps #
     ##################
@@ -38,6 +46,10 @@ jobs:
       ##########################
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          # super-linter needs the full git history to get the
+          # list of files that changed across commits
+          fetch-depth: 0
 
       ##########################
       # Github Super Linter needs
@@ -57,7 +69,7 @@ jobs:
       - name: Lint Code Base
 
         # We use the Github super linter, it can be cranky at times, so in that moment here are the docs https://github.com/github/super-linter
-        uses: docker://ghcr.io/github/super-linter:slim-v4@sha256:80ecaa58ad5f9480c66e3c77af5c955831861a41fb78ce7e0ffb1b443eca0f0f
+        uses: super-linter/super-linter/slim@v6.4.1
 
         # All Environment variables are defined here https://github.com/github/super-linter#environment-variables
         env:
