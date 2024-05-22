@@ -25,12 +25,15 @@ export { RemoveItemFromScheduledSurfaceModal } from './RemoveItemFromScheduledSu
 export { RemoveItemForm } from './RemoveItemForm/RemoveItemForm';
 export { RemoveItemModal } from './RemoveItemModal/RemoveItemModal';
 export { ScheduleCorpusItemAction } from './actions/ScheduleCorpusItemAction/ScheduleCorpusItemAction';
+export { ScheduleDayHeading } from './ScheduleDayHeading/ScheduleDayHeading';
 export { ScheduleHistory } from './ScheduleHistory/ScheduleHistory';
 export { ScheduleHistoryEntries } from './ScheduleHistoryEntries/ScheduleHistoryEntries';
 export { ScheduledItemCardWrapper } from './ScheduledItemCardWrapper/ScheduledItemCardWrapper';
 export { ScheduleItemFormConnector } from './ScheduleItemFormConnector/ScheduleItemFormConnector';
 export { ScheduleItemForm } from './ScheduleItemForm/ScheduleItemForm';
 export { ScheduleItemModal } from './ScheduleItemModal/ScheduleItemModal';
+export { SchedulePageFilters } from './SchedulePageFilters/SchedulePageFilters';
+export { ScheduleResultsFilter } from './ScheduleResultsFilter/ScheduleResultsFilter';
 export type { ScheduleSummary } from './ScheduleSummaryCard/ScheduleSummaryCard';
 export { ScheduleSummaryCard } from './ScheduleSummaryCard/ScheduleSummaryCard';
 export { ScheduleSummaryConnector } from './ScheduleSummaryConnector/ScheduleSummaryConnector';

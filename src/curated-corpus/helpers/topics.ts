@@ -26,9 +26,15 @@ export const getDisplayTopic = (
 /**
  * Extracts a summary of topic data from scheduled corpus item data.
  *
+ * By default, lists topics with zero story counts at the bottom of the list.
+ *
  * @param data
+ * @param includeAllTopics
  */
-export const getGroupedTopicData = (data: string[]): ScheduleSummary[] => {
+export const getGroupedTopicData = (
+  data: string[],
+  includeAllTopics = true
+): ScheduleSummary[] => {
   const topics: ScheduleSummary[] = [];
 
   data.forEach((topic) => {
@@ -41,14 +47,8 @@ export const getGroupedTopicData = (data: string[]): ScheduleSummary[] => {
 
   // Add the rest of the pre-defined topics - we need to list them all,
   // but only if there's anything actually scheduled for the day.
-  if (data.length > 0) {
-    canonicalTopics.forEach((topic: DropdownOption) => {
-      const topicExists = topics.find((entry) => entry.name === topic.name);
-
-      if (!topicExists) {
-        topics.push({ name: topic.name, count: 0 });
-      }
-    });
+  if (data.length > 0 && includeAllTopics) {
+    addFullListOfTopics(topics);
   }
 
   // Sort topics in descending order - most frequent on top
@@ -57,4 +57,20 @@ export const getGroupedTopicData = (data: string[]): ScheduleSummary[] => {
   topics.sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 
   return topics;
+};
+
+/**
+ * Add the remaining topics with 0 story counts to provide a full list of topics
+ * for the summary table with story counts.
+ *
+ * @param topics
+ */
+const addFullListOfTopics = (topics: ScheduleSummary[]) => {
+  canonicalTopics.forEach((topic: DropdownOption) => {
+    const topicExists = topics.find((entry) => entry.name === topic.name);
+
+    if (!topicExists) {
+      topics.push({ name: topic.name, count: 0 });
+    }
+  });
 };

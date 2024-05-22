@@ -10,6 +10,7 @@ export { StyledDropzoneBox } from './StyledDropzoneBox';
 export { StyledHistoryCollapse } from './StyledHistoryCollapse';
 export { StyledLinkButton } from './StyledLinkButton';
 export { StyledListCard } from './StyledListCard';
+export { StyledMenu } from './StyledMenu';
 export { StyledProductHeading } from './StyledProductHeading';
 export { StyledProductHeadingLink } from './StyledProductHeadingLink';
 export { StyledRouterLink } from './StyledRouterLink';

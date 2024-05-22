@@ -1,21 +1,5 @@
 import React, { ReactElement, useEffect, useState } from 'react';
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Box,
-  Grid,
-  TextField,
-  Typography,
-} from '@mui/material';
-import { Stack } from '@mui/system';
-import { Dropdown } from '@mui/base/Dropdown';
-import { Menu } from '@mui/base/Menu';
-import { MenuButton } from '@mui/base/MenuButton';
-import { MenuItem } from '@mui/base/MenuItem';
-
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import AddIcon from '@mui/icons-material/Add';
+import { Box, Grid, TextField, Typography } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { DateTime } from 'luxon';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
@@ -32,9 +16,9 @@ import {
   EditCorpusItemAction,
   RejectAndUnscheduleItemAction,
   RemoveItemFromScheduledSurfaceModal,
+  ScheduleDayHeading,
   ScheduledItemCardWrapper,
   ScheduleItemModal,
-  ScheduleSummaryLayout,
   SplitButton,
 } from '../../components';
 import {
@@ -64,9 +48,10 @@ import {
   downloadAndUploadApprovedItemImageToS3,
   getLocalDateTimeForGuid,
 } from '../../helpers/helperFunctions';
-import { curationPalette } from '../../../theme';
 import { transformProspectToApprovedItem } from '../../helpers/prospects';
 import { transformAuthors } from '../../../_shared/utils/transformAuthors';
+import { SchedulePageFiltersInterface } from '../../components/SchedulePageFilters/SchedulePageFilters';
+import { getDisplayTopic } from '../../helpers/topics';
 
 export const SchedulePage: React.FC = (): ReactElement => {
   /**
@@ -195,6 +180,15 @@ export const SchedulePage: React.FC = (): ReactElement => {
     undefined | string
   >();
 
+  // Keep track of filters. Filters are reset if a different surface is loaded or dates are updated
+  const initialFiltersState: SchedulePageFiltersInterface = {
+    topics: 'All',
+    publishers: 'All',
+    types: 'All',
+  };
+  const [filters, setFilters] =
+    useState<SchedulePageFiltersInterface>(initialFiltersState);
+
   // Get the list of Scheduled Surfaces the currently logged-in user has access to.
   const { data: scheduledSurfaceData } = useGetScheduledSurfacesForUserQuery({
     onCompleted: (data) => {
@@ -287,6 +281,10 @@ export const SchedulePage: React.FC = (): ReactElement => {
    * refetch all the data on the page for that Scheduled Surface.
    */
   const updateScheduledSurface = (option: DropdownOption) => {
+    // Reset frontend-only filters to show all items for the surface
+    // the curator is switching to.
+    setFilters(initialFiltersState);
+
     // The "refetch" variable is only defined after the first execution
     // of a lazy query hook function
     if (refetch) {
@@ -420,6 +418,10 @@ export const SchedulePage: React.FC = (): ReactElement => {
     startDate: DateTime,
     endDate: DateTime
   ) => {
+    // Reset frontend-only filters to show all items for the surface
+    // the curator is switching to.
+    setFilters(initialFiltersState);
+
     getScheduledItemsQuery({
       variables: {
         filters: {
@@ -433,20 +435,6 @@ export const SchedulePage: React.FC = (): ReactElement => {
     if (error) {
       showNotification(error.message, 'error');
     }
-  };
-
-  /**
-   *
-   * @param data
-   * @returns Formatted day and syndicated count heading
-   */
-  const getDayAndSyndicatedCountHeading = (
-    data: ScheduledCorpusItemsResult
-  ): string => {
-    return DateTime.fromFormat(data.scheduledDate, 'yyyy-MM-dd')
-      .setLocale('en')
-      .toLocaleString(DateTime.DATE_FULL)
-      .concat(` (${data.syndicatedCount}/${data.totalCount} syndicated)`);
   };
 
   /**
@@ -494,6 +482,20 @@ export const SchedulePage: React.FC = (): ReactElement => {
         toggleManualScheduleItemModal();
       }
     );
+  };
+
+  /**
+   * Open up the "Add Item" modal and fill in the default date
+   * from the day this button was clicked from.
+   *
+   * @param date
+   */
+  const onAddItem = (date: string) => {
+    // toggle the add prospect modal
+    toggleAddProspectModal();
+    // set the default date to use when this manual addition
+    // is scheduled
+    setAddItemDate(DateTime.fromFormat(date, 'yyyy-MM-dd'));
   };
 
   /**
@@ -771,56 +773,15 @@ export const SchedulePage: React.FC = (): ReactElement => {
             data.getScheduledCorpusItems.map(
               (data: ScheduledCorpusItemsResult) => (
                 <>
-                  <Stack
-                    direction="row"
-                    spacing={1}
-                    //  divider={<Divider orientation="vertical" flexItem />}
-                    justifyContent="space-between"
-                    key={`temp-fix-this-{$data.scheduledDate}`}
-                  >
-                    <Box>
-                      <Typography variant="h6">
-                        {DateTime.fromFormat(data.scheduledDate, 'yyyy-MM-dd')
-                          .setLocale('en')
-                          .toLocaleString(DateTime.DATE_FULL)}
-                      </Typography>
-                    </Box>
-                    <Stack
-                      direction="row"
-                      justifyContent={'flex-end'}
-                      spacing={1}
-                    >
-                      <Box>
-                        <Dropdown>
-                          <MenuButton>My account</MenuButton>
-                          <Menu>
-                            <MenuItem>Profile</MenuItem>
-                            <MenuItem>Language settings</MenuItem>
-                            <MenuItem>Log out</MenuItem>
-                          </Menu>
-                        </Dropdown>
-                      </Box>
-                      <Box>
-                        <Button
-                          onClick={() => {
-                            // toggle the add prospect modal
-                            toggleAddProspectModal();
-                            // set the default date to use when this manual addition
-                            // is scheduled
-                            setAddItemDate(
-                              DateTime.fromFormat(
-                                data.scheduledDate,
-                                'yyyy-MM-dd'
-                              )
-                            );
-                          }}
-                        >
-                          <AddIcon />
-                          Add Item
-                        </Button>
-                      </Box>
-                    </Stack>
-                  </Stack>
+                  <Box mt={3} mb={3}>
+                    <ScheduleDayHeading
+                      onAddItem={onAddItem}
+                      scheduledDate={data.scheduledDate}
+                      scheduledItems={data.items}
+                      setFilters={setFilters}
+                      key={`{data.scheduledDate}-day-heading`}
+                    />
+                  </Box>
 
                   <Grid
                     container
@@ -829,98 +790,68 @@ export const SchedulePage: React.FC = (): ReactElement => {
                     justifyContent="flex-start"
                     key={data.scheduledDate}
                   >
-                    <Grid item xs={10}>
-                      <Box mt={3}>
-                        <Accordion>
-                          <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            sx={{ maxHeight: '2.5rem' }}
-                          >
-                            <Typography
-                              sx={{
-                                fontSize: '1.25rem',
-                                fontWeight: 500,
-                                textTransform: 'capitalize',
-                                color: curationPalette.primary,
-                              }}
-                            >
-                              {getDayAndSyndicatedCountHeading(data)}
-                            </Typography>
-                          </AccordionSummary>
-                          <AccordionDetails>
-                            <ScheduleSummaryLayout
-                              scheduledItems={data.items}
-                            />
-                          </AccordionDetails>
-                        </Accordion>
-                      </Box>
-                    </Grid>
-                    <Grid item xs={2}>
-                      <Box mt={3}>
-                        <Button
-                          size="large"
-                          onClick={() => {
-                            // toggle the add prospect modal
-                            toggleAddProspectModal();
-                            // set the default date to use when this manual addition
-                            // is scheduled
-                            setAddItemDate(
-                              DateTime.fromFormat(
-                                data.scheduledDate,
-                                'yyyy-MM-dd'
-                              )
-                            );
-                          }}
-                        >
-                          <AddIcon />
-                          Add Item
-                        </Button>
-                      </Box>
-                    </Grid>
                     <Grid item xs={12}>
                       <Grid container spacing={2}>
                         {data.items.map((item: ScheduledCorpusItem) => {
-                          return (
-                            <ScheduledItemCardWrapper
-                              key={item.externalId}
-                              item={item}
-                              onEdit={() => {
-                                setCurrentItem(item);
-                                toggleEditModal();
-                              }}
-                              onUnschedule={() => {
-                                setCurrentItem(item);
-                                toggleRemoveModal();
-                              }}
-                              onMoveToBottom={() => {
-                                moveItemToBottom(item);
-                              }}
-                              onReschedule={() => {
-                                setCurrentItem(item);
-                                toggleScheduleItemModal();
-                              }}
-                              onReject={() => {
-                                setCurrentItem(item);
+                          if (
+                            (filters.topics === 'All' &&
+                              filters.publishers === 'All' &&
+                              filters.types === 'All') ||
+                            filters.topics ===
+                              getDisplayTopic(item.approvedItem.topic) ||
+                            filters.publishers ===
+                              item.approvedItem.publisher ||
+                            (filters.types === 'Ml' &&
+                              item.source === ScheduledItemSource.Ml) ||
+                            (filters.types === 'Collections' &&
+                              item.approvedItem.isCollection) ||
+                            (filters.types === 'Syndicated' &&
+                              item.approvedItem.isSyndicated)
+                          ) {
+                            return (
+                              <ScheduledItemCardWrapper
+                                key={item.externalId}
+                                item={item}
+                                onEdit={() => {
+                                  setCurrentItem(item);
+                                  toggleEditModal();
+                                }}
+                                onUnschedule={() => {
+                                  setCurrentItem(item);
+                                  toggleRemoveModal();
+                                }}
+                                onMoveToBottom={() => {
+                                  moveItemToBottom(item);
+                                }}
+                                onReschedule={() => {
+                                  setCurrentItem(item);
+                                  toggleScheduleItemModal();
+                                }}
+                                onReject={() => {
+                                  setCurrentItem(item);
 
-                                // If this item is also scheduled elsewhere, show an error.
-                                if (
-                                  item.approvedItem.scheduledSurfaceHistory
-                                    .length > 1
-                                ) {
-                                  showNotification(
-                                    'Cannot reject and unschedule this item - multiple scheduled entries exist.',
-                                    'error'
-                                  );
+                                  // If this item is also scheduled elsewhere, show an error.
+                                  if (
+                                    item.approvedItem.scheduledSurfaceHistory
+                                      .length > 1
+                                  ) {
+                                    showNotification(
+                                      'Cannot reject and unschedule this item - multiple scheduled entries exist.',
+                                      'error'
+                                    );
+                                  }
+                                  // Otherwise, proceed with rejecting and unscheduling this item
+                                  else {
+                                    toggleRejectAndUnscheduleModal();
+                                  }
+                                }}
+                                currentScheduledDate={data.scheduledDate}
+                                scheduledSurfaceGuid={
+                                  currentScheduledSurfaceGuid
                                 }
-                                // Otherwise, proceed with rejecting and unscheduling this item
-                                else {
-                                  toggleRejectAndUnscheduleModal();
-                                }
-                              }}
-                              currentScheduledDate={data.scheduledDate}
-                              scheduledSurfaceGuid={currentScheduledSurfaceGuid}
-                            />
-                          );
+                              />
+                            );
+                          }
                         })}
                       </Grid>
                     </Grid>

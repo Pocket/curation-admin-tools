@@ -81,5 +81,10 @@ describe('helper functions related to topics', () => {
       const topics = getGroupedTopicData([]);
       expect(topics).to.be.an('array').with.lengthOf(0);
     });
+
+    it('returns an abbreviated list if not all topics are requested', () => {
+      const topics = getGroupedTopicData(data, false);
+      expect(topics).to.be.an('array').with.lengthOf(5);
+    });
   });
 });
