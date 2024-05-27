@@ -176,7 +176,16 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
 
   // Determine whether to highlight the "Last scheduled X days ago" overlay
   const highlightLastScheduled = !!(
-    lastScheduledOnThisSurface && lastScheduledOnThisSurface <= 2
+    // for syndicated items, only highlight items scheduled up to two days ago
+    // on the same surface
+    (
+      (item.isSyndicated &&
+        lastScheduledOnThisSurface &&
+        lastScheduledOnThisSurface <= 2) ||
+      // for all other items, always highlight if they were previously EVER
+      // scheduled on the same surface
+      (!item.isSyndicated && lastScheduledOnThisSurface)
+    )
   );
 
   return (

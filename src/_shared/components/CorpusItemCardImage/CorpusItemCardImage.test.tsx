@@ -5,6 +5,7 @@ import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { CorpusItemCardImage } from './CorpusItemCardImage';
 import { getTestApprovedItem } from '../../../curated-corpus/helpers/approvedItem';
 import { ScheduledSurfaces } from '../../../curated-corpus/helpers/definitions';
+import { curationPalette } from '../../../theme';
 
 describe('The CorpusItemCardImage component', () => {
   let item: ApprovedCorpusItem = getTestApprovedItem();
@@ -16,6 +17,7 @@ describe('The CorpusItemCardImage component', () => {
     render(
       <CorpusItemCardImage
         item={item}
+        isMlScheduled={false}
         currentScheduledDate={currentScheduledDate}
         scheduledSurfaceGuid="NEW_TAB_EN_US"
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
@@ -39,6 +41,7 @@ describe('The CorpusItemCardImage component', () => {
 
     render(
       <CorpusItemCardImage
+        isMlScheduled={false}
         item={item}
         currentScheduledDate={currentScheduledDate}
         scheduledSurfaceGuid="NEW_TAB_EN_US"
@@ -58,6 +61,7 @@ describe('The CorpusItemCardImage component', () => {
     render(
       <CorpusItemCardImage
         item={item}
+        isMlScheduled={false}
         currentScheduledDate={currentScheduledDate}
         scheduledSurfaceGuid="NEW_TAB_EN_US"
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
@@ -68,14 +72,12 @@ describe('The CorpusItemCardImage component', () => {
   });
 
   it('should render syndicated label if item has this prop', () => {
-    item = {
-      ...item,
-      isSyndicated: true,
-    };
+    const syndicatedItem = { ...item, isSyndicated: true };
 
     render(
       <CorpusItemCardImage
-        item={item}
+        item={syndicatedItem}
+        isMlScheduled={false}
         currentScheduledDate={currentScheduledDate}
         scheduledSurfaceGuid="NEW_TAB_EN_US"
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
@@ -107,6 +109,7 @@ describe('The CorpusItemCardImage component', () => {
     render(
       <CorpusItemCardImage
         item={item}
+        isMlScheduled={false}
         currentScheduledDate={currentScheduledDate}
         scheduledSurfaceGuid="NEW_TAB_EN_US"
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
@@ -114,6 +117,108 @@ describe('The CorpusItemCardImage component', () => {
     );
 
     expect(screen.getByText(/last scheduled 2 days ago/i)).toBeInTheDocument();
+  });
+
+  it('should highlight last scheduled label if a non-syndicated item has been scheduled at any time in the past on the same surface', () => {
+    const nonSyndicatedItem = {
+      ...item,
+      scheduledSurfaceHistory: [
+        {
+          createdBy: 'ad|Mozilla-LDAP|aperson',
+          externalId: 'bogus-external-id',
+          scheduledDate: '2024-05-25',
+          scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+        },
+        {
+          createdBy: 'ad|Mozilla-LDAP|bperson',
+          externalId: 'useless-external-id',
+          scheduledDate: '2024-01-01',
+          scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+        },
+      ],
+    };
+
+    render(
+      <CorpusItemCardImage
+        item={nonSyndicatedItem}
+        isMlScheduled={false}
+        currentScheduledDate="2024-05-25"
+        scheduledSurfaceGuid="NEW_TAB_EN_US"
+        toggleScheduleHistoryModal={toggleScheduleHistoryModal}
+      />
+    );
+
+    expect(screen.getByTestId('last-scheduled-overlay')).toHaveStyle({
+      'background-color': curationPalette.solidPink,
+    });
+  });
+
+  it('should highlight last scheduled label if a syndicated item has been scheduled up to two days ago on the same surface', () => {
+    const syndicatedItem = getTestApprovedItem({
+      isSyndicated: true,
+      scheduledSurfaceHistory: [
+        {
+          createdBy: 'ad|Mozilla-LDAP|aperson',
+          externalId: 'bogus-external-id',
+          scheduledDate: '2024-05-25',
+          scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+        },
+        {
+          createdBy: 'ad|Mozilla-LDAP|bperson',
+          externalId: 'useless-external-id',
+          scheduledDate: '2024-05-23',
+          scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+        },
+      ],
+    });
+
+    render(
+      <CorpusItemCardImage
+        item={syndicatedItem}
+        isMlScheduled={false}
+        currentScheduledDate="2024-05-25"
+        scheduledSurfaceGuid="NEW_TAB_EN_US"
+        toggleScheduleHistoryModal={toggleScheduleHistoryModal}
+      />
+    );
+
+    expect(screen.getByTestId('last-scheduled-overlay')).toHaveStyle({
+      'background-color': curationPalette.solidPink,
+    });
+  });
+
+  it('should NOT highlight last scheduled label if a syndicated item has been scheduled 3+ days ago on the same surface', () => {
+    const syndicatedItem = getTestApprovedItem({
+      isSyndicated: true,
+      scheduledSurfaceHistory: [
+        {
+          createdBy: 'ad|Mozilla-LDAP|aperson',
+          externalId: 'bogus-external-id',
+          scheduledDate: '2024-05-25',
+          scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+        },
+        {
+          createdBy: 'ad|Mozilla-LDAP|bperson',
+          externalId: 'useless-external-id',
+          scheduledDate: '2024-05-21',
+          scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+        },
+      ],
+    });
+
+    render(
+      <CorpusItemCardImage
+        item={syndicatedItem}
+        isMlScheduled={false}
+        currentScheduledDate="2024-05-25"
+        scheduledSurfaceGuid="NEW_TAB_EN_US"
+        toggleScheduleHistoryModal={toggleScheduleHistoryModal}
+      />
+    );
+
+    expect(screen.getByTestId('last-scheduled-overlay')).toHaveStyle({
+      'background-color': curationPalette.overlayBgBlack,
+    });
   });
 
   it('should render a new domain warning label if item.hasTrustedDomain is false', () => {
@@ -125,6 +230,7 @@ describe('The CorpusItemCardImage component', () => {
     render(
       <CorpusItemCardImage
         item={item}
+        isMlScheduled={false}
         currentScheduledDate={currentScheduledDate}
         scheduledSurfaceGuid="NEW_TAB_EN_US"
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
