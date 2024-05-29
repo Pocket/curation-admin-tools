@@ -119,9 +119,10 @@ describe('The CorpusItemCardImage component', () => {
     expect(screen.getByText(/last scheduled 2 days ago/i)).toBeInTheDocument();
   });
 
-  it('should highlight last scheduled label if a non-syndicated item has been scheduled at any time in the past on the same surface', () => {
-    const nonSyndicatedItem = {
-      ...item,
+  it('should highlight last scheduled label if a non-syndicated, not-a-collection item has been scheduled at any time in the past on the same surface', () => {
+    const nonSyndicatedItem = getTestApprovedItem({
+      isSyndicated: false,
+      isCollection: false,
       scheduledSurfaceHistory: [
         {
           createdBy: 'ad|Mozilla-LDAP|aperson',
@@ -136,7 +137,7 @@ describe('The CorpusItemCardImage component', () => {
           scheduledSurfaceGuid: 'NEW_TAB_EN_US',
         },
       ],
-    };
+    });
 
     render(
       <CorpusItemCardImage
@@ -209,6 +210,74 @@ describe('The CorpusItemCardImage component', () => {
     render(
       <CorpusItemCardImage
         item={syndicatedItem}
+        isMlScheduled={false}
+        currentScheduledDate="2024-05-25"
+        scheduledSurfaceGuid="NEW_TAB_EN_US"
+        toggleScheduleHistoryModal={toggleScheduleHistoryModal}
+      />
+    );
+
+    expect(screen.getByTestId('last-scheduled-overlay')).toHaveStyle({
+      'background-color': curationPalette.overlayBgBlack,
+    });
+  });
+
+  it('should highlight last scheduled label if collection has been scheduled up to two days ago on the same surface', () => {
+    const collection = getTestApprovedItem({
+      isCollection: true,
+      scheduledSurfaceHistory: [
+        {
+          createdBy: 'ad|Mozilla-LDAP|aperson',
+          externalId: 'bogus-external-id',
+          scheduledDate: '2024-05-25',
+          scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+        },
+        {
+          createdBy: 'ad|Mozilla-LDAP|bperson',
+          externalId: 'useless-external-id',
+          scheduledDate: '2024-05-23',
+          scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+        },
+      ],
+    });
+
+    render(
+      <CorpusItemCardImage
+        item={collection}
+        isMlScheduled={false}
+        currentScheduledDate="2024-05-25"
+        scheduledSurfaceGuid="NEW_TAB_EN_US"
+        toggleScheduleHistoryModal={toggleScheduleHistoryModal}
+      />
+    );
+
+    expect(screen.getByTestId('last-scheduled-overlay')).toHaveStyle({
+      'background-color': curationPalette.solidPink,
+    });
+  });
+
+  it('should NOT highlight last scheduled label if a collection has been scheduled 3+ days ago on the same surface', () => {
+    const collection = getTestApprovedItem({
+      isCollection: true,
+      scheduledSurfaceHistory: [
+        {
+          createdBy: 'ad|Mozilla-LDAP|aperson',
+          externalId: 'bogus-external-id',
+          scheduledDate: '2024-05-25',
+          scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+        },
+        {
+          createdBy: 'ad|Mozilla-LDAP|bperson',
+          externalId: 'useless-external-id',
+          scheduledDate: '2024-05-21',
+          scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+        },
+      ],
+    });
+
+    render(
+      <CorpusItemCardImage
+        item={collection}
         isMlScheduled={false}
         currentScheduledDate="2024-05-25"
         scheduledSurfaceGuid="NEW_TAB_EN_US"
