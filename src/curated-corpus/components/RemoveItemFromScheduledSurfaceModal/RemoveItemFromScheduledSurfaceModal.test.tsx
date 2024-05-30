@@ -1,22 +1,25 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import { ScheduledCorpusItem } from '../../../api/generatedTypes';
+import {
+  ScheduledCorpusItem,
+  ScheduledItemSource,
+} from '../../../api/generatedTypes';
 import { RemoveItemFromScheduledSurfaceModal } from './RemoveItemFromScheduledSurfaceModal';
 import { getTestApprovedItem } from '../../helpers/approvedItem';
-import { ScheduledSurfaces } from '../../helpers/definitions';
 import userEvent from '@testing-library/user-event';
 
 describe('The RemoveItemFromScheduledSurfaceModal component', () => {
   const approvedItem = getTestApprovedItem();
-  const germanItem: ScheduledCorpusItem = {
+  const pocketHitsItem: ScheduledCorpusItem = {
     approvedItem,
     createdAt: 1635014926,
     createdBy: 'jdoe',
     externalId: '123-test-id',
     scheduledDate: '2022-05-24',
-    scheduledSurfaceGuid: ScheduledSurfaces[1].guid,
+    scheduledSurfaceGuid: 'POCKET_HITS_DE_DE',
     updatedAt: 1635114926,
     updatedBy: 'jdoe',
+    source: ScheduledItemSource.Manual,
   };
   const usItem: ScheduledCorpusItem = {
     approvedItem,
@@ -24,9 +27,10 @@ describe('The RemoveItemFromScheduledSurfaceModal component', () => {
     createdBy: 'klm',
     externalId: '1234-test-id',
     scheduledDate: '2022-05-24',
-    scheduledSurfaceGuid: ScheduledSurfaces[0].guid,
+    scheduledSurfaceGuid: 'NEW_TAB_EN_US',
     updatedAt: 1935114924,
     updatedBy: 'klm',
+    source: ScheduledItemSource.Manual,
   };
   const isOpen = true;
   const onSave = jest.fn();
@@ -56,10 +60,10 @@ describe('The RemoveItemFromScheduledSurfaceModal component', () => {
     expect(screen.getByText('Niche')).toBeInTheDocument();
   });
 
-  it('should render this component successfully for german item', async () => {
+  it('should render this component successfully for Pocket Hits item', async () => {
     render(
       <RemoveItemFromScheduledSurfaceModal
-        item={germanItem}
+        item={pocketHitsItem}
         isOpen={isOpen}
         onSave={onSave}
         toggleModal={toggleModal}
@@ -77,10 +81,10 @@ describe('The RemoveItemFromScheduledSurfaceModal component', () => {
     expect(screen.getByRole('checkbox')).toBeInTheDocument();
   });
 
-  it('should call the onSave function when the checkbox is checked and "Save" form button is clicked for german item', async () => {
+  it('should call the onSave function when the checkbox is checked and "Save" form button is clicked for Pocket Hits item', async () => {
     render(
       <RemoveItemFromScheduledSurfaceModal
-        item={germanItem}
+        item={pocketHitsItem}
         isOpen={isOpen}
         onSave={onSave}
         toggleModal={toggleModal}
@@ -105,17 +109,17 @@ describe('The RemoveItemFromScheduledSurfaceModal component', () => {
     expect(onSave).toHaveBeenCalled();
   });
 
-  it('should not call the onSave function when the checkbox is not checked and "Save" form button is clicked for german item', async () => {
+  it('should not call the onSave function when the checkbox is not checked and "Save" form button is clicked for Pocket Hits item', async () => {
     render(
       <RemoveItemFromScheduledSurfaceModal
-        item={germanItem}
+        item={pocketHitsItem}
         isOpen={isOpen}
         onSave={onSave}
         toggleModal={toggleModal}
       />
     );
 
-    const errorMessage = `Yes, I want to remove ${germanItem.approvedItem.title} from this scheduled surface`;
+    const errorMessage = `Yes, I want to remove ${pocketHitsItem.approvedItem.title} from this scheduled surface`;
 
     // fetch the button elements
     const saveButton = screen.getByRole('button', { name: /save/i });
