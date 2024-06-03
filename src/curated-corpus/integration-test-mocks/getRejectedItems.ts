@@ -40,5 +40,5 @@ export const mock_AllRejectedItems = constructMock(
   'getRejectedCorpusItems',
   getRejectedItems,
   { pagination: { first: 32 } },
-  data
+  data,
 );

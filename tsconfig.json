@@ -28,6 +28,7 @@
     "strictNullChecks": true
   },
   "include": [
-    "src/**/*.ts*"
+    ".aws/src/**/*.ts",
+    "src/**/*"
   ]
 }

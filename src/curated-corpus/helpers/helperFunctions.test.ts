@@ -68,7 +68,7 @@ describe('helperFunctions ', () => {
     it('should return the same input string when an invalid mozilla ldap string is provided', () => {
       // note that the input string has - instead of |
       expect(getCuratorNameFromLdap('ad-Mozilla-LDAP-jdoe')).toEqual(
-        'ad-Mozilla-LDAP-jdoe'
+        'ad-Mozilla-LDAP-jdoe',
       );
     });
 
@@ -80,7 +80,7 @@ describe('helperFunctions ', () => {
   describe('getScheduledSurfaceName function', () => {
     it('should return the correct scheduled surface name when its corresponding guid is provided', () => {
       expect(getScheduledSurfaceName(ScheduledSurfaces[0].guid)).toEqual(
-        ScheduledSurfaces[0].name
+        ScheduledSurfaces[0].name,
       );
     });
 
@@ -104,22 +104,22 @@ describe('helperFunctions ', () => {
     it('should return the correctly formatted local date time for the NEW_TAB_EN_US guid', () => {
       const dateTimeFromFunction = getLocalDateTimeForGuid(
         newTabEnUsSurface.guid,
-        mockGetScheduledSurfacesForUserQueryData
+        mockGetScheduledSurfacesForUserQueryData,
       );
 
       const localDateTime = DateTime.local().setZone(
-        newTabEnUsSurface.ianaTimezone
+        newTabEnUsSurface.ianaTimezone,
       );
 
       expect(dateTimeFromFunction).toEqual(
-        localDateTime.toFormat('DDD').concat(', ', localDateTime.toFormat('t'))
+        localDateTime.toFormat('DDD').concat(', ', localDateTime.toFormat('t')),
       );
     });
 
     it('should return undefined for an incorrect guid', () => {
       const dateTimeFromFunction = getLocalDateTimeForGuid(
         'FAKE_GUID',
-        mockGetScheduledSurfacesForUserQueryData
+        mockGetScheduledSurfacesForUserQueryData,
       );
 
       expect(dateTimeFromFunction).toEqual(undefined);
@@ -173,11 +173,11 @@ describe('helperFunctions ', () => {
         'www.test-image-url.com',
         () => {
           return testMutationResponseData;
-        }
+        },
       );
 
       expect(result).toEqual(
-        testMutationResponseData.data.uploadApprovedCorpusItemImage.url
+        testMutationResponseData.data.uploadApprovedCorpusItemImage.url,
       );
     });
 
@@ -195,10 +195,10 @@ describe('helperFunctions ', () => {
           'www.test-image-url.com',
           () => {
             return testMutationResponseData;
-          }
+          },
         );
       }).rejects.toThrow(
-        'Failed to download image, please upload a new image manually'
+        'Failed to download image, please upload a new image manually',
       );
     });
 
@@ -218,7 +218,7 @@ describe('helperFunctions ', () => {
           'www.test-image-url.com',
           () => {
             return testMutationResponseError;
-          }
+          },
         );
       }).rejects.toThrow('Failed to upload image, please try again');
     });
@@ -234,7 +234,7 @@ describe('helperFunctions ', () => {
 
     it('should return fallback url when an empty string is passed', () => {
       expect(getFormattedImageUrl('')).toEqual(
-        '/placeholders/collectionSmall.svg'
+        '/placeholders/collectionSmall.svg',
       );
     });
   });
@@ -254,7 +254,7 @@ describe('helperFunctions ', () => {
       const scheduledDates: string[] = [];
 
       expect(
-        getLastScheduledDayDiff(currentScheduleDate, scheduledDates)
+        getLastScheduledDayDiff(currentScheduleDate, scheduledDates),
       ).toBeNull();
     });
 
@@ -262,7 +262,7 @@ describe('helperFunctions ', () => {
       const scheduledDates: string[] = ['2024-01-25'];
 
       expect(
-        getLastScheduledDayDiff(currentScheduleDate, scheduledDates)
+        getLastScheduledDayDiff(currentScheduleDate, scheduledDates),
       ).toBeNull();
     });
 
@@ -275,7 +275,7 @@ describe('helperFunctions ', () => {
 
       // current scheduled date is Jan 20, 2024. scheduled dates array has no dates before that
       expect(
-        getLastScheduledDayDiff(currentScheduleDate, scheduledDates)
+        getLastScheduledDayDiff(currentScheduleDate, scheduledDates),
       ).toBeNull();
     });
 
@@ -288,7 +288,7 @@ describe('helperFunctions ', () => {
 
       const result = getLastScheduledDayDiff(
         currentScheduleDate,
-        scheduledDates
+        scheduledDates,
       );
 
       // current scheduled date is Jan 20, 2024. scheduled dates array has Mar 15, 2022
@@ -296,8 +296,8 @@ describe('helperFunctions ', () => {
         Math.ceil(
           (new Date(currentScheduleDate).getTime() -
             new Date(scheduledDates[2]).getTime()) /
-            (1000 * 3600 * 24)
-        )
+            (1000 * 3600 * 24),
+        ),
       );
       expect(result).toBe(expected);
     });

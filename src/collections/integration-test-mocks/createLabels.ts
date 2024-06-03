@@ -42,7 +42,7 @@ export const createDuplicateLabelErrorMock = {
     },
   },
   error: new Error(
-    'A label with the name "fake-label-duplicate" already exists'
+    'A label with the name "fake-label-duplicate" already exists',
   ),
 };
 
@@ -64,6 +64,6 @@ export const createBadCharLabelErrorMock = {
     },
   },
   error: new Error(
-    'Label name can only contain lowercase alphanumeric characters and hyphens.'
+    'Label name can only contain lowercase alphanumeric characters and hyphens.',
   ),
 };

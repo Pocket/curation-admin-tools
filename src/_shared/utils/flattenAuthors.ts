@@ -11,13 +11,13 @@ import {
  * @param authors
  */
 export const flattenAuthors = (
-  authors: CollectionStoryAuthor[] | CollectionAuthor[] | CorpusItemAuthor[]
+  authors: CollectionStoryAuthor[] | CollectionAuthor[] | CorpusItemAuthor[],
 ): string => {
   return authors
     .map(
       (author: CollectionStoryAuthor | CollectionAuthor | CorpusItemAuthor) => {
         return author.name;
-      }
+      },
     )
     .join(', ');
 };

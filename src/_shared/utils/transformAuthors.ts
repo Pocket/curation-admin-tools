@@ -11,7 +11,7 @@ import {
  * @param authors
  */
 export const transformAuthors = (
-  authors: string | Maybe<string> | undefined
+  authors: string | Maybe<string> | undefined,
 ): CollectionStoryAuthor[] | CorpusItemAuthor[] => {
   // get rid of any whitespace on the sides
   authors = authors ? authors.trim() : authors;

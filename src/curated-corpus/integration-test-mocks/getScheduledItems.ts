@@ -111,7 +111,7 @@ export const mock_scheduledItems = constructMock(
   'getScheduledCorpusItems',
   getScheduledItems,
   variables,
-  data
+  data,
 );
 
 export const mock_scheduledItemsNoResults = constructMock(
@@ -126,12 +126,12 @@ export const mock_scheduledItemsNoResults = constructMock(
       totalCount: 0,
       items: [],
     },
-  ]
+  ],
 );
 
 export const mock_scheduledItemsWithParams = (
   scheduledDate: string,
-  scheduledSurfaceGuid = 'NEW_TAB_EN_US'
+  scheduledSurfaceGuid = 'NEW_TAB_EN_US',
 ) => {
   return constructMock(
     'getScheduledCorpusItems',
@@ -151,6 +151,6 @@ export const mock_scheduledItemsWithParams = (
         totalCount: 1,
         items: scheduledItems,
       },
-    ]
+    ],
   );
 };

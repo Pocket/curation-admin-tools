@@ -46,7 +46,7 @@ describe('applyApTitleCase', () => {
     ];
     conjunctions.forEach((conjunction) => {
       expect(applyApTitleCase(conjunction.result)).toEqual(
-        conjunction.expected
+        conjunction.expected,
       );
     });
   });

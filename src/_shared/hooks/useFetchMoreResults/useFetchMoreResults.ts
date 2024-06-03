@@ -21,13 +21,13 @@ import { useNotifications } from '../';
  */
 export const useFetchMoreResults = (
   queryHook: any,
-  options: Apollo.QueryHookOptions
+  options: Apollo.QueryHookOptions,
 ): [
   loading: boolean,
   reloading: boolean,
   error: ApolloError | undefined,
   data: any,
-  updateData: () => void
+  updateData: () => void,
 ] => {
   const { showNotification } = useNotifications();
 

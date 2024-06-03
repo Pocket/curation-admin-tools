@@ -53,10 +53,10 @@ export const getTestProspect = (options?: Partial<Prospect>): Prospect => {
  * a given Scheduled Surface.
  */
 export const getProspectFilterOptions = (
-  data: ProspectType[]
+  data: ProspectType[],
 ): DropdownOption[] => {
   const availableProspectFilters: string[] = data.map(
-    (prospectType) => prospectType
+    (prospectType) => prospectType,
   );
 
   const filters: DropdownOption[] = prospectFilterOptions.filter((option) => {
@@ -78,7 +78,7 @@ export const getProspectFilterOptions = (
 export const transformProspectToApprovedItem = (
   prospect: Prospect & { datePublished?: string | null },
   isRecommendation: boolean,
-  isManual: boolean
+  isManual: boolean,
 ): ApprovedItemFromProspect => {
   return {
     externalId: '',
@@ -114,7 +114,7 @@ export const transformProspectToApprovedItem = (
  * @returns Prospect
  */
 export const transformUrlMetaDataToProspect = (
-  metadata: UrlMetadata
+  metadata: UrlMetadata,
 ): Prospect & { datePublished?: string | null } => {
   // set language to undefined if metadata.language is an empty string or undefined.
   // if not, then map it from string to its corresponding CorpusLanguage enum value

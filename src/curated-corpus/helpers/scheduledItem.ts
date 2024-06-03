@@ -22,7 +22,7 @@ export const scheduledItem: ScheduledCorpusItem = {
  * @returns Returns a test object of type ApprovedCorpusItem
  */
 export const getTestScheduledItem = (
-  options?: Partial<ScheduledCorpusItem>
+  options?: Partial<ScheduledCorpusItem>,
 ): ScheduledCorpusItem => {
   return {
     ...scheduledItem,
