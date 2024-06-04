@@ -1,16 +1,17 @@
 import { DateTime } from 'luxon';
-import { ProspectType } from '../../api/generatedTypes';
+import { CorpusLanguage, ProspectType } from '../../api/generatedTypes';
 import { ScheduledSurfaces } from './definitions';
 import {
+  applyStrFormatByLanguage,
   downloadAndUploadApprovedItemImageToS3,
   fetchFileFromUrl,
   formatFormLabel,
   getCuratorNameFromLdap,
+  getFormattedImageUrl,
+  getLastScheduledDayDiff,
   getLocalDateTimeForGuid,
   getScheduledSurfaceName,
-  getFormattedImageUrl,
-  readImageFileFromDisk,
-  getLastScheduledDayDiff,
+  readImageFileFromDisk
 } from './helperFunctions';
 
 describe('helperFunctions ', () => {
@@ -300,6 +301,27 @@ describe('helperFunctions ', () => {
         ),
       );
       expect(result).toBe(expected);
+    });
+  });
+
+  describe('applyStrFormatByLanguage function', () => {
+    it('should default to EN_US formatting for title & excerpt if language is not EN or DE', () => {
+      // title case (Spanish language)
+      expect(applyStrFormatByLanguage(CorpusLanguage.Es, 'spanish-title\'s', false)).toEqual('Spanish-Title’s');
+      // excerpt case (Italian language)
+      expect(applyStrFormatByLanguage(CorpusLanguage.It, 'italian - "excerpt\'s"', true)).toEqual('italian - “excerpt’s”');
+    });
+    it('should use EN_US formatting for title & excerpt if language is EN', () => {
+      // title case (English language)
+      expect(applyStrFormatByLanguage(CorpusLanguage.En, 'example Title in english Language "sample"', false)).toEqual('Example Title in English Language “Sample”');
+      // excerpt case (English language)
+      expect(applyStrFormatByLanguage(CorpusLanguage.En, 'example excerpt in English Language "sample\'s"', true)).toEqual('example excerpt in English Language “sample’s”');
+    });
+    it('should use DE_DE formatting for title & excerpt if language is DE', () => {
+      // title (German language) no capitalization should be applied
+      expect(applyStrFormatByLanguage(CorpusLanguage.De, '«Meeresregionen» – in die pelagischen Zonen – verlegt', false)).toEqual('„Meeresregionen” — in die pelagischen Zonen — verlegt');
+      // excerpt case (English language)
+      expect(applyStrFormatByLanguage(CorpusLanguage.De, '«Meeresregionen» – in die pelagischen "Zonen" – verlegt', true)).toEqual('„Meeresregionen” — in die pelagischen „Zonen” — verlegt');
     });
   });
 });

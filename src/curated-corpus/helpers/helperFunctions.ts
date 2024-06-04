@@ -1,7 +1,10 @@
 import { DateTime } from 'luxon';
 import { FileWithPath } from 'react-dropzone';
-import { GetScheduledSurfacesForUserQuery } from '../../api/generatedTypes';
+import { CorpusLanguage, GetScheduledSurfacesForUserQuery } from '../../api/generatedTypes';
 import { ScheduledSurfaces } from './definitions';
+import { applyCurlyQuotes } from '../../_shared/utils/applyCurlyQuotes';
+import { applyApTitleCase } from '../../_shared/utils/applyApTitleCase';
+import { applyQuotesDashesDE } from '../../_shared/utils/applyQuotesDashesDE';
 
 // downloads image from source url
 export const fetchFileFromUrl = async (
@@ -175,3 +178,38 @@ export const getLastScheduledDayDiff = (
     new Date(mostRecentScheduleDate).getTime();
   return Math.abs(Math.ceil(daysDifference / (1000 * 3600 * 24)));
 };
+
+/**
+ * Formats a string using rules based on the string language.
+ * @param language the language the passed string is in
+ * @param str string to format
+ * @param isExcerpt indicates if string is an excerpt as different formatting rules are applied for certain languages
+ * @returns formatted string
+ */
+export const applyStrFormatByLanguage = (
+  language: CorpusLanguage,
+  str: string,
+  isExcerpt: boolean
+): string => {
+  // if not excerpt (title is passed), apply quotes & title case for EN
+  if (language === CorpusLanguage.En && !isExcerpt) {
+    return applyCurlyQuotes(applyApTitleCase(str));
+  }
+  // if excerpt, apply quotes formatting for EN
+  if(language === CorpusLanguage.En && isExcerpt) {
+    applyCurlyQuotes(str)
+  }
+  //if excerpt or title, apply German quotes/dashes formatting
+  if(language === CorpusLanguage.De) {
+    return applyQuotesDashesDE(str) as string;
+  }
+  // apply EN formatting rules for other languages for now
+  else {
+    if(!isExcerpt) {
+      return applyCurlyQuotes(applyApTitleCase(str));
+    }
+    else {
+      return applyCurlyQuotes(str);
+    }
+  }
+}

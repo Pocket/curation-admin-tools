@@ -9,22 +9,23 @@ import {
   styled,
   Switch,
   TextField,
-  Tooltip,
+  Tooltip
 } from '@mui/material';
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import { validationSchema } from './ApprovedItemForm.validation';
 import {
   ApprovedCorpusItem,
+  CorpusLanguage,
   CuratedStatus,
   useGetOpenGraphFieldsQuery,
-  useGetUrlMetadataLazyQuery,
+  useGetUrlMetadataLazyQuery
 } from '../../../api/generatedTypes';
 import {
   ApprovedItemFromProspect,
   curationStatusOptions,
   DropdownOption,
   languages,
-  topics,
+  topics
 } from '../../helpers/definitions';
 import {
   Button,
@@ -32,12 +33,11 @@ import {
   FormikTextField,
   ImageUpload,
   SharedFormButtons,
-  SharedFormButtonsProps,
+  SharedFormButtonsProps
 } from '../../../_shared/components';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
-import { applyCurlyQuotes } from '../../../_shared/utils/applyCurlyQuotes';
-import { applyApTitleCase } from '../../../_shared/utils/applyApTitleCase';
 import { curationPalette } from '../../../theme';
+import { applyStrFormatByLanguage } from '../../helpers/helperFunctions';
 
 interface ApprovedItemFormProps {
   /**
@@ -183,12 +183,15 @@ export const ApprovedItemForm: React.FC<
   const fixTitle = () => {
     formik.setFieldValue(
       'title',
-      applyCurlyQuotes(applyApTitleCase(formik.values.title))
+      applyStrFormatByLanguage(approvedItem.language as CorpusLanguage, formik.values.title, false)
     );
   };
 
   const fixExcerpt = () => {
-    formik.setFieldValue('excerpt', applyCurlyQuotes(formik.values.excerpt));
+    formik.setFieldValue(
+      'excerpt',
+      applyStrFormatByLanguage(approvedItem.language as CorpusLanguage, formik.values.excerpt, true)
+    );
   };
 
   // Boolean. Set to true if the current excerpt in the form excerpt input field is the og excerpt.
