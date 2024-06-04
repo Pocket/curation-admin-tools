@@ -1,6 +1,9 @@
 import { DateTime } from 'luxon';
 import { FileWithPath } from 'react-dropzone';
-import { CorpusLanguage, GetScheduledSurfacesForUserQuery } from '../../api/generatedTypes';
+import {
+  CorpusLanguage,
+  GetScheduledSurfacesForUserQuery,
+} from '../../api/generatedTypes';
 import { ScheduledSurfaces } from './definitions';
 import { applyCurlyQuotes } from '../../_shared/utils/applyCurlyQuotes';
 import { applyApTitleCase } from '../../_shared/utils/applyApTitleCase';
@@ -189,27 +192,26 @@ export const getLastScheduledDayDiff = (
 export const applyStrFormatByLanguage = (
   language: CorpusLanguage,
   str: string,
-  isExcerpt: boolean
+  isExcerpt: boolean,
 ): string => {
   // if not excerpt (title is passed), apply quotes & title case for EN
   if (language === CorpusLanguage.En && !isExcerpt) {
     return applyCurlyQuotes(applyApTitleCase(str));
   }
   // if excerpt, apply quotes formatting for EN
-  if(language === CorpusLanguage.En && isExcerpt) {
-    applyCurlyQuotes(str)
+  if (language === CorpusLanguage.En && isExcerpt) {
+    applyCurlyQuotes(str);
   }
   //if excerpt or title, apply German quotes/dashes formatting
-  if(language === CorpusLanguage.De) {
+  if (language === CorpusLanguage.De) {
     return applyQuotesDashesDE(str) as string;
   }
   // apply EN formatting rules for other languages for now
   else {
-    if(!isExcerpt) {
+    if (!isExcerpt) {
       return applyCurlyQuotes(applyApTitleCase(str));
-    }
-    else {
+    } else {
       return applyCurlyQuotes(str);
     }
   }
-}
+};
