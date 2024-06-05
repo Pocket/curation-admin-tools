@@ -5,7 +5,7 @@ import { SchedulePageFilters } from '../';
 import AddIcon from '@mui/icons-material/Add';
 import { curationPalette } from '../../../theme';
 import { DateTime } from 'luxon';
-import { ScheduledCorpusItem } from '../../../api/generatedTypes';
+import { ScheduledCorpusItemsResult } from '../../../api/generatedTypes';
 
 import { SchedulePageFiltersInterface } from '../SchedulePageFilters/SchedulePageFilters';
 
@@ -16,15 +16,9 @@ interface ScheduleDayHeadingProps {
   onAddItem: (date: string) => void;
 
   /**
-   * The date to show in the heading and use in pre-filling the
-   * "Add item" form. Comes through in SQL date format (YYYY-MM-DD).
+   * Data for a given date.
    */
-  scheduledDate: string;
-
-  /**
-   * Scheduled items for a given date - to summarise in the filters
-   */
-  scheduledItems: ScheduledCorpusItem[];
+  data: ScheduledCorpusItemsResult;
 
   /**
    * Callback to set filters on the Schedule Page
@@ -44,7 +38,7 @@ interface ScheduleDayHeadingProps {
 export const ScheduleDayHeading: React.FC<ScheduleDayHeadingProps> = (
   props
 ): ReactElement => {
-  const { onAddItem, scheduledDate, scheduledItems, setFilters } = props;
+  const { onAddItem, data, setFilters } = props;
 
   return (
     <>
@@ -55,7 +49,7 @@ export const ScheduleDayHeading: React.FC<ScheduleDayHeadingProps> = (
         rowSpacing={3}
         justifyContent="space-between"
       >
-        <Grid item xs={3}>
+        <Grid item xs={5}>
           <Typography
             sx={{
               fontSize: '1.25rem',
@@ -64,12 +58,13 @@ export const ScheduleDayHeading: React.FC<ScheduleDayHeadingProps> = (
               color: curationPalette.pocketBlack,
             }}
           >
-            {DateTime.fromFormat(scheduledDate, 'yyyy-MM-dd')
+            {DateTime.fromFormat(data.scheduledDate, 'yyyy-MM-dd')
               .setLocale('en')
-              .toLocaleString(DateTime.DATE_FULL)}
+              .toLocaleString(DateTime.DATE_FULL)}{' '}
+            {` (${data.syndicatedCount}/${data.totalCount} syndicated)`}
           </Typography>
         </Grid>
-        <Grid item xs={9}>
+        <Grid item xs={7}>
           <Stack
             direction="row"
             alignItems="center"
@@ -77,13 +72,13 @@ export const ScheduleDayHeading: React.FC<ScheduleDayHeadingProps> = (
             spacing={2}
           >
             <SchedulePageFilters
-              scheduledItems={scheduledItems}
+              scheduledItems={data.items}
               setFilters={setFilters}
             />
 
             <Button
               onClick={() => {
-                onAddItem(scheduledDate);
+                onAddItem(data.scheduledDate);
               }}
             >
               <AddIcon />

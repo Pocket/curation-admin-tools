@@ -776,8 +776,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
                   <Box mt={3} mb={3}>
                     <ScheduleDayHeading
                       onAddItem={onAddItem}
-                      scheduledDate={data.scheduledDate}
-                      scheduledItems={data.items}
+                      data={data}
                       setFilters={setFilters}
                       key={`{data.scheduledDate}-day-heading`}
                     />

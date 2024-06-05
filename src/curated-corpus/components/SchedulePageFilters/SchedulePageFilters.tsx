@@ -49,7 +49,7 @@ export const SchedulePageFilters: React.FC<SchedulePageFiltersProps> = (
         getDisplayTopic(item.approvedItem.topic)
     ) ?? [];
 
-  const topicList = getGroupedTopicData(topics, false);
+  const topicList = getGroupedTopicData(topics, true);
 
   // Extract all publishers from scheduled item data
   const publishers =
@@ -63,7 +63,7 @@ export const SchedulePageFilters: React.FC<SchedulePageFiltersProps> = (
   // Round up all the different types of scheduled items we're interested in
   const typeList = [
     {
-      name: 'Ml',
+      name: 'ML',
       count: scheduledItems.filter(
         (item) => item.source === ScheduledItemSource.Ml
       ).length,
