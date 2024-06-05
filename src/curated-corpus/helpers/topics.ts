@@ -33,7 +33,7 @@ export const getDisplayTopic = (
  */
 export const getGroupedTopicData = (
   data: string[],
-  includeAllTopics = true
+  includeAllTopics = true,
 ): ScheduleSummary[] => {
   const topics: ScheduleSummary[] = [];
 
