@@ -1,7 +1,13 @@
 import { DateTime } from 'luxon';
 import { FileWithPath } from 'react-dropzone';
-import { GetScheduledSurfacesForUserQuery } from '../../api/generatedTypes';
+import {
+  CorpusLanguage,
+  GetScheduledSurfacesForUserQuery,
+} from '../../api/generatedTypes';
 import { ScheduledSurfaces } from './definitions';
+import { applyCurlyQuotes } from '../../_shared/utils/applyCurlyQuotes';
+import { applyApTitleCase } from '../../_shared/utils/applyApTitleCase';
+import { applyQuotesDashesDE } from '../../_shared/utils/applyQuotesDashesDE';
 
 // downloads image from source url
 export const fetchFileFromUrl = async (
@@ -174,4 +180,44 @@ export const getLastScheduledDayDiff = (
     new Date(currentDateViewingScheduleFor).getTime() -
     new Date(mostRecentScheduleDate).getTime();
   return Math.abs(Math.ceil(daysDifference / (1000 * 3600 * 24)));
+};
+
+/**
+ * Formats an excerpt using rules based on the excerpt's language.
+ * @param language the language the passed excerpt is in
+ * @param excerpt excerpt to format
+ * @returns formatted excerpt
+ */
+export const applyExcerptFormattingByLanguage = (
+  language: CorpusLanguage,
+  excerpt: string,
+): string => {
+  // if excerpt is German, apply German quotes/dashes formatting
+  if (language === CorpusLanguage.De) {
+    return applyQuotesDashesDE(excerpt) as string;
+  }
+  // apply EN formatting rules on excerpt for all other languages for now
+  else {
+    return applyCurlyQuotes(excerpt);
+  }
+};
+
+/**
+ * Formats a title using rules based on the title's language.
+ * @param language the language the passed title is in
+ * @param title title to format
+ * @returns formatted title
+ */
+export const applyTitleFormattingByLanguage = (
+  language: CorpusLanguage,
+  title: string,
+): string => {
+  // if title is in German, apply German quotes/dashes formatting
+  if (language === CorpusLanguage.De) {
+    return applyQuotesDashesDE(title) as string;
+  }
+  // apply EN formatting rules on title for all other languages for now
+  else {
+    return applyCurlyQuotes(applyApTitleCase(title));
+  }
 };
