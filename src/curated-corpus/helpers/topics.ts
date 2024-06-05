@@ -14,7 +14,7 @@ import { ScheduleSummary } from '../components';
  * Returns `N/A` if there is no topic match from the known list of topics.
  */
 export const getDisplayTopic = (
-  topicCode: Maybe<string> | string | undefined
+  topicCode: Maybe<string> | string | undefined,
 ): string => {
   const displayTopic = topics.find((topic) => {
     return topic.code === topicCode;

@@ -7,7 +7,7 @@ export const constructMock = (
   queryName: string,
   query: DocumentNode,
   variables: any,
-  data: any
+  data: any,
 ) => {
   return {
     request: {

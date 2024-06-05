@@ -15,7 +15,7 @@ export const useRunMutation = () => {
     message?: string,
     successCallback?: (data?: any) => void,
     errorCallback?: () => void,
-    refetch?: any
+    refetch?: any,
   ): void => {
     mutateFunction(options)
       .then(({ data }: any) => {

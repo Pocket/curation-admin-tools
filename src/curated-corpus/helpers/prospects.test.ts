@@ -80,7 +80,7 @@ describe('helper functions related to prospects', () => {
       const approvedItemFromProspect = transformProspectToApprovedItem(
         prospect,
         true,
-        true
+        true,
       );
 
       jestExpect(approvedItemFromProspect).toMatchObject({
@@ -117,7 +117,7 @@ describe('helper functions related to prospects', () => {
       const approvedItemFromProspect = transformProspectToApprovedItem(
         prospect,
         false,
-        true
+        true,
       );
 
       jestExpect(approvedItemFromProspect).toMatchObject({
@@ -185,7 +185,7 @@ describe('helper functions related to prospects', () => {
       };
 
       const prospect = transformUrlMetaDataToProspect(
-        metaDataWithPopulatedFields
+        metaDataWithPopulatedFields,
       );
 
       expect(prospect).to.deep.equal({
@@ -223,7 +223,7 @@ describe('helper functions related to prospects', () => {
           ...defaultExpectedProspect,
           language: expectedLanguage,
         });
-      }
+      },
     );
   });
 });

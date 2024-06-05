@@ -13,7 +13,7 @@ import { getTestApprovedItem } from '../helpers/approvedItem';
  */
 export const successMock = (
   scheduledDate: string,
-  scheduledSurfaceGuid = 'NEW_TAB_EN_US'
+  scheduledSurfaceGuid = 'NEW_TAB_EN_US',
 ) => {
   return {
     request: {
@@ -57,7 +57,7 @@ export const errorMock = {
   result: {
     data: { createScheduledCorpusItem: null },
     error: new Error(
-      'This story is already scheduled to appear on NEW_TAB_EN_US on Jan 1, 2030.'
+      'This story is already scheduled to appear on NEW_TAB_EN_US on Jan 1, 2030.',
     ),
   },
 };

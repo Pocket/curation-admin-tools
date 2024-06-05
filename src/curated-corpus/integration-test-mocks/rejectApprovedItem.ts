@@ -25,7 +25,7 @@ export const errorMock = {
   result: {
     data: { rejectApprovedCorpusItem: null },
     error: new Error(
-      'Cannot remove item from approved corpus - scheduled entries exist.'
+      'Cannot remove item from approved corpus - scheduled entries exist.',
     ),
   },
 };

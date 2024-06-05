@@ -14,7 +14,7 @@ export const mergePaginatedDataInCache = (
   existing: SafeReadonly<any>,
   incoming: SafeReadonly<any>,
   options: FieldFunctionOptions,
-  dataPropName: string
+  dataPropName: string,
 ) => {
   const { args } = options;
 

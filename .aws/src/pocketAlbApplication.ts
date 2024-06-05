@@ -25,7 +25,7 @@ function createPagerDuty(scope: Construct) {
       workspaces: {
         name: 'incident-management',
       },
-    }
+    },
   );
 
   return new PocketPagerDuty(scope, 'pagerduty_policies', {
@@ -48,7 +48,7 @@ function createPagerDuty(scope: Construct) {
  */
 export function createApplicationCodePipeline(
   scope: Construct,
-  app: PocketALBApplication
+  app: PocketALBApplication,
 ) {
   new PocketECSCodePipeline(scope, 'code-pipeline', {
     prefix: config.prefix,
@@ -64,7 +64,7 @@ export function createApplicationCodePipeline(
  * @param scope
  */
 export function createPocketAlbApplication(
-  scope: Construct
+  scope: Construct,
 ): PocketALBApplication {
   const pagerDuty = createPagerDuty(scope);
 

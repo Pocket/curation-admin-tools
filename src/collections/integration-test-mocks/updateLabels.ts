@@ -31,7 +31,7 @@ export const updateDuplicateLabelErrorMock = {
     },
   },
   error: new Error(
-    'A label with the name "fake-label-duplicate-update" already exists'
+    'A label with the name "fake-label-duplicate-update" already exists',
   ),
 };
 
@@ -47,6 +47,6 @@ export const updateCollectionLabelAssociationErrorMock = {
     },
   },
   error: new Error(
-    'Cannot update label; it is associated with at least one collection'
+    'Cannot update label; it is associated with at least one collection',
   ),
 };

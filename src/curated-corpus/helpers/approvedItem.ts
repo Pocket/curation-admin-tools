@@ -35,7 +35,7 @@ export const approvedCorpusItem: ApprovedCorpusItem = {
  * @returns Returns a test object of type ApprovedCorpusItem
  */
 export const getTestApprovedItem = (
-  options?: Partial<ApprovedCorpusItem>
+  options?: Partial<ApprovedCorpusItem>,
 ): ApprovedCorpusItem => {
   return {
     ...approvedCorpusItem,

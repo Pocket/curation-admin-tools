@@ -28,10 +28,10 @@ describe('applyCurlyQuotes', () => {
 
   it('adds double curly apostrophes at the end of quotes', () => {
     const result = applyCurlyQuotes(
-      'I tried the workout, and it did more than expected. "Fitness is for Everyone."'
+      'I tried the workout, and it did more than expected. "Fitness is for Everyone."',
     );
     expect(result).toEqual(
-      'I tried the workout, and it did more than expected. “Fitness is for Everyone.”'
+      'I tried the workout, and it did more than expected. “Fitness is for Everyone.”',
     );
   });
 });
