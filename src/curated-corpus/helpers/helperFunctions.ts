@@ -183,35 +183,49 @@ export const getLastScheduledDayDiff = (
 };
 
 /**
- * Formats a string using rules based on the string language.
- * @param language the language the passed string is in
- * @param str string to format
- * @param isExcerpt indicates if string is an excerpt as different formatting rules are applied for certain languages
- * @returns formatted string
+ * Formats an excerpt using rules based on the excerpt's language.
+ * @param language the language the passed excerpt is in
+ * @param excerpt excerpt to format
+ * @returns formatted excerpt
  */
-export const applyStrFormatByLanguage = (
+export const applyExcerptFormattingByLanguage = (
   language: CorpusLanguage,
-  str: string,
-  isExcerpt: boolean,
+  excerpt: string,
 ): string => {
-  // if not excerpt (title is passed), apply quotes & title case for EN
-  if (language === CorpusLanguage.En && !isExcerpt) {
-    return applyCurlyQuotes(applyApTitleCase(str));
+  // if excerpt is English, apply quotes formatting for EN
+  if (language === CorpusLanguage.En) {
+    applyCurlyQuotes(excerpt);
   }
-  // if excerpt, apply quotes formatting for EN
-  if (language === CorpusLanguage.En && isExcerpt) {
-    applyCurlyQuotes(str);
-  }
-  //if excerpt or title, apply German quotes/dashes formatting
+  // if excerpt is German, apply German quotes/dashes formatting
   if (language === CorpusLanguage.De) {
-    return applyQuotesDashesDE(str) as string;
+    return applyQuotesDashesDE(excerpt) as string;
   }
-  // apply EN formatting rules for other languages for now
+  // apply EN formatting rules on excerpt for other languages for now
   else {
-    if (!isExcerpt) {
-      return applyCurlyQuotes(applyApTitleCase(str));
-    } else {
-      return applyCurlyQuotes(str);
-    }
+    return applyCurlyQuotes(excerpt);
+  }
+};
+
+/**
+ * Formats a title using rules based on the title's language.
+ * @param language the language the passed title is in
+ * @param title title to format
+ * @returns formatted title
+ */
+export const applyTitleFormattingByLanguage = (
+  language: CorpusLanguage,
+  title: string,
+): string => {
+  // if title is passed, apply quotes & title case for EN
+  if (language === CorpusLanguage.En) {
+    return applyCurlyQuotes(applyApTitleCase(title));
+  }
+  // if title is in German, apply German quotes/dashes formatting
+  if (language === CorpusLanguage.De) {
+    return applyQuotesDashesDE(title) as string;
+  }
+  // apply EN formatting rules on title for other languages for now
+  else {
+    return applyCurlyQuotes(applyApTitleCase(title));
   }
 };

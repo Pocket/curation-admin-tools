@@ -9,7 +9,7 @@ import {
   styled,
   Switch,
   TextField,
-  Tooltip
+  Tooltip,
 } from '@mui/material';
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import { validationSchema } from './ApprovedItemForm.validation';
@@ -18,14 +18,14 @@ import {
   CorpusLanguage,
   CuratedStatus,
   useGetOpenGraphFieldsQuery,
-  useGetUrlMetadataLazyQuery
+  useGetUrlMetadataLazyQuery,
 } from '../../../api/generatedTypes';
 import {
   ApprovedItemFromProspect,
   curationStatusOptions,
   DropdownOption,
   languages,
-  topics
+  topics,
 } from '../../helpers/definitions';
 import {
   Button,
@@ -33,11 +33,14 @@ import {
   FormikTextField,
   ImageUpload,
   SharedFormButtons,
-  SharedFormButtonsProps
+  SharedFormButtonsProps,
 } from '../../../_shared/components';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 import { curationPalette } from '../../../theme';
-import { applyStrFormatByLanguage } from '../../helpers/helperFunctions';
+import {
+  applyExcerptFormattingByLanguage,
+  applyTitleFormattingByLanguage,
+} from '../../helpers/helperFunctions';
 
 interface ApprovedItemFormProps {
   /**
@@ -50,7 +53,7 @@ interface ApprovedItemFormProps {
    */
   onSubmit: (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ) => void | Promise<any>;
 
   /**
@@ -183,14 +186,20 @@ export const ApprovedItemForm: React.FC<
   const fixTitle = () => {
     formik.setFieldValue(
       'title',
-      applyStrFormatByLanguage(approvedItem.language as CorpusLanguage, formik.values.title, false)
+      applyTitleFormattingByLanguage(
+        approvedItem.language as CorpusLanguage,
+        formik.values.title,
+      ),
     );
   };
 
   const fixExcerpt = () => {
     formik.setFieldValue(
       'excerpt',
-      applyStrFormatByLanguage(approvedItem.language as CorpusLanguage, formik.values.excerpt, true)
+      applyExcerptFormattingByLanguage(
+        approvedItem.language as CorpusLanguage,
+        formik.values.excerpt,
+      ),
     );
   };
 

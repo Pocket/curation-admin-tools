@@ -2,7 +2,8 @@ import { DateTime } from 'luxon';
 import { CorpusLanguage, ProspectType } from '../../api/generatedTypes';
 import { ScheduledSurfaces } from './definitions';
 import {
-  applyStrFormatByLanguage,
+  applyExcerptFormattingByLanguage,
+  applyTitleFormattingByLanguage,
   downloadAndUploadApprovedItemImageToS3,
   fetchFileFromUrl,
   formatFormLabel,
@@ -11,7 +12,7 @@ import {
   getLastScheduledDayDiff,
   getLocalDateTimeForGuid,
   getScheduledSurfaceName,
-  readImageFileFromDisk,
+  readImageFileFromDisk
 } from './helperFunctions';
 
 describe('helperFunctions ', () => {
@@ -304,56 +305,55 @@ describe('helperFunctions ', () => {
     });
   });
 
-  describe('applyStrFormatByLanguage function', () => {
-    it('should default to EN_US formatting for title & excerpt if language is not EN or DE', () => {
-      // title case (Spanish language)
+  describe('applyExcerptFormattingByLanguage function', () => {
+    it('should default to EN_US formatting for excerpt if language is not EN or DE', () => {
       expect(
-        applyStrFormatByLanguage(CorpusLanguage.Es, "spanish-title's", false),
-      ).toEqual('Spanish-Title’s');
-      // excerpt case (Italian language)
-      expect(
-        applyStrFormatByLanguage(
+        applyExcerptFormattingByLanguage(
           CorpusLanguage.It,
           'italian - "excerpt\'s"',
-          true,
         ),
       ).toEqual('italian - “excerpt’s”');
     });
-    it('should use EN_US formatting for title & excerpt if language is EN', () => {
-      // title case (English language)
+    it('should use EN_US formatting for excerpt if language is EN', () => {
       expect(
-        applyStrFormatByLanguage(
-          CorpusLanguage.En,
-          'example Title in english Language "sample"',
-          false,
-        ),
-      ).toEqual('Example Title in English Language “Sample”');
-      // excerpt case (English language)
-      expect(
-        applyStrFormatByLanguage(
+        applyExcerptFormattingByLanguage(
           CorpusLanguage.En,
           'example excerpt in English Language "sample\'s"',
-          true,
         ),
       ).toEqual('example excerpt in English Language “sample’s”');
     });
-    it('should use DE_DE formatting for title & excerpt if language is DE', () => {
-      // title (German language) no capitalization should be applied
+    it('should use DE_DE formatting for title excerpt if language is DE', () => {
       expect(
-        applyStrFormatByLanguage(
-          CorpusLanguage.De,
-          '«Meeresregionen» – in die pelagischen Zonen – verlegt',
-          false,
-        ),
-      ).toEqual('„Meeresregionen” — in die pelagischen Zonen — verlegt');
-      // excerpt case (English language)
-      expect(
-        applyStrFormatByLanguage(
+        applyExcerptFormattingByLanguage(
           CorpusLanguage.De,
           '«Meeresregionen» – in die pelagischen "Zonen" – verlegt',
-          true,
         ),
       ).toEqual('„Meeresregionen” — in die pelagischen „Zonen” — verlegt');
+    });
+  });
+
+  describe('applyTitleFormattingByLanguage function', () => {
+    it('should default to EN_US formatting for title if language is not EN or DE', () => {
+      expect(
+        applyTitleFormattingByLanguage(CorpusLanguage.Es, "spanish-title's"),
+      ).toEqual('Spanish-Title’s');
+    });
+    it('should use EN_US formatting for title if language is EN', () => {
+      expect(
+        applyTitleFormattingByLanguage(
+          CorpusLanguage.En,
+          'example Title in english Language "sample"',
+        ),
+      ).toEqual('Example Title in English Language “Sample”');
+    });
+    it('should use DE_DE formatting for title if language is DE', () => {
+      // title (German language) no capitalization should be applied
+      expect(
+        applyTitleFormattingByLanguage(
+          CorpusLanguage.De,
+          '«Meeresregionen» – in die pelagischen Zonen – verlegt',
+        ),
+      ).toEqual('„Meeresregionen” — in die pelagischen Zonen — verlegt');
     });
   });
 });
