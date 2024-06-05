@@ -192,15 +192,11 @@ export const applyExcerptFormattingByLanguage = (
   language: CorpusLanguage,
   excerpt: string,
 ): string => {
-  // if excerpt is English, apply quotes formatting for EN
-  if (language === CorpusLanguage.En) {
-    applyCurlyQuotes(excerpt);
-  }
   // if excerpt is German, apply German quotes/dashes formatting
   if (language === CorpusLanguage.De) {
     return applyQuotesDashesDE(excerpt) as string;
   }
-  // apply EN formatting rules on excerpt for other languages for now
+  // apply EN formatting rules on excerpt for all other languages for now
   else {
     return applyCurlyQuotes(excerpt);
   }
@@ -216,15 +212,11 @@ export const applyTitleFormattingByLanguage = (
   language: CorpusLanguage,
   title: string,
 ): string => {
-  // if title is passed, apply quotes & title case for EN
-  if (language === CorpusLanguage.En) {
-    return applyCurlyQuotes(applyApTitleCase(title));
-  }
   // if title is in German, apply German quotes/dashes formatting
   if (language === CorpusLanguage.De) {
     return applyQuotesDashesDE(title) as string;
   }
-  // apply EN formatting rules on title for other languages for now
+  // apply EN formatting rules on title for all other languages for now
   else {
     return applyCurlyQuotes(applyApTitleCase(title));
   }
