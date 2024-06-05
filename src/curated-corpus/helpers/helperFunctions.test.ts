@@ -12,7 +12,7 @@ import {
   getLastScheduledDayDiff,
   getLocalDateTimeForGuid,
   getScheduledSurfaceName,
-  readImageFileFromDisk
+  readImageFileFromDisk,
 } from './helperFunctions';
 
 describe('helperFunctions ', () => {
