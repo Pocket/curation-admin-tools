@@ -322,7 +322,7 @@ describe('helperFunctions ', () => {
         ),
       ).toEqual('example excerpt in English Language “sample’s”');
     });
-    it('should use DE_DE formatting for title excerpt if language is DE', () => {
+    it('should use DE_DE formatting for excerpt if language is DE', () => {
       expect(
         applyExcerptFormattingByLanguage(
           CorpusLanguage.De,
