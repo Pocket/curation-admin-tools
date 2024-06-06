@@ -82,7 +82,6 @@ export function createPocketAlbApplication(
     internal: false, //set to true to put it inside our vpc
     prefix: config.prefix,
     alb6CharacterPrefix: config.shortName,
-    tags: config.tags,
     cdn: false,
     domain: config.domain,
     containerConfigs: [
