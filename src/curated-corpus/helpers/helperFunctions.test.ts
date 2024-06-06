@@ -1,16 +1,18 @@
 import { DateTime } from 'luxon';
-import { ProspectType } from '../../api/generatedTypes';
+import { CorpusLanguage, ProspectType } from '../../api/generatedTypes';
 import { ScheduledSurfaces } from './definitions';
 import {
+  applyExcerptFormattingByLanguage,
+  applyTitleFormattingByLanguage,
   downloadAndUploadApprovedItemImageToS3,
   fetchFileFromUrl,
   formatFormLabel,
   getCuratorNameFromLdap,
+  getFormattedImageUrl,
+  getLastScheduledDayDiff,
   getLocalDateTimeForGuid,
   getScheduledSurfaceName,
-  getFormattedImageUrl,
   readImageFileFromDisk,
-  getLastScheduledDayDiff,
 } from './helperFunctions';
 
 describe('helperFunctions ', () => {
@@ -300,6 +302,58 @@ describe('helperFunctions ', () => {
         ),
       );
       expect(result).toBe(expected);
+    });
+  });
+
+  describe('applyExcerptFormattingByLanguage function', () => {
+    it('should default to EN_US formatting for excerpt if language is not EN or DE', () => {
+      expect(
+        applyExcerptFormattingByLanguage(
+          CorpusLanguage.It,
+          'italian - "excerpt\'s"',
+        ),
+      ).toEqual('italian - “excerpt’s”');
+    });
+    it('should use EN_US formatting for excerpt if language is EN', () => {
+      expect(
+        applyExcerptFormattingByLanguage(
+          CorpusLanguage.En,
+          'example excerpt in English Language "sample\'s"',
+        ),
+      ).toEqual('example excerpt in English Language “sample’s”');
+    });
+    it('should use DE_DE formatting for excerpt if language is DE', () => {
+      expect(
+        applyExcerptFormattingByLanguage(
+          CorpusLanguage.De,
+          '«Meeresregionen» – in die pelagischen "Zonen" – verlegt',
+        ),
+      ).toEqual('„Meeresregionen” — in die pelagischen „Zonen” — verlegt');
+    });
+  });
+
+  describe('applyTitleFormattingByLanguage function', () => {
+    it('should default to EN_US formatting for title if language is not EN or DE', () => {
+      expect(
+        applyTitleFormattingByLanguage(CorpusLanguage.Es, "spanish-title's"),
+      ).toEqual('Spanish-Title’s');
+    });
+    it('should use EN_US formatting for title if language is EN', () => {
+      expect(
+        applyTitleFormattingByLanguage(
+          CorpusLanguage.En,
+          'example Title in english Language "sample"',
+        ),
+      ).toEqual('Example Title in English Language “Sample”');
+    });
+    it('should use DE_DE formatting for title if language is DE', () => {
+      // title (German language) no capitalization should be applied
+      expect(
+        applyTitleFormattingByLanguage(
+          CorpusLanguage.De,
+          '«Meeresregionen» – in die pelagischen Zonen – verlegt',
+        ),
+      ).toEqual('„Meeresregionen” — in die pelagischen Zonen — verlegt');
     });
   });
 });

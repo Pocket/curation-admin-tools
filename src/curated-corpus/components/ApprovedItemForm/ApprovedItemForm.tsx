@@ -15,6 +15,7 @@ import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import { validationSchema } from './ApprovedItemForm.validation';
 import {
   ApprovedCorpusItem,
+  CorpusLanguage,
   CuratedStatus,
   useGetOpenGraphFieldsQuery,
   useGetUrlMetadataLazyQuery,
@@ -35,9 +36,11 @@ import {
   SharedFormButtonsProps,
 } from '../../../_shared/components';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
-import { applyCurlyQuotes } from '../../../_shared/utils/applyCurlyQuotes';
-import { applyApTitleCase } from '../../../_shared/utils/applyApTitleCase';
 import { curationPalette } from '../../../theme';
+import {
+  applyExcerptFormattingByLanguage,
+  applyTitleFormattingByLanguage,
+} from '../../helpers/helperFunctions';
 
 interface ApprovedItemFormProps {
   /**
@@ -183,12 +186,21 @@ export const ApprovedItemForm: React.FC<
   const fixTitle = () => {
     formik.setFieldValue(
       'title',
-      applyCurlyQuotes(applyApTitleCase(formik.values.title)),
+      applyTitleFormattingByLanguage(
+        approvedItem.language as CorpusLanguage,
+        formik.values.title,
+      ),
     );
   };
 
   const fixExcerpt = () => {
-    formik.setFieldValue('excerpt', applyCurlyQuotes(formik.values.excerpt));
+    formik.setFieldValue(
+      'excerpt',
+      applyExcerptFormattingByLanguage(
+        approvedItem.language as CorpusLanguage,
+        formik.values.excerpt,
+      ),
+    );
   };
 
   // Boolean. Set to true if the current excerpt in the form excerpt input field is the og excerpt.
