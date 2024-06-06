@@ -41,7 +41,7 @@ export const PartnerPage = (): JSX.Element => {
     location.state?.partner
       ? // Deep clone a read-only object that comes from the routing
         JSON.parse(JSON.stringify(location.state?.partner))
-      : undefined
+      : undefined,
   );
 
   /**
@@ -77,7 +77,7 @@ export const PartnerPage = (): JSX.Element => {
    */
   const handleSubmit = (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ): void => {
     updateCollectionPartner({
       variables: {

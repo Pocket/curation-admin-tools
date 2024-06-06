@@ -43,7 +43,7 @@ interface ScheduleSummaryCardProps {
  * @constructor
  */
 export const ScheduleSummaryCard: React.FC<ScheduleSummaryCardProps> = (
-  props
+  props,
 ): JSX.Element => {
   const { headingCopy, items } = props;
 

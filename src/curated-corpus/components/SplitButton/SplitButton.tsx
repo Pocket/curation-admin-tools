@@ -58,7 +58,7 @@ export const SplitButton: React.FC<SplitButtonProps> = (props) => {
   const handleMenuItemClick = (
     event: React.MouseEvent<HTMLLIElement, MouseEvent>,
     index: number,
-    code: string
+    code: string,
   ) => {
     setSelectedIndex(index);
     setOpen(false);

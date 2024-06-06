@@ -69,7 +69,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
 
   // This is the date used in the sidebar. Defaults to tomorrow
   const [sidebarDate, setSidebarDate] = useState<DateTime | null>(
-    DateTime.local().plus({ days: 1 })
+    DateTime.local().plus({ days: 1 }),
   );
 
   // Whether the data in the sidebar needs to be refreshed.
@@ -110,7 +110,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       const options = data.getScheduledSurfacesForUser.map(
         (scheduledSurface) => {
           return { code: scheduledSurface.guid, name: scheduledSurface.name };
-        }
+        },
       );
       if (options.length > 0) {
         setCurrentScheduledSurfaceGuid(options[0].code);
@@ -121,7 +121,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       // relevant to this Scheduled Surface.
       if (data.getScheduledSurfacesForUser[0]) {
         const filters = getProspectFilterOptions(
-          data.getScheduledSurfacesForUser[0].prospectTypes
+          data.getScheduledSurfacesForUser[0].prospectTypes,
         );
         setProspectFilters(filters);
       }
@@ -151,13 +151,13 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     // we fetched earlier for the user.
     const currentScheduledSurface =
       scheduledSurfaceData?.getScheduledSurfacesForUser.filter(
-        (surface) => surface.guid === option.code
+        (surface) => surface.guid === option.code,
       )[0];
 
     // Update the Prospect Type dropdown with values available
     // for the current Scheduled Surface
     const filterOptions = getProspectFilterOptions(
-      currentScheduledSurface?.prospectTypes!
+      currentScheduledSurface?.prospectTypes!,
     );
     setProspectFilters(filterOptions);
   };
@@ -166,7 +166,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
    * Set the current Prospect to be worked on (e.g., to be approved or rejected).
    */
   const [currentProspect, setCurrentProspect] = useState<Prospect | undefined>(
-    undefined
+    undefined,
   );
 
   /**
@@ -280,7 +280,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       // variable on prospect types resets;
       // otherwise the refetch() function is run with previously set filters
       // when users update filters from, for example, "Syndicated" to "All Sources".
-      option.code ? { prospectType: option.code } : { prospectType: undefined }
+      option.code ? { prospectType: option.code } : { prospectType: undefined },
     );
   };
 
@@ -293,7 +293,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
    */
   const onRejectSave = (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ): void => {
     // Set out all the variables we need to pass to the first mutation
     const variables: RejectProspectMutationVariables = {
@@ -327,7 +327,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       },
       () => {
         formikHelpers.setSubmitting(false);
-      }
+      },
     );
 
     // Add the prospect to the rejected corpus
@@ -342,14 +342,14 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         // Remove the newly rejected item from the list of prospects displayed
         // on the page.
         setProspects(
-          prospects.filter((prospect) => prospect.id !== currentProspect?.id!)
+          prospects.filter((prospect) => prospect.id !== currentProspect?.id!),
         );
 
         formikHelpers.setSubmitting(false);
       },
       () => {
         formikHelpers.setSubmitting(false);
-      }
+      },
     );
   };
 
@@ -375,7 +375,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   const createApprovedItemAndMarkAsCurated = async (
     s3ImageUrl: string,
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ): Promise<void> => {
     //build an approved item
 
@@ -417,26 +417,26 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
             () => {
               postCreateApprovedItem(
                 approvedItemData.createApprovedCorpusItem,
-                true
+                true,
               );
 
               formikHelpers.setSubmitting(false);
             },
             () => {
               formikHelpers.setSubmitting(false);
-            }
+            },
           );
         } else {
           // if we don't have a prospect id, this was a manually added prospect,
           // and we don't need to call prospect api at all
           postCreateApprovedItem(
             approvedItemData.createApprovedCorpusItem,
-            false
+            false,
           );
 
           formikHelpers.setSubmitting(false);
         }
-      }
+      },
     );
   };
 
@@ -449,7 +449,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
    */
   const postCreateApprovedItem = (
     approvedItem: ApprovedCorpusItem,
-    isRegularProspect: boolean
+    isRegularProspect: boolean,
   ): void => {
     toggleApprovedItemModal();
 
@@ -466,7 +466,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       // Remove the newly curated item from the list of prospects displayed
       // on the page.
       setProspects(
-        prospects.filter((prospect) => prospect.id !== currentProspect?.id!)
+        prospects.filter((prospect) => prospect.id !== currentProspect?.id!),
       );
     }
   };
@@ -477,7 +477,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
    */
   const onCuratedItemSave = async (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ) => {
     try {
       // set s3ImageUrl variable to the user uploaded s3 image url
@@ -488,7 +488,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       if (!s3ImageUrl) {
         s3ImageUrl = await downloadAndUploadApprovedItemImageToS3(
           values.imageUrl,
-          uploadApprovedItemImage
+          uploadApprovedItemImage,
         );
       }
 
@@ -496,7 +496,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       await createApprovedItemAndMarkAsCurated(
         s3ImageUrl,
         values,
-        formikHelpers
+        formikHelpers,
       );
 
       // reset the userUploadedS3ImageUrl state variable so that the
@@ -513,7 +513,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   // 2. Schedule the curated item when the user saves a scheduling request
   const onScheduleSave = (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ): void => {
     // DE items migrated from the old system don't have a topic. This check forces to add a topic before scheduling
     if (!approvedItem?.topic) {
@@ -560,7 +560,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
         // Remove the previously curated item from the list of prospects displayed
         // on the page.
         setProspects(
-          prospects.filter((prospect) => prospect.id !== currentProspect?.id!)
+          prospects.filter((prospect) => prospect.id !== currentProspect?.id!),
         );
 
         // Hide the Schedule Item Form modal
@@ -579,7 +579,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       () => {
         // Hide the loading indicator
         formikHelpers.setSubmitting(false);
-      }
+      },
     );
   };
 
@@ -592,7 +592,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
    */
   const onRemoveProspect = (
     prospectId: string,
-    errorMessage?: string
+    errorMessage?: string,
   ): void => {
     if (errorMessage) {
       showNotification(errorMessage, 'error');
@@ -658,8 +658,8 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     const mappedProspectIds = prospects.map((p) => p.id);
     setProspects(
       unsortedProspects.filter((up: { id: string }) =>
-        mappedProspectIds.includes(up.id)
-      )
+        mappedProspectIds.includes(up.id),
+      ),
     );
     setSortByPublishedDate((prev) => !prev);
   };
@@ -685,7 +685,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
     setProspects(
       prospectsToSort.sort((a, b) => {
         return (b.item?.timeToRead ?? 0) - (a.item?.timeToRead ?? 0);
-      })
+      }),
     );
   };
 
@@ -704,7 +704,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
             approvedItem={transformProspectToApprovedItem(
               currentProspect,
               isRecommendation,
-              isManualSubmission
+              isManualSubmission,
             )}
             heading={isRecommendation ? 'Recommend' : 'Add to Corpus'}
             isOpen={approvedItemModalOpen}
@@ -879,7 +879,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
                   // Get the most recent scheduled date for the prospect. Note the scheduled dates are returned in descending order by the api
                   const lastScheduledDate = DateTime.fromISO(
                     prospect.approvedCorpusItem?.scheduledSurfaceHistory[0]
-                      .scheduledDate
+                      .scheduledDate,
                   );
 
                   // hide the prospect if the last scheduled date of the prospect is within the 14 days before and after today's date

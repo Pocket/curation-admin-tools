@@ -62,12 +62,12 @@ export const SchedulePage: React.FC = (): ReactElement => {
 
   // set up initial start date. Note it is set a day after current local time
   const [startDate, setStartDate] = useState<DateTime>(
-    DateTime.local().plus({ days: 1 })
+    DateTime.local().plus({ days: 1 }),
   );
 
   // set up initial end date. Note it is set a day after startDate state variable
   const [endDate, setEndDate] = useState<DateTime>(
-    DateTime.local().plus({ days: 2 })
+    DateTime.local().plus({ days: 2 }),
   );
 
   // set up the initial Scheduled Surface GUID value (nothing at this point)
@@ -132,7 +132,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
    * a curated item.
    */
   const [currentProspect, setCurrentProspect] = useState<Prospect | undefined>(
-    undefined
+    undefined,
   );
 
   /**
@@ -195,7 +195,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
       const options = data.getScheduledSurfacesForUser.map(
         (scheduledSurface) => {
           return { code: scheduledSurface.guid, name: scheduledSurface.name };
-        }
+        },
       );
       if (options.length > 0) {
         setCurrentScheduledSurfaceGuid(options[0].code);
@@ -232,7 +232,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
       const options = scheduledSurfaceData.getScheduledSurfacesForUser.map(
         (surface) => {
           return { code: surface.guid, name: surface.name };
-        }
+        },
       );
       if (options.length > 0) {
         setCurrentScheduledSurfaceGuid(options[0].code);
@@ -251,7 +251,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
       executeGetScheduledItemsQuery(
         currentScheduledSurfaceGuid,
         startDate,
-        endDate
+        endDate,
       );
     }
 
@@ -263,8 +263,8 @@ export const SchedulePage: React.FC = (): ReactElement => {
       setGuidLocalDateTime(
         getLocalDateTimeForGuid(
           currentScheduledSurfaceGuid,
-          scheduledSurfaceData
-        )
+          scheduledSurfaceData,
+        ),
       );
   }, [currentScheduledSurfaceGuid]);
 
@@ -299,7 +299,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
 
       scheduledSurfaceData &&
         setGuidLocalDateTime(
-          getLocalDateTimeForGuid(option.code, scheduledSurfaceData)
+          getLocalDateTimeForGuid(option.code, scheduledSurfaceData),
         );
     }
   };
@@ -312,7 +312,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
    */
   const onRescheduleItem = (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ): void => {
     // DE items migrated from the old system don't have a topic. This check forces to add a topic before scheduling
     if (!currentItem?.approvedItem.topic) {
@@ -340,7 +340,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
       () => {
         formikHelpers.setSubmitting(false);
       },
-      refetch
+      refetch,
     );
   };
 
@@ -370,7 +370,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
       `Success! Item moved to the bottom of the list.`,
       undefined,
       undefined,
-      refetch
+      refetch,
     );
   };
 
@@ -382,7 +382,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
    */
   const onRemoveSave = (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ): void => {
     // Setup the input
     const input: DeleteScheduledCorpusItemInput = {
@@ -403,7 +403,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
       () => {
         formikHelpers.setSubmitting(false);
       },
-      refetch
+      refetch,
     );
   };
 
@@ -416,7 +416,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
   const executeGetScheduledItemsQuery = (
     surfaceGuid: string,
     startDate: DateTime,
-    endDate: DateTime
+    endDate: DateTime,
   ) => {
     // Reset frontend-only filters to show all items for the surface
     // the curator is switching to.
@@ -443,7 +443,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
   const createCuratedItem = async (
     s3ImageUrl: string,
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ): Promise<void> => {
     //build an approved item
 
@@ -480,7 +480,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
         setApprovedItem(approvedItemData.createApprovedCorpusItem);
         // transition to scheduling it and specifying manual addition reasons
         toggleManualScheduleItemModal();
-      }
+      },
     );
   };
 
@@ -504,7 +504,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
    */
   const onCuratedItemSave = async (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ) => {
     try {
       // set s3ImageUrl variable to the user uploaded s3 image url
@@ -515,7 +515,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
       if (!s3ImageUrl) {
         s3ImageUrl = await downloadAndUploadApprovedItemImageToS3(
           values.imageUrl,
-          uploadApprovedItemImage
+          uploadApprovedItemImage,
         );
       }
 
@@ -536,7 +536,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
   // 2. Schedule the curated item when the user saves a scheduling request
   const onScheduleSave = (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ): void => {
     // DE items migrated from the old system don't have a topic. This check forces to add a topic before scheduling
     if (!approvedItem?.topic) {
@@ -578,7 +578,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
         // Hide the loading indicator
         formikHelpers.setSubmitting(false);
       },
-      refetch
+      refetch,
     );
   };
 
@@ -635,7 +635,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
           approvedItem={transformProspectToApprovedItem(
             currentProspect,
             isRecommendation,
-            isManualSubmission
+            isManualSubmission,
           )}
           heading={isRecommendation ? 'Recommend' : 'Add to Corpus'}
           isOpen={approvedItemModalOpen}
@@ -746,7 +746,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
                       executeGetScheduledItemsQuery(
                         currentScheduledSurfaceGuid,
                         startDate,
-                        endDate
+                        endDate,
                       );
                     }}
                   >
@@ -836,7 +836,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
                                   ) {
                                     showNotification(
                                       'Cannot reject and unschedule this item - multiple scheduled entries exist.',
-                                      'error'
+                                      'error',
                                     );
                                   }
                                   // Otherwise, proceed with rejecting and unscheduling this item
@@ -856,7 +856,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
                     </Grid>
                   </Grid>
                 </>
-              )
+              ),
             )}
         </Grid>
         <FloatingActionButton

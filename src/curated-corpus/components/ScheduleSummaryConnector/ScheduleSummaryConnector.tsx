@@ -56,7 +56,7 @@ export const ScheduleSummaryConnector: React.FC<
   const { date, scheduledSurfaceGuid, refreshData, setRefreshData } = props;
 
   const [scheduledItems, setScheduledItems] = useState<ScheduledCorpusItem[]>(
-    []
+    [],
   );
 
   // Get the stories already scheduled for a given date+surface combination.

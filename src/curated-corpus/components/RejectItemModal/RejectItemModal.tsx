@@ -11,13 +11,13 @@ interface RejectProspectModalProps {
   isOpen: boolean;
   onSave: (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ) => void | Promise<any>;
   toggleModal: () => void;
 }
 
 export const RejectItemModal: React.FC<RejectProspectModalProps> = (
-  props
+  props,
 ): JSX.Element => {
   const { prospect, isOpen, onSave, toggleModal } = props;
 

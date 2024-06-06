@@ -50,7 +50,7 @@ interface ApprovedItemFormProps {
    */
   onSubmit: (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ) => void | Promise<any>;
 
   /**
@@ -183,7 +183,7 @@ export const ApprovedItemForm: React.FC<
   const fixTitle = () => {
     formik.setFieldValue(
       'title',
-      applyCurlyQuotes(applyApTitleCase(formik.values.title))
+      applyCurlyQuotes(applyApTitleCase(formik.values.title)),
     );
   };
 

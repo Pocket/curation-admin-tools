@@ -17,7 +17,7 @@ import { validationSchema } from './ShareableListModerationForm.validation';
 interface ShareableListModerationFormProps {
   onSubmit: (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ) => void | Promise<any>;
 
   /**
@@ -79,7 +79,7 @@ export const ShareableListModerationForm: React.FC<
                     {modReasonOpt.name}
                   </option>
                 );
-              }
+              },
             )}
           </FormikSelectField>
         </Grid>

@@ -36,7 +36,7 @@ interface AuthorFormProps {
  * A form for adding authors or editing information for existing authors
  */
 export const AuthorForm: React.FC<AuthorFormProps & SharedFormButtonsProps> = (
-  props
+  props,
 ): JSX.Element => {
   const { author, onSubmit, editMode, onCancel } = props;
 

@@ -40,7 +40,7 @@ interface ApprovedItemListCardProps {
 }
 
 export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
-  props
+  props,
 ): JSX.Element => {
   const {
     item,
@@ -54,7 +54,7 @@ export const ApprovedItemListCard: React.FC<ApprovedItemListCardProps> = (
   // prefixing the item's imageUrl with the pocket-image-cache url to format it to a size of 600x300
   const formattedImageUrl =
     `https://pocket-image-cache.com/600x300/filters:format(jpg):extract_focal()/`.concat(
-      encodeURIComponent(item.imageUrl)
+      encodeURIComponent(item.imageUrl),
     );
 
   const showScheduleHistory = item.scheduledSurfaceHistory.length != 0;

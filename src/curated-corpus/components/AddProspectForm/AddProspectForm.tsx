@@ -13,7 +13,7 @@ import { validationSchema } from './AddProspectForm.validation';
 interface AddProspectFormProps {
   onSubmit: (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ) => void | Promise<any>;
 
   // show/hide the loading bar on submissions

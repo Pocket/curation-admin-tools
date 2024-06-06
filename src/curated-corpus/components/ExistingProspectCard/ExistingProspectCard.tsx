@@ -69,7 +69,7 @@ interface ExistingProspectCardProps {
  * @constructor
  */
 export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
-  props
+  props,
 ): JSX.Element => {
   const {
     item,
@@ -120,7 +120,7 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
                 secondary={
                   parserItem?.datePublished &&
                   `Published ${DateTime.fromJSDate(
-                    new Date(parserItem?.datePublished)
+                    new Date(parserItem?.datePublished),
                   ).toFormat('MMMM dd, yyyy')}`
                 }
               />
@@ -132,7 +132,7 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
               <ListItemText
                 primary={getCuratorNameFromLdap(item.createdBy)}
                 secondary={DateTime.fromSeconds(item.createdAt).toFormat(
-                  'MMMM dd, yyyy'
+                  'MMMM dd, yyyy',
                 )}
               />
             </ListItem>

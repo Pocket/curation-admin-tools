@@ -21,7 +21,7 @@ interface ScheduleSummaryLayoutProps {
  * @constructor
  */
 export const ScheduleSummaryLayout: React.FC<ScheduleSummaryLayoutProps> = (
-  props
+  props,
 ): JSX.Element => {
   const { scheduledItems } = props;
 
@@ -29,14 +29,14 @@ export const ScheduleSummaryLayout: React.FC<ScheduleSummaryLayoutProps> = (
   const publishers =
     scheduledItems.map(
       (item: { approvedItem: { publisher: string } }) =>
-        item.approvedItem.publisher
+        item.approvedItem.publisher,
     ) ?? [];
 
   // Extract all topics from scheduled item data
   const topics =
     scheduledItems.map(
       (item: { approvedItem: { topic: Maybe<string> | undefined } }) =>
-        getDisplayTopic(item.approvedItem.topic)
+        getDisplayTopic(item.approvedItem.topic),
     ) ?? [];
 
   return (

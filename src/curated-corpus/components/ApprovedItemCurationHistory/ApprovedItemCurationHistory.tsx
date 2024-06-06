@@ -56,7 +56,7 @@ export const ApprovedItemCurationHistory: React.FC<
           <ListItemText
             primary={getCuratorNameFromLdap(item.createdBy)}
             secondary={DateTime.fromSeconds(item.createdAt).toFormat(
-              'MMMM dd, yyyy'
+              'MMMM dd, yyyy',
             )}
           />
         </ListItem>

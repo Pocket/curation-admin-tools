@@ -9,7 +9,7 @@ interface RefreshProspectsModalProps {
 }
 
 export const RefreshProspectsModal: React.FC<RefreshProspectsModalProps> = (
-  props
+  props,
 ): JSX.Element => {
   const { isOpen, onConfirm, toggleModal } = props;
 

@@ -14,7 +14,7 @@ interface ApprovedItemModalProps {
   showItemTitle?: boolean;
   onSave: (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ) => void | Promise<any>;
   toggleModal: () => void;
   isRecommendation?: boolean;
@@ -22,7 +22,7 @@ interface ApprovedItemModalProps {
 }
 
 export const ApprovedItemModal: React.FC<ApprovedItemModalProps> = (
-  props
+  props,
 ): JSX.Element => {
   const {
     approvedItem,

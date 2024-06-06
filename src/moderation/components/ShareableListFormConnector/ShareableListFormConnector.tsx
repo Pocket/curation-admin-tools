@@ -3,10 +3,10 @@ import { useRunMutation } from '../../../_shared/hooks';
 import { ShareableListModerationForm, ShareableListRestorationForm } from '../';
 import { FormikHelpers, FormikValues } from 'formik';
 import {
-  useModerateShareableListMutation,
   ModerateShareableListInput,
   ShareableListComplete,
   ShareableListModerationStatus,
+  useModerateShareableListMutation,
 } from '../../../api/generatedTypes';
 
 interface ShareableListFormConnectorProps {
@@ -54,7 +54,7 @@ export const ShareableListFormConnector: React.FC<
 
   const onSubmit = (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ): void => {
     // if hideList flag is true, hide list
     if (hideList) {
@@ -78,7 +78,7 @@ export const ShareableListFormConnector: React.FC<
           setIsLoaderShowing(false);
           formikHelpers.setSubmitting(false);
         },
-        refetch
+        refetch,
       );
     }
 
@@ -103,7 +103,7 @@ export const ShareableListFormConnector: React.FC<
           setIsLoaderShowing(false);
           formikHelpers.setSubmitting(false);
         },
-        refetch
+        refetch,
       );
     }
     setIsLoaderShowing(true);

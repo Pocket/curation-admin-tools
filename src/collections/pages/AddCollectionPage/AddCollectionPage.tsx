@@ -55,7 +55,7 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
   const handleSubmit = (
     values: FormikValues,
     formikHelpers: FormikHelpers<any>,
-    labels: Label[]
+    labels: Label[],
   ): void => {
     addCollection({
       variables: {
@@ -92,7 +92,7 @@ export const AddCollectionPage: React.FC = (): JSX.Element => {
           `/collections/collections/${data?.createCollection?.externalId}/`,
           {
             collection: data?.createCollection,
-          }
+          },
         );
       })
       .catch((error: Error) => {

@@ -18,13 +18,14 @@ interface ScheduleHistoryEntries {
    */
   isProspect?: boolean;
 }
+
 /**
  * This component renders recent scheduled runs details of an already existing item in the corpus.
  * Includes scheduled surface name, curator's name and the date scheduled for each scheduled run.
  * @param props
  */
 export const ScheduleHistoryEntries: React.FC<ScheduleHistoryEntries> = (
-  props
+  props,
 ): JSX.Element => {
   const { data, isProspect } = props;
 

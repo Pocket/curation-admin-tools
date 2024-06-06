@@ -7,7 +7,7 @@ import {
 export const getValidationSchema = (
   authorIds: string[],
   selectedLabelExternalIds: string[],
-  availableLabelExternalIds: string[]
+  availableLabelExternalIds: string[],
 ) => {
   return yup.object({
     title: yup
@@ -18,11 +18,11 @@ export const getValidationSchema = (
       .string()
       .trim()
       .required(
-        'Please enter a slug or use the "Suggest slug" button to generate one from the collection title'
+        'Please enter a slug or use the "Suggest slug" button to generate one from the collection title',
       )
       .matches(
         /^[a-z0-9-]+$/,
-        'Slug can only contain lowercase alphanumeric characters and hyphens'
+        'Slug can only contain lowercase alphanumeric characters and hyphens',
       )
       .min(6),
     excerpt: yup.string(),
@@ -44,9 +44,9 @@ export const getValidationSchema = (
           return selectedLabelExternalIds.length === 0
             ? true
             : selectedLabelExternalIds.some((label) =>
-                availableLabelExternalIds.includes(label)
+                availableLabelExternalIds.includes(label),
               );
-        }
+        },
       ),
     authorExternalId: yup
       .string()
@@ -63,7 +63,7 @@ export const getValidationSchema = (
         then: yup
           .string()
           .required(
-            'Please choose a child IAB category or leave both IAB categories blank'
+            'Please choose a child IAB category or leave both IAB categories blank',
           ),
         otherwise: yup.string(),
       }),

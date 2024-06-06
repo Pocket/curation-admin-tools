@@ -40,7 +40,7 @@ export interface SharedFormButtonsProps {
 }
 
 export const SharedFormButtons: React.FC<SharedFormButtonsProps> = (
-  props
+  props,
 ): JSX.Element => {
   const {
     editMode = true,

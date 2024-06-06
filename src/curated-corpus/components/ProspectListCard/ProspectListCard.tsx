@@ -59,7 +59,7 @@ interface ProspectListCardProps {
 }
 
 export const ProspectListCard: React.FC<ProspectListCardProps> = (
-  props
+  props,
 ): JSX.Element => {
   const {
     prospect,
@@ -141,7 +141,7 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
                 secondary={
                   parserItem?.datePublished &&
                   `Published ${DateTime.fromJSDate(
-                    new Date(parserItem?.datePublished)
+                    new Date(parserItem?.datePublished),
                   ).toFormat('MMMM dd, yyyy')}`
                 }
               />

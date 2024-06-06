@@ -24,8 +24,8 @@ import { useNotifications } from '../../../_shared/hooks';
 import { validationSchema } from './StoryForm.validation';
 import {
   CollectionStory,
-  useGetStoryFromParserLazyQuery,
   useGetOpenGraphFieldsLazyQuery,
+  useGetStoryFromParserLazyQuery,
 } from '../../../api/generatedTypes';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 import { applyApTitleCase } from '../../../_shared/utils/applyApTitleCase';
@@ -43,7 +43,7 @@ interface StoryFormProps {
    */
   onSubmit: (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ) => void | Promise<any>;
 
   /**
@@ -66,7 +66,7 @@ interface StoryFormProps {
 }
 
 export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
-  props
+  props,
 ): JSX.Element => {
   const {
     story,
@@ -103,7 +103,7 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
 
   // Which image do we show?
   const [imageSrc, setImageSrc] = useState<string>(
-    story.imageUrl ? story.imageUrl : '/placeholders/story.svg'
+    story.imageUrl ? story.imageUrl : '/placeholders/story.svg',
   );
 
   /**
@@ -168,7 +168,7 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
           formik.setFieldValue('title', data.getItemByUrl.title);
           formik.setFieldValue(
             'publisher',
-            data.getItemByUrl.domainMetadata?.name
+            data.getItemByUrl.domainMetadata?.name,
           );
           setParserItemExcerptText(data.getItemByUrl.excerpt || '');
           if (!ogExcerptText) {
@@ -249,7 +249,7 @@ export const StoryForm: React.FC<StoryFormProps & SharedFormButtonsProps> = (
   const fixTitle = () => {
     formik.setFieldValue(
       'title',
-      applyCurlyQuotes(applyApTitleCase(formik.values.title))
+      applyCurlyQuotes(applyApTitleCase(formik.values.title)),
     );
   };
 

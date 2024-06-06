@@ -36,7 +36,7 @@ interface CardActionButtonRowProps {
 }
 
 export const CardActionButtonRow: React.FC<CardActionButtonRowProps> = (
-  props
+  props,
 ): JSX.Element => {
   const { onEdit, onUnschedule, onReschedule, onMoveToBottom, onReject } =
     props;

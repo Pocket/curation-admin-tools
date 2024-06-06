@@ -12,8 +12,8 @@ import CardContent from '@mui/material/CardContent';
 import { SxProps } from '@mui/system';
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import {
-  getFormattedImageUrl,
   getCuratorNameFromLdap,
+  getFormattedImageUrl,
   getScheduledSurfaceName,
 } from '../../helpers/helperFunctions';
 
@@ -52,7 +52,7 @@ const cardHeaderSxCssStyles: SxProps = {
 };
 
 export const ScheduleHistoryModal: React.FC<ScheduleHistoryModalProps> = (
-  props
+  props,
 ): JSX.Element => {
   const { item, isOpen, toggleModal } = props;
 
@@ -119,7 +119,7 @@ export const ScheduleHistoryModal: React.FC<ScheduleHistoryModalProps> = (
 
                     <ListItemText
                       primary={getScheduledSurfaceName(
-                        history.scheduledSurfaceGuid
+                        history.scheduledSurfaceGuid,
                       )}
                       sx={{ width: '30%' }}
                     />

@@ -26,7 +26,7 @@ export const PartnerListPage = (): JSX.Element => {
         perPage: config.pagination.partnersPerPage,
         page: 1,
       },
-    }
+    },
   );
 
   return (
@@ -54,7 +54,7 @@ export const PartnerListPage = (): JSX.Element => {
             return (
               <PartnerListCard key={partner.externalId} partner={partner} />
             );
-          }
+          },
         )}
 
       {data && (

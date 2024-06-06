@@ -64,7 +64,7 @@ interface ProspectPublisherFilterProps {
  * @constructor
  */
 export const ProspectPublisherFilter: React.FC<ProspectPublisherFilterProps> = (
-  props
+  props,
 ): JSX.Element => {
   const {
     excludePublisherSwitch,

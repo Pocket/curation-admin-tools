@@ -3,10 +3,10 @@ import { useRunMutation } from '../../../_shared/hooks';
 import { LabelForm } from '../';
 import { FormikHelpers, FormikValues } from 'formik';
 import {
+  Label,
+  UpdateLabelInput,
   useCreateLabelMutation,
   useUpdateLabelMutation,
-  UpdateLabelInput,
-  Label,
 } from '../../../api/generatedTypes';
 
 interface LabelFormConnectorProps {
@@ -42,7 +42,7 @@ interface LabelFormConnectorProps {
  * Parent component for the LabelForm component
  */
 export const LabelFormConnector: React.FC<LabelFormConnectorProps> = (
-  props
+  props,
 ): JSX.Element => {
   const {
     toggleModal,
@@ -62,7 +62,7 @@ export const LabelFormConnector: React.FC<LabelFormConnectorProps> = (
 
   const onSubmit = (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ): void => {
     // if runCreateLabelMutation flag is true, createLabel
     if (runCreateLabelMutation) {
@@ -79,7 +79,7 @@ export const LabelFormConnector: React.FC<LabelFormConnectorProps> = (
           setIsLoaderShowing(false);
           formikHelpers.setSubmitting(false);
         },
-        refetch
+        refetch,
       );
     }
     // if runUpdateLabelMutation flag is true and label data is passed, updateLabel
@@ -102,7 +102,7 @@ export const LabelFormConnector: React.FC<LabelFormConnectorProps> = (
           setIsLoaderShowing(false);
           formikHelpers.setSubmitting(false);
         },
-        refetch
+        refetch,
       );
     }
     setIsLoaderShowing(true);

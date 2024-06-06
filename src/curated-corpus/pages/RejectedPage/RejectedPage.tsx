@@ -22,7 +22,7 @@ export const RejectedPage: React.FC = (): JSX.Element => {
   const [getRejectedCorpusItems, { loading, error, data }] =
     useGetRejectedItemsLazyQuery(
       // We need to make sure search results are never served from the cache.
-      { fetchPolicy: 'no-cache', notifyOnNetworkStatusChange: true }
+      { fetchPolicy: 'no-cache', notifyOnNetworkStatusChange: true },
     );
 
   // Save the filters in a state variable to be able to use them when paginating
@@ -156,7 +156,7 @@ export const RejectedPage: React.FC = (): JSX.Element => {
                   />
                 </Grid>
               );
-            }
+            },
           )}
       </Grid>
 

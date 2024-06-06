@@ -21,5 +21,5 @@ export const useStyles = makeStyles((theme: Theme) =>
         width: '100%',
       },
     },
-  })
+  }),
 );

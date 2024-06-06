@@ -18,7 +18,7 @@ interface CollectionInfoProps {
 }
 
 export const CollectionInfo: React.FC<CollectionInfoProps> = (
-  props
+  props,
 ): JSX.Element => {
   const { collection } = props;
 

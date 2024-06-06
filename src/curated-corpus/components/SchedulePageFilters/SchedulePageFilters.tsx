@@ -38,7 +38,7 @@ interface SchedulePageFiltersProps {
  * @constructor
  */
 export const SchedulePageFilters: React.FC<SchedulePageFiltersProps> = (
-  props
+  props,
 ): ReactElement => {
   const { scheduledItems, setFilters } = props;
 
@@ -46,7 +46,7 @@ export const SchedulePageFilters: React.FC<SchedulePageFiltersProps> = (
   const topics =
     scheduledItems.map(
       (item: { approvedItem: { topic: Maybe<string> | undefined } }) =>
-        getDisplayTopic(item.approvedItem.topic)
+        getDisplayTopic(item.approvedItem.topic),
     ) ?? [];
 
   const topicList = getGroupedTopicData(topics, true);
@@ -55,7 +55,7 @@ export const SchedulePageFilters: React.FC<SchedulePageFiltersProps> = (
   const publishers =
     scheduledItems.map(
       (item: { approvedItem: { publisher: string } }) =>
-        item.approvedItem.publisher
+        item.approvedItem.publisher,
     ) ?? [];
 
   const publisherList = getGroupedPublisherData(publishers);
@@ -65,7 +65,7 @@ export const SchedulePageFilters: React.FC<SchedulePageFiltersProps> = (
     {
       name: 'ML',
       count: scheduledItems.filter(
-        (item) => item.source === ScheduledItemSource.Ml
+        (item) => item.source === ScheduledItemSource.Ml,
       ).length,
     },
     {

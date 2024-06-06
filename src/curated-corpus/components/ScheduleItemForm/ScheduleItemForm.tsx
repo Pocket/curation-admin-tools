@@ -83,7 +83,7 @@ interface ScheduleItemFormProps {
    */
   onSubmit: (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ) => void | Promise<any>;
 }
 
@@ -154,7 +154,7 @@ export const ScheduleItemForm: React.FC<
     validateOnChange: false,
     validationSchema: getValidationSchema(
       scheduledSurfaces,
-      showManualScheduleReasons
+      showManualScheduleReasons,
     ),
     onSubmit: (values, formikHelpers) => {
       // Make sure the date is the one selected by the user

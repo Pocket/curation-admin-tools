@@ -50,7 +50,7 @@ interface EditCorpusItemActionProps {
  * @constructor
  */
 export const EditCorpusItemAction: React.FC<EditCorpusItemActionProps> = (
-  props
+  props,
 ) => {
   const { item, actionScreen, toggleModal, modalOpen, refetch } = props;
 
@@ -64,7 +64,7 @@ export const EditCorpusItemAction: React.FC<EditCorpusItemActionProps> = (
   // 2. Update the curated item with the data the curator submitted in the edit form.
   const onSave = (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ): void => {
     const variables = {
       data: {
@@ -95,7 +95,7 @@ export const EditCorpusItemAction: React.FC<EditCorpusItemActionProps> = (
       () => {
         formikHelpers.setSubmitting(false);
       },
-      refetch
+      refetch,
     );
   };
 

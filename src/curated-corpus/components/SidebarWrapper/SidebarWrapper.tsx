@@ -49,7 +49,7 @@ interface SidebarWrapperProps {
  * @constructor
  */
 export const SidebarWrapper: React.FC<SidebarWrapperProps> = (
-  props
+  props,
 ): JSX.Element => {
   const {
     date,

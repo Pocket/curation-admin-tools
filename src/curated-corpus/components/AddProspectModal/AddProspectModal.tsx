@@ -58,7 +58,7 @@ interface AddProspectModalProps {
  * Parent component for the AddProspectFormConnector component
  */
 export const AddProspectModal: React.FC<AddProspectModalProps> = (
-  props
+  props,
 ): JSX.Element => {
   const {
     isOpen,

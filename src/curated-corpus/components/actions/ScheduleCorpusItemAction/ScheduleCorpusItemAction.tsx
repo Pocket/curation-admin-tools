@@ -68,7 +68,7 @@ export const ScheduleCorpusItemAction: React.FC<
 
   const onSave = (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ): void => {
     // DE items migrated from the old system don't have a topic.
     // This check forces to add a topic before scheduling
@@ -103,7 +103,7 @@ export const ScheduleCorpusItemAction: React.FC<
       },
       () => {
         formikHelpers.setSubmitting(false);
-      }
+      },
     );
   };
 

@@ -25,7 +25,7 @@ export const AuthorListPage = (): JSX.Element => {
         perPage: config.pagination.authorsPerPage,
         page: 1,
       },
-    }
+    },
   );
 
   return (

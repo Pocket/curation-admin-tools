@@ -6,8 +6,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { ShareableListModal } from '../';
 import {
   ShareableListComplete,
-  ShareableListVisibility,
   ShareableListModerationStatus,
+  ShareableListVisibility,
 } from '../../../api/generatedTypes';
 import { Button, Chip } from '../../../_shared/components';
 import { DateTime } from 'luxon';
@@ -36,7 +36,7 @@ interface ShareableListCardProps {
 export const dateFormat = 'MMMM dd, yyyy HH:MM:ss';
 
 export const ShareableListCard: React.FC<ShareableListCardProps> = (
-  props
+  props,
 ): JSX.Element => {
   const { list, refetch } = props;
 
@@ -78,7 +78,7 @@ export const ShareableListCard: React.FC<ShareableListCardProps> = (
           {replaceCharsInStr(
             list.title,
             htmlEncodedCharsToFindArr,
-            replaceWithDecodedCharsArr
+            replaceWithDecodedCharsArr,
           )}
           <Chip label={list.status} color="primary" />
           {list.moderationStatus === ShareableListModerationStatus.Visible && (
@@ -117,7 +117,7 @@ export const ShareableListCard: React.FC<ShareableListCardProps> = (
             {replaceCharsInStr(
               list.moderationDetails,
               htmlEncodedCharsToFindArr,
-              replaceWithDecodedCharsArr
+              replaceWithDecodedCharsArr,
             )}
           </Box>
         )}
@@ -127,7 +127,7 @@ export const ShareableListCard: React.FC<ShareableListCardProps> = (
             {replaceCharsInStr(
               list.restorationReason,
               htmlEncodedCharsToFindArr,
-              replaceWithDecodedCharsArr
+              replaceWithDecodedCharsArr,
             )}
           </Box>
         )}
@@ -137,7 +137,7 @@ export const ShareableListCard: React.FC<ShareableListCardProps> = (
             {replaceCharsInStr(
               list.description,
               htmlEncodedCharsToFindArr,
-              replaceWithDecodedCharsArr
+              replaceWithDecodedCharsArr,
             )}
           </Box>
         )}

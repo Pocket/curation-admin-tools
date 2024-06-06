@@ -40,7 +40,7 @@ interface HandleApiResponseProps {
  * @param props
  */
 export const HandleApiResponse: React.FC<HandleApiResponseProps> = (
-  props
+  props,
 ): JSX.Element | null => {
   const [isErrorVisible, setIsErrorVisible] = useState(true);
 
@@ -71,7 +71,7 @@ export const HandleApiResponse: React.FC<HandleApiResponseProps> = (
 
       if (graphQLErrors)
         messages = graphQLErrors.map(
-          ({ message }) => `[GraphQL error]: ${message}`
+          ({ message }) => `[GraphQL error]: ${message}`,
         );
 
       if (networkError) {

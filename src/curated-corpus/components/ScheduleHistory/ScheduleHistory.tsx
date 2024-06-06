@@ -22,7 +22,7 @@ interface ScheduleHistory {
  * @param props
  */
 export const ScheduleHistory: React.FC<ScheduleHistory> = (
-  props
+  props,
 ): JSX.Element => {
   const { data, isProspect } = props;
 

@@ -63,7 +63,7 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
         },
       },
       'Story deleted successfully',
-      refetch
+      refetch,
     );
   };
 
@@ -72,7 +72,7 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
   // 2. Update the story when the user submits the form
   const onUpdate = (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ): void => {
     // prepare authors! They need to be an array of objects again
     const authors = transformAuthors(values.authors);
@@ -102,7 +102,7 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
       () => {
         formikHelpers.setSubmitting(false);
       },
-      refetch
+      refetch,
     );
   };
 
@@ -121,7 +121,7 @@ export const StoryListCard: React.FC<StoryListCardProps> = (props) => {
           imageUrl: url,
         },
       },
-      'Image saved successfully'
+      'Image saved successfully',
     );
   };
 

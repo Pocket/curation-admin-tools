@@ -31,7 +31,7 @@ interface NextPrevPaginationProps {
  * @constructor
  */
 export const NextPrevPagination: React.FC<NextPrevPaginationProps> = (
-  props
+  props,
 ): JSX.Element => {
   const { hasNextPage, loadNext, hasPreviousPage, loadPrevious } = props;
 

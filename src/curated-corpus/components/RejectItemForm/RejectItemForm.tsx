@@ -22,7 +22,7 @@ interface RejectItemFormProps {
    */
   onSubmit: (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ) => void | Promise<any>;
 }
 

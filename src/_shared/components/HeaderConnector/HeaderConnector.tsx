@@ -20,7 +20,7 @@ interface HeaderConnectorProps {
 }
 
 export const HeaderConnector: React.FC<HeaderConnectorProps> = (
-  props
+  props,
 ): JSX.Element => {
   const { productName, productLink, menuLinks } = props;
 

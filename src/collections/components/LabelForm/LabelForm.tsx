@@ -13,7 +13,7 @@ import { validationSchema } from './LabelForm.validation';
 interface LabelFormProps {
   onSubmit: (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ) => void | Promise<any>;
 
   // show/hide the loading bar on submissions
@@ -30,7 +30,7 @@ interface LabelFormProps {
  * This component houses all the logic and data that will be used in this form.
  */
 export const LabelForm: React.FC<LabelFormProps & SharedFormButtonsProps> = (
-  props
+  props,
 ) => {
   // de-structure props
   const { onCancel, onSubmit, isLoaderShowing, label } = props;

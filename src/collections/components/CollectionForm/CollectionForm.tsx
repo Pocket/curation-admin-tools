@@ -78,7 +78,7 @@ interface CollectionFormProps {
   onSubmit: (
     values: FormikValues,
     formikHelpers: FormikHelpers<any>,
-    labels: Label[]
+    labels: Label[],
   ) => void | Promise<any>;
 }
 
@@ -117,12 +117,12 @@ export const CollectionForm: React.FC<
   const [selectedLabels, setSelectedLabels] = useState<Label[]>(
     // The API, via generated types, returns a `Maybe` type (Label [] | null),
     // so type coalescing is required to keep the labels field happy.
-    (collection.labels as Label[]) ?? []
+    (collection.labels as Label[]) ?? [],
   );
 
   // pull out external ids of all the selected labels in a separate variable
   const selectedLabelsExternalIds = selectedLabels.map(
-    (label) => label.externalId
+    (label) => label.externalId,
   );
   // Update labels if the user has made any changes
   const handleLabelChange = (e: React.ChangeEvent<unknown>, value: Label[]) => {
@@ -156,7 +156,7 @@ export const CollectionForm: React.FC<
     validationSchema: getValidationSchema(
       authorIds,
       selectedLabelsExternalIds,
-      availableLabelExternalIds
+      availableLabelExternalIds,
     ),
     onSubmit: (values, formikHelpers) => {
       onSubmit(values, formikHelpers, selectedLabels);
@@ -174,7 +174,7 @@ export const CollectionForm: React.FC<
   const fixTitle = () => {
     formik.setFieldValue(
       'title',
-      applyCurlyQuotes(applyApTitleCase(formik.values.title))
+      applyCurlyQuotes(applyApTitleCase(formik.values.title)),
     );
   };
 
@@ -394,7 +394,7 @@ export const CollectionForm: React.FC<
             onClick={() =>
               formik.setFieldValue(
                 'excerpt',
-                applyCurlyQuotes(formik.values.excerpt)
+                applyCurlyQuotes(formik.values.excerpt),
               )
             }
           >
@@ -420,7 +420,7 @@ export const CollectionForm: React.FC<
             onClick={() =>
               formik.setFieldValue(
                 'intro',
-                applyCurlyQuotes(formik.values.intro)
+                applyCurlyQuotes(formik.values.intro),
               )
             }
           >

@@ -17,7 +17,7 @@ interface ModalProps {
  * @returns JSX.Element Modal overlay over the entire screen
  */
 export const Modal: React.FC<ModalProps & DialogProps> = (
-  props
+  props,
 ): JSX.Element => {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));

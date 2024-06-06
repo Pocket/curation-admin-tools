@@ -39,7 +39,7 @@ interface ScheduleResultsFilterProps {
  * @constructor
  */
 export const ScheduleResultsFilter: React.FC<ScheduleResultsFilterProps> = (
-  props
+  props,
 ): ReactElement => {
   const { filterData, filterName, itemCount, setFilters } = props;
 
@@ -56,7 +56,7 @@ export const ScheduleResultsFilter: React.FC<ScheduleResultsFilterProps> = (
   const handleMenuItemClick = (
     event: React.MouseEvent<HTMLElement>,
     index: number,
-    value: string
+    value: string,
   ) => {
     setSelectedIndex(index);
     setFilters((filters: any) => {

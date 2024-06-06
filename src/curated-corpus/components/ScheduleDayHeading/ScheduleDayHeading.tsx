@@ -36,7 +36,7 @@ interface ScheduleDayHeadingProps {
  * @constructor
  */
 export const ScheduleDayHeading: React.FC<ScheduleDayHeadingProps> = (
-  props
+  props,
 ): ReactElement => {
   const { onAddItem, data, setFilters } = props;
 

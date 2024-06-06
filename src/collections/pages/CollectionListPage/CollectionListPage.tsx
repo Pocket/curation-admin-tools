@@ -28,13 +28,13 @@ export const CollectionListPage = (): JSX.Element => {
    * Set the value of the active tab to path name - drafts tab by default
    */
   const [value, setValue] = useState<string>(
-    pathname ?? '/collections/collections/drafts/'
+    pathname ?? '/collections/collections/drafts/',
   );
 
   // switch to active tab when user clicks on tab heading
   const handleChange = (
     event: React.ChangeEvent<unknown>,
-    newValue: string
+    newValue: string,
   ): void => {
     setValue(newValue);
   };
@@ -155,7 +155,7 @@ export const CollectionListPage = (): JSX.Element => {
                   collection={collection}
                 />
               );
-            }
+            },
           )}
 
         {data && (
@@ -184,7 +184,7 @@ export const CollectionListPage = (): JSX.Element => {
                   collection={collection}
                 />
               );
-            }
+            },
           )}
 
         {dataReview && (
@@ -216,7 +216,7 @@ export const CollectionListPage = (): JSX.Element => {
                   collection={collection}
                 />
               );
-            }
+            },
           )}
 
         {dataPublished && (
@@ -245,7 +245,7 @@ export const CollectionListPage = (): JSX.Element => {
                   collection={collection}
                 />
               );
-            }
+            },
           )}
 
         {dataArchived && (

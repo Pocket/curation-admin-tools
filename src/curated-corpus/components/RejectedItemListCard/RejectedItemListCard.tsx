@@ -26,7 +26,7 @@ interface RejectedItemListCardProps {
 }
 
 export const RejectedItemListCard: React.FC<RejectedItemListCardProps> = (
-  props
+  props,
 ): JSX.Element => {
   const { item } = props;
 
