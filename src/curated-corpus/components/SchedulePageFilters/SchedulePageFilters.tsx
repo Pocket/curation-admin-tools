@@ -49,7 +49,7 @@ export const SchedulePageFilters: React.FC<SchedulePageFiltersProps> = (
         getDisplayTopic(item.approvedItem.topic),
     ) ?? [];
 
-  const topicList = getGroupedTopicData(topics, true);
+  const topicList = getGroupedTopicData(topics, true, false);
 
   // Extract all publishers from scheduled item data
   const publishers =

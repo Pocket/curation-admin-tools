@@ -1,4 +1,4 @@
-import { Maybe } from '../../api/generatedTypes';
+import { Maybe, Topics } from '../../api/generatedTypes';
 import {
   DropdownOption,
   topics as canonicalTopics,
@@ -30,10 +30,12 @@ export const getDisplayTopic = (
  *
  * @param data
  * @param includeAllTopics
+ * @param includeCoronavirus
  */
 export const getGroupedTopicData = (
   data: string[],
   includeAllTopics = true,
+  includeCoronavirus = true,
 ): ScheduleSummary[] => {
   const topics: ScheduleSummary[] = [];
 
@@ -48,7 +50,7 @@ export const getGroupedTopicData = (
   // Add the rest of the pre-defined topics - we need to list them all,
   // but only if there's anything actually scheduled for the day.
   if (data.length > 0 && includeAllTopics) {
-    addFullListOfTopics(topics);
+    addFullListOfTopics(topics, includeCoronavirus);
   }
 
   // Sort topics in descending order - most frequent on top
@@ -61,16 +63,25 @@ export const getGroupedTopicData = (
 
 /**
  * Add the remaining topics with 0 story counts to provide a full list of topics
- * for the summary table with story counts.
+ * for the summary table with story counts. Optionally, exclude the now obsolete
+ * "Coronavirus" topic.
  *
  * @param topics
+ * @param includeCoronavirus
  */
-const addFullListOfTopics = (topics: ScheduleSummary[]) => {
+const addFullListOfTopics = (
+  topics: ScheduleSummary[],
+  includeCoronavirus = true,
+) => {
   canonicalTopics.forEach((topic: DropdownOption) => {
     const topicExists = topics.find((entry) => entry.name === topic.name);
 
     if (!topicExists) {
-      topics.push({ name: topic.name, count: 0 });
+      if (
+        includeCoronavirus ||
+        (!includeCoronavirus && topic.code !== Topics.Coronavirus)
+      )
+        topics.push({ name: topic.name, count: 0 });
     }
   });
 };
