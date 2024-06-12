@@ -92,14 +92,14 @@ export const SchedulePageFilters: React.FC<SchedulePageFiltersProps> = (
         setFilters={setFilters}
       />
       <ScheduleResultsFilter
-        filterData={publisherList}
-        filterName="publishers"
+        filterData={typeList}
+        filterName="types"
         itemCount={scheduledItems.length}
         setFilters={setFilters}
       />
       <ScheduleResultsFilter
-        filterData={typeList}
-        filterName="types"
+        filterData={publisherList}
+        filterName="publishers"
         itemCount={scheduledItems.length}
         setFilters={setFilters}
       />
