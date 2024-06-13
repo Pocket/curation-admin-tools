@@ -86,5 +86,15 @@ describe('helper functions related to topics', () => {
       const topics = getGroupedTopicData(data, false);
       expect(topics).to.be.an('array').with.lengthOf(5);
     });
+
+    it('returns a list of topics without "Coronavirus" if requested', () => {
+      const topics = getGroupedTopicData(data, true, false);
+      expect(topics).to.be.an('array').with.lengthOf(15);
+    });
+
+    it('returns a full list of topics if requested', () => {
+      const topics = getGroupedTopicData(data);
+      expect(topics).to.be.an('array').with.lengthOf(16);
+    });
   });
 });
