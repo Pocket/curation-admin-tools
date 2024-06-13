@@ -63,7 +63,7 @@ export const SchedulePageFilters: React.FC<SchedulePageFiltersProps> = (
   // Round up all the different types of scheduled items we're interested in
   const typeList = [
     {
-      name: 'ML',
+      name: 'Ml',
       count: scheduledItems.filter(
         (item) => item.source === ScheduledItemSource.Ml,
       ).length,

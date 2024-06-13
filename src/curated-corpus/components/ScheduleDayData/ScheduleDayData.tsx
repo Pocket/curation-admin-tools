@@ -115,7 +115,7 @@ export const ScheduleDayData: React.FC<ScheduleDayDataProps> = (
 
   return (
     <>
-      <Box mt={3} mb={3}>
+      <Box mt={9} mb={3}>
         <ScheduleDayHeading
           onAddItem={onAddItem}
           data={data}
