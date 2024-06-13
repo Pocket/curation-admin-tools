@@ -20,5 +20,4 @@ export const applyQuotesDashesDE = (text: string): string | undefined => {
     .replace(/(^|[-\u2014/([{\u2018\s])\u201c/g, '$1\u201E') // Replaces opening “ with „
     .replace(/\s\u2014\s/g, ' \u2013 ') // Replace em dash (—) with en dash (–)
     .replace(/\s-\s/g, ' \u2013 '); // Replace short dash (-) with long en dash (–)
-
 };

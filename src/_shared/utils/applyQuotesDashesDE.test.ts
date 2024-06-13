@@ -29,13 +29,13 @@ describe('applyQuotesDashesDE', () => {
     const result = applyQuotesDashesDE("Here's to the great ones!»");
     expect(result).toEqual("Here's to the great ones!”");
   });
-  it('Replaces «Here\'s to the great ones!» with „Here\'s to the great ones!”', () => {
+  it("Replaces «Here's to the great ones!» with „Here's to the great ones!”", () => {
     const result = applyQuotesDashesDE("«Here's to the great ones!»");
     expect(result).toEqual("„Here's to the great ones!”");
   });
   it('Replaces »example« with „example”', () => {
-    const result = applyQuotesDashesDE("»example«");
-    expect(result).toEqual("„example”");
+    const result = applyQuotesDashesDE('»example«');
+    expect(result).toEqual('„example”');
   });
   it('Replaces opening " with „', () => {
     const result = applyQuotesDashesDE('"Here\'s to the great ones!');
