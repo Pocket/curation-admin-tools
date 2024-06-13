@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect, useState } from 'react';
-import { Box, Grid, TextField, Typography } from '@mui/material';
+import { Grid, TextField, Typography } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { DateTime } from 'luxon';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
@@ -16,8 +16,7 @@ import {
   EditCorpusItemAction,
   RejectAndUnscheduleItemAction,
   RemoveItemFromScheduledSurfaceModal,
-  ScheduleDayHeading,
-  ScheduledItemCardWrapper,
+  ScheduleDayData,
   ScheduleItemModal,
   SplitButton,
 } from '../../components';
@@ -50,8 +49,6 @@ import {
 } from '../../helpers/helperFunctions';
 import { transformProspectToApprovedItem } from '../../helpers/prospects';
 import { transformAuthors } from '../../../_shared/utils/transformAuthors';
-import { SchedulePageFiltersInterface } from '../../components/SchedulePageFilters/SchedulePageFilters';
-import { getDisplayTopic } from '../../helpers/topics';
 
 export const SchedulePage: React.FC = (): ReactElement => {
   /**
@@ -180,15 +177,6 @@ export const SchedulePage: React.FC = (): ReactElement => {
     undefined | string
   >();
 
-  // Keep track of filters. Filters are reset if a different surface is loaded or dates are updated
-  const initialFiltersState: SchedulePageFiltersInterface = {
-    topics: 'All',
-    publishers: 'All',
-    types: 'All',
-  };
-  const [filters, setFilters] =
-    useState<SchedulePageFiltersInterface>(initialFiltersState);
-
   // Get the list of Scheduled Surfaces the currently logged-in user has access to.
   const { data: scheduledSurfaceData } = useGetScheduledSurfacesForUserQuery({
     onCompleted: (data) => {
@@ -245,7 +233,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
   // has the currentScheduledSurfaceGuid as the dependency and initial execution is also on page load
   useEffect(() => {
     // check if the currentScheduledSurfaceGuid state variable is set first
-    // due to non-sequential and async nature of react state updates, it causes the below query
+    // due to non-sequential and async nature of React state updates, it causes the below query
     // to run with the incorrect value on page load intermittently
     if (currentScheduledSurfaceGuid) {
       executeGetScheduledItemsQuery(
@@ -281,10 +269,6 @@ export const SchedulePage: React.FC = (): ReactElement => {
    * refetch all the data on the page for that Scheduled Surface.
    */
   const updateScheduledSurface = (option: DropdownOption) => {
-    // Reset frontend-only filters to show all items for the surface
-    // the curator is switching to.
-    setFilters(initialFiltersState);
-
     // The "refetch" variable is only defined after the first execution
     // of a lazy query hook function
     if (refetch) {
@@ -345,36 +329,6 @@ export const SchedulePage: React.FC = (): ReactElement => {
   };
 
   /**
-   * Pocket Hits items need to be returned in a pre-defined order. When the graph
-   * is queried, scheduled items are returned sorted by the `updatedAt` value
-   * in ascending order (most recently updated goes last).
-   *
-   * To enable the curators to rearrange stories in a certain order for a Pocket Hits
-   * email, a "Move to bottom" button has been added that updates the scheduled entry
-   * to bump up the timestamp recorded in the `updatedAt` field.
-   * @param item
-   */
-  const moveItemToBottom = (item: ScheduledCorpusItem): void => {
-    // Run the "reschedule" mutation with the same variables
-    // it already has. All we want from it is to update `updatedAt` timestamp.
-    const variables = {
-      externalId: item.externalId,
-      scheduledDate: item.scheduledDate,
-      source: item.source,
-    };
-
-    // Run the mutation
-    runMutation(
-      rescheduleItem,
-      { variables },
-      `Success! Item moved to the bottom of the list.`,
-      undefined,
-      undefined,
-      refetch,
-    );
-  };
-
-  /**
    * Remove item from Scheduled Surface.
    *
    * @param values
@@ -384,7 +338,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
     values: FormikValues,
     formikHelpers: FormikHelpers<any>,
   ): void => {
-    // Setup the input
+    // Set up the input
     const input: DeleteScheduledCorpusItemInput = {
       externalId: currentItem?.externalId as string,
       reasonComment: values.reasonComment,
@@ -418,10 +372,6 @@ export const SchedulePage: React.FC = (): ReactElement => {
     startDate: DateTime,
     endDate: DateTime,
   ) => {
-    // Reset frontend-only filters to show all items for the surface
-    // the curator is switching to.
-    setFilters(initialFiltersState);
-
     getScheduledItemsQuery({
       variables: {
         filters: {
@@ -772,90 +722,20 @@ export const SchedulePage: React.FC = (): ReactElement => {
           {data &&
             data.getScheduledCorpusItems.map(
               (data: ScheduledCorpusItemsResult) => (
-                <>
-                  <Box mt={3} mb={3}>
-                    <ScheduleDayHeading
-                      onAddItem={onAddItem}
-                      data={data}
-                      setFilters={setFilters}
-                      key={`{data.scheduledDate}-day-heading`}
-                    />
-                  </Box>
-
-                  <Grid
-                    container
-                    alignItems="stretch"
-                    spacing={3}
-                    justifyContent="flex-start"
-                    key={data.scheduledDate}
-                  >
-                    <Grid item xs={12}>
-                      <Grid container spacing={2}>
-                        {data.items.map((item: ScheduledCorpusItem) => {
-                          if (
-                            (filters.topics === 'All' &&
-                              filters.publishers === 'All' &&
-                              filters.types === 'All') ||
-                            filters.topics ===
-                              getDisplayTopic(item.approvedItem.topic) ||
-                            filters.publishers ===
-                              item.approvedItem.publisher ||
-                            (filters.types === 'Ml' &&
-                              item.source === ScheduledItemSource.Ml) ||
-                            (filters.types === 'Collections' &&
-                              item.approvedItem.isCollection) ||
-                            (filters.types === 'Syndicated' &&
-                              item.approvedItem.isSyndicated)
-                          ) {
-                            return (
-                              <ScheduledItemCardWrapper
-                                key={item.externalId}
-                                item={item}
-                                onEdit={() => {
-                                  setCurrentItem(item);
-                                  toggleEditModal();
-                                }}
-                                onUnschedule={() => {
-                                  setCurrentItem(item);
-                                  toggleRemoveModal();
-                                }}
-                                onMoveToBottom={() => {
-                                  moveItemToBottom(item);
-                                }}
-                                onReschedule={() => {
-                                  setCurrentItem(item);
-                                  toggleScheduleItemModal();
-                                }}
-                                onReject={() => {
-                                  setCurrentItem(item);
-
-                                  // If this item is also scheduled elsewhere, show an error.
-                                  if (
-                                    item.approvedItem.scheduledSurfaceHistory
-                                      .length > 1
-                                  ) {
-                                    showNotification(
-                                      'Cannot reject and unschedule this item - multiple scheduled entries exist.',
-                                      'error',
-                                    );
-                                  }
-                                  // Otherwise, proceed with rejecting and unscheduling this item
-                                  else {
-                                    toggleRejectAndUnscheduleModal();
-                                  }
-                                }}
-                                currentScheduledDate={data.scheduledDate}
-                                scheduledSurfaceGuid={
-                                  currentScheduledSurfaceGuid
-                                }
-                              />
-                            );
-                          }
-                        })}
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </>
+                <ScheduleDayData
+                  key={`schedule-day-data-${data.scheduledDate}`}
+                  currentScheduledSurfaceGuid={currentScheduledSurfaceGuid}
+                  data={data}
+                  onAddItem={onAddItem}
+                  refetch={refetch}
+                  setCurrentItem={setCurrentItem}
+                  toggleEditModal={toggleEditModal}
+                  toggleRemoveModal={toggleRemoveModal}
+                  toggleScheduleItemModal={toggleScheduleItemModal}
+                  toggleRejectAndUnscheduleModal={
+                    toggleRejectAndUnscheduleModal
+                  }
+                />
               ),
             )}
         </Grid>

@@ -25,6 +25,7 @@ export { RemoveItemFromScheduledSurfaceModal } from './RemoveItemFromScheduledSu
 export { RemoveItemForm } from './RemoveItemForm/RemoveItemForm';
 export { RemoveItemModal } from './RemoveItemModal/RemoveItemModal';
 export { ScheduleCorpusItemAction } from './actions/ScheduleCorpusItemAction/ScheduleCorpusItemAction';
+export { ScheduleDayData } from './ScheduleDayData/ScheduleDayData';
 export { ScheduleDayHeading } from './ScheduleDayHeading/ScheduleDayHeading';
 export { ScheduleHistory } from './ScheduleHistory/ScheduleHistory';
 export { ScheduleHistoryEntries } from './ScheduleHistoryEntries/ScheduleHistoryEntries';
