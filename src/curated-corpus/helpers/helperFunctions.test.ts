@@ -328,7 +328,7 @@ describe('helperFunctions ', () => {
           CorpusLanguage.De,
           '«Meeresregionen» – in die pelagischen "Zonen" – verlegt',
         ),
-      ).toEqual('„Meeresregionen” — in die pelagischen „Zonen” — verlegt');
+      ).toEqual('„Meeresregionen” – in die pelagischen „Zonen” – verlegt');
     });
   });
 
@@ -351,9 +351,9 @@ describe('helperFunctions ', () => {
       expect(
         applyTitleFormattingByLanguage(
           CorpusLanguage.De,
-          '«Meeresregionen» – in die pelagischen Zonen – verlegt',
+          '«Meeresregionen» – in die »pelagischen« Zonen – verlegt',
         ),
-      ).toEqual('„Meeresregionen” — in die pelagischen Zonen — verlegt');
+      ).toEqual('„Meeresregionen” – in die „pelagischen” Zonen – verlegt');
     });
   });
 });
