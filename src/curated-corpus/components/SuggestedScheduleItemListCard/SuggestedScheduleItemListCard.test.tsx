@@ -28,7 +28,7 @@ describe('The SuggestedScheduleItemListCard component', () => {
         onMoveToBottom={onMoveToBottom}
         onReject={onReject}
         scheduledSurfaceGuid="NEW_TAB_EN_US"
-      />
+      />,
     );
 
     // The image is present and the alt text is the item title
@@ -59,7 +59,7 @@ describe('The SuggestedScheduleItemListCard component', () => {
         onMoveToBottom={onMoveToBottom}
         onReject={onReject}
         scheduledSurfaceGuid="NEW_TAB_EN_US"
-      />
+      />,
     );
 
     expect(screen.getByText(item.excerpt)).toBeInTheDocument();
@@ -77,7 +77,7 @@ describe('The SuggestedScheduleItemListCard component', () => {
         onMoveToBottom={onMoveToBottom}
         onReject={onReject}
         scheduledSurfaceGuid="NEW_TAB_EN_US"
-      />
+      />,
     );
 
     expect(screen.getByText(flattenAuthors(item.authors))).toBeInTheDocument();
@@ -100,7 +100,7 @@ describe('The SuggestedScheduleItemListCard component', () => {
         onMoveToBottom={onMoveToBottom}
         onReject={onReject}
         scheduledSurfaceGuid="NEW_TAB_EN_US"
-      />
+      />,
     );
 
     expect(screen.getByText('Agatha Christie')).toBeInTheDocument();

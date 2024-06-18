@@ -41,7 +41,7 @@ describe('The AuthorForm component', () => {
 
   it('only shows two buttons if cancel button is not requested', () => {
     render(
-      <AuthorForm author={author} editMode={false} onSubmit={handleSubmit} />
+      <AuthorForm author={author} editMode={false} onSubmit={handleSubmit} />,
     );
 
     const buttons = screen.getAllByRole('button');
@@ -76,10 +76,10 @@ describe('The AuthorForm component', () => {
       userEvent.click(saveButton);
     });
     expect(
-      screen.queryByText(/please enter the full name of the author/i)
+      screen.queryByText(/please enter the full name of the author/i),
     ).toBeInTheDocument();
     expect(
-      screen.queryByText(/name must be at least 2 characters/i)
+      screen.queryByText(/name must be at least 2 characters/i),
     ).not.toBeInTheDocument();
 
     // Submit a name that is too short (under 2 characters)
@@ -91,10 +91,10 @@ describe('The AuthorForm component', () => {
       userEvent.click(saveButton);
     });
     expect(
-      screen.queryByText(/please enter the full name of the author/i)
+      screen.queryByText(/please enter the full name of the author/i),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByText(/name must be at least 2 characters/i)
+      screen.queryByText(/name must be at least 2 characters/i),
     ).toBeInTheDocument();
 
     // Submit a name that satisfies all the requirements
@@ -103,10 +103,10 @@ describe('The AuthorForm component', () => {
       userEvent.click(saveButton);
     });
     expect(
-      screen.queryByText(/please enter the full name of the author/i)
+      screen.queryByText(/please enter the full name of the author/i),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByText(/name must be at least 2 characters/i)
+      screen.queryByText(/name must be at least 2 characters/i),
     ).not.toBeInTheDocument();
   });
 
@@ -123,7 +123,7 @@ describe('The AuthorForm component', () => {
     });
     expect(screen.queryByText(/please enter a slug/i)).toBeInTheDocument();
     expect(
-      screen.queryByText(/slug must be at least 2 characters/i)
+      screen.queryByText(/slug must be at least 2 characters/i),
     ).not.toBeInTheDocument();
 
     // Submit a slug that is too short (under 2 characters)
@@ -134,7 +134,7 @@ describe('The AuthorForm component', () => {
     });
     expect(screen.queryByText(/please enter a slug/i)).not.toBeInTheDocument();
     expect(
-      screen.queryByText(/slug must be at least 2 characters/i)
+      screen.queryByText(/slug must be at least 2 characters/i),
     ).toBeInTheDocument();
 
     // Submit a slug that satisfies all the requirements
@@ -144,7 +144,7 @@ describe('The AuthorForm component', () => {
     });
     expect(screen.queryByText(/please enter a slug/i)).not.toBeInTheDocument();
     expect(
-      screen.queryByText(/slug must be at least 2 characters/i)
+      screen.queryByText(/slug must be at least 2 characters/i),
     ).not.toBeInTheDocument();
   });
 

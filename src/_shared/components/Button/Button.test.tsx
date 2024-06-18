@@ -15,7 +15,7 @@ describe('The Button component', () => {
     render(
       <Button buttonType="neutral" size="large">
         Snooze
-      </Button>
+      </Button>,
     );
 
     const button = screen.getByRole('button');

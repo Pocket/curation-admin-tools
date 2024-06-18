@@ -38,7 +38,7 @@ describe('The Header component', () => {
             productName="Collections"
           />
         </ThemeProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // There are two logos: one for desktop, one for mobile
@@ -66,7 +66,7 @@ describe('The Header component', () => {
             productName="Collections"
           />
         </ThemeProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // Menu links are actual links and not buttons in MUI 5, hooray!

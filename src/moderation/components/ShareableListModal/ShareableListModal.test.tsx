@@ -6,7 +6,7 @@ import { ShareableListModal } from './ShareableListModal';
 import {
   ShareableListComplete,
   ShareableListModerationStatus,
-  ShareableListVisibility
+  ShareableListVisibility,
 } from '../../../api/generatedTypes';
 
 describe('The ShareableListModal component', () => {
@@ -39,7 +39,7 @@ describe('The ShareableListModal component', () => {
             hideList={true} // this modal is in charge of moderating a list (hide), so passing flag
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // using the modal heading to fetch it
@@ -67,7 +67,7 @@ describe('The ShareableListModal component', () => {
             restoreList={true} // this modal is in charge of moderating a list (hide), so passing flag
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // using the modal heading to fetch it

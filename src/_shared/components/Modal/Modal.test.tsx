@@ -7,7 +7,7 @@ describe('The Modal component', () => {
     render(
       <Modal open={true} handleClose={jest.fn()}>
         Loading...
-      </Modal>
+      </Modal>,
     );
     const modal = screen.getByText(/^Loading...$/i);
 

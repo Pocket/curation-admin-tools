@@ -24,24 +24,24 @@ describe('The ScheduleSummaryLayout component', () => {
 
     // The three scheduled items have two publishers
     expect(
-      within(publishers).getByText(/amazing inventions/i)
+      within(publishers).getByText(/amazing inventions/i),
     ).toBeInTheDocument();
     expect(within(publishers).getByText('2')).toBeInTheDocument();
 
     expect(
-      within(publishers).getByText(/fantastic computers/i)
+      within(publishers).getByText(/fantastic computers/i),
     ).toBeInTheDocument();
     expect(within(publishers).getByText('1')).toBeInTheDocument();
 
     // And there are three topics present
     expect(
-      within(topics).getByText(getDisplayTopic(Topics.Politics))
+      within(topics).getByText(getDisplayTopic(Topics.Politics)),
     ).toBeInTheDocument();
     expect(
-      within(topics).getByText(getDisplayTopic(Topics.PersonalFinance))
+      within(topics).getByText(getDisplayTopic(Topics.PersonalFinance)),
     ).toBeInTheDocument();
     expect(
-      within(topics).getByText(getDisplayTopic(Topics.HealthFitness))
+      within(topics).getByText(getDisplayTopic(Topics.HealthFitness)),
     ).toBeInTheDocument();
 
     // And all of these show a total of one for each topic.

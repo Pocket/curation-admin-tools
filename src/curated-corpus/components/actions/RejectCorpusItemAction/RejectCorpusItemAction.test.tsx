@@ -28,7 +28,7 @@ describe('The RejectCorpusItemAction', () => {
             modalOpen={true}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Do we have the modal heading
@@ -51,7 +51,7 @@ describe('The RejectCorpusItemAction', () => {
             modalOpen={true}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const reason = screen.getByLabelText(/time sensitive/i);
@@ -59,7 +59,9 @@ describe('The RejectCorpusItemAction', () => {
     userEvent.click(screen.getByText(/save/i));
 
     expect(
-      await screen.findByText(/item successfully moved to the rejected corpus/i)
+      await screen.findByText(
+        /item successfully moved to the rejected corpus/i,
+      ),
     ).toBeInTheDocument();
   });
 
@@ -93,7 +95,7 @@ describe('The RejectCorpusItemAction', () => {
             modalOpen={true}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const reason = screen.getByLabelText(/time sensitive/i);
@@ -102,8 +104,8 @@ describe('The RejectCorpusItemAction', () => {
 
     expect(
       await screen.findByText(
-        /cannot remove item from approved corpus - scheduled entries exist/i
-      )
+        /cannot remove item from approved corpus - scheduled entries exist/i,
+      ),
     ).toBeInTheDocument();
   });
 });

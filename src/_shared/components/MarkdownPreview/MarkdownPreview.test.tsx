@@ -24,7 +24,7 @@ describe('The MarkdownPreview component', () => {
     render(
       <MarkdownPreview minHeight={10} source={markdownSource}>
         <textarea value={markdownSource} onChange={jest.fn()} />
-      </MarkdownPreview>
+      </MarkdownPreview>,
     );
 
     // Let's check if we can see the tabs
@@ -39,7 +39,7 @@ describe('The MarkdownPreview component', () => {
     render(
       <MarkdownPreview minHeight={10} source={markdownSource}>
         <textarea value={markdownSource} onChange={jest.fn()} />
-      </MarkdownPreview>
+      </MarkdownPreview>,
     );
 
     userEvent.click(screen.getByText(/preview/i));

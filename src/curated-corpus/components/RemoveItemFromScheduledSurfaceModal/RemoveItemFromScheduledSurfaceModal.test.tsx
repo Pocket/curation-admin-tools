@@ -43,7 +43,7 @@ describe('The RemoveItemFromScheduledSurfaceModal component', () => {
         isOpen={isOpen}
         onSave={onSave}
         toggleModal={toggleModal}
-      />
+      />,
     );
 
     // fetching the modal heading and asserting it renders
@@ -53,7 +53,7 @@ describe('The RemoveItemFromScheduledSurfaceModal component', () => {
     expect(screen.getByRole('form')).toBeInTheDocument();
     // check for the item title
     const itemTitle = screen.getByText(
-      /How To Win Friends And Influence People with React/i
+      /How To Win Friends And Influence People with React/i,
     );
     expect(itemTitle).toBeInTheDocument();
     // check that one of the reasons is present (this indicates that the removal reason form is rendered)
@@ -67,12 +67,12 @@ describe('The RemoveItemFromScheduledSurfaceModal component', () => {
         isOpen={isOpen}
         onSave={onSave}
         toggleModal={toggleModal}
-      />
+      />,
     );
 
     // fetching the modal heading and asserting it renders
     expect(
-      screen.getByText(/remove this item from this scheduled surface/i)
+      screen.getByText(/remove this item from this scheduled surface/i),
     ).toBeInTheDocument();
 
     // fetch and assert the RemoveItemFromScheduleSurfaceForm component is rendered within this component
@@ -88,7 +88,7 @@ describe('The RemoveItemFromScheduledSurfaceModal component', () => {
         isOpen={isOpen}
         onSave={onSave}
         toggleModal={toggleModal}
-      />
+      />,
     );
 
     // fetch the checkbox and button elements
@@ -116,7 +116,7 @@ describe('The RemoveItemFromScheduledSurfaceModal component', () => {
         isOpen={isOpen}
         onSave={onSave}
         toggleModal={toggleModal}
-      />
+      />,
     );
 
     const errorMessage = `Yes, I want to remove ${pocketHitsItem.approvedItem.title} from this scheduled surface`;
@@ -134,7 +134,7 @@ describe('The RemoveItemFromScheduledSurfaceModal component', () => {
 
     // assert that the error message is shown
     expect(
-      await waitFor(() => screen.findByLabelText(errorMessage))
+      await waitFor(() => screen.findByLabelText(errorMessage)),
     ).toBeInTheDocument();
 
     // assert that onSave callback was not called

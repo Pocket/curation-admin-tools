@@ -17,7 +17,7 @@ describe('The LabelForm component', () => {
         onSubmit={onSubmit}
         onCancel={onCancel}
         isLoaderShowing={false}
-      />
+      />,
     );
 
     // Check if form input and buttons are rendered
@@ -41,7 +41,7 @@ describe('The LabelForm component', () => {
             isLoaderShowing={false}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const saveButton = screen.getByText(/save/i);
@@ -63,7 +63,7 @@ describe('The LabelForm component', () => {
             isLoaderShowing={false}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const saveButton = screen.getByText(/save/i);

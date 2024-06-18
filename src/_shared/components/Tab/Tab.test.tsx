@@ -14,7 +14,7 @@ describe('The Tab component', () => {
           to="/en-US/live"
           hasLink={true}
         />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const tab = screen.getByRole('tab');

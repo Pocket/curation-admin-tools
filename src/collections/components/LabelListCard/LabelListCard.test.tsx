@@ -18,7 +18,7 @@ describe('The LabelListCard component', () => {
     render(
       <MemoryRouter>
         <LabelListCard label={label} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const name = screen.getByText(/region-east-africa/i);

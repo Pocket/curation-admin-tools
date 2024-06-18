@@ -20,7 +20,7 @@ describe('The CardActionButtonRow component', () => {
         onReschedule={onReschedule}
         onMoveToBottom={onMoveToBottom}
         onReject={onReject}
-      />
+      />,
     );
 
     // assert edit button is present and calls its callback

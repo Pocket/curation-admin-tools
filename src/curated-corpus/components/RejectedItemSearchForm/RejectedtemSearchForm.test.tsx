@@ -75,7 +75,7 @@ describe('The RejectedItemSearchForm component', () => {
       userEvent.click(searchButton);
     });
     expect(
-      screen.getByText('Please enter at least two characters.')
+      screen.getByText('Please enter at least two characters.'),
     ).toBeInTheDocument();
     expect(handleSubmit).not.toHaveBeenCalled();
 
@@ -88,7 +88,7 @@ describe('The RejectedItemSearchForm component', () => {
     });
 
     expect(
-      screen.getByText('Please enter at least two characters.')
+      screen.getByText('Please enter at least two characters.'),
     ).toBeInTheDocument();
     expect(handleSubmit).not.toHaveBeenCalled();
 

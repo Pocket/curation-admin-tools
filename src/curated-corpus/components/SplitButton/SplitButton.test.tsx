@@ -28,7 +28,7 @@ describe('The SplitButton component', () => {
         icon={<FilterListIcon fontSize="large" data-testid="my-filter-icon" />}
         onMenuOptionClick={onClick}
         options={options}
-      />
+      />,
     );
 
     const icon = screen.getByTestId('my-filter-icon');

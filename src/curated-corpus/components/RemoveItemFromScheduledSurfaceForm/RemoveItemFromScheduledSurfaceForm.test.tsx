@@ -11,7 +11,7 @@ describe('The RemoveItemFromScheduledSurfaceForm component', () => {
       <RemoveItemFromScheduledSurfaceForm
         onSubmit={handleSubmit}
         title="This is a test"
-      />
+      />,
     );
 
     // there is at least a form and nothing falls over
@@ -24,7 +24,7 @@ describe('The RemoveItemFromScheduledSurfaceForm component', () => {
       <RemoveItemFromScheduledSurfaceForm
         onSubmit={handleSubmit}
         title="This is a test"
-      />
+      />,
     );
 
     const checkboxes = screen.getAllByRole('checkbox');
@@ -42,7 +42,7 @@ describe('The RemoveItemFromScheduledSurfaceForm component', () => {
       <RemoveItemFromScheduledSurfaceForm
         onSubmit={handleSubmit}
         title="This is a test"
-      />
+      />,
     );
 
     await waitFor(() => {
@@ -50,7 +50,7 @@ describe('The RemoveItemFromScheduledSurfaceForm component', () => {
     });
 
     const errorMessage = screen.getByText(
-      /Please confirm your intention to remove this item./i
+      /Please confirm your intention to remove this item./i,
     );
     expect(errorMessage).toBeInTheDocument();
     expect(handleSubmit).not.toHaveBeenCalled();
@@ -61,7 +61,7 @@ describe('The RemoveItemFromScheduledSurfaceForm component', () => {
       <RemoveItemFromScheduledSurfaceForm
         onSubmit={handleSubmit}
         title="This is a test"
-      />
+      />,
     );
 
     const checkbox = screen.getByRole('checkbox');

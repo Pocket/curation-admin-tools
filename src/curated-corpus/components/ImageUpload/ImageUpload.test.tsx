@@ -56,7 +56,7 @@ describe('The ImageUpload component', () => {
             />
           </SnackbarProvider>
         </ThemeProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const updateImageButton = screen.getByRole('button', {
@@ -70,12 +70,12 @@ describe('The ImageUpload component', () => {
 
     // get the input html element for us to upload the file
     const imageUploadInput = await screen.findByTestId(
-      'curated-corpus-image-upload-input'
+      'curated-corpus-image-upload-input',
     );
 
     // get the drop zone element
     const dropZone = await screen.findByText(
-      /Drag and drop an image here, or click to select one/i
+      /Drag and drop an image here, or click to select one/i,
     );
 
     // assert that input html element is rendered
@@ -102,7 +102,7 @@ describe('The ImageUpload component', () => {
             />
           </SnackbarProvider>
         </ThemeProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const updateImageButton = screen.getByRole('button', {
@@ -112,7 +112,7 @@ describe('The ImageUpload component', () => {
     userEvent.click(updateImageButton);
 
     const imageUploadInput = await screen.findByTestId(
-      'curated-corpus-image-upload-input'
+      'curated-corpus-image-upload-input',
     );
 
     // upload the test file by executing an upload event
@@ -126,24 +126,24 @@ describe('The ImageUpload component', () => {
 
     // fetch the file attributes when they get rendered
     const fileName = (await screen.findByText(
-      /name:/i
+      /name:/i,
     )) as HTMLParagraphElement;
     const fileSize = (await screen.findByText(
-      /size:/i
+      /size:/i,
     )) as HTMLParagraphElement;
     const fileType = (await screen.findByText(
-      /type:/i
+      /type:/i,
     )) as HTMLParagraphElement;
 
     // assert the uploaded file attributes match our file
     expect(fileName.textContent?.replace('Name:', '').trim()).toEqual(
-      file.name
+      file.name,
     );
     expect(fileSize.textContent?.replace('Size:', '').trim()).toEqual(
-      formatFileSize(file.size)
+      formatFileSize(file.size),
     );
     expect(fileType.textContent?.replace('Type:', '').trim()).toEqual(
-      file.type
+      file.type,
     );
   });
 });

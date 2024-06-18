@@ -10,12 +10,12 @@ describe('The RefreshProspectsModal component', () => {
         isOpen={true}
         onConfirm={jest.fn()}
         toggleModal={jest.fn()}
-      />
+      />,
     );
 
     expect(screen.getByText(/refresh prospects/i)).toBeInTheDocument();
     expect(
-      screen.getByText(/there are still some prospects remaining on the page/i)
+      screen.getByText(/there are still some prospects remaining on the page/i),
     ).toBeInTheDocument();
   });
 
@@ -25,7 +25,7 @@ describe('The RefreshProspectsModal component', () => {
         isOpen={true}
         onConfirm={jest.fn()}
         toggleModal={jest.fn()}
-      />
+      />,
     );
 
     expect(screen.getByRole('button', { name: 'Confirm' })).toBeInTheDocument();
@@ -40,7 +40,7 @@ describe('The RefreshProspectsModal component', () => {
         isOpen={true}
         onConfirm={onConfirm}
         toggleModal={jest.fn()}
-      />
+      />,
     );
 
     userEvent.click(screen.getByRole('button', { name: 'Confirm' }));
@@ -56,7 +56,7 @@ describe('The RefreshProspectsModal component', () => {
         isOpen={true}
         onConfirm={jest.fn()}
         toggleModal={toggleModal}
-      />
+      />,
     );
 
     userEvent.click(screen.getByRole('button', { name: 'Cancel' }));

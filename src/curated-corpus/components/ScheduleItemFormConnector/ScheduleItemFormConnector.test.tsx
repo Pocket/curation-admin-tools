@@ -26,7 +26,7 @@ describe('ScheduleItemFormConnector', () => {
             onSubmit={jest.fn()}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Wait for the form to load, as it needs to fetch a list of surfaces
@@ -35,7 +35,7 @@ describe('ScheduleItemFormConnector', () => {
 
     // Get the dropdown with available scheduled surfaces
     const surfaceSelect = screen.getByLabelText(
-      /choose a scheduled surface/i
+      /choose a scheduled surface/i,
     ) as HTMLSelectElement;
 
     const scheduledSurfaceValues = [
@@ -69,7 +69,7 @@ describe('ScheduleItemFormConnector', () => {
             onSubmit={jest.fn()}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Wait for the form to load, as it needs to fetch a list of surfaces
@@ -78,7 +78,7 @@ describe('ScheduleItemFormConnector', () => {
 
     // Get the dropdown with available scheduled surfaces
     const surfaceSelect = screen.getByLabelText(
-      /choose a scheduled surface/i
+      /choose a scheduled surface/i,
     ) as HTMLSelectElement;
 
     const scheduledSurfaceValues = ['NEW_TAB_EN_US', 'NEW_TAB_DE_DE'];
@@ -104,7 +104,7 @@ describe('ScheduleItemFormConnector', () => {
             onSubmit={jest.fn()}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Wait for the form to load, as it needs to fetch a list of surfaces
@@ -113,7 +113,7 @@ describe('ScheduleItemFormConnector', () => {
 
     // Get the dropdown with available scheduled surfaces
     const surfaceSelect = screen.getByLabelText(
-      /choose a scheduled surface/i
+      /choose a scheduled surface/i,
     ) as HTMLSelectElement;
 
     const scheduledSurfaceValues = ['POCKET_HITS_EN_US'];
@@ -137,7 +137,7 @@ describe('ScheduleItemFormConnector', () => {
             onSubmit={jest.fn()}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Wait for the form to load, as it needs to fetch a list of surfaces
@@ -146,7 +146,7 @@ describe('ScheduleItemFormConnector', () => {
 
     // Get the dropdown with available scheduled surfaces
     const surfaceSelect = screen.getByLabelText(
-      /choose a scheduled surface/i
+      /choose a scheduled surface/i,
     ) as HTMLSelectElement;
 
     // Select a scheduled surface

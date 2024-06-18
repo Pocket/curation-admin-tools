@@ -29,7 +29,7 @@ describe('The PartnerInfo component', () => {
         <MemoryRouter>
           <PartnerInfo partner={partner} />
         </MemoryRouter>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // The link to the partner site is present

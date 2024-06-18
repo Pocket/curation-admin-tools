@@ -40,7 +40,11 @@ describe('The PartnerForm component', () => {
 
   it('only shows one button if cancel button is not requested', () => {
     render(
-      <PartnerForm partner={partner} editMode={false} onSubmit={handleSubmit} />
+      <PartnerForm
+        partner={partner}
+        editMode={false}
+        onSubmit={handleSubmit}
+      />,
     );
 
     const buttons = screen.getAllByRole('button');
@@ -72,10 +76,10 @@ describe('The PartnerForm component', () => {
       userEvent.click(saveButton);
     });
     expect(
-      screen.queryByText(/please enter the name of the partner company/i)
+      screen.queryByText(/please enter the name of the partner company/i),
     ).toBeInTheDocument();
     expect(
-      screen.queryByText(/please enter at least two characters/i)
+      screen.queryByText(/please enter at least two characters/i),
     ).not.toBeInTheDocument();
 
     // Submit a name that is too short (under two characters)
@@ -84,10 +88,10 @@ describe('The PartnerForm component', () => {
       userEvent.click(saveButton);
     });
     expect(
-      screen.queryByText(/please enter the name of the partner company/i)
+      screen.queryByText(/please enter the name of the partner company/i),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByText(/please enter at least two characters/i)
+      screen.queryByText(/please enter at least two characters/i),
     ).toBeInTheDocument();
 
     // Submit a name that satisfies all the requirements
@@ -96,10 +100,10 @@ describe('The PartnerForm component', () => {
       userEvent.click(saveButton);
     });
     expect(
-      screen.queryByText(/please enter the name of the partner company/i)
+      screen.queryByText(/please enter the name of the partner company/i),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByText(/please enter at least two characters/i)
+      screen.queryByText(/please enter at least two characters/i),
     ).not.toBeInTheDocument();
   });
 
@@ -116,7 +120,7 @@ describe('The PartnerForm component', () => {
     });
     expect(screen.queryByText(/please enter a url/i)).toBeInTheDocument();
     expect(
-      screen.queryByText(/url must be at least 12 characters long/i)
+      screen.queryByText(/url must be at least 12 characters long/i),
     ).not.toBeInTheDocument();
 
     // Submit a URL that is too short (under 12 characters)
@@ -126,7 +130,7 @@ describe('The PartnerForm component', () => {
     });
     expect(screen.queryByText(/please enter a url/i)).not.toBeInTheDocument();
     expect(
-      screen.queryByText(/url must be at least 12 characters long/i)
+      screen.queryByText(/url must be at least 12 characters long/i),
     ).toBeInTheDocument();
 
     // Submit a URL that satisfies all the requirements
@@ -136,7 +140,7 @@ describe('The PartnerForm component', () => {
     });
     expect(screen.queryByText(/please enter a url/i)).not.toBeInTheDocument();
     expect(
-      screen.queryByText(/url must be at least 12 characters long/i)
+      screen.queryByText(/url must be at least 12 characters long/i),
     ).not.toBeInTheDocument();
   });
 
@@ -152,7 +156,7 @@ describe('The PartnerForm component', () => {
       userEvent.click(saveButton);
     });
     expect(
-      screen.queryByText(/please enter the blurb for the partner company/i)
+      screen.queryByText(/please enter the blurb for the partner company/i),
     ).toBeInTheDocument();
 
     // Submit some text
@@ -161,7 +165,7 @@ describe('The PartnerForm component', () => {
       userEvent.click(saveButton);
     });
     expect(
-      screen.queryByText(/please enter the blurb for the partner company/i)
+      screen.queryByText(/please enter the blurb for the partner company/i),
     ).not.toBeInTheDocument();
   });
 

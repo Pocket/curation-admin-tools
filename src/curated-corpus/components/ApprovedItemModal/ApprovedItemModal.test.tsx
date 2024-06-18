@@ -30,7 +30,7 @@ describe('The ApprovedItemModal component', () => {
             showItemTitle={showItemTitle}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // fetch and assert the modal is rendered correctly with its Heading
@@ -53,7 +53,7 @@ describe('The ApprovedItemModal component', () => {
             onImageSave={onImageSave}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // assert the modal is not rendered a heading

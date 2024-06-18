@@ -2,9 +2,10 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { dateFormat, ShareableListCard } from './ShareableListCard';
 import {
-  ShareableListComplete, ShareableListModerationReason,
+  ShareableListComplete,
+  ShareableListModerationReason,
   ShareableListModerationStatus,
-  ShareableListVisibility
+  ShareableListVisibility,
 } from '../../../api/generatedTypes';
 import { DateTime } from 'luxon';
 

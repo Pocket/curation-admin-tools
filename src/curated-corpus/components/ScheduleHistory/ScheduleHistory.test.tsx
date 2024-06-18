@@ -13,7 +13,7 @@ describe('The ScheduleHistory component', () => {
         <ThemeProvider theme={theme}>
           <ScheduleHistory data={[]} />
         </ThemeProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // the button when clicked shows us the recent scheduled runs

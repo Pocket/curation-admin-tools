@@ -32,7 +32,7 @@ describe('The StoryCard component', () => {
     render(
       <MemoryRouter>
         <StoryCard story={story} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // The link to the story is present and well-formed
@@ -40,11 +40,11 @@ describe('The StoryCard component', () => {
     expect(linkToStory).toBeInTheDocument();
     expect(linkToStory).toHaveAttribute(
       'href',
-      expect.stringMatching(story.url)
+      expect.stringMatching(story.url),
     );
     expect(linkToStory).toHaveAttribute(
       'target',
-      expect.stringMatching('_blank')
+      expect.stringMatching('_blank'),
     );
 
     // the title is present
@@ -74,24 +74,24 @@ describe('The StoryCard component', () => {
     render(
       <MemoryRouter>
         <StoryCard story={story} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // The sample excerpt has some line breaks
     // and should be rendered as three paragraphs.
     const firstParagraph = screen.getByText(
-      'Quia non dolores voluptatem est aut. Id officiis nulla est.'
+      'Quia non dolores voluptatem est aut. Id officiis nulla est.',
     );
     expect(firstParagraph).toBeInTheDocument();
 
     const secondParagraph = screen.getByText(
       'Harum et velit debitis. Quia assumenda commodi et dolor. ' +
-        'Ut dicta veritatis perspiciatis suscipit.'
+        'Ut dicta veritatis perspiciatis suscipit.',
     );
     expect(secondParagraph).toBeInTheDocument();
 
     const thirdParagraph = screen.getByText(
-      'Aspernatur reprehenderit laboriosam voluptates ut. Ut minus aut est.'
+      'Aspernatur reprehenderit laboriosam voluptates ut. Ut minus aut est.',
     );
     expect(thirdParagraph).toBeInTheDocument();
   });
@@ -100,7 +100,7 @@ describe('The StoryCard component', () => {
     render(
       <MemoryRouter>
         <StoryCard story={story} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const middot = screen.getByText('\u00b7');
@@ -113,7 +113,7 @@ describe('The StoryCard component', () => {
     render(
       <MemoryRouter>
         <StoryCard story={story} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const middot = screen.queryByText('\u00b7');
@@ -126,7 +126,7 @@ describe('The StoryCard component', () => {
     render(
       <MemoryRouter>
         <StoryCard story={story} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const fromPartner = screen.getByText(/from partner\/sponsor/i);

@@ -30,7 +30,7 @@ describe('ShareableListFormConnector -> Hiding List', () => {
             hideList={true}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Wait for the form to load
@@ -70,7 +70,7 @@ describe('ShareableListFormConnector -> Hiding List', () => {
             hideList={true}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // grab save button
@@ -86,7 +86,7 @@ describe('ShareableListFormConnector -> Hiding List', () => {
     });
     // should resolve in error
     expect(
-      screen.getByText('Please choose a reason for hiding this list.')
+      screen.getByText('Please choose a reason for hiding this list.'),
     ).toBeInTheDocument();
   });
 
@@ -103,7 +103,7 @@ describe('ShareableListFormConnector -> Hiding List', () => {
             hideList={true}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // grab save button
@@ -142,7 +142,7 @@ describe('ShareableListFormConnector -> Hiding List', () => {
             hideList={true}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // grab cancel button
@@ -177,7 +177,7 @@ describe('ShareableListFormConnector -> Restoring List', () => {
             restoreList={true}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Wait for the form to load
@@ -213,7 +213,7 @@ describe('ShareableListFormConnector -> Restoring List', () => {
             restoreList={true}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // grab save button
@@ -229,7 +229,7 @@ describe('ShareableListFormConnector -> Restoring List', () => {
     });
     // should resolve in error
     expect(
-      screen.getByText('Please enter a reason for restoring this list.')
+      screen.getByText('Please enter a reason for restoring this list.'),
     ).toBeInTheDocument();
   });
 
@@ -246,7 +246,7 @@ describe('ShareableListFormConnector -> Restoring List', () => {
             restoreList={true}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // grab save button
@@ -278,7 +278,7 @@ describe('ShareableListFormConnector -> Restoring List', () => {
             restoreList={true}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // grab cancel button

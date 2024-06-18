@@ -13,7 +13,7 @@ describe('The ScrollToTop component', () => {
     render(
       <Router history={history}>
         <ScrollToTop />
-      </Router>
+      </Router>,
     );
 
     // move to another page

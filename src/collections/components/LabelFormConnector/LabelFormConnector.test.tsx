@@ -30,7 +30,7 @@ describe('LabelFormConnector', () => {
         <SnackbarProvider>
           <LabelFormConnector toggleModal={toggleModal} />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Wait for the form to load
@@ -61,7 +61,7 @@ describe('LabelFormConnector', () => {
         <SnackbarProvider>
           <LabelFormConnector toggleModal={toggleModal} />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Wait for the form to load
@@ -96,7 +96,7 @@ describe('LabelFormConnector', () => {
             runCreateLabelMutation={true}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Wait for the form to load
@@ -119,8 +119,8 @@ describe('LabelFormConnector', () => {
     // should resolve in duplicate error
     expect(
       screen.getByText(
-        'A label with the name "fake-label-duplicate" already exists'
-      )
+        'A label with the name "fake-label-duplicate" already exists',
+      ),
     ).toBeInTheDocument();
   });
 
@@ -140,7 +140,7 @@ describe('LabelFormConnector', () => {
             runUpdateLabelMutation={true}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Wait for the form to load
@@ -162,8 +162,8 @@ describe('LabelFormConnector', () => {
     // should resolve in duplicate error
     expect(
       screen.getByText(
-        'A label with the name "fake-label-duplicate-update" already exists'
-      )
+        'A label with the name "fake-label-duplicate-update" already exists',
+      ),
     ).toBeInTheDocument();
   });
 
@@ -183,7 +183,7 @@ describe('LabelFormConnector', () => {
             runUpdateLabelMutation={true}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Wait for the form to load
@@ -208,8 +208,8 @@ describe('LabelFormConnector', () => {
     // should resolve in duplicate error
     expect(
       screen.getByText(
-        'Cannot update label; it is associated with at least one collection'
-      )
+        'Cannot update label; it is associated with at least one collection',
+      ),
     ).toBeInTheDocument();
   });
 
@@ -221,7 +221,7 @@ describe('LabelFormConnector', () => {
         <SnackbarProvider>
           <LabelFormConnector toggleModal={toggleModal} />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Wait for the form to load
@@ -243,7 +243,7 @@ describe('LabelFormConnector', () => {
     });
     // should resolve in min length error
     expect(
-      screen.getByText('Label name needs to be at least 2 characters.')
+      screen.getByText('Label name needs to be at least 2 characters.'),
     ).toBeInTheDocument();
   });
 
@@ -255,7 +255,7 @@ describe('LabelFormConnector', () => {
         <SnackbarProvider>
           <LabelFormConnector toggleModal={toggleModal} />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Wait for the form to load
@@ -278,8 +278,8 @@ describe('LabelFormConnector', () => {
     // should resolve in min length error
     expect(
       screen.getByText(
-        'Label name can only contain lowercase alphanumeric characters and hyphens.'
-      )
+        'Label name can only contain lowercase alphanumeric characters and hyphens.',
+      ),
     ).toBeInTheDocument();
   });
 
@@ -294,7 +294,7 @@ describe('LabelFormConnector', () => {
             runCreateLabelMutation={true}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Wait for the form to load
@@ -335,7 +335,7 @@ describe('LabelFormConnector', () => {
             label={label}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Wait for the form to load
@@ -370,7 +370,7 @@ describe('LabelFormConnector', () => {
         <SnackbarProvider>
           <LabelFormConnector toggleModal={toggleModal} />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Wait for the form to load

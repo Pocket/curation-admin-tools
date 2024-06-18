@@ -22,7 +22,7 @@ describe('The DuplicateProspectModal component', () => {
             toggleModal={toggleModal}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // fetch the modal by its heading and assert it rendered
@@ -34,12 +34,12 @@ describe('The DuplicateProspectModal component', () => {
 
     // fetch modal body text and assert it rendered
     expect(
-      screen.getByText(/this item is already in the corpus/i)
+      screen.getByText(/this item is already in the corpus/i),
     ).toBeInTheDocument();
 
     // fetch the view item curation history button assert it rendered
     expect(
-      screen.getByRole('button', { name: /view item curation history/i })
+      screen.getByRole('button', { name: /view item curation history/i }),
     ).toBeInTheDocument();
 
     // fetch the cancel button assert it rendered
@@ -56,7 +56,7 @@ describe('The DuplicateProspectModal component', () => {
             toggleModal={toggleModal}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const viewCurationHistoryButton = screen.getByRole('button', {

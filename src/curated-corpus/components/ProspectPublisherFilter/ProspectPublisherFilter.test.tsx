@@ -23,7 +23,7 @@ describe('The ProspectPublisherFilter component', () => {
         sortByPublishedDate={sortByPublishedDate}
         sortByTimeToRead={sortByTimeToRead}
         handleSortByTimeToRead={handleSortByTimeToRead}
-      />
+      />,
     );
   };
 

@@ -64,7 +64,7 @@ describe('The ApprovedItemForm component', () => {
             />
           </SnackbarProvider>
         </ThemeProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const url = screen.getByLabelText(/Item URL/);
@@ -139,7 +139,7 @@ describe('The ApprovedItemForm component', () => {
             />
           </SnackbarProvider>
         </ThemeProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     //This is fetching the 'Update Image' text in the ImageUpload component
@@ -161,7 +161,7 @@ describe('The ApprovedItemForm component', () => {
             />
           </SnackbarProvider>
         </ThemeProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const saveButton = screen.getByText(/Save/);
@@ -186,7 +186,7 @@ describe('The ApprovedItemForm component', () => {
               />
             </SnackbarProvider>
           </ThemeProvider>
-        </MockedProvider>
+        </MockedProvider>,
       );
 
       const title = screen.getByLabelText(/Title/);
@@ -214,7 +214,7 @@ describe('The ApprovedItemForm component', () => {
               />
             </SnackbarProvider>
           </ThemeProvider>
-        </MockedProvider>
+        </MockedProvider>,
       );
 
       const title = screen.getByLabelText(/Title/);
@@ -266,7 +266,7 @@ describe('The ApprovedItemForm component', () => {
               />
             </SnackbarProvider>
           </ThemeProvider>
-        </MockedProvider>
+        </MockedProvider>,
       );
 
       // fetch the update image button
@@ -278,7 +278,7 @@ describe('The ApprovedItemForm component', () => {
 
       // get the input html element for us to upload the file
       const imageUploadInput = await screen.findByTestId(
-        'curated-corpus-image-upload-input'
+        'curated-corpus-image-upload-input',
       );
 
       // upload the test file by executing an upload event
@@ -298,7 +298,7 @@ describe('The ApprovedItemForm component', () => {
 
       // fetch the imageUrl field that is on the form
       const imageUrlField = (await screen.findByLabelText(
-        'imageUrl'
+        'imageUrl',
       )) as HTMLInputElement;
 
       await waitFor(() => {
@@ -323,7 +323,7 @@ describe('The ApprovedItemForm component', () => {
               />
             </SnackbarProvider>
           </ThemeProvider>
-        </MockedProvider>
+        </MockedProvider>,
       );
 
       const saveButton = screen.getByRole('button', {
@@ -351,7 +351,7 @@ describe('The ApprovedItemForm component', () => {
               />
             </SnackbarProvider>
           </ThemeProvider>
-        </MockedProvider>
+        </MockedProvider>,
       );
 
       const saveButton = screen.getByRole('button', {

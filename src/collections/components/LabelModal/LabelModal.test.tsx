@@ -17,7 +17,7 @@ describe('The LabelModal component', () => {
             modalTitle="Add a New Label"
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // using the modal heading to fetch it
@@ -40,7 +40,7 @@ describe('The LabelModal component', () => {
             modalTitle="Edit Label"
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // using the modal heading to fetch it

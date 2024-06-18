@@ -19,7 +19,7 @@ describe('The ShareableListsSearchForm component', () => {
             <ShareableListsSearchForm onSubmit={onSubmit} />
           </SnackbarProvider>
         </ThemeProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const id = screen.getByLabelText(/List ID/);
@@ -34,7 +34,7 @@ describe('The ShareableListsSearchForm component', () => {
             <ShareableListsSearchForm onSubmit={onSubmit} />
           </SnackbarProvider>
         </ThemeProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const searchButton = screen.getByText(/Search/);
@@ -51,7 +51,7 @@ describe('The ShareableListsSearchForm component', () => {
             <ShareableListsSearchForm onSubmit={onSubmit} />
           </SnackbarProvider>
         </ThemeProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const id = screen.getByLabelText(/List ID/);

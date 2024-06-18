@@ -29,7 +29,7 @@ describe('The RejectedItemListCard component', () => {
     render(
       <MemoryRouter>
         <RejectedItemListCard item={rejectedItem} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // The link to the rejected item page is present and is well-formed
@@ -37,7 +37,7 @@ describe('The RejectedItemListCard component', () => {
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute(
       'href',
-      expect.stringContaining(rejectedItem.url)
+      expect.stringContaining(rejectedItem.url),
     );
     // The link also opens in a new tab
     expect(link).toHaveAttribute('target', expect.stringContaining('_blank'));
@@ -47,7 +47,7 @@ describe('The RejectedItemListCard component', () => {
     render(
       <MemoryRouter>
         <RejectedItemListCard item={rejectedItem} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText(rejectedItem.language!)).toBeInTheDocument();
@@ -57,7 +57,7 @@ describe('The RejectedItemListCard component', () => {
     render(
       <MemoryRouter>
         <RejectedItemListCard item={rejectedItem} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText(rejectedItem.reason)).toBeInTheDocument();
@@ -67,7 +67,7 @@ describe('The RejectedItemListCard component', () => {
     render(
       <MemoryRouter>
         <RejectedItemListCard item={rejectedItem} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText(rejectedItem.createdBy)).toBeInTheDocument();
@@ -77,7 +77,7 @@ describe('The RejectedItemListCard component', () => {
     render(
       <MemoryRouter>
         <RejectedItemListCard item={rejectedItem} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText(rejectedItem.topic!)).toBeInTheDocument();
@@ -87,7 +87,7 @@ describe('The RejectedItemListCard component', () => {
     render(
       <MemoryRouter>
         <RejectedItemListCard item={rejectedItem} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText(rejectedItem.publisher!)).toBeInTheDocument();
@@ -105,7 +105,7 @@ describe('The RejectedItemListCard component', () => {
     render(
       <MemoryRouter>
         <RejectedItemListCard item={rejectedItem} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const placeholders = screen.getAllByText('N/A');

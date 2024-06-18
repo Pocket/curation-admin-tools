@@ -20,7 +20,7 @@ describe('The TabSet component', () => {
           handleChange={jest.fn()}
           tabs={tabs}
         />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const tab = screen.getByRole('tab');

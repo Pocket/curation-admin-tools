@@ -38,7 +38,7 @@ describe('The ScheduleItemForm component', () => {
         onSubmit={handleSubmit}
         scheduledSurfaces={scheduledSurfaces}
         approvedItemExternalId={'123abc'}
-      />
+      />,
     );
 
     // there is at least a form and nothing falls over
@@ -54,7 +54,7 @@ describe('The ScheduleItemForm component', () => {
         onSubmit={handleSubmit}
         scheduledSurfaces={scheduledSurfaces}
         approvedItemExternalId={'123abc'}
-      />
+      />,
     );
 
     const buttons = screen.getAllByRole('button');
@@ -74,11 +74,11 @@ describe('The ScheduleItemForm component', () => {
         onSubmit={handleSubmit}
         scheduledSurfaces={scheduledSurfaces}
         approvedItemExternalId={'123abc'}
-      />
+      />,
     );
 
     const select = screen.getByLabelText(
-      'Choose a Scheduled Surface'
+      'Choose a Scheduled Surface',
     ) as HTMLSelectElement;
 
     // there should be an empty option and a single scheduled surface option
@@ -100,11 +100,11 @@ describe('The ScheduleItemForm component', () => {
           scheduledSurfaceGuid="NEW_TAB_EN_US"
           approvedItemExternalId={'123abc'}
         />
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const select = screen.getByLabelText(
-      'Choose a Scheduled Surface'
+      'Choose a Scheduled Surface',
     ) as HTMLSelectElement;
 
     // there should be an empty option and a single scheduled surface option
@@ -126,11 +126,11 @@ describe('The ScheduleItemForm component', () => {
           scheduledSurfaces={[scheduledSurfaces[0]]}
           approvedItemExternalId={'123abc'}
         />
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const select = screen.getByLabelText(
-      'Choose a Scheduled Surface'
+      'Choose a Scheduled Surface',
     ) as HTMLSelectElement;
 
     // there should be an empty option and a single scheduled surface option
@@ -151,7 +151,7 @@ describe('The ScheduleItemForm component', () => {
           scheduledSurfaces={[scheduledSurfaces[0]]}
           approvedItemExternalId={'123abc'}
         />
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     await waitFor(() => {
@@ -175,7 +175,7 @@ describe('The ScheduleItemForm component', () => {
           approvedItemExternalId={'123abc'}
           showManualScheduleReasons={true}
         />
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     await waitFor(() => {
@@ -199,7 +199,7 @@ describe('The ScheduleItemForm component', () => {
           approvedItemExternalId={'123abc'}
           showManualScheduleReasons={true}
         />
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     await waitFor(() => {
@@ -207,7 +207,7 @@ describe('The ScheduleItemForm component', () => {
     });
 
     const errorMessage = screen.getByText(
-      /Please choose at least one reason to schedule this item manually./i
+      /Please choose at least one reason to schedule this item manually./i,
     );
     expect(errorMessage).toBeVisible();
     expect(handleSubmit).not.toHaveBeenCalled();
@@ -226,7 +226,7 @@ describe('The ScheduleItemForm component', () => {
           showManualScheduleReasons={true}
           expandSummary={true}
         />
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Wait for the summary to load, then expect to see the main headings
@@ -251,7 +251,7 @@ describe('The ScheduleItemForm component', () => {
           showManualScheduleReasons={true}
           expandSummary={false}
         />
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Wait for the summary to load, then expect to see the main headings
@@ -279,7 +279,7 @@ describe('The ScheduleItemForm component', () => {
           approvedItemExternalId={'123abc'}
           showManualScheduleReasons={true}
         />
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const chosenReason = screen.getByLabelText(/under the radar/i);

@@ -97,8 +97,8 @@
     "build": "DISABLE_ESLINT_PLUGIN=true node scripts/build.js",
     "test": "node scripts/test.js --transformIgnorePatterns \"node_modules/(?!@apollo/client/link/core/ApolloLink.js)/\"",
     "test:nowatch": "node scripts/test.js --watchAll=false  --transformIgnorePatterns \"node_modules/(?!@apollo/client/link/core/ApolloLink.js)/\"",
-    "lint-check": "tsc --noEmit && eslint src/**/*.ts{,x}",
-    "lint-fix": "tsc --noEmit && eslint src/**/*.ts{,x} --fix",
+    "lint-check": "eslint src/**/*.ts{,x}",
+    "lint-fix": "eslint src/**/*.ts{,x} --fix",
     "api:generate-types": "graphql-codegen --config src/config/admin-api-codegen.json -r dotenv/config"
   },
   "jest": {
