@@ -83,7 +83,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = (props): JSX.Element => {
   // or a placeholder
   const [imageSrc, setImageSrc] = useState<string>(entity.imageUrl);
   const [hasImage, setHasImage] = useState<boolean>(
-    !!(imageSrc && imageSrc.length > 0)
+    !!(imageSrc && imageSrc.length > 0),
   );
 
   // Close the image upload modal when user clicks away or presses the "Cancel" button

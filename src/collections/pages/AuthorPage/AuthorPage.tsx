@@ -40,7 +40,7 @@ export const AuthorPage = (): JSX.Element => {
     location.state?.author
       ? // Deep clone a read-only object that comes from the routing
         JSON.parse(JSON.stringify(location.state?.author))
-      : undefined
+      : undefined,
   );
 
   /**
@@ -76,7 +76,7 @@ export const AuthorPage = (): JSX.Element => {
    */
   const handleSubmit = (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ): void => {
     updateAuthor({
       variables: {

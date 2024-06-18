@@ -25,7 +25,7 @@ interface CollectionListCardProps {
  * @param props
  */
 export const CollectionListCard: React.FC<CollectionListCardProps> = (
-  props
+  props,
 ) => {
   const { collection } = props;
   return (

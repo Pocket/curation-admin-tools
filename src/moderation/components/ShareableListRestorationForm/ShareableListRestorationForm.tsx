@@ -12,7 +12,7 @@ import { validationSchema } from './ShareableListRestorationForm.validation';
 interface ShareableListRestorationFormProps {
   onSubmit: (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ) => void | Promise<any>;
 
   /**

@@ -72,7 +72,7 @@ export const RejectAndUnscheduleItemAction: React.FC<
   // into the rejected item list.
   const onSave = (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ): void => {
     // Set up all the variables we need to pass to the unschedule mutation
     const unscheduleInput: DeleteScheduledCorpusItemInput = {
@@ -107,12 +107,12 @@ export const RejectAndUnscheduleItemAction: React.FC<
           },
           // If the data needs to be refreshed (as it does on the Schedule page),
           // run the `refetch` helper function provided by the parent component.
-          refetch
+          refetch,
         );
       },
       () => {
         formikHelpers.setSubmitting(false);
-      }
+      },
     );
   };
 

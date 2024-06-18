@@ -22,7 +22,7 @@ interface RemoveItemFromScheduledSurfaceProps {
    */
   onSubmit: (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ) => void | Promise<any>;
   /**
    * Item title to be used in the checkbox description.

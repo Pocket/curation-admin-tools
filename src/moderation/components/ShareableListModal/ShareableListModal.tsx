@@ -46,7 +46,7 @@ interface ShareableListsModalProps {
  * Parent component for the LabelModal component
  */
 export const ShareableListModal: React.FC<ShareableListsModalProps> = (
-  props
+  props,
 ): JSX.Element => {
   const {
     isOpen,

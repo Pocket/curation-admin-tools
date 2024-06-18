@@ -39,7 +39,7 @@ interface ApprovedItemCardWrapperProps {
  * @constructor
  */
 export const ApprovedItemCardWrapper: React.FC<ApprovedItemCardWrapperProps> = (
-  props
+  props,
 ): JSX.Element => {
   const { item, onEdit, onReject, onSchedule } = props;
 

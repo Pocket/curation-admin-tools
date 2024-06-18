@@ -25,12 +25,17 @@ export { RemoveItemFromScheduledSurfaceModal } from './RemoveItemFromScheduledSu
 export { RemoveItemForm } from './RemoveItemForm/RemoveItemForm';
 export { RemoveItemModal } from './RemoveItemModal/RemoveItemModal';
 export { ScheduleCorpusItemAction } from './actions/ScheduleCorpusItemAction/ScheduleCorpusItemAction';
+export { ScheduleDayData } from './ScheduleDayData/ScheduleDayData';
+export { ScheduleDayHeading } from './ScheduleDayHeading/ScheduleDayHeading';
 export { ScheduleHistory } from './ScheduleHistory/ScheduleHistory';
 export { ScheduleHistoryEntries } from './ScheduleHistoryEntries/ScheduleHistoryEntries';
 export { ScheduledItemCardWrapper } from './ScheduledItemCardWrapper/ScheduledItemCardWrapper';
 export { ScheduleItemFormConnector } from './ScheduleItemFormConnector/ScheduleItemFormConnector';
 export { ScheduleItemForm } from './ScheduleItemForm/ScheduleItemForm';
 export { ScheduleItemModal } from './ScheduleItemModal/ScheduleItemModal';
+export { ScheduleDayFilterRow } from './ScheduleDayFilterRow/ScheduleDayFilterRow';
+export type { ScheduleDayFilterOptions } from './ScheduleDayFilterRow/ScheduleDayFilterRow';
+export { ScheduleDayFilter } from './ScheduleDayFilter/ScheduleDayFilter';
 export type { ScheduleSummary } from './ScheduleSummaryCard/ScheduleSummaryCard';
 export { ScheduleSummaryCard } from './ScheduleSummaryCard/ScheduleSummaryCard';
 export { ScheduleSummaryConnector } from './ScheduleSummaryConnector/ScheduleSummaryConnector';

@@ -45,7 +45,7 @@ export const useNotifications = (): useNotificationsReturnValues => {
    */
   const showNotification = (
     message: string,
-    type: VariantType | undefined
+    type: VariantType | undefined,
   ): void => {
     enqueueSnackbar(message, {
       // This is the close button we defined above

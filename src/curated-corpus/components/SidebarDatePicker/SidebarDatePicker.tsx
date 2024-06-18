@@ -24,7 +24,7 @@ interface SidebarDatePickerProps {
  * @constructor
  */
 export const SidebarDatePicker: React.FC<SidebarDatePickerProps> = (
-  props
+  props,
 ): JSX.Element => {
   const { handleDateChange, selectedDate } = props;
 

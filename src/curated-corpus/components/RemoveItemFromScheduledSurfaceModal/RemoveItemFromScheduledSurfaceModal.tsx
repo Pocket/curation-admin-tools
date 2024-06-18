@@ -4,14 +4,14 @@ import { Box, Grid, Typography } from '@mui/material';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import { ScheduledCorpusItem } from '../../../api/generatedTypes';
-import { RemoveItemFromScheduledSurfaceForm, RemoveItemForm } from '../';
+import { RemoveItemForm, RemoveItemFromScheduledSurfaceForm } from '../';
 
 interface RemoveItemFromScheduledSurfaceModalProps {
   item: ScheduledCorpusItem;
   isOpen: boolean;
   onSave: (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ) => void | Promise<any>;
   toggleModal: VoidFunction;
 }

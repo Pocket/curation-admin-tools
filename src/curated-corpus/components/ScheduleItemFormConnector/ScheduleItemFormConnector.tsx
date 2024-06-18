@@ -46,7 +46,7 @@ interface ScheduleItemFormConnectorProps {
    */
   onSubmit: (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ) => void | Promise<any>;
 }
 
@@ -78,7 +78,7 @@ export const ScheduleItemFormConnector: React.FC<
   // Use the date provided; otherwise, use tomorrow's date in the curator's time zone
 
   const [selectedDate, setSelectedDate] = useState<DateTime | null>(
-    date ? date : tomorrow
+    date ? date : tomorrow,
   );
 
   // What to do when the user clicks on a date in the calendar.

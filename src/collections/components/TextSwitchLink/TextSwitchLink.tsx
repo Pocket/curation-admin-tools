@@ -48,7 +48,7 @@ export const TextSwitchLink = ({
 
   const [descriptionState, setDescriptionState] =
     useState<DescriptionTextStates>(
-      DescriptionTextStates.IncompleteDescription
+      DescriptionTextStates.IncompleteDescription,
     );
 
   let nextDescriptionState = null;
@@ -72,7 +72,7 @@ export const TextSwitchLink = ({
 
   const actionCallback = (
     textToInsert: string,
-    newDescriptionState: DescriptionTextStates
+    newDescriptionState: DescriptionTextStates,
   ) => {
     setDescriptionState(newDescriptionState);
     updateExcerptText(textToInsert);

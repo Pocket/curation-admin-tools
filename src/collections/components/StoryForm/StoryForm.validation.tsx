@@ -11,7 +11,7 @@ export const validationSchema = yup.object({
       2, // minimum could be "AP"
       'Please enter one or more authors, separated by commas.' +
         ' Please supply at least two characters or leave this field empty' +
-        ' if this story has no authors.'
+        ' if this story has no authors.',
     ),
   publisher: yup.string(),
   fromPartner: yup.boolean(),

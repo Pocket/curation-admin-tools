@@ -18,7 +18,7 @@ export const CollectionSearchPage: React.FC = (): JSX.Element => {
       // We need to make sure search results are never served from the cache.
       // Otherwise, this page is broken as we have a type policy on the
       // 'searchCollections' query.
-      { fetchPolicy: 'no-cache' }
+      { fetchPolicy: 'no-cache' },
     );
 
   const { data: labelData } = useLabelsQuery();
@@ -41,7 +41,7 @@ export const CollectionSearchPage: React.FC = (): JSX.Element => {
 
     if (values.labels.length > 0) {
       searchVars['labelExternalIds'] = values.labels.map(
-        (value: Label) => value.externalId
+        (value: Label) => value.externalId,
       );
     }
 

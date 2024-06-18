@@ -37,7 +37,7 @@ export const AddPartnerPage: React.FC = (): JSX.Element => {
    */
   const handleSubmit = (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ): void => {
     addCollectionPartner({
       variables: {
@@ -61,7 +61,7 @@ export const AddPartnerPage: React.FC = (): JSX.Element => {
           `/collections/partners/${data?.createCollectionPartner?.externalId}/`,
           {
             partner: data?.createCollectionPartner,
-          }
+          },
         );
       })
       .catch((error: Error) => {

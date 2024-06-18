@@ -73,7 +73,7 @@ const bottomOverlayContainerSxStyles: SxProps = {
 
 const getTopRightLabel = (
   item: ApprovedCorpusItem,
-  isMlScheduled: boolean
+  isMlScheduled: boolean,
 ): ReactElement | null => {
   if (isMlScheduled) {
     return (
@@ -108,7 +108,7 @@ const getTopRightLabel = (
 const getBottomLeftLastScheduledLabel = (
   lastScheduledDayDiff: number,
   toggleScheduleHistoryModal: VoidFunction,
-  highlightLastScheduled?: boolean
+  highlightLastScheduled?: boolean,
 ): ReactElement => {
   return (
     <Box
@@ -137,7 +137,7 @@ const getBottomLeftLastScheduledLabel = (
  * @returns A component that returns an image with the relevant overlay labels
  */
 export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
-  props
+  props,
 ): ReactElement => {
   const {
     item,
@@ -156,12 +156,12 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
 
   // extract the scheduled history dates into a string array
   const scheduledHistoryDates = item.scheduledSurfaceHistory.map(
-    (scheduledHistory) => scheduledHistory.scheduledDate
+    (scheduledHistory) => scheduledHistory.scheduledDate,
   );
 
   const lastScheduledDayDiff = getLastScheduledDayDiff(
     currentDateViewingScheduleFor,
-    scheduledHistoryDates
+    scheduledHistoryDates,
   );
 
   // Find the most recent date this item was scheduled on this surface
@@ -171,7 +171,7 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
 
   const lastScheduledOnThisSurface = getLastScheduledDayDiff(
     currentDateViewingScheduleFor,
-    datesForCurrentSurface
+    datesForCurrentSurface,
   );
 
   // Determine whether to highlight the "Last scheduled X days ago" overlay
@@ -247,7 +247,7 @@ export const CorpusItemCardImage: React.FC<CorpusItemCardImageProps> = (
             getBottomLeftLastScheduledLabel(
               lastScheduledDayDiff,
               toggleScheduleHistoryModal,
-              highlightLastScheduled
+              highlightLastScheduled,
             )}
         </Stack>
 

@@ -44,7 +44,7 @@ interface RemoveProspectActionProps {
  * @returns
  */
 export const RemoveProspectAction: React.FC<RemoveProspectActionProps> = (
-  props
+  props,
 ) => {
   let isProspectSlateScheduler = false;
   const {

@@ -38,7 +38,7 @@ export const AddAuthorPage: React.FC = (): JSX.Element => {
    */
   const handleSubmit = (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ): void => {
     addAuthor({
       variables: {
@@ -63,7 +63,7 @@ export const AddAuthorPage: React.FC = (): JSX.Element => {
           `/collections/authors/${data?.createCollectionAuthor?.externalId}/`,
           {
             author: data?.createCollectionAuthor,
-          }
+          },
         );
       })
       .catch((error: Error) => {

@@ -40,7 +40,7 @@ interface TabSetProps {
    */
   handleChange: (
     event: React.ChangeEvent<unknown>,
-    newCurrentTab: string
+    newCurrentTab: string,
   ) => void;
 
   /**

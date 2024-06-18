@@ -30,7 +30,7 @@ export const validationSchema = yup
       return new yup.ValidationError(
         'Please provide a comment for removing this item.',
         null,
-        'reasonComment'
+        'reasonComment',
       );
     }
     // If Other checkbox was NOT selected but a reason was entered, fail validation
@@ -38,7 +38,7 @@ export const validationSchema = yup
       return new yup.ValidationError(
         'Please select the "OTHER" reason checkbox.',
         null,
-        'removalReason'
+        'removalReason',
       );
     }
     // If at least one checkbox was selected & above conditions satisfied, pass validation
@@ -67,6 +67,6 @@ export const validationSchema = yup
     return new yup.ValidationError(
       'Please choose at least one removal reason.',
       null,
-      'removalReason'
+      'removalReason',
     );
   });

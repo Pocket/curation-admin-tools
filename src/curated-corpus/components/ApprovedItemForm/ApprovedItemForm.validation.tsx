@@ -12,12 +12,12 @@ export const validationSchema = yup.object({
     .string()
     .trim()
     .required(
-      'Please add an author. If this item has multiple authors, please use commas to separate them.'
+      'Please add an author. If this item has multiple authors, please use commas to separate them.',
     )
     .min(2, 'Authors field needs to be longer than 2 characters.')
     .max(
       255,
-      'Value for authors field is too long, it cannot exceed 255 characters.'
+      'Value for authors field is too long, it cannot exceed 255 characters.',
     ),
 
   publisher: yup

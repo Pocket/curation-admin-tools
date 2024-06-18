@@ -15,7 +15,7 @@ interface RejectedItemSearchFormProps {
    */
   onSubmit: (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ) => void | Promise<any>;
 }
 
@@ -24,7 +24,7 @@ interface RejectedItemSearchFormProps {
  */
 
 export const RejectedItemSearchForm: React.FC<RejectedItemSearchFormProps> = (
-  props
+  props,
 ): JSX.Element => {
   const { onSubmit } = props;
 

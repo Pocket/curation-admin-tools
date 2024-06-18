@@ -10,7 +10,7 @@ describe('The RemoveItemModal component', () => {
   const prospect: Prospect = {
     id: 'test-id',
     prospectId: 'test-prospect-id',
-    prospectType: ProspectType.SlateScheduler,
+    prospectType: ProspectType.SlateSchedulerV2,
     scheduledSurfaceGuid: ScheduledSurfaces[0].guid,
     url: 'www.test-prospect-url.com',
     title: 'test-title',
@@ -25,7 +25,7 @@ describe('The RemoveItemModal component', () => {
         isOpen={true}
         onSave={onSave}
         toggleModal={toggleModal}
-      />
+      />,
     );
 
     // fetch the modal's heading and assert it renders successfully

@@ -97,7 +97,7 @@ export const CollectionPage = (): JSX.Element => {
     location.state?.collection
       ? // Deep clone a read-only object that comes from the routing
         JSON.parse(JSON.stringify(location.state?.collection))
-      : undefined
+      : undefined,
   );
 
   /**
@@ -153,7 +153,7 @@ export const CollectionPage = (): JSX.Element => {
 
   // Let's keep stories in state to be able to reorder them with drag'n'drop
   const [stories, setStories] = useState<CollectionStory[] | undefined>(
-    undefined
+    undefined,
   );
   // And update the state variable when data is loaded
   useEffect(() => {
@@ -196,7 +196,7 @@ export const CollectionPage = (): JSX.Element => {
   const onCollectionUpdate = (
     values: FormikValues,
     formikHelpers: FormikHelpers<any>,
-    labels: Label[]
+    labels: Label[],
   ): void => {
     const options = {
       variables: {
@@ -289,7 +289,7 @@ export const CollectionPage = (): JSX.Element => {
       options,
       'Collection successfully updated.',
       successCallback,
-      errorCallback
+      errorCallback,
     );
   };
 
@@ -316,7 +316,7 @@ export const CollectionPage = (): JSX.Element => {
           collection.imageUrl = data?.updateCollectionImageUrl?.imageUrl!;
           showNotification(
             `Image saved to "${collection.title.substring(0, 50)}..."`,
-            'success'
+            'success',
           );
         }
       })
@@ -336,7 +336,7 @@ export const CollectionPage = (): JSX.Element => {
    */
   const handleCreateStorySubmit = (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ): void => {
     // First, let's save the new story
     // Prepare authors. They need to be an array of objects again
@@ -360,9 +360,9 @@ export const CollectionPage = (): JSX.Element => {
         showNotification(
           `Added "${data.data?.createCollectionStory?.title.substring(
             0,
-            50
+            50,
           )}..."`,
-          'success'
+          'success',
         );
 
         // If the parser returned an image, let's upload it to S3
@@ -402,7 +402,7 @@ export const CollectionPage = (): JSX.Element => {
                     .then(() => {
                       showNotification(
                         'Image uploaded to S3 and linked to story',
-                        'success'
+                        'success',
                       );
                       // manually refresh the cache
                       refetchStories();
@@ -426,7 +426,7 @@ export const CollectionPage = (): JSX.Element => {
             showNotification(
               'Could not process image - file may be too large.\n' +
                 `(Original error: ${error.message})`,
-              'error'
+              'error',
             );
             // manually refresh the cache
             refetchStories();
@@ -490,7 +490,7 @@ export const CollectionPage = (): JSX.Element => {
 
   const handleCreateAssociationSubmit = (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ): void => {
     const options = {
       variables: {
@@ -513,7 +513,7 @@ export const CollectionPage = (): JSX.Element => {
       () => {
         formikHelpers.setSubmitting(false);
       },
-      refetchAssociation
+      refetchAssociation,
     );
   };
 
@@ -546,7 +546,7 @@ export const CollectionPage = (): JSX.Element => {
               sortOrder: newSortOrder,
             },
           },
-          `Order updated for "${story.title.substring(0, 50)}..."`
+          `Order updated for "${story.title.substring(0, 50)}..."`,
         );
       }
     });

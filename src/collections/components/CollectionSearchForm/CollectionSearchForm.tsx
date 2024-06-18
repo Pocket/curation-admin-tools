@@ -27,7 +27,7 @@ interface CollectionSearchFormProps {
  * A form for searching collections.
  */
 export const CollectionSearchForm: React.FC<CollectionSearchFormProps> = (
-  props
+  props,
 ): JSX.Element => {
   const { labels, onSubmit } = props;
 

@@ -57,7 +57,7 @@ interface ScheduleItemModalProps {
    */
   onSave: (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ) => void | Promise<any>;
 
   /**
@@ -74,7 +74,7 @@ interface ScheduleItemModalProps {
  * @constructor
  */
 export const ScheduleItemModal: React.FC<ScheduleItemModalProps> = (
-  props
+  props,
 ): ReactElement => {
   const {
     approvedItem,

@@ -26,7 +26,7 @@ export const CorpusPage: React.FC = (): JSX.Element => {
   const [getApprovedCorpusItems, { loading, error, data, refetch }] =
     useGetApprovedItemsLazyQuery(
       // We need to make sure search results are never served from the cache.
-      { fetchPolicy: 'no-cache', notifyOnNetworkStatusChange: true }
+      { fetchPolicy: 'no-cache', notifyOnNetworkStatusChange: true },
     );
 
   // Save the filters in a state variable to be able to use them when paginating
@@ -215,7 +215,7 @@ export const CorpusPage: React.FC = (): JSX.Element => {
                       />
                     </Grid>
                   );
-                }
+                },
               )}
           </Grid>
         </Grid>

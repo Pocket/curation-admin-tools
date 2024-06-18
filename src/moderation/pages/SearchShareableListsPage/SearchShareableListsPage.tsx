@@ -17,7 +17,7 @@ export const SearchShareableListsPage = (): JSX.Element => {
   const [searchShareableLists, { loading, error, data, refetch }] =
     useSearchShareableListLazyQuery(
       // Make sure search results are never served from the cache.
-      { fetchPolicy: 'no-cache' }
+      { fetchPolicy: 'no-cache' },
     );
 
   const handleSubmit = (values: FormikValues): void => {

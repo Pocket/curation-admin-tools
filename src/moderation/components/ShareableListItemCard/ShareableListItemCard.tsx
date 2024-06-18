@@ -16,7 +16,7 @@ interface ShareableListItemCardProps {
 }
 
 export const ShareableListItemCard: React.FC<ShareableListItemCardProps> = (
-  props
+  props,
 ): JSX.Element => {
   const { listItem } = props;
 
@@ -58,7 +58,7 @@ export const ShareableListItemCard: React.FC<ShareableListItemCardProps> = (
                 replaceCharsInStr(
                   listItem.title,
                   htmlEncodedCharsToFindArr,
-                  replaceWithDecodedCharsArr
+                  replaceWithDecodedCharsArr,
                 )) ??
                 'No title'}
             </a>
@@ -80,7 +80,7 @@ export const ShareableListItemCard: React.FC<ShareableListItemCardProps> = (
                 replaceCharsInStr(
                   listItem.excerpt,
                   htmlEncodedCharsToFindArr,
-                  replaceWithDecodedCharsArr
+                  replaceWithDecodedCharsArr,
                 )) ??
                 'No excerpt'}
             </Typography>
@@ -91,7 +91,7 @@ export const ShareableListItemCard: React.FC<ShareableListItemCardProps> = (
               {replaceCharsInStr(
                 listItem.note,
                 htmlEncodedCharsToFindArr,
-                replaceWithDecodedCharsArr
+                replaceWithDecodedCharsArr,
               )}
             </Box>
           )}

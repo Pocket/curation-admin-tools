@@ -12,11 +12,11 @@ export const validationSchema = yup.object({
     .string()
     .trim()
     .required(
-      'Please enter a slug or use the "Suggest slug" button to generate one from the name of the author'
+      'Please enter a slug or use the "Suggest slug" button to generate one from the name of the author',
     )
     .matches(
       /^[a-z0-9-]+$/,
-      'Slug can only contain lowercase alphanumeric characters and hyphens'
+      'Slug can only contain lowercase alphanumeric characters and hyphens',
     )
     .min(2),
   bio: yup.string(),

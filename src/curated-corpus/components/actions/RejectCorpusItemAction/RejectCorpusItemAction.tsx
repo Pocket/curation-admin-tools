@@ -51,7 +51,7 @@ interface RejectCorpusItemActionProps {
  * @constructor
  */
 export const RejectCorpusItemAction: React.FC<RejectCorpusItemActionProps> = (
-  props
+  props,
 ) => {
   const { item, actionScreen, toggleModal, modalOpen, refetch } = props;
 
@@ -66,7 +66,7 @@ export const RejectCorpusItemAction: React.FC<RejectCorpusItemActionProps> = (
   // into the rejected item list.
   const onSave = (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ): void => {
     // Set out all the variables we need to pass to the mutation
     const variables = {
@@ -91,7 +91,7 @@ export const RejectCorpusItemAction: React.FC<RejectCorpusItemActionProps> = (
       },
       // If the data needs to be refreshed (as it does on the Corpus page),
       // run the `refetch` helper function provided by the parent component.
-      refetch
+      refetch,
     );
   };
 

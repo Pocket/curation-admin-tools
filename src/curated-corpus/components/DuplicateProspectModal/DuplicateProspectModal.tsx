@@ -25,7 +25,7 @@ interface DuplicateProspectModalProps {
  * This component renders a simple modal that links to the curation history page of an already existing prospect.
  */
 export const DuplicateProspectModal: React.FC<DuplicateProspectModalProps> = (
-  props
+  props,
 ): JSX.Element => {
   const classes = useStyles();
   const { isOpen, toggleModal, approvedItem } = props;
@@ -37,7 +37,7 @@ export const DuplicateProspectModal: React.FC<DuplicateProspectModalProps> = (
   const onClick = () => {
     window.open(
       `/curated-corpus/corpus/item/${approvedItem.externalId}`,
-      '_blank'
+      '_blank',
     );
 
     toggleModal();

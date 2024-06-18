@@ -14,12 +14,12 @@ import {
  */
 export const getValidationSchema = (
   scheduledSurfaces: ScheduledSurface[],
-  showManualScheduleReasons = false
+  showManualScheduleReasons = false,
 ) => {
   const accessibleScheduledSurfaces = scheduledSurfaces.map(
     (surface: ScheduledSurface) => {
       return surface.guid;
-    }
+    },
   );
 
   return yup
@@ -63,7 +63,7 @@ export const getValidationSchema = (
           return new yup.ValidationError(
             'Please provide a comment for scheduling this item manually.',
             null,
-            'reasonComment'
+            'reasonComment',
           );
         }
         // If the "Other" checkbox was NOT selected but a reason was entered, fail validation
@@ -71,7 +71,7 @@ export const getValidationSchema = (
           return new yup.ValidationError(
             'Please select the "OTHER" reason checkbox.',
             null,
-            'manualScheduleReason'
+            'manualScheduleReason',
           );
         }
         // If at least one checkbox was selected & above conditions satisfied, pass validation
@@ -92,7 +92,7 @@ export const getValidationSchema = (
         return new yup.ValidationError(
           'Please choose at least one reason to schedule this item manually.',
           null,
-          'manualScheduleReason'
+          'manualScheduleReason',
         );
       } else {
         return true;

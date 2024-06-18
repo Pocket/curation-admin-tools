@@ -10,7 +10,7 @@ interface RemoveItemModalProps {
   isOpen: boolean;
   onSave: (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ) => void | Promise<any>;
   toggleModal: VoidFunction;
 }

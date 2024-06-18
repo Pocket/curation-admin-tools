@@ -61,7 +61,7 @@ export const CollectionsHomePage = (): JSX.Element => {
                 collection={collection}
               />
             );
-          }
+          },
         )}
 
       <h2>
@@ -89,7 +89,7 @@ export const CollectionsHomePage = (): JSX.Element => {
                 collection={collection}
               />
             );
-          }
+          },
         )}
 
       <h2>
@@ -117,7 +117,7 @@ export const CollectionsHomePage = (): JSX.Element => {
                 collection={collection}
               />
             );
-          }
+          },
         )}
     </>
   );

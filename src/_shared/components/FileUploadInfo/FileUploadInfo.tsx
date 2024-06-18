@@ -19,7 +19,7 @@ interface FileUploadInfoProps {
  * @constructor
  */
 export const FileUploadInfo: React.FC<FileUploadInfoProps> = (
-  props
+  props,
 ): JSX.Element => {
   const { file } = props;
 

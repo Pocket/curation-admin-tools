@@ -88,7 +88,7 @@ export const AddProspectFormConnector: React.FC<
    */
   const onSubmit = (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ) => {
     formikHelpers.setSubmitting(true);
 

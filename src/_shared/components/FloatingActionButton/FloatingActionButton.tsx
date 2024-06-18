@@ -14,7 +14,7 @@ interface FloatingActionButtonProps {
  * to customize this, but it could be expanded upon in the future if need be e.g (Icon/Style)
  */
 export const FloatingActionButton: React.FC<FloatingActionButtonProps> = (
-  props
+  props,
 ): JSX.Element => {
   const { onClick } = props;
 

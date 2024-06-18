@@ -1,4 +1,4 @@
-import { Maybe } from '../../api/generatedTypes';
+import { Maybe, Topics } from '../../api/generatedTypes';
 import {
   DropdownOption,
   topics as canonicalTopics,
@@ -26,9 +26,17 @@ export const getDisplayTopic = (
 /**
  * Extracts a summary of topic data from scheduled corpus item data.
  *
+ * By default, lists topics with zero story counts at the bottom of the list.
+ *
  * @param data
+ * @param includeAllTopics
+ * @param includeCoronavirus
  */
-export const getGroupedTopicData = (data: string[]): ScheduleSummary[] => {
+export const getGroupedTopicData = (
+  data: string[],
+  includeAllTopics = true,
+  includeCoronavirus = true,
+): ScheduleSummary[] => {
   const topics: ScheduleSummary[] = [];
 
   data.forEach((topic) => {
@@ -41,14 +49,8 @@ export const getGroupedTopicData = (data: string[]): ScheduleSummary[] => {
 
   // Add the rest of the pre-defined topics - we need to list them all,
   // but only if there's anything actually scheduled for the day.
-  if (data.length > 0) {
-    canonicalTopics.forEach((topic: DropdownOption) => {
-      const topicExists = topics.find((entry) => entry.name === topic.name);
-
-      if (!topicExists) {
-        topics.push({ name: topic.name, count: 0 });
-      }
-    });
+  if (data.length > 0 && includeAllTopics) {
+    addFullListOfTopics(topics, includeCoronavirus);
   }
 
   // Sort topics in descending order - most frequent on top
@@ -57,4 +59,29 @@ export const getGroupedTopicData = (data: string[]): ScheduleSummary[] => {
   topics.sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 
   return topics;
+};
+
+/**
+ * Add the remaining topics with 0 story counts to provide a full list of topics
+ * for the summary table with story counts. Optionally, exclude the now obsolete
+ * "Coronavirus" topic.
+ *
+ * @param topics
+ * @param includeCoronavirus
+ */
+const addFullListOfTopics = (
+  topics: ScheduleSummary[],
+  includeCoronavirus = true,
+) => {
+  canonicalTopics.forEach((topic: DropdownOption) => {
+    const topicExists = topics.find((entry) => entry.name === topic.name);
+
+    if (!topicExists) {
+      if (
+        includeCoronavirus ||
+        (!includeCoronavirus && topic.code !== Topics.Coronavirus)
+      )
+        topics.push({ name: topic.name, count: 0 });
+    }
+  });
 };

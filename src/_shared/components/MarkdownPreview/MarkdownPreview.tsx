@@ -22,7 +22,7 @@ interface MarkdownPreviewProps {
 }
 
 export const MarkdownPreview: React.FC<MarkdownPreviewProps> = (
-  props
+  props,
 ): JSX.Element => {
   const { children, minHeight, source } = props;
 
@@ -32,7 +32,7 @@ export const MarkdownPreview: React.FC<MarkdownPreviewProps> = (
   // switch to active tab when user clicks on tab heading
   const handleChange = (
     event: React.ChangeEvent<unknown>,
-    newValue: string
+    newValue: string,
   ): void => {
     setValue(newValue);
   };

@@ -16,7 +16,7 @@ interface ApprovedItemSearchFormProps {
    */
   onSubmit: (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ) => void | Promise<any>;
 }
 
@@ -24,7 +24,7 @@ interface ApprovedItemSearchFormProps {
  * A form for filtering and searching approved Curated Items.
  */
 export const ApprovedItemSearchForm: React.FC<ApprovedItemSearchFormProps> = (
-  props
+  props,
 ): JSX.Element => {
   const { onSubmit } = props;
 

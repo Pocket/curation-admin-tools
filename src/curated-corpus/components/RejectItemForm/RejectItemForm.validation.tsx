@@ -26,6 +26,6 @@ export const validationSchema = yup
     return new yup.ValidationError(
       'Please specify at least one rejection reason.',
       null,
-      'reason'
+      'reason',
     );
   });

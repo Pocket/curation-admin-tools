@@ -76,7 +76,7 @@ export const CollectionPartnerAssociationInfo: React.FC<
       'Partnership deleted successfully',
       undefined,
       undefined,
-      refetch
+      refetch,
     );
   };
 
@@ -86,7 +86,7 @@ export const CollectionPartnerAssociationInfo: React.FC<
   // Update the association when the edit form is submitted
   const onUpdate = (
     values: FormikValues,
-    formikHelpers: FormikHelpers<any>
+    formikHelpers: FormikHelpers<any>,
   ): void => {
     const options = {
       variables: {
@@ -111,7 +111,7 @@ export const CollectionPartnerAssociationInfo: React.FC<
       () => {
         formikHelpers.setSubmitting(false);
       },
-      refetch
+      refetch,
     );
   };
 
@@ -131,7 +131,7 @@ export const CollectionPartnerAssociationInfo: React.FC<
           imageUrl: url,
         },
       },
-      'Image saved successfully'
+      'Image saved successfully',
     );
   };
 
