@@ -6,7 +6,7 @@ import { ScheduleDayFilterOptions, ScheduleSummary } from '../';
 import { StyledMenu } from '../../../_shared/styled';
 import { MenuItem } from '@mui/material';
 
-interface ScheduleResultsFilterProps {
+interface ScheduleDayFilterProps {
   /**
    * Options to show in the filter dropdown.
    */
@@ -37,7 +37,7 @@ interface ScheduleResultsFilterProps {
  * @param props
  * @constructor
  */
-export const ScheduleDayFilter: React.FC<ScheduleResultsFilterProps> = (
+export const ScheduleDayFilter: React.FC<ScheduleDayFilterProps> = (
   props,
 ): ReactElement => {
   const { filterData, filterName, itemCount, setFilters } = props;

@@ -11,11 +11,13 @@ import {
   ScheduleDayHeading,
   ScheduledItemCardWrapper,
 } from '../';
-
 import { getDisplayTopic } from '../../helpers/topics';
 import { useNotifications, useRunMutation } from '../../../_shared/hooks';
 
 interface ScheduleDayDataProps {
+  /**
+   * The GUID of the current surface, e.g. "NEW_TAB_EN_US"
+   */
   currentScheduledSurfaceGuid: string;
 
   /**
@@ -34,16 +36,32 @@ interface ScheduleDayDataProps {
    */
   refetch?: VoidFunction;
 
+  /**
+   * Callback to set the current item (to work on, e.g. edit or reschedule)
+   * on the Schedule Page.
+   */
   setCurrentItem: React.Dispatch<
     React.SetStateAction<Omit<ScheduledCorpusItem, '__typename'> | undefined>
   >;
 
+  /**
+   * A toggle function for the "Edit this item" modal.
+   */
   toggleEditModal: VoidFunction;
 
+  /**
+   * A toggle function for the "Remove this item" modal.
+   */
   toggleRemoveModal: VoidFunction;
 
+  /**
+   * A toggle function for the "Schedule this item" modal.
+   */
   toggleScheduleItemModal: VoidFunction;
 
+  /**
+   * A toggle function for the "Reject and unschedule this item" modal.
+   */
   toggleRejectAndUnscheduleModal: VoidFunction;
 }
 

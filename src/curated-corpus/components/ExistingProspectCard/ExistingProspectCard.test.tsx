@@ -27,7 +27,7 @@ describe('The ExistingProspectCard component', () => {
       title: 'How To Win Friends And Influence People with DynamoDB',
       scheduledSurfaceGuid: 'NEW_TAB_EN_US',
       prospectType: ProspectType.Counts,
-      url: 'http://www.test.com/how-to',
+      url: 'https://www.test.com/how-to',
       imageUrl: 'https://placeimg.com/640/480/people?random=495',
       excerpt:
         'Everything You Wanted to Know About DynamoDB and Were Afraid To Ask',
@@ -37,7 +37,8 @@ describe('The ExistingProspectCard component', () => {
       approvedCorpusItem: {
         externalId: '456-cde',
         title: 'How To Win Friends And Influence People with DynamoDB',
-        url: 'http://www.test.com/how-to',
+        url: 'https://www.test.com/how-to',
+        hasTrustedDomain: true,
         imageUrl: 'https://placeimg.com/640/480/people?random=495',
         excerpt:
           'Everything You Wanted to Know About DynamoDB and Were Afraid To Ask',
@@ -73,7 +74,7 @@ describe('The ExistingProspectCard component', () => {
             />
           </MemoryRouter>
         </ThemeProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // The image is present and the alt text is the item title
@@ -106,7 +107,7 @@ describe('The ExistingProspectCard component', () => {
             />
           </MemoryRouter>
         </ThemeProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     expect(screen.getByText(/^de$/i)).toBeInTheDocument();
@@ -126,7 +127,7 @@ describe('The ExistingProspectCard component', () => {
             />
           </MemoryRouter>
         </ThemeProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     expect(screen.getByText(/^technology$/i)).toBeInTheDocument();
@@ -146,7 +147,7 @@ describe('The ExistingProspectCard component', () => {
             />
           </MemoryRouter>
         </ThemeProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     expect(screen.getByText(prospect.excerpt!)).toBeInTheDocument();
@@ -166,7 +167,7 @@ describe('The ExistingProspectCard component', () => {
             />
           </MemoryRouter>
         </ThemeProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     expect(screen.queryByText('Syndicated')).not.toBeInTheDocument();
@@ -189,7 +190,7 @@ describe('The ExistingProspectCard component', () => {
             />
           </MemoryRouter>
         </ThemeProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     expect(screen.queryByText('Syndicated')).toBeInTheDocument();
@@ -209,7 +210,7 @@ describe('The ExistingProspectCard component', () => {
             />
           </MemoryRouter>
         </ThemeProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const scheduleButton = screen.getByRole('button', {
@@ -223,11 +224,12 @@ describe('The ExistingProspectCard component', () => {
 
   it('should render schedule history component', async () => {
     /**
-     * We have separate units tests testing ScheduleHistory component in details in its corresponding test file
-     * This test only tests if the ScheduleHistory component renders within this component
+     * We have separate units tests that test ScheduleHistory component in detail
+     * in its corresponding test file.
+     * This test only tests if the ScheduleHistory component renders within this component.
      */
 
-    // creating a prospect with an schedule history
+    // creating a prospect with a schedule history
     const prospectWithScheduleHistory = {
       ...prospect,
       approvedCorpusItem: {
@@ -257,7 +259,7 @@ describe('The ExistingProspectCard component', () => {
             />
           </MemoryRouter>
         </ThemeProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // the button when clicked shows us the recent scheduled runs
