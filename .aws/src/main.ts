@@ -2,7 +2,6 @@ import { Construct } from 'constructs';
 import { App, S3Backend, TerraformStack } from 'cdktf';
 import { AwsProvider } from '@cdktf/provider-aws';
 import { config } from './config';
-import { PagerdutyProvider } from '@cdktf/provider-pagerduty';
 import {
   createApplicationCodePipeline,
   createPocketAlbApplication,
@@ -19,7 +18,6 @@ class CurationAdminTools extends TerraformStack {
       defaultTags: { tags: config.tags },
     });
 
-    new PagerdutyProvider(this, 'pagerduty_provider', { token: undefined });
     new LocalProvider(this, 'local_provider');
     new NullProvider(this, 'null_provider');
 
