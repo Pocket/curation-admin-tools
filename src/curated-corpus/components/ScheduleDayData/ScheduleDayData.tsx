@@ -1,15 +1,18 @@
 import React, { ReactElement, useState } from 'react';
+import { Box, Grid } from '@mui/material';
 import {
   ScheduledCorpusItem,
   ScheduledCorpusItemsResult,
   ScheduledItemSource,
   useRescheduleScheduledCorpusItemMutation,
 } from '../../../api/generatedTypes';
-import { SchedulePageFiltersInterface } from '../SchedulePageFilters/SchedulePageFilters';
-import { Box, Grid } from '@mui/material';
-import { ScheduleDayHeading } from '../ScheduleDayHeading/ScheduleDayHeading';
+import {
+  ScheduleDayFilterOptions,
+  ScheduleDayHeading,
+  ScheduledItemCardWrapper,
+} from '../';
+
 import { getDisplayTopic } from '../../helpers/topics';
-import { ScheduledItemCardWrapper } from '../ScheduledItemCardWrapper/ScheduledItemCardWrapper';
 import { useNotifications, useRunMutation } from '../../../_shared/hooks';
 
 interface ScheduleDayDataProps {
@@ -105,13 +108,13 @@ export const ScheduleDayData: React.FC<ScheduleDayDataProps> = (
     );
   };
 
-  const initialFiltersState: SchedulePageFiltersInterface = {
+  const initialFiltersState: ScheduleDayFilterOptions = {
     topics: 'All',
     publishers: 'All',
     types: 'All',
   };
   const [filters, setFilters] =
-    useState<SchedulePageFiltersInterface>(initialFiltersState);
+    useState<ScheduleDayFilterOptions>(initialFiltersState);
 
   return (
     <>

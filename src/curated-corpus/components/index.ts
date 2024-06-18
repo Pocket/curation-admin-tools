@@ -33,8 +33,9 @@ export { ScheduledItemCardWrapper } from './ScheduledItemCardWrapper/ScheduledIt
 export { ScheduleItemFormConnector } from './ScheduleItemFormConnector/ScheduleItemFormConnector';
 export { ScheduleItemForm } from './ScheduleItemForm/ScheduleItemForm';
 export { ScheduleItemModal } from './ScheduleItemModal/ScheduleItemModal';
-export { SchedulePageFilters } from './SchedulePageFilters/SchedulePageFilters';
-export { ScheduleResultsFilter } from './ScheduleResultsFilter/ScheduleResultsFilter';
+export { ScheduleDayFilterRow } from './ScheduleDayFilterRow/ScheduleDayFilterRow';
+export type { ScheduleDayFilterOptions } from './ScheduleDayFilterRow/ScheduleDayFilterRow';
+export { ScheduleDayFilter } from './ScheduleDayFilter/ScheduleDayFilter';
 export type { ScheduleSummary } from './ScheduleSummaryCard/ScheduleSummaryCard';
 export { ScheduleSummaryCard } from './ScheduleSummaryCard/ScheduleSummaryCard';
 export { ScheduleSummaryConnector } from './ScheduleSummaryConnector/ScheduleSummaryConnector';

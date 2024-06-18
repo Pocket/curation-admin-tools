@@ -2,8 +2,7 @@ import React, { ReactElement } from 'react';
 import { Button } from '../../../_shared/components';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
-import { SchedulePageFiltersInterface } from '../SchedulePageFilters/SchedulePageFilters';
-import { ScheduleSummary } from '../ScheduleSummaryCard/ScheduleSummaryCard';
+import { ScheduleDayFilterOptions, ScheduleSummary } from '../';
 import { StyledMenu } from '../../../_shared/styled';
 import { MenuItem } from '@mui/material';
 
@@ -26,19 +25,19 @@ interface ScheduleResultsFilterProps {
   /**
    * Callback to set filters on the Schedule Page
    */
-  setFilters: React.Dispatch<
-    React.SetStateAction<SchedulePageFiltersInterface>
-  >;
+  setFilters: React.Dispatch<React.SetStateAction<ScheduleDayFilterOptions>>;
 }
 
 /**
- * Display a summary of scheduled stories for a given grouping
- * (for example, topic or publisher).
+ * Display a dropdown menu with a summary of how many stories are available
+ * for each of the filter options. Allow users to interact with the menu;
+ * highlight the chosen option and send it up to the parent component to apply
+ * the filters.
  *
  * @param props
  * @constructor
  */
-export const ScheduleResultsFilter: React.FC<ScheduleResultsFilterProps> = (
+export const ScheduleDayFilter: React.FC<ScheduleResultsFilterProps> = (
   props,
 ): ReactElement => {
   const { filterData, filterName, itemCount, setFilters } = props;

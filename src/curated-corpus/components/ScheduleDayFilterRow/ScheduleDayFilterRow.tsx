@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 import { Typography } from '@mui/material';
 
 import { curationPalette } from '../../../theme';
-import { ScheduleResultsFilter } from '../../components';
+import { ScheduleDayFilter } from '../../components';
 import {
   Maybe,
   ScheduledCorpusItem,
@@ -11,13 +11,13 @@ import {
 import { getDisplayTopic, getGroupedTopicData } from '../../helpers/topics';
 import { getGroupedPublisherData } from '../../helpers/publishers';
 
-export interface SchedulePageFiltersInterface {
+export interface ScheduleDayFilterOptions {
   topics: string;
   publishers: string;
   types: string;
 }
 
-interface SchedulePageFiltersProps {
+interface SchedulePageFilterRowProps {
   /**
    * Scheduled items for a given date - to summarise in the filters
    */
@@ -26,9 +26,7 @@ interface SchedulePageFiltersProps {
   /**
    * Callback to set filters on the Schedule Page
    */
-  setFilters: React.Dispatch<
-    React.SetStateAction<SchedulePageFiltersInterface>
-  >;
+  setFilters: React.Dispatch<React.SetStateAction<ScheduleDayFilterOptions>>;
 }
 
 /**
@@ -37,7 +35,7 @@ interface SchedulePageFiltersProps {
  * @param props
  * @constructor
  */
-export const SchedulePageFilters: React.FC<SchedulePageFiltersProps> = (
+export const ScheduleDayFilterRow: React.FC<SchedulePageFilterRowProps> = (
   props,
 ): ReactElement => {
   const { scheduledItems, setFilters } = props;
@@ -85,19 +83,19 @@ export const SchedulePageFilters: React.FC<SchedulePageFiltersProps> = (
       <Typography sx={{ fontSize: '0.75rem', color: curationPalette.neutral }}>
         Filter by:
       </Typography>
-      <ScheduleResultsFilter
+      <ScheduleDayFilter
         filterData={topicList}
         filterName="topics"
         itemCount={scheduledItems.length}
         setFilters={setFilters}
       />
-      <ScheduleResultsFilter
+      <ScheduleDayFilter
         filterData={typeList}
         filterName="types"
         itemCount={scheduledItems.length}
         setFilters={setFilters}
       />
-      <ScheduleResultsFilter
+      <ScheduleDayFilter
         filterData={publisherList}
         filterName="publishers"
         itemCount={scheduledItems.length}

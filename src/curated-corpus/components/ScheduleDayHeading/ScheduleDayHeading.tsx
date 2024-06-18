@@ -1,13 +1,11 @@
 import React, { ReactElement } from 'react';
 import { Grid, Stack, Typography } from '@mui/material';
 import { Button } from '../../../_shared/components';
-import { SchedulePageFilters } from '../';
+import { ScheduleDayFilterOptions, ScheduleDayFilterRow } from '../';
 import AddIcon from '@mui/icons-material/Add';
 import { curationPalette } from '../../../theme';
 import { DateTime } from 'luxon';
 import { ScheduledCorpusItemsResult } from '../../../api/generatedTypes';
-
-import { SchedulePageFiltersInterface } from '../SchedulePageFilters/SchedulePageFilters';
 
 interface ScheduleDayHeadingProps {
   /**
@@ -23,9 +21,7 @@ interface ScheduleDayHeadingProps {
   /**
    * Callback to set filters on the Schedule Page
    */
-  setFilters: React.Dispatch<
-    React.SetStateAction<SchedulePageFiltersInterface>
-  >;
+  setFilters: React.Dispatch<React.SetStateAction<ScheduleDayFilterOptions>>;
 }
 
 /**
@@ -71,7 +67,7 @@ export const ScheduleDayHeading: React.FC<ScheduleDayHeadingProps> = (
             justifyContent="flex-end"
             spacing={2}
           >
-            <SchedulePageFilters
+            <ScheduleDayFilterRow
               scheduledItems={data.items}
               setFilters={setFilters}
             />
