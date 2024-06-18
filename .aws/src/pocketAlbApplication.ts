@@ -1,45 +1,15 @@
 import {
   PocketALBApplication,
   PocketECSCodePipeline,
-  PocketPagerDuty,
 } from '@pocket-tools/terraform-modules';
-import { config, isDev } from './config';
+import { config } from './config';
 import { Construct } from 'constructs';
-import { DataTerraformRemoteState } from 'cdktf';
 import {
   DataAwsCallerIdentity,
   DataAwsRegion,
 } from '@cdktf/provider-aws/lib/datasources';
 import { DataAwsSnsTopic } from '@cdktf/provider-aws/lib/sns';
 import { DataAwsKmsAlias } from '@cdktf/provider-aws/lib/kms';
-
-/**
- * @param scope
- */
-function createPagerDuty(scope: Construct) {
-  const incidentManagement = new DataTerraformRemoteState(
-    scope,
-    'incident_management',
-    {
-      organization: 'Pocket',
-      workspaces: {
-        name: 'incident-management',
-      },
-    },
-  );
-
-  return new PocketPagerDuty(scope, 'pagerduty_policies', {
-    prefix: config.prefix,
-    service: {
-      criticalEscalationPolicyId: incidentManagement
-        .get('policy_default_critical_id')
-        .toString(),
-      nonCriticalEscalationPolicyId: incidentManagement
-        .get('policy_default_non_critical_id')
-        .toString(),
-    },
-  });
-}
 
 /**
  * Create CodePipeline to build and deploy terraform and ecs
@@ -66,8 +36,6 @@ export function createApplicationCodePipeline(
 export function createPocketAlbApplication(
   scope: Construct,
 ): PocketALBApplication {
-  const pagerDuty = createPagerDuty(scope);
-
   const region = new DataAwsRegion(scope, 'region');
   const caller = new DataAwsCallerIdentity(scope, 'caller');
   const secretsManager = new DataAwsKmsAlias(scope, 'kms_alias', {
@@ -217,7 +185,7 @@ export function createPocketAlbApplication(
         threshold: 25, // 25%
         evaluationPeriods: 4,
         period: 300, // 5 minutes
-        actions: isDev ? [] : [pagerDuty.snsCriticalAlarmTopic.arn],
+        actions: [],
       },
     },
   });
