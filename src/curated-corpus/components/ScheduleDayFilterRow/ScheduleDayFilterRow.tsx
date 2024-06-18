@@ -17,7 +17,7 @@ export interface ScheduleDayFilterOptions {
   types: string;
 }
 
-interface SchedulePageFilterRowProps {
+interface ScheduleDayFilterRowProps {
   /**
    * Scheduled items for a given date - to summarise in the filters
    */
@@ -35,7 +35,7 @@ interface SchedulePageFilterRowProps {
  * @param props
  * @constructor
  */
-export const ScheduleDayFilterRow: React.FC<SchedulePageFilterRowProps> = (
+export const ScheduleDayFilterRow: React.FC<ScheduleDayFilterRowProps> = (
   props,
 ): ReactElement => {
   const { scheduledItems, setFilters } = props;
