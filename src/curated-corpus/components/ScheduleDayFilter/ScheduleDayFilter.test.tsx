@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../../../theme';
@@ -7,7 +8,6 @@ import { ScheduleDayFilter } from '..';
 import { Maybe } from '../../../api/generatedTypes';
 import { getDisplayTopic, getGroupedTopicData } from '../../helpers/topics';
 import { scheduledItems } from '../../integration-test-mocks/getScheduledItems';
-import userEvent from '@testing-library/user-event';
 
 describe('The ScheduleDayFilter component', () => {
   // Extract all topics from scheduled item data
