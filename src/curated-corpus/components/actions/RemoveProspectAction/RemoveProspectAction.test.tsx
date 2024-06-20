@@ -31,7 +31,7 @@ describe('The RemoveProspectAction', () => {
             onRemoveProspect={onRemoveProspect}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
   };
 
@@ -48,7 +48,7 @@ describe('The RemoveProspectAction', () => {
 
     // asserting that onRemoveProspect is called with the correct arguments - error message should be undefined for a successful mutation call
     await waitFor(() =>
-      expect(onRemoveProspect).toHaveBeenCalledWith(prospectId, undefined)
+      expect(onRemoveProspect).toHaveBeenCalledWith(prospectId, undefined),
     );
   });
 
@@ -73,7 +73,7 @@ describe('The RemoveProspectAction', () => {
 
     // asserting that onRemoveProspect is called with the correct arguments
     await waitFor(() =>
-      expect(onRemoveProspect).toHaveBeenCalledWith(prospectId, errorMessage)
+      expect(onRemoveProspect).toHaveBeenCalledWith(prospectId, errorMessage),
     );
   });
 });

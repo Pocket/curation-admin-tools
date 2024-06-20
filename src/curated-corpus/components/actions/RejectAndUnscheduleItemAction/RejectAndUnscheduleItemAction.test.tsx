@@ -29,7 +29,7 @@ describe('The RejectAndUnscheduleItemAction', () => {
             modalOpen={true}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Do we have the modal heading
@@ -52,7 +52,7 @@ describe('The RejectAndUnscheduleItemAction', () => {
             modalOpen={true}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const reason = screen.getByLabelText(/time sensitive/i);
@@ -60,7 +60,9 @@ describe('The RejectAndUnscheduleItemAction', () => {
     userEvent.click(screen.getByText(/save/i));
 
     expect(
-      await screen.findByText(/item successfully moved to the rejected corpus/i)
+      await screen.findByText(
+        /item successfully moved to the rejected corpus/i,
+      ),
     ).toBeInTheDocument();
   });
 });

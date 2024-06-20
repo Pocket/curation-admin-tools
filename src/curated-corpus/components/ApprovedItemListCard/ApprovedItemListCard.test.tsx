@@ -19,7 +19,7 @@ describe('The ApprovedItemListCard component', () => {
         <ThemeProvider theme={theme}>
           <ApprovedItemListCard item={item} />
         </ThemeProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // The photo is present and the alt text is the item title
@@ -44,7 +44,7 @@ describe('The ApprovedItemListCard component', () => {
         <ThemeProvider theme={theme}>
           <ApprovedItemListCard item={item} />
         </ThemeProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // Shows 'Recommendation' status for a recommended story -
@@ -65,7 +65,7 @@ describe('The ApprovedItemListCard component', () => {
         <ThemeProvider theme={theme}>
           <ApprovedItemListCard item={item} />
         </ThemeProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText(/^de$/i)).toBeInTheDocument();
@@ -77,7 +77,7 @@ describe('The ApprovedItemListCard component', () => {
         <ThemeProvider theme={theme}>
           <ApprovedItemListCard item={item} />
         </ThemeProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText('Health & Fitness')).toBeInTheDocument();
@@ -89,7 +89,7 @@ describe('The ApprovedItemListCard component', () => {
         <ThemeProvider theme={theme}>
           <ApprovedItemListCard item={item} />
         </ThemeProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText(item.excerpt)).toBeInTheDocument();
@@ -101,7 +101,7 @@ describe('The ApprovedItemListCard component', () => {
         <ThemeProvider theme={theme}>
           <ApprovedItemListCard item={item} />
         </ThemeProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.queryByText(/collection/i)).not.toBeInTheDocument();
@@ -122,7 +122,7 @@ describe('The ApprovedItemListCard component', () => {
         <ThemeProvider theme={theme}>
           <ApprovedItemListCard item={item} />
         </ThemeProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText(/collection/i)).toBeInTheDocument();
@@ -136,7 +136,7 @@ describe('The ApprovedItemListCard component', () => {
         <ThemeProvider theme={theme}>
           <ApprovedItemListCard item={item} />
         </ThemeProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText(flattenAuthors(item.authors))).toBeInTheDocument();
@@ -153,7 +153,7 @@ describe('The ApprovedItemListCard component', () => {
         <ThemeProvider theme={theme}>
           <ApprovedItemListCard item={item} />
         </ThemeProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText('Agatha Christie')).toBeInTheDocument();
@@ -183,7 +183,7 @@ describe('The ApprovedItemListCard component', () => {
         <ThemeProvider theme={theme}>
           <ApprovedItemListCard item={item} />
         </ThemeProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // fetch the view recently scheduled button

@@ -18,7 +18,7 @@ describe('The TabNavigation component', () => {
             to="/de-DE/scheduled/"
           />
         </TabNavigation>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     const tabNavigation = screen.getByRole('tablist');
     const tabs = within(tabNavigation).getAllByRole('tab');
@@ -49,7 +49,7 @@ describe('The TabNavigation component', () => {
           />
           <Tab label="Scheduled" count={333} value={activeTab} to={activeTab} />
         </TabNavigation>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const tabNavigation = screen.getByRole('tablist');

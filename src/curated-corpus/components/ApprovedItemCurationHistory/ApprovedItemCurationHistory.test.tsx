@@ -28,8 +28,8 @@ describe('The ApprovedItemCurationHistory component', () => {
     expect(screen.getByText(/schedule/i)).toBeInTheDocument();
     expect(
       screen.getByText(
-        /Note: up to ten most recent entries are displayed below/i
-      )
+        /Note: up to ten most recent entries are displayed below/i,
+      ),
     ).toBeInTheDocument();
   });
 
@@ -40,7 +40,7 @@ describe('The ApprovedItemCurationHistory component', () => {
     // this prevents the test from failing due to off by one day error depending on the time and timezone it's being run in.
     // keeps it consistent now with local dev machines timezones and CI server timezone
     const addedToCorpusDate = DateTime.fromSeconds(item.createdAt).toFormat(
-      'MMMM dd, yyyy'
+      'MMMM dd, yyyy',
     );
 
     expect(screen.getByText(/recommendation/i)).toBeInTheDocument();

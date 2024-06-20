@@ -22,7 +22,7 @@ describe('The ShareableListRestorationForm component', () => {
         onCancel={onCancel}
         isLoaderShowing={false}
         shareableList={hiddenList}
-      />
+      />,
     );
 
     // Check if form input and buttons are rendered
@@ -47,14 +47,14 @@ describe('The ShareableListRestorationForm component', () => {
             shareableList={hiddenList}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const saveButton = screen.getByText(/save/i);
 
     userEvent.click(saveButton);
     const emptyInputError = await screen.findByText(
-      /Please enter a reason for restoring this list./i
+      /Please enter a reason for restoring this list./i,
     );
 
     expect(emptyInputError).toBeInTheDocument();
@@ -72,7 +72,7 @@ describe('The ShareableListRestorationForm component', () => {
             shareableList={hiddenList}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const saveButton = screen.getByText(/save/i);
@@ -99,7 +99,7 @@ describe('The ShareableListRestorationForm component', () => {
             shareableList={hiddenList}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const cancelButton = screen.getByText(/cancel/i);

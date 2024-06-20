@@ -28,7 +28,7 @@ describe('The EditCorpusItemAction', () => {
             actionScreen={ActionScreen.Corpus}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Do we have the modal heading?
@@ -51,7 +51,7 @@ describe('The EditCorpusItemAction', () => {
             actionScreen={ActionScreen.Corpus}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // The most basic of integration tests - we simply send through
@@ -59,7 +59,7 @@ describe('The EditCorpusItemAction', () => {
     userEvent.click(screen.getByText(/save/i));
 
     expect(
-      await screen.findByText(/curated item .* successfully updated/i)
+      await screen.findByText(/curated item .* successfully updated/i),
     ).toBeInTheDocument();
   });
 
@@ -80,7 +80,7 @@ describe('The EditCorpusItemAction', () => {
             actionScreen={ActionScreen.Corpus}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // The most basic of integration tests - we simply send through
@@ -88,7 +88,7 @@ describe('The EditCorpusItemAction', () => {
     userEvent.click(screen.getByText(/save/i));
 
     expect(
-      await screen.findByText(/curated item .* successfully updated/i)
+      await screen.findByText(/curated item .* successfully updated/i),
     ).toBeInTheDocument();
   });
 

@@ -22,7 +22,7 @@ describe('ScheduleItemModal', () => {
       headingCopy?: string;
       isOpen?: boolean;
       toggleModal?: VoidFunction;
-    }
+    },
   ) => {
     render(
       <MockedProvider mocks={mocks}>
@@ -37,7 +37,7 @@ describe('ScheduleItemModal', () => {
             headingCopy={props.headingCopy ?? undefined}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
   };
 

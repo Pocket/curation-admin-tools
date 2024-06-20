@@ -28,7 +28,7 @@ describe('The ScheduleSummaryConnector component', () => {
           refreshData={false}
           setRefreshData={jest.fn()}
         />
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     await waitFor(() => {
@@ -47,7 +47,7 @@ describe('The ScheduleSummaryConnector component', () => {
           refreshData={false}
           setRefreshData={jest.fn()}
         />
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     await waitFor(() => {
@@ -60,13 +60,13 @@ describe('The ScheduleSummaryConnector component', () => {
       // Let's also limit the DOM search to the topic table
       // (the second one in the component).
       expect(
-        within(tables[1]).getByText(getDisplayTopic(Topics.Politics))
+        within(tables[1]).getByText(getDisplayTopic(Topics.Politics)),
       ).toBeInTheDocument();
       expect(
-        within(tables[1]).getByText(getDisplayTopic(Topics.PersonalFinance))
+        within(tables[1]).getByText(getDisplayTopic(Topics.PersonalFinance)),
       ).toBeInTheDocument();
       expect(
-        within(tables[1]).getByText(getDisplayTopic(Topics.HealthFitness))
+        within(tables[1]).getByText(getDisplayTopic(Topics.HealthFitness)),
       ).toBeInTheDocument();
 
       // And all of these show a total of one for each topic.
@@ -83,7 +83,7 @@ describe('The ScheduleSummaryConnector component', () => {
           refreshData={false}
           setRefreshData={jest.fn()}
         />
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     await waitFor(() => {
@@ -92,12 +92,12 @@ describe('The ScheduleSummaryConnector component', () => {
 
       // Current mocks (three scheduled items) have two publishers
       expect(
-        within(tables[0]).getByText(/amazing inventions/i)
+        within(tables[0]).getByText(/amazing inventions/i),
       ).toBeInTheDocument();
       expect(within(tables[0]).getByText('2')).toBeInTheDocument();
 
       expect(
-        within(tables[0]).getByText(/fantastic computers/i)
+        within(tables[0]).getByText(/fantastic computers/i),
       ).toBeInTheDocument();
       expect(within(tables[0]).getByText('1')).toBeInTheDocument();
     });
@@ -114,12 +114,12 @@ describe('The ScheduleSummaryConnector component', () => {
           refreshData={false}
           setRefreshData={jest.fn()}
         />
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     await waitFor(() => {
       expect(
-        screen.getByText(/no stories have been scheduled for this date yet/i)
+        screen.getByText(/no stories have been scheduled for this date yet/i),
       ).toBeInTheDocument();
     });
   });

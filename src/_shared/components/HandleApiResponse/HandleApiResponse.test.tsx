@@ -11,7 +11,7 @@ describe('The HandleApiResponse component', () => {
         loading={true}
         loadingText="Loading data, please wait..."
         error={undefined}
-      />
+      />,
     );
 
     expect(screen.getByText(/^loading data/i)).toBeInTheDocument();
@@ -27,7 +27,7 @@ describe('The HandleApiResponse component', () => {
             networkError: new Error('Server not found.'),
           })
         }
-      />
+      />,
     );
 
     // error messages
@@ -37,7 +37,7 @@ describe('The HandleApiResponse component', () => {
 
   it('renders nothing if the API call is successful', () => {
     const { container } = render(
-      <HandleApiResponse loading={false} error={undefined} />
+      <HandleApiResponse loading={false} error={undefined} />,
     );
 
     expect(container).toBeEmptyDOMElement();

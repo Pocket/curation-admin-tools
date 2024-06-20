@@ -35,7 +35,7 @@ describe('The FormikSelectField component', () => {
         <option value="2">Option 2</option>
         <option value="3">Option 3</option>
         <option value="4">Option 4</option>
-      </FormikSelectField>
+      </FormikSelectField>,
     );
 
     const field = screen.getByRole('combobox') as HTMLInputElement;
@@ -54,7 +54,7 @@ describe('The FormikSelectField component', () => {
         <option value="2">Option 2</option>
         <option value="3">Option 3</option>
         <option value="4">Option 4</option>
-      </FormikSelectField>
+      </FormikSelectField>,
     );
 
     const field = screen.getByRole('combobox') as HTMLSelectElement;

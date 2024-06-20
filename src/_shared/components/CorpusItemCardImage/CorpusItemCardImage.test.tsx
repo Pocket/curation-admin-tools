@@ -21,7 +21,7 @@ describe('The CorpusItemCardImage component', () => {
         currentScheduledDate={currentScheduledDate}
         scheduledSurfaceGuid="NEW_TAB_EN_US"
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
-      />
+      />,
     );
 
     expect(screen.getByText('Health & Fitness')).toBeInTheDocument();
@@ -46,7 +46,7 @@ describe('The CorpusItemCardImage component', () => {
         currentScheduledDate={currentScheduledDate}
         scheduledSurfaceGuid="NEW_TAB_EN_US"
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
-      />
+      />,
     );
 
     expect(screen.getByText(/time sensitive/i)).toBeInTheDocument();
@@ -65,7 +65,7 @@ describe('The CorpusItemCardImage component', () => {
         currentScheduledDate={currentScheduledDate}
         scheduledSurfaceGuid="NEW_TAB_EN_US"
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
-      />
+      />,
     );
 
     expect(screen.getByText(/collection/i)).toBeInTheDocument();
@@ -81,7 +81,7 @@ describe('The CorpusItemCardImage component', () => {
         currentScheduledDate={currentScheduledDate}
         scheduledSurfaceGuid="NEW_TAB_EN_US"
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
-      />
+      />,
     );
 
     expect(screen.getByText(/syndicated/i)).toBeInTheDocument();
@@ -113,7 +113,7 @@ describe('The CorpusItemCardImage component', () => {
         currentScheduledDate={currentScheduledDate}
         scheduledSurfaceGuid="NEW_TAB_EN_US"
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
-      />
+      />,
     );
 
     expect(screen.getByText(/last scheduled 2 days ago/i)).toBeInTheDocument();
@@ -146,7 +146,7 @@ describe('The CorpusItemCardImage component', () => {
         currentScheduledDate="2024-05-25"
         scheduledSurfaceGuid="NEW_TAB_EN_US"
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
-      />
+      />,
     );
 
     expect(screen.getByTestId('last-scheduled-overlay')).toHaveStyle({
@@ -180,7 +180,7 @@ describe('The CorpusItemCardImage component', () => {
         currentScheduledDate="2024-05-25"
         scheduledSurfaceGuid="NEW_TAB_EN_US"
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
-      />
+      />,
     );
 
     expect(screen.getByTestId('last-scheduled-overlay')).toHaveStyle({
@@ -214,7 +214,7 @@ describe('The CorpusItemCardImage component', () => {
         currentScheduledDate="2024-05-25"
         scheduledSurfaceGuid="NEW_TAB_EN_US"
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
-      />
+      />,
     );
 
     expect(screen.getByTestId('last-scheduled-overlay')).toHaveStyle({
@@ -248,7 +248,7 @@ describe('The CorpusItemCardImage component', () => {
         currentScheduledDate="2024-05-25"
         scheduledSurfaceGuid="NEW_TAB_EN_US"
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
-      />
+      />,
     );
 
     expect(screen.getByTestId('last-scheduled-overlay')).toHaveStyle({
@@ -282,7 +282,7 @@ describe('The CorpusItemCardImage component', () => {
         currentScheduledDate="2024-05-25"
         scheduledSurfaceGuid="NEW_TAB_EN_US"
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
-      />
+      />,
     );
 
     expect(screen.getByTestId('last-scheduled-overlay')).toHaveStyle({
@@ -303,7 +303,7 @@ describe('The CorpusItemCardImage component', () => {
         currentScheduledDate={currentScheduledDate}
         scheduledSurfaceGuid="NEW_TAB_EN_US"
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
-      />
+      />,
     );
 
     expect(screen.getByText(/NEW DOMAIN/i)).toBeVisible();

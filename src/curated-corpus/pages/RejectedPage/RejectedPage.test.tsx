@@ -18,7 +18,7 @@ describe('The RejectedPage', () => {
       render(
         <MockedProvider mocks={mocks}>
           <RejectedPage />
-        </MockedProvider>
+        </MockedProvider>,
       );
     });
 
@@ -42,7 +42,7 @@ describe('The RejectedPage', () => {
   it.todo('renders rejected items with a combination of filters applied');
 
   it.todo(
-    'displays a full list of items after filtering and resetting filters'
+    'displays a full list of items after filtering and resetting filters',
   );
 
   it.todo('shows the next page of results');

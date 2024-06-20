@@ -70,7 +70,7 @@ describe('The CollectionPartnerAssociationForm component', () => {
         association={association}
         partners={partners}
         onSubmit={handleSubmit}
-      />
+      />,
     );
 
     // there is at least a form and nothing falls over
@@ -84,7 +84,7 @@ describe('The CollectionPartnerAssociationForm component', () => {
         association={association}
         partners={partners}
         onSubmit={handleSubmit}
-      />
+      />,
     );
 
     const buttons = screen.getAllByRole('button');
@@ -98,7 +98,7 @@ describe('The CollectionPartnerAssociationForm component', () => {
         partners={partners}
         onSubmit={handleSubmit}
         editMode={false}
-      />
+      />,
     );
 
     const buttons = screen.getAllByRole('button');
@@ -111,7 +111,7 @@ describe('The CollectionPartnerAssociationForm component', () => {
         association={association}
         partners={partners}
         onSubmit={handleSubmit}
-      />
+      />,
     );
 
     const typeField = screen.getByLabelText('Type');
@@ -136,7 +136,7 @@ describe('The CollectionPartnerAssociationForm component', () => {
         association={association}
         partners={partners}
         onSubmit={handleSubmit}
-      />
+      />,
     );
 
     const typeField = screen.getByLabelText(/type/i) as HTMLSelectElement;
@@ -165,7 +165,7 @@ describe('The CollectionPartnerAssociationForm component', () => {
         association={association}
         partners={partners}
         onSubmit={handleSubmit}
-      />
+      />,
     );
 
     const partnerField = screen.getByLabelText(/partner/i) as HTMLSelectElement;
@@ -194,7 +194,7 @@ describe('The CollectionPartnerAssociationForm component', () => {
         association={association}
         partners={partners}
         onSubmit={handleSubmit}
-      />
+      />,
     );
 
     const nameField = screen.getByLabelText(/name/i);
@@ -207,7 +207,7 @@ describe('The CollectionPartnerAssociationForm component', () => {
       userEvent.click(saveButton);
     });
     expect(
-      screen.queryByText(/please enter at least two characters/i)
+      screen.queryByText(/please enter at least two characters/i),
     ).toBeInTheDocument();
 
     // Submit a longer name
@@ -217,7 +217,7 @@ describe('The CollectionPartnerAssociationForm component', () => {
       userEvent.click(saveButton);
     });
     expect(
-      screen.queryByText(/please enter at least two characters/i)
+      screen.queryByText(/please enter at least two characters/i),
     ).not.toBeInTheDocument();
 
     // Since we're not modifying any other test data, and the default test data
@@ -232,7 +232,7 @@ describe('The CollectionPartnerAssociationForm component', () => {
         association={association}
         partners={partners}
         onSubmit={handleSubmit}
-      />
+      />,
     );
 
     const urlField = screen.getByLabelText(/url/i);
@@ -245,7 +245,7 @@ describe('The CollectionPartnerAssociationForm component', () => {
       userEvent.click(saveButton);
     });
     expect(
-      screen.queryByText(/please enter at least 10 characters/i)
+      screen.queryByText(/please enter at least 10 characters/i),
     ).toBeInTheDocument();
 
     // Submit a longer url
@@ -255,7 +255,7 @@ describe('The CollectionPartnerAssociationForm component', () => {
       userEvent.click(saveButton);
     });
     expect(
-      screen.queryByText(/please enter at least 10 characters/i)
+      screen.queryByText(/please enter at least 10 characters/i),
     ).not.toBeInTheDocument();
 
     // Since we're not modifying any other test data, and the default test data
@@ -270,7 +270,7 @@ describe('The CollectionPartnerAssociationForm component', () => {
         association={association}
         partners={partners}
         onSubmit={handleSubmit}
-      />
+      />,
     );
 
     const blurbField = screen.getByLabelText(/blurb/i);
@@ -283,20 +283,20 @@ describe('The CollectionPartnerAssociationForm component', () => {
       userEvent.click(saveButton);
     });
     expect(
-      screen.queryByText(/please enter at least 10 characters/i)
+      screen.queryByText(/please enter at least 10 characters/i),
     ).toBeInTheDocument();
 
     // Submit a longer url
     userEvent.clear(blurbField);
     userEvent.type(
       blurbField,
-      'Hmm, this test tends to time out if this line is too long'
+      'Hmm, this test tends to time out if this line is too long',
     );
     await waitFor(() => {
       userEvent.click(saveButton);
     });
     expect(
-      screen.queryByText(/please enter at least 10 characters/i)
+      screen.queryByText(/please enter at least 10 characters/i),
     ).not.toBeInTheDocument();
 
     // Since we're not modifying any other test data, and the default test data
@@ -311,7 +311,7 @@ describe('The CollectionPartnerAssociationForm component', () => {
         association={association}
         partners={partners}
         onSubmit={handleSubmit}
-      />
+      />,
     );
     const writeTabs = screen.getAllByText(/write/i);
     expect(writeTabs.length).toEqual(1);

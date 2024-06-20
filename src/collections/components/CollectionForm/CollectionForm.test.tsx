@@ -113,7 +113,7 @@ describe('The CollectionForm component', () => {
         labels={labels}
         languages={Object.values(CollectionLanguage)}
         onSubmit={handleSubmit}
-      />
+      />,
     );
 
     // there is at least a form and nothing falls over
@@ -131,7 +131,7 @@ describe('The CollectionForm component', () => {
         labels={labels}
         languages={languages}
         onSubmit={handleSubmit}
-      />
+      />,
     );
 
     const buttons = screen.getAllByRole('button');
@@ -151,7 +151,7 @@ describe('The CollectionForm component', () => {
         languages={languages}
         editMode={false}
         onSubmit={handleSubmit}
-      />
+      />,
     );
 
     const buttons = screen.getAllByRole('button');
@@ -170,7 +170,7 @@ describe('The CollectionForm component', () => {
         labels={labels}
         languages={languages}
         onSubmit={handleSubmit}
-      />
+      />,
     );
 
     const titleField = screen.getByLabelText('Title');
@@ -214,7 +214,7 @@ describe('The CollectionForm component', () => {
         labels={labels}
         languages={languages}
         onSubmit={handleSubmit}
-      />
+      />,
     );
 
     const titleField = screen.getByLabelText(/title/i);
@@ -226,10 +226,10 @@ describe('The CollectionForm component', () => {
       userEvent.click(saveButton);
     });
     expect(
-      screen.queryByText(/please enter a title for this collection/i)
+      screen.queryByText(/please enter a title for this collection/i),
     ).toBeInTheDocument();
     expect(
-      screen.queryByText(/title must be at least 6 characters/i)
+      screen.queryByText(/title must be at least 6 characters/i),
     ).not.toBeInTheDocument();
 
     // Submit a collection title that is too short (under 6 characters)
@@ -238,10 +238,10 @@ describe('The CollectionForm component', () => {
       userEvent.click(saveButton);
     });
     expect(
-      screen.queryByText(/please enter a title for this collection/i)
+      screen.queryByText(/please enter a title for this collection/i),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByText(/title must be at least 6 characters/i)
+      screen.queryByText(/title must be at least 6 characters/i),
     ).toBeInTheDocument();
 
     // Submit a title that satisfies all the requirements
@@ -250,10 +250,10 @@ describe('The CollectionForm component', () => {
       userEvent.click(saveButton);
     });
     expect(
-      screen.queryByText(/please enter a title for this collection/i)
+      screen.queryByText(/please enter a title for this collection/i),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByText(/title must be at least 6 characters/i)
+      screen.queryByText(/title must be at least 6 characters/i),
     ).not.toBeInTheDocument();
   });
 
@@ -267,7 +267,7 @@ describe('The CollectionForm component', () => {
         labels={labels}
         languages={languages}
         onSubmit={handleSubmit}
-      />
+      />,
     );
 
     const slugField = screen.getByLabelText(/slug/i);
@@ -280,7 +280,7 @@ describe('The CollectionForm component', () => {
     });
     expect(screen.queryByText(/please enter a slug/i)).toBeInTheDocument();
     expect(
-      screen.queryByText(/slug must be at least 6 characters/i)
+      screen.queryByText(/slug must be at least 6 characters/i),
     ).not.toBeInTheDocument();
 
     // Submit a slug that is too short (under 6 characters)
@@ -290,7 +290,7 @@ describe('The CollectionForm component', () => {
     });
     expect(screen.queryByText(/please enter a slug/i)).not.toBeInTheDocument();
     expect(
-      screen.queryByText(/slug must be at least 6 characters/i)
+      screen.queryByText(/slug must be at least 6 characters/i),
     ).toBeInTheDocument();
 
     // Submit a slug that satisfies all the requirements
@@ -300,7 +300,7 @@ describe('The CollectionForm component', () => {
     });
     expect(screen.queryByText(/please enter a slug/i)).not.toBeInTheDocument();
     expect(
-      screen.queryByText(/slug must be at least 6 characters/i)
+      screen.queryByText(/slug must be at least 6 characters/i),
     ).not.toBeInTheDocument();
   });
 
@@ -314,7 +314,7 @@ describe('The CollectionForm component', () => {
         labels={labels}
         languages={languages}
         onSubmit={handleSubmit}
-      />
+      />,
     );
 
     // The "Suggest slug" button slugifies whatever is present in the "Title" field
@@ -342,7 +342,7 @@ describe('The CollectionForm component', () => {
 
     // Slugified version of the title appears in the slug input field
     expect(
-      screen.getByDisplayValue('a-very-long-and-elaborate-collection-name')
+      screen.getByDisplayValue('a-very-long-and-elaborate-collection-name'),
     ).toBeInTheDocument();
   });
 
@@ -356,7 +356,7 @@ describe('The CollectionForm component', () => {
         labels={labels}
         languages={languages}
         onSubmit={handleSubmit}
-      />
+      />,
     );
 
     const slugField = screen.getByLabelText(/slug/i);
@@ -370,7 +370,7 @@ describe('The CollectionForm component', () => {
 
     userEvent.type(
       titleField,
-      'A !!!title ??? full ### of ```special~~~ chars!#@*^*#^.,;*_/'
+      'A !!!title ??? full ### of ```special~~~ chars!#@*^*#^.,;*_/',
     );
 
     await waitFor(() => {
@@ -379,7 +379,7 @@ describe('The CollectionForm component', () => {
 
     // Get a slug that is free
     expect(
-      screen.getByDisplayValue('a-title-full-of-special-chars')
+      screen.getByDisplayValue('a-title-full-of-special-chars'),
     ).toBeInTheDocument();
   });
 
@@ -393,7 +393,7 @@ describe('The CollectionForm component', () => {
         labels={labels}
         languages={languages}
         onSubmit={handleSubmit}
-      />
+      />,
     );
 
     const writeTabs = screen.getAllByText(/write/i);
@@ -416,7 +416,7 @@ describe('The CollectionForm component', () => {
         labels={labels}
         languages={languages}
         onSubmit={handleSubmit}
-      />
+      />,
     );
 
     // Expect to see both of these labels on the screen

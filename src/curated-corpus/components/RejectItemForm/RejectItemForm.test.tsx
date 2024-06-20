@@ -35,7 +35,7 @@ describe('The RejectItemForm component', () => {
     });
 
     const errorMessage = screen.getByText(
-      /Please specify at least one rejection reason./i
+      /Please specify at least one rejection reason./i,
     );
     expect(errorMessage).toBeInTheDocument();
     expect(handleSubmit).not.toHaveBeenCalled();

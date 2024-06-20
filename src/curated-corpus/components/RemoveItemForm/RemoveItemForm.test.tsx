@@ -38,7 +38,7 @@ describe('The RemoveItemForm component', () => {
     });
 
     const errorMessage = screen.getByText(
-      /Please choose at least one removal reason./i
+      /Please choose at least one removal reason./i,
     );
     expect(errorMessage).toBeInTheDocument();
     expect(handleSubmit).not.toHaveBeenCalled();
@@ -57,7 +57,7 @@ describe('The RemoveItemForm component', () => {
     });
 
     const errorMessage = screen.getByText(
-      /Please provide a comment for removing this item./i
+      /Please provide a comment for removing this item./i,
     );
     expect(errorMessage).toBeInTheDocument();
     expect(handleSubmit).not.toHaveBeenCalled();
@@ -87,7 +87,7 @@ describe('The RemoveItemForm component', () => {
     });
 
     const errorMessage = screen.getByText(
-      /Please select the "Other" reason checkbox./i
+      /Please select the "Other" reason checkbox./i,
     );
     expect(errorMessage).toBeInTheDocument();
     expect(handleSubmit).not.toHaveBeenCalled();
@@ -116,7 +116,7 @@ describe('The RemoveItemForm component', () => {
     });
 
     const errorMessage = screen.getByText(
-      /Please provide a comment for removing this item./i
+      /Please provide a comment for removing this item./i,
     );
     expect(errorMessage).toBeInTheDocument();
     expect(handleSubmit).not.toHaveBeenCalled();
@@ -158,7 +158,7 @@ describe('The RemoveItemForm component', () => {
     expect(handleSubmit).toHaveBeenCalled();
     // error message
     const errorMessage = screen.queryByText(
-      /Please choose at least one removal reason./i
+      /Please choose at least one removal reason./i,
     );
     // check that error message is not in the form
     expect(errorMessage).not.toBeInTheDocument();

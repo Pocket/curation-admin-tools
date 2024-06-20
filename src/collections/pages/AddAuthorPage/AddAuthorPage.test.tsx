@@ -39,7 +39,7 @@ describe('The AddAuthor page', () => {
     render(
       <MockedProvider mocks={mocksWithError} addTypename={false}>
         <AddAuthorPage />
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // fill out the form

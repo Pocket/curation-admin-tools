@@ -30,21 +30,21 @@ describe('The ScheduleHistoryEntries component', () => {
 
   it('should render two recent scheduled run items', async () => {
     render(
-      <ScheduleHistoryEntries data={approvedItemScheduleSurfaceHistory} />
+      <ScheduleHistoryEntries data={approvedItemScheduleSurfaceHistory} />,
     );
 
     // fetch details for the first scheduled run item below
     const firstScheduledRunCurator = screen.getByText(
       `${getCuratorNameFromLdap(
-        approvedItemScheduleSurfaceHistory[0].createdBy
-      )}`
+        approvedItemScheduleSurfaceHistory[0].createdBy,
+      )}`,
     );
     const firstScheduledRunDate = screen.getByText('August 1, 2022');
 
     const firstScheduledRunSurface = screen.getByText(
       `${getScheduledSurfaceName(
-        approvedItemScheduleSurfaceHistory[0].scheduledSurfaceGuid
-      )}`
+        approvedItemScheduleSurfaceHistory[0].scheduledSurfaceGuid,
+      )}`,
     );
 
     // assert that the first scheduled run item was rendered
@@ -55,15 +55,15 @@ describe('The ScheduleHistoryEntries component', () => {
     // fetch details for the second scheduled run item below
     const secondScheduledRunCurator = screen.getByText(
       `${getCuratorNameFromLdap(
-        approvedItemScheduleSurfaceHistory[1].createdBy
-      )}`
+        approvedItemScheduleSurfaceHistory[1].createdBy,
+      )}`,
     );
     const secondScheduledRunDate = screen.getByText('August 2, 2022');
 
     const secondScheduledRunSurface = screen.getByText(
       `${getScheduledSurfaceName(
-        approvedItemScheduleSurfaceHistory[1].scheduledSurfaceGuid
-      )}`
+        approvedItemScheduleSurfaceHistory[1].scheduledSurfaceGuid,
+      )}`,
     );
 
     // assert that the second scheduled run item was rendered

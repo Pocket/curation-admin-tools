@@ -29,7 +29,7 @@ describe('The PartnerListCard component', () => {
     render(
       <MemoryRouter>
         <PartnerListCard partner={partner} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // The partner image is present and the alt text is the partner's name
@@ -41,7 +41,7 @@ describe('The PartnerListCard component', () => {
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute(
       'href',
-      expect.stringContaining(partner.externalId)
+      expect.stringContaining(partner.externalId),
     );
 
     // The blurb is also present
@@ -59,14 +59,14 @@ describe('The PartnerListCard component', () => {
         <Router history={history}>
           <PartnerListCard partner={partner} />
         </Router>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // While the entire card is a giant link, we can click on
     // anything we like within that link - i.e., the partners's name
     userEvent.click(screen.getByText(partner.name));
     expect(history.location.pathname).toEqual(
-      `/collections/partners/${partner.externalId}/`
+      `/collections/partners/${partner.externalId}/`,
     );
 
     // Let's go back to the Partners page
@@ -76,7 +76,7 @@ describe('The PartnerListCard component', () => {
     // And click on the image this time
     userEvent.click(screen.getByRole('img'));
     expect(history.location.pathname).toEqual(
-      `/collections/partners/${partner.externalId}/`
+      `/collections/partners/${partner.externalId}/`,
     );
   });
 });

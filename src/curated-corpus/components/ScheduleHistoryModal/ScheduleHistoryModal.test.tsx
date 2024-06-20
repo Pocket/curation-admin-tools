@@ -42,7 +42,7 @@ describe('The ScheduleHistoryModal component', () => {
             toggleModal={toggleModal}
           />
         </ThemeProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // assert that title has rendered

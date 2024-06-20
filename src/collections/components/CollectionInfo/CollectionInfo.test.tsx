@@ -31,7 +31,7 @@ describe('The CollectionInfo component', () => {
     render(
       <MemoryRouter>
         <CollectionInfo collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // The slug is present
@@ -61,7 +61,7 @@ describe('The CollectionInfo component', () => {
     render(
       <MemoryRouter>
         <CollectionInfo collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // Shows 'Published' subtitle for a published collection
@@ -83,14 +83,14 @@ describe('The CollectionInfo component', () => {
     const { rerender } = render(
       <MemoryRouter>
         <CollectionInfo collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const link = screen.getByRole('link');
     expect(link).toBeInTheDocument();
 
     expect(link.getAttribute('href')).toEqual(
-      `https://getpocket.com/collections/${collection.slug}`
+      `https://getpocket.com/collections/${collection.slug}`,
     );
 
     const textOnlySlug = screen.queryByText(collection.slug);
@@ -101,7 +101,7 @@ describe('The CollectionInfo component', () => {
     rerender(
       <MemoryRouter>
         <CollectionInfo collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // Test that the active link persists
@@ -109,7 +109,7 @@ describe('The CollectionInfo component', () => {
     expect(link2).toBeInTheDocument();
 
     expect(link2.getAttribute('href')).toEqual(
-      `https://getpocket.com/collections/${collection.slug}`
+      `https://getpocket.com/collections/${collection.slug}`,
     );
 
     const textOnlySlug2 = screen.queryByText(collection.slug);
@@ -120,7 +120,7 @@ describe('The CollectionInfo component', () => {
     render(
       <MemoryRouter>
         <CollectionInfo collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText(/^de$/i)).toBeInTheDocument();
@@ -136,7 +136,7 @@ describe('The CollectionInfo component', () => {
     render(
       <MemoryRouter>
         <CollectionInfo collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText('Food')).toBeInTheDocument();
@@ -146,7 +146,7 @@ describe('The CollectionInfo component', () => {
     render(
       <MemoryRouter>
         <CollectionInfo collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.queryByText('Food')).not.toBeInTheDocument();
@@ -168,7 +168,7 @@ describe('The CollectionInfo component', () => {
     render(
       <MemoryRouter>
         <CollectionInfo collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText('Careers → Job Fairs')).toBeInTheDocument();
@@ -178,7 +178,7 @@ describe('The CollectionInfo component', () => {
     render(
       <MemoryRouter>
         <CollectionInfo collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.queryByText('Careers → Job Fairs')).not.toBeInTheDocument();
@@ -199,7 +199,7 @@ describe('The CollectionInfo component', () => {
     render(
       <MemoryRouter>
         <CollectionInfo collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText('region-east-africa')).toBeInTheDocument();
@@ -225,7 +225,7 @@ describe('The CollectionInfo component', () => {
     render(
       <MemoryRouter>
         <CollectionInfo collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // grab expand button, expect +1 as there are total of 3 labels
@@ -261,7 +261,7 @@ describe('The CollectionInfo component', () => {
     render(
       <MemoryRouter>
         <CollectionInfo collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // grab expand button, expect +1 as there are total of 3 labels
@@ -280,7 +280,7 @@ describe('The CollectionInfo component', () => {
     render(
       <MemoryRouter>
         <CollectionInfo collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.queryByText('region-east-africa')).not.toBeInTheDocument();

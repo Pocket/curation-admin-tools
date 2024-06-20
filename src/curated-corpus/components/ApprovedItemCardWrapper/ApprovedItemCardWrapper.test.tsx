@@ -21,7 +21,7 @@ describe('The ApprovedItemCardWrapper component', () => {
             onSchedule={jest.fn()}
           />
         </ThemeProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // Only check the title here as the rest is thoroughly tested
@@ -41,7 +41,7 @@ describe('The ApprovedItemCardWrapper component', () => {
             onSchedule={jest.fn()}
           />
         </ThemeProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const viewButton = screen.getByRole('button', { name: /View/i });
@@ -73,7 +73,7 @@ describe('The ApprovedItemCardWrapper component', () => {
             onSchedule={jest.fn()}
           />
         </ThemeProvider>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // The link to the corpus item page is present and is well-formed
@@ -81,7 +81,7 @@ describe('The ApprovedItemCardWrapper component', () => {
     expect(linkToItemPage).toBeInTheDocument();
     expect(linkToItemPage).toHaveAttribute(
       'href',
-      expect.stringContaining(item.externalId)
+      expect.stringContaining(item.externalId),
     );
   });
 });

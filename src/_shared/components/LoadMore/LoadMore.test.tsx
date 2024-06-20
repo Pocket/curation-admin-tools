@@ -20,7 +20,7 @@ describe('The LoadMore component', () => {
         buttonDisabled={buttonDisabled}
         loadMore={loadMore}
         showSpinner={showSpinner}
-      />
+      />,
     );
 
     expect(screen.getByText(/load more results/i)).toBeInTheDocument();
@@ -34,7 +34,7 @@ describe('The LoadMore component', () => {
         buttonDisabled={buttonDisabled}
         loadMore={loadMore}
         showSpinner={showSpinner}
-      />
+      />,
     );
 
     const button = screen.getByRole('button') as HTMLButtonElement;
@@ -52,7 +52,7 @@ describe('The LoadMore component', () => {
         buttonDisabled={buttonDisabled}
         loadMore={loadMore}
         showSpinner={showSpinner}
-      />
+      />,
     );
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
   });
@@ -63,7 +63,7 @@ describe('The LoadMore component', () => {
         buttonDisabled={buttonDisabled}
         loadMore={loadMore}
         showSpinner={showSpinner}
-      />
+      />,
     );
 
     const button = screen.getByRole('button') as HTMLButtonElement;

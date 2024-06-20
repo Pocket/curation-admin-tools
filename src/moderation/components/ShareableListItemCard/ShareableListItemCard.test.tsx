@@ -24,7 +24,7 @@ describe('The ShareableListItemCard component', () => {
     render(
       <MemoryRouter>
         <ShareableListItemCard listItem={listItem} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // The link to the story is present and well-formed
@@ -32,11 +32,11 @@ describe('The ShareableListItemCard component', () => {
     expect(linkToStory).toBeInTheDocument();
     expect(linkToStory).toHaveAttribute(
       'href',
-      expect.stringMatching(listItem.url)
+      expect.stringMatching(listItem.url),
     );
     expect(linkToStory).toHaveAttribute(
       'target',
-      expect.stringMatching('_blank')
+      expect.stringMatching('_blank'),
     );
 
     // Asserting presence of props here as most fields on a list item are optional
@@ -68,7 +68,7 @@ describe('The ShareableListItemCard component', () => {
     render(
       <MemoryRouter>
         <ShareableListItemCard listItem={itemNoProps} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // Asserting presence of props here as most fields on a list item are optional

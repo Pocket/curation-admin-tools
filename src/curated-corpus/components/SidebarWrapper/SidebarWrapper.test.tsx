@@ -24,7 +24,7 @@ describe('The SidebarWrapper component', () => {
           setRefreshData={jest.fn()}
           setSidebarDate={jest.fn()}
         ></SidebarWrapper>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     await waitFor(() => {
@@ -32,7 +32,7 @@ describe('The SidebarWrapper component', () => {
       expect(
         // Regex because this phrase takes up two lines in the DOM
         // with extra whitespace/line break
-        screen.getByText(/scheduled for[\s\n]+?january 1, 2023/i)
+        screen.getByText(/scheduled for[\s\n]+?january 1, 2023/i),
       ).toBeInTheDocument();
     });
   });
@@ -47,12 +47,12 @@ describe('The SidebarWrapper component', () => {
           setRefreshData={jest.fn()}
           setSidebarDate={jest.fn()}
         ></SidebarWrapper>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     await waitFor(() => {
       const datePicker = screen.getByLabelText(
-        /choose a different date/i
+        /choose a different date/i,
       ) as HTMLInputElement;
 
       expect(datePicker).toBeInTheDocument();
@@ -70,7 +70,7 @@ describe('The SidebarWrapper component', () => {
           setRefreshData={jest.fn()}
           setSidebarDate={jest.fn()}
         ></SidebarWrapper>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     await waitFor(() => {

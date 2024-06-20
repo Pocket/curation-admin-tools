@@ -11,12 +11,12 @@ describe('SidebarDatePicker', () => {
       <SidebarDatePicker
         selectedDate={DateTime.fromFormat('2050-05-05', 'yyyy-MM-dd')}
         handleDateChange={jest.fn()}
-      ></SidebarDatePicker>
+      ></SidebarDatePicker>,
     );
 
     await waitFor(() => {
       const datePicker = screen.getByLabelText(
-        /choose a different date/i
+        /choose a different date/i,
       ) as HTMLInputElement;
 
       expect(datePicker).toBeInTheDocument();

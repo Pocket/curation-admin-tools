@@ -30,7 +30,7 @@ describe('The AuthorInfo component', () => {
         <MemoryRouter>
           <AuthorInfo author={author} />
         </MemoryRouter>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // The author bio is present
@@ -44,7 +44,7 @@ describe('The AuthorInfo component', () => {
         <MemoryRouter>
           <AuthorInfo author={author} />
         </MemoryRouter>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Shows 'Active' subtitle for an active author
@@ -64,7 +64,7 @@ describe('The AuthorInfo component', () => {
         <MemoryRouter>
           <AuthorInfo author={author} />
         </MemoryRouter>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Shows 'Inactive' subtitle for an inactive author

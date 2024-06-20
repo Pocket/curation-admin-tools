@@ -10,7 +10,7 @@ describe('The TabLink component', () => {
         <TabLink isCurrentTab={false} to="/any/path/">
           Tab title
         </TabLink>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const tabLink = screen.getByRole('link');
@@ -25,7 +25,7 @@ describe('The TabLink component', () => {
         <TabLink count={22} isCurrentTab to="/any/path/">
           Tab title
         </TabLink>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const tabLink = screen.getByRole('link');
@@ -38,7 +38,7 @@ describe('The TabLink component', () => {
         <TabLink count={1235} isCurrentTab to="/any/path/">
           Tab title
         </TabLink>
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     const tabLink = screen.getByRole('link');

@@ -63,7 +63,7 @@ describe('The ProspectListCard component', () => {
             parserItem={prospect.item!}
           />
         </MemoryRouter>
-      </MockedProvider>
+      </MockedProvider>,
     );
   };
 
@@ -122,7 +122,7 @@ describe('The ProspectListCard component', () => {
     renderComponent();
 
     expect(
-      screen.getByText(prospect.prospectType.toLowerCase())
+      screen.getByText(prospect.prospectType.toLowerCase()),
     ).toBeInTheDocument();
   });
 
@@ -144,7 +144,7 @@ describe('The ProspectListCard component', () => {
     renderComponent();
 
     expect(
-      screen.getByText(`${prospect.item?.timeToRead} min(s)`)
+      screen.getByText(`${prospect.item?.timeToRead} min(s)`),
     ).toBeInTheDocument();
   });
 
@@ -163,7 +163,7 @@ describe('The ProspectListCard component', () => {
     renderComponent();
 
     expect(
-      screen.queryByText(`${prospect.item?.timeToRead} min(s)`)
+      screen.queryByText(`${prospect.item?.timeToRead} min(s)`),
     ).not.toBeInTheDocument();
   });
 
@@ -176,7 +176,7 @@ describe('The ProspectListCard component', () => {
     renderComponent();
 
     expect(
-      screen.queryByText(`${prospect.item?.timeToRead} min(s)`)
+      screen.queryByText(`${prospect.item?.timeToRead} min(s)`),
     ).not.toBeInTheDocument();
   });
 
@@ -207,7 +207,7 @@ describe('The ProspectListCard component', () => {
     userEvent.click(
       screen.getByRole('button', {
         name: /Recommend/i,
-      })
+      }),
     );
 
     expect(onRecommend).toHaveBeenCalled();
@@ -219,7 +219,7 @@ describe('The ProspectListCard component', () => {
     userEvent.click(
       screen.getByRole('button', {
         name: /Reject/i,
-      })
+      }),
     );
 
     expect(onReject).toHaveBeenCalled();
@@ -231,7 +231,7 @@ describe('The ProspectListCard component', () => {
     userEvent.click(
       screen.getByRole('button', {
         name: /Add to corpus/i,
-      })
+      }),
     );
 
     expect(onAddToCorpus).toHaveBeenCalled();

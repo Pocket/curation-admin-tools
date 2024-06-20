@@ -34,7 +34,7 @@ describe('The CollectionListCard component', () => {
     render(
       <MemoryRouter>
         <CollectionListCard collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // The photo is present and the alt text is the collection title
@@ -46,7 +46,7 @@ describe('The CollectionListCard component', () => {
     expect(linkToCollectionPage).toBeInTheDocument();
     expect(linkToCollectionPage).toHaveAttribute(
       'href',
-      expect.stringContaining(collection.externalId)
+      expect.stringContaining(collection.externalId),
     );
 
     // The excerpt is also present
@@ -58,7 +58,7 @@ describe('The CollectionListCard component', () => {
     render(
       <MemoryRouter>
         <CollectionListCard collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // Shows 'Published' subtitle for a published collection
@@ -76,7 +76,7 @@ describe('The CollectionListCard component', () => {
     render(
       <MemoryRouter>
         <CollectionListCard collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText(/^de$/i)).toBeInTheDocument();
@@ -92,7 +92,7 @@ describe('The CollectionListCard component', () => {
     render(
       <MemoryRouter>
         <CollectionListCard collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText('Food')).toBeInTheDocument();
@@ -102,7 +102,7 @@ describe('The CollectionListCard component', () => {
     render(
       <MemoryRouter>
         <CollectionListCard collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.queryByText('Food')).not.toBeInTheDocument();
@@ -124,7 +124,7 @@ describe('The CollectionListCard component', () => {
     render(
       <MemoryRouter>
         <CollectionListCard collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText('Careers → Job Fairs')).toBeInTheDocument();
@@ -134,7 +134,7 @@ describe('The CollectionListCard component', () => {
     render(
       <MemoryRouter>
         <CollectionListCard collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.queryByText('Careers → Job Fairs')).not.toBeInTheDocument();
@@ -155,7 +155,7 @@ describe('The CollectionListCard component', () => {
     render(
       <MemoryRouter>
         <CollectionListCard collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText('region-east-africa')).toBeInTheDocument();
@@ -181,7 +181,7 @@ describe('The CollectionListCard component', () => {
     render(
       <MemoryRouter>
         <CollectionListCard collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // grab expand button, expect +1 as there are total of 3 labels
@@ -217,7 +217,7 @@ describe('The CollectionListCard component', () => {
     render(
       <MemoryRouter>
         <CollectionListCard collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // grab expand button, expect +1 as there are total of 3 labels
@@ -236,7 +236,7 @@ describe('The CollectionListCard component', () => {
     render(
       <MemoryRouter>
         <CollectionListCard collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.queryByText('region-east-africa')).not.toBeInTheDocument();
@@ -252,14 +252,14 @@ describe('The CollectionListCard component', () => {
         <Router history={history}>
           <CollectionListCard collection={collection} />
         </Router>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // While the entire card is a giant link, we can click on
     // anything we like within that link - i.e., the title of the collection
     userEvent.click(screen.getByText(collection.title));
     expect(history.location.pathname).toEqual(
-      `/collections/collections/${collection.externalId}/`
+      `/collections/collections/${collection.externalId}/`,
     );
 
     // Let's go back to the Collections page
@@ -269,7 +269,7 @@ describe('The CollectionListCard component', () => {
     // And click on the image this time
     userEvent.click(screen.getByRole('img'));
     expect(history.location.pathname).toEqual(
-      `/collections/collections/${collection.externalId}/`
+      `/collections/collections/${collection.externalId}/`,
     );
   });
 });

@@ -22,7 +22,7 @@ describe('The ShareableListModerationForm component', () => {
         onCancel={onCancel}
         isLoaderShowing={false}
         shareableList={visibleList}
-      />
+      />,
     );
 
     // Check if form input and buttons are rendered
@@ -47,14 +47,14 @@ describe('The ShareableListModerationForm component', () => {
             shareableList={visibleList}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const saveButton = screen.getByText(/save/i);
 
     userEvent.click(saveButton);
     const emptyInputError = await screen.findByText(
-      /Please choose a reason for hiding this list./i
+      /Please choose a reason for hiding this list./i,
     );
 
     expect(emptyInputError).toBeInTheDocument();
@@ -72,7 +72,7 @@ describe('The ShareableListModerationForm component', () => {
             shareableList={visibleList}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const saveButton = screen.getByText(/save/i);
@@ -105,7 +105,7 @@ describe('The ShareableListModerationForm component', () => {
             shareableList={visibleList}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const saveButton = screen.getByText(/save/i);
@@ -132,7 +132,7 @@ describe('The ShareableListModerationForm component', () => {
             shareableList={visibleList}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const cancelButton = screen.getByText(/cancel/i);

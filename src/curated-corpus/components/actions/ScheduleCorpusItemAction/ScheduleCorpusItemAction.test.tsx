@@ -34,7 +34,7 @@ describe('The ScheduleCorpusItemAction', () => {
             modalOpen={true}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Do we have the modal heading
@@ -58,7 +58,7 @@ describe('The ScheduleCorpusItemAction', () => {
       mock_AllScheduledSurfaces,
       mock_scheduledItemsWithParams(
         chosenDate.toFormat('yyyy-MM-dd'),
-        chosenSurfaceGuid
+        chosenSurfaceGuid,
       ),
       successMock(chosenDate.toFormat('yyyy-MM-dd'), chosenSurfaceGuid),
     ];
@@ -73,7 +73,7 @@ describe('The ScheduleCorpusItemAction', () => {
             modalOpen={true}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // Wait for the form to load, as it needs to fetch a list of surfaces
@@ -82,7 +82,7 @@ describe('The ScheduleCorpusItemAction', () => {
 
     // Get the dropdown with available scheduled surfaces
     const surfaceSelect = screen.getByLabelText(
-      /choose a scheduled surface/i
+      /choose a scheduled surface/i,
     ) as HTMLSelectElement;
 
     // Select a scheduled surface
@@ -113,7 +113,7 @@ describe('The ScheduleCorpusItemAction', () => {
     // Testing for the success toast notification. Omitting the date from
     // the text tested for as it has caused so many false alarms on CI.
     expect(
-      await screen.findByText(/Item scheduled successfully/i)
+      await screen.findByText(/Item scheduled successfully/i),
     ).toBeInTheDocument();
   });
 

@@ -28,7 +28,7 @@ describe('The AddProspectModal component', () => {
             toggleDuplicateProspectModal={toggleDuplicateProspectModal}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // using the modal heading to fetch it

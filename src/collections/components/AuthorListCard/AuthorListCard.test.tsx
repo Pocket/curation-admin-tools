@@ -30,7 +30,7 @@ describe('The AuthorListCard component', () => {
     render(
       <MemoryRouter>
         <AuthorListCard author={author} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // The author photo is present and the alt text is the author's name
@@ -42,7 +42,7 @@ describe('The AuthorListCard component', () => {
     expect(linkToAuthorPage).toBeInTheDocument();
     expect(linkToAuthorPage).toHaveAttribute(
       'href',
-      expect.stringContaining(author.externalId)
+      expect.stringContaining(author.externalId),
     );
 
     // The author bio is also present
@@ -54,7 +54,7 @@ describe('The AuthorListCard component', () => {
     render(
       <MemoryRouter>
         <AuthorListCard author={author} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // Shows 'Active' subtitle for an active author
@@ -72,7 +72,7 @@ describe('The AuthorListCard component', () => {
     render(
       <MemoryRouter>
         <AuthorListCard author={author} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // Shows 'Inactive' subtitle for an inactive author
@@ -94,14 +94,14 @@ describe('The AuthorListCard component', () => {
         <Router history={history}>
           <AuthorListCard author={author} />
         </Router>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     // While the entire card is a giant link, we can click on
     // anything we like within that link - i.e., the author's name
     userEvent.click(screen.getByText(author.name));
     expect(history.location.pathname).toEqual(
-      `/collections/authors/${author.externalId}/`
+      `/collections/authors/${author.externalId}/`,
     );
 
     // Let's go back to the Authors page
@@ -111,7 +111,7 @@ describe('The AuthorListCard component', () => {
     // And click on the image this time
     userEvent.click(screen.getByRole('img'));
     expect(history.location.pathname).toEqual(
-      `/collections/authors/${author.externalId}/`
+      `/collections/authors/${author.externalId}/`,
     );
   });
 });

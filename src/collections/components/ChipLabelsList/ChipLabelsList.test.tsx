@@ -42,7 +42,7 @@ describe('The ChipLabelsList component', () => {
     render(
       <MemoryRouter>
         <ChipLabelsList collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.getByText('region-east-africa')).toBeInTheDocument();
@@ -68,7 +68,7 @@ describe('The ChipLabelsList component', () => {
     render(
       <MemoryRouter>
         <ChipLabelsList collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // grab expand button, expect +1 as there are total of 3 labels
@@ -104,7 +104,7 @@ describe('The ChipLabelsList component', () => {
     render(
       <MemoryRouter>
         <ChipLabelsList collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     // grab expand button, expect +1 as there are total of 3 labels
@@ -123,7 +123,7 @@ describe('The ChipLabelsList component', () => {
     render(
       <MemoryRouter>
         <ChipLabelsList collection={collection} />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
 
     expect(screen.queryByText('region-east-africa')).not.toBeInTheDocument();

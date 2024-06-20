@@ -15,7 +15,7 @@ describe('The AddProspectForm component', () => {
         onSubmit={onSubmit}
         onCancel={onCancel}
         isLoaderShowing={false}
-      />
+      />,
     );
 
     // Check if form input and buttons are rendered
@@ -39,7 +39,7 @@ describe('The AddProspectForm component', () => {
             isLoaderShowing={false}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const saveButton = screen.getByText(/save/i);
@@ -60,7 +60,7 @@ describe('The AddProspectForm component', () => {
             isLoaderShowing={false}
           />
         </SnackbarProvider>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     const urlInputField = screen.getByLabelText(/item url/i);
@@ -72,7 +72,7 @@ describe('The AddProspectForm component', () => {
     userEvent.click(saveButton);
 
     const incorrectUrlError = await screen.findByText(
-      /please enter a valid url starting with https:\/\//i
+      /please enter a valid url starting with https:\/\//i,
     );
 
     expect(incorrectUrlError).toBeInTheDocument();

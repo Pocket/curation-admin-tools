@@ -30,7 +30,7 @@ describe('The FormikTextField component', () => {
         label="Test Title"
         fieldProps={fieldProps}
         fieldMeta={fieldMeta}
-      />
+      />,
     );
 
     const field = screen.getByRole('textbox') as HTMLInputElement;
@@ -44,7 +44,7 @@ describe('The FormikTextField component', () => {
         label="Test Title"
         fieldProps={fieldProps}
         fieldMeta={fieldMeta}
-      />
+      />,
     );
 
     const field = screen.getByRole('textbox') as HTMLInputElement;

@@ -9,7 +9,7 @@ describe('The TabPanel component', () => {
     render(
       <TabPanel heading="Test tab" value="test-tab" index="test-tab">
         <p>Tab contents</p>
-      </TabPanel>
+      </TabPanel>,
     );
 
     const tabPanel = screen.getByRole('tabpanel');

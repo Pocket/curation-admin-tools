@@ -11,7 +11,7 @@ describe('The NextPrevPagination component', () => {
         hasPreviousPage={true}
         loadNext={jest.fn()}
         loadPrevious={jest.fn()}
-      />
+      />,
     );
 
     const nextButton = screen.getByText(/next page/i);
@@ -28,7 +28,7 @@ describe('The NextPrevPagination component', () => {
         hasPreviousPage={false}
         loadNext={jest.fn()}
         loadPrevious={jest.fn()}
-      />
+      />,
     );
 
     const nextButton = screen.queryByText(/next page/i);
@@ -45,7 +45,7 @@ describe('The NextPrevPagination component', () => {
         hasPreviousPage={false}
         loadNext={jest.fn()}
         loadPrevious={jest.fn()}
-      />
+      />,
     );
 
     const nextButton = screen.getByText(/next page/i);
@@ -62,7 +62,7 @@ describe('The NextPrevPagination component', () => {
         hasPreviousPage={true}
         loadNext={jest.fn()}
         loadPrevious={jest.fn()}
-      />
+      />,
     );
 
     const nextButton = screen.queryByText(/next page/i);
@@ -80,7 +80,7 @@ describe('The NextPrevPagination component', () => {
         hasPreviousPage={true}
         loadNext={loadNext}
         loadPrevious={jest.fn()}
-      />
+      />,
     );
 
     const button = screen.getByText(/next page/i);
@@ -100,7 +100,7 @@ describe('The NextPrevPagination component', () => {
         hasPreviousPage={true}
         loadNext={jest.fn()}
         loadPrevious={loadPrevious}
-      />
+      />,
     );
 
     const button = screen.getByText(/previous page/i);
