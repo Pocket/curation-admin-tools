@@ -17,9 +17,9 @@ export const config = {
       process.env.REACT_APP_OAUTH2_PROVIDER ??
       'https://mozilla-auth-proxy.getpocket.com/oauth2'
     }`,
-    // So is the client ID.
+    // So is the client ID
     clientId: `${
-      process.env.REACT_APP_OAUTH2_CLIENT_ID ?? '2acvnpoglouk95t2pks7hucu7p'
+      process.env.REACT_APP_OAUTH2_CLIENT_ID ?? '5qgiui93mdakahca0rvvtsi3ar'
     }`,
     logoutEndpoint: `${
       process.env.REACT_APP_OAUTH2_LOGOUT_ENDPOINT ??
