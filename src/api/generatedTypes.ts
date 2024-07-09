@@ -76,6 +76,8 @@ export type ApprovedCorpusItem = {
   excerpt: Scalars['String'];
   /** An alternative primary key in UUID format that is generated on creation. */
   externalId: Scalars['ID'];
+  /** The quality grade associated with this CorpusItem. */
+  grade?: Maybe<ApprovedItemGrade>;
   /** True if the domain of the corpus item has been scheduled in the past. */
   hasTrustedDomain: Scalars['Boolean'];
   /**
@@ -195,6 +197,13 @@ export type ApprovedCorpusItemScheduledSurfaceHistoryFilters = {
    */
   scheduledSurfaceGuid?: InputMaybe<Scalars['ID']>;
 };
+
+/** Valid grade values for CorpusItem (public graph) and ApprovedItem (admin graph) */
+export enum ApprovedItemGrade {
+  A = 'A',
+  B = 'B',
+  C = 'C',
+}
 
 export type ArticleMarkdown = {
   __typename?: 'ArticleMarkdown';
@@ -485,6 +494,13 @@ export enum CorpusLanguage {
   It = 'IT',
 }
 
+/** A node in a CorpusSearchConnection result */
+export type CorpusSearchNode = {
+  __typename?: 'CorpusSearchNode';
+  /** The preview of the search result */
+  preview: PocketMetadata;
+};
+
 /** Input data for creating an Approved Item and optionally scheduling this item to appear on a Scheduled Surface. */
 export type CreateApprovedCorpusItemInput = {
   /** The UI screen where the approved corpus item is being created from. */
@@ -495,6 +511,8 @@ export type CreateApprovedCorpusItemInput = {
   datePublished?: InputMaybe<Scalars['Date']>;
   /** The excerpt of the Approved Item. */
   excerpt: Scalars['String'];
+  /** The quality grade associated with this CorpusItem. */
+  grade?: InputMaybe<ApprovedItemGrade>;
   /** The image URL for this item's accompanying picture. */
   imageUrl: Scalars['Url'];
   /** Whether this story is a Pocket Collection. */
@@ -524,10 +542,7 @@ export type CreateApprovedCorpusItemInput = {
   status: CuratedStatus;
   /** The title of the Approved Item. */
   title: Scalars['String'];
-  /**
-   * A topic this story best fits in.
-   * Temporarily a string value that will be provided by Prospect API, possibly an enum in the future.
-   */
+  /** A topic this story best fits in. */
   topic: Scalars['String'];
   /** The URL of the Approved Item. */
   url: Scalars['Url'];
@@ -972,15 +987,10 @@ export type ItemSummary = PocketMetadata & {
   id: Scalars['ID'];
   image?: Maybe<Image>;
   item?: Maybe<Item>;
-  source: ItemSummarySource;
+  source: PocketMetadataSource;
   title?: Maybe<Scalars['String']>;
   url: Scalars['Url'];
 };
-
-export enum ItemSummarySource {
-  Opengraph = 'OPENGRAPH',
-  PocketParser = 'POCKET_PARSER',
-}
 
 /** A label used to mark and categorize an Entity (e.g. Collection). */
 export type Label = {
@@ -1183,6 +1193,8 @@ export type Mutation = {
   rescheduleScheduledCorpusItem: ScheduledCorpusItem;
   /** Updates an Approved Item. */
   updateApprovedCorpusItem: ApprovedCorpusItem;
+  /** Updates the grade of an Approved Item */
+  updateApprovedCorpusItemGrade: ApprovedCorpusItem;
   /** Updates a Collection. */
   updateCollection: Collection;
   /** Updates a CollectionAuthor. */
@@ -1318,6 +1330,10 @@ export type MutationUpdateApprovedCorpusItemArgs = {
   data: UpdateApprovedCorpusItemInput;
 };
 
+export type MutationUpdateApprovedCorpusItemGradeArgs = {
+  data: UpdateApprovedCorpusItemGradeInput;
+};
+
 export type MutationUpdateCollectionArgs = {
   data: UpdateCollectionInput;
 };
@@ -1383,6 +1399,29 @@ export type NumberedListElement = ListElement & {
   /** Zero-indexed level, for handling nested lists. */
   level: Scalars['Int'];
 };
+
+export type OEmbed = PocketMetadata & {
+  __typename?: 'OEmbed';
+  authors?: Maybe<Array<Author>>;
+  datePublished?: Maybe<Scalars['ISOString']>;
+  domain?: Maybe<DomainMetadata>;
+  excerpt?: Maybe<Scalars['String']>;
+  htmlEmbed?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  image?: Maybe<Image>;
+  item?: Maybe<Item>;
+  source: PocketMetadataSource;
+  title?: Maybe<Scalars['String']>;
+  type?: Maybe<OEmbedType>;
+  url: Scalars['Url'];
+};
+
+export enum OEmbedType {
+  Link = 'LINK',
+  Photo = 'PHOTO',
+  Rich = 'RICH',
+  Video = 'VIDEO',
+}
 
 export type OpenGraphFields = {
   __typename?: 'OpenGraphFields';
@@ -1456,14 +1495,20 @@ export type PocketMetadata = {
   id: Scalars['ID'];
   image?: Maybe<Image>;
   item?: Maybe<Item>;
-  source: ItemSummarySource;
+  source: PocketMetadataSource;
   title?: Maybe<Scalars['String']>;
   url: Scalars['Url'];
 };
 
+export enum PocketMetadataSource {
+  Oembed = 'OEMBED',
+  Opengraph = 'OPENGRAPH',
+  PocketParser = 'POCKET_PARSER',
+}
+
 export type PocketShare = {
   __typename?: 'PocketShare';
-  preview?: Maybe<ItemSummary>;
+  preview?: Maybe<PocketMetadata>;
   targetUrl: Scalars['ValidUrl'];
 };
 
@@ -1570,8 +1615,8 @@ export type Query = {
    * Resolve Reader View links which might point to SavedItems that do not
    * exist, aren't in the Pocket User's list, or are requested by a logged-out
    * user (or user without a Pocket Account).
-   * Fetches data to create an interstitial page/modal so the visitor can click
-   * through to the shared site.
+   * Fetches data which clients can use to generate an appropriate fallback view
+   * that allows users to preview the content and access the original source site.
    */
   readerSlug: ReaderViewResult;
   searchCollections: CollectionsResult;
@@ -1669,13 +1714,28 @@ export type QuerySearchShareableListArgs = {
   externalId: Scalars['ID'];
 };
 
+/**
+ * Metadata of an Item in Pocket for preview purposes,
+ * or an ItemNotFound result if the record does not exist.
+ */
 export type ReaderFallback = ItemNotFound | ReaderInterstitial;
 
+/**
+ * Card preview data for Items resolved from reader view
+ * (getpocket.com/read/) links.
+ *
+ * Should be used to create a view if Reader Mode cannot
+ * be rendered (e.g. the link is visited by an anonymous
+ * Pocket user, or a Pocket User that does not have the
+ * underlying Item in their Saves). Due to legal obligations
+ * we can only display Reader Mode for SavedItems.
+ */
 export type ReaderInterstitial = {
   __typename?: 'ReaderInterstitial';
-  itemCard?: Maybe<ItemSummary>;
+  itemCard?: Maybe<PocketMetadata>;
 };
 
+/** Result for resolving a getpocket.com/read/<slug> link. */
 export type ReaderViewResult = {
   __typename?: 'ReaderViewResult';
   fallbackPage?: Maybe<ReaderFallback>;
@@ -2063,6 +2123,16 @@ export type UnMarseable = {
   html: Scalars['String'];
 };
 
+/** Input data for updating the grade of an Approved Item. */
+export type UpdateApprovedCorpusItemGradeInput = {
+  /** The UI screen where the approved corpus item is being graded from. */
+  actionScreen: ActionScreen;
+  /** Approved Item ID. */
+  externalId: Scalars['ID'];
+  /** The quality grade associated with this CorpusItem. */
+  grade: ApprovedItemGrade;
+};
+
 /** Input data for updating an Approved Item. */
 export type UpdateApprovedCorpusItemInput = {
   /**
@@ -2078,6 +2148,8 @@ export type UpdateApprovedCorpusItemInput = {
   excerpt: Scalars['String'];
   /** Approved Item ID. */
   externalId: Scalars['ID'];
+  /** The quality grade associated with this CorpusItem. */
+  grade?: InputMaybe<ApprovedItemGrade>;
   /** The image URL for this item's accompanying picture. */
   imageUrl: Scalars['Url'];
   /**
@@ -2093,10 +2165,7 @@ export type UpdateApprovedCorpusItemInput = {
   status: CuratedStatus;
   /** The title of the Approved Item. */
   title: Scalars['String'];
-  /**
-   * A topic this story best fits in.
-   * Temporarily a string value that will be provided by Prospect API, possibly an enum in the future.
-   */
+  /** A topic this story best fits in. */
   topic: Scalars['String'];
 };
 
@@ -4913,7 +4982,7 @@ export function useCreateApprovedCorpusItemMutation(
   baseOptions?: Apollo.MutationHookOptions<
     CreateApprovedCorpusItemMutation,
     CreateApprovedCorpusItemMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -4965,7 +5034,7 @@ export function useCreateCollectionMutation(
   baseOptions?: Apollo.MutationHookOptions<
     CreateCollectionMutation,
     CreateCollectionMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -5034,7 +5103,7 @@ export function useCreateCollectionAuthorMutation(
   baseOptions?: Apollo.MutationHookOptions<
     CreateCollectionAuthorMutation,
     CreateCollectionAuthorMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -5095,7 +5164,7 @@ export function useCreateCollectionPartnerMutation(
   baseOptions?: Apollo.MutationHookOptions<
     CreateCollectionPartnerMutation,
     CreateCollectionPartnerMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -5171,7 +5240,7 @@ export function useCreateCollectionPartnerAssociationMutation(
   baseOptions?: Apollo.MutationHookOptions<
     CreateCollectionPartnerAssociationMutation,
     CreateCollectionPartnerAssociationMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -5253,7 +5322,7 @@ export function useCreateCollectionStoryMutation(
   baseOptions?: Apollo.MutationHookOptions<
     CreateCollectionStoryMutation,
     CreateCollectionStoryMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -5304,12 +5373,12 @@ export function useCreateLabelMutation(
   baseOptions?: Apollo.MutationHookOptions<
     CreateLabelMutation,
     CreateLabelMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<CreateLabelMutation, CreateLabelMutationVariables>(
     CreateLabelDocument,
-    options
+    options,
   );
 }
 export type CreateLabelMutationHookResult = ReturnType<
@@ -5387,7 +5456,7 @@ export function useCreateScheduledCorpusItemMutation(
   baseOptions?: Apollo.MutationHookOptions<
     CreateScheduledCorpusItemMutation,
     CreateScheduledCorpusItemMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -5440,7 +5509,7 @@ export function useDeleteCollectionPartnerAssociationMutation(
   baseOptions?: Apollo.MutationHookOptions<
     DeleteCollectionPartnerAssociationMutation,
     DeleteCollectionPartnerAssociationMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -5492,7 +5561,7 @@ export function useDeleteCollectionStoryMutation(
   baseOptions?: Apollo.MutationHookOptions<
     DeleteCollectionStoryMutation,
     DeleteCollectionStoryMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -5551,7 +5620,7 @@ export function useDeleteScheduledItemMutation(
   baseOptions?: Apollo.MutationHookOptions<
     DeleteScheduledItemMutation,
     DeleteScheduledItemMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -5616,12 +5685,12 @@ export function useImageUploadMutation(
   baseOptions?: Apollo.MutationHookOptions<
     ImageUploadMutation,
     ImageUploadMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<ImageUploadMutation, ImageUploadMutationVariables>(
     ImageUploadDocument,
-    options
+    options,
   );
 }
 export type ImageUploadMutationHookResult = ReturnType<
@@ -5667,7 +5736,7 @@ export function useModerateShareableListMutation(
   baseOptions?: Apollo.MutationHookOptions<
     ModerateShareableListMutation,
     ModerateShareableListMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -5718,7 +5787,7 @@ export function useRejectApprovedItemMutation(
   baseOptions?: Apollo.MutationHookOptions<
     RejectApprovedItemMutation,
     RejectApprovedItemMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -5769,7 +5838,7 @@ export function useRejectProspectMutation(
   baseOptions?: Apollo.MutationHookOptions<
     RejectProspectMutation,
     RejectProspectMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -5820,7 +5889,7 @@ export function useRemoveProspectMutation(
   baseOptions?: Apollo.MutationHookOptions<
     RemoveProspectMutation,
     RemoveProspectMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -5886,7 +5955,7 @@ export function useRescheduleScheduledCorpusItemMutation(
   baseOptions?: Apollo.MutationHookOptions<
     RescheduleScheduledCorpusItemMutation,
     RescheduleScheduledCorpusItemMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -5938,7 +6007,7 @@ export function useUpdateApprovedCorpusItemMutation(
   baseOptions?: Apollo.MutationHookOptions<
     UpdateApprovedCorpusItemMutation,
     UpdateApprovedCorpusItemMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -5990,7 +6059,7 @@ export function useUpdateCollectionMutation(
   baseOptions?: Apollo.MutationHookOptions<
     UpdateCollectionMutation,
     UpdateCollectionMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -6062,7 +6131,7 @@ export function useUpdateCollectionAuthorMutation(
   baseOptions?: Apollo.MutationHookOptions<
     UpdateCollectionAuthorMutation,
     UpdateCollectionAuthorMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -6119,7 +6188,7 @@ export function useUpdateCollectionAuthorImageUrlMutation(
   baseOptions?: Apollo.MutationHookOptions<
     UpdateCollectionAuthorImageUrlMutation,
     UpdateCollectionAuthorImageUrlMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -6174,7 +6243,7 @@ export function useUpdateCollectionImageUrlMutation(
   baseOptions?: Apollo.MutationHookOptions<
     UpdateCollectionImageUrlMutation,
     UpdateCollectionImageUrlMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -6244,7 +6313,7 @@ export function useUpdateCollectionPartnerMutation(
   baseOptions?: Apollo.MutationHookOptions<
     UpdateCollectionPartnerMutation,
     UpdateCollectionPartnerMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -6320,7 +6389,7 @@ export function useUpdateCollectionPartnerAssociationMutation(
   baseOptions?: Apollo.MutationHookOptions<
     UpdateCollectionPartnerAssociationMutation,
     UpdateCollectionPartnerAssociationMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -6379,7 +6448,7 @@ export function useUpdateCollectionPartnerAssociationImageUrlMutation(
   baseOptions?: Apollo.MutationHookOptions<
     UpdateCollectionPartnerAssociationImageUrlMutation,
     UpdateCollectionPartnerAssociationImageUrlMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -6436,7 +6505,7 @@ export function useUpdateCollectionPartnerImageUrlMutation(
   baseOptions?: Apollo.MutationHookOptions<
     UpdateCollectionPartnerImageUrlMutation,
     UpdateCollectionPartnerImageUrlMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -6518,7 +6587,7 @@ export function useUpdateCollectionStoryMutation(
   baseOptions?: Apollo.MutationHookOptions<
     UpdateCollectionStoryMutation,
     UpdateCollectionStoryMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -6575,7 +6644,7 @@ export function useUpdateCollectionStoryImageUrlMutation(
   baseOptions?: Apollo.MutationHookOptions<
     UpdateCollectionStoryImageUrlMutation,
     UpdateCollectionStoryImageUrlMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -6633,7 +6702,7 @@ export function useUpdateCollectionStorySortOrderMutation(
   baseOptions?: Apollo.MutationHookOptions<
     UpdateCollectionStorySortOrderMutation,
     UpdateCollectionStorySortOrderMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -6685,12 +6754,12 @@ export function useUpdateLabelMutation(
   baseOptions?: Apollo.MutationHookOptions<
     UpdateLabelMutation,
     UpdateLabelMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<UpdateLabelMutation, UpdateLabelMutationVariables>(
     UpdateLabelDocument,
-    options
+    options,
   );
 }
 export type UpdateLabelMutationHookResult = ReturnType<
@@ -6740,7 +6809,7 @@ export function useUpdateProspectAsCuratedMutation(
   baseOptions?: Apollo.MutationHookOptions<
     UpdateProspectAsCuratedMutation,
     UpdateProspectAsCuratedMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -6790,7 +6859,7 @@ export function useUploadApprovedCorpusItemImageMutation(
   baseOptions?: Apollo.MutationHookOptions<
     UploadApprovedCorpusItemImageMutation,
     UploadApprovedCorpusItemImageMutationVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
@@ -6841,7 +6910,7 @@ export function useApprovedCorpusItemByExternalIdQuery(
   baseOptions: Apollo.QueryHookOptions<
     ApprovedCorpusItemByExternalIdQuery,
     ApprovedCorpusItemByExternalIdQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
@@ -6853,7 +6922,7 @@ export function useApprovedCorpusItemByExternalIdLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     ApprovedCorpusItemByExternalIdQuery,
     ApprovedCorpusItemByExternalIdQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
@@ -6900,7 +6969,7 @@ export function useGetApprovedItemByUrlQuery(
   baseOptions: Apollo.QueryHookOptions<
     GetApprovedItemByUrlQuery,
     GetApprovedItemByUrlQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
@@ -6912,7 +6981,7 @@ export function useGetApprovedItemByUrlLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     GetApprovedItemByUrlQuery,
     GetApprovedItemByUrlQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
@@ -6975,19 +7044,19 @@ export function useGetApprovedItemsQuery(
   baseOptions?: Apollo.QueryHookOptions<
     GetApprovedItemsQuery,
     GetApprovedItemsQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetApprovedItemsQuery, GetApprovedItemsQueryVariables>(
     GetApprovedItemsDocument,
-    options
+    options,
   );
 }
 export function useGetApprovedItemsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     GetApprovedItemsQuery,
     GetApprovedItemsQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
@@ -7034,24 +7103,24 @@ export function useGetAuthorByIdQuery(
   baseOptions: Apollo.QueryHookOptions<
     GetAuthorByIdQuery,
     GetAuthorByIdQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetAuthorByIdQuery, GetAuthorByIdQueryVariables>(
     GetAuthorByIdDocument,
-    options
+    options,
   );
 }
 export function useGetAuthorByIdLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     GetAuthorByIdQuery,
     GetAuthorByIdQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<GetAuthorByIdQuery, GetAuthorByIdQueryVariables>(
     GetAuthorByIdDocument,
-    options
+    options,
   );
 }
 export type GetAuthorByIdQueryHookResult = ReturnType<
@@ -7101,24 +7170,24 @@ export function useGetAuthorsQuery(
   baseOptions?: Apollo.QueryHookOptions<
     GetAuthorsQuery,
     GetAuthorsQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetAuthorsQuery, GetAuthorsQueryVariables>(
     GetAuthorsDocument,
-    options
+    options,
   );
 }
 export function useGetAuthorsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     GetAuthorsQuery,
     GetAuthorsQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<GetAuthorsQuery, GetAuthorsQueryVariables>(
     GetAuthorsDocument,
-    options
+    options,
   );
 }
 export type GetAuthorsQueryHookResult = ReturnType<typeof useGetAuthorsQuery>;
@@ -7158,7 +7227,7 @@ export function useGetCollectionByExternalIdQuery(
   baseOptions: Apollo.QueryHookOptions<
     GetCollectionByExternalIdQuery,
     GetCollectionByExternalIdQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
@@ -7170,7 +7239,7 @@ export function useGetCollectionByExternalIdLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     GetCollectionByExternalIdQuery,
     GetCollectionByExternalIdQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
@@ -7217,7 +7286,7 @@ export function useGetCollectionPartnerQuery(
   baseOptions: Apollo.QueryHookOptions<
     GetCollectionPartnerQuery,
     GetCollectionPartnerQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
@@ -7229,7 +7298,7 @@ export function useGetCollectionPartnerLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     GetCollectionPartnerQuery,
     GetCollectionPartnerQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
@@ -7276,7 +7345,7 @@ export function useGetCollectionPartnerAssociationQuery(
   baseOptions: Apollo.QueryHookOptions<
     GetCollectionPartnerAssociationQuery,
     GetCollectionPartnerAssociationQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
@@ -7288,7 +7357,7 @@ export function useGetCollectionPartnerAssociationLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     GetCollectionPartnerAssociationQuery,
     GetCollectionPartnerAssociationQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
@@ -7343,7 +7412,7 @@ export function useGetCollectionPartnersQuery(
   baseOptions?: Apollo.QueryHookOptions<
     GetCollectionPartnersQuery,
     GetCollectionPartnersQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
@@ -7355,7 +7424,7 @@ export function useGetCollectionPartnersLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     GetCollectionPartnersQuery,
     GetCollectionPartnersQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
@@ -7405,7 +7474,7 @@ export function useGetCollectionStoriesQuery(
   baseOptions: Apollo.QueryHookOptions<
     GetCollectionStoriesQuery,
     GetCollectionStoriesQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
@@ -7417,7 +7486,7 @@ export function useGetCollectionStoriesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     GetCollectionStoriesQuery,
     GetCollectionStoriesQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
@@ -7481,24 +7550,24 @@ export function useGetCollectionsQuery(
   baseOptions: Apollo.QueryHookOptions<
     GetCollectionsQuery,
     GetCollectionsQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetCollectionsQuery, GetCollectionsQueryVariables>(
     GetCollectionsDocument,
-    options
+    options,
   );
 }
 export function useGetCollectionsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     GetCollectionsQuery,
     GetCollectionsQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<GetCollectionsQuery, GetCollectionsQueryVariables>(
     GetCollectionsDocument,
-    options
+    options,
   );
 }
 export type GetCollectionsQueryHookResult = ReturnType<
@@ -7563,7 +7632,7 @@ export function useGetInitialCollectionFormDataQuery(
   baseOptions?: Apollo.QueryHookOptions<
     GetInitialCollectionFormDataQuery,
     GetInitialCollectionFormDataQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
@@ -7575,7 +7644,7 @@ export function useGetInitialCollectionFormDataLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     GetInitialCollectionFormDataQuery,
     GetInitialCollectionFormDataQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
@@ -7621,7 +7690,7 @@ export function useGetOpenGraphFieldsQuery(
   baseOptions: Apollo.QueryHookOptions<
     GetOpenGraphFieldsQuery,
     GetOpenGraphFieldsQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
@@ -7633,7 +7702,7 @@ export function useGetOpenGraphFieldsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     GetOpenGraphFieldsQuery,
     GetOpenGraphFieldsQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
@@ -7691,24 +7760,24 @@ export function useGetProspectsQuery(
   baseOptions: Apollo.QueryHookOptions<
     GetProspectsQuery,
     GetProspectsQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetProspectsQuery, GetProspectsQueryVariables>(
     GetProspectsDocument,
-    options
+    options,
   );
 }
 export function useGetProspectsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     GetProspectsQuery,
     GetProspectsQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<GetProspectsQuery, GetProspectsQueryVariables>(
     GetProspectsDocument,
-    options
+    options,
   );
 }
 export type GetProspectsQueryHookResult = ReturnType<
@@ -7766,19 +7835,19 @@ export function useGetRejectedItemsQuery(
   baseOptions?: Apollo.QueryHookOptions<
     GetRejectedItemsQuery,
     GetRejectedItemsQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetRejectedItemsQuery, GetRejectedItemsQueryVariables>(
     GetRejectedItemsDocument,
-    options
+    options,
   );
 }
 export function useGetRejectedItemsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     GetRejectedItemsQuery,
     GetRejectedItemsQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
@@ -7826,7 +7895,7 @@ export function useGetScheduledItemCountsQuery(
   baseOptions: Apollo.QueryHookOptions<
     GetScheduledItemCountsQuery,
     GetScheduledItemCountsQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
@@ -7838,7 +7907,7 @@ export function useGetScheduledItemCountsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     GetScheduledItemCountsQuery,
     GetScheduledItemCountsQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
@@ -7891,7 +7960,7 @@ export function useGetScheduledItemsQuery(
   baseOptions: Apollo.QueryHookOptions<
     GetScheduledItemsQuery,
     GetScheduledItemsQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
@@ -7903,7 +7972,7 @@ export function useGetScheduledItemsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     GetScheduledItemsQuery,
     GetScheduledItemsQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
@@ -7951,7 +8020,7 @@ export function useGetScheduledSurfacesForUserQuery(
   baseOptions?: Apollo.QueryHookOptions<
     GetScheduledSurfacesForUserQuery,
     GetScheduledSurfacesForUserQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
@@ -7963,7 +8032,7 @@ export function useGetScheduledSurfacesForUserLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     GetScheduledSurfacesForUserQuery,
     GetScheduledSurfacesForUserQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
@@ -8024,7 +8093,7 @@ export function useSearchCollectionsQuery(
   baseOptions: Apollo.QueryHookOptions<
     SearchCollectionsQuery,
     SearchCollectionsQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
@@ -8036,7 +8105,7 @@ export function useSearchCollectionsLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SearchCollectionsQuery,
     SearchCollectionsQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
@@ -8096,7 +8165,7 @@ export function useGetStoryFromParserQuery(
   baseOptions: Apollo.QueryHookOptions<
     GetStoryFromParserQuery,
     GetStoryFromParserQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
@@ -8108,7 +8177,7 @@ export function useGetStoryFromParserLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     GetStoryFromParserQuery,
     GetStoryFromParserQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<
@@ -8155,24 +8224,24 @@ export function useGetUrlMetadataQuery(
   baseOptions: Apollo.QueryHookOptions<
     GetUrlMetadataQuery,
     GetUrlMetadataQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<GetUrlMetadataQuery, GetUrlMetadataQueryVariables>(
     GetUrlMetadataDocument,
-    options
+    options,
   );
 }
 export function useGetUrlMetadataLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     GetUrlMetadataQuery,
     GetUrlMetadataQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<GetUrlMetadataQuery, GetUrlMetadataQueryVariables>(
     GetUrlMetadataDocument,
-    options
+    options,
   );
 }
 export type GetUrlMetadataQueryHookResult = ReturnType<
@@ -8210,21 +8279,21 @@ export const LabelsDocument = gql`
  * });
  */
 export function useLabelsQuery(
-  baseOptions?: Apollo.QueryHookOptions<LabelsQuery, LabelsQueryVariables>
+  baseOptions?: Apollo.QueryHookOptions<LabelsQuery, LabelsQueryVariables>,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<LabelsQuery, LabelsQueryVariables>(
     LabelsDocument,
-    options
+    options,
   );
 }
 export function useLabelsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<LabelsQuery, LabelsQueryVariables>
+  baseOptions?: Apollo.LazyQueryHookOptions<LabelsQuery, LabelsQueryVariables>,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<LabelsQuery, LabelsQueryVariables>(
     LabelsDocument,
-    options
+    options,
   );
 }
 export type LabelsQueryHookResult = ReturnType<typeof useLabelsQuery>;
@@ -8262,7 +8331,7 @@ export function useSearchShareableListQuery(
   baseOptions: Apollo.QueryHookOptions<
     SearchShareableListQuery,
     SearchShareableListQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useQuery<
@@ -8274,7 +8343,7 @@ export function useSearchShareableListLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
     SearchShareableListQuery,
     SearchShareableListQueryVariables
-  >
+  >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useLazyQuery<

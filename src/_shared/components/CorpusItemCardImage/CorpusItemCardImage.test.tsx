@@ -87,6 +87,22 @@ describe('The CorpusItemCardImage component', () => {
     expect(screen.getByText(/syndicated/i)).toBeInTheDocument();
   });
 
+  it('should render ML-syndicated label if item is both ML-scheduled and syndicated', () => {
+    const syndicatedItem = { ...item, isSyndicated: true };
+
+    render(
+      <CorpusItemCardImage
+        item={syndicatedItem}
+        isMlScheduled={true}
+        currentScheduledDate={currentScheduledDate}
+        scheduledSurfaceGuid="NEW_TAB_EN_US"
+        toggleScheduleHistoryModal={toggleScheduleHistoryModal}
+      />,
+    );
+
+    expect(screen.getByText(/ML-syndicated/i)).toBeInTheDocument();
+  });
+
   it('should render last scheduled label if item has this prop', () => {
     item = {
       ...item,

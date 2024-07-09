@@ -67,6 +67,14 @@ export const ScheduleDayFilterRow: React.FC<ScheduleDayFilterRowProps> = (
       ).length,
     },
     {
+      name: 'ML-Syndicated',
+      count: scheduledItems.filter(
+        (item) =>
+          item.source === ScheduledItemSource.Ml &&
+          item.approvedItem.isSyndicated,
+      ).length,
+    },
+    {
       name: 'Syndicated',
       count: scheduledItems.filter((item) => item.approvedItem.isSyndicated)
         .length,
