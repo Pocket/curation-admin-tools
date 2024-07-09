@@ -2,7 +2,11 @@ import React, { ReactElement, useState } from 'react';
 import { Box, CardContent, Link, Typography } from '@mui/material';
 import { DateTime } from 'luxon';
 
-import { ApprovedCorpusItem } from '../../../api/generatedTypes';
+import {
+  ApprovedCorpusItem,
+  ApprovedItemGrade,
+  ActionScreen,
+} from '../../../api/generatedTypes';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 
 import { curationPalette } from '../../../theme';
@@ -57,6 +61,15 @@ interface SuggestedScheduleItemListCardProps {
    * Callback for the "Reject" (trash) button
    */
   onReject: VoidFunction;
+
+  /**
+   * Callback for the "Grade" buttons
+   */
+  onGrade: (
+    item: ApprovedCorpusItem,
+    grade: ApprovedItemGrade,
+    actionScreen: ActionScreen,
+  ) => void;
 }
 
 export const SuggestedScheduleItemListCard: React.FC<
@@ -72,6 +85,7 @@ export const SuggestedScheduleItemListCard: React.FC<
     onEdit,
     onMoveToBottom,
     onReject,
+    onGrade,
   } = props;
 
   const [isScheduleHistoryModalOpen, setScheduleHistoryModalOpen] =
@@ -178,6 +192,8 @@ export const SuggestedScheduleItemListCard: React.FC<
         onReschedule={onReschedule}
         onMoveToBottom={onMoveToBottom}
         onReject={onReject}
+        onGrade={onGrade}
+        item={item}
       />
     </>
   );

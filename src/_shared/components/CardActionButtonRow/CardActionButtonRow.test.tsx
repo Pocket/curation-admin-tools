@@ -4,22 +4,27 @@ import userEvent from '@testing-library/user-event';
 
 import { CardActionButtonRow } from './CardActionButtonRow';
 
+import { approvedCorpusItem } from '../../../curated-corpus/helpers/approvedItem';
+
 describe('The CardActionButtonRow component', () => {
   const onMoveToBottom = jest.fn();
   const onEdit = jest.fn();
   const onReschedule = jest.fn();
   const onUnschedule = jest.fn();
   const onReject = jest.fn();
+  const onGrade = jest.fn();
 
   //TODO update when reject button flow ready
   it('should render all four card action buttons and call their callbacks', () => {
     render(
       <CardActionButtonRow
+        item={approvedCorpusItem}
         onEdit={onEdit}
         onUnschedule={onUnschedule}
         onReschedule={onReschedule}
         onMoveToBottom={onMoveToBottom}
         onReject={onReject}
+        onGrade={onGrade}
       />,
     );
 

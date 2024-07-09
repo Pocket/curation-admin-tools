@@ -1,5 +1,6 @@
 import {
   ApprovedCorpusItem,
+  ApprovedItemGrade,
   CorpusItemSource,
   CorpusLanguage,
   CuratedStatus,
@@ -19,6 +20,7 @@ export const approvedCorpusItem: ApprovedCorpusItem = {
   publisher: 'Amazing Inventions',
   datePublished: '2024-01-03',
   topic: Topics.HealthFitness,
+  grade: ApprovedItemGrade.A,
   source: CorpusItemSource.Prospect,
   status: CuratedStatus.Recommendation,
   isCollection: false,

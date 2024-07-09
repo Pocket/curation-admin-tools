@@ -1,10 +1,14 @@
 import React, { ReactElement, useState } from 'react';
 import { Box, Grid } from '@mui/material';
 import {
+  ActionScreen,
+  ApprovedCorpusItem,
+  ApprovedItemGrade,
   ScheduledCorpusItem,
   ScheduledCorpusItemsResult,
   ScheduledItemSource,
   useRescheduleScheduledCorpusItemMutation,
+  useUpdateApprovedCorpusItemGradeMutation,
 } from '../../../api/generatedTypes';
 import {
   ScheduleDayFilterOptions,
@@ -96,6 +100,8 @@ export const ScheduleDayData: React.FC<ScheduleDayDataProps> = (
   // Prepare the "reschedule scheduled curated corpus item" mutation
   const [rescheduleItem] = useRescheduleScheduledCorpusItemMutation();
 
+  const [updateCorpusItemGrade] = useUpdateApprovedCorpusItemGradeMutation();
+
   /**
    * Pocket Hits items need to be returned in a pre-defined order. When the graph
    * is queried, scheduled items are returned sorted by the `updatedAt` value
@@ -120,6 +126,36 @@ export const ScheduleDayData: React.FC<ScheduleDayDataProps> = (
       rescheduleItem,
       { variables },
       `Success! Item moved to the bottom of the list.`,
+      undefined,
+      undefined,
+      refetch,
+    );
+  };
+
+  /**
+   * Assigns the given grade to the given item.
+   *
+   * @param item ApprovedCorpusItem
+   * @param grade ApprovedItemGrade
+   * @param actionScreen ActionScreen
+   */
+  const assignGradeToItem = (
+    item: ApprovedCorpusItem,
+    grade: ApprovedItemGrade,
+    actionScreen: ActionScreen,
+  ): void => {
+    const variables = {
+      data: {
+        externalId: item.externalId,
+        grade,
+        actionScreen,
+      },
+    };
+
+    runMutation(
+      updateCorpusItemGrade,
+      { variables },
+      `Curated item "${item.title.substring(0, 40)}..." successfully graded`,
       undefined,
       undefined,
       refetch,
@@ -204,6 +240,7 @@ export const ScheduleDayData: React.FC<ScheduleDayDataProps> = (
                         toggleRejectAndUnscheduleModal();
                       }
                     }}
+                    onGrade={assignGradeToItem}
                     currentScheduledDate={data.scheduledDate}
                     scheduledSurfaceGuid={currentScheduledSurfaceGuid}
                   />
