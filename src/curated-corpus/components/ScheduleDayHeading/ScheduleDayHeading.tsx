@@ -45,7 +45,7 @@ export const ScheduleDayHeading: React.FC<ScheduleDayHeadingProps> = (
         rowSpacing={3}
         justifyContent="space-between"
       >
-        <Grid item xs={5}>
+        <Grid item xs={12}>
           <Typography
             sx={{
               fontSize: '1.25rem',
@@ -60,7 +60,7 @@ export const ScheduleDayHeading: React.FC<ScheduleDayHeadingProps> = (
             {` (${data.syndicatedCount}/${data.totalCount} syndicated)`}
           </Typography>
         </Grid>
-        <Grid item xs={7}>
+        <Grid item xs={12}>
           <Stack
             direction="row"
             alignItems="center"

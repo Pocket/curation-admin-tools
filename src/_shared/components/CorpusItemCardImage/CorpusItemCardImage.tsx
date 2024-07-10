@@ -79,7 +79,9 @@ const getTopRightLabel = (
     return (
       <>
         <AutoFixHighOutlinedIcon fontSize="small" />
-        <Typography variant="caption">ML</Typography>
+        <Typography variant="caption">
+          {item.isSyndicated ? 'ML-Syndicated' : 'ML'}
+        </Typography>
       </>
     );
   }
