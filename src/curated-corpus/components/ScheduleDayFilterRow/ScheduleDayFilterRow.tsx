@@ -61,9 +61,13 @@ export const ScheduleDayFilterRow: React.FC<ScheduleDayFilterRowProps> = (
   // Round up all the different types of scheduled items we're interested in
   const typeList = [
     {
+      // For ML items, exclude ML-scheduled items that are also syndicated
+      // (these are shown in the next filter option, "ML-Syndicated")
       name: 'Ml',
       count: scheduledItems.filter(
-        (item) => item.source === ScheduledItemSource.Ml,
+        (item) =>
+          item.source === ScheduledItemSource.Ml &&
+          !item.approvedItem.isSyndicated,
       ).length,
     },
     {

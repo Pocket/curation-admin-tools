@@ -5,10 +5,7 @@ import { ScheduleDayFilterOptions, ScheduleDayFilterRow } from '../';
 import AddIcon from '@mui/icons-material/Add';
 import { curationPalette } from '../../../theme';
 import { DateTime } from 'luxon';
-import {
-  ScheduledCorpusItemsResult,
-  ScheduledItemSource,
-} from '../../../api/generatedTypes';
+import { ScheduledCorpusItemsResult } from '../../../api/generatedTypes';
 
 interface ScheduleDayHeadingProps {
   /**
@@ -39,13 +36,6 @@ export const ScheduleDayHeading: React.FC<ScheduleDayHeadingProps> = (
 ): ReactElement => {
   const { onAddItem, data, setFilters } = props;
 
-  // Figure out how many items are both ML-scheduled and Syndicated, since
-  // it's not available from the graph as a ready-to-use data point
-  const mlSyndicatedCount = data.items.filter(
-    (item) =>
-      item.source === ScheduledItemSource.Ml && item.approvedItem.isSyndicated,
-  ).length;
-
   return (
     <>
       <Grid
@@ -58,7 +48,7 @@ export const ScheduleDayHeading: React.FC<ScheduleDayHeadingProps> = (
         <Grid item xs={12}>
           <Typography
             sx={{
-              fontSize: '1.5rem',
+              fontSize: '1.25rem',
               fontWeight: 500,
               textTransform: 'capitalize',
               color: curationPalette.pocketBlack,
@@ -67,8 +57,7 @@ export const ScheduleDayHeading: React.FC<ScheduleDayHeadingProps> = (
             {DateTime.fromFormat(data.scheduledDate, 'yyyy-MM-dd')
               .setLocale('en')
               .toLocaleString(DateTime.DATE_FULL)}{' '}
-            {` (${mlSyndicatedCount} ML-syndicated, `}
-            {`${data.syndicatedCount} syndicated, ${data.totalCount} total)`}
+            {` (${data.syndicatedCount}/${data.totalCount} syndicated)`}
           </Typography>
         </Grid>
         <Grid item xs={12}>
