@@ -2,7 +2,6 @@ import React from 'react';
 import { Grid, Typography } from '@mui/material';
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { Modal, SharedFormButtons } from '../../../_shared/components';
-import { useStyles } from './DuplicateProspectModal.styles';
 
 interface DuplicateProspectModalProps {
   /**
@@ -27,7 +26,6 @@ interface DuplicateProspectModalProps {
 export const DuplicateProspectModal: React.FC<DuplicateProspectModalProps> = (
   props,
 ): JSX.Element => {
-  const classes = useStyles();
   const { isOpen, toggleModal, approvedItem } = props;
 
   /**
@@ -45,7 +43,11 @@ export const DuplicateProspectModal: React.FC<DuplicateProspectModalProps> = (
 
   return (
     <Modal open={isOpen} handleClose={toggleModal}>
-      <Grid container direction="column" className={classes.root}>
+      <Grid
+        container
+        direction="column"
+        sx={{ width: { xs: '100%', md: '800px' } }}
+      >
         <Grid item xs={12}>
           <h2>Duplicate Item</h2>
         </Grid>
@@ -55,7 +57,11 @@ export const DuplicateProspectModal: React.FC<DuplicateProspectModalProps> = (
           </Typography>
         </Grid>
         <Grid item xs={12}>
-          <Grid container spacing={1} className={classes.buttonContainer}>
+          <Grid
+            container
+            spacing={1}
+            sx={{ marginTop: '1.25rem', textAlign: 'center' }}
+          >
             <Grid item xs={12}>
               <Typography variant="subtitle1" align="center">
                 This item is already in the corpus
