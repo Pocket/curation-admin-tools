@@ -1,6 +1,9 @@
 import React, { ReactElement } from 'react';
 import { Grid } from '@mui/material';
 import {
+  ActionScreen,
+  ApprovedCorpusItem,
+  ApprovedItemGrade,
   ScheduledCorpusItem,
   ScheduledItemSource,
 } from '../../../api/generatedTypes';
@@ -40,6 +43,15 @@ interface ScheduledItemCardWrapperProps {
   onReject: VoidFunction;
 
   /**
+   * Callback for the "Grade" buttons
+   */
+  onGrade: (
+    item: ApprovedCorpusItem,
+    grade: ApprovedItemGrade,
+    actionScreen: ActionScreen,
+  ) => void;
+
+  /**
    * Current date that the schedule is being viewed for
    */
   currentScheduledDate: string;
@@ -60,6 +72,7 @@ export const ScheduledItemCardWrapper: React.FC<
     onReschedule,
     onEdit,
     onReject,
+    onGrade,
     currentScheduledDate,
     scheduledSurfaceGuid,
   } = props;
@@ -77,6 +90,7 @@ export const ScheduledItemCardWrapper: React.FC<
           onReschedule={onReschedule}
           onMoveToBottom={onMoveToBottom}
           onReject={onReject}
+          onGrade={onGrade}
         />
       </StyledScheduledItemCard>
     </Grid>
