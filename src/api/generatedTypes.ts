@@ -1549,8 +1549,6 @@ export enum ProspectType {
   RssLogistic = 'RSS_LOGISTIC',
   RssLogisticRecent = 'RSS_LOGISTIC_RECENT',
   SlateSchedulerV2 = 'SLATE_SCHEDULER_V2',
-  SyndicatedNew = 'SYNDICATED_NEW',
-  SyndicatedRerun = 'SYNDICATED_RERUN',
   Timespent = 'TIMESPENT',
   TimespentModeled = 'TIMESPENT_MODELED',
   TitleUrlModeled = 'TITLE_URL_MODELED',
