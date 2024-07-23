@@ -40,7 +40,7 @@ describe('helper functions related to prospects', () => {
     });
 
     it('returns a cut-down list of prospect types if only some are available for given Scheduled Surface', () => {
-      const types: ProspectType[] = [ProspectType.SyndicatedNew];
+      const types: ProspectType[] = [ProspectType.Recommended];
 
       const options = getProspectFilterOptions(types);
 
@@ -50,8 +50,8 @@ describe('helper functions related to prospects', () => {
       expect(options[0].code).to.be.an.empty.string;
       expect(options[0].name).to.equal('All Sources');
 
-      expect(options[1].code).to.equal(ProspectType.SyndicatedNew);
-      expect(options[1].name).to.equal('SyndicatedNew');
+      expect(options[1].code).to.equal(ProspectType.Recommended);
+      expect(options[1].name).to.equal('Recommended');
     });
   });
 
