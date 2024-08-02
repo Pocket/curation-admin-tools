@@ -13,7 +13,7 @@ export interface DropdownOption {
   code: string;
   name: string;
 }
-// This is a list of topics. The 15 "standard" topics + coronavirus.
+// This is a list of topics. The 16 "standard" topics + coronavirus.
 export const topics: DropdownOption[] = [
   { code: Topics.Business, name: 'Business' },
   { code: Topics.Career, name: 'Career' },
@@ -23,6 +23,7 @@ export const topics: DropdownOption[] = [
   { code: Topics.Food, name: 'Food' },
   { code: Topics.Gaming, name: 'Gaming' },
   { code: Topics.HealthFitness, name: 'Health & Fitness' },
+  { code: Topics.Home, name: 'Home' },
   { code: Topics.Parenting, name: 'Parenting' },
   { code: Topics.PersonalFinance, name: 'Personal Finance' },
   { code: Topics.Politics, name: 'Politics' },

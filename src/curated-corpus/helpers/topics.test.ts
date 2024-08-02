@@ -89,7 +89,7 @@ describe('helper functions related to topics', () => {
 
     it('returns a list of topics without "Coronavirus" if requested', () => {
       const topics = getGroupedTopicData(data, true, false);
-      expect(topics).to.be.an('array').with.lengthOf(15);
+      expect(topics).to.be.an('array').with.lengthOf(16);
     });
 
     it('returns a full list of topics if requested', () => {
