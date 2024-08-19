@@ -43,7 +43,7 @@ describe('helper functions related to topics', () => {
       expect(topics).to.be.an('array');
       // However, we're getting the entire list of topics here,
       // not just the ones stories belong to
-      expect(topics).to.have.lengthOf(16);
+      expect(topics).to.have.lengthOf(17);
 
       // And we expect to see the story topics, with the correct counts
       expect(topics).to.contain.deep.members([
