@@ -162,7 +162,8 @@ export const ScheduleDayData: React.FC<ScheduleDayDataProps> = (
                 filters.topics === getDisplayTopic(item.approvedItem.topic) ||
                 filters.publishers === item.approvedItem.publisher ||
                 (filters.types === 'Ml' &&
-                  item.source === ScheduledItemSource.Ml) ||
+                  item.source === ScheduledItemSource.Ml &&
+                  !item.approvedItem.isSyndicated) ||
                 (filters.types == 'ML-Syndicated' &&
                   item.source === ScheduledItemSource.Ml &&
                   item.approvedItem.isSyndicated) ||
