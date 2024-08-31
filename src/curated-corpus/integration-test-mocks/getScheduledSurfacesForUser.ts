@@ -1,6 +1,6 @@
-import { ProspectType, ScheduledSurface } from '../../api/generatedTypes';
-import { getScheduledSurfacesForUser } from '../../api/queries/getScheduledSurfacesForUser';
-import { constructMock } from './utils';
+import {ProspectType, ScheduledSurface} from '../../api/generatedTypes';
+import {getScheduledSurfacesForUser} from '../../api/queries/getScheduledSurfacesForUser';
+import {constructMock} from './utils';
 
 /**
  * The source array with all the scheduled surfaces available in the Curation Tool.
@@ -25,6 +25,7 @@ const allScheduledSurfaces: ScheduledSurface[] = [
       ProspectType.RssLogistic,
       ProspectType.RssLogisticRecent,
       ProspectType.SlateSchedulerV2,
+      ProspectType.ExternalEditorial,
     ],
   },
   {
@@ -37,6 +38,7 @@ const allScheduledSurfaces: ScheduledSurface[] = [
       ProspectType.DomainAllowlist,
       ProspectType.Dismissed,
       ProspectType.TitleUrlModeled,
+      ProspectType.ExternalEditorial,
     ],
   },
   {
