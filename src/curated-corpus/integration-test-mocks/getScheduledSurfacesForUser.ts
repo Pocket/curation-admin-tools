@@ -17,8 +17,6 @@ const allScheduledSurfaces: ScheduledSurface[] = [
       ProspectType.TopSaved,
       ProspectType.DomainAllowlist,
       ProspectType.Dismissed,
-      ProspectType.SyndicatedRerun,
-      ProspectType.SyndicatedNew,
       ProspectType.CountsModeled,
       ProspectType.TimespentModeled,
       ProspectType.TitleUrlModeled,
