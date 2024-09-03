@@ -1,6 +1,6 @@
-import {ProspectType, ScheduledSurface} from '../../api/generatedTypes';
-import {getScheduledSurfacesForUser} from '../../api/queries/getScheduledSurfacesForUser';
-import {constructMock} from './utils';
+import { ProspectType, ScheduledSurface } from '../../api/generatedTypes';
+import { getScheduledSurfacesForUser } from '../../api/queries/getScheduledSurfacesForUser';
+import { constructMock } from './utils';
 
 /**
  * The source array with all the scheduled surfaces available in the Curation Tool.
