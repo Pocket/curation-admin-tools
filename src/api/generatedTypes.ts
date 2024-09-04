@@ -1562,7 +1562,7 @@ export enum ProspectType {
   CountsModeled = 'COUNTS_MODELED',
   Dismissed = 'DISMISSED',
   DomainAllowlist = 'DOMAIN_ALLOWLIST',
-  ExternalEditorial = 'EXTERNAL_EDITORIAL',
+  PublisherSubmitted = 'PUBLISHER_SUBMITTED',
   Recommended = 'RECOMMENDED',
   RssLogistic = 'RSS_LOGISTIC',
   RssLogisticRecent = 'RSS_LOGISTIC_RECENT',

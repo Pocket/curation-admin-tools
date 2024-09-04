@@ -23,7 +23,7 @@ const allScheduledSurfaces: ScheduledSurface[] = [
       ProspectType.RssLogistic,
       ProspectType.RssLogisticRecent,
       ProspectType.SlateSchedulerV2,
-      ProspectType.ExternalEditorial,
+      ProspectType.PublisherSubmitted,
     ],
   },
   {
@@ -36,7 +36,7 @@ const allScheduledSurfaces: ScheduledSurface[] = [
       ProspectType.DomainAllowlist,
       ProspectType.Dismissed,
       ProspectType.TitleUrlModeled,
-      ProspectType.ExternalEditorial,
+      ProspectType.PublisherSubmitted,
     ],
   },
   {
