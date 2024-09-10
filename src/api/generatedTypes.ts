@@ -2574,6 +2574,7 @@ export type CuratedItemDataFragment = {
   status: CuratedStatus;
   source: CorpusItemSource;
   topic: string;
+  grade?: ApprovedItemGrade | null;
   isCollection: boolean;
   isTimeSensitive: boolean;
   isSyndicated: boolean;
@@ -2730,6 +2731,7 @@ export type ScheduledItemDataFragment = {
     status: CuratedStatus;
     source: CorpusItemSource;
     topic: string;
+    grade?: ApprovedItemGrade | null;
     isCollection: boolean;
     isTimeSensitive: boolean;
     isSyndicated: boolean;
@@ -2788,6 +2790,7 @@ export type CreateApprovedCorpusItemMutation = {
     status: CuratedStatus;
     source: CorpusItemSource;
     topic: string;
+    grade?: ApprovedItemGrade | null;
     isCollection: boolean;
     isTimeSensitive: boolean;
     isSyndicated: boolean;
@@ -3017,6 +3020,7 @@ export type CreateScheduledCorpusItemMutation = {
       status: CuratedStatus;
       source: CorpusItemSource;
       topic: string;
+      grade?: ApprovedItemGrade | null;
       isCollection: boolean;
       isTimeSensitive: boolean;
       isSyndicated: boolean;
@@ -3118,6 +3122,7 @@ export type DeleteScheduledItemMutation = {
       status: CuratedStatus;
       source: CorpusItemSource;
       topic: string;
+      grade?: ApprovedItemGrade | null;
       isCollection: boolean;
       isTimeSensitive: boolean;
       isSyndicated: boolean;
@@ -3214,6 +3219,7 @@ export type RejectApprovedItemMutation = {
     status: CuratedStatus;
     source: CorpusItemSource;
     topic: string;
+    grade?: ApprovedItemGrade | null;
     isCollection: boolean;
     isTimeSensitive: boolean;
     isSyndicated: boolean;
@@ -3319,6 +3325,7 @@ export type RescheduleScheduledCorpusItemMutation = {
       status: CuratedStatus;
       source: CorpusItemSource;
       topic: string;
+      grade?: ApprovedItemGrade | null;
       isCollection: boolean;
       isTimeSensitive: boolean;
       isSyndicated: boolean;
@@ -3363,6 +3370,51 @@ export type UpdateApprovedCorpusItemMutation = {
     status: CuratedStatus;
     source: CorpusItemSource;
     topic: string;
+    grade?: ApprovedItemGrade | null;
+    isCollection: boolean;
+    isTimeSensitive: boolean;
+    isSyndicated: boolean;
+    createdBy: string;
+    createdAt: number;
+    updatedBy?: string | null;
+    updatedAt: number;
+    authors: Array<{
+      __typename?: 'CorpusItemAuthor';
+      name: string;
+      sortOrder: number;
+    }>;
+    scheduledSurfaceHistory: Array<{
+      __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
+      externalId: string;
+      createdBy: string;
+      scheduledDate: any;
+      scheduledSurfaceGuid: string;
+    }>;
+  };
+};
+
+export type UpdateApprovedCorpusItemGradeMutationVariables = Exact<{
+  data: UpdateApprovedCorpusItemGradeInput;
+}>;
+
+export type UpdateApprovedCorpusItemGradeMutation = {
+  __typename?: 'Mutation';
+  updateApprovedCorpusItemGrade: {
+    __typename?: 'ApprovedCorpusItem';
+    externalId: string;
+    prospectId?: string | null;
+    title: string;
+    language: CorpusLanguage;
+    publisher: string;
+    datePublished?: any | null;
+    url: any;
+    hasTrustedDomain: boolean;
+    imageUrl: any;
+    excerpt: string;
+    status: CuratedStatus;
+    source: CorpusItemSource;
+    topic: string;
+    grade?: ApprovedItemGrade | null;
     isCollection: boolean;
     isTimeSensitive: boolean;
     isSyndicated: boolean;
@@ -3890,6 +3942,7 @@ export type GetApprovedItemByUrlQuery = {
     status: CuratedStatus;
     source: CorpusItemSource;
     topic: string;
+    grade?: ApprovedItemGrade | null;
     isCollection: boolean;
     isTimeSensitive: boolean;
     isSyndicated: boolean;
@@ -3947,6 +4000,7 @@ export type GetApprovedItemsQuery = {
         status: CuratedStatus;
         source: CorpusItemSource;
         topic: string;
+        grade?: ApprovedItemGrade | null;
         isCollection: boolean;
         isTimeSensitive: boolean;
         isSyndicated: boolean;
@@ -4466,6 +4520,7 @@ export type GetScheduledItemsQuery = {
         status: CuratedStatus;
         source: CorpusItemSource;
         topic: string;
+        grade?: ApprovedItemGrade | null;
         isCollection: boolean;
         isTimeSensitive: boolean;
         isSyndicated: boolean;
@@ -4935,6 +4990,7 @@ export const CuratedItemDataFragmentDoc = gql`
     status
     source
     topic
+    grade
     isCollection
     isTimeSensitive
     isSyndicated
@@ -6057,6 +6113,60 @@ export type UpdateApprovedCorpusItemMutationOptions =
   Apollo.BaseMutationOptions<
     UpdateApprovedCorpusItemMutation,
     UpdateApprovedCorpusItemMutationVariables
+  >;
+export const UpdateApprovedCorpusItemGradeDocument = gql`
+  mutation updateApprovedCorpusItemGrade(
+    $data: UpdateApprovedCorpusItemGradeInput!
+  ) {
+    updateApprovedCorpusItemGrade(data: $data) {
+      ...CuratedItemData
+    }
+  }
+  ${CuratedItemDataFragmentDoc}
+`;
+export type UpdateApprovedCorpusItemGradeMutationFn = Apollo.MutationFunction<
+  UpdateApprovedCorpusItemGradeMutation,
+  UpdateApprovedCorpusItemGradeMutationVariables
+>;
+
+/**
+ * __useUpdateApprovedCorpusItemGradeMutation__
+ *
+ * To run a mutation, you first call `useUpdateApprovedCorpusItemGradeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateApprovedCorpusItemGradeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateApprovedCorpusItemGradeMutation, { data, loading, error }] = useUpdateApprovedCorpusItemGradeMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateApprovedCorpusItemGradeMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateApprovedCorpusItemGradeMutation,
+    UpdateApprovedCorpusItemGradeMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateApprovedCorpusItemGradeMutation,
+    UpdateApprovedCorpusItemGradeMutationVariables
+  >(UpdateApprovedCorpusItemGradeDocument, options);
+}
+export type UpdateApprovedCorpusItemGradeMutationHookResult = ReturnType<
+  typeof useUpdateApprovedCorpusItemGradeMutation
+>;
+export type UpdateApprovedCorpusItemGradeMutationResult =
+  Apollo.MutationResult<UpdateApprovedCorpusItemGradeMutation>;
+export type UpdateApprovedCorpusItemGradeMutationOptions =
+  Apollo.BaseMutationOptions<
+    UpdateApprovedCorpusItemGradeMutation,
+    UpdateApprovedCorpusItemGradeMutationVariables
   >;
 export const UpdateCollectionDocument = gql`
   mutation updateCollection($data: UpdateCollectionInput!) {
