@@ -8,6 +8,7 @@ export const validationSchema = yup
     [RejectionReason.OffensiveMaterial]: yup.boolean(),
     [RejectionReason.TimeSensitive]: yup.boolean(),
     [RejectionReason.Misinformation]: yup.boolean(),
+    [RejectionReason.PublisherRequest]: yup.boolean(),
     [RejectionReason.Other]: yup.boolean(),
   })
   .test('reason', '', (obj) => {
@@ -18,6 +19,7 @@ export const validationSchema = yup
       obj[RejectionReason.OffensiveMaterial] ||
       obj[RejectionReason.TimeSensitive] ||
       obj[RejectionReason.Misinformation] ||
+      obj[RejectionReason.PublisherRequest] ||
       obj[RejectionReason.Other]
     ) {
       return true;

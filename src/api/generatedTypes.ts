@@ -1846,6 +1846,7 @@ export enum RejectionReason {
   Paywall = 'PAYWALL',
   PoliticalOpinion = 'POLITICAL_OPINION',
   PublisherQuality = 'PUBLISHER_QUALITY',
+  PublisherRequest = 'PUBLISHER_REQUEST',
   TimeSensitive = 'TIME_SENSITIVE',
 }
 
