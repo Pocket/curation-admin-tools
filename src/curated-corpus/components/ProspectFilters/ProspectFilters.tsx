@@ -9,7 +9,6 @@ import {
 } from '@mui/material';
 import { Prospect } from '../../../api/generatedTypes';
 import { DropDownFilter } from '../DropDownFilter/DropDownFilter';
-// import { ProspectDropDownFilter } from '../ProspectDropDownFilter/ProspectDropDownFilter';
 import { getDisplayTopic, getGroupedTopicData } from '../../helpers/topics';
 import { curationPalette } from '../../../theme';
 

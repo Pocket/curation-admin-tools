@@ -2,7 +2,7 @@ import React, { ReactElement, useEffect, useState } from 'react';
 import { Button } from '../../../_shared/components';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
-import { ScheduleDayFilterOptions, ScheduleSummary } from '../';
+import { ScheduleDayFilterOptions, StoriesSummary } from '../';
 import { ProspectFilerOptions } from '../ProspectFilters/ProspectFilters';
 import { StyledMenu } from '../../../_shared/styled';
 import { MenuItem } from '@mui/material';
@@ -11,7 +11,7 @@ interface DropDownFilterProps {
   /**
    * Options to show in the filter dropdown.
    */
-  filterData: ScheduleSummary[];
+  filterData: StoriesSummary[];
 
   /**
    * The copy to show on the filter button, e.g. "Topics" or "Publishers"

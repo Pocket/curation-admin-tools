@@ -9,7 +9,7 @@ import {
   TableRow,
 } from '@mui/material';
 
-export type ScheduleSummary = {
+export type StoriesSummary = {
   /**
    * The name of the line item in the table to be displayed.
    * Example: topic.
@@ -18,7 +18,7 @@ export type ScheduleSummary = {
 
   /**
    * The number associated with the line item.
-   * Example: number of stories scheduled for a given topic.
+   * Example: number of stories for a given topic.
    */
   count: number;
 };
@@ -32,7 +32,7 @@ interface ScheduleSummaryCardProps {
   /**
    * List of items to display in table format.
    */
-  items: ScheduleSummary[];
+  items: StoriesSummary[];
 }
 
 /**

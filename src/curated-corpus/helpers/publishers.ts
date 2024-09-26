@@ -1,12 +1,12 @@
-import { ScheduleSummary } from '../components';
+import { StoriesSummary } from '../components';
 
 /**
  * Extracts a summary of publisher data from scheduled corpus item data.
  *
  * @param data
  */
-export const getGroupedPublisherData = (data: string[]): ScheduleSummary[] => {
-  const publishers: ScheduleSummary[] = [];
+export const getGroupedPublisherData = (data: string[]): StoriesSummary[] => {
+  const publishers: StoriesSummary[] = [];
 
   data.forEach((publisher) => {
     const existingEntry = publishers.find((entry) => entry.name === publisher);

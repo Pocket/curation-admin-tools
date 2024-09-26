@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { ProspectFilters } from './ProspectFilters';
 import { CorpusLanguage, Prospect, Topics } from '../../../api/generatedTypes';
-import { ScheduleSummary } from '../ScheduleSummaryCard/ScheduleSummaryCard';
+import { StoriesSummary } from '../ScheduleSummaryCard/ScheduleSummaryCard';
 
 describe('The ProspectFilters component', () => {
   const prospects: Prospect[] = [
@@ -54,7 +54,7 @@ describe('The ProspectFilters component', () => {
 
   const mockSetFilters = jest.fn();
 
-  const filterData: ScheduleSummary[] = [
+  const filterData: StoriesSummary[] = [
     { name: 'Topic 1', count: 10 },
     { name: 'Topic 2', count: 20 },
     { name: 'Topic 3', count: 0 },
