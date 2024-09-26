@@ -169,6 +169,8 @@ export const DropDownFilter: React.FC<DropDownFilterProps> = (
                 handleMenuItemClick(event, index, filter.name)
               }
             >
+              {/* Capitalise the ML filter only - as we filter by an object property (string),
+              we need to keep the type name ("Ml") as it comes from the graph everywhere else */}
               {filter.name === 'Ml' ? 'ML' : filter.name} {filter.count}
             </MenuItem>
           );
