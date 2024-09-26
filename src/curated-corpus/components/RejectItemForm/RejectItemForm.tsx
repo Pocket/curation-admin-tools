@@ -38,6 +38,7 @@ export const RejectItemForm: React.FC<
       [RejectionReason.OffensiveMaterial]: false,
       [RejectionReason.TimeSensitive]: false,
       [RejectionReason.Misinformation]: false,
+      [RejectionReason.PublisherRequest]: false,
       [RejectionReason.Other]: false,
       reason: '',
     },
@@ -97,10 +98,6 @@ export const RejectItemForm: React.FC<
               }
               label="Offensive material"
             />
-          </FormGroup>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <FormGroup>
             <FormControlLabel
               control={
                 <Checkbox
@@ -112,6 +109,10 @@ export const RejectItemForm: React.FC<
               }
               label="Time sensitive"
             />
+          </FormGroup>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <FormGroup>
             <FormControlLabel
               control={
                 <Checkbox
@@ -122,6 +123,17 @@ export const RejectItemForm: React.FC<
                 />
               }
               label="Misinformation"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  color="primary"
+                  {...formik.getFieldProps({
+                    name: RejectionReason.PublisherRequest,
+                  })}
+                />
+              }
+              label="Publisher Request"
             />
             <FormControlLabel
               control={

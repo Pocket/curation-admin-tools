@@ -626,6 +626,17 @@ export type CreateRejectedCorpusItemInput = {
   url: Scalars['Url'];
 };
 
+/**
+ * Input data for marking the given scheduled surface as reviewed
+ * by human curators for a given date.
+ */
+export type CreateScheduleReviewInput = {
+  /** The date of the schedule that was reviewed, in YYYY-MM-DD format. */
+  scheduledDate: Scalars['Date'];
+  /** The GUID of the scheduledSurface that was reviewed. */
+  scheduledSurfaceGuid: Scalars['ID'];
+};
+
 /** Input data for creating a scheduled entry for an Approved Item on a Scheduled Surface. */
 export type CreateScheduledCorpusItemInput = {
   /**
@@ -1155,6 +1166,8 @@ export type Mutation = {
   createLabel: Label;
   /** Creates a Rejected Item. */
   createRejectedCorpusItem: RejectedCorpusItem;
+  /** Marks the given scheduled surface as reviewed by human curators for a given date. */
+  createScheduleReview: ScheduleReview;
   /** Creates a Scheduled Surface Scheduled Item. */
   createScheduledCorpusItem: ScheduledCorpusItem;
   /** Deletes a CollectionPartnerAssociation. */
@@ -1280,6 +1293,10 @@ export type MutationCreateLabelArgs = {
 
 export type MutationCreateRejectedCorpusItemArgs = {
   data: CreateRejectedCorpusItemInput;
+};
+
+export type MutationCreateScheduleReviewArgs = {
+  data: CreateScheduleReviewInput;
 };
 
 export type MutationCreateScheduledCorpusItemArgs = {
@@ -1545,6 +1562,7 @@ export enum ProspectType {
   CountsModeled = 'COUNTS_MODELED',
   Dismissed = 'DISMISSED',
   DomainAllowlist = 'DOMAIN_ALLOWLIST',
+  PublisherSubmitted = 'PUBLISHER_SUBMITTED',
   Recommended = 'RECOMMENDED',
   RssLogistic = 'RSS_LOGISTIC',
   RssLogisticRecent = 'RSS_LOGISTIC_RECENT',
@@ -1828,6 +1846,7 @@ export enum RejectionReason {
   Paywall = 'PAYWALL',
   PoliticalOpinion = 'POLITICAL_OPINION',
   PublisherQuality = 'PUBLISHER_QUALITY',
+  PublisherRequest = 'PUBLISHER_REQUEST',
   TimeSensitive = 'TIME_SENSITIVE',
 }
 
@@ -1889,6 +1908,19 @@ export type RescheduleScheduledCorpusItemInput = {
   source: ScheduledItemSource;
 };
 
+/** Contains information about the human curator who reviewed the schedule for a given date and scheduled surface. */
+export type ScheduleReview = {
+  __typename?: 'ScheduleReview';
+  /** A Unix timestamp of when the scheduled was last reviewed. */
+  reviewedAt: Scalars['Date'];
+  /** A single sign-on user identifier of the user who reviewed the schedule. */
+  reviewedBy: Scalars['String'];
+  /** The date of the schedule that was reviewed, in YYYY-MM-DD format. */
+  scheduledDate: Scalars['Date'];
+  /** The GUID of the scheduledSurface that was reviewed. */
+  scheduledSurfaceGuid: Scalars['ID'];
+};
+
 /**
  * A scheduled entry for an Approved Item to appear on a Scheduled Surface.
  * For example, a story that is scheduled to appear on December 31st, 2021 on the New Tab in Firefox for the US audience.
@@ -1935,6 +1967,8 @@ export type ScheduledCorpusItemsResult = {
   collectionCount: Scalars['Int'];
   /** An array of items for a given Scheduled Surface */
   items: Array<ScheduledCorpusItem>;
+  /** The human review status of the schedule for the given scheduledSurfaceGuid & scheduledDate. */
+  scheduleReview?: Maybe<ScheduleReview>;
   /** The date items are scheduled for, in YYYY-MM-DD format. */
   scheduledDate: Scalars['Date'];
   /** The number of syndicated articles for the scheduled date. */
@@ -2104,6 +2138,7 @@ export enum Topics {
   Food = 'FOOD',
   Gaming = 'GAMING',
   HealthFitness = 'HEALTH_FITNESS',
+  Home = 'HOME',
   Parenting = 'PARENTING',
   PersonalFinance = 'PERSONAL_FINANCE',
   Politics = 'POLITICS',
