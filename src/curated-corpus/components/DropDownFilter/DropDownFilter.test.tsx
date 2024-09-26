@@ -4,12 +4,12 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../../../theme';
-import { ScheduleDayFilter } from '..';
+import { DropDownFilter } from '..';
 import { Maybe } from '../../../api/generatedTypes';
 import { getDisplayTopic, getGroupedTopicData } from '../../helpers/topics';
 import { scheduledItems } from '../../integration-test-mocks/getScheduledItems';
 
-describe('The ScheduleDayFilter component', () => {
+describe('The DropDownFilter component', () => {
   // Extract all topics from scheduled item data
   const topics =
     scheduledItems.map(
@@ -23,30 +23,30 @@ describe('The ScheduleDayFilter component', () => {
     render(
       <MemoryRouter>
         <ThemeProvider theme={theme}>
-          <ScheduleDayFilter
+          <DropDownFilter
             filterData={topicList}
             filterName={'Topics'}
             itemCount={60}
-            setFilters={jest.fn()}
+            setScheduleFilters={jest.fn()}
+            setProspectFilters={jest.fn()}
           />
         </ThemeProvider>
       </MemoryRouter>,
     );
 
-    // This is the name of the filter: it is visible on the page
-    const button = screen.getByText(/Topics/i);
+    // Check for the button text; adjust based on the default selected option
+    const button = screen.getByText(/All/i); // Adjust to what you expect
     expect(button).toBeInTheDocument();
 
-    // Let's open up the dropdown
+    // Open the dropdown
     userEvent.click(button);
 
-    // Check that each topic displayed has a name
+    // Verify topic menu items
     topicList.forEach((topic) => {
       const menuOption = screen.getByText(new RegExp(topic.name, 'i'));
       expect(menuOption).toBeInTheDocument();
 
-      // If there are no stories for a given topic, this menu option
-      // should be disabled.
+      // Check if the topic option is disabled if no stories for topic found
       if (topic.count === 0) {
         expect(menuOption).toHaveAttribute('aria-disabled');
       } else {
@@ -54,28 +54,35 @@ describe('The ScheduleDayFilter component', () => {
       }
     });
   });
-
-  it('should call the "setFilters" function when a menu option is chosen', () => {
+  it('should call the "setFilters" function', async () => {
     const setFilters = jest.fn();
     render(
       <MemoryRouter>
         <ThemeProvider theme={theme}>
-          <ScheduleDayFilter
+          <DropDownFilter
             filterData={topicList}
             filterName={'Topics'}
             itemCount={60}
-            setFilters={setFilters}
+            setScheduleFilters={setFilters}
+            setProspectFilters={setFilters}
           />
         </ThemeProvider>
       </MemoryRouter>,
     );
 
-    // Let's open up the dropdown
-    userEvent.click(screen.getByText(/Topics/i));
+    const button = screen.getByText(/All/i);
+    expect(button).toBeInTheDocument();
 
-    // And click on a topic
-    userEvent.click(screen.getByText(/Personal Finance/i));
+    // Open the dropdown
+    userEvent.click(button);
 
-    expect(setFilters).toHaveBeenCalled();
+    // Check each topic option for its state and click if enabled
+    topicList.forEach((topic) => {
+      const menuOption = screen.getByText(new RegExp(topic.name, 'i'));
+      if (!menuOption.closest('li')?.hasAttribute('aria-disabled')) {
+        userEvent.click(menuOption);
+        expect(setFilters).toHaveBeenCalled();
+      }
+    });
   });
 });

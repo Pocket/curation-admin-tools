@@ -5,9 +5,30 @@ import {
   Grid,
   Switch,
   TextField,
+  Typography,
 } from '@mui/material';
+import { Prospect } from '../../../api/generatedTypes';
+import { DropDownFilter } from '../DropDownFilter/DropDownFilter';
+// import { ProspectDropDownFilter } from '../ProspectDropDownFilter/ProspectDropDownFilter';
+import { getDisplayTopic, getGroupedTopicData } from '../../helpers/topics';
+import { curationPalette } from '../../../theme';
 
-interface ProspectPublisherFilterProps {
+export interface ProspectFilerOptions {
+  topics: string;
+}
+
+interface ProspectFiltersProps {
+  /**
+   * prospect items - to summarise in the filters
+   */
+  prospects: Prospect[];
+
+  /**
+   * Callback to set filters on the Prospecting Page
+   */
+  setProspectMetadataFilters: React.Dispatch<
+    React.SetStateAction<ProspectFilerOptions>
+  >;
   /**
    * What to filter the publisher by. For example, entering 'new' will
    * filter for "New York Times" and any other publisher containing the string
@@ -58,15 +79,17 @@ interface ProspectPublisherFilterProps {
 
 /**
  * This component contains markup for a publisher filter and exclude/include
- * switch used on the Prospecting page.
+ * switch & topic filter used on the Prospecting page.
  *
  * @param props
  * @constructor
  */
-export const ProspectPublisherFilter: React.FC<ProspectPublisherFilterProps> = (
+export const ProspectFilters: React.FC<ProspectFiltersProps> = (
   props,
 ): JSX.Element => {
   const {
+    prospects,
+    setProspectMetadataFilters,
     excludePublisherSwitch,
     filterByPublisher,
     sortByPublishedDate,
@@ -76,6 +99,13 @@ export const ProspectPublisherFilter: React.FC<ProspectPublisherFilterProps> = (
     sortByTimeToRead,
     handleSortByTimeToRead,
   } = props;
+
+  // Extract all topics from prospects item data
+  const topics =
+    prospects.map((prospect: Prospect) => getDisplayTopic(prospect.topic)) ??
+    [];
+
+  const topicList = getGroupedTopicData(topics, true, false);
 
   return (
     <Grid container justifyContent={'flex-start'}>
@@ -96,6 +126,7 @@ export const ProspectPublisherFilter: React.FC<ProspectPublisherFilterProps> = (
             <Switch checked={excludePublisherSwitch} onChange={onChange} />
           }
           label={excludePublisherSwitch ? 'Exclude' : 'Include'}
+          labelPlacement={'top'} // Ensures the label is on top of the switch
         />
       </FormGroup>
       <FormGroup>
@@ -108,6 +139,7 @@ export const ProspectPublisherFilter: React.FC<ProspectPublisherFilterProps> = (
             />
           }
           label={'Published Date'}
+          labelPlacement={'top'} // Ensures the label is on top of the switch
         />
       </FormGroup>
       <FormGroup>
@@ -120,8 +152,25 @@ export const ProspectPublisherFilter: React.FC<ProspectPublisherFilterProps> = (
             />
           }
           label={'Time to Read'}
+          labelPlacement={'top'} // Ensures the label is on top of the switch
         />
       </FormGroup>
+      {/*Topic Filter*/}
+      {prospects.length > 0 && (
+        <FormGroup sx={{ mx: 1, mb: 2 }}>
+          <Typography
+            sx={{ fontSize: '1.0rem', color: curationPalette.regularGrey }}
+          >
+            Filter by Topics:
+          </Typography>
+          <DropDownFilter
+            filterData={topicList}
+            filterName="topics"
+            itemCount={prospects.length}
+            setProspectFilters={setProspectMetadataFilters}
+          />
+        </FormGroup>
+      )}
     </Grid>
   );
 };

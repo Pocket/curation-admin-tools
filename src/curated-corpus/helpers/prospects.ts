@@ -13,6 +13,7 @@ import {
   UrlMetadata,
 } from '../../api/generatedTypes';
 import { transformAuthors } from '../../_shared/utils/transformAuthors';
+import { DateTime } from 'luxon';
 
 const testProspect: Prospect = {
   id: 'test-id',
@@ -158,4 +159,55 @@ export const transformUrlMetaDataToProspect = (
     prospectType: '',
     scheduledSurfaceGuid: '',
   };
+};
+
+export const getFilteredProspects = (
+  prospects: Prospect[],
+  filterByPublisher: string,
+  excludePublisherSwitch: boolean,
+): Prospect[] => {
+  const filteredProspects: Prospect[] = [];
+
+  prospects.forEach((prospect: Prospect) => {
+    if (prospect.rejectedCorpusItem) {
+      return; // Skip rejected items
+    }
+
+    // Check filter conditions
+    if (filterByPublisher.length > 2 && prospect.publisher) {
+      const publisherLower = prospect.publisher.toLowerCase();
+      const filterLower = filterByPublisher.toLowerCase();
+
+      if (
+        (excludePublisherSwitch && publisherLower.includes(filterLower)) ||
+        (!excludePublisherSwitch && !publisherLower.includes(filterLower))
+      ) {
+        return; // Exclude based on filter
+      }
+    }
+
+    // Check for approved corpus items
+    if (prospect.approvedCorpusItem) {
+      const { scheduledSurfaceHistory } = prospect.approvedCorpusItem;
+      // if the prospect has an approvedItem meaning it is in the corpus
+      // check if it has a schedule history
+      if (scheduledSurfaceHistory.length) {
+        // Get the most recent scheduled date for the prospect. Note the scheduled dates are returned in descending order by the api
+        const lastScheduledDate = DateTime.fromISO(
+          scheduledSurfaceHistory[0].scheduledDate,
+        );
+        // Hide the prospect if the last scheduled date of the prospect is within the 14 days before and after today's date
+        if (
+          lastScheduledDate >= DateTime.local().minus({ days: 14 }) &&
+          lastScheduledDate <= DateTime.local().plus({ days: 14 })
+        ) {
+          return; // Exclude if within the 14-day window
+        }
+      }
+    }
+
+    filteredProspects.push(prospect); // Include prospect
+  });
+
+  return filteredProspects;
 };

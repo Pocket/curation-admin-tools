@@ -13,7 +13,7 @@ import {
   DuplicateProspectModal,
   ExistingProspectCard,
   ProspectListCard,
-  ProspectPublisherFilter,
+  ProspectFilters,
   RefreshProspectsModal,
   RejectItemModal,
   ScheduleItemModal,
@@ -43,6 +43,7 @@ import {
 } from '../../../_shared/hooks';
 import { downloadAndUploadApprovedItemImageToS3 } from '../../helpers/helperFunctions';
 import {
+  getFilteredProspects,
   getProspectFilterOptions,
   transformProspectToApprovedItem,
 } from '../../helpers/prospects';
@@ -50,10 +51,18 @@ import { FormikHelpers, FormikValues } from 'formik';
 import { DropdownOption } from '../../helpers/definitions';
 import { EmptyState } from './EmptyState';
 import { transformAuthors } from '../../../_shared/utils/transformAuthors';
+import { getDisplayTopic } from '../../helpers/topics';
+import { ProspectFilerOptions } from '../../components/ProspectFilters/ProspectFilters';
 
 const distantPast = new Date('1970-01-01Z00:00:00:000').getTime();
 
 export const ProspectingPage: React.FC = (): JSX.Element => {
+  const initialProspectFiltersState: ProspectFilerOptions = {
+    topics: 'All',
+  };
+  const [prospectMetadataFilters, setProspectMetadataFilters] =
+    useState<ProspectFilerOptions>(initialProspectFiltersState);
+
   // set up the initial scheduled surface guid value (nothing at this point)
   const [currentScheduledSurfaceGuid, setCurrentScheduledSurfaceGuid] =
     useState('');
@@ -621,7 +630,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   // and most useful to curators, option
   const [excludePublisherSwitch, setExcludePublisherSwitch] = useState(true);
 
-  // Toggle the exclude/include switch - passed on to the ProspectPublisherFilter component
+  // Toggle the exclude/include switch - passed on to the ProspectFilters component
   const toggleExcludePublisherSwitch = () => {
     setExcludePublisherSwitch((prev) => !prev);
   };
@@ -823,7 +832,13 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
               </Box>
             </Grid>
             <Grid item xs={12}>
-              <ProspectPublisherFilter
+              <ProspectFilters
+                prospects={getFilteredProspects(
+                  prospects,
+                  filterByPublisher,
+                  excludePublisherSwitch,
+                )}
+                setProspectMetadataFilters={setProspectMetadataFilters}
                 filterByPublisher={filterByPublisher}
                 setFilterByPublisher={setFilterByPublisher}
                 onChange={toggleExcludePublisherSwitch}
@@ -840,98 +855,64 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
 
           {!prospects && <HandleApiResponse loading={loading} error={error} />}
           {showEmptyState && <EmptyState />}
-
           {prospects &&
-            prospects.map((prospect: Prospect) => {
-              if (prospect.rejectedCorpusItem) {
-                // If an item was rejected, lets just not show it
-                return;
-              }
-
-              // Filter the prospects already pre-loaded on the page
-              if (filterByPublisher.length > 2 && prospect.publisher) {
-                // Exclude prospects that match the filter
-                if (
-                  excludePublisherSwitch &&
-                  prospect.publisher
-                    .toLowerCase()
-                    .includes(filterByPublisher.toLowerCase())
-                ) {
-                  return;
-                }
-                // Include prospects that match the filter
-                else if (
-                  !excludePublisherSwitch &&
-                  !prospect.publisher
-                    .toLowerCase()
-                    .includes(filterByPublisher.toLowerCase())
-                ) {
-                  return;
-                }
-              }
-
-              if (prospect.approvedCorpusItem) {
-                // if the prospect has an approvedItem meaning it is in the corpus
-                // check if it has a schedule history
-                if (
-                  prospect.approvedCorpusItem.scheduledSurfaceHistory.length
-                ) {
-                  // Get the most recent scheduled date for the prospect. Note the scheduled dates are returned in descending order by the api
-                  const lastScheduledDate = DateTime.fromISO(
-                    prospect.approvedCorpusItem?.scheduledSurfaceHistory[0]
-                      .scheduledDate,
+            getFilteredProspects(
+              prospects,
+              filterByPublisher,
+              excludePublisherSwitch,
+            ).map((prospect: Prospect) => {
+              if (
+                prospectMetadataFilters.topics === 'All' ||
+                prospectMetadataFilters.topics ===
+                  getDisplayTopic(prospect.topic)
+              ) {
+                if (prospect.approvedCorpusItem) {
+                  return (
+                    <>
+                      <ExistingProspectCard
+                        key={prospect.id}
+                        item={prospect.approvedCorpusItem}
+                        parserItem={prospect.item!}
+                        prospectId={prospect.id}
+                        prospectType={prospect.prospectType}
+                        prospectTitle={prospect.title as string}
+                        onSchedule={() => {
+                          setCurrentProspect(prospect);
+                          setApprovedItem(prospect.approvedCorpusItem!);
+                          toggleScheduleModalAndDisableScheduledSurface();
+                        }}
+                        onRemoveProspect={onRemoveProspect}
+                      />
+                    </>
                   );
-
-                  // hide the prospect if the last scheduled date of the prospect is within the 14 days before and after today's date
-                  if (
-                    lastScheduledDate >= DateTime.local().minus({ days: 14 }) &&
-                    lastScheduledDate <= DateTime.local().plus({ days: 14 })
-                  ) {
-                    return;
-                  }
                 }
-
                 return (
-                  <ExistingProspectCard
-                    key={prospect.id}
-                    item={prospect.approvedCorpusItem}
-                    parserItem={prospect.item!}
-                    prospectId={prospect.id}
-                    prospectType={prospect.prospectType}
-                    prospectTitle={prospect.title as string}
-                    onSchedule={() => {
-                      setCurrentProspect(prospect);
-                      setApprovedItem(prospect.approvedCorpusItem!);
-                      toggleScheduleModalAndDisableScheduledSurface();
-                    }}
-                    onRemoveProspect={onRemoveProspect}
-                  />
+                  <>
+                    <ProspectListCard
+                      key={prospect.id}
+                      parserItem={prospect.item!}
+                      prospect={prospect}
+                      onAddToCorpus={() => {
+                        setCurrentProspect(prospect);
+                        setIsManualSubmission(false);
+                        setIsRecommendation(false);
+                        toggleApprovedItemModal();
+                      }}
+                      onRemoveProspect={onRemoveProspect}
+                      onRecommend={() => {
+                        setCurrentProspect(prospect);
+                        setIsManualSubmission(false);
+                        setIsRecommendation(true);
+                        toggleApprovedItemModal();
+                      }}
+                      onReject={() => {
+                        setCurrentProspect(prospect);
+                        toggleRejectModal();
+                      }}
+                    />
+                  </>
                 );
               }
-              return (
-                <ProspectListCard
-                  key={prospect.id}
-                  parserItem={prospect.item!}
-                  prospect={prospect}
-                  onAddToCorpus={() => {
-                    setCurrentProspect(prospect);
-                    setIsManualSubmission(false);
-                    setIsRecommendation(false);
-                    toggleApprovedItemModal();
-                  }}
-                  onRemoveProspect={onRemoveProspect}
-                  onRecommend={() => {
-                    setCurrentProspect(prospect);
-                    setIsManualSubmission(false);
-                    setIsRecommendation(true);
-                    toggleApprovedItemModal();
-                  }}
-                  onReject={() => {
-                    setCurrentProspect(prospect);
-                    toggleRejectModal();
-                  }}
-                />
-              );
             })}
         </Grid>
         <Hidden xsDown>
