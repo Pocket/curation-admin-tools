@@ -34,8 +34,8 @@ describe('The DropDownFilter component', () => {
       </MemoryRouter>,
     );
 
-    // Check for the button text; adjust based on the default selected option
-    const button = screen.getByText(/All/i); // Adjust to what you expect
+    // Check for the button text
+    const button = screen.getByText(/All/i);
     expect(button).toBeInTheDocument();
 
     // Open the dropdown
