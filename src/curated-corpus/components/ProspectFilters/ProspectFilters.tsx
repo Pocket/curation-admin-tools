@@ -166,7 +166,7 @@ export const ProspectFilters: React.FC<ProspectFiltersProps> = (
             filterData={topicList}
             filterName="topics"
             itemCount={prospects.length}
-            setProspectFilters={setProspectMetadataFilters}
+            setFilters={setProspectMetadataFilters}
           />
         </FormGroup>
       )}

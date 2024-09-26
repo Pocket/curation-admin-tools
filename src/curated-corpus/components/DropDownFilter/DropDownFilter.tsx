@@ -24,16 +24,10 @@ interface DropDownFilterProps {
   itemCount: number;
 
   /**
-   * Callback to set filters on the Schedule Page
+   * Callback to set filters on the Schedule Page or Prospecting Page
    */
-  setScheduleFilters?: React.Dispatch<
-    React.SetStateAction<ScheduleDayFilterOptions>
-  >;
-  /**
-   * Callback to set filters on the Prospecting Page
-   */
-  setProspectFilters?: React.Dispatch<
-    React.SetStateAction<ProspectFilerOptions>
+  setFilters: React.Dispatch<
+    React.SetStateAction<ScheduleDayFilterOptions | ProspectFilerOptions>
   >;
 }
 
@@ -49,13 +43,7 @@ interface DropDownFilterProps {
 export const DropDownFilter: React.FC<DropDownFilterProps> = (
   props,
 ): ReactElement => {
-  const {
-    filterData,
-    filterName,
-    itemCount,
-    setScheduleFilters,
-    setProspectFilters,
-  } = props;
+  const { filterData, filterName, itemCount, setFilters } = props;
 
   // State management for the dropdown menu options
   // (lifted from the docs: https://mui.com/material-ui/react-menu/)
@@ -84,8 +72,6 @@ export const DropDownFilter: React.FC<DropDownFilterProps> = (
     setAnchorEl(event.currentTarget);
   };
 
-  let setFilters: any;
-
   const handleMenuItemClick = (
     event: React.MouseEvent<HTMLElement>,
     index: number,
@@ -94,12 +80,6 @@ export const DropDownFilter: React.FC<DropDownFilterProps> = (
     setSelectedIndex(index);
     setSelectedOption(value); // Update the selected option state
     setSelectedOptionCount(getFilterCount(value)); // Update the count based on the selected option
-    if (setProspectFilters) {
-      setFilters = setProspectFilters;
-    }
-    if (setScheduleFilters) {
-      setFilters = setScheduleFilters;
-    }
 
     setFilters((filters: any) => {
       // Reset each filter to 'All' before applying the current filter
