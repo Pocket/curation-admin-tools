@@ -58,6 +58,7 @@ export const DropDownFilter: React.FC<DropDownFilterProps> = (
   } = props;
 
   // State management for the dropdown menu options
+  // (lifted from the docs: https://mui.com/material-ui/react-menu/)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [selectedOption, setSelectedOption] = useState<string>('All');
