@@ -3,7 +3,7 @@ import { Button } from '../../../_shared/components';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import { ScheduleDayFilterOptions, StoriesSummary } from '../';
-import { ProspectFilerOptions } from '../ProspectFilters/ProspectFilters';
+import { ProspectFilterOptions } from '../ProspectFilters/ProspectFilters';
 import { StyledMenu } from '../../../_shared/styled';
 import { MenuItem } from '@mui/material';
 
@@ -27,7 +27,7 @@ interface DropDownFilterProps {
    * Callback to set filters on the Schedule Page or Prospecting Page
    */
   setFilters: React.Dispatch<
-    React.SetStateAction<ScheduleDayFilterOptions | ProspectFilerOptions>
+    React.SetStateAction<ScheduleDayFilterOptions | ProspectFilterOptions>
   >;
 }
 

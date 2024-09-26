@@ -27,8 +27,7 @@ describe('The DropDownFilter component', () => {
             filterData={topicList}
             filterName={'Topics'}
             itemCount={60}
-            setScheduleFilters={jest.fn()}
-            setProspectFilters={jest.fn()}
+            setFilters={jest.fn()}
           />
         </ThemeProvider>
       </MemoryRouter>,
@@ -63,8 +62,7 @@ describe('The DropDownFilter component', () => {
             filterData={topicList}
             filterName={'Topics'}
             itemCount={60}
-            setScheduleFilters={setFilters}
-            setProspectFilters={setFilters}
+            setFilters={setFilters}
           />
         </ThemeProvider>
       </MemoryRouter>,

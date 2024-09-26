@@ -12,7 +12,7 @@ import { DropDownFilter } from '../DropDownFilter/DropDownFilter';
 import { getDisplayTopic, getGroupedTopicData } from '../../helpers/topics';
 import { curationPalette } from '../../../theme';
 
-export interface ProspectFilerOptions {
+export interface ProspectFilterOptions {
   topics: string;
 }
 
@@ -26,7 +26,7 @@ interface ProspectFiltersProps {
    * Callback to set filters on the Prospecting Page
    */
   setProspectMetadataFilters: React.Dispatch<
-    React.SetStateAction<ProspectFilerOptions>
+    React.SetStateAction<ProspectFilterOptions>
   >;
   /**
    * What to filter the publisher by. For example, entering 'new' will
