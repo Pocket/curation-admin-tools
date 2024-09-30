@@ -18,9 +18,9 @@ describe('The RejectItemForm component', () => {
     render(<RejectItemForm onSubmit={handleSubmit} />);
 
     const checkboxes = screen.getAllByRole('checkbox');
-    // We have six rejection reasons. They come from an enum in the Curated Corpus
+    // We have seven rejection reasons. They come from an enum in the Curated Corpus
     // API schema - RejectionReason and are available through the codegen types.
-    expect(checkboxes).toHaveLength(6);
+    expect(checkboxes).toHaveLength(7);
 
     const buttons = screen.getAllByRole('button');
     // "Save" and "Cancel" buttons are expected here.

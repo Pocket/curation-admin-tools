@@ -17,14 +17,13 @@ const allScheduledSurfaces: ScheduledSurface[] = [
       ProspectType.TopSaved,
       ProspectType.DomainAllowlist,
       ProspectType.Dismissed,
-      ProspectType.SyndicatedRerun,
-      ProspectType.SyndicatedNew,
       ProspectType.CountsModeled,
       ProspectType.TimespentModeled,
       ProspectType.TitleUrlModeled,
       ProspectType.RssLogistic,
       ProspectType.RssLogisticRecent,
       ProspectType.SlateSchedulerV2,
+      ProspectType.PublisherSubmitted,
     ],
   },
   {
@@ -37,6 +36,7 @@ const allScheduledSurfaces: ScheduledSurface[] = [
       ProspectType.DomainAllowlist,
       ProspectType.Dismissed,
       ProspectType.TitleUrlModeled,
+      ProspectType.PublisherSubmitted,
     ],
   },
   {

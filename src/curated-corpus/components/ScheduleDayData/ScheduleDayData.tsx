@@ -170,7 +170,9 @@ export const ScheduleDayData: React.FC<ScheduleDayDataProps> = (
                 (filters.types === 'Collections' &&
                   item.approvedItem.isCollection) ||
                 (filters.types === 'Syndicated' &&
-                  item.approvedItem.isSyndicated)
+                  item.approvedItem.isSyndicated) ||
+                (filters.types === 'Time-sensitive' &&
+                  item.approvedItem.isTimeSensitive)
               ) {
                 return (
                   <ScheduledItemCardWrapper

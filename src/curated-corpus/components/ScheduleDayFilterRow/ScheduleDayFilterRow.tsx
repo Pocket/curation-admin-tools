@@ -88,6 +88,11 @@ export const ScheduleDayFilterRow: React.FC<ScheduleDayFilterRowProps> = (
       count: scheduledItems.filter((item) => item.approvedItem.isCollection)
         .length,
     },
+    {
+      name: 'Time-sensitive',
+      count: scheduledItems.filter((item) => item.approvedItem.isTimeSensitive)
+        .length,
+    },
   ];
 
   return (
