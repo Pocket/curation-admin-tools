@@ -101,9 +101,18 @@ export const ProspectFilters: React.FC<ProspectFiltersProps> = (
 
   // Extract all topics from prospects item data
   const topics =
-    prospects.map((prospect: Prospect) => getDisplayTopic(prospect.topic)) ??
-    [];
-
+    prospects.map((prospect: Prospect) => {
+      if (prospect.topic) {
+        // If prospect.topic is not empty or null, apply getDisplayTopic & return
+        return getDisplayTopic(prospect.topic);
+      } else if (prospect.approvedCorpusItem) {
+        // If prospect.topic is null/empty and approvedCorpusItem exists
+        return getDisplayTopic(prospect.approvedCorpusItem.topic);
+      } else {
+        // If both are null/empty, apply getDisplayTopic on prospect.topic & return
+        return getDisplayTopic(prospect.topic);
+      }
+    }) ?? [];
   const topicList = getGroupedTopicData(topics, true, false);
 
   return (
@@ -160,7 +169,7 @@ export const ProspectFilters: React.FC<ProspectFiltersProps> = (
           <Typography
             sx={{ fontSize: '1.0rem', color: curationPalette.regularGrey }}
           >
-            Filter by Topics:
+            Filter by:
           </Typography>
           <DropDownFilter
             filterData={topicList}

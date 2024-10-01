@@ -34,7 +34,7 @@ describe('The DropDownFilter component', () => {
     );
 
     // Check for the button text
-    const button = screen.getByText(/All/i);
+    const button = screen.getByText(/Topics/i);
     expect(button).toBeInTheDocument();
 
     // Open the dropdown
@@ -68,7 +68,7 @@ describe('The DropDownFilter component', () => {
       </MemoryRouter>,
     );
 
-    const button = screen.getByText(/All/i);
+    const button = screen.getByText(/Topics/i);
     expect(button).toBeInTheDocument();
 
     // Open the dropdown

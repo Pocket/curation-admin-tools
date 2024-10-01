@@ -861,10 +861,23 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
               filterByPublisher,
               excludePublisherSwitch,
             ).map((prospect: Prospect) => {
+              // There are some cases when topic on prospect is not set directly
+              // but set on the approvedCorpusItem. Set prospect.topic if this is the case
+              // to filter easier
+              if (
+                !prospect.topic &&
+                prospect.approvedCorpusItem &&
+                getDisplayTopic(prospect.approvedCorpusItem.topic)
+              ) {
+                prospect.topic = prospect.approvedCorpusItem.topic;
+              }
               if (
                 prospectMetadataFilters.topics === 'All' ||
                 prospectMetadataFilters.topics ===
-                  getDisplayTopic(prospect.topic)
+                  getDisplayTopic(prospect.topic) ||
+                (prospect.approvedCorpusItem &&
+                  prospectMetadataFilters.topics ===
+                    getDisplayTopic(prospect.approvedCorpusItem!.topic))
               ) {
                 if (prospect.approvedCorpusItem) {
                   return (

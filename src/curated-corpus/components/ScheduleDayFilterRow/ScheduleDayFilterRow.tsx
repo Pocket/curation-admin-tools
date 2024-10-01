@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 
 import { curationPalette } from '../../../theme';
 import { DropDownFilter } from '../../components';
@@ -102,29 +102,18 @@ export const ScheduleDayFilterRow: React.FC<ScheduleDayFilterRowProps> = (
   ];
   return (
     <>
+      <Typography sx={{ fontSize: '0.75rem', color: curationPalette.neutral }}>
+        Filter by:
+      </Typography>
       {allFilters.map((filter) => {
         return (
-          <Box
+          <DropDownFilter
+            filterData={filter.data}
+            filterName={filter.name}
+            itemCount={scheduledItems.length}
+            setFilters={setFilters}
             key={filter.name}
-            sx={{ display: 'flex', alignItems: 'center', mb: 1 }}
-          >
-            <Typography
-              sx={{
-                fontSize: '1.0rem',
-                color: curationPalette.regularGrey,
-                textTransform: 'capitalize',
-                mr: 1, // Adds space between label and dropdown
-              }}
-            >
-              Filter by {filter.name}:
-            </Typography>
-            <DropDownFilter
-              filterData={filter.data}
-              filterName={filter.name}
-              itemCount={scheduledItems.length}
-              setFilters={setFilters}
-            />
-          </Box>
+          />
         );
       })}
     </>

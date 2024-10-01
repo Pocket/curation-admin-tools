@@ -1,8 +1,15 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { ProspectFilters } from './ProspectFilters';
-import { CorpusLanguage, Prospect, Topics } from '../../../api/generatedTypes';
+import {
+  CorpusItemSource,
+  CorpusLanguage,
+  CuratedStatus,
+  Prospect,
+  Topics,
+} from '../../../api/generatedTypes';
 import { StoriesSummary } from '../ScheduleSummaryCard/ScheduleSummaryCard';
+import { DateTime } from 'luxon';
 
 describe('The ProspectFilters component', () => {
   const prospects: Prospect[] = [
@@ -42,6 +49,44 @@ describe('The ProspectFilters component', () => {
       saveCount: 111222,
       isSyndicated: false,
     },
+    {
+      id: '523-zcf',
+      prospectId: '764-fgh',
+      title: 'The Strange Theft of a Priceless Churchill Portrait',
+      scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+      prospectType: 'organic-timespent',
+      url: 'https://thewalrus.ca/churchill-portrait/',
+      imageUrl: 'https://placeimg.com/640/480/people?random=495',
+      excerpt:
+        'The inside story of one of Canada’s most brazen, baffling, and mysterious art heists and how the police cracked it.',
+      language: CorpusLanguage.En,
+      publisher: 'The Walrus',
+      authors: 'Brett Popplewell',
+      saveCount: 111222,
+      isSyndicated: false,
+      approvedCorpusItem: {
+        externalId: '123-abc',
+        createdBy: 'test-user',
+        hasTrustedDomain: true,
+        isTimeSensitive: false,
+        source: CorpusItemSource.Manual,
+        status: CuratedStatus.Recommendation,
+        createdAt: DateTime.local().millisecond,
+        updatedAt: DateTime.local().millisecond,
+        scheduledSurfaceHistory: [],
+        authors: [{ name: 'Brett Popplewell', sortOrder: 0 }],
+        title: 'The Strange Theft of a Priceless Churchill Portrait',
+        url: 'https://thewalrus.ca/churchill-portrait/',
+        excerpt:
+          'The inside story of one of Canada’s most brazen, baffling, and mysterious art heists and how the police cracked it.',
+        imageUrl: 'https://placeimg.com/640/480/people?random=495',
+        language: CorpusLanguage.En,
+        publisher: 'The Walrus',
+        topic: Topics.Education,
+        isCollection: false,
+        isSyndicated: false,
+      },
+    },
   ];
   let excludePublisherSwitch = true;
   const filterByPublisher = '';
@@ -52,13 +97,13 @@ describe('The ProspectFilters component', () => {
   const sortByTimeToRead = false;
   const handleSortByTimeToRead = jest.fn();
 
-  const mockSetFilters = jest.fn();
-
-  const filterData: StoriesSummary[] = [
-    { name: 'Topic 1', count: 10 },
-    { name: 'Topic 2', count: 20 },
-    { name: 'Topic 3', count: 0 },
-  ];
+  // const mockSetFilters = jest.fn();
+  //
+  // const filterData: StoriesSummary[] = [
+  //   { name: 'Topic 1', count: 10 },
+  //   { name: 'Topic 2', count: 20 },
+  //   { name: 'Topic 3', count: 0 },
+  // ];
   const renderComponent = () => {
     render(
       <ProspectFilters
@@ -115,7 +160,10 @@ describe('The ProspectFilters component', () => {
   it('should render the topic filter', () => {
     renderComponent();
 
-    const topicFilter = screen.getByText(/Filter by Topic/i);
+    // should be 3 different topics
+    // last prospect has prospect.topic set to null, but has an
+    // approvedCorpusItem which has the topic set.
+    const topicFilter = screen.getByText(/Topics 3/i);
     expect(topicFilter).toBeInTheDocument();
   });
 });
