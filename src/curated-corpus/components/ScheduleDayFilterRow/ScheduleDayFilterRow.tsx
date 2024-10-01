@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 import { Typography } from '@mui/material';
 
 import { curationPalette } from '../../../theme';
-import { ScheduleDayFilter } from '../../components';
+import { DropDownFilter } from '../../components';
 import {
   Maybe,
   ScheduledCorpusItem,
@@ -95,29 +95,27 @@ export const ScheduleDayFilterRow: React.FC<ScheduleDayFilterRowProps> = (
     },
   ];
 
+  const allFilters = [
+    { name: 'topics', data: topicList },
+    { name: 'types', data: typeList },
+    { name: 'publishers', data: publisherList },
+  ];
   return (
     <>
       <Typography sx={{ fontSize: '0.75rem', color: curationPalette.neutral }}>
         Filter by:
       </Typography>
-      <ScheduleDayFilter
-        filterData={topicList}
-        filterName="topics"
-        itemCount={scheduledItems.length}
-        setFilters={setFilters}
-      />
-      <ScheduleDayFilter
-        filterData={typeList}
-        filterName="types"
-        itemCount={scheduledItems.length}
-        setFilters={setFilters}
-      />
-      <ScheduleDayFilter
-        filterData={publisherList}
-        filterName="publishers"
-        itemCount={scheduledItems.length}
-        setFilters={setFilters}
-      />
+      {allFilters.map((filter) => {
+        return (
+          <DropDownFilter
+            filterData={filter.data}
+            filterName={filter.name}
+            itemCount={scheduledItems.length}
+            setFilters={setFilters}
+            key={filter.name}
+          />
+        );
+      })}
     </>
   );
 };

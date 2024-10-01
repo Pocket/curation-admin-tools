@@ -4,7 +4,7 @@ import {
   topics as canonicalTopics,
   topics,
 } from './definitions';
-import { ScheduleSummary } from '../components';
+import { StoriesSummary } from '../components';
 
 /**
  * This function transforms topic names as recorded in the database
@@ -36,8 +36,8 @@ export const getGroupedTopicData = (
   data: string[],
   includeAllTopics = true,
   includeCoronavirus = true,
-): ScheduleSummary[] => {
-  const topics: ScheduleSummary[] = [];
+): StoriesSummary[] => {
+  const topics: StoriesSummary[] = [];
 
   data.forEach((topic) => {
     const existingEntry = topics.find((entry) => entry.name === topic);
@@ -70,7 +70,7 @@ export const getGroupedTopicData = (
  * @param includeCoronavirus
  */
 const addFullListOfTopics = (
-  topics: ScheduleSummary[],
+  topics: StoriesSummary[],
   includeCoronavirus = true,
 ) => {
   canonicalTopics.forEach((topic: DropdownOption) => {

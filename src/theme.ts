@@ -13,6 +13,7 @@ export const curationPalette = {
   translucentPink: '#C50042CC',
   overlayBgBlack: '#000000',
   jetBlack: '#000000',
+  regularGrey: '#555555',
 };
 
 const theme: Theme = createTheme({

@@ -1,18 +1,22 @@
 import { expect } from 'chai';
 import { expect as jestExpect } from '@jest/globals';
 import {
+  getFilteredProspects,
   getProspectFilterOptions,
   transformProspectToApprovedItem,
   transformUrlMetaDataToProspect,
 } from './prospects';
 import {
+  ApprovedCorpusItem,
   CorpusItemSource,
   CorpusLanguage,
   CuratedStatus,
   Prospect,
   ProspectType,
+  Topics,
   UrlMetadata,
 } from '../../api/generatedTypes';
+import { DateTime } from 'luxon';
 
 describe('helper functions related to prospects', () => {
   describe('getProspectFilterOptions function', () => {
@@ -225,5 +229,225 @@ describe('helper functions related to prospects', () => {
         });
       },
     );
+  });
+
+  describe('getFilteredProspects', () => {
+    const currentDate = DateTime.local();
+    const twoWeeksBefore = currentDate.minus({ days: 14 });
+    const fifteenDaysAfter = currentDate.plus({ days: 15 });
+
+    const initialProspects: Prospect[] = [
+      {
+        id: '123-abc',
+        prospectId: '456-dfg',
+        title: 'How To Win Friends And Influence People with DynamoDB',
+        scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+        prospectType: 'organic-timespent',
+        url: 'http://www.test.com/how-to',
+        imageUrl: 'https://placeimg.com/640/480/people?random=495',
+        excerpt:
+          'Everything You Wanted to Know About DynamoDB and Were Afraid To Ask',
+        language: CorpusLanguage.En,
+        publisher: 'Amazing Inventions',
+        authors: 'Charles Dickens,O. Henry',
+        topic: Topics.Technology,
+        saveCount: 111222,
+        isSyndicated: false,
+      },
+      {
+        id: '456-def',
+        prospectId: '123-bc',
+        title:
+          'How We Discovered That People Who Are Colorblind Are Less Likely to Be Picky Eaters',
+        scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+        prospectType: 'organic-timespent',
+        url: 'http://www.test.com/how-to',
+        imageUrl: 'https://placeimg.com/640/480/people?random=495',
+        excerpt:
+          'The seventh season of Julia Child’s “The French Chef,” the first of the television series to air in color, revealed how color can change the experience of food.',
+        language: CorpusLanguage.En,
+        publisher: 'The Conversation',
+        authors: 'Jason Parham',
+        topic: Topics.Food,
+        saveCount: 111222,
+        isSyndicated: false,
+      },
+    ];
+
+    let prospects: Prospect[];
+
+    beforeEach(() => {
+      // Deep copy the initial prospects array before each test
+      prospects = JSON.parse(JSON.stringify(initialProspects));
+    });
+
+    it('should return an empty array when input array is empty', () => {
+      const result = getFilteredProspects([], 'test', false);
+      expect(result.length).to.equal(0);
+    });
+
+    it('should exclude prospects with rejectedCorpusItem', () => {
+      prospects[0].rejectedCorpusItem = {
+        externalId: '123-abc',
+        reason: 'reason',
+        url: 'http://www.test.com/how-to',
+        createdAt: Date.now(),
+        createdBy: 'test-user',
+      };
+      const result = getFilteredProspects(prospects, 'Test', false);
+      expect(result.length).to.equal(0);
+    });
+
+    it('should include prospects when filterByPublisher matches and excludePublisherSwitch is false', () => {
+      const result = getFilteredProspects(
+        prospects,
+        'Amazing Inventions',
+        false,
+      );
+      expect(result).to.deep.equal([prospects[0]]);
+    });
+
+    it('should exclude prospects when filterByPublisher matches and excludePublisherSwitch is true', () => {
+      const result = getFilteredProspects(
+        prospects,
+        'Amazing Inventions',
+        true,
+      );
+      expect(result).to.deep.equal([prospects[1]]);
+    });
+
+    it('should include prospects when filterByPublisher does not match and excludePublisherSwitch is true', () => {
+      const result = getFilteredProspects(prospects, 'Other', true);
+      expect(result).to.deep.equal(prospects);
+    });
+
+    it('should exclude prospects with an approvedCorpusItem scheduled within 14 days before and after today', () => {
+      prospects[0].approvedCorpusItem = {
+        externalId: '123-abc',
+        createdBy: 'test-user',
+        hasTrustedDomain: true,
+        isTimeSensitive: false,
+        source: CorpusItemSource.Manual,
+        status: CuratedStatus.Recommendation,
+        updatedAt: currentDate.millisecond,
+        scheduledSurfaceHistory: [
+          {
+            externalId: '123-abc',
+            scheduledDate: currentDate.toISO(),
+            createdBy: 'test-user',
+            scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+          },
+        ],
+      } as ApprovedCorpusItem;
+      const result = getFilteredProspects(
+        prospects,
+        'Amazing Inventions',
+        false,
+      );
+      expect(result).to.deep.equal([]);
+    });
+
+    it('should include prospects with an approvedCorpusItem scheduled outside the 14 days window', () => {
+      prospects[0].approvedCorpusItem = {
+        externalId: '123-abc',
+        createdBy: 'test-user',
+        hasTrustedDomain: true,
+        isTimeSensitive: false,
+        source: CorpusItemSource.Manual,
+        status: CuratedStatus.Recommendation,
+        updatedAt: currentDate.millisecond,
+        scheduledSurfaceHistory: [
+          {
+            externalId: '123-abc',
+            scheduledDate: twoWeeksBefore.minus({ days: 1 }).toISO(),
+            createdBy: 'test-user',
+            scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+          },
+        ],
+      } as ApprovedCorpusItem;
+      const result = getFilteredProspects(
+        prospects,
+        'Amazing Inventions',
+        false,
+      );
+      expect(result).to.deep.equal([prospects[0]]);
+    });
+
+    it('should include prospects with no scheduledSurfaceHistory', () => {
+      prospects[0].approvedCorpusItem = {
+        externalId: '123-abc',
+        createdBy: 'test-user',
+        hasTrustedDomain: true,
+        isTimeSensitive: false,
+        source: CorpusItemSource.Manual,
+        status: CuratedStatus.Recommendation,
+        updatedAt: currentDate.millisecond,
+        scheduledSurfaceHistory: [],
+      } as unknown as ApprovedCorpusItem;
+
+      const result = getFilteredProspects(
+        prospects,
+        'Amazing Inventions',
+        false,
+      );
+      expect(result).to.deep.equal([prospects[0]]);
+    });
+
+    it('should handle prospects with future (15 days) scheduled dates correctly', () => {
+      prospects[0].approvedCorpusItem = {
+        externalId: '123-abc',
+        createdBy: 'test-user',
+        hasTrustedDomain: true,
+        isTimeSensitive: false,
+        source: CorpusItemSource.Manual,
+        status: CuratedStatus.Recommendation,
+        updatedAt: currentDate.millisecond,
+        scheduledSurfaceHistory: [
+          {
+            externalId: '123-abc',
+            scheduledDate: fifteenDaysAfter.toISO(),
+            createdBy: 'test-user',
+            scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+          },
+        ],
+      } as ApprovedCorpusItem;
+      const result = getFilteredProspects(
+        prospects,
+        'Amazing Inventions',
+        false,
+      );
+      expect(result).to.deep.equal([prospects[0]]);
+    });
+
+    it('should handle prospects with past scheduled dates beyond 14 days window', () => {
+      prospects[0].approvedCorpusItem = {
+        externalId: '123-abc',
+        createdBy: 'test-user',
+        hasTrustedDomain: true,
+        isTimeSensitive: false,
+        source: CorpusItemSource.Manual,
+        status: CuratedStatus.Recommendation,
+        updatedAt: currentDate.millisecond,
+        scheduledSurfaceHistory: [
+          {
+            externalId: '123-abc',
+            scheduledDate: twoWeeksBefore.minus({ days: 1 }).toISO(),
+            createdBy: 'test-user',
+            scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+          },
+        ],
+      } as ApprovedCorpusItem;
+      const result = getFilteredProspects(
+        prospects,
+        'Amazing Inventions',
+        false,
+      );
+      expect(result).to.deep.equal([prospects[0]]);
+    });
+
+    it('should not apply filter when filterByPublisher length is 2 or less', () => {
+      const result = getFilteredProspects(prospects, 'Am', false);
+      expect(result).to.deep.equal(prospects);
+    });
   });
 });
