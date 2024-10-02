@@ -96,8 +96,8 @@ jobs:
                 account_id: << parameters.aws-account-id >>
                 auth:
                   - aws-cli/setup:
-                      aws-access-key-id: << parameters.aws-access-key-id >>
-                      aws-secret-access-key: << parameters.aws-secret-access-key >>
+                      aws-access-key-id: << parameters.environment >>_AWS_ACCESS_KEY
+                      aws-secret-access-key: << parameters.environment >>_AWS_SECRET_ACCESS_KEY
                       aws-region: << parameters.aws-region >>
                 checkout: false
                 repo: << parameters.repo-name >>
