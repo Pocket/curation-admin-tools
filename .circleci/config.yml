@@ -104,15 +104,6 @@ jobs:
                 tag: << parameters.tag >>
                 extra_build_args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg APP_ENV=<< parameters.react_environment >>
                 region: "${<< parameters.aws-region >>}"
-#            - aws-ecr/build-and-push-image:
-#                checkout: false
-#                repo: << parameters.repo_name >>
-#                setup-remote-docker: true
-#                remote-docker-version: << parameters.remote_docker_version >>
-#                aws-access-key-id: << parameters.environment >>_AWS_ACCESS_KEY
-#                aws-secret-access-key: << parameters.environment >>_AWS_SECRET_ACCESS_KEY
-#                tag: << parameters.tag >>
-#                extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg APP_ENV=<< parameters.react_environment >>
       - unless:
           condition: <<parameters.push>>
           steps:
