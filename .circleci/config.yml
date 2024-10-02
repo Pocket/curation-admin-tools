@@ -103,7 +103,6 @@ jobs:
                 repo: << parameters.repo_name >>
                 tag: << parameters.tag >>
                 extra_build_args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg APP_ENV=<< parameters.react_environment >>
-                platform: 'linux/amd64,linux/arm64'
                 region: "${<< parameters.aws-region >>}"
 #            - aws-ecr/build-and-push-image:
 #                checkout: false
@@ -123,12 +122,11 @@ jobs:
                 aws-access-key-id: << parameters.environment >>_AWS_ACCESS_KEY
                 aws-secret-access-key: << parameters.environment >>_AWS_SECRET_ACCESS_KEY
                 aws-region: << parameters.aws-region >>
-            - aws-ecr/build-image:
+            - aws-ecr/build_image:
                 account_id: << parameters.aws-account-id >>
                 repo: << parameters.repo_name >>
                 tag: << parameters.tag >>
                 extra_build_args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg APP_ENV=<< parameters.react_environment >>
-                platform: 'linux/amd64,linux/arm64'
                 region: "${<< parameters.aws-region >>}"
                 push_image: false
 
