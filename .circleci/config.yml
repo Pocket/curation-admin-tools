@@ -91,7 +91,7 @@ jobs:
           condition: <<parameters.push>>
           steps:
             - setup_remote_docker:
-                version: << parameters.remote-docker-version >>
+                version: << parameters.remote_docker_version >>
             - aws-ecr/build_and_push_image:
                 account_id: << parameters.aws-account-id >>
                 auth:
@@ -100,9 +100,9 @@ jobs:
                       aws-secret-access-key: << parameters.environment >>_AWS_SECRET_ACCESS_KEY
                       aws-region: << parameters.aws-region >>
                 checkout: false
-                repo: << parameters.repo-name >>
+                repo: << parameters.repo_name >>
                 tag: << parameters.tag >>
-                extra_build_args: << parameters.extra-build-args >>
+                extra_build_args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg APP_ENV=<< parameters.react_environment >>
                 platform: 'linux/amd64,linux/arm64'
                 region: "${<< parameters.aws-region >>}"
 #            - aws-ecr/build-and-push-image:
@@ -127,7 +127,7 @@ jobs:
                 account_id: << parameters.aws-account-id >>
                 repo: << parameters.repo_name >>
                 tag: << parameters.tag >>
-                extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg APP_ENV=<< parameters.react_environment >>
+                extra_build_args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg APP_ENV=<< parameters.react_environment >>
                 platform: 'linux/amd64,linux/arm64'
                 region: "${<< parameters.aws-region >>}"
                 push_image: false
