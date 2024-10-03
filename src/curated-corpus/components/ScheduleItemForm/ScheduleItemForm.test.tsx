@@ -19,7 +19,7 @@ describe('The ScheduleItemForm component', () => {
       prospectTypes: [
         ProspectType.Timespent,
         ProspectType.TopSaved,
-        ProspectType.SyndicatedNew,
+        ProspectType.PublisherSubmitted,
       ],
     },
     {
