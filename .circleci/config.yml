@@ -1,8 +1,9 @@
 version: 2.1
 
 orbs:
-  aws-ecr: circleci/aws-ecr@7.0.0
+  aws-ecr: circleci/aws-ecr@9.3.4
   aws-ecs: circleci/aws-ecs@2.0.0
+  aws-cli: circleci/aws-cli@2.0.6
   pocket: pocket/circleci-orbs@1.1.0
 
 # Workflow shortcuts
@@ -47,6 +48,13 @@ only_dev: &only_dev
 jobs:
   docker_build:
     parameters:
+      aws-account-id:
+        description: 'AWS Account ID'
+        type: string
+      aws-region:
+        description: 'AWS region environment variable'
+        type: env_var_name  # Use env_var_name to fetch the value dynamically
+        default: AWS_DEFAULT_REGION
       tag:
         description: 'The docker tag name'
         type: string
@@ -82,24 +90,36 @@ jobs:
       - when:
           condition: <<parameters.push>>
           steps:
-            - aws-ecr/build-and-push-image:
+            - setup_remote_docker:
+                version: << parameters.remote_docker_version >>
+            - aws-ecr/build_and_push_image:
+                account_id: << parameters.aws-account-id >>
+                auth:
+                  - aws-cli/setup:
+                      aws-access-key-id: << parameters.environment >>_AWS_ACCESS_KEY
+                      aws-secret-access-key: << parameters.environment >>_AWS_SECRET_ACCESS_KEY
+                      aws-region: << parameters.aws-region >>
                 checkout: false
                 repo: << parameters.repo_name >>
-                setup-remote-docker: true
-                remote-docker-version: << parameters.remote_docker_version >>
-                aws-access-key-id: << parameters.environment >>_AWS_ACCESS_KEY
-                aws-secret-access-key: << parameters.environment >>_AWS_SECRET_ACCESS_KEY
                 tag: << parameters.tag >>
-                extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg APP_ENV=<< parameters.react_environment >>
+                extra_build_args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg APP_ENV=<< parameters.react_environment >>
+                region: "${<< parameters.aws-region >>}"
       - unless:
           condition: <<parameters.push>>
           steps:
             - setup_remote_docker:
                 version: << parameters.remote_docker_version >>
-            - aws-ecr/build-image:
+            - aws-cli/setup:
+                aws-access-key-id: << parameters.environment >>_AWS_ACCESS_KEY
+                aws-secret-access-key: << parameters.environment >>_AWS_SECRET_ACCESS_KEY
+                aws-region: << parameters.aws-region >>
+            - aws-ecr/build_image:
+                account_id: << parameters.aws-account-id >>
                 repo: << parameters.repo_name >>
                 tag: << parameters.tag >>
-                extra-build-args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg APP_ENV=<< parameters.react_environment >>
+                extra_build_args: --build-arg GIT_SHA=${CIRCLE_SHA1} --build-arg APP_ENV=<< parameters.react_environment >>
+                region: "${<< parameters.aws-region >>}"
+                push_image: false
 
 workflows:
   all:
@@ -111,6 +131,7 @@ workflows:
           name: build_docker
           environment: 'Dev'
           tag: latest,$CIRCLE_SHA1
+          aws-account-id: '410318598490'
           repo_name: curationadmintools-dev-app
           ecr_url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
           push: false
@@ -123,6 +144,7 @@ workflows:
           name: build_docker_dev
           environment: 'Dev'
           tag: latest,$CIRCLE_SHA1
+          aws-account-id: '410318598490'
           repo_name: curationadmintools-dev-app
           ecr_url: 410318598490.dkr.ecr.us-east-1.amazonaws.com
           push: true
@@ -149,6 +171,7 @@ workflows:
           name: build_docker_prod
           environment: 'Prod'
           tag: latest,$CIRCLE_SHA1
+          aws-account-id: '996905175585'
           repo_name: curationadmintools-prod-app
           ecr_url: 996905175585.dkr.ecr.us-east-1.amazonaws.com
           push: true
