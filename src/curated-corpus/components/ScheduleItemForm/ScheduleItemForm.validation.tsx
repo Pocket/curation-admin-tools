@@ -35,9 +35,18 @@ export const getValidationSchema = (
 
       scheduledDate: yup
         .date()
-        .min(DateTime.local())
-        .max(DateTime.local().plus({ days: 60 }))
-        .required('Please choose a date no more than 60 days in advance.')
+        .min(
+          // Rewind back to the start of the day locally so that curators
+          // are not unintentionally prevented from scheduling stories
+          // for the current date.
+          DateTime.local().startOf('day'),
+          'Stories cannot be scheduled in the past.',
+        )
+        .max(
+          DateTime.local().plus({ days: 60 }),
+          'Please choose a date no more than 60 days in advance.',
+        )
+        .required('This field is required.')
         .nullable(),
 
       [ManualScheduleReason.Evergreen]: yup.boolean(),
