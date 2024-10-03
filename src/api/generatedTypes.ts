@@ -20,7 +20,7 @@ export type Scalars = {
   Int: number;
   Float: number;
   _FieldSet: any;
-  /** A date in the YYYY-MM-DD format. */
+  /** A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   Date: any;
   /** A String representing a date in the format of `yyyy-MM-dd HH:mm:ss` */
   DateString: any;
@@ -37,7 +37,7 @@ export type Scalars = {
    * not treated differently from String in the API.
    */
   Markdown: any;
-  /** A positive integer number. */
+  /** Integers that will have a value of 0 or more. */
   NonNegativeInt: any;
   Upload: any;
   /** A URL - usually, for an interesting story on the internet that's worth saving to Pocket. */
@@ -90,8 +90,8 @@ export type ApprovedCorpusItem = {
   /** Whether this item is a syndicated article. */
   isSyndicated: Scalars['Boolean'];
   /**
-   * A flag to ML to not recommend this item long term after it is added to the corpus.
-   * Example: a story covering an election, or "The best of 202x" collection.
+   * Experimental data point that could imply either an expiry date or an urgency to be shown.
+   * May be used for ML modeling.
    */
   isTimeSensitive: Scalars['Boolean'];
   /** What language this story is in. This is a two-letter code, for example, 'EN' for English. */
@@ -117,7 +117,7 @@ export type ApprovedCorpusItem = {
   updatedAt: Scalars['Int'];
   /** A single sign-on user identifier of the user who last updated this entity. Null on creation. */
   updatedBy?: Maybe<Scalars['String']>;
-  /** key field to identify the Approved Corpus Item entity in the Curated Corpus service */
+  /** The URL of the story. */
   url: Scalars['Url'];
 };
 
@@ -259,7 +259,7 @@ export type CachedImageInput = {
   fileType?: InputMaybe<ImageFileType>;
   /** Height of the image */
   height?: InputMaybe<Scalars['Int']>;
-  /** Id of the image in the returned result set */
+  /** ID that will be added to the generated response object so you can find it. NOTE: Can be any string that you like, it will be added to the response so you can use it when consuming it */
   id: Scalars['ID'];
   /** Quality of the image in whole percentage, 100 = full, quality 50 = half quality */
   qualityPercentage?: InputMaybe<Scalars['Int']>;
@@ -497,8 +497,8 @@ export enum CorpusLanguage {
 /** A node in a CorpusSearchConnection result */
 export type CorpusSearchNode = {
   __typename?: 'CorpusSearchNode';
-  /** The preview of the search result */
-  preview: PocketMetadata;
+  /** Attaches the item so we can use the preview field */
+  item?: Maybe<Item>;
 };
 
 /** Input data for creating an Approved Item and optionally scheduling this item to appear on a Scheduled Surface. */
@@ -841,7 +841,10 @@ export type ImportApprovedCorpusItemPayload = {
   scheduledItem: ScheduledCorpusItem;
 };
 
-/** Resolve by reference the Item entity to connect Prospect to Items. */
+/**
+ * The heart of Pocket
+ * A url and meta data related to it.
+ */
 export type Item = {
   __typename?: 'Item';
   /** If available, the url to an AMP version of this article */
@@ -1177,14 +1180,6 @@ export type Mutation = {
   /** Deletes an item from a Scheduled Surface. */
   deleteScheduledCorpusItem: ScheduledCorpusItem;
   /**
-   * Marks a prospect as 'curated' in the database, preventing it from being displayed for prospecting.
-   * Returns the prospect if the operation succeeds, and null if not (almost surely due to an incorrect id).
-   *
-   * This is functionally a copy of updateProspectAsCurated for now, but will have differences in
-   * snowplow reporting down the line.
-   */
-  dismissProspect?: Maybe<Prospect>;
-  /**
    * Lets an automated process create an Approved Item and optionally schedule it to appear
    * on a Scheduled Surface.
    */
@@ -1253,6 +1248,8 @@ export type Mutation = {
   /**
    * Marks a prospect as 'curated' in the database, preventing it from being displayed for prospecting.
    * Returns the prospect if the operation succeeds, and null if not (almost surely due to an incorrect id).
+   *
+   * Called when approving or rejecting a prospect into the corpus.
    */
   updateProspectAsCurated?: Maybe<Prospect>;
   /** Uploads an image to S3 for an Approved Item */
@@ -1313,10 +1310,6 @@ export type MutationDeleteCollectionStoryArgs = {
 
 export type MutationDeleteScheduledCorpusItemArgs = {
   data: DeleteScheduledCorpusItemInput;
-};
-
-export type MutationDismissProspectArgs = {
-  id: Scalars['ID'];
 };
 
 export type MutationImportApprovedCorpusItemArgs = {
@@ -1559,7 +1552,6 @@ export type Prospect = {
  */
 export enum ProspectType {
   Counts = 'COUNTS',
-  CountsModeled = 'COUNTS_MODELED',
   Dismissed = 'DISMISSED',
   DomainAllowlist = 'DOMAIN_ALLOWLIST',
   PublisherSubmitted = 'PUBLISHER_SUBMITTED',
@@ -1568,7 +1560,6 @@ export enum ProspectType {
   RssLogisticRecent = 'RSS_LOGISTIC_RECENT',
   SlateSchedulerV2 = 'SLATE_SCHEDULER_V2',
   Timespent = 'TIMESPENT',
-  TimespentModeled = 'TIMESPENT_MODELED',
   TitleUrlModeled = 'TITLE_URL_MODELED',
   TopSaved = 'TOP_SAVED',
 }
@@ -1795,7 +1786,7 @@ export type RejectedCorpusItem = {
    * Temporarily a string value that will be provided by Prospect API, possibly an enum in the future.
    */
   topic?: Maybe<Scalars['String']>;
-  /** key field to identify the Rejected Corpus Item entity in the Curated Corpus service */
+  /** The URL of the story. */
   url: Scalars['Url'];
 };
 
