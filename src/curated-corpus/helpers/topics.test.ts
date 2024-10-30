@@ -19,6 +19,11 @@ describe('helper functions related to topics', () => {
       expect(displayTopic).to.equal('N/A');
     });
 
+    it('returns "N/A" if topic is Coronavirus', () => {
+      const displayTopic = getDisplayTopic('Coronavirus');
+      expect(displayTopic).to.equal('N/A');
+    });
+
     it('returns "N/A" if topic is not part of shared data topic list', () => {
       const displayTopic = getDisplayTopic('BEST_BOOKS');
       expect(displayTopic).to.equal('N/A');
@@ -85,11 +90,6 @@ describe('helper functions related to topics', () => {
     it('returns an abbreviated list if not all topics are requested', () => {
       const topics = getGroupedTopicData(data, false);
       expect(topics).to.be.an('array').with.lengthOf(5);
-    });
-
-    it('returns a list of topics without "Coronavirus" if requested', () => {
-      const topics = getGroupedTopicData(data, true, false);
-      expect(topics).to.be.an('array').with.lengthOf(16);
     });
 
     it('returns a full list of topics if requested', () => {
