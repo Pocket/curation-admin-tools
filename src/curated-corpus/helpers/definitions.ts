@@ -17,7 +17,6 @@ export interface DropdownOption {
 export const topics: DropdownOption[] = [
   { code: Topics.Business, name: 'Business' },
   { code: Topics.Career, name: 'Career' },
-  // { code: Topics.Coronavirus, name: 'Coronavirus' },
   { code: Topics.Education, name: 'Education' },
   { code: Topics.Entertainment, name: 'Entertainment' },
   { code: Topics.Food, name: 'Food' },
