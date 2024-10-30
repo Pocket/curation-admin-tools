@@ -43,7 +43,7 @@ describe('helper functions related to topics', () => {
       expect(topics).to.be.an('array');
       // However, we're getting the entire list of topics here,
       // not just the ones stories belong to
-      expect(topics).to.have.lengthOf(17);
+      expect(topics).to.have.lengthOf(16);
 
       // And we expect to see the story topics, with the correct counts
       expect(topics).to.contain.deep.members([
@@ -94,7 +94,7 @@ describe('helper functions related to topics', () => {
 
     it('returns a full list of topics if requested', () => {
       const topics = getGroupedTopicData(data);
-      expect(topics).to.be.an('array').with.lengthOf(17);
+      expect(topics).to.be.an('array').with.lengthOf(16);
     });
   });
 });
