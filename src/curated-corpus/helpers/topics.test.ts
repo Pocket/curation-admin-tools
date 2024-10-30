@@ -19,6 +19,11 @@ describe('helper functions related to topics', () => {
       expect(displayTopic).to.equal('N/A');
     });
 
+    it('returns "N/A" if topic is Coronavirus', () => {
+      const displayTopic = getDisplayTopic('Coronavirus');
+      expect(displayTopic).to.equal('N/A');
+    });
+
     it('returns "N/A" if topic is not part of shared data topic list', () => {
       const displayTopic = getDisplayTopic('BEST_BOOKS');
       expect(displayTopic).to.equal('N/A');
@@ -43,7 +48,7 @@ describe('helper functions related to topics', () => {
       expect(topics).to.be.an('array');
       // However, we're getting the entire list of topics here,
       // not just the ones stories belong to
-      expect(topics).to.have.lengthOf(17);
+      expect(topics).to.have.lengthOf(16);
 
       // And we expect to see the story topics, with the correct counts
       expect(topics).to.contain.deep.members([
@@ -87,14 +92,9 @@ describe('helper functions related to topics', () => {
       expect(topics).to.be.an('array').with.lengthOf(5);
     });
 
-    it('returns a list of topics without "Coronavirus" if requested', () => {
-      const topics = getGroupedTopicData(data, true, false);
-      expect(topics).to.be.an('array').with.lengthOf(16);
-    });
-
     it('returns a full list of topics if requested', () => {
       const topics = getGroupedTopicData(data);
-      expect(topics).to.be.an('array').with.lengthOf(17);
+      expect(topics).to.be.an('array').with.lengthOf(16);
     });
   });
 });
