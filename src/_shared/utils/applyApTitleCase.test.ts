@@ -113,4 +113,28 @@ describe('applyApTitleCase', () => {
       expect(applyApTitleCase(swc.result)).toEqual(swc.expected);
     });
   });
+
+  it('should differentiate between strings in quotes and apostrophe', () => {
+    const sentencesWithContractions = [
+      {
+        result: "Here's what you haven't noticed 'foo bar' foo'S",
+        expected: "Here's What You Haven't Noticed 'Foo Bar' Foo's",
+      },
+    ];
+    sentencesWithContractions.forEach((swc) => {
+      expect(applyApTitleCase(swc.result)).toEqual(swc.expected);
+    });
+  });
+
+  it('should capitalize after a colon (:)', () => {
+    const sentencesWithContractions = [
+      {
+        result: "Here's what you haven't noticed 'foo bar' foo'S: foo Bar",
+        expected: "Here's What You Haven't Noticed 'Foo Bar' Foo'S: Foo Bar",
+      },
+    ];
+    sentencesWithContractions.forEach((swc) => {
+      expect(applyApTitleCase(swc.result)).toEqual(swc.expected);
+    });
+  });
 });
