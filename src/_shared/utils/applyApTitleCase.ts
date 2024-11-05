@@ -1,17 +1,24 @@
 export const STOP_WORDS =
   'a an and at but by for in nor of on or the to up yet';
 
+// Matches a colon (:) and 0+ white spaces following after
+// Matches 1+ white spaces
+// Matches special chars (i.e. hyphens, quotes, etc)
 export const SEPARATORS = /(:\s*|\s+|[-‑–—,:;!?()“”'‘"])/; // Include curly quotes as separators
 
 export const stop = STOP_WORDS.split(' ');
 
 /**
  * Format a string: Capture the letter after an apostrophe at the end of a
- * sentence (without requiring a space) or with a white space following the letter
+ * sentence (without requiring a space) or with a white space following the letter.
+ * Lowercase the captured letter & return the formatted string.
  * @param input
  * @returns {string}
  */
 export const lowercaseAfterApostrophe = (input: string): string => {
+  // matches a char (num or letter) right after an apostrophe,
+  // only if the apostrophe is preceded by a char & is followed
+  // by a space or end of the str.
   const regex = /(?<=\w)'(\w)(?=\s|$)/g;
 
   return input.replace(regex, (match, p1) => {

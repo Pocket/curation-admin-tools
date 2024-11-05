@@ -1,4 +1,4 @@
-import { applyApTitleCase } from './applyApTitleCase';
+import { applyApTitleCase, lowercaseAfterApostrophe } from './applyApTitleCase';
 
 // examples taken from https://www.grammarly.com/blog/capitalization-in-the-titles/
 // tested at https://headlinecapitalization.com/ (AP style)
@@ -136,5 +136,16 @@ describe('applyApTitleCase', () => {
     sentencesWithContractions.forEach((swc) => {
       expect(applyApTitleCase(swc.result)).toEqual(swc.expected);
     });
+  });
+});
+
+describe('lowercaseAfterApostrophe', () => {
+  it('lowercase letter after apostrophe & return new string', () => {
+    const result = lowercaseAfterApostrophe("foo'S");
+    expect(result).toEqual("foo's");
+  });
+  it('lowercase letter after apostrophe, ignore string in quotes, & return new string', () => {
+    const result = lowercaseAfterApostrophe("'Foo' foo'S DaY's");
+    expect(result).toEqual("'Foo' foo's DaY's");
   });
 });
