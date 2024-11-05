@@ -66,8 +66,8 @@ export const applyApTitleCase = (value: string): string => {
         index > 0 &&
         (allWords[index - 1] === "'" ||
           allWords[index - 1] === '"' ||
-          allWords[index - 1] === '\u2018' ||
-          allWords[index - 1] === '\u201C');
+          allWords[index - 1] === '\u2018' || // Opening single quote ’
+          allWords[index - 1] === '\u201C'); // Opening double quote “
 
       if (
         index === 0 || // first word
