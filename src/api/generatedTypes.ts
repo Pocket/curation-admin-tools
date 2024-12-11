@@ -1555,6 +1555,11 @@ export enum ProspectType {
   Dismissed = 'DISMISSED',
   DomainAllowlist = 'DOMAIN_ALLOWLIST',
   PublisherSubmitted = 'PUBLISHER_SUBMITTED',
+  QaEntertainment = 'QA_ENTERTAINMENT',
+  QaGaming = 'QA_GAMING',
+  QaHistory = 'QA_HISTORY',
+  QaRelationships = 'QA_RELATIONSHIPS',
+  QaSports = 'QA_SPORTS',
   Recommended = 'RECOMMENDED',
   RssLogistic = 'RSS_LOGISTIC',
   RssLogisticRecent = 'RSS_LOGISTIC_RECENT',
@@ -2326,6 +2331,8 @@ export type Video = {
 export enum VideoType {
   /** Brightcove (v3 value is 8) */
   Brightcove = 'BRIGHTCOVE',
+  /** Dailymotion (v3 value is 9) */
+  Dailymotion = 'DAILYMOTION',
   /** Flash (v3 value is 6) */
   Flash = 'FLASH',
   /** html5 (v3 value is 5) */
