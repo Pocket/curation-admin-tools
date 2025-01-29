@@ -55,6 +55,14 @@ export enum ActionScreen {
   Schedule = 'SCHEDULE',
 }
 
+/** The source of en entity */
+export enum ActivitySource {
+  /** Manually entered through the curation admin tool */
+  Manual = 'MANUAL',
+  /** Created by ML */
+  Ml = 'ML',
+}
+
 export type ApprovedCorpusImageUrl = {
   __typename?: 'ApprovedCorpusImageUrl';
   /** The url of the image stored in the s3 bucket */
@@ -600,6 +608,22 @@ export type CreateCollectionStoryInput = {
   url: Scalars['Url'];
 };
 
+/** Input data for creating a Section */
+export type CreateOrUpdateSectionInput = {
+  /** Indicates whether or not a Section is available for display. */
+  active: Scalars['Boolean'];
+  /** The source which created the Section. */
+  createSource: ActivitySource;
+  /** An alternative primary key in UUID format supplied by ML. */
+  externalId: Scalars['ID'];
+  /** The GUID of the Scheduled Surface. Example: 'NEW_TAB_EN_US'. */
+  scheduledSurfaceGuid: Scalars['ID'];
+  /** Controls the display order of Sections. */
+  sort?: InputMaybe<Scalars['Int']>;
+  /** The title of the Section displayed to the users. */
+  title: Scalars['String'];
+};
+
 /** Input data for creating a Rejected Item. */
 export type CreateRejectedCorpusItemInput = {
   /**
@@ -656,6 +680,20 @@ export type CreateScheduledCorpusItemInput = {
   scheduledSurfaceGuid: Scalars['ID'];
   /** Source of the Scheduled Item. Could be one of: MANUAL or ML */
   source: ScheduledItemSource;
+};
+
+/** Input data for adding a SectionItem to a Section */
+export type CreateSectionItemInput = {
+  /** The ID of the ApprovedItem backing the SectionItem. */
+  approvedItemExternalId: Scalars['ID'];
+  /**
+   * The initial rank of the SectionItem in relation to its siblings. Used as a
+   * fallback in Merino when there is no engagement/click data available. May only apply to
+   * ML-generated SectionItems.
+   */
+  rank?: InputMaybe<Scalars['Int']>;
+  /** The ID of the Section to contain the new SectionItem. */
+  sectionExternalId: Scalars['ID'];
 };
 
 /** The outcome of the curators reviewing a prospective story. */
@@ -1167,12 +1205,20 @@ export type Mutation = {
   createCollectionStory: CollectionStory;
   /** Creates a Label. */
   createLabel: Label;
+  /**
+   * Creates a new Section entity. If a Section already exists, the existing
+   * Section gets updated, associated active SectionItems are set to in-active.
+   * This mutation is to be used by ML-automated processes.
+   */
+  createOrUpdateSection: Section;
   /** Creates a Rejected Item. */
   createRejectedCorpusItem: RejectedCorpusItem;
   /** Marks the given scheduled surface as reviewed by human curators for a given date. */
   createScheduleReview: ScheduleReview;
   /** Creates a Scheduled Surface Scheduled Item. */
   createScheduledCorpusItem: ScheduledCorpusItem;
+  /** Creates a SectionItem within a Section. */
+  createSectionItem: SectionItem;
   /** Deletes a CollectionPartnerAssociation. */
   deleteCollectionPartnerAssociation: CollectionPartnerAssociation;
   /** Deletes a CollectionStory. Also deletes all the related CollectionStoryAuthor records. */
@@ -1288,6 +1334,10 @@ export type MutationCreateLabelArgs = {
   name: Scalars['String'];
 };
 
+export type MutationCreateOrUpdateSectionArgs = {
+  data: CreateOrUpdateSectionInput;
+};
+
 export type MutationCreateRejectedCorpusItemArgs = {
   data: CreateRejectedCorpusItemInput;
 };
@@ -1298,6 +1348,10 @@ export type MutationCreateScheduleReviewArgs = {
 
 export type MutationCreateScheduledCorpusItemArgs = {
   data: CreateScheduledCorpusItemInput;
+};
+
+export type MutationCreateSectionItemArgs = {
+  data: CreateSectionItemInput;
 };
 
 export type MutationDeleteCollectionPartnerAssociationArgs = {
@@ -1555,11 +1609,18 @@ export enum ProspectType {
   Dismissed = 'DISMISSED',
   DomainAllowlist = 'DOMAIN_ALLOWLIST',
   PublisherSubmitted = 'PUBLISHER_SUBMITTED',
+  QaBooks = 'QA_BOOKS',
+  QaCelebrity = 'QA_CELEBRITY',
   QaEntertainment = 'QA_ENTERTAINMENT',
-  QaGaming = 'QA_GAMING',
-  QaHistory = 'QA_HISTORY',
-  QaRelationships = 'QA_RELATIONSHIPS',
+  QaMlb = 'QA_MLB',
+  QaMovies = 'QA_MOVIES',
+  QaMusic = 'QA_MUSIC',
+  QaNba = 'QA_NBA',
+  QaNfl = 'QA_NFL',
+  QaNhl = 'QA_NHL',
+  QaSoccer = 'QA_SOCCER',
   QaSports = 'QA_SPORTS',
+  QaTelevision = 'QA_TELEVISION',
   Recommended = 'RECOMMENDED',
   RssLogistic = 'RSS_LOGISTIC',
   RssLogisticRecent = 'RSS_LOGISTIC_RECENT',
@@ -1617,6 +1678,8 @@ export type Query = {
   getScheduledCorpusItems: Array<ScheduledCorpusItemsResult>;
   /** Retrieves all ScheduledSurfaces available to the given SSO user. Requires an Authorization header. */
   getScheduledSurfacesForUser: Array<ScheduledSurface>;
+  /** Retrieves a list of active Sections with their corresponding active SectionItems for a scheduled surface. */
+  getSectionsWithSectionItems: Array<Section>;
   /** returns parser meta data for a given url */
   getUrlMetadata: UrlMetadata;
   /** Look up Item info by a url. */
@@ -1702,6 +1765,10 @@ export type QueryGetRejectedCorpusItemsArgs = {
 
 export type QueryGetScheduledCorpusItemsArgs = {
   filters: ScheduledCorpusItemsFilterInput;
+};
+
+export type QueryGetSectionsWithSectionItemsArgs = {
+  scheduledSurfaceGuid: Scalars['ID'];
 };
 
 export type QueryGetUrlMetadataArgs = {
@@ -2000,6 +2067,50 @@ export type SearchCollectionsFilters = {
   labelExternalIds?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   status?: InputMaybe<CollectionStatus>;
   title?: InputMaybe<Scalars['String']>;
+};
+
+export type Section = {
+  __typename?: 'Section';
+  /** Indicates whether or not a Section is available for display. */
+  active: Scalars['Boolean'];
+  /** The source which created the Section. */
+  createSource: ActivitySource;
+  /** A Unix timestamp of when the Section was created. */
+  createdAt: Scalars['Int'];
+  /** An alternative primary key in UUID format. */
+  externalId: Scalars['ID'];
+  /** The GUID of the Scheduled Surface. Example: 'NEW_TAB_EN_US'. */
+  scheduledSurfaceGuid: Scalars['ID'];
+  /**
+   * An array of active and in-active SectionItems in a Section.
+   * This field returns an empty array when creating a new Section or updating a Section.
+   */
+  sectionItems: Array<SectionItem>;
+  /** Controls the display order of Sections. */
+  sort?: Maybe<Scalars['Int']>;
+  /** The title of the Section displayed to the users. */
+  title: Scalars['String'];
+  /** A Unix timestamp of when the Section was last updated. */
+  updatedAt: Scalars['Int'];
+};
+
+/** An ApprovedItem belonging to a Section */
+export type SectionItem = {
+  __typename?: 'SectionItem';
+  /** The associated Approved Item. */
+  approvedItem: ApprovedCorpusItem;
+  /** A Unix timestamp of when the entity was created. */
+  createdAt: Scalars['Int'];
+  /** An alternative primary key in UUID format that is generated on creation. */
+  externalId: Scalars['ID'];
+  /**
+   * The initial rank of the SectionItem in relation to its siblings. Used as a
+   * fallback in Merino when there is no engagement/click data available. May only apply to
+   * ML-generated SectionItems.
+   */
+  rank?: Maybe<Scalars['Int']>;
+  /** A Unix timestamp of when the entity was last updated. */
+  updatedAt: Scalars['Int'];
 };
 
 export type ShareableListComplete = {
