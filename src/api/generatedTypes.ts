@@ -541,7 +541,7 @@ export type CreateApprovedCorpusItemInput = {
   /** Optionally, specify the date this item should be appearing on a Scheduled Surface. Format: YYYY-MM-DD */
   scheduledDate?: InputMaybe<Scalars['Date']>;
   /** Optionally, specify the source of the Scheduled Item. Could be one of: MANUAL or ML */
-  scheduledSource?: InputMaybe<ScheduledItemSource>;
+  scheduledSource?: InputMaybe<ActivitySource>;
   /** Optionally, specify the GUID of the Scheduled Surface this item should be scheduled for. */
   scheduledSurfaceGuid?: InputMaybe<Scalars['ID']>;
   /** The source of the corpus item. */
@@ -679,7 +679,7 @@ export type CreateScheduledCorpusItemInput = {
   /** The GUID of the Scheduled Surface the Approved Item is going to appear on. Example: 'NEW_TAB_EN_US'. */
   scheduledSurfaceGuid: Scalars['ID'];
   /** Source of the Scheduled Item. Could be one of: MANUAL or ML */
-  source: ScheduledItemSource;
+  source: ActivitySource;
 };
 
 /** Input data for adding a SectionItem to a Section */
@@ -851,7 +851,7 @@ export type ImportApprovedCorpusItemInput = {
    *
    * This field was added after this import mutation was created. We may need to expand the enum value list if this mutation is used in the future.
    */
-  scheduledSource: ScheduledItemSource;
+  scheduledSource: ActivitySource;
   /** The GUID of the Scheduled Surface this item should be scheduled for. */
   scheduledSurfaceGuid: Scalars['ID'];
   /** The source of the corpus item. */
@@ -1243,6 +1243,8 @@ export type Mutation = {
    * Called when removing a prospect from the list - specifically not approving or rejecting into the corpus.
    */
   removeProspect?: Maybe<Prospect>;
+  /** Removes an active SectionItem from a Section. */
+  removeSectionItem: SectionItem;
   /** Updates the scheduled date of a Scheduled Surface Scheduled Item. */
   rescheduleScheduledCorpusItem: ScheduledCorpusItem;
   /** Updates an Approved Item. */
@@ -1384,6 +1386,10 @@ export type MutationRejectApprovedCorpusItemArgs = {
 
 export type MutationRemoveProspectArgs = {
   data: RemoveProspectInput;
+};
+
+export type MutationRemoveSectionItemArgs = {
+  externalId: Scalars['String'];
 };
 
 export type MutationRescheduleScheduledCorpusItemArgs = {
@@ -1968,7 +1974,7 @@ export type RescheduleScheduledCorpusItemInput = {
   /** The new scheduled date for the scheduled item to appear on a Scheduled Surface. Format: YYYY-MM-DD. */
   scheduledDate: Scalars['Date'];
   /** Source of the Scheduled Item. Could be one of: MANUAL or ML */
-  source: ScheduledItemSource;
+  source: ActivitySource;
 };
 
 /** Contains information about the human curator who reviewed the schedule for a given date and scheduled surface. */
@@ -2006,7 +2012,7 @@ export type ScheduledCorpusItem = {
   /** The GUID of this scheduledSurface to which this item is scheduled. Example: 'NEW_TAB_EN_US'. */
   scheduledSurfaceGuid: Scalars['ID'];
   /** Source of the Scheduled Item. Could be one of: MANUAL or ML */
-  source: ScheduledItemSource;
+  source: ActivitySource;
   /** A Unix timestamp of when the entity was last updated. */
   updatedAt: Scalars['Int'];
   /** A single sign-on user identifier of the user who last updated this entity. Null on creation. */
@@ -2040,14 +2046,6 @@ export type ScheduledCorpusItemsResult = {
   totalCount: Scalars['Int'];
 };
 
-/** The source of the Scheduled item */
-export enum ScheduledItemSource {
-  /** Manually entered through the curation admin tool */
-  Manual = 'MANUAL',
-  /** Created by ML */
-  Ml = 'ML',
-}
-
 /** A Scheduled Surface, including its associated Prospect Types. */
 export type ScheduledSurface = {
   __typename?: 'ScheduledSurface';
@@ -2069,6 +2067,7 @@ export type SearchCollectionsFilters = {
   title?: InputMaybe<Scalars['String']>;
 };
 
+/** An entity containing Corpus Items. */
 export type Section = {
   __typename?: 'Section';
   /** Indicates whether or not a Section is available for display. */
@@ -2094,10 +2093,16 @@ export type Section = {
   updatedAt: Scalars['Int'];
 };
 
-/** An ApprovedItem belonging to a Section */
+/** Available fields for filtering Sections. */
+export type SectionFilters = {
+  /** Required filter to retrieve Sections & SectionItems for a Scheduled Surface */
+  scheduledSurfaceGuid: Scalars['ID'];
+};
+
+/** A CorpusItem belonging to a Section */
 export type SectionItem = {
   __typename?: 'SectionItem';
-  /** The associated Approved Item. */
+  /** The associated Approved Corpus Item. */
   approvedItem: ApprovedCorpusItem;
   /** A Unix timestamp of when the entity was created. */
   createdAt: Scalars['Int'];
@@ -2823,7 +2828,7 @@ export type ScheduledItemDataFragment = {
   scheduledDate: any;
   updatedAt: number;
   updatedBy?: string | null;
-  source: ScheduledItemSource;
+  source: ActivitySource;
   approvedItem: {
     __typename?: 'ApprovedCorpusItem';
     externalId: string;
@@ -3095,7 +3100,7 @@ export type CreateScheduledCorpusItemMutationVariables = Exact<{
   approvedItemExternalId: Scalars['ID'];
   scheduledSurfaceGuid: Scalars['ID'];
   scheduledDate: Scalars['Date'];
-  source: ScheduledItemSource;
+  source: ActivitySource;
   reasons?: InputMaybe<Scalars['String']>;
   reasonComment?: InputMaybe<Scalars['String']>;
   actionScreen?: InputMaybe<ActionScreen>;
@@ -3397,7 +3402,7 @@ export type RemoveProspectMutation = {
 export type RescheduleScheduledCorpusItemMutationVariables = Exact<{
   externalId: Scalars['ID'];
   scheduledDate: Scalars['Date'];
-  source: ScheduledItemSource;
+  source: ActivitySource;
   actionScreen?: InputMaybe<ActionScreen>;
 }>;
 
@@ -3412,7 +3417,7 @@ export type RescheduleScheduledCorpusItemMutation = {
     scheduledDate: any;
     updatedAt: number;
     updatedBy?: string | null;
-    source: ScheduledItemSource;
+    source: ActivitySource;
     approvedItem: {
       __typename?: 'ApprovedCorpusItem';
       externalId: string;
@@ -4559,7 +4564,7 @@ export type GetScheduledItemsQuery = {
       scheduledDate: any;
       updatedAt: number;
       updatedBy?: string | null;
-      source: ScheduledItemSource;
+      source: ActivitySource;
       approvedItem: {
         __typename?: 'ApprovedCorpusItem';
         externalId: string;
@@ -5537,7 +5542,7 @@ export const CreateScheduledCorpusItemDocument = gql`
     $approvedItemExternalId: ID!
     $scheduledSurfaceGuid: ID!
     $scheduledDate: Date!
-    $source: ScheduledItemSource!
+    $source: ActivitySource!
     $reasons: String
     $reasonComment: String
     $actionScreen: ActionScreen
@@ -6052,7 +6057,7 @@ export const RescheduleScheduledCorpusItemDocument = gql`
   mutation rescheduleScheduledCorpusItem(
     $externalId: ID!
     $scheduledDate: Date!
-    $source: ScheduledItemSource!
+    $source: ActivitySource!
     $actionScreen: ActionScreen
   ) {
     rescheduleScheduledCorpusItem(

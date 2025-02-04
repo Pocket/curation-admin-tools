@@ -3,7 +3,7 @@ import { Box, Grid } from '@mui/material';
 import {
   ScheduledCorpusItem,
   ScheduledCorpusItemsResult,
-  ScheduledItemSource,
+  ActivitySource,
   useRescheduleScheduledCorpusItemMutation,
 } from '../../../api/generatedTypes';
 import {
@@ -162,10 +162,10 @@ export const ScheduleDayData: React.FC<ScheduleDayDataProps> = (
                 filters.topics === getDisplayTopic(item.approvedItem.topic) ||
                 filters.publishers === item.approvedItem.publisher ||
                 (filters.types === 'Ml' &&
-                  item.source === ScheduledItemSource.Ml &&
+                  item.source === ActivitySource.Ml &&
                   !item.approvedItem.isSyndicated) ||
                 (filters.types == 'ML-Syndicated' &&
-                  item.source === ScheduledItemSource.Ml &&
+                  item.source === ActivitySource.Ml &&
                   item.approvedItem.isSyndicated) ||
                 (filters.types === 'Collections' &&
                   item.approvedItem.isCollection) ||

@@ -5,7 +5,7 @@ import {
   CuratedStatus,
   GetScheduledItemsQuery,
   ScheduledCorpusItem,
-  ScheduledItemSource,
+  ActivitySource,
   Topics,
 } from '../../api/generatedTypes';
 import { getScheduledItems } from '../../api/queries/getScheduledItems';
@@ -50,7 +50,7 @@ export const scheduledItems: ScheduledCorpusItem[] = [
     updatedAt: 1635014926,
     updatedBy: 'Amy',
     scheduledSurfaceGuid: 'NEW_TAB_EN_US',
-    source: ScheduledItemSource.Manual,
+    source: ActivitySource.Manual,
     approvedItem,
   },
   {
@@ -61,7 +61,7 @@ export const scheduledItems: ScheduledCorpusItem[] = [
     updatedAt: 1635014926,
     updatedBy: 'Amy',
     scheduledSurfaceGuid: 'NEW_TAB_EN_US',
-    source: ScheduledItemSource.Manual,
+    source: ActivitySource.Manual,
     // Tweak topic & publisher to test ScheduleSummaryConnector
     approvedItem: {
       ...approvedItem,
@@ -78,7 +78,7 @@ export const scheduledItems: ScheduledCorpusItem[] = [
     updatedAt: 1635014926,
     updatedBy: 'Amy',
     scheduledSurfaceGuid: 'NEW_TAB_EN_US',
-    source: ScheduledItemSource.Ml,
+    source: ActivitySource.Ml,
     approvedItem: {
       ...approvedItem,
       topic: Topics.HealthFitness,

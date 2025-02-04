@@ -27,7 +27,7 @@ import {
   CuratedStatus,
   Prospect,
   RejectProspectMutationVariables,
-  ScheduledItemSource,
+  ActivitySource,
   useCreateApprovedCorpusItemMutation,
   useCreateScheduledCorpusItemMutation,
   useGetProspectsLazyQuery,
@@ -535,7 +535,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
       approvedItemExternalId: approvedItem?.externalId,
       scheduledSurfaceGuid: values.scheduledSurfaceGuid,
       scheduledDate: values.scheduledDate.toISODate(),
-      source: ScheduledItemSource.Manual,
+      source: ActivitySource.Manual,
       // Refrain from sending empty strings (form defaults) to the mutation
       // if no data has been supplied for these fields: for example, when they're
       // not needed for the Pocket Hits surface or any other surface where

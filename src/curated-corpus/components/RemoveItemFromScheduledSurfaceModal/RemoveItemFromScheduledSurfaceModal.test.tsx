@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import {
   ScheduledCorpusItem,
-  ScheduledItemSource,
+  ActivitySource,
 } from '../../../api/generatedTypes';
 import { RemoveItemFromScheduledSurfaceModal } from './RemoveItemFromScheduledSurfaceModal';
 import { getTestApprovedItem } from '../../helpers/approvedItem';
@@ -19,7 +19,7 @@ describe('The RemoveItemFromScheduledSurfaceModal component', () => {
     scheduledSurfaceGuid: 'POCKET_HITS_DE_DE',
     updatedAt: 1635114926,
     updatedBy: 'jdoe',
-    source: ScheduledItemSource.Manual,
+    source: ActivitySource.Manual,
   };
   const usItem: ScheduledCorpusItem = {
     approvedItem,
@@ -30,7 +30,7 @@ describe('The RemoveItemFromScheduledSurfaceModal component', () => {
     scheduledSurfaceGuid: 'NEW_TAB_EN_US',
     updatedAt: 1935114924,
     updatedBy: 'klm',
-    source: ScheduledItemSource.Manual,
+    source: ActivitySource.Manual,
   };
   const isOpen = true;
   const onSave = jest.fn();

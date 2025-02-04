@@ -1,7 +1,4 @@
-import {
-  ScheduledCorpusItem,
-  ScheduledItemSource,
-} from '../../api/generatedTypes';
+import { ScheduledCorpusItem, ActivitySource } from '../../api/generatedTypes';
 import { getTestApprovedItem } from './approvedItem';
 import { ScheduledSurfaces } from './definitions';
 
@@ -9,7 +6,7 @@ export const scheduledItem: ScheduledCorpusItem = {
   externalId: '456-qwerty',
   scheduledDate: '2024-01-01',
   scheduledSurfaceGuid: ScheduledSurfaces[0].guid, // New Tab EN-US
-  source: ScheduledItemSource.Manual,
+  source: ActivitySource.Manual,
   createdAt: 1635014927,
   createdBy: 'Amy',
   updatedAt: 1635014927,
