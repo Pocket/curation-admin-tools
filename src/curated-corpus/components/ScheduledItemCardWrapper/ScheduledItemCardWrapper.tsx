@@ -2,7 +2,7 @@ import React, { ReactElement } from 'react';
 import { Grid } from '@mui/material';
 import {
   ScheduledCorpusItem,
-  ScheduledItemSource,
+  ActivitySource,
 } from '../../../api/generatedTypes';
 
 import { StyledScheduledItemCard } from '../../../_shared/styled';
@@ -69,7 +69,7 @@ export const ScheduledItemCardWrapper: React.FC<
       <StyledScheduledItemCard variant="outlined">
         <SuggestedScheduleItemListCard
           item={item.approvedItem}
-          isMlScheduled={item.source === ScheduledItemSource.Ml}
+          isMlScheduled={item.source === ActivitySource.Ml}
           currentScheduledDate={currentScheduledDate}
           scheduledSurfaceGuid={scheduledSurfaceGuid}
           onEdit={onEdit}

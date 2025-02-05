@@ -6,7 +6,7 @@ import { DropDownFilter } from '../../components';
 import {
   Maybe,
   ScheduledCorpusItem,
-  ScheduledItemSource,
+  ActivitySource,
 } from '../../../api/generatedTypes';
 import { getDisplayTopic, getGroupedTopicData } from '../../helpers/topics';
 import { getGroupedPublisherData } from '../../helpers/publishers';
@@ -66,16 +66,14 @@ export const ScheduleDayFilterRow: React.FC<ScheduleDayFilterRowProps> = (
       name: 'Ml',
       count: scheduledItems.filter(
         (item) =>
-          item.source === ScheduledItemSource.Ml &&
-          !item.approvedItem.isSyndicated,
+          item.source === ActivitySource.Ml && !item.approvedItem.isSyndicated,
       ).length,
     },
     {
       name: 'ML-Syndicated',
       count: scheduledItems.filter(
         (item) =>
-          item.source === ScheduledItemSource.Ml &&
-          item.approvedItem.isSyndicated,
+          item.source === ActivitySource.Ml && item.approvedItem.isSyndicated,
       ).length,
     },
     {

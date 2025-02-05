@@ -1,4 +1,4 @@
-import { ActionScreen, ScheduledItemSource } from '../../api/generatedTypes';
+import { ActionScreen, ActivitySource } from '../../api/generatedTypes';
 
 import { createScheduledCorpusItem } from '../../api/mutations/createScheduledCorpusItem';
 import { getTestApprovedItem } from '../helpers/approvedItem';
@@ -22,7 +22,7 @@ export const successMock = (
         approvedItemExternalId: '123-abc',
         scheduledSurfaceGuid,
         scheduledDate,
-        source: ScheduledItemSource.Manual,
+        source: ActivitySource.Manual,
         actionScreen: ActionScreen.Schedule,
       },
     },

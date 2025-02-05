@@ -5,7 +5,7 @@ import {
   ActionScreen,
   ApprovedCorpusItem,
   CreateScheduledCorpusItemInput,
-  ScheduledItemSource,
+  ActivitySource,
   useCreateScheduledCorpusItemMutation,
 } from '../../../../api/generatedTypes';
 import { useNotifications, useRunMutation } from '../../../../_shared/hooks';
@@ -83,7 +83,7 @@ export const ScheduleCorpusItemAction: React.FC<
       approvedItemExternalId: item.externalId,
       scheduledSurfaceGuid: values.scheduledSurfaceGuid,
       scheduledDate: values.scheduledDate.toISODate(),
-      source: ScheduledItemSource.Manual,
+      source: ActivitySource.Manual,
       actionScreen,
     };
     // Run the mutation

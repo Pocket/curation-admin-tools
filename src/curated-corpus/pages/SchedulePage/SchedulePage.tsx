@@ -28,7 +28,7 @@ import {
   Prospect,
   ScheduledCorpusItem,
   ScheduledCorpusItemsResult,
-  ScheduledItemSource,
+  ActivitySource,
   useCreateApprovedCorpusItemMutation,
   useCreateScheduledCorpusItemMutation,
   useDeleteScheduledItemMutation,
@@ -499,7 +499,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
       approvedItemExternalId: approvedItem?.externalId,
       scheduledSurfaceGuid: values.scheduledSurfaceGuid,
       scheduledDate: values.scheduledDate.toISODate(),
-      source: ScheduledItemSource.Manual,
+      source: ActivitySource.Manual,
       // Refrain from sending empty strings (form defaults) to the mutation
       // if no data has been supplied for these fields: for example, when they're
       // not needed for the Pocket Hits surface or any other surface where

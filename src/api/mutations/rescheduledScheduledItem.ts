@@ -5,7 +5,7 @@ export const rescheduleScheduledItem = gql`
   mutation rescheduleScheduledCorpusItem(
     $externalId: ID!
     $scheduledDate: Date!
-    $source: ScheduledItemSource!
+    $source: ActivitySource!
     $actionScreen: ActionScreen
   ) {
     rescheduleScheduledCorpusItem(
