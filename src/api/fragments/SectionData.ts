@@ -1,0 +1,25 @@
+import { gql } from '@apollo/client';
+import { SectionItemData } from './SectionItemData';
+
+export const BaseSectionData = gql`
+  fragment BaseSectionData on Section {
+    externalId
+    title
+    scheduledSurfaceGuid
+    sort
+    createSource
+    active
+  }
+`;
+export const SectionData = gql`
+  fragment SectionData on Section {
+    ...BaseSectionData
+    sectionItems {
+      ...SectionItemData
+    }
+    createdAt
+    updatedAt
+  }
+  ${BaseSectionData}
+  ${SectionItemData}
+`;

@@ -4,3 +4,4 @@ export { CuratedCorpusLandingPage } from './CuratedCorpusLandingPage/CuratedCorp
 export { RejectedPage } from './RejectedPage/RejectedPage';
 export { ProspectingPage } from './ProspectingPage/ProspectingPage';
 export { SchedulePage } from './SchedulePage/SchedulePage';
+export { SectionsPage } from './SectionsPage/SectionsPage';

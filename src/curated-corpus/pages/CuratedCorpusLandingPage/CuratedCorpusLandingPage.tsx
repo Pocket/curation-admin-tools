@@ -14,6 +14,7 @@ import {
   ProspectingPage,
   RejectedPage,
   SchedulePage,
+  SectionsPage,
 } from '../';
 import { client } from '../../../api/client';
 
@@ -40,6 +41,10 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
     {
       text: 'Rejected',
       url: `${path}/rejected/`,
+    },
+    {
+      text: 'Sections',
+      url: `${path}/sections/`,
     },
   ];
 
@@ -83,6 +88,12 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
                   all prospects that have been rejected.
                 </ListItemText>
               </ListItem>
+              <ListItem>
+                <ListItemText>
+                  <Link to={`${path}/sections/`}>Sections</Link> will show you
+                  all ML-generated sections with their related stories.
+                </ListItemText>
+              </ListItem>
             </List>
           </Route>
           <Route exact path={`${path}/prospecting/`}>
@@ -99,6 +110,9 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
           </Route>
           <Route exact path={`${path}/rejected/`}>
             <RejectedPage />
+          </Route>
+          <Route exact path={`${path}/sections/`}>
+            <SectionsPage />
           </Route>
           <Route component={PageNotFound} />
         </Switch>
