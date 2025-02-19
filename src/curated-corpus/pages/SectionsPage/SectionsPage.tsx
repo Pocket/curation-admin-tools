@@ -20,27 +20,25 @@ export const SectionsPage: React.FC = (): JSX.Element => {
     DropdownOption[]
   >([]);
 
-  // state variable to toggle on or off the empty state component
-  // if the callGetSectionsWithSectionItemsQuery query returns no data and no errors, this will be set to true
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [showEmptyState, setShowEmptyState] = useState<boolean>(false);
   const [currentSection, setCurrentSection] = useState('');
   // Get a list of sections on the page
-  const [callGetSectionsWithSectionItemsQuery, { error, data, refetch }] =
-    useGetSectionsWithSectionItemsLazyQuery({
-      // Do not cache sections. On update, remove the relevant section item
-      // cards from the screen manually once the sections have been checked by curators.
-      fetchPolicy: 'no-cache',
-      notifyOnNetworkStatusChange: true,
-      variables: {
-        scheduledSurfaceGuid: currentScheduledSurfaceGuid,
-      },
-      onCompleted: (data) => {
-        if (!data && !error) {
-          setShowEmptyState(true);
-        }
-      },
-    });
+  const [
+    callGetSectionsWithSectionItemsQuery,
+    {
+      // error commented out for now, enabled when enabling notifications
+      // error,
+      data,
+      refetch,
+    },
+  ] = useGetSectionsWithSectionItemsLazyQuery({
+    // Do not cache sections. On update, remove the relevant section item
+    // cards from the screen manually once the sections have been checked by curators.
+    fetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+    variables: {
+      scheduledSurfaceGuid: currentScheduledSurfaceGuid,
+    },
+  });
 
   // Get the list of Scheduled Surfaces the currently logged-in user has access to.
   const {
@@ -58,7 +56,7 @@ export const SectionsPage: React.FC = (): JSX.Element => {
         setCurrentScheduledSurfaceGuid(options[0].code);
         setScheduledSurfaceOptions(options);
       }
-      // call the dependent queries now
+      // Call the dependent queries now
       callGetSectionsWithSectionItemsQuery();
     },
   });
@@ -68,7 +66,7 @@ export const SectionsPage: React.FC = (): JSX.Element => {
    * dropdown, refetch all the data on the page for that surface.
    */
   const updateScheduledSurface = (option: DropdownOption) => {
-    // fetch sections for the selected Scheduled Surface
+    // Fetch sections for the selected Scheduled Surface
     refetch && refetch({ scheduledSurfaceGuid: option.code });
 
     // Update the split button to reflect which ScheduledSurface the user is now on.
@@ -84,8 +82,7 @@ export const SectionsPage: React.FC = (): JSX.Element => {
 
   // Storing the sections here which will be shown in the UI.
   const [sections, setSections] = useState<Section[]>([]);
-  // Section titles to be displayed in the Dropdown
-  const [sectionTitles, setSectionTitles] = useState<string[]>([]);
+
   // Section options stored as a Dropdown object
   const [sectionOptions, setSectionOptions] = useState<DropdownOption[]>([]);
 
@@ -99,7 +96,6 @@ export const SectionsPage: React.FC = (): JSX.Element => {
       const sectionTitlesArr: string[] = fetchedSections.map(
         (section) => section.title,
       );
-      setSectionTitles(sectionTitlesArr);
 
       // Add "All Sections" option as default
       const options = [
@@ -138,7 +134,7 @@ export const SectionsPage: React.FC = (): JSX.Element => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <Box display="flex" justifyContent="flex-end" mb={2}>
-                {sectionTitles.length > 0 && (
+                {sectionOptions.length > 0 && (
                   <SplitButton
                     icon={<FilterListIcon fontSize="large" />}
                     onMenuOptionClick={updateSection}

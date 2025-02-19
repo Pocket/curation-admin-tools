@@ -227,25 +227,33 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
                 alignItems="center"
               >
                 <Hidden smDown implementation="css">
-                  <Grid item sm={8}>
+                  <Grid
+                    item
+                    sm={12}
+                    sx={{ display: 'flex', justifyContent: 'flex-end' }}
+                  >
                     <List
                       sx={{
                         display: 'flex',
                         flexDirection: 'row',
                         padding: 0,
+                        flexWrap: 'nowrap', // Prevents wrapping
+                        justifyContent: 'flex-end', // Keeps alignment the same
                       }}
                     >
-                      {menuLinks.map((link: MenuLink) => {
-                        return (
-                          <ListItem
-                            component={StyledAppBarLink}
-                            to={link.url}
-                            key={link.url}
-                          >
-                            <ListItemText primary={link.text} />
-                          </ListItem>
-                        );
-                      })}
+                      {menuLinks.map((link: MenuLink) => (
+                        <ListItem
+                          component={StyledAppBarLink}
+                          to={link.url}
+                          key={link.url}
+                          sx={{
+                            padding: '0 0.75rem',
+                            minWidth: 'auto',
+                          }}
+                        >
+                          <ListItemText primary={link.text} />
+                        </ListItem>
+                      ))}
                     </List>
                   </Grid>
                 </Hidden>
