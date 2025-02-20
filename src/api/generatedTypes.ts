@@ -2624,6 +2624,119 @@ export type CuratedItemDataWithHistoryFragment = {
   }>;
 };
 
+export type BaseSectionDataFragment = {
+  __typename?: 'Section';
+  externalId: string;
+  title: string;
+  scheduledSurfaceGuid: string;
+  sort?: number | null;
+  createSource: ActivitySource;
+  active: boolean;
+};
+
+export type SectionDataFragment = {
+  __typename?: 'Section';
+  createdAt: number;
+  updatedAt: number;
+  externalId: string;
+  title: string;
+  scheduledSurfaceGuid: string;
+  sort?: number | null;
+  createSource: ActivitySource;
+  active: boolean;
+  sectionItems: Array<{
+    __typename?: 'SectionItem';
+    createdAt: number;
+    updatedAt: number;
+    externalId: string;
+    rank?: number | null;
+    approvedItem: {
+      __typename?: 'ApprovedCorpusItem';
+      externalId: string;
+      prospectId?: string | null;
+      title: string;
+      language: CorpusLanguage;
+      publisher: string;
+      datePublished?: any | null;
+      url: any;
+      hasTrustedDomain: boolean;
+      imageUrl: any;
+      excerpt: string;
+      status: CuratedStatus;
+      source: CorpusItemSource;
+      topic: string;
+      isCollection: boolean;
+      isTimeSensitive: boolean;
+      isSyndicated: boolean;
+      createdBy: string;
+      createdAt: number;
+      updatedBy?: string | null;
+      updatedAt: number;
+      authors: Array<{
+        __typename?: 'CorpusItemAuthor';
+        name: string;
+        sortOrder: number;
+      }>;
+      scheduledSurfaceHistory: Array<{
+        __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
+        externalId: string;
+        createdBy: string;
+        scheduledDate: any;
+        scheduledSurfaceGuid: string;
+      }>;
+    };
+  }>;
+};
+
+export type BaseSectionItemDataFragment = {
+  __typename?: 'SectionItem';
+  externalId: string;
+  rank?: number | null;
+};
+
+export type SectionItemDataFragment = {
+  __typename?: 'SectionItem';
+  createdAt: number;
+  updatedAt: number;
+  externalId: string;
+  rank?: number | null;
+  approvedItem: {
+    __typename?: 'ApprovedCorpusItem';
+    externalId: string;
+    prospectId?: string | null;
+    title: string;
+    language: CorpusLanguage;
+    publisher: string;
+    datePublished?: any | null;
+    url: any;
+    hasTrustedDomain: boolean;
+    imageUrl: any;
+    excerpt: string;
+    status: CuratedStatus;
+    source: CorpusItemSource;
+    topic: string;
+    isCollection: boolean;
+    isTimeSensitive: boolean;
+    isSyndicated: boolean;
+    createdBy: string;
+    createdAt: number;
+    updatedBy?: string | null;
+    updatedAt: number;
+    authors: Array<{
+      __typename?: 'CorpusItemAuthor';
+      name: string;
+      sortOrder: number;
+    }>;
+    scheduledSurfaceHistory: Array<{
+      __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
+      externalId: string;
+      createdBy: string;
+      scheduledDate: any;
+      scheduledSurfaceGuid: string;
+    }>;
+  };
+};
+
 export type ShareableListCompletePropsFragment = {
   __typename?: 'ShareableListComplete';
   externalId: string;
@@ -4691,6 +4804,67 @@ export type SearchCollectionsQuery = {
   };
 };
 
+export type GetSectionsWithSectionItemsQueryVariables = Exact<{
+  scheduledSurfaceGuid: Scalars['ID'];
+}>;
+
+export type GetSectionsWithSectionItemsQuery = {
+  __typename?: 'Query';
+  getSectionsWithSectionItems: Array<{
+    __typename?: 'Section';
+    createdAt: number;
+    updatedAt: number;
+    externalId: string;
+    title: string;
+    scheduledSurfaceGuid: string;
+    sort?: number | null;
+    createSource: ActivitySource;
+    active: boolean;
+    sectionItems: Array<{
+      __typename?: 'SectionItem';
+      createdAt: number;
+      updatedAt: number;
+      externalId: string;
+      rank?: number | null;
+      approvedItem: {
+        __typename?: 'ApprovedCorpusItem';
+        externalId: string;
+        prospectId?: string | null;
+        title: string;
+        language: CorpusLanguage;
+        publisher: string;
+        datePublished?: any | null;
+        url: any;
+        hasTrustedDomain: boolean;
+        imageUrl: any;
+        excerpt: string;
+        status: CuratedStatus;
+        source: CorpusItemSource;
+        topic: string;
+        isCollection: boolean;
+        isTimeSensitive: boolean;
+        isSyndicated: boolean;
+        createdBy: string;
+        createdAt: number;
+        updatedBy?: string | null;
+        updatedAt: number;
+        authors: Array<{
+          __typename?: 'CorpusItemAuthor';
+          name: string;
+          sortOrder: number;
+        }>;
+        scheduledSurfaceHistory: Array<{
+          __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
+          externalId: string;
+          createdBy: string;
+          scheduledDate: any;
+          scheduledSurfaceGuid: string;
+        }>;
+      };
+    }>;
+  }>;
+};
+
 export type GetStoryFromParserQueryVariables = Exact<{
   url: Scalars['String'];
 }>;
@@ -4881,6 +5055,80 @@ export const CollectionStoryDataFragmentDoc = gql`
     sortOrder
   }
 `;
+export const BaseSectionDataFragmentDoc = gql`
+  fragment BaseSectionData on Section {
+    externalId
+    title
+    scheduledSurfaceGuid
+    sort
+    createSource
+    active
+  }
+`;
+export const BaseSectionItemDataFragmentDoc = gql`
+  fragment BaseSectionItemData on SectionItem {
+    externalId
+    rank
+  }
+`;
+export const CuratedItemDataFragmentDoc = gql`
+  fragment CuratedItemData on ApprovedCorpusItem {
+    externalId
+    prospectId
+    title
+    language
+    publisher
+    datePublished
+    authors {
+      name
+      sortOrder
+    }
+    url
+    hasTrustedDomain
+    imageUrl
+    excerpt
+    status
+    source
+    topic
+    isCollection
+    isTimeSensitive
+    isSyndicated
+    createdBy
+    createdAt
+    updatedBy
+    updatedAt
+    scheduledSurfaceHistory {
+      externalId
+      createdBy
+      scheduledDate
+      scheduledSurfaceGuid
+    }
+  }
+`;
+export const SectionItemDataFragmentDoc = gql`
+  fragment SectionItemData on SectionItem {
+    ...BaseSectionItemData
+    approvedItem {
+      ...CuratedItemData
+    }
+    createdAt
+    updatedAt
+  }
+  ${BaseSectionItemDataFragmentDoc}
+  ${CuratedItemDataFragmentDoc}
+`;
+export const SectionDataFragmentDoc = gql`
+  fragment SectionData on Section {
+    ...BaseSectionData
+    sectionItems {
+      ...SectionItemData
+    }
+    createdAt
+    updatedAt
+  }
+  ${BaseSectionDataFragmentDoc}
+  ${SectionItemDataFragmentDoc}
+`;
 export const ShareableListItemPropsFragmentDoc = gql`
   fragment ShareableListItemProps on ShareableListItem {
     externalId
@@ -5029,40 +5277,6 @@ export const ProspectDataWithCorpusItemsFragmentDoc = gql`
   ${CuratedItemDataWithHistoryFragmentDoc}
   ${RejectedItemDataFragmentDoc}
   ${BasicParserItemDataFragmentDoc}
-`;
-export const CuratedItemDataFragmentDoc = gql`
-  fragment CuratedItemData on ApprovedCorpusItem {
-    externalId
-    prospectId
-    title
-    language
-    publisher
-    datePublished
-    authors {
-      name
-      sortOrder
-    }
-    url
-    hasTrustedDomain
-    imageUrl
-    excerpt
-    status
-    source
-    topic
-    isCollection
-    isTimeSensitive
-    isSyndicated
-    createdBy
-    createdAt
-    updatedBy
-    updatedAt
-    scheduledSurfaceHistory {
-      externalId
-      createdBy
-      scheduledDate
-      scheduledSurfaceGuid
-    }
-  }
 `;
 export const ScheduledItemDataFragmentDoc = gql`
   fragment ScheduledItemData on ScheduledCorpusItem {
@@ -8269,6 +8483,65 @@ export type SearchCollectionsLazyQueryHookResult = ReturnType<
 export type SearchCollectionsQueryResult = Apollo.QueryResult<
   SearchCollectionsQuery,
   SearchCollectionsQueryVariables
+>;
+export const GetSectionsWithSectionItemsDocument = gql`
+  query getSectionsWithSectionItems($scheduledSurfaceGuid: ID!) {
+    getSectionsWithSectionItems(scheduledSurfaceGuid: $scheduledSurfaceGuid) {
+      ...SectionData
+    }
+  }
+  ${SectionDataFragmentDoc}
+`;
+
+/**
+ * __useGetSectionsWithSectionItemsQuery__
+ *
+ * To run a query within a React component, call `useGetSectionsWithSectionItemsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSectionsWithSectionItemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSectionsWithSectionItemsQuery({
+ *   variables: {
+ *      scheduledSurfaceGuid: // value for 'scheduledSurfaceGuid'
+ *   },
+ * });
+ */
+export function useGetSectionsWithSectionItemsQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetSectionsWithSectionItemsQuery,
+    GetSectionsWithSectionItemsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetSectionsWithSectionItemsQuery,
+    GetSectionsWithSectionItemsQueryVariables
+  >(GetSectionsWithSectionItemsDocument, options);
+}
+export function useGetSectionsWithSectionItemsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetSectionsWithSectionItemsQuery,
+    GetSectionsWithSectionItemsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetSectionsWithSectionItemsQuery,
+    GetSectionsWithSectionItemsQueryVariables
+  >(GetSectionsWithSectionItemsDocument, options);
+}
+export type GetSectionsWithSectionItemsQueryHookResult = ReturnType<
+  typeof useGetSectionsWithSectionItemsQuery
+>;
+export type GetSectionsWithSectionItemsLazyQueryHookResult = ReturnType<
+  typeof useGetSectionsWithSectionItemsLazyQuery
+>;
+export type GetSectionsWithSectionItemsQueryResult = Apollo.QueryResult<
+  GetSectionsWithSectionItemsQuery,
+  GetSectionsWithSectionItemsQueryVariables
 >;
 export const GetStoryFromParserDocument = gql`
   query getStoryFromParser($url: String!) {
