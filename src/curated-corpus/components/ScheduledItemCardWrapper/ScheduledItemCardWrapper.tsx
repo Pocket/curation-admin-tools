@@ -6,7 +6,8 @@ import {
 } from '../../../api/generatedTypes';
 
 import { StyledScheduledItemCard } from '../../../_shared/styled';
-import { SuggestedScheduleItemListCard } from '../SuggestedScheduleItemListCard/SuggestedScheduleItemListCard';
+import { StoryItemListCard } from '../StoryItemListCard/StoryItemListCard';
+import { CardActionButtonRow } from '../../../_shared/components';
 
 interface ScheduledItemCardWrapperProps {
   /**
@@ -67,16 +68,20 @@ export const ScheduledItemCardWrapper: React.FC<
   return (
     <Grid item xs={12} sm={6} md={3}>
       <StyledScheduledItemCard variant="outlined">
-        <SuggestedScheduleItemListCard
+        <StoryItemListCard
           item={item.approvedItem}
+          cardActionButtonRow={
+            <CardActionButtonRow
+              onEdit={onEdit}
+              onUnschedule={onUnschedule}
+              onReschedule={onReschedule}
+              onMoveToBottom={onMoveToBottom}
+              onReject={onReject}
+            />
+          }
           isMlScheduled={item.source === ActivitySource.Ml}
           currentScheduledDate={currentScheduledDate}
           scheduledSurfaceGuid={scheduledSurfaceGuid}
-          onEdit={onEdit}
-          onUnschedule={onUnschedule}
-          onReschedule={onReschedule}
-          onMoveToBottom={onMoveToBottom}
-          onReject={onReject}
         />
       </StyledScheduledItemCard>
     </Grid>

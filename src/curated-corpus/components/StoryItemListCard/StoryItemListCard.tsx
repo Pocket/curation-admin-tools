@@ -6,72 +6,45 @@ import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 
 import { curationPalette } from '../../../theme';
-import {
-  CardActionButtonRow,
-  CorpusItemCardImage,
-} from '../../../_shared/components';
+import { CorpusItemCardImage } from '../../../_shared/components';
 import { ScheduleHistoryModal } from '../ScheduleHistoryModal/ScheduleHistoryModal';
 
-interface SuggestedScheduleItemListCardProps {
+interface StoryItemListCardProps {
   /**
    * An approved corpus item object
    */
   item: ApprovedCorpusItem;
 
   /**
-   * If this Scheduled item was scheduled by ML
+   * CardActionButtonRow component
+   */
+  cardActionButtonRow: JSX.Element;
+
+  /**
+   * If this story item was sent by ML
    */
   isMlScheduled: boolean;
 
   /**
    * Current date that the schedule is being viewed for
    */
-  currentScheduledDate: string;
+  currentScheduledDate?: string;
 
   /**
    * The surface the card is displayed on, e.g. EN_US
    */
   scheduledSurfaceGuid: string;
-
-  /**
-   * Callback for the "Unschedule" button
-   */
-  onUnschedule: VoidFunction;
-
-  /**
-   * Callback for the "Reschedule" button
-   */
-  onReschedule: VoidFunction;
-
-  /**
-   * Callback for the "Edit" button
-   */
-  onEdit: VoidFunction;
-
-  /**
-   * Callback for the "Move to bottom" button
-   */
-  onMoveToBottom: VoidFunction;
-
-  /**
-   * Callback for the "Reject" (trash) button
-   */
-  onReject: VoidFunction;
 }
 
-export const SuggestedScheduleItemListCard: React.FC<
-  SuggestedScheduleItemListCardProps
-> = (props): ReactElement => {
+export const StoryItemListCard: React.FC<StoryItemListCardProps> = (
+  props,
+): ReactElement => {
   const {
     item,
+    cardActionButtonRow,
     isMlScheduled,
     currentScheduledDate,
     scheduledSurfaceGuid,
-    onUnschedule,
-    onReschedule,
-    onEdit,
-    onMoveToBottom,
-    onReject,
   } = props;
 
   const [isScheduleHistoryModalOpen, setScheduleHistoryModalOpen] =
@@ -93,7 +66,7 @@ export const SuggestedScheduleItemListCard: React.FC<
       <CorpusItemCardImage
         item={item}
         toggleScheduleHistoryModal={toggleScheduleHistoryModal}
-        currentScheduledDate={currentScheduledDate}
+        currentScheduledDate={currentScheduledDate!}
         scheduledSurfaceGuid={scheduledSurfaceGuid}
         isMlScheduled={isMlScheduled}
       />
@@ -168,17 +141,8 @@ export const SuggestedScheduleItemListCard: React.FC<
         </Typography>
       </CardContent>
 
-      {/* {TODO @Herraj rework this to use flex parents vs hacking it */}
-      {/* Push the rest of the elements to the bottom of the card. */}
       <Box sx={{ flexGrow: 1 }} />
-
-      <CardActionButtonRow
-        onEdit={onEdit}
-        onUnschedule={onUnschedule}
-        onReschedule={onReschedule}
-        onMoveToBottom={onMoveToBottom}
-        onReject={onReject}
-      />
+      {cardActionButtonRow}
     </>
   );
 };
