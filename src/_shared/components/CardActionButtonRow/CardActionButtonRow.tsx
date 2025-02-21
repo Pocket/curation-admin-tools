@@ -12,12 +12,12 @@ interface CardActionButtonRowProps {
   /**
    * Callback for the "Unschedule" button
    */
-  onUnschedule: VoidFunction;
+  onUnschedule?: VoidFunction;
 
   /**
    * Callback for the "Reschedule" button
    */
-  onReschedule: VoidFunction;
+  onReschedule?: VoidFunction;
 
   /**
    * Callback for the "Edit" button
@@ -27,7 +27,7 @@ interface CardActionButtonRowProps {
   /**
    * Callback for the "Move to bottom" button
    */
-  onMoveToBottom: VoidFunction;
+  onMoveToBottom?: VoidFunction;
 
   /**
    * Callback for the "Reject" (trash) button
@@ -60,15 +60,17 @@ export const CardActionButtonRow: React.FC<CardActionButtonRowProps> = (
           </IconButton>
         </Tooltip>
 
-        <Tooltip title="Move to bottom" placement="bottom">
-          <IconButton
-            aria-label="move to bottom"
-            onClick={onMoveToBottom}
-            sx={{ color: curationPalette.jetBlack }}
-          >
-            <KeyboardDoubleArrowDownOutlinedIcon />
-          </IconButton>
-        </Tooltip>
+        {onMoveToBottom && (
+          <Tooltip title="Move to bottom" placement="bottom">
+            <IconButton
+              aria-label="move to bottom"
+              onClick={onMoveToBottom}
+              sx={{ color: curationPalette.jetBlack }}
+            >
+              <KeyboardDoubleArrowDownOutlinedIcon />
+            </IconButton>
+          </Tooltip>
+        )}
 
         <Tooltip title="Edit" placement="bottom">
           <IconButton
@@ -80,27 +82,31 @@ export const CardActionButtonRow: React.FC<CardActionButtonRowProps> = (
           </IconButton>
         </Tooltip>
 
-        <Tooltip title="Re-schedule" placement="bottom">
-          <IconButton
-            aria-label="re-schedule"
-            onClick={onReschedule}
-            sx={{ color: curationPalette.jetBlack }}
-          >
-            <ScheduleIcon />
-          </IconButton>
-        </Tooltip>
+        {onReschedule && (
+          <Tooltip title="Re-schedule" placement="bottom">
+            <IconButton
+              aria-label="re-schedule"
+              onClick={onReschedule}
+              sx={{ color: curationPalette.jetBlack }}
+            >
+              <ScheduleIcon />
+            </IconButton>
+          </Tooltip>
+        )}
       </Stack>
 
       <Stack direction="row" justifyContent="flex-start">
-        <Tooltip title="Unschedule" placement="bottom">
-          <IconButton
-            aria-label="unschedule"
-            onClick={onUnschedule}
-            sx={{ color: curationPalette.jetBlack }}
-          >
-            <EventBusyOutlinedIcon />
-          </IconButton>
-        </Tooltip>
+        {onUnschedule && (
+          <Tooltip title="Unschedule" placement="bottom">
+            <IconButton
+              aria-label="unschedule"
+              onClick={onUnschedule}
+              sx={{ color: curationPalette.jetBlack }}
+            >
+              <EventBusyOutlinedIcon />
+            </IconButton>
+          </Tooltip>
+        )}
       </Stack>
     </Stack>
   );

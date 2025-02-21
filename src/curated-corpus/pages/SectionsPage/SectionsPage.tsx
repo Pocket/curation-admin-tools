@@ -7,7 +7,7 @@ import {
 import { DropdownOption } from '../../helpers/definitions';
 import { Box, Grid } from '@mui/material';
 import { HandleApiResponse } from '../../../_shared/components';
-import { SplitButton } from '../../components';
+import { SectionDetails, SplitButton } from '../../components';
 import FilterListIcon from '@mui/icons-material/FilterList';
 
 export const SectionsPage: React.FC = (): JSX.Element => {
@@ -91,6 +91,8 @@ export const SectionsPage: React.FC = (): JSX.Element => {
   useEffect(() => {
     if (currentScheduledSurfaceGuid && data) {
       const fetchedSections = data.getSectionsWithSectionItems;
+      // Sort sections in alphabetical order by title
+      fetchedSections.sort((a, b) => a.title.localeCompare(b.title));
       setSections(fetchedSections);
 
       const sectionTitlesArr: string[] = fetchedSections.map(
@@ -145,26 +147,13 @@ export const SectionsPage: React.FC = (): JSX.Element => {
               </Box>
             </Grid>
           </Grid>
-          {sections &&
-            sections
-              .filter(
-                (section) =>
-                  currentSection === 'all' || section.title === currentSection,
-              )
-              .map((section) => (
-                <Box
-                  key={section.externalId}
-                  mt={2}
-                  p={2}
-                  border={1}
-                  borderColor="grey.300"
-                >
-                  <h2>{section.title}</h2>
-                  <p>{section.active}</p>
-                </Box>
-              ))}
         </Grid>
       </Grid>
+      <SectionDetails
+        sections={sections}
+        currentSection={currentSection}
+        currentScheduledSurfaceGuid={currentScheduledSurfaceGuid}
+      />
     </>
   );
 };
