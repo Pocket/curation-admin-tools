@@ -2,11 +2,12 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
-import { SuggestedScheduleItemListCard } from './SuggestedScheduleItemListCard';
+import { StoryItemListCard } from './StoryItemListCard';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 import { getTestApprovedItem } from '../../helpers/approvedItem';
+import { CardActionButtonRow } from '../../../_shared/components';
 
-describe('The SuggestedScheduleItemListCard component', () => {
+describe('The StoryItemListCard component', () => {
   let item: ApprovedCorpusItem = getTestApprovedItem();
   const currentScheduledDate = '2024-01-20';
 
@@ -16,17 +17,21 @@ describe('The SuggestedScheduleItemListCard component', () => {
   const onUnschedule = jest.fn();
   const onReject = jest.fn();
 
-  it('shows basic scheduled item information', () => {
+  it('shows basic story item information with all optional card actions', () => {
     render(
-      <SuggestedScheduleItemListCard
+      <StoryItemListCard
         isMlScheduled={false}
         item={item}
+        cardActionButtonRow={
+          <CardActionButtonRow
+            onEdit={onEdit}
+            onUnschedule={onUnschedule}
+            onReschedule={onReschedule}
+            onMoveToBottom={onMoveToBottom}
+            onReject={onReject}
+          />
+        }
         currentScheduledDate={currentScheduledDate}
-        onEdit={onEdit}
-        onUnschedule={onUnschedule}
-        onReschedule={onReschedule}
-        onMoveToBottom={onMoveToBottom}
-        onReject={onReject}
         scheduledSurfaceGuid="NEW_TAB_EN_US"
       />,
     );
@@ -49,15 +54,19 @@ describe('The SuggestedScheduleItemListCard component', () => {
 
   it('should render excerpt', () => {
     render(
-      <SuggestedScheduleItemListCard
+      <StoryItemListCard
         isMlScheduled={false}
         item={item}
+        cardActionButtonRow={
+          <CardActionButtonRow
+            onEdit={onEdit}
+            onUnschedule={onUnschedule}
+            onReschedule={onReschedule}
+            onMoveToBottom={onMoveToBottom}
+            onReject={onReject}
+          />
+        }
         currentScheduledDate={currentScheduledDate}
-        onEdit={onEdit}
-        onUnschedule={onUnschedule}
-        onReschedule={onReschedule}
-        onMoveToBottom={onMoveToBottom}
-        onReject={onReject}
         scheduledSurfaceGuid="NEW_TAB_EN_US"
       />,
     );
@@ -67,15 +76,19 @@ describe('The SuggestedScheduleItemListCard component', () => {
 
   it('should show multiple authors as a comma-separated string', () => {
     render(
-      <SuggestedScheduleItemListCard
+      <StoryItemListCard
         isMlScheduled={false}
         item={item}
         currentScheduledDate={currentScheduledDate}
-        onEdit={onEdit}
-        onUnschedule={onUnschedule}
-        onReschedule={onReschedule}
-        onMoveToBottom={onMoveToBottom}
-        onReject={onReject}
+        cardActionButtonRow={
+          <CardActionButtonRow
+            onEdit={onEdit}
+            onUnschedule={onUnschedule}
+            onReschedule={onReschedule}
+            onMoveToBottom={onMoveToBottom}
+            onReject={onReject}
+          />
+        }
         scheduledSurfaceGuid="NEW_TAB_EN_US"
       />,
     );
@@ -90,15 +103,19 @@ describe('The SuggestedScheduleItemListCard component', () => {
     };
 
     render(
-      <SuggestedScheduleItemListCard
+      <StoryItemListCard
         isMlScheduled={false}
         item={item}
         currentScheduledDate={currentScheduledDate}
-        onEdit={onEdit}
-        onUnschedule={onUnschedule}
-        onReschedule={onReschedule}
-        onMoveToBottom={onMoveToBottom}
-        onReject={onReject}
+        cardActionButtonRow={
+          <CardActionButtonRow
+            onEdit={onEdit}
+            onUnschedule={onUnschedule}
+            onReschedule={onReschedule}
+            onMoveToBottom={onMoveToBottom}
+            onReject={onReject}
+          />
+        }
         scheduledSurfaceGuid="NEW_TAB_EN_US"
       />,
     );

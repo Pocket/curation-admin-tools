@@ -59,4 +59,33 @@ describe('The CardActionButtonRow component', () => {
     userEvent.click(rejectButton);
     expect(onReject).toHaveBeenCalled();
   });
+  it('should only render card actions that are passed', () => {
+    render(<CardActionButtonRow onEdit={onEdit} onReject={onReject} />);
+
+    // assert edit button is present and calls its callback
+    const editButton = screen.getByRole('button', { name: 'edit' });
+    expect(editButton).toBeInTheDocument();
+    userEvent.click(editButton);
+    expect(onEdit).toHaveBeenCalled();
+
+    // assert unscheduleButton button is NOT present
+    const unscheduleButton = screen.queryByLabelText('unschedule');
+    expect(unscheduleButton).not.toBeInTheDocument();
+
+    // assert re-schedule button is NOT present
+    const rescheduleButton = screen.queryByLabelText('re-schedule');
+    expect(rescheduleButton).not.toBeInTheDocument();
+
+    // assert move to bottom button is is NOT present
+    const moveToBottomButton = screen.queryByLabelText('move to bottom');
+    expect(moveToBottomButton).not.toBeInTheDocument();
+
+    //assert for reject button and onReject callback
+    const rejectButton = screen.getByRole('button', {
+      name: 'reject',
+    });
+    expect(rejectButton).toBeInTheDocument();
+    userEvent.click(rejectButton);
+    expect(onReject).toHaveBeenCalled();
+  });
 });
