@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Grid, Typography } from '@mui/material';
+import { Alert, Box, Grid, Typography } from '@mui/material';
 import { FormikValues } from 'formik';
 import { FormikHelpers } from 'formik/dist/types';
 import { ApprovedCorpusItem, Prospect } from '../../../api/generatedTypes';
@@ -35,6 +35,11 @@ export const RejectItemModal: React.FC<RejectProspectModalProps> = (
             <Typography variant="subtitle1">
               <em>Title</em>: {prospect.title}
             </Typography>
+            <br />
+            <Alert severity="warning">
+              <strong>Notice</strong>: This item will be removed from all
+              Sections.
+            </Alert>
           </Box>
         </Grid>
         <Grid item xs={12}>
