@@ -140,7 +140,7 @@ describe('The SectionDetails component', () => {
     expect(mockToggleEditModal).toHaveBeenCalled();
   });
 
-  it('should render reject button', async () => {
+  it('should render & click reject button', async () => {
     render(
       <MockedProvider>
         <SnackbarProvider maxSnack={3}>
