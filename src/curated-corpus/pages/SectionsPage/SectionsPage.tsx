@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import {
+  ActionScreen,
   Section,
+  SectionItem,
   useGetScheduledSurfacesForUserQuery,
   useGetSectionsWithSectionItemsLazyQuery,
 } from '../../../api/generatedTypes';
 import { DropdownOption } from '../../helpers/definitions';
 import { Box, Grid } from '@mui/material';
 import { HandleApiResponse } from '../../../_shared/components';
-import { SectionDetails, SplitButton } from '../../components';
+import {
+  EditCorpusItemAction,
+  SectionDetails,
+  SplitButton,
+} from '../../components';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import { useToggle } from '../../../_shared/hooks';
 
 export const SectionsPage: React.FC = (): JSX.Element => {
   // set up the initial scheduled surface guid value (nothing at this point)
@@ -21,6 +28,19 @@ export const SectionsPage: React.FC = (): JSX.Element => {
   >([]);
 
   const [currentSection, setCurrentSection] = useState('');
+
+  /**
+   * Set the current SectionItem to be worked on.
+   */
+  const [currentSectionItem, setCurrentSectionItem] = useState<
+    Omit<SectionItem, '__typename'> | undefined
+  >(undefined);
+
+  /**
+   * Keep track of whether the "Edit item modal" is open or not
+   */
+  const [editItemModalOpen, toggleEditModal] = useToggle(false);
+
   // Get a list of sections on the page
   const [
     callGetSectionsWithSectionItemsQuery,
@@ -113,6 +133,15 @@ export const SectionsPage: React.FC = (): JSX.Element => {
   return (
     <>
       <h1>Sections</h1>
+      {currentSectionItem?.approvedItem && (
+        <EditCorpusItemAction
+          item={currentSectionItem.approvedItem}
+          actionScreen={ActionScreen.Sections}
+          modalOpen={editItemModalOpen}
+          toggleModal={toggleEditModal}
+          refetch={refetch}
+        />
+      )}
       <Grid container spacing={3}>
         <Grid item xs={12} sm={8}>
           <Grid container spacing={3}>
@@ -152,7 +181,10 @@ export const SectionsPage: React.FC = (): JSX.Element => {
       <SectionDetails
         sections={sections}
         currentSection={currentSection}
+        setCurrentSectionItem={setCurrentSectionItem}
         currentScheduledSurfaceGuid={currentScheduledSurfaceGuid}
+        toggleEditModal={toggleEditModal}
+        refetch={refetch}
       />
     </>
   );

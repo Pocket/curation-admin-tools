@@ -1,6 +1,9 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { SnackbarProvider } from 'notistack';
 import { SectionDetails } from './SectionDetails';
+import { MockedProvider } from '@apollo/client/testing';
 import {
   ActivitySource,
   ApprovedCorpusItem,
@@ -31,7 +34,7 @@ describe('The SectionDetails component', () => {
     {
       externalId: '2',
       title: 'Section 2',
-      active: false,
+      active: true,
       sectionItems: [
         {
           externalId: 'item-2',
@@ -47,13 +50,24 @@ describe('The SectionDetails component', () => {
     },
   ];
 
+  const mockSetCurrentSectionItem = jest.fn();
+  const mockToggleEditModal = jest.fn();
+  const mockRefetch = jest.fn();
+
   it('should render all sections when currentSection is "all"', () => {
     render(
-      <SectionDetails
-        sections={mockSections}
-        currentSection="all"
-        currentScheduledSurfaceGuid="NEW_TAB_EN_US"
-      />,
+      <MockedProvider>
+        <SnackbarProvider maxSnack={3}>
+          <SectionDetails
+            sections={mockSections}
+            currentSection="all"
+            setCurrentSectionItem={mockSetCurrentSectionItem}
+            currentScheduledSurfaceGuid="NEW_TAB_EN_US"
+            toggleEditModal={mockToggleEditModal}
+            refetch={mockRefetch}
+          />
+        </SnackbarProvider>
+      </MockedProvider>,
     );
 
     expect(screen.getByText('Section 1')).toBeInTheDocument();
@@ -62,11 +76,18 @@ describe('The SectionDetails component', () => {
 
   it('should render only the selected section', () => {
     render(
-      <SectionDetails
-        sections={mockSections}
-        currentSection="Section 1"
-        currentScheduledSurfaceGuid="NEW_TAB_EN_US"
-      />,
+      <MockedProvider>
+        <SnackbarProvider maxSnack={3}>
+          <SectionDetails
+            sections={mockSections}
+            currentSection="Section 1"
+            setCurrentSectionItem={mockSetCurrentSectionItem}
+            currentScheduledSurfaceGuid="NEW_TAB_EN_US"
+            toggleEditModal={mockToggleEditModal}
+            refetch={mockRefetch}
+          />
+        </SnackbarProvider>
+      </MockedProvider>,
     );
 
     expect(screen.getByText('Section 1')).toBeInTheDocument();
@@ -75,14 +96,70 @@ describe('The SectionDetails component', () => {
 
   it('should not render sections when there are no matching sections', () => {
     render(
-      <SectionDetails
-        sections={mockSections}
-        currentSection="section-does-not-exist"
-        currentScheduledSurfaceGuid="NEW_TAB_EN_US"
-      />,
+      <MockedProvider>
+        <SnackbarProvider maxSnack={3}>
+          <SectionDetails
+            sections={mockSections}
+            currentSection="section-does-not-exist"
+            setCurrentSectionItem={mockSetCurrentSectionItem}
+            currentScheduledSurfaceGuid="NEW_TAB_EN_US"
+            toggleEditModal={mockToggleEditModal}
+            refetch={mockRefetch}
+          />
+        </SnackbarProvider>
+      </MockedProvider>,
     );
 
     expect(screen.queryByText('Section 1')).not.toBeInTheDocument();
     expect(screen.queryByText('Section 2')).not.toBeInTheDocument();
+  });
+
+  it('should call setCurrentSectionItem and toggleEditModal on editButton click', async () => {
+    render(
+      <MockedProvider>
+        <SnackbarProvider maxSnack={3}>
+          <SectionDetails
+            sections={mockSections}
+            currentSection="Section 1"
+            setCurrentSectionItem={mockSetCurrentSectionItem}
+            currentScheduledSurfaceGuid="NEW_TAB_EN_US"
+            toggleEditModal={mockToggleEditModal}
+            refetch={mockRefetch}
+          />
+        </SnackbarProvider>
+      </MockedProvider>,
+    );
+
+    const editButton = screen.getByRole('button', { name: /edit/i });
+    expect(editButton).toBeInTheDocument();
+    userEvent.click(editButton);
+
+    expect(mockSetCurrentSectionItem).toHaveBeenCalledWith(
+      mockSections[0].sectionItems[0],
+    );
+    expect(mockToggleEditModal).toHaveBeenCalled();
+  });
+
+  it('should render reject button', async () => {
+    render(
+      <MockedProvider>
+        <SnackbarProvider maxSnack={3}>
+          <SectionDetails
+            sections={mockSections}
+            currentSection="Section 1"
+            setCurrentSectionItem={mockSetCurrentSectionItem}
+            currentScheduledSurfaceGuid="NEW_TAB_EN_US"
+            toggleEditModal={mockToggleEditModal}
+            refetch={mockRefetch}
+          />
+        </SnackbarProvider>
+      </MockedProvider>,
+    );
+    const removeButton = screen.getByRole('button', { name: /remove/i });
+    expect(removeButton).toBeInTheDocument();
+    userEvent.click(removeButton);
+    expect(mockSetCurrentSectionItem).toHaveBeenCalledWith(
+      mockSections[0].sectionItems[0],
+    );
   });
 });

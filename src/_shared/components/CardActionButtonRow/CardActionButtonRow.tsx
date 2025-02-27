@@ -6,6 +6,7 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import EventBusyOutlinedIcon from '@mui/icons-material/EventBusyOutlined';
 import KeyboardDoubleArrowDownOutlinedIcon from '@mui/icons-material/KeyboardDoubleArrowDownOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import ClearIcon from '@mui/icons-material/Clear';
 import { curationPalette } from '../../../theme';
 
 interface CardActionButtonRowProps {
@@ -32,14 +33,25 @@ interface CardActionButtonRowProps {
   /**
    * Callback for the "Reject" (trash) button
    */
-  onReject: VoidFunction;
+  onReject?: VoidFunction;
+
+  /**
+   * Callback for the "Remove" (X) button
+   */
+  onRemove?: VoidFunction;
 }
 
 export const CardActionButtonRow: React.FC<CardActionButtonRowProps> = (
   props,
 ): JSX.Element => {
-  const { onEdit, onUnschedule, onReschedule, onMoveToBottom, onReject } =
-    props;
+  const {
+    onEdit,
+    onUnschedule,
+    onReschedule,
+    onMoveToBottom,
+    onReject,
+    onRemove,
+  } = props;
 
   return (
     <Stack
@@ -50,15 +62,29 @@ export const CardActionButtonRow: React.FC<CardActionButtonRowProps> = (
       ml="0.5rem"
     >
       <Stack direction="row" justifyContent="flex-start">
-        <Tooltip title="Reject" placement="bottom">
-          <IconButton
-            aria-label="reject"
-            onClick={onReject}
-            sx={{ color: curationPalette.jetBlack }}
-          >
-            <DeleteOutlinedIcon />
-          </IconButton>
-        </Tooltip>
+        {onReject && (
+          <Tooltip title="Reject" placement="bottom">
+            <IconButton
+              aria-label="reject"
+              onClick={onReject}
+              sx={{ color: curationPalette.jetBlack }}
+            >
+              <DeleteOutlinedIcon />
+            </IconButton>
+          </Tooltip>
+        )}
+
+        {onRemove && (
+          <Tooltip title="Reject" placement="bottom">
+            <IconButton
+              aria-label="remove"
+              onClick={onRemove}
+              sx={{ color: curationPalette.jetBlack }}
+            >
+              <ClearIcon />
+            </IconButton>
+          </Tooltip>
+        )}
 
         {onMoveToBottom && (
           <Tooltip title="Move to bottom" placement="bottom">
