@@ -75,7 +75,7 @@ export const CardActionButtonRow: React.FC<CardActionButtonRowProps> = (
         )}
 
         {onRemove && (
-          <Tooltip title="Reject" placement="bottom">
+          <Tooltip title="Remove" placement="bottom">
             <IconButton
               aria-label="remove"
               onClick={onRemove}
