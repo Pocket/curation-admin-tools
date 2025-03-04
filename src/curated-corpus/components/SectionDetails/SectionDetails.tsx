@@ -1,7 +1,12 @@
 import React, { ReactElement } from 'react';
-import { Section, SectionItem } from '../../../api/generatedTypes';
+import {
+  Section,
+  SectionItem,
+  useRemoveSectionItemMutation,
+} from '../../../api/generatedTypes';
 import { Box, Grid } from '@mui/material';
 import { SectionItemCardWrapper } from '../SectionItemCardWrapper/SectionItemCardWrapper';
+import { useRunMutation } from '../../../_shared/hooks';
 
 interface SectionDetailsProps {
   /**
@@ -13,14 +18,59 @@ interface SectionDetailsProps {
    */
   currentSection: string;
   /**
+   * Callback to set the current approved corpus item (to work on, e.g. edit or remove)
+   * on the Sections Page.
+   */
+  setCurrentSectionItem: React.Dispatch<
+    React.SetStateAction<Omit<SectionItem, '__typename'> | undefined>
+  >;
+  /**
    * The current surface selected by user
    */
   currentScheduledSurfaceGuid: string;
+  /**
+   * A toggle function for the "Edit this item" modal.
+   */
+  toggleEditModal: VoidFunction;
+  /**
+   * A function that triggers a new API call to refetch the data for a given
+   * query. Needed on the Schedule page to refresh data after every action.
+   */
+  refetch?: VoidFunction;
 }
 export const SectionDetails: React.FC<SectionDetailsProps> = (
   props,
 ): ReactElement => {
-  const { sections, currentSection, currentScheduledSurfaceGuid } = props;
+  const {
+    sections,
+    currentSection,
+    setCurrentSectionItem,
+    currentScheduledSurfaceGuid,
+    toggleEditModal,
+    refetch,
+  } = props;
+
+  // Get a helper function that will execute each mutation, show standard notifications
+  // and execute any additional actions in a callback
+  const { runMutation } = useRunMutation();
+
+  const [removeSectionItemMutation] = useRemoveSectionItemMutation();
+
+  const removeSectionItem = (externalId: string): void => {
+    // Run the mutation
+    runMutation(
+      removeSectionItemMutation,
+      {
+        variables: {
+          externalId: externalId,
+        },
+      },
+      `Item removed successfully.`,
+      undefined,
+      undefined,
+      refetch,
+    );
+  };
   return (
     <>
       {sections &&
@@ -50,10 +100,16 @@ export const SectionDetails: React.FC<SectionDetailsProps> = (
                           <SectionItemCardWrapper
                             key={item.externalId}
                             item={item.approvedItem}
-                            // TODO: wire up edit action https://mozilla-hub.atlassian.net/browse/MC-1656
-                            onEdit={() => {}}
-                            // TODO: wire up reject/remove action https://mozilla-hub.atlassian.net/browse/MC-1656
-                            onReject={() => {}}
+                            onEdit={() => {
+                              // set the current section item being worked on to pass
+                              // back to the parent component
+                              setCurrentSectionItem(item);
+                              toggleEditModal();
+                            }}
+                            onRemove={() => {
+                              setCurrentSectionItem(item);
+                              removeSectionItem(item.externalId);
+                            }}
                             scheduledSurfaceGuid={currentScheduledSurfaceGuid}
                           />
                         );

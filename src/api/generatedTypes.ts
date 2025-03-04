@@ -53,6 +53,8 @@ export enum ActionScreen {
   Prospecting = 'PROSPECTING',
   /** This action took place from the schedule screen in the admin tool */
   Schedule = 'SCHEDULE',
+  /** This action took place from the sections screen in the admin tool */
+  Sections = 'SECTIONS',
 }
 
 /** The source of en entity */
@@ -1234,7 +1236,10 @@ export type Mutation = {
   moderateShareableList?: Maybe<ShareableListComplete>;
   /** Refresh an Item's article content. */
   refreshItemArticle: Item;
-  /** Rejects an Approved Item: deletes it from the corpus and creates a Rejected Item instead. */
+  /**
+   * Rejects an Approved Item: deletes it from the corpus and creates a Rejected Item instead.
+   * Also deletes all associated SectionItems.
+   */
   rejectApprovedCorpusItem: ApprovedCorpusItem;
   /**
    * Marks a prospect as 'curated' in the database, preventing it from being displayed for prospecting.
@@ -3510,6 +3515,56 @@ export type RemoveProspectMutation = {
     isSyndicated?: boolean | null;
     isCollection?: boolean | null;
   } | null;
+};
+
+export type RemoveSectionItemMutationVariables = Exact<{
+  externalId: Scalars['String'];
+}>;
+
+export type RemoveSectionItemMutation = {
+  __typename?: 'Mutation';
+  removeSectionItem: {
+    __typename?: 'SectionItem';
+    createdAt: number;
+    updatedAt: number;
+    externalId: string;
+    rank?: number | null;
+    approvedItem: {
+      __typename?: 'ApprovedCorpusItem';
+      externalId: string;
+      prospectId?: string | null;
+      title: string;
+      language: CorpusLanguage;
+      publisher: string;
+      datePublished?: any | null;
+      url: any;
+      hasTrustedDomain: boolean;
+      imageUrl: any;
+      excerpt: string;
+      status: CuratedStatus;
+      source: CorpusItemSource;
+      topic: string;
+      isCollection: boolean;
+      isTimeSensitive: boolean;
+      isSyndicated: boolean;
+      createdBy: string;
+      createdAt: number;
+      updatedBy?: string | null;
+      updatedAt: number;
+      authors: Array<{
+        __typename?: 'CorpusItemAuthor';
+        name: string;
+        sortOrder: number;
+      }>;
+      scheduledSurfaceHistory: Array<{
+        __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
+        externalId: string;
+        createdBy: string;
+        scheduledDate: any;
+        scheduledSurfaceGuid: string;
+      }>;
+    };
+  };
 };
 
 export type RescheduleScheduledCorpusItemMutationVariables = Exact<{
@@ -6266,6 +6321,57 @@ export type RemoveProspectMutationResult =
 export type RemoveProspectMutationOptions = Apollo.BaseMutationOptions<
   RemoveProspectMutation,
   RemoveProspectMutationVariables
+>;
+export const RemoveSectionItemDocument = gql`
+  mutation RemoveSectionItem($externalId: String!) {
+    removeSectionItem(externalId: $externalId) {
+      ...SectionItemData
+    }
+  }
+  ${SectionItemDataFragmentDoc}
+`;
+export type RemoveSectionItemMutationFn = Apollo.MutationFunction<
+  RemoveSectionItemMutation,
+  RemoveSectionItemMutationVariables
+>;
+
+/**
+ * __useRemoveSectionItemMutation__
+ *
+ * To run a mutation, you first call `useRemoveSectionItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveSectionItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeSectionItemMutation, { data, loading, error }] = useRemoveSectionItemMutation({
+ *   variables: {
+ *      externalId: // value for 'externalId'
+ *   },
+ * });
+ */
+export function useRemoveSectionItemMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    RemoveSectionItemMutation,
+    RemoveSectionItemMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    RemoveSectionItemMutation,
+    RemoveSectionItemMutationVariables
+  >(RemoveSectionItemDocument, options);
+}
+export type RemoveSectionItemMutationHookResult = ReturnType<
+  typeof useRemoveSectionItemMutation
+>;
+export type RemoveSectionItemMutationResult =
+  Apollo.MutationResult<RemoveSectionItemMutation>;
+export type RemoveSectionItemMutationOptions = Apollo.BaseMutationOptions<
+  RemoveSectionItemMutation,
+  RemoveSectionItemMutationVariables
 >;
 export const RescheduleScheduledCorpusItemDocument = gql`
   mutation rescheduleScheduledCorpusItem(
