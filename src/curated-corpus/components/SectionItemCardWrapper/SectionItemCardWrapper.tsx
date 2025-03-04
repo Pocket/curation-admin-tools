@@ -21,9 +21,9 @@ interface SectionItemCardWrapperProps {
   onEdit: VoidFunction;
 
   /**
-   * Callback for the "Reject" (trash) button
+   * Callback for the "Remove" (X) button
    */
-  onReject: VoidFunction;
+  onRemove: VoidFunction;
 
   /**
    * The surface the card is displayed on, e.g. EN_US
@@ -34,7 +34,7 @@ interface SectionItemCardWrapperProps {
 export const SectionItemCardWrapper: React.FC<SectionItemCardWrapperProps> = (
   props,
 ): ReactElement => {
-  const { item, onEdit, onReject, scheduledSurfaceGuid } = props;
+  const { item, onEdit, onRemove, scheduledSurfaceGuid } = props;
 
   return (
     <Grid item xs={12} sm={6} md={3}>
@@ -42,7 +42,7 @@ export const SectionItemCardWrapper: React.FC<SectionItemCardWrapperProps> = (
         <StoryItemListCard
           item={item}
           cardActionButtonRow={
-            <CardActionButtonRow onEdit={onEdit} onReject={onReject} />
+            <CardActionButtonRow onEdit={onEdit} onRemove={onRemove} />
           }
           isMlScheduled={item.source === CorpusItemSource.Ml}
           scheduledSurfaceGuid={scheduledSurfaceGuid}

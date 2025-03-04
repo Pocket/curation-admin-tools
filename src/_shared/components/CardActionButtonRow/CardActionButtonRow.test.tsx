@@ -10,9 +10,10 @@ describe('The CardActionButtonRow component', () => {
   const onReschedule = jest.fn();
   const onUnschedule = jest.fn();
   const onReject = jest.fn();
+  const onRemove = jest.fn();
 
   //TODO update when reject button flow ready
-  it('should render all four card action buttons and call their callbacks', () => {
+  it('should render all five card action buttons and call their callbacks', () => {
     render(
       <CardActionButtonRow
         onEdit={onEdit}
@@ -20,6 +21,7 @@ describe('The CardActionButtonRow component', () => {
         onReschedule={onReschedule}
         onMoveToBottom={onMoveToBottom}
         onReject={onReject}
+        onRemove={onRemove}
       />,
     );
 
@@ -58,6 +60,14 @@ describe('The CardActionButtonRow component', () => {
     expect(rejectButton).toBeInTheDocument();
     userEvent.click(rejectButton);
     expect(onReject).toHaveBeenCalled();
+
+    //assert for remove button and onRemove callback
+    const removeButton = screen.getByRole('button', {
+      name: 'remove',
+    });
+    expect(removeButton).toBeInTheDocument();
+    userEvent.click(rejectButton);
+    expect(onReject).toHaveBeenCalled();
   });
   it('should only render card actions that are passed', () => {
     render(<CardActionButtonRow onEdit={onEdit} onReject={onReject} />);
@@ -87,5 +97,9 @@ describe('The CardActionButtonRow component', () => {
     expect(rejectButton).toBeInTheDocument();
     userEvent.click(rejectButton);
     expect(onReject).toHaveBeenCalled();
+
+    // assert removeButton button is NOT present
+    const removeButton = screen.queryByLabelText('remove');
+    expect(removeButton).not.toBeInTheDocument();
   });
 });
