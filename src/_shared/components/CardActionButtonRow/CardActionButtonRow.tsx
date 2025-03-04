@@ -74,18 +74,6 @@ export const CardActionButtonRow: React.FC<CardActionButtonRowProps> = (
           </Tooltip>
         )}
 
-        {onRemove && (
-          <Tooltip title="Remove" placement="bottom">
-            <IconButton
-              aria-label="remove"
-              onClick={onRemove}
-              sx={{ color: curationPalette.jetBlack }}
-            >
-              <ClearIcon />
-            </IconButton>
-          </Tooltip>
-        )}
-
         {onMoveToBottom && (
           <Tooltip title="Move to bottom" placement="bottom">
             <IconButton
@@ -130,6 +118,17 @@ export const CardActionButtonRow: React.FC<CardActionButtonRowProps> = (
               sx={{ color: curationPalette.jetBlack }}
             >
               <EventBusyOutlinedIcon />
+            </IconButton>
+          </Tooltip>
+        )}
+        {onRemove && (
+          <Tooltip title="Remove" placement="bottom">
+            <IconButton
+              aria-label="remove"
+              onClick={onRemove}
+              sx={{ color: curationPalette.jetBlack }}
+            >
+              <ClearIcon />
             </IconButton>
           </Tooltip>
         )}
