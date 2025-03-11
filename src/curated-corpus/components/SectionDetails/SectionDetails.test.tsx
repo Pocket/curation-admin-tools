@@ -14,10 +14,12 @@ import { getTestApprovedItem } from '../../helpers/approvedItem';
 describe('The SectionDetails component', () => {
   const item: ApprovedCorpusItem = getTestApprovedItem();
   const mockSections: Section[] = [
+    // enabled section
     {
       externalId: '1',
       title: 'Section 1',
       active: true,
+      disabled: false,
       sectionItems: [
         {
           externalId: 'item-1',
@@ -31,10 +33,12 @@ describe('The SectionDetails component', () => {
       createSource: ActivitySource.Ml,
       scheduledSurfaceGuid: 'NEW_TAB_EN_US',
     },
+    // disabled section
     {
       externalId: '2',
       title: 'Section 2',
       active: true,
+      disabled: true,
       sectionItems: [
         {
           externalId: 'item-2',
@@ -161,5 +165,43 @@ describe('The SectionDetails component', () => {
     expect(mockSetCurrentSectionItem).toHaveBeenCalledWith(
       mockSections[0].sectionItems[0],
     );
+  });
+
+  it('should render & toggle the Disable switch', async () => {
+    render(
+      <MockedProvider>
+        <SnackbarProvider maxSnack={3}>
+          <SectionDetails
+            sections={mockSections}
+            currentSection="Section 1" // section to be disabled
+            setCurrentSectionItem={mockSetCurrentSectionItem}
+            currentScheduledSurfaceGuid="NEW_TAB_EN_US"
+            toggleEditModal={mockToggleEditModal}
+            refetch={mockRefetch}
+          />
+        </SnackbarProvider>
+      </MockedProvider>,
+    );
+    const disableSwitch = screen.getByRole('checkbox', { name: /disable/i });
+    expect(disableSwitch).toBeInTheDocument();
+  });
+
+  it('should render & toggle the Enable switch', async () => {
+    render(
+      <MockedProvider>
+        <SnackbarProvider maxSnack={3}>
+          <SectionDetails
+            sections={mockSections}
+            currentSection="Section 2" // section to be disabled
+            setCurrentSectionItem={mockSetCurrentSectionItem}
+            currentScheduledSurfaceGuid="NEW_TAB_EN_US"
+            toggleEditModal={mockToggleEditModal}
+            refetch={mockRefetch}
+          />
+        </SnackbarProvider>
+      </MockedProvider>,
+    );
+    const enableSwitch = screen.getByRole('checkbox', { name: /enable/i });
+    expect(enableSwitch).toBeInTheDocument();
   });
 });
