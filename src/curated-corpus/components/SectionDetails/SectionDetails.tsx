@@ -78,7 +78,6 @@ export const SectionDetails: React.FC<SectionDetailsProps> = (
     // Determine the new state
     const newDisabledState = !section.disabled;
     // Run the mutation
-    console.log('section: ', section);
     runMutation(
       disableEnableSectionMutation,
       {
