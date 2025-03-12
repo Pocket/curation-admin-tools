@@ -8,6 +8,7 @@ export const BaseSectionData = gql`
     scheduledSurfaceGuid
     sort
     createSource
+    disabled
     active
   }
 `;

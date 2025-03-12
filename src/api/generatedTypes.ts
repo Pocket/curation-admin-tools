@@ -86,8 +86,6 @@ export type ApprovedCorpusItem = {
   excerpt: Scalars['String'];
   /** An alternative primary key in UUID format that is generated on creation. */
   externalId: Scalars['ID'];
-  /** The quality grade associated with this CorpusItem. */
-  grade?: Maybe<ApprovedItemGrade>;
   /** True if the domain of the corpus item has been scheduled in the past. */
   hasTrustedDomain: Scalars['Boolean'];
   /**
@@ -207,13 +205,6 @@ export type ApprovedCorpusItemScheduledSurfaceHistoryFilters = {
    */
   scheduledSurfaceGuid?: InputMaybe<Scalars['ID']>;
 };
-
-/** Valid grade values for CorpusItem (public graph) and ApprovedItem (admin graph) */
-export enum ApprovedItemGrade {
-  A = 'A',
-  B = 'B',
-  C = 'C',
-}
 
 export type ArticleMarkdown = {
   __typename?: 'ArticleMarkdown';
@@ -521,8 +512,6 @@ export type CreateApprovedCorpusItemInput = {
   datePublished?: InputMaybe<Scalars['Date']>;
   /** The excerpt of the Approved Item. */
   excerpt: Scalars['String'];
-  /** The quality grade associated with this CorpusItem. */
-  grade?: InputMaybe<ApprovedItemGrade>;
   /** The image URL for this item's accompanying picture. */
   imageUrl: Scalars['Url'];
   /** Whether this story is a Pocket Collection. */
@@ -730,6 +719,17 @@ export type DeleteScheduledCorpusItemInput = {
   reasonComment?: InputMaybe<Scalars['String']>;
   /** A comma-separated list of unschedule reasons. */
   reasons?: InputMaybe<Scalars['String']>;
+};
+
+/** Input data for disabling or enabling a Section */
+export type DisableEnableSectionInput = {
+  /**
+   * Indicates whether or not a Section is fully disabled from display on NewTab. Can only  be controlled
+   * in the admin tool.
+   */
+  disabled: Scalars['Boolean'];
+  /** An alternative primary key in UUID format supplied by ML. */
+  externalId: Scalars['ID'];
 };
 
 /** Metadata from a domain, originally populated from ClearBit */
@@ -1227,6 +1227,8 @@ export type Mutation = {
   deleteCollectionStory: CollectionStory;
   /** Deletes an item from a Scheduled Surface. */
   deleteScheduledCorpusItem: ScheduledCorpusItem;
+  /** Disables or enables a Section. Can only be done from the admin tool. */
+  disableEnableSection: Section;
   /**
    * Lets an automated process create an Approved Item and optionally schedule it to appear
    * on a Scheduled Surface.
@@ -1254,8 +1256,6 @@ export type Mutation = {
   rescheduleScheduledCorpusItem: ScheduledCorpusItem;
   /** Updates an Approved Item. */
   updateApprovedCorpusItem: ApprovedCorpusItem;
-  /** Updates the grade of an Approved Item */
-  updateApprovedCorpusItemGrade: ApprovedCorpusItem;
   /** Updates a Collection. */
   updateCollection: Collection;
   /** Updates a CollectionAuthor. */
@@ -1373,6 +1373,10 @@ export type MutationDeleteScheduledCorpusItemArgs = {
   data: DeleteScheduledCorpusItemInput;
 };
 
+export type MutationDisableEnableSectionArgs = {
+  data: DisableEnableSectionInput;
+};
+
 export type MutationImportApprovedCorpusItemArgs = {
   data: ImportApprovedCorpusItemInput;
 };
@@ -1403,10 +1407,6 @@ export type MutationRescheduleScheduledCorpusItemArgs = {
 
 export type MutationUpdateApprovedCorpusItemArgs = {
   data: UpdateApprovedCorpusItemInput;
-};
-
-export type MutationUpdateApprovedCorpusItemGradeArgs = {
-  data: UpdateApprovedCorpusItemGradeInput;
 };
 
 export type MutationUpdateCollectionArgs = {
@@ -1689,7 +1689,7 @@ export type Query = {
   getScheduledCorpusItems: Array<ScheduledCorpusItemsResult>;
   /** Retrieves all ScheduledSurfaces available to the given SSO user. Requires an Authorization header. */
   getScheduledSurfacesForUser: Array<ScheduledSurface>;
-  /** Retrieves a list of active Sections with their corresponding active SectionItems for a scheduled surface. */
+  /** Retrieves a list of active and enabled/disabled Sections with their corresponding active SectionItems for a scheduled surface. */
   getSectionsWithSectionItems: Array<Section>;
   /** returns parser meta data for a given url */
   getUrlMetadata: UrlMetadata;
@@ -2081,6 +2081,11 @@ export type Section = {
   createSource: ActivitySource;
   /** A Unix timestamp of when the Section was created. */
   createdAt: Scalars['Int'];
+  /**
+   * Indicates whether or not a Section is fully disabled from display on NewTab. Can only  be controlled
+   * in the admin tool.
+   */
+  disabled: Scalars['Boolean'];
   /** An alternative primary key in UUID format. */
   externalId: Scalars['ID'];
   /** The GUID of the Scheduled Surface. Example: 'NEW_TAB_EN_US'. */
@@ -2273,16 +2278,6 @@ export type UnMarseable = {
   html: Scalars['String'];
 };
 
-/** Input data for updating the grade of an Approved Item. */
-export type UpdateApprovedCorpusItemGradeInput = {
-  /** The UI screen where the approved corpus item is being graded from. */
-  actionScreen: ActionScreen;
-  /** Approved Item ID. */
-  externalId: Scalars['ID'];
-  /** The quality grade associated with this CorpusItem. */
-  grade: ApprovedItemGrade;
-};
-
 /** Input data for updating an Approved Item. */
 export type UpdateApprovedCorpusItemInput = {
   /**
@@ -2298,8 +2293,6 @@ export type UpdateApprovedCorpusItemInput = {
   excerpt: Scalars['String'];
   /** Approved Item ID. */
   externalId: Scalars['ID'];
-  /** The quality grade associated with this CorpusItem. */
-  grade?: InputMaybe<ApprovedItemGrade>;
   /** The image URL for this item's accompanying picture. */
   imageUrl: Scalars['Url'];
   /**
@@ -2636,6 +2629,7 @@ export type BaseSectionDataFragment = {
   scheduledSurfaceGuid: string;
   sort?: number | null;
   createSource: ActivitySource;
+  disabled: boolean;
   active: boolean;
 };
 
@@ -2648,6 +2642,7 @@ export type SectionDataFragment = {
   scheduledSurfaceGuid: string;
   sort?: number | null;
   createSource: ActivitySource;
+  disabled: boolean;
   active: boolean;
   sectionItems: Array<{
     __typename?: 'SectionItem';
@@ -3370,6 +3365,68 @@ export type DeleteScheduledItemMutation = {
         scheduledSurfaceGuid: string;
       }>;
     };
+  };
+};
+
+export type DisableEnableSectionMutationVariables = Exact<{
+  data: DisableEnableSectionInput;
+}>;
+
+export type DisableEnableSectionMutation = {
+  __typename?: 'Mutation';
+  disableEnableSection: {
+    __typename?: 'Section';
+    createdAt: number;
+    updatedAt: number;
+    externalId: string;
+    title: string;
+    scheduledSurfaceGuid: string;
+    sort?: number | null;
+    createSource: ActivitySource;
+    disabled: boolean;
+    active: boolean;
+    sectionItems: Array<{
+      __typename?: 'SectionItem';
+      createdAt: number;
+      updatedAt: number;
+      externalId: string;
+      rank?: number | null;
+      approvedItem: {
+        __typename?: 'ApprovedCorpusItem';
+        externalId: string;
+        prospectId?: string | null;
+        title: string;
+        language: CorpusLanguage;
+        publisher: string;
+        datePublished?: any | null;
+        url: any;
+        hasTrustedDomain: boolean;
+        imageUrl: any;
+        excerpt: string;
+        status: CuratedStatus;
+        source: CorpusItemSource;
+        topic: string;
+        isCollection: boolean;
+        isTimeSensitive: boolean;
+        isSyndicated: boolean;
+        createdBy: string;
+        createdAt: number;
+        updatedBy?: string | null;
+        updatedAt: number;
+        authors: Array<{
+          __typename?: 'CorpusItemAuthor';
+          name: string;
+          sortOrder: number;
+        }>;
+        scheduledSurfaceHistory: Array<{
+          __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
+          externalId: string;
+          createdBy: string;
+          scheduledDate: any;
+          scheduledSurfaceGuid: string;
+        }>;
+      };
+    }>;
   };
 };
 
@@ -4874,6 +4931,7 @@ export type GetSectionsWithSectionItemsQuery = {
     scheduledSurfaceGuid: string;
     sort?: number | null;
     createSource: ActivitySource;
+    disabled: boolean;
     active: boolean;
     sectionItems: Array<{
       __typename?: 'SectionItem';
@@ -5117,6 +5175,7 @@ export const BaseSectionDataFragmentDoc = gql`
     scheduledSurfaceGuid
     sort
     createSource
+    disabled
     active
   }
 `;
@@ -6052,6 +6111,57 @@ export type DeleteScheduledItemMutationResult =
 export type DeleteScheduledItemMutationOptions = Apollo.BaseMutationOptions<
   DeleteScheduledItemMutation,
   DeleteScheduledItemMutationVariables
+>;
+export const DisableEnableSectionDocument = gql`
+  mutation disableEnableSection($data: DisableEnableSectionInput!) {
+    disableEnableSection(data: $data) {
+      ...SectionData
+    }
+  }
+  ${SectionDataFragmentDoc}
+`;
+export type DisableEnableSectionMutationFn = Apollo.MutationFunction<
+  DisableEnableSectionMutation,
+  DisableEnableSectionMutationVariables
+>;
+
+/**
+ * __useDisableEnableSectionMutation__
+ *
+ * To run a mutation, you first call `useDisableEnableSectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDisableEnableSectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [disableEnableSectionMutation, { data, loading, error }] = useDisableEnableSectionMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useDisableEnableSectionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DisableEnableSectionMutation,
+    DisableEnableSectionMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    DisableEnableSectionMutation,
+    DisableEnableSectionMutationVariables
+  >(DisableEnableSectionDocument, options);
+}
+export type DisableEnableSectionMutationHookResult = ReturnType<
+  typeof useDisableEnableSectionMutation
+>;
+export type DisableEnableSectionMutationResult =
+  Apollo.MutationResult<DisableEnableSectionMutation>;
+export type DisableEnableSectionMutationOptions = Apollo.BaseMutationOptions<
+  DisableEnableSectionMutation,
+  DisableEnableSectionMutationVariables
 >;
 export const ImageUploadDocument = gql`
   mutation imageUpload(

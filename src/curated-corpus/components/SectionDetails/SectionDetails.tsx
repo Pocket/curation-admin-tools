@@ -2,9 +2,10 @@ import React, { ReactElement } from 'react';
 import {
   Section,
   SectionItem,
+  useDisableEnableSectionMutation,
   useRemoveSectionItemMutation,
 } from '../../../api/generatedTypes';
-import { Box, Grid } from '@mui/material';
+import { Box, FormControlLabel, FormGroup, Grid, Switch } from '@mui/material';
 import { SectionItemCardWrapper } from '../SectionItemCardWrapper/SectionItemCardWrapper';
 import { useRunMutation } from '../../../_shared/hooks';
 
@@ -71,6 +72,31 @@ export const SectionDetails: React.FC<SectionDetailsProps> = (
       refetch,
     );
   };
+
+  const [disableEnableSectionMutation] = useDisableEnableSectionMutation();
+  const toggleEnableDisableSectionSwitch = (section: Section): void => {
+    // Determine the new state
+    const newDisabledState = !section.disabled;
+    // Run the mutation
+    runMutation(
+      disableEnableSectionMutation,
+      {
+        variables: {
+          data: {
+            externalId: section.externalId,
+            disabled: newDisabledState,
+          },
+        },
+      },
+      // display appropriate message based on disabledState
+      newDisabledState
+        ? 'Section disabled successfully.'
+        : 'Section enabled successfully.',
+      undefined,
+      undefined,
+      refetch,
+    );
+  };
   return (
     <>
       {sections &&
@@ -82,8 +108,31 @@ export const SectionDetails: React.FC<SectionDetailsProps> = (
           .map((section: Section) => (
             <>
               <Box mt={9} mb={3}>
-                <h2>{section.title}</h2>
-                <p>{section.active}</p>
+                <Box
+                  key={section.externalId}
+                  display="flex"
+                  alignItems="center"
+                  p={2}
+                >
+                  {/* Section Title */}
+                  <h2 style={{ marginRight: '2rem' }}>{section.title}</h2>
+                  <p>{section.active}</p>
+                  {/* Enable/Disable Switch */}
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={!section.disabled}
+                          onChange={() =>
+                            toggleEnableDisableSectionSwitch(section)
+                          }
+                        />
+                      }
+                      label={section.disabled ? 'Enable' : 'Disable'}
+                      labelPlacement="end" // Places label next to switch
+                    />
+                  </FormGroup>
+                </Box>
               </Box>
               <Grid
                 container
