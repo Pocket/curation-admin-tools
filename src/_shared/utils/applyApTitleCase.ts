@@ -17,7 +17,10 @@ export const stop = STOP_WORDS.split(' ');
 export const lowercaseAfterApostrophe = (input: string): string => {
   // Match either an ASCII or curly apostrophe followed by a letter, after a word character.
   const regex = /(?<=\w)(['\u2018\u2019])(\w)/g;
-  return input.replace(regex, (_, apostrophe, letter) => `${apostrophe}${letter.toLowerCase()}`);
+  return input.replace(
+    regex,
+    (_, apostrophe, letter) => `${apostrophe}${letter.toLowerCase()}`,
+  );
 };
 
 /**

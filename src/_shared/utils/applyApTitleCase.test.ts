@@ -140,8 +140,8 @@ describe('applyApTitleCase', () => {
   it('should correctly format titles with curly apostrophes', () => {
     const testCases = [
       {
-        result: "every state\u2018S dream travel destination, mapped",
-        expected: "Every State\u2018s Dream Travel Destination, Mapped",
+        result: 'every state\u2018S dream travel destination, mapped',
+        expected: 'Every State\u2018s Dream Travel Destination, Mapped',
       },
     ];
     testCases.forEach(({ result, expected }) => {
@@ -162,8 +162,8 @@ describe('lowercaseAfterApostrophe', () => {
     expect(result).toEqual("'Foo' foo's DaY's You'll 'foo Bar foo'ss'");
   });
   it('should lowercase the letter after a curly apostrophe', () => {
-    const input = "Every State\u2018S Dream Travel Destination, Mapped";
-    const expected = "Every State\u2018s Dream Travel Destination, Mapped";
+    const input = 'Every State\u2018S Dream Travel Destination, Mapped';
+    const expected = 'Every State\u2018s Dream Travel Destination, Mapped';
     expect(lowercaseAfterApostrophe(input)).toEqual(expected);
   });
 });
