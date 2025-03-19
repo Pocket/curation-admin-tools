@@ -8,7 +8,6 @@ import {
   Prospect,
   Topics,
 } from '../../../api/generatedTypes';
-import { StoriesSummary } from '../ScheduleSummaryCard/ScheduleSummaryCard';
 import { DateTime } from 'luxon';
 
 describe('The ProspectFilters component', () => {
