@@ -10,7 +10,7 @@ export interface CardAction {
   /**
    * The material UI icon
    */
-  icon: React.ReactNode;
+  icon: ReactNode;
   /**
    * Callback for the button
    */
