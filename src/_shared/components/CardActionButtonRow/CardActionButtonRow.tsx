@@ -36,6 +36,8 @@ export const CardActionButtonRow: React.FC<CardActionButtonRowProps> = (
     return actions.map(({ actionName, icon, onClick }) => (
       <Tooltip key={actionName} title={actionName} placement="bottom">
         <IconButton
+          // convert to lowercase & replace space with hyphens
+          // /\s/g replace all spaces with hyphens
           aria-label={actionName.toLowerCase().replace(/\s/g, '-')}
           onClick={onClick}
           sx={{ color: curationPalette.jetBlack }}
