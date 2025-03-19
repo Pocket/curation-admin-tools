@@ -5,17 +5,46 @@ import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { StoryItemListCard } from './StoryItemListCard';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 import { getTestApprovedItem } from '../../helpers/approvedItem';
-import { CardActionButtonRow } from '../../../_shared/components';
+import { CardAction, CardActionButtonRow } from '../../../_shared/components';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import KeyboardDoubleArrowDownOutlinedIcon from '@mui/icons-material/KeyboardDoubleArrowDownOutlined';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import ScheduleIcon from '@mui/icons-material/Schedule';
+import EventBusyOutlinedIcon from '@mui/icons-material/EventBusyOutlined';
 
 describe('The StoryItemListCard component', () => {
   let item: ApprovedCorpusItem = getTestApprovedItem();
   const currentScheduledDate = '2024-01-20';
 
-  const onMoveToBottom = jest.fn();
-  const onEdit = jest.fn();
-  const onReschedule = jest.fn();
-  const onUnschedule = jest.fn();
-  const onReject = jest.fn();
+  const cardActionButtonsLeft: CardAction[] = [
+    {
+      actionName: 'Reject',
+      icon: <DeleteOutlinedIcon />,
+      onClick: () => jest.fn(),
+    },
+    {
+      actionName: 'Move to bottom',
+      icon: <KeyboardDoubleArrowDownOutlinedIcon />,
+      onClick: () => jest.fn(),
+    },
+    {
+      actionName: 'Edit',
+      icon: <EditOutlinedIcon />,
+      onClick: () => jest.fn(),
+    },
+    {
+      actionName: 'Re-schedule',
+      icon: <ScheduleIcon />,
+      onClick: () => jest.fn(),
+    },
+  ];
+  const cardActionButtonsRight: CardAction[] = [
+    {
+      actionName: 'Unschedule',
+      icon: <EventBusyOutlinedIcon />,
+      onClick: () => jest.fn(),
+    },
+  ];
 
   it('shows basic story item information with all optional card actions', () => {
     render(
@@ -24,11 +53,8 @@ describe('The StoryItemListCard component', () => {
         item={item}
         cardActionButtonRow={
           <CardActionButtonRow
-            onEdit={onEdit}
-            onUnschedule={onUnschedule}
-            onReschedule={onReschedule}
-            onMoveToBottom={onMoveToBottom}
-            onReject={onReject}
+            cardActionButtonsLeft={cardActionButtonsLeft}
+            cardActionButtonsRight={cardActionButtonsRight}
           />
         }
         currentScheduledDate={currentScheduledDate}
@@ -59,11 +85,8 @@ describe('The StoryItemListCard component', () => {
         item={item}
         cardActionButtonRow={
           <CardActionButtonRow
-            onEdit={onEdit}
-            onUnschedule={onUnschedule}
-            onReschedule={onReschedule}
-            onMoveToBottom={onMoveToBottom}
-            onReject={onReject}
+            cardActionButtonsLeft={cardActionButtonsLeft}
+            cardActionButtonsRight={cardActionButtonsRight}
           />
         }
         currentScheduledDate={currentScheduledDate}
@@ -82,11 +105,8 @@ describe('The StoryItemListCard component', () => {
         currentScheduledDate={currentScheduledDate}
         cardActionButtonRow={
           <CardActionButtonRow
-            onEdit={onEdit}
-            onUnschedule={onUnschedule}
-            onReschedule={onReschedule}
-            onMoveToBottom={onMoveToBottom}
-            onReject={onReject}
+            cardActionButtonsLeft={cardActionButtonsLeft}
+            cardActionButtonsRight={cardActionButtonsRight}
           />
         }
         scheduledSurfaceGuid="NEW_TAB_EN_US"
@@ -109,11 +129,8 @@ describe('The StoryItemListCard component', () => {
         currentScheduledDate={currentScheduledDate}
         cardActionButtonRow={
           <CardActionButtonRow
-            onEdit={onEdit}
-            onUnschedule={onUnschedule}
-            onReschedule={onReschedule}
-            onMoveToBottom={onMoveToBottom}
-            onReject={onReject}
+            cardActionButtonsLeft={cardActionButtonsLeft}
+            cardActionButtonsRight={cardActionButtonsRight}
           />
         }
         scheduledSurfaceGuid="NEW_TAB_EN_US"

@@ -1,5 +1,7 @@
 import React, { ReactElement } from 'react';
 import { Grid } from '@mui/material';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import ClearIcon from '@mui/icons-material/Clear';
 import {
   ApprovedCorpusItem,
   CorpusItemSource,
@@ -7,7 +9,7 @@ import {
 
 import { StyledScheduledItemCard } from '../../../_shared/styled';
 import { StoryItemListCard } from '../StoryItemListCard/StoryItemListCard';
-import { CardActionButtonRow } from '../../../_shared/components';
+import { CardAction, CardActionButtonRow } from '../../../_shared/components';
 
 interface SectionItemCardWrapperProps {
   /**
@@ -36,13 +38,25 @@ export const SectionItemCardWrapper: React.FC<SectionItemCardWrapperProps> = (
 ): ReactElement => {
   const { item, onEdit, onRemove, scheduledSurfaceGuid } = props;
 
+  // card action buttons to be rendered & aligned on bottom left
+  const cardActionButtonsLeft: CardAction[] = [
+    { actionName: 'Edit', icon: <EditOutlinedIcon />, onClick: () => onEdit() },
+  ];
+  // card action buttons to be rendered & aligned on bottom right
+  const cardActionButtonsRight: CardAction[] = [
+    { actionName: 'Remove', icon: <ClearIcon />, onClick: () => onRemove() },
+  ];
+
   return (
     <Grid item xs={12} sm={6} md={3}>
       <StyledScheduledItemCard variant="outlined">
         <StoryItemListCard
           item={item}
           cardActionButtonRow={
-            <CardActionButtonRow onEdit={onEdit} onRemove={onRemove} />
+            <CardActionButtonRow
+              cardActionButtonsLeft={cardActionButtonsLeft}
+              cardActionButtonsRight={cardActionButtonsRight}
+            />
           }
           isMlScheduled={item.source === CorpusItemSource.Ml}
           scheduledSurfaceGuid={scheduledSurfaceGuid}

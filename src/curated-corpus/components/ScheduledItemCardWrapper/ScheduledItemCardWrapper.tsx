@@ -1,5 +1,10 @@
 import React, { ReactElement } from 'react';
 import { Grid } from '@mui/material';
+import ScheduleIcon from '@mui/icons-material/Schedule';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import EventBusyOutlinedIcon from '@mui/icons-material/EventBusyOutlined';
+import KeyboardDoubleArrowDownOutlinedIcon from '@mui/icons-material/KeyboardDoubleArrowDownOutlined';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import {
   ScheduledCorpusItem,
   ActivitySource,
@@ -7,7 +12,7 @@ import {
 
 import { StyledScheduledItemCard } from '../../../_shared/styled';
 import { StoryItemListCard } from '../StoryItemListCard/StoryItemListCard';
-import { CardActionButtonRow } from '../../../_shared/components';
+import { CardAction, CardActionButtonRow } from '../../../_shared/components';
 
 interface ScheduledItemCardWrapperProps {
   /**
@@ -65,6 +70,35 @@ export const ScheduledItemCardWrapper: React.FC<
     scheduledSurfaceGuid,
   } = props;
 
+  // card action buttons to be rendered & aligned on bottom left
+  const cardActionButtonsLeft: CardAction[] = [
+    {
+      actionName: 'Reject',
+      icon: <DeleteOutlinedIcon />,
+      onClick: () => onReject(),
+    },
+    {
+      actionName: 'Move to bottom',
+      icon: <KeyboardDoubleArrowDownOutlinedIcon />,
+      onClick: () => onMoveToBottom(),
+    },
+    { actionName: 'Edit', icon: <EditOutlinedIcon />, onClick: () => onEdit() },
+    {
+      actionName: 'Re-schedule',
+      icon: <ScheduleIcon />,
+      onClick: () => onReschedule(),
+    },
+  ];
+
+  // card action buttons to be rendered & aligned on bottom right
+  const cardActionButtonsRight: CardAction[] = [
+    {
+      actionName: 'Unschedule',
+      icon: <EventBusyOutlinedIcon />,
+      onClick: () => onUnschedule(),
+    },
+  ];
+
   return (
     <Grid item xs={12} sm={6} md={3}>
       <StyledScheduledItemCard variant="outlined">
@@ -72,11 +106,8 @@ export const ScheduledItemCardWrapper: React.FC<
           item={item.approvedItem}
           cardActionButtonRow={
             <CardActionButtonRow
-              onEdit={onEdit}
-              onUnschedule={onUnschedule}
-              onReschedule={onReschedule}
-              onMoveToBottom={onMoveToBottom}
-              onReject={onReject}
+              cardActionButtonsLeft={cardActionButtonsLeft}
+              cardActionButtonsRight={cardActionButtonsRight}
             />
           }
           isMlScheduled={item.source === ActivitySource.Ml}
