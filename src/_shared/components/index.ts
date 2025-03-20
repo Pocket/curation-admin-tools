@@ -23,4 +23,5 @@ export { ImageUpload } from '../../curated-corpus/components/ImageUpload/ImageUp
 export { PageNotFound } from '../components/PageNotFound/PageNotFound';
 export { FloatingActionButton } from '../components/FloatingActionButton/FloatingActionButton';
 export { CardActionButtonRow } from '../components/CardActionButtonRow/CardActionButtonRow';
+export type { CardAction } from '../components/CardActionButtonRow/CardActionButtonRow';
 export { CorpusItemCardImage } from '../components/CorpusItemCardImage/CorpusItemCardImage';
