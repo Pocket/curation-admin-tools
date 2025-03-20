@@ -1,57 +1,52 @@
-import React from 'react';
-import { IconButton, Tooltip } from '@mui/material';
-import { Stack } from '@mui/system';
-import ScheduleIcon from '@mui/icons-material/Schedule';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import EventBusyOutlinedIcon from '@mui/icons-material/EventBusyOutlined';
-import KeyboardDoubleArrowDownOutlinedIcon from '@mui/icons-material/KeyboardDoubleArrowDownOutlined';
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-import ClearIcon from '@mui/icons-material/Clear';
+import React, { ReactNode } from 'react';
+import { IconButton, Tooltip, Stack } from '@mui/material';
 import { curationPalette } from '../../../theme';
+
+export interface CardAction {
+  /**
+   * The name of the button action (i.e. "Edit")
+   */
+  actionName: string;
+  /**
+   * The material UI icon
+   */
+  icon: ReactNode;
+  /**
+   * Callback for the button
+   */
+  onClick: VoidFunction;
+}
 
 interface CardActionButtonRowProps {
   /**
-   * Callback for the "Unschedule" button
+   * Card action buttons aligned to bottom left
    */
-  onUnschedule?: VoidFunction;
-
+  cardActionButtonsLeft?: CardAction[];
   /**
-   * Callback for the "Reschedule" button
+   * Card action buttons aligned to bottom right
    */
-  onReschedule?: VoidFunction;
-
-  /**
-   * Callback for the "Edit" button
-   */
-  onEdit: VoidFunction;
-
-  /**
-   * Callback for the "Move to bottom" button
-   */
-  onMoveToBottom?: VoidFunction;
-
-  /**
-   * Callback for the "Reject" (trash) button
-   */
-  onReject?: VoidFunction;
-
-  /**
-   * Callback for the "Remove" (X) button
-   */
-  onRemove?: VoidFunction;
+  cardActionButtonsRight?: CardAction[];
 }
 
 export const CardActionButtonRow: React.FC<CardActionButtonRowProps> = (
   props,
 ): JSX.Element => {
-  const {
-    onEdit,
-    onUnschedule,
-    onReschedule,
-    onMoveToBottom,
-    onReject,
-    onRemove,
-  } = props;
+  const { cardActionButtonsLeft = [], cardActionButtonsRight = [] } = props;
+  const renderCardActionButtons = (actions: CardAction[]): ReactNode => {
+    return actions.map(({ actionName, icon, onClick }) => (
+      <Tooltip key={actionName} title={actionName} placement="bottom">
+        <IconButton
+          // convert to lowercase & replace space with hyphens
+          // /\s/g replace all spaces with hyphens
+          aria-label={actionName.toLowerCase().replace(/\s/g, '-')}
+          onClick={onClick}
+          sx={{ color: curationPalette.jetBlack }}
+        >
+          {icon}
+        </IconButton>
+      </Tooltip>
+    ));
+  };
 
   return (
     <Stack
@@ -61,77 +56,13 @@ export const CardActionButtonRow: React.FC<CardActionButtonRowProps> = (
       mr="0.5rem"
       ml="0.5rem"
     >
-      <Stack direction="row" justifyContent="flex-start">
-        {onReject && (
-          <Tooltip title="Reject" placement="bottom">
-            <IconButton
-              aria-label="reject"
-              onClick={onReject}
-              sx={{ color: curationPalette.jetBlack }}
-            >
-              <DeleteOutlinedIcon />
-            </IconButton>
-          </Tooltip>
-        )}
-
-        {onMoveToBottom && (
-          <Tooltip title="Move to bottom" placement="bottom">
-            <IconButton
-              aria-label="move to bottom"
-              onClick={onMoveToBottom}
-              sx={{ color: curationPalette.jetBlack }}
-            >
-              <KeyboardDoubleArrowDownOutlinedIcon />
-            </IconButton>
-          </Tooltip>
-        )}
-
-        <Tooltip title="Edit" placement="bottom">
-          <IconButton
-            aria-label="edit"
-            onClick={onEdit}
-            sx={{ color: curationPalette.jetBlack }}
-          >
-            <EditOutlinedIcon />
-          </IconButton>
-        </Tooltip>
-
-        {onReschedule && (
-          <Tooltip title="Re-schedule" placement="bottom">
-            <IconButton
-              aria-label="re-schedule"
-              onClick={onReschedule}
-              sx={{ color: curationPalette.jetBlack }}
-            >
-              <ScheduleIcon />
-            </IconButton>
-          </Tooltip>
-        )}
+      <Stack direction="row">
+        {/*buttons aligned on bottom left of card*/}
+        {renderCardActionButtons(cardActionButtonsLeft)}
       </Stack>
-
-      <Stack direction="row" justifyContent="flex-start">
-        {onUnschedule && (
-          <Tooltip title="Unschedule" placement="bottom">
-            <IconButton
-              aria-label="unschedule"
-              onClick={onUnschedule}
-              sx={{ color: curationPalette.jetBlack }}
-            >
-              <EventBusyOutlinedIcon />
-            </IconButton>
-          </Tooltip>
-        )}
-        {onRemove && (
-          <Tooltip title="Remove" placement="bottom">
-            <IconButton
-              aria-label="remove"
-              onClick={onRemove}
-              sx={{ color: curationPalette.jetBlack }}
-            >
-              <ClearIcon />
-            </IconButton>
-          </Tooltip>
-        )}
+      <Stack direction="row">
+        {/*buttons aligned on bottom right of card*/}
+        {renderCardActionButtons(cardActionButtonsRight)}
       </Stack>
     </Stack>
   );
