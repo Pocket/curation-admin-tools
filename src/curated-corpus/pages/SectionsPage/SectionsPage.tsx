@@ -11,6 +11,7 @@ import { Box, Grid } from '@mui/material';
 import { HandleApiResponse } from '../../../_shared/components';
 import {
   EditCorpusItemAction,
+  RejectCorpusItemAction,
   SectionDetails,
   SplitButton,
 } from '../../components';
@@ -40,6 +41,11 @@ export const SectionsPage: React.FC = (): JSX.Element => {
    * Keep track of whether the "Edit item modal" is open or not
    */
   const [editItemModalOpen, toggleEditModal] = useToggle(false);
+
+  /**
+   * Keep track of whether the "Reject item modal" is open or not
+   */
+  const [rejectItemModalOpen, toggleRejectModal] = useToggle(false);
 
   // Get a list of sections on the page
   const [
@@ -134,13 +140,22 @@ export const SectionsPage: React.FC = (): JSX.Element => {
     <>
       <h1>Sections</h1>
       {currentSectionItem?.approvedItem && (
-        <EditCorpusItemAction
-          item={currentSectionItem.approvedItem}
-          actionScreen={ActionScreen.Sections}
-          modalOpen={editItemModalOpen}
-          toggleModal={toggleEditModal}
-          refetch={refetch}
-        />
+        <>
+          <EditCorpusItemAction
+            item={currentSectionItem.approvedItem}
+            actionScreen={ActionScreen.Sections}
+            modalOpen={editItemModalOpen}
+            toggleModal={toggleEditModal}
+            refetch={refetch}
+          />
+          <RejectCorpusItemAction
+            item={currentSectionItem.approvedItem}
+            actionScreen={ActionScreen.Sections}
+            modalOpen={rejectItemModalOpen}
+            toggleModal={toggleRejectModal}
+            refetch={refetch}
+          />
+        </>
       )}
       <Grid container spacing={3}>
         <Grid item xs={12} sm={8}>
@@ -184,6 +199,7 @@ export const SectionsPage: React.FC = (): JSX.Element => {
         setCurrentSectionItem={setCurrentSectionItem}
         currentScheduledSurfaceGuid={currentScheduledSurfaceGuid}
         toggleEditModal={toggleEditModal}
+        toggleRejectModal={toggleRejectModal}
         refetch={refetch}
       />
     </>

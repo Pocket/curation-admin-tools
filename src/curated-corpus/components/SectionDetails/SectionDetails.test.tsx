@@ -56,6 +56,7 @@ describe('The SectionDetails component', () => {
 
   const mockSetCurrentSectionItem = jest.fn();
   const mockToggleEditModal = jest.fn();
+  const mockToggleRejectModal = jest.fn();
   const mockRefetch = jest.fn();
 
   it('should render all sections when currentSection is "all"', () => {
@@ -68,6 +69,7 @@ describe('The SectionDetails component', () => {
             setCurrentSectionItem={mockSetCurrentSectionItem}
             currentScheduledSurfaceGuid="NEW_TAB_EN_US"
             toggleEditModal={mockToggleEditModal}
+            toggleRejectModal={mockToggleRejectModal}
             refetch={mockRefetch}
           />
         </SnackbarProvider>
@@ -88,6 +90,7 @@ describe('The SectionDetails component', () => {
             setCurrentSectionItem={mockSetCurrentSectionItem}
             currentScheduledSurfaceGuid="NEW_TAB_EN_US"
             toggleEditModal={mockToggleEditModal}
+            toggleRejectModal={mockToggleRejectModal}
             refetch={mockRefetch}
           />
         </SnackbarProvider>
@@ -108,6 +111,7 @@ describe('The SectionDetails component', () => {
             setCurrentSectionItem={mockSetCurrentSectionItem}
             currentScheduledSurfaceGuid="NEW_TAB_EN_US"
             toggleEditModal={mockToggleEditModal}
+            toggleRejectModal={mockToggleRejectModal}
             refetch={mockRefetch}
           />
         </SnackbarProvider>
@@ -128,6 +132,7 @@ describe('The SectionDetails component', () => {
             setCurrentSectionItem={mockSetCurrentSectionItem}
             currentScheduledSurfaceGuid="NEW_TAB_EN_US"
             toggleEditModal={mockToggleEditModal}
+            toggleRejectModal={mockToggleRejectModal}
             refetch={mockRefetch}
           />
         </SnackbarProvider>
@@ -144,6 +149,33 @@ describe('The SectionDetails component', () => {
     expect(mockToggleEditModal).toHaveBeenCalled();
   });
 
+  it('should call setCurrentSectionItem and toggleRejectModal on rejectButton click', async () => {
+    render(
+      <MockedProvider>
+        <SnackbarProvider maxSnack={3}>
+          <SectionDetails
+            sections={mockSections}
+            currentSection="Section 1"
+            setCurrentSectionItem={mockSetCurrentSectionItem}
+            currentScheduledSurfaceGuid="NEW_TAB_EN_US"
+            toggleEditModal={mockToggleEditModal}
+            toggleRejectModal={mockToggleRejectModal}
+            refetch={mockRefetch}
+          />
+        </SnackbarProvider>
+      </MockedProvider>,
+    );
+
+    const rejectButton = screen.getByRole('button', { name: /reject/i });
+    expect(rejectButton).toBeInTheDocument();
+    userEvent.click(rejectButton);
+
+    expect(mockSetCurrentSectionItem).toHaveBeenCalledWith(
+      mockSections[0].sectionItems[0],
+    );
+    expect(mockToggleRejectModal).toHaveBeenCalled();
+  });
+
   it('should render & click remove button', async () => {
     render(
       <MockedProvider>
@@ -154,6 +186,7 @@ describe('The SectionDetails component', () => {
             setCurrentSectionItem={mockSetCurrentSectionItem}
             currentScheduledSurfaceGuid="NEW_TAB_EN_US"
             toggleEditModal={mockToggleEditModal}
+            toggleRejectModal={mockToggleRejectModal}
             refetch={mockRefetch}
           />
         </SnackbarProvider>
@@ -177,6 +210,7 @@ describe('The SectionDetails component', () => {
             setCurrentSectionItem={mockSetCurrentSectionItem}
             currentScheduledSurfaceGuid="NEW_TAB_EN_US"
             toggleEditModal={mockToggleEditModal}
+            toggleRejectModal={mockToggleRejectModal}
             refetch={mockRefetch}
           />
         </SnackbarProvider>
@@ -196,6 +230,7 @@ describe('The SectionDetails component', () => {
             setCurrentSectionItem={mockSetCurrentSectionItem}
             currentScheduledSurfaceGuid="NEW_TAB_EN_US"
             toggleEditModal={mockToggleEditModal}
+            toggleRejectModal={mockToggleRejectModal}
             refetch={mockRefetch}
           />
         </SnackbarProvider>
