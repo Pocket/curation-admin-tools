@@ -17,6 +17,7 @@ import {
 } from '../../components';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { useToggle } from '../../../_shared/hooks';
+import { RemoveSectionItemAction } from '../../components/actions/RemoveSectionItemAction/RemoveSectionItemAction';
 
 export const SectionsPage: React.FC = (): JSX.Element => {
   // set up the initial scheduled surface guid value (nothing at this point)
@@ -46,6 +47,12 @@ export const SectionsPage: React.FC = (): JSX.Element => {
    * Keep track of whether the "Reject item modal" is open or not
    */
   const [rejectItemModalOpen, toggleRejectModal] = useToggle(false);
+
+  /**
+   * Keep track of whether the "Remove section item modal" is open or not
+   */
+  const [removeSectionItemModalOpen, toggleRemoveSectionItemModal] =
+    useToggle(false);
 
   // Get a list of sections on the page
   const [
@@ -155,6 +162,12 @@ export const SectionsPage: React.FC = (): JSX.Element => {
             toggleModal={toggleRejectModal}
             refetch={refetch}
           />
+          <RemoveSectionItemAction
+            sectionItem={currentSectionItem}
+            modalOpen={removeSectionItemModalOpen}
+            toggleModal={toggleRemoveSectionItemModal}
+            refetch={refetch}
+          />
         </>
       )}
       <Grid container spacing={3}>
@@ -200,6 +213,7 @@ export const SectionsPage: React.FC = (): JSX.Element => {
         currentScheduledSurfaceGuid={currentScheduledSurfaceGuid}
         toggleEditModal={toggleEditModal}
         toggleRejectModal={toggleRejectModal}
+        toggleRemoveSectionItemModal={toggleRemoveSectionItemModal}
         refetch={refetch}
       />
     </>
