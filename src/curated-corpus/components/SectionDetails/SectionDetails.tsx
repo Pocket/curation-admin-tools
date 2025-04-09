@@ -34,6 +34,10 @@ interface SectionDetailsProps {
    */
   toggleEditModal: VoidFunction;
   /**
+   * A toggle function for the "Reject this item" modal.
+   */
+  toggleRejectModal: VoidFunction;
+  /**
    * A function that triggers a new API call to refetch the data for a given
    * query. Needed on the Schedule page to refresh data after every action.
    */
@@ -48,6 +52,7 @@ export const SectionDetails: React.FC<SectionDetailsProps> = (
     setCurrentSectionItem,
     currentScheduledSurfaceGuid,
     toggleEditModal,
+    toggleRejectModal,
     refetch,
   } = props;
 
@@ -154,6 +159,10 @@ export const SectionDetails: React.FC<SectionDetailsProps> = (
                               // back to the parent component
                               setCurrentSectionItem(item);
                               toggleEditModal();
+                            }}
+                            onReject={() => {
+                              setCurrentSectionItem(item);
+                              toggleRejectModal();
                             }}
                             onRemove={() => {
                               setCurrentSectionItem(item);

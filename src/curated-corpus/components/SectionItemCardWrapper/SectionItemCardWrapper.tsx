@@ -2,6 +2,7 @@ import React, { ReactElement } from 'react';
 import { Grid } from '@mui/material';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import ClearIcon from '@mui/icons-material/Clear';
+import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import {
   ApprovedCorpusItem,
   CorpusItemSource,
@@ -28,6 +29,11 @@ interface SectionItemCardWrapperProps {
   onRemove: VoidFunction;
 
   /**
+   * Callback for the "Reject" (trash) button
+   */
+  onReject: VoidFunction;
+
+  /**
    * The surface the card is displayed on, e.g. EN_US
    */
   scheduledSurfaceGuid: string;
@@ -36,10 +42,15 @@ interface SectionItemCardWrapperProps {
 export const SectionItemCardWrapper: React.FC<SectionItemCardWrapperProps> = (
   props,
 ): ReactElement => {
-  const { item, onEdit, onRemove, scheduledSurfaceGuid } = props;
+  const { item, onEdit, onRemove, onReject, scheduledSurfaceGuid } = props;
 
   // card action buttons to be rendered & aligned on bottom left
   const cardActionButtonsLeft: CardAction[] = [
+    {
+      actionName: 'Reject',
+      icon: <DeleteOutlinedIcon />,
+      onClick: () => onReject(),
+    },
     { actionName: 'Edit', icon: <EditOutlinedIcon />, onClick: () => onEdit() },
   ];
   // card action buttons to be rendered & aligned on bottom right
