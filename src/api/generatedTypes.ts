@@ -1398,7 +1398,7 @@ export type MutationRemoveProspectArgs = {
 };
 
 export type MutationRemoveSectionItemArgs = {
-  externalId: Scalars['String'];
+  data: RemoveSectionItemInput;
 };
 
 export type MutationRescheduleScheduledCorpusItemArgs = {
@@ -1967,6 +1967,14 @@ export type RemoveProspectInput = {
   reasons?: InputMaybe<Scalars['String']>;
 };
 
+/** Input data for removing a SectionItem */
+export type RemoveSectionItemInput = {
+  /** Array of reasons for removing a SectionItem. */
+  deactivateReasons: Array<SectionItemRemovalReason>;
+  /** ID of the SectionItem. A string in UUID format. */
+  externalId: Scalars['ID'];
+};
+
 /** Input data for rescheduling a scheduled item for a Scheduled Surface. */
 export type RescheduleScheduledCorpusItemInput = {
   /**
@@ -2127,6 +2135,26 @@ export type SectionItem = {
   /** A Unix timestamp of when the entity was last updated. */
   updatedAt: Scalars['Int'];
 };
+
+/**
+ * Reasons for removing SectionItems from ML Sections.
+ *
+ * This is used by ML downstream to improve their modeling.
+ */
+export enum SectionItemRemovalReason {
+  ArticleQuality = 'ARTICLE_QUALITY',
+  Controversial = 'CONTROVERSIAL',
+  Dated = 'DATED',
+  HedDekQuality = 'HED_DEK_QUALITY',
+  ImageQuality = 'IMAGE_QUALITY',
+  NoImage = 'NO_IMAGE',
+  OffTopic = 'OFF_TOPIC',
+  OneSided = 'ONE_SIDED',
+  Paywall = 'PAYWALL',
+  PublisherQuality = 'PUBLISHER_QUALITY',
+  SetDiversity = 'SET_DIVERSITY',
+  Other = 'OTHER',
+}
 
 export type ShareableListComplete = {
   __typename?: 'ShareableListComplete';
@@ -3575,7 +3603,7 @@ export type RemoveProspectMutation = {
 };
 
 export type RemoveSectionItemMutationVariables = Exact<{
-  externalId: Scalars['String'];
+  data: RemoveSectionItemInput;
 }>;
 
 export type RemoveSectionItemMutation = {
@@ -6433,8 +6461,8 @@ export type RemoveProspectMutationOptions = Apollo.BaseMutationOptions<
   RemoveProspectMutationVariables
 >;
 export const RemoveSectionItemDocument = gql`
-  mutation RemoveSectionItem($externalId: String!) {
-    removeSectionItem(externalId: $externalId) {
+  mutation RemoveSectionItem($data: RemoveSectionItemInput!) {
+    removeSectionItem(data: $data) {
       ...SectionItemData
     }
   }
@@ -6458,7 +6486,7 @@ export type RemoveSectionItemMutationFn = Apollo.MutationFunction<
  * @example
  * const [removeSectionItemMutation, { data, loading, error }] = useRemoveSectionItemMutation({
  *   variables: {
- *      externalId: // value for 'externalId'
+ *      data: // value for 'data'
  *   },
  * });
  */

@@ -25,6 +25,8 @@ export { RemoveItemFromScheduledSurfaceForm } from './RemoveItemFromScheduledSur
 export { RemoveItemFromScheduledSurfaceModal } from './RemoveItemFromScheduledSurfaceModal/RemoveItemFromScheduledSurfaceModal';
 export { RemoveItemForm } from './RemoveItemForm/RemoveItemForm';
 export { RemoveItemModal } from './RemoveItemModal/RemoveItemModal';
+export { RemoveSectionItemForm } from './RemoveSectionItemForm/RemoveSectionItemForm';
+export { RemoveSectionItemModal } from './RemoveSectionItemModal/RemoveSectionItemModal';
 export { ScheduleCorpusItemAction } from './actions/ScheduleCorpusItemAction/ScheduleCorpusItemAction';
 export { ScheduleDayData } from './ScheduleDayData/ScheduleDayData';
 export { ScheduleDayHeading } from './ScheduleDayHeading/ScheduleDayHeading';

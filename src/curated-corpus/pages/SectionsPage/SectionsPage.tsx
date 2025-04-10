@@ -17,6 +17,7 @@ import {
 } from '../../components';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { useToggle } from '../../../_shared/hooks';
+import { RemoveSectionItemAction } from '../../components/actions/RemoveSectionItemAction/RemoveSectionItemAction';
 
 export const SectionsPage: React.FC = (): JSX.Element => {
   // set up the initial scheduled surface guid value (nothing at this point)
@@ -46,6 +47,12 @@ export const SectionsPage: React.FC = (): JSX.Element => {
    * Keep track of whether the "Reject item modal" is open or not
    */
   const [rejectItemModalOpen, toggleRejectModal] = useToggle(false);
+
+  /**
+   * Keep track of whether the "Remove section item modal" is open or not
+   */
+  const [removeSectionItemModalOpen, toggleRemoveSectionItemModal] =
+    useToggle(false);
 
   // Get a list of sections on the page
   const [
@@ -132,9 +139,34 @@ export const SectionsPage: React.FC = (): JSX.Element => {
       ];
 
       setSectionOptions(options);
-      setCurrentSection('all'); // Set default to "All Sections"
+
+      // Don't show all sections if current section selected
+      if (!currentSection) {
+        setCurrentSection('all');
+      }
     }
   }, [data, currentScheduledSurfaceGuid]);
+
+  /**
+   * Reorders dropdown options based on selected option.
+   */
+  const reorderOptionsForSplitButton = (
+    options: DropdownOption[],
+    selectedCode: string,
+  ): DropdownOption[] => {
+    // Get the option that matches the selected code
+    const selectedOption = options.find(
+      (option) => option.code === selectedCode,
+    );
+
+    // Remove the selected option from the default list
+    const remainingOptions = options.filter(
+      (option) => option.code !== selectedCode,
+    );
+
+    // Return reordered options array with the selected option first (if found)
+    return selectedOption ? [selectedOption, ...remainingOptions] : options;
+  };
 
   return (
     <>
@@ -153,6 +185,12 @@ export const SectionsPage: React.FC = (): JSX.Element => {
             actionScreen={ActionScreen.Sections}
             modalOpen={rejectItemModalOpen}
             toggleModal={toggleRejectModal}
+            refetch={refetch}
+          />
+          <RemoveSectionItemAction
+            sectionItem={currentSectionItem}
+            modalOpen={removeSectionItemModalOpen}
+            toggleModal={toggleRemoveSectionItemModal}
             refetch={refetch}
           />
         </>
@@ -184,7 +222,10 @@ export const SectionsPage: React.FC = (): JSX.Element => {
                   <SplitButton
                     icon={<FilterListIcon fontSize="large" />}
                     onMenuOptionClick={updateSection}
-                    options={sectionOptions}
+                    options={reorderOptionsForSplitButton(
+                      sectionOptions,
+                      currentSection,
+                    )}
                     size="medium"
                   />
                 )}
@@ -200,6 +241,7 @@ export const SectionsPage: React.FC = (): JSX.Element => {
         currentScheduledSurfaceGuid={currentScheduledSurfaceGuid}
         toggleEditModal={toggleEditModal}
         toggleRejectModal={toggleRejectModal}
+        toggleRemoveSectionItemModal={toggleRemoveSectionItemModal}
         refetch={refetch}
       />
     </>

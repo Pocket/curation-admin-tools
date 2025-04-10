@@ -3,7 +3,6 @@ import {
   Section,
   SectionItem,
   useDisableEnableSectionMutation,
-  useRemoveSectionItemMutation,
 } from '../../../api/generatedTypes';
 import { Box, FormControlLabel, FormGroup, Grid, Switch } from '@mui/material';
 import { SectionItemCardWrapper } from '../SectionItemCardWrapper/SectionItemCardWrapper';
@@ -38,6 +37,10 @@ interface SectionDetailsProps {
    */
   toggleRejectModal: VoidFunction;
   /**
+   * A toggle function for the "Remove this section item" modal.
+   */
+  toggleRemoveSectionItemModal: VoidFunction;
+  /**
    * A function that triggers a new API call to refetch the data for a given
    * query. Needed on the Schedule page to refresh data after every action.
    */
@@ -53,30 +56,13 @@ export const SectionDetails: React.FC<SectionDetailsProps> = (
     currentScheduledSurfaceGuid,
     toggleEditModal,
     toggleRejectModal,
+    toggleRemoveSectionItemModal,
     refetch,
   } = props;
 
   // Get a helper function that will execute each mutation, show standard notifications
   // and execute any additional actions in a callback
   const { runMutation } = useRunMutation();
-
-  const [removeSectionItemMutation] = useRemoveSectionItemMutation();
-
-  const removeSectionItem = (externalId: string): void => {
-    // Run the mutation
-    runMutation(
-      removeSectionItemMutation,
-      {
-        variables: {
-          externalId: externalId,
-        },
-      },
-      `Item removed successfully.`,
-      undefined,
-      undefined,
-      refetch,
-    );
-  };
 
   const [disableEnableSectionMutation] = useDisableEnableSectionMutation();
   const toggleEnableDisableSectionSwitch = (section: Section): void => {
@@ -166,7 +152,7 @@ export const SectionDetails: React.FC<SectionDetailsProps> = (
                             }}
                             onRemove={() => {
                               setCurrentSectionItem(item);
-                              removeSectionItem(item.externalId);
+                              toggleRemoveSectionItemModal();
                             }}
                             scheduledSurfaceGuid={currentScheduledSurfaceGuid}
                           />

@@ -57,6 +57,7 @@ describe('The SectionDetails component', () => {
   const mockSetCurrentSectionItem = jest.fn();
   const mockToggleEditModal = jest.fn();
   const mockToggleRejectModal = jest.fn();
+  const mockToggleRemoveSectionItemModal = jest.fn();
   const mockRefetch = jest.fn();
 
   it('should render all sections when currentSection is "all"', () => {
@@ -70,6 +71,7 @@ describe('The SectionDetails component', () => {
             currentScheduledSurfaceGuid="NEW_TAB_EN_US"
             toggleEditModal={mockToggleEditModal}
             toggleRejectModal={mockToggleRejectModal}
+            toggleRemoveSectionItemModal={mockToggleRemoveSectionItemModal}
             refetch={mockRefetch}
           />
         </SnackbarProvider>
@@ -91,6 +93,7 @@ describe('The SectionDetails component', () => {
             currentScheduledSurfaceGuid="NEW_TAB_EN_US"
             toggleEditModal={mockToggleEditModal}
             toggleRejectModal={mockToggleRejectModal}
+            toggleRemoveSectionItemModal={mockToggleRemoveSectionItemModal}
             refetch={mockRefetch}
           />
         </SnackbarProvider>
@@ -112,6 +115,7 @@ describe('The SectionDetails component', () => {
             currentScheduledSurfaceGuid="NEW_TAB_EN_US"
             toggleEditModal={mockToggleEditModal}
             toggleRejectModal={mockToggleRejectModal}
+            toggleRemoveSectionItemModal={mockToggleRemoveSectionItemModal}
             refetch={mockRefetch}
           />
         </SnackbarProvider>
@@ -133,6 +137,7 @@ describe('The SectionDetails component', () => {
             currentScheduledSurfaceGuid="NEW_TAB_EN_US"
             toggleEditModal={mockToggleEditModal}
             toggleRejectModal={mockToggleRejectModal}
+            toggleRemoveSectionItemModal={mockToggleRemoveSectionItemModal}
             refetch={mockRefetch}
           />
         </SnackbarProvider>
@@ -160,6 +165,7 @@ describe('The SectionDetails component', () => {
             currentScheduledSurfaceGuid="NEW_TAB_EN_US"
             toggleEditModal={mockToggleEditModal}
             toggleRejectModal={mockToggleRejectModal}
+            toggleRemoveSectionItemModal={mockToggleRemoveSectionItemModal}
             refetch={mockRefetch}
           />
         </SnackbarProvider>
@@ -176,7 +182,7 @@ describe('The SectionDetails component', () => {
     expect(mockToggleRejectModal).toHaveBeenCalled();
   });
 
-  it('should render & click remove button', async () => {
+  it('should call setCurrentSectionItem and toggleRemoveSectionItemModal on removeButton click', async () => {
     render(
       <MockedProvider>
         <SnackbarProvider maxSnack={3}>
@@ -187,17 +193,21 @@ describe('The SectionDetails component', () => {
             currentScheduledSurfaceGuid="NEW_TAB_EN_US"
             toggleEditModal={mockToggleEditModal}
             toggleRejectModal={mockToggleRejectModal}
+            toggleRemoveSectionItemModal={mockToggleRemoveSectionItemModal}
             refetch={mockRefetch}
           />
         </SnackbarProvider>
       </MockedProvider>,
     );
+
     const removeButton = screen.getByRole('button', { name: /remove/i });
     expect(removeButton).toBeInTheDocument();
     userEvent.click(removeButton);
+
     expect(mockSetCurrentSectionItem).toHaveBeenCalledWith(
       mockSections[0].sectionItems[0],
     );
+    expect(mockToggleRemoveSectionItemModal).toHaveBeenCalled();
   });
 
   it('should render & toggle the Disable switch', async () => {
@@ -211,6 +221,7 @@ describe('The SectionDetails component', () => {
             currentScheduledSurfaceGuid="NEW_TAB_EN_US"
             toggleEditModal={mockToggleEditModal}
             toggleRejectModal={mockToggleRejectModal}
+            toggleRemoveSectionItemModal={mockToggleRemoveSectionItemModal}
             refetch={mockRefetch}
           />
         </SnackbarProvider>
@@ -231,6 +242,7 @@ describe('The SectionDetails component', () => {
             currentScheduledSurfaceGuid="NEW_TAB_EN_US"
             toggleEditModal={mockToggleEditModal}
             toggleRejectModal={mockToggleRejectModal}
+            toggleRemoveSectionItemModal={mockToggleRemoveSectionItemModal}
             refetch={mockRefetch}
           />
         </SnackbarProvider>
