@@ -2150,10 +2150,10 @@ export enum SectionItemRemovalReason {
   NoImage = 'NO_IMAGE',
   OffTopic = 'OFF_TOPIC',
   OneSided = 'ONE_SIDED',
-  Other = 'OTHER',
   Paywall = 'PAYWALL',
   PublisherQuality = 'PUBLISHER_QUALITY',
   SetDiversity = 'SET_DIVERSITY',
+  Other = 'OTHER',
 }
 
 export type ShareableListComplete = {
