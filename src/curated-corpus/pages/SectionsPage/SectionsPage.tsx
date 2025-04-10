@@ -139,7 +139,11 @@ export const SectionsPage: React.FC = (): JSX.Element => {
       ];
 
       setSectionOptions(options);
-      setCurrentSection('all'); // Set default to "All Sections"
+
+      // Don't show all sections if current section selected
+      if (!currentSection) {
+        setCurrentSection('all');
+      }
     }
   }, [data, currentScheduledSurfaceGuid]);
 
