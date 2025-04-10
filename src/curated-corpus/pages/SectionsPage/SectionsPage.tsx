@@ -147,6 +147,27 @@ export const SectionsPage: React.FC = (): JSX.Element => {
     }
   }, [data, currentScheduledSurfaceGuid]);
 
+  /**
+   * Reorders dropdown options based on selected option.
+   */
+  const reorderOptionsForSplitButton = (
+    options: DropdownOption[],
+    selectedCode: string,
+  ): DropdownOption[] => {
+    // Get the option that matches the selected code
+    const selectedOption = options.find(
+      (option) => option.code === selectedCode,
+    );
+
+    // Remove the selected option from the default list
+    const remainingOptions = options.filter(
+      (option) => option.code !== selectedCode,
+    );
+
+    // Return reordered options array with the selected option first (if found)
+    return selectedOption ? [selectedOption, ...remainingOptions] : options;
+  };
+
   return (
     <>
       <h1>Sections</h1>
@@ -201,7 +222,10 @@ export const SectionsPage: React.FC = (): JSX.Element => {
                   <SplitButton
                     icon={<FilterListIcon fontSize="large" />}
                     onMenuOptionClick={updateSection}
-                    options={sectionOptions}
+                    options={reorderOptionsForSplitButton(
+                      sectionOptions,
+                      currentSection,
+                    )}
                     size="medium"
                   />
                 )}
