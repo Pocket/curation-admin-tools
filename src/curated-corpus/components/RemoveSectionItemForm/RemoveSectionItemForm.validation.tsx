@@ -11,10 +11,10 @@ export const validationSchema = yup
     [SectionItemRemovalReason.NoImage]: yup.boolean(),
     [SectionItemRemovalReason.OffTopic]: yup.boolean(),
     [SectionItemRemovalReason.OneSided]: yup.boolean(),
-    [SectionItemRemovalReason.Other]: yup.boolean(),
     [SectionItemRemovalReason.Paywall]: yup.boolean(),
     [SectionItemRemovalReason.PublisherQuality]: yup.boolean(),
     [SectionItemRemovalReason.SetDiversity]: yup.boolean(),
+    [SectionItemRemovalReason.Other]: yup.boolean(),
   })
   .test('removalReasons', '', (obj) => {
     // If at least one checkbox was selected & above conditions satisfied, pass validation
@@ -28,10 +28,10 @@ export const validationSchema = yup
       obj[SectionItemRemovalReason.NoImage] ||
       obj[SectionItemRemovalReason.OffTopic] ||
       obj[SectionItemRemovalReason.OneSided] ||
-      obj[SectionItemRemovalReason.Other] ||
       obj[SectionItemRemovalReason.Paywall] ||
       obj[SectionItemRemovalReason.PublisherQuality] ||
-      obj[SectionItemRemovalReason.SetDiversity]
+      obj[SectionItemRemovalReason.SetDiversity] ||
+      obj[SectionItemRemovalReason.Other]
     ) {
       return true;
     }
