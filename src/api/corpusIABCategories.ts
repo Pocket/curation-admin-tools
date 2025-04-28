@@ -12,6 +12,7 @@ export type CorpusIABTaxonomyDict = Record<
   Record<string, CorpusIABCategory>
 >;
 
+// prettier-ignore
 export const CORPUS_IAB_CATEGORIES: CorpusIABTaxonomyDict = {
   'IAB-3.0': {
     '1': {
