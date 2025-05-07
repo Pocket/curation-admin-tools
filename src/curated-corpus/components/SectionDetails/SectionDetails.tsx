@@ -4,9 +4,18 @@ import {
   SectionItem,
   useDisableEnableSectionMutation,
 } from '../../../api/generatedTypes';
-import { Box, FormControlLabel, FormGroup, Grid, Switch } from '@mui/material';
+import {
+  Box,
+  Chip,
+  FormControlLabel,
+  FormGroup,
+  Grid,
+  Switch,
+} from '@mui/material';
+import AdUnitsIcon from '@mui/icons-material/AdUnits';
 import { SectionItemCardWrapper } from '../SectionItemCardWrapper/SectionItemCardWrapper';
 import { useRunMutation } from '../../../_shared/hooks';
+import { getIABCategoryTreeLabel } from '../../helpers/helperFunctions';
 
 interface SectionDetailsProps {
   /**
@@ -123,6 +132,18 @@ export const SectionDetails: React.FC<SectionDetailsProps> = (
                       labelPlacement="end" // Places label next to switch
                     />
                   </FormGroup>
+                  {/* IAB Label */}
+                  {section.iab && (
+                    <Chip
+                      variant="outlined"
+                      color="primary"
+                      label={getIABCategoryTreeLabel(
+                        'IAB-3.0',
+                        section.iab.categories[0],
+                      )}
+                      icon={<AdUnitsIcon />}
+                    />
+                  )}
                 </Box>
               </Box>
               <Grid
