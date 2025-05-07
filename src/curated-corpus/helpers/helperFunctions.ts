@@ -237,7 +237,7 @@ export const getIABCategoryTreeLabel = (
   iabCode: string,
 ): string => {
   const iabTaxonomy = CORPUS_IAB_CATEGORIES[taxonomy];
-  // Check if taxonomy version exists
+  // Check if taxonomy version/ IAB code exists
   if (!iabTaxonomy || !iabTaxonomy[iabCode]) return '';
 
   // Array to hold IAB category names from each Tier in the hierarchy, from parent -> child
@@ -246,7 +246,7 @@ export const getIABCategoryTreeLabel = (
 
   // Start from target IAB category (child) & walk up the parent chain
   while (currentIABCategory) {
-    // Add child category to the end of the array
+    // Add child category to the END of the array
     iabLabels.unshift(currentIABCategory.name);
     // Walk up to the parent IAB category (if there is a parent)
     currentIABCategory = currentIABCategory.parentId
