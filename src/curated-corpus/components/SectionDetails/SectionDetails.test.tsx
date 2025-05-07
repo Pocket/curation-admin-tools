@@ -7,17 +7,28 @@ import { MockedProvider } from '@apollo/client/testing';
 import {
   ActivitySource,
   ApprovedCorpusItem,
+  IabMetadata,
   Section,
 } from '../../../api/generatedTypes';
 import { getTestApprovedItem } from '../../helpers/approvedItem';
 
 describe('The SectionDetails component', () => {
   const item: ApprovedCorpusItem = getTestApprovedItem();
+  const iabMetadata1: IabMetadata = {
+    taxonomy: 'IAB-3.0',
+    categories: ['339'], // Adult Contemporary Music (Tier 3)
+  };
+  const iabMetadata2: IabMetadata = {
+    taxonomy: 'IAB-3.0',
+    categories: ['335'], // Fantasy (Tier 2)
+  };
+
   const mockSections: Section[] = [
     // enabled section
     {
       externalId: '1',
       title: 'Section 1',
+      iab: iabMetadata1,
       active: true,
       disabled: false,
       sectionItems: [
@@ -37,6 +48,7 @@ describe('The SectionDetails component', () => {
     {
       externalId: '2',
       title: 'Section 2',
+      iab: iabMetadata2,
       active: true,
       disabled: true,
       sectionItems: [
@@ -250,5 +262,35 @@ describe('The SectionDetails component', () => {
     );
     const enableSwitch = screen.getByRole('checkbox', { name: /enable/i });
     expect(enableSwitch).toBeInTheDocument();
+  });
+
+  it('should render IAB labels', async () => {
+    render(
+      <MockedProvider>
+        <SnackbarProvider maxSnack={3}>
+          <SectionDetails
+            sections={mockSections}
+            currentSection="all"
+            setCurrentSectionItem={mockSetCurrentSectionItem}
+            currentScheduledSurfaceGuid="NEW_TAB_EN_US"
+            toggleEditModal={mockToggleEditModal}
+            toggleRejectModal={mockToggleRejectModal}
+            toggleRemoveSectionItemModal={mockToggleRemoveSectionItemModal}
+            refetch={mockRefetch}
+          />
+        </SnackbarProvider>
+      </MockedProvider>,
+    );
+    expect(screen.getByText('Section 1')).toBeInTheDocument();
+    expect(screen.getByText('Section 2')).toBeInTheDocument();
+
+    // check IAB labels
+    // IAB label for Section 1
+    expect(
+      screen.getByText('Entertainment → Music → Adult Contemporary Music'),
+    ).toBeInTheDocument();
+
+    // IAB label for Section 2
+    expect(screen.getByText('Genres → Fantasy')).toBeInTheDocument();
   });
 });

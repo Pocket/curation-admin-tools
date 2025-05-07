@@ -607,6 +607,8 @@ export type CreateOrUpdateSectionInput = {
   createSource: ActivitySource;
   /** An alternative primary key in UUID format supplied by ML. */
   externalId: Scalars['ID'];
+  /** Optional IAB metadata input */
+  iab?: InputMaybe<IabMetadataInput>;
   /** The GUID of the Scheduled Surface. Example: 'NEW_TAB_EN_US'. */
   scheduledSurfaceGuid: Scalars['ID'];
   /** Controls the display order of Sections. */
@@ -766,6 +768,22 @@ export type IabCategory = {
   externalId: Scalars['String'];
   name: Scalars['String'];
   slug: Scalars['String'];
+};
+
+/**
+ * Represents IAB metadata for a Section.
+ * Used by both admin input/output and public output.
+ */
+export type IabMetadata = {
+  __typename?: 'IABMetadata';
+  categories: Array<Scalars['String']>;
+  taxonomy: Scalars['String'];
+};
+
+/** Input data for creating IAB metadata for a Section */
+export type IabMetadataInput = {
+  categories: Array<Scalars['String']>;
+  taxonomy: Scalars['String'];
 };
 
 export type IabParentCategory = {
@@ -2096,6 +2114,8 @@ export type Section = {
   disabled: Scalars['Boolean'];
   /** An alternative primary key in UUID format. */
   externalId: Scalars['ID'];
+  /** Optional IAB metadata returned to the client (i.e. Merino->Firefox, Admin Tools) */
+  iab?: Maybe<IabMetadata>;
   /** The GUID of the Scheduled Surface. Example: 'NEW_TAB_EN_US'. */
   scheduledSurfaceGuid: Scalars['ID'];
   /**
@@ -2150,10 +2170,10 @@ export enum SectionItemRemovalReason {
   NoImage = 'NO_IMAGE',
   OffTopic = 'OFF_TOPIC',
   OneSided = 'ONE_SIDED',
+  Other = 'OTHER',
   Paywall = 'PAYWALL',
   PublisherQuality = 'PUBLISHER_QUALITY',
   SetDiversity = 'SET_DIVERSITY',
-  Other = 'OTHER',
 }
 
 export type ShareableListComplete = {
@@ -2659,6 +2679,11 @@ export type BaseSectionDataFragment = {
   createSource: ActivitySource;
   disabled: boolean;
   active: boolean;
+  iab?: {
+    __typename?: 'IABMetadata';
+    taxonomy: string;
+    categories: Array<string>;
+  } | null;
 };
 
 export type SectionDataFragment = {
@@ -2714,6 +2739,11 @@ export type SectionDataFragment = {
       }>;
     };
   }>;
+  iab?: {
+    __typename?: 'IABMetadata';
+    taxonomy: string;
+    categories: Array<string>;
+  } | null;
 };
 
 export type BaseSectionItemDataFragment = {
@@ -3455,6 +3485,11 @@ export type DisableEnableSectionMutation = {
         }>;
       };
     }>;
+    iab?: {
+      __typename?: 'IABMetadata';
+      taxonomy: string;
+      categories: Array<string>;
+    } | null;
   };
 };
 
@@ -5003,6 +5038,11 @@ export type GetSectionsWithSectionItemsQuery = {
         }>;
       };
     }>;
+    iab?: {
+      __typename?: 'IABMetadata';
+      taxonomy: string;
+      categories: Array<string>;
+    } | null;
   }>;
 };
 
@@ -5201,6 +5241,10 @@ export const BaseSectionDataFragmentDoc = gql`
     externalId
     title
     scheduledSurfaceGuid
+    iab {
+      taxonomy
+      categories
+    }
     sort
     createSource
     disabled

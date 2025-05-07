@@ -9,6 +9,7 @@ import {
   formatFormLabel,
   getCuratorNameFromLdap,
   getFormattedImageUrl,
+  getIABCategoryTreeLabel,
   getLastScheduledDayDiff,
   getLocalDateTimeForGuid,
   getScheduledSurfaceName,
@@ -354,6 +355,37 @@ describe('helperFunctions ', () => {
           '«Meeresregionen» – in die »pelagischen« Zonen – verlegt',
         ),
       ).toEqual('„Meeresregionen” – in die „pelagischen” Zonen – verlegt');
+    });
+  });
+
+  describe('getIABCategoryTreeLabel function', () => {
+    it('should return full hierarchy for a Tier 4 IAB category', () => {
+      const iabLabel = getIABCategoryTreeLabel('IAB-3.0', '341'); // Urban AC Music (Tier 4)
+      expect(iabLabel).toEqual(
+        'Entertainment → Music → Adult Contemporary Music → Urban AC Music',
+      );
+    });
+    it('should return full hierarchy for a Tier 3 IAB category', () => {
+      const iabLabel = getIABCategoryTreeLabel('IAB-3.0', '339'); // Adult Contemporary Music (Tier 3)
+      expect(iabLabel).toEqual(
+        'Entertainment → Music → Adult Contemporary Music',
+      );
+    });
+    it('should return full hierarchy for a Tier 2 IAB category', () => {
+      const iabLabel = getIABCategoryTreeLabel('IAB-3.0', '338'); // Music (Tier 2)
+      expect(iabLabel).toEqual('Entertainment → Music');
+    });
+    it('should return only the IAB category name for a Tier 1 IAB category', () => {
+      const iabLabel = getIABCategoryTreeLabel('IAB-3.0', 'JLBCU7'); // Entertainment (Tier 1)
+      expect(iabLabel).toEqual('Entertainment');
+    });
+    it('should return an empty string for an unknown IAB category code', () => {
+      const label = getIABCategoryTreeLabel('IAB-3.0', 'unknown_code');
+      expect(label).toEqual('');
+    });
+    it('should return an empty string for an unknown taxonomy version', () => {
+      const label = getIABCategoryTreeLabel('unknown_taxonomy_version', '341');
+      expect(label).toEqual('');
     });
   });
 });

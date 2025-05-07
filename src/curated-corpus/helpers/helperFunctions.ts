@@ -8,6 +8,10 @@ import { ScheduledSurfaces } from './definitions';
 import { applyCurlyQuotes } from '../../_shared/utils/applyCurlyQuotes';
 import { applyApTitleCase } from '../../_shared/utils/applyApTitleCase';
 import { applyQuotesDashesDE } from '../../_shared/utils/applyQuotesDashesDE';
+import {
+  CORPUS_IAB_CATEGORIES,
+  CorpusIABCategory,
+} from '../../api/corpusIABCategories';
 
 // downloads image from source url
 export const fetchFileFromUrl = async (
@@ -220,4 +224,35 @@ export const applyTitleFormattingByLanguage = (
   else {
     return applyCurlyQuotes(applyApTitleCase(title));
   }
+};
+
+/**
+ * Constructs the full IAB label (parent/child hierarchy) based on the provided IAB code
+ * @param taxonomy the IAB taxonomy version
+ * @param iabCode the iabCode to lookup in taxonomy
+ * @returns string IAB category names joined with an arrow (->) to form a readable path
+ */
+export const getIABCategoryTreeLabel = (
+  taxonomy: string,
+  iabCode: string,
+): string => {
+  const iabTaxonomy = CORPUS_IAB_CATEGORIES[taxonomy];
+  // Check if taxonomy version/ IAB code exists
+  if (!iabTaxonomy || !iabTaxonomy[iabCode]) return '';
+
+  // Array to hold IAB category names from each Tier in the hierarchy, from parent -> child
+  const iabLabels: string[] = [];
+  let currentIABCategory: CorpusIABCategory | null = iabTaxonomy[iabCode];
+
+  // Start from target IAB category (child) & walk up the parent chain
+  while (currentIABCategory) {
+    // Add child category to the END of the array
+    iabLabels.unshift(currentIABCategory.name);
+    // Walk up to the parent IAB category (if there is a parent)
+    currentIABCategory = currentIABCategory.parentId
+      ? iabTaxonomy[currentIABCategory.parentId]
+      : null;
+  }
+
+  return iabLabels.join(' → ');
 };
