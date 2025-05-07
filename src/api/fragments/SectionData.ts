@@ -7,9 +7,9 @@ export const BaseSectionData = gql`
     title
     scheduledSurfaceGuid
     iab {
-        taxonomy
-        categories
-      }
+      taxonomy
+      categories
+    }
     sort
     createSource
     disabled
