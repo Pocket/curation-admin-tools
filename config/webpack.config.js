@@ -15,7 +15,7 @@ const safePostCssParser = require('postcss-safe-parser');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
-const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
+// const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
 const ESLintPlugin = require('eslint-webpack-plugin');
@@ -23,8 +23,8 @@ const paths = require('./paths');
 const modules = require('./modules');
 const getClientEnvironment = require('./env');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
-const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
-const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
+// const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
+// const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 const postcssNormalize = require('postcss-normalize');
@@ -194,16 +194,16 @@ module.exports = function (webpackEnv) {
             // changing JS code would still trigger a refresh.
           ]
         : paths.appIndexJs,
-    output: {
-      // The build folder.
+   output: {
+      // The build  folder.
       path: isEnvProduction ? paths.appBuild : undefined,
       // Add /* filename */ comments to generated require()s in the output.
       pathinfo: isEnvDevelopment,
       // There will be one main bundle, and one file per asynchronous chunk.
       // In development, it does not produce real files.
-      filename: isEnvProduction
-        ? 'static/js/[name].[contenthash:8].js'
-        : isEnvDevelopment && 'static/js/bundle.js',
+     filename: isEnvProduction
+       ? 'static/js/[name].[contenthash:8].js'
+       : isEnvDevelopment && 'static/js/[name].js',
       // TODO: remove this when upgrading to webpack 5 - testing
       // There are also additional JS chunk files if you use code splitting.
       chunkFilename: isEnvProduction
@@ -294,7 +294,7 @@ module.exports = function (webpackEnv) {
       // https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366
       splitChunks: {
         chunks: 'all',
-        name: isEnvDevelopment ? 'chunk' : false,
+        name: false,
       },
       // Keep the runtime chunk separated to enable long term caching
       // https://twitter.com/wSokra/status/969679223278505985
@@ -331,6 +331,19 @@ module.exports = function (webpackEnv) {
         }),
         ...(modules.webpackAliases || {}),
       },
+      fallback: {
+        "url": require.resolve("url/"),
+        "crypto": require.resolve("crypto-browserify"),
+        "vm": require.resolve("vm-browserify"),
+        "buffer": false,
+        "stream": false,
+        "util": false,
+        "assert": false,
+        "http": false,
+        "https": false,
+        "os": false,
+        "path": false
+      },
       plugins: [
         // Adds support for installing with Plug'n'Play, leading to faster installs and adding
         // guards against forgotten dependencies and such.
@@ -357,7 +370,10 @@ module.exports = function (webpackEnv) {
       strictExportPresence: true,
       rules: [
         // Disable require.ensure as it's not a standard language feature.
-        { parser: { requireEnsure: false } },
+        {
+          test: /\.(js|mjs|jsx|ts|tsx)$/,
+          parser: { requireEnsure: false }
+        },
         {
           // "oneOf" will traverse all following loaders until one will
           // match the requirements. When no loader matches it will fall
@@ -633,8 +649,8 @@ module.exports = function (webpackEnv) {
       // to restart the development server for webpack to discover it. This plugin
       // makes the discovery automatic so you don't have to restart.
       // See https://github.com/facebook/create-react-app/issues/186
-      isEnvDevelopment &&
-        new WatchMissingNodeModulesPlugin(paths.appNodeModules),
+      // isEnvDevelopment &&
+       // new WatchMissingNodeModulesPlugin(paths.appNodeModules),
       isEnvProduction &&
         new MiniCssExtractPlugin({
           // Options similar to the same options in webpackOptions.output
@@ -689,36 +705,36 @@ module.exports = function (webpackEnv) {
           maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         }),
       // TypeScript type checking
-      useTypeScript &&
-        new ForkTsCheckerWebpackPlugin({
-          typescript: resolve.sync('typescript', {
-            basedir: paths.appNodeModules,
-          }),
-          async: isEnvDevelopment,
-          checkSyntacticErrors: true,
-          resolveModuleNameModule: process.versions.pnp
-            ? `${__dirname}/pnpTs.js`
-            : undefined,
-          resolveTypeReferenceDirectiveModule: process.versions.pnp
-            ? `${__dirname}/pnpTs.js`
-            : undefined,
-          tsconfig: paths.appTsConfig,
-          reportFiles: [
-            // This one is specifically to match during CI tests,
-            // as micromatch doesn't match
-            // '../cra-template-typescript/template/src/App.tsx'
-            // otherwise.
-            '../**/src/**/*.{ts,tsx}',
-            '**/src/**/*.{ts,tsx}',
-            '!**/src/**/__tests__/**',
-            '!**/src/**/?(*.)(spec|test).*',
-            '!**/src/setupProxy.*',
-            '!**/src/setupTests.*',
-          ],
-          silent: true,
-          // The formatter is invoked directly in WebpackDevServerUtils during development
-          formatter: isEnvProduction ? typescriptFormatter : undefined,
-        }),
+// useTypeScript &&
+//   new ForkTsCheckerWebpackPlugin({
+//     typescript: resolve.sync('typescript', {
+//       basedir: paths.appNodeModules,
+//     }),
+//     async: isEnvDevelopment,
+//     checkSyntacticErrors: true,
+//     resolveModuleNameModule: process.versions.pnp
+//       ? `${__dirname}/pnpTs.js`
+//       : undefined,
+//     resolveTypeReferenceDirectiveModule: process.versions.pnp
+//       ? `${__dirname}/pnpTs.js`
+//       : undefined,
+//     tsconfig: paths.appTsConfig,
+//     reportFiles: [
+//       // This one is specifically to match during CI tests,
+//       // as micromatch doesn't match
+//       // '../cra-template-typescript/template/src/App.tsx'
+//       // otherwise.
+//       '../**/src/**/*.{ts,tsx}',
+//       '**/src/**/*.{ts,tsx}',
+//       '!**/src/**/__tests__/**',
+//       '!**/src/**/?(*.)(spec|test).*',
+//       '!**/src/setupProxy.*',
+//       '!**/src/setupTests.*',
+//     ],
+//     silent: true,
+//     // The formatter is invoked directly in WebpackDevServerUtils during development
+//     formatter: isEnvProduction ? undefined : undefined,
+//   }),
       !disableESLintPlugin &&
         new ESLintPlugin({
           // Plugin options
