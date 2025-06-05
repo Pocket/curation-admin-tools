@@ -335,6 +335,7 @@ module.exports = function (webpackEnv) {
         "url": require.resolve("url/"),
         "crypto": require.resolve("crypto-browserify"),
         "vm": require.resolve("vm-browserify"),
+        "global": false,
         "buffer": false,
         "stream": false,
         "util": false,
@@ -577,6 +578,15 @@ module.exports = function (webpackEnv) {
       ],
     },
     plugins: [
+      new webpack.ProvidePlugin({
+        process: 'process/browser',
+        Buffer: ['buffer', 'Buffer'],
+      }),
+
+      new webpack.DefinePlugin({
+        global: 'globalThis',
+      }),
+
       // Generates an `index.html` file with the <script> injected.
       new HtmlWebpackPlugin(
         Object.assign(
