@@ -30,6 +30,46 @@ export const useMozillaAuth = (): {
   canAccessCuration: boolean;
   canAccessModeration: boolean;
 } => {
+  const isLocalDev = process.env.REACT_APP_LOCAL_DEV === 'true';
+
+  if (isLocalDev) {
+    // Mock authentication data for local development
+    const mockIdToken: IDToken = {
+      given_name: 'Local',
+      family_name: 'Developer',
+      name: 'Local Developer',
+      email: 'local@example.com',
+      'cognito:groups': ['developers'],
+      'cognito:username': 'local-dev',
+      'custom:groups': '["developers"]',
+      groups: ['developers'],
+      picture: '',
+      exp: Date.now() / 1000 + 3600,
+      iat: Date.now() / 1000,
+      email_verified: 'true',
+    };
+
+    // Mock authService for local development
+    const mockAuthService = {
+      getUser: () => mockIdToken,
+      logout: () => {
+        console.log('Mock logout called');
+        window.location.reload();
+      },
+      isAuthenticated: () => true,
+      isPending: () => false,
+    } as AuthService;
+
+    return {
+      authService: mockAuthService,
+      parsedIdToken: mockIdToken,
+      jwtIdToken: 'mock-jwt-token',
+      canAccessCollections: true,
+      canAccessCuration: true,
+      canAccessModeration: true,
+    };
+  }
+
   const { authService } = pkceUseAuth();
   const parsedIdToken = authService.getUser() as IDToken;
 

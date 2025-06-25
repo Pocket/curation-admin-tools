@@ -47,6 +47,9 @@ function App(): JSX.Element {
                 <Route exact path="/">
                   <LandingPage />
                 </Route>
+                <Route exact path="/oauth/callback">
+                  <LandingPage />
+                </Route>
                 {canAccessCollections && (
                   <Route path="/collections">
                     <CollectionsLandingPage />

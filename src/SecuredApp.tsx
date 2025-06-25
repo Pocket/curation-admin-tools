@@ -25,11 +25,14 @@ const SecuredApp = (): JSX.Element => {
 
   const login = async () => authService.authorize();
 
-  if (authService.isPending()) {
+  // In local development mode, bypass authentication
+  const isLocalDev = process.env.REACT_APP_LOCAL_DEV === 'true';
+
+  if (!isLocalDev && authService.isPending()) {
     return <div>Loading...</div>;
   }
 
-  if (!authService.isAuthenticated()) {
+  if (!isLocalDev && !authService.isAuthenticated()) {
     // The beginnings of a proper login page
     return (
       <ThemeProvider theme={theme}>
