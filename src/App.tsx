@@ -13,7 +13,7 @@ import { CuratedCorpusLandingPage } from './curated-corpus/pages';
 import { ModerationLandingPage } from './moderation/pages';
 import { useMozillaAuth } from './_shared/hooks';
 import { client } from './api/client';
-
+//test
 function App(): JSX.Element {
   const {
     canAccessCollections,
@@ -45,6 +45,9 @@ function App(): JSX.Element {
             <>
               <Switch>
                 <Route exact path="/">
+                  <LandingPage />
+                </Route>
+                <Route exact path="/oauth/callback">
                   <LandingPage />
                 </Route>
                 {canAccessCollections && (

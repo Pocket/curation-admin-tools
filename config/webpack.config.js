@@ -10,12 +10,12 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const safePostCssParser = require('postcss-safe-parser');
-const ManifestPlugin = require('webpack-manifest-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
-const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
+// const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
 const ESLintPlugin = require('eslint-webpack-plugin');
@@ -23,8 +23,8 @@ const paths = require('./paths');
 const modules = require('./modules');
 const getClientEnvironment = require('./env');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
-const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
-const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
+// const ForkTsCheckerWebpackPlugin = require('react-dev-utils/ForkTsCheckerWebpackPlugin');
+// const typescriptFormatter = require('react-dev-utils/typescriptFormatter');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 const postcssNormalize = require('postcss-normalize');
@@ -194,18 +194,17 @@ module.exports = function (webpackEnv) {
             // changing JS code would still trigger a refresh.
           ]
         : paths.appIndexJs,
-    output: {
-      // The build folder.
+   output: {
+      // The build  folder.
       path: isEnvProduction ? paths.appBuild : undefined,
       // Add /* filename */ comments to generated require()s in the output.
       pathinfo: isEnvDevelopment,
       // There will be one main bundle, and one file per asynchronous chunk.
       // In development, it does not produce real files.
-      filename: isEnvProduction
-        ? 'static/js/[name].[contenthash:8].js'
-        : isEnvDevelopment && 'static/js/bundle.js',
-      // TODO: remove this when upgrading to webpack 5
-      futureEmitAssets: true,
+     filename: isEnvProduction
+       ? 'static/js/[name].[contenthash:8].js'
+       : isEnvDevelopment && 'static/js/[name].js',
+      // TODO: remove this when upgrading to webpack 5 - testing
       // There are also additional JS chunk files if you use code splitting.
       chunkFilename: isEnvProduction
         ? 'static/js/[name].[contenthash:8].chunk.js'
@@ -224,7 +223,7 @@ module.exports = function (webpackEnv) {
           (info => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')),
       // Prevents conflicts when multiple webpack runtimes (from different apps)
       // are used on the same page.
-      jsonpFunction: `webpackJsonp${appPackageJson.name}`,
+      chunkLoadingGlobal: `webpackJsonp${appPackageJson.name}`,
       // this defaults to 'window', but by setting it to 'this' then
       // module chunks which are built will work in web workers as well.
       globalObject: 'this',
@@ -274,23 +273,20 @@ module.exports = function (webpackEnv) {
           sourceMap: shouldUseSourceMap,
         }),
         // This is only used in production mode
-        new OptimizeCSSAssetsPlugin({
-          cssProcessorOptions: {
-            parser: safePostCssParser,
-            map: shouldUseSourceMap
-              ? {
-                  // `inline: false` forces the sourcemap to be output into a
-                  // separate file
-                  inline: false,
-                  // `annotation: true` appends the sourceMappingURL to the end of
-                  // the css file, helping the browser find the sourcemap
-                  annotation: true,
-                }
-              : false,
-          },
-          cssProcessorPluginOptions: {
+        new CssMinimizerPlugin({
+          minimizerOptions: {
             preset: ['default', { minifyFontValues: { removeQuotes: false } }],
           },
+          parallel: true,
+          ...(shouldUseSourceMap && {
+            minimizerOptions: {
+              preset: ['default', { minifyFontValues: { removeQuotes: false } }],
+              map: {
+                inline: false,
+                annotation: true,
+              },
+            },
+          }),
         }),
       ],
       // Automatically split vendor and commons
@@ -298,7 +294,7 @@ module.exports = function (webpackEnv) {
       // https://medium.com/webpack/webpack-4-code-splitting-chunk-graph-and-the-splitchunks-optimization-be739a861366
       splitChunks: {
         chunks: 'all',
-        name: isEnvDevelopment,
+        name: false,
       },
       // Keep the runtime chunk separated to enable long term caching
       // https://twitter.com/wSokra/status/969679223278505985
@@ -335,6 +331,20 @@ module.exports = function (webpackEnv) {
         }),
         ...(modules.webpackAliases || {}),
       },
+      fallback: {
+        "url": require.resolve("url/"),
+        "crypto": require.resolve("crypto-browserify"),
+        "vm": require.resolve("vm-browserify"),
+        "global": false,
+        "buffer": require.resolve("buffer/"),
+        "stream": require.resolve("stream-browserify"),
+        "util": require.resolve("util/"),
+        "assert": require.resolve("assert/"),
+        "http": false,
+        "https": false,
+        "os": false,
+        "path": false
+      },
       plugins: [
         // Adds support for installing with Plug'n'Play, leading to faster installs and adding
         // guards against forgotten dependencies and such.
@@ -344,10 +354,10 @@ module.exports = function (webpackEnv) {
         // To fix this, we prevent you from importing files out of src/ -- if you'd like to,
         // please link the files into your node_modules/ and let module-resolution kick in.
         // Make sure your source files are compiled, as they will not be processed in any way.
-        new ModuleScopePlugin(paths.appSrc, [
-          paths.appPackageJson,
-          reactRefreshOverlayEntry,
-        ]),
+        // new ModuleScopePlugin(paths.appSrc, [
+          // paths.appPackageJson,
+         // reactRefreshOverlayEntry,
+        // ]),
       ],
     },
     resolveLoader: {
@@ -361,7 +371,10 @@ module.exports = function (webpackEnv) {
       strictExportPresence: true,
       rules: [
         // Disable require.ensure as it's not a standard language feature.
-        { parser: { requireEnsure: false } },
+        {
+          test: /\.(js|mjs|jsx|ts|tsx)$/,
+          parser: { requireEnsure: false }
+        },
         {
           // "oneOf" will traverse all following loaders until one will
           // match the requirements. When no loader matches it will fall
@@ -371,11 +384,15 @@ module.exports = function (webpackEnv) {
             // https://github.com/jshttp/mime-db
             {
               test: [/\.avif$/],
-              loader: require.resolve('url-loader'),
-              options: {
-                limit: imageInlineSizeLimit,
-                mimetype: 'image/avif',
-                name: 'static/media/[name].[hash:8].[ext]',
+              type: 'asset',
+              parser: {
+                dataUrlCondition: {
+                  maxSize: imageInlineSizeLimit,
+                },
+              },
+              generator: {
+                filename: 'static/media/[name].[hash:8][ext]',
+                mimeType: 'image/avif',
               },
             },
             // "url" loader works like "file" loader except that it embeds assets
@@ -383,10 +400,14 @@ module.exports = function (webpackEnv) {
             // A missing `test` is equivalent to a match.
             {
               test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
-              loader: require.resolve('url-loader'),
-              options: {
-                limit: imageInlineSizeLimit,
-                name: 'static/media/[name].[hash:8].[ext]',
+              type: 'asset',
+              parser: {
+                dataUrlCondition: {
+                  maxSize: imageInlineSizeLimit,
+                },
+              },
+              generator: {
+                filename: 'static/media/[name].[hash:8][ext]',
               },
             },
             // Process application JS with Babel.
@@ -407,7 +428,7 @@ module.exports = function (webpackEnv) {
                     },
                   ],
                 ],
-                
+
                 plugins: [
                   [
                     require.resolve('babel-plugin-named-asset-import'),
@@ -452,7 +473,7 @@ module.exports = function (webpackEnv) {
                 cacheDirectory: true,
                 // See #6846 for context on why cacheCompression is disabled
                 cacheCompression: false,
-                
+
                 // Babel sourcemaps are needed for debugging into node_modules
                 // code.  Without the options below, debuggers like VSCode
                 // show incorrect code and set breakpoints on the wrong lines.
@@ -540,23 +561,32 @@ module.exports = function (webpackEnv) {
             // This loader doesn't use a "test" so it will catch all modules
             // that fall through the other loaders.
             {
-              loader: require.resolve('file-loader'),
+              type: 'asset/resource',
               // Exclude `js` files to keep "css" loader working as it injects
               // its runtime that would otherwise be processed through "file" loader.
               // Also exclude `html` and `json` extensions so they get processed
               // by webpacks internal loaders.
               exclude: [/\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
-              options: {
-                name: 'static/media/[name].[hash:8].[ext]',
+              generator: {
+                filename: 'static/media/[name].[hash:8][ext]',
               },
             },
-            // ** STOP ** Are you adding a new loader?
-            // Make sure to add the new loader(s) before the "file" loader.
+// ** STOP ** Are you adding a new loader?
+// Make sure to add the new loader(s) before the "file" loader.
           ],
         },
       ],
     },
     plugins: [
+      new webpack.ProvidePlugin({
+        process: 'process/browser',
+        Buffer: ['buffer', 'Buffer'],
+      }),
+
+      new webpack.DefinePlugin({
+        global: 'globalThis',
+      }),
+
       // Generates an `index.html` file with the <script> injected.
       new HtmlWebpackPlugin(
         Object.assign(
@@ -629,8 +659,8 @@ module.exports = function (webpackEnv) {
       // to restart the development server for webpack to discover it. This plugin
       // makes the discovery automatic so you don't have to restart.
       // See https://github.com/facebook/create-react-app/issues/186
-      isEnvDevelopment &&
-        new WatchMissingNodeModulesPlugin(paths.appNodeModules),
+      // isEnvDevelopment &&
+       // new WatchMissingNodeModulesPlugin(paths.appNodeModules),
       isEnvProduction &&
         new MiniCssExtractPlugin({
           // Options similar to the same options in webpackOptions.output
@@ -644,7 +674,7 @@ module.exports = function (webpackEnv) {
       //   `index.html`
       // - "entrypoints" key: Array of files which are included in `index.html`,
       //   can be used to reconstruct the HTML if necessary
-      new ManifestPlugin({
+      new WebpackManifestPlugin({
         fileName: 'asset-manifest.json',
         publicPath: paths.publicUrlOrPath,
         generate: (seed, files, entrypoints) => {
@@ -667,7 +697,10 @@ module.exports = function (webpackEnv) {
       // solution that requires the user to opt into importing specific locales.
       // https://github.com/jmblog/how-to-optimize-momentjs-with-webpack
       // You can remove this if you don't use Moment.js:
-      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+      new webpack.IgnorePlugin({
+        resourceRegExp: /^\.\/locale$/,
+        contextRegExp: /moment$/,
+      }),
       // Generate a service worker script that will precache, and keep up to date,
       // the HTML & assets that are part of the webpack build.
       isEnvProduction &&
@@ -682,36 +715,36 @@ module.exports = function (webpackEnv) {
           maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         }),
       // TypeScript type checking
-      useTypeScript &&
-        new ForkTsCheckerWebpackPlugin({
-          typescript: resolve.sync('typescript', {
-            basedir: paths.appNodeModules,
-          }),
-          async: isEnvDevelopment,
-          checkSyntacticErrors: true,
-          resolveModuleNameModule: process.versions.pnp
-            ? `${__dirname}/pnpTs.js`
-            : undefined,
-          resolveTypeReferenceDirectiveModule: process.versions.pnp
-            ? `${__dirname}/pnpTs.js`
-            : undefined,
-          tsconfig: paths.appTsConfig,
-          reportFiles: [
-            // This one is specifically to match during CI tests,
-            // as micromatch doesn't match
-            // '../cra-template-typescript/template/src/App.tsx'
-            // otherwise.
-            '../**/src/**/*.{ts,tsx}',
-            '**/src/**/*.{ts,tsx}',
-            '!**/src/**/__tests__/**',
-            '!**/src/**/?(*.)(spec|test).*',
-            '!**/src/setupProxy.*',
-            '!**/src/setupTests.*',
-          ],
-          silent: true,
-          // The formatter is invoked directly in WebpackDevServerUtils during development
-          formatter: isEnvProduction ? typescriptFormatter : undefined,
-        }),
+// useTypeScript &&
+//   new ForkTsCheckerWebpackPlugin({
+//     typescript: resolve.sync('typescript', {
+//       basedir: paths.appNodeModules,
+//     }),
+//     async: isEnvDevelopment,
+//     checkSyntacticErrors: true,
+//     resolveModuleNameModule: process.versions.pnp
+//       ? `${__dirname}/pnpTs.js`
+//       : undefined,
+//     resolveTypeReferenceDirectiveModule: process.versions.pnp
+//       ? `${__dirname}/pnpTs.js`
+//       : undefined,
+//     tsconfig: paths.appTsConfig,
+//     reportFiles: [
+//       // This one is specifically to match during CI tests,
+//       // as micromatch doesn't match
+//       // '../cra-template-typescript/template/src/App.tsx'
+//       // otherwise.
+//       '../**/src/**/*.{ts,tsx}',
+//       '**/src/**/*.{ts,tsx}',
+//       '!**/src/**/__tests__/**',
+//       '!**/src/**/?(*.)(spec|test).*',
+//       '!**/src/setupProxy.*',
+//       '!**/src/setupTests.*',
+//     ],
+//     silent: true,
+//     // The formatter is invoked directly in WebpackDevServerUtils during development
+//     formatter: isEnvProduction ? undefined : undefined,
+//   }),
       !disableESLintPlugin &&
         new ESLintPlugin({
           // Plugin options
@@ -740,16 +773,7 @@ module.exports = function (webpackEnv) {
     ].filter(Boolean),
     // Some libraries import Node modules but don't use them in the browser.
     // Tell webpack to provide empty mocks for them so importing them works.
-    node: {
-      module: 'empty',
-      dgram: 'empty',
-      dns: 'mock',
-      fs: 'empty',
-      http2: 'empty',
-      net: 'empty',
-      tls: 'empty',
-      child_process: 'empty',
-    },
+    node: false,
     // Turn off performance processing because we utilize
     // our own hints via the FileSizeReporter
     performance: false,
