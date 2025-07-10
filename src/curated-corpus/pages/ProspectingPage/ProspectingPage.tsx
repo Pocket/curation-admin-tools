@@ -749,14 +749,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
           isOpen={scheduleModalOpen}
           scheduledSurfaceGuid={currentScheduledSurfaceGuid}
           disableScheduledSurface={disableScheduledSurface}
-          showManualScheduleReasons={
-            /* Only ask for manual schedule reasons if the curator is working on the US New Tab or German New Tab
-             * and if it's not a syndicated item */
-            (currentScheduledSurfaceGuid === 'NEW_TAB_EN_US' ||
-              (currentScheduledSurfaceGuid === 'NEW_TAB_DE_DE' &&
-                !approvedItem.prospectId)) &&
-            !approvedItem.isSyndicated
-          }
+          showManualScheduleReasons={false}
           expandSummary={
             /* Expand the Topic & Publisher Summary for syndicated articles */
             approvedItem.isSyndicated

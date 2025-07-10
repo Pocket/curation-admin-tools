@@ -604,14 +604,7 @@ export const SchedulePage: React.FC = (): ReactElement => {
           headingCopy="Confirm Schedule"
           isOpen={manualScheduleItemModalOpen}
           scheduledSurfaceGuid={currentScheduledSurfaceGuid}
-          showManualScheduleReasons={
-            /* Only ask for manual schedule reasons if the curator is working on the US New Tab or German New Tab
-             * and if it's not a syndicated item */
-            (currentScheduledSurfaceGuid === 'NEW_TAB_EN_US' ||
-              (currentScheduledSurfaceGuid === 'NEW_TAB_DE_DE' &&
-                !approvedItem.prospectId)) &&
-            !approvedItem.isSyndicated
-          }
+          showManualScheduleReasons={false}
           expandSummary={
             /* Expand the Topic & Publisher Summary for syndicated articles */
             approvedItem.isSyndicated
