@@ -4,6 +4,11 @@
 process.env.BABEL_ENV = 'production';
 process.env.NODE_ENV = 'production';
 
+// Handle OpenSSL 3.0 compatibility for Node.js 18+
+const crypto = require('crypto');
+const origCreateHash = crypto.createHash;
+crypto.createHash = (algorithm) => origCreateHash(algorithm == 'md4' ? 'sha256' : algorithm);
+
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
 // terminate the Node.js process with a non-zero exit code.

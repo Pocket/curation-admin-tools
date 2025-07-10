@@ -88,7 +88,7 @@
   },
   "scripts": {
     "start": "NODE_OPTIONS=--openssl-legacy-provider NODE_ENV=local node scripts/start.js",
-    "build": "NODE_OPTIONS=--openssl-legacy-provider DISABLE_ESLINT_PLUGIN=true node scripts/build.js",
+    "build": "DISABLE_ESLINT_PLUGIN=true node scripts/build.js",
     "build:local": "NODE_OPTIONS=--openssl-legacy-provider DISABLE_ESLINT_PLUGIN=true node scripts/build.js",
     "test": "NODE_OPTIONS=--openssl-legacy-provider node scripts/test.js --transformIgnorePatterns \"node_modules/(?!@apollo/client/link/core/ApolloLink.js)/\"",
     "test:nowatch": "NODE_OPTIONS=--openssl-legacy-provider node scripts/test.js --watchAll=false  --transformIgnorePatterns \"node_modules/(?!@apollo/client/link/core/ApolloLink.js)/\"",
