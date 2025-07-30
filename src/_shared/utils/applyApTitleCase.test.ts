@@ -137,11 +137,83 @@ describe('applyApTitleCase', () => {
       expect(applyApTitleCase(swc.result)).toEqual(swc.expected);
     });
   });
+  
+  it('should handle new AP style stop words correctly', () => {
+    const testCases = [
+      {
+        result: 'The Dog Jumped Up And Over The Fence',
+        expected: 'The Dog Jumped Up and Over the Fence',
+      },
+      {
+        result: 'Work As A Team',
+        expected: 'Work as a Team',
+      },
+      {
+        result: 'If You Can Dream It',
+        expected: 'If You Can Dream It',
+      },
+      {
+        result: 'Turn Off The Lights',
+        expected: 'Turn off the Lights',
+      },
+      {
+        result: 'Going Out Tonight',
+        expected: 'Going out Tonight',
+      },
+      {
+        result: 'So What Do You Think',
+        expected: 'So What Do You Think',
+      },
+      {
+        result: 'Come If You Can So We Can Talk',
+        expected: 'Come if You Can so We Can Talk',
+      },
+    ];
+    testCases.forEach(({ result, expected }) => {
+      expect(applyApTitleCase(result)).toEqual(expected);
+    });
+  });
   it('should correctly format titles with curly apostrophes', () => {
     const testCases = [
       {
         result: 'every state\u2018S dream travel destination, mapped',
         expected: 'Every State\u2018s Dream Travel Destination, Mapped',
+      },
+    ];
+    testCases.forEach(({ result, expected }) => {
+      expect(applyApTitleCase(result)).toEqual(expected);
+    });
+  });
+
+  it('should keep iPhone and similar Apple products with lowercase i', () => {
+    const testCases = [
+      {
+        result: 'The New IPhone Is Here',
+        expected: 'The New iPhone Is Here',
+      },
+      {
+        result: 'IPad Pro Vs IPad Air',
+        expected: 'iPad Pro vs iPad Air',
+      },
+      {
+        result: 'Using ICloud With Your IPod',
+        expected: 'Using iCloud With Your iPod',
+      },
+      {
+        result: 'IMac and MacBook Pro Comparison',
+        expected: 'iMac and MacBook Pro Comparison',
+      },
+      {
+        result: 'ITunes Is Now Apple Music',
+        expected: 'iTunes Is Now Apple Music',
+      },
+      {
+        result: 'Send IMessage From Your IPhone',
+        expected: 'Send iMessage From Your iPhone',
+      },
+      {
+        result: 'IBooks: The Complete Guide',
+        expected: 'iBooks: The Complete Guide',
       },
     ];
     testCases.forEach(({ result, expected }) => {

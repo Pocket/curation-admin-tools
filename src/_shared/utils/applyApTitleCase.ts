@@ -1,5 +1,5 @@
 export const STOP_WORDS =
-  'a an and at but by for in nor of on or the to up yet';
+  'a an and as at but by for if in nor of off on or out so the to yet';
 
 // Matches a colon (:) and 0+ white spaces following after
 // Matches 1+ white spaces
@@ -11,12 +11,14 @@ export const stop = STOP_WORDS.split(' ');
 /**
  * Format a string: Match the letter after an apostrophe & capture the apostrophe and matched char.
  * Lowercase the captured letter & return the formatted string.
+ * Exception: O' prefix (like O'Hearn) should have the letter after apostrophe capitalized.
  * @param input
  * @returns {string}
  */
 export const lowercaseAfterApostrophe = (input: string): string => {
   // Match either an ASCII or curly apostrophe followed by a letter, after a word character.
-  const regex = /(?<=\w)(['\u2018\u2019])(\w)/g;
+  // Negative lookbehind to exclude O' prefix
+  const regex = /(?<!^O)(?<![\s]O)(?<=\w)(['\u2018\u2019])(\w)/g;
   return input.replace(
     regex,
     (_, apostrophe, letter) => `${apostrophe}${letter.toLowerCase()}`,
@@ -63,8 +65,8 @@ export const applyApTitleCase = (value: string): string => {
         index > 0 &&
         (allWords[index - 1] === "'" ||
           allWords[index - 1] === '"' ||
-          allWords[index - 1] === '\u2018' || // Opening single quote ’
-          allWords[index - 1] === '\u201C'); // Opening double quote “
+          allWords[index - 1] === '\u2018' || // Opening single quote '
+          allWords[index - 1] === '\u201C'); // Opening double quote "
 
       if (
         index === 0 || // first word
@@ -79,5 +81,16 @@ export const applyApTitleCase = (value: string): string => {
       return word.toLowerCase();
     })
     .join(''); // join without additional spaces
-  return lowercaseAfterApostrophe(result);
+
+  // Apply special formatting rules
+  let formattedResult = lowercaseAfterApostrophe(result);
+
+  // Handle special cases like iPhone, iPad, iPod, etc.
+  // This regex looks for word boundaries followed by capital I and then Phone/Pad/Pod/etc.
+  formattedResult = formattedResult.replace(
+    /\bI(Phone|Pad|Pod|Mac|Cloud|Tunes|Books|Message)/g,
+    'i$1',
+  );
+
+  return formattedResult;
 };
