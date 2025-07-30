@@ -1,5 +1,5 @@
 export const STOP_WORDS =
-  'a an and as at but by for if in nor of off on or out so the to yet';
+  'a an and as at but by for if in nor of off on or out so the to vs yet';
 
 // Matches a colon (:) and 0+ white spaces following after
 // Matches 1+ white spaces
