@@ -137,7 +137,7 @@ describe('applyApTitleCase', () => {
       expect(applyApTitleCase(swc.result)).toEqual(swc.expected);
     });
   });
-  
+
   it('should handle new AP style stop words correctly', () => {
     const testCases = [
       {
