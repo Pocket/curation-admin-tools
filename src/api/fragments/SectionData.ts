@@ -17,6 +17,8 @@ export const BaseSectionData = gql`
     description
     heroTitle
     heroDescription
+    startDate
+    endDate
   }
 `;
 export const SectionData = gql`
