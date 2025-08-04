@@ -842,64 +842,6 @@ export enum Imageness {
 }
 
 /**
- * Input data for loading an Approved Item via an automated process and optionally scheduling
- * this item to appear on a Scheduled Surface.
- */
-export type ImportApprovedCorpusItemInput = {
-  /** A Unix timestamp of when the entity was created. */
-  createdAt: Scalars['Int'];
-  /** A single sign-on user identifier of the user who created this entity. */
-  createdBy: Scalars['String'];
-  /** The publication date for this story. */
-  datePublished?: InputMaybe<Scalars['Date']>;
-  /** The excerpt of the Approved Item. */
-  excerpt: Scalars['String'];
-  /** The image URL for this item's accompanying picture. */
-  imageUrl: Scalars['Url'];
-  /** Whether this story is a Pocket Collection. */
-  isCollection?: InputMaybe<Scalars['Boolean']>;
-  /** Whether this item is a syndicated article. */
-  isSyndicated?: InputMaybe<Scalars['Boolean']>;
-  /** What language this item is in. This is a two-letter capitalized code, for example, 'EN' for English. */
-  language: CorpusLanguage;
-  /** The name of the online publication that published this story. */
-  publisher: Scalars['String'];
-  /** The date this item should be appearing on a Scheduled Surface. Format: YYYY-MM-DD */
-  scheduledDate: Scalars['Date'];
-  /**
-   * Source of the Scheduled Item. Could be one of: MANUAL or ML
-   *
-   * This field was added after this import mutation was created. We may need to expand the enum value list if this mutation is used in the future.
-   */
-  scheduledSource: ActivitySource;
-  /** The GUID of the Scheduled Surface this item should be scheduled for. */
-  scheduledSurfaceGuid: Scalars['ID'];
-  /** The source of the corpus item. */
-  source: CorpusItemSource;
-  /** The outcome of the curators' review of the Approved Item. */
-  status: CuratedStatus;
-  /** The title of the Approved Item. */
-  title: Scalars['String'];
-  /** A topic this story best fits in. The value will be `null` for migrated items that don't have a topic set. */
-  topic?: InputMaybe<Scalars['String']>;
-  /** A Unix timestamp of when the entity was last updated. */
-  updatedAt: Scalars['Int'];
-  /** A single sign-on user identifier of the user who last updated this entity. */
-  updatedBy: Scalars['String'];
-  /** The URL of the Approved Item. */
-  url: Scalars['Url'];
-};
-
-/** The data that the loadApprovedCuratedCorpusItem mutation returns on success. */
-export type ImportApprovedCorpusItemPayload = {
-  __typename?: 'ImportApprovedCorpusItemPayload';
-  /** The approved item, as created by an automated process. */
-  approvedItem: ApprovedCorpusItem;
-  /** The scheduled entry that is created by an automated process at the same time. */
-  scheduledItem: ScheduledCorpusItem;
-};
-
-/**
  * The heart of Pocket
  * A url and meta data related to it.
  */
@@ -1247,11 +1189,6 @@ export type Mutation = {
   deleteScheduledCorpusItem: ScheduledCorpusItem;
   /** Disables or enables a Section. Can only be done from the admin tool. */
   disableEnableSection: Section;
-  /**
-   * Lets an automated process create an Approved Item and optionally schedule it to appear
-   * on a Scheduled Surface.
-   */
-  importApprovedCorpusItem: ImportApprovedCorpusItemPayload;
   /** Removes (moderates) a Shareable List. */
   moderateShareableList?: Maybe<ShareableListComplete>;
   /** Refresh an Item's article content. */
@@ -1393,10 +1330,6 @@ export type MutationDeleteScheduledCorpusItemArgs = {
 
 export type MutationDisableEnableSectionArgs = {
   data: DisableEnableSectionInput;
-};
-
-export type MutationImportApprovedCorpusItemArgs = {
-  data: ImportApprovedCorpusItemInput;
 };
 
 export type MutationModerateShareableListArgs = {
@@ -2107,13 +2040,21 @@ export type Section = {
   createSource: ActivitySource;
   /** A Unix timestamp of when the Section was created. */
   createdAt: Scalars['Int'];
+  /** Optional description for the Section. */
+  description?: Maybe<Scalars['String']>;
   /**
    * Indicates whether or not a Section is fully disabled from display on NewTab. Can only  be controlled
    * in the admin tool.
    */
   disabled: Scalars['Boolean'];
+  /** The date when the Section is expired. */
+  endDate?: Maybe<Scalars['Date']>;
   /** An alternative primary key in UUID format. */
   externalId: Scalars['ID'];
+  /** Optional hero description for the Section. */
+  heroDescription?: Maybe<Scalars['String']>;
+  /** Optional hero title for the Section. */
+  heroTitle?: Maybe<Scalars['String']>;
   /** Optional IAB metadata returned to the client (i.e. Merino->Firefox, Admin Tools) */
   iab?: Maybe<IabMetadata>;
   /** The GUID of the Scheduled Surface. Example: 'NEW_TAB_EN_US'. */
@@ -2125,6 +2066,10 @@ export type Section = {
   sectionItems: Array<SectionItem>;
   /** Controls the display order of Sections. */
   sort?: Maybe<Scalars['Int']>;
+  /** The start date for when the Section should be live. */
+  startDate?: Maybe<Scalars['Date']>;
+  /** The status of the Section. */
+  status?: Maybe<SectionStatus>;
   /** The title of the Section displayed to the users. */
   title: Scalars['String'];
   /** A Unix timestamp of when the Section was last updated. */
@@ -2174,6 +2119,14 @@ export enum SectionItemRemovalReason {
   Paywall = 'PAYWALL',
   PublisherQuality = 'PUBLISHER_QUALITY',
   SetDiversity = 'SET_DIVERSITY',
+}
+
+/** Represents the current Section status, computed dynamically. */
+export enum SectionStatus {
+  Disabled = 'DISABLED',
+  Expired = 'EXPIRED',
+  Live = 'LIVE',
+  Scheduled = 'SCHEDULED',
 }
 
 export type ShareableListComplete = {
@@ -2679,6 +2632,11 @@ export type BaseSectionDataFragment = {
   createSource: ActivitySource;
   disabled: boolean;
   active: boolean;
+  description?: string | null;
+  heroTitle?: string | null;
+  heroDescription?: string | null;
+  startDate?: any | null;
+  endDate?: any | null;
   iab?: {
     __typename?: 'IABMetadata';
     taxonomy: string;
@@ -2697,6 +2655,11 @@ export type SectionDataFragment = {
   createSource: ActivitySource;
   disabled: boolean;
   active: boolean;
+  description?: string | null;
+  heroTitle?: string | null;
+  heroDescription?: string | null;
+  startDate?: any | null;
+  endDate?: any | null;
   sectionItems: Array<{
     __typename?: 'SectionItem';
     createdAt: number;
@@ -3443,6 +3406,11 @@ export type DisableEnableSectionMutation = {
     createSource: ActivitySource;
     disabled: boolean;
     active: boolean;
+    description?: string | null;
+    heroTitle?: string | null;
+    heroDescription?: string | null;
+    startDate?: any | null;
+    endDate?: any | null;
     sectionItems: Array<{
       __typename?: 'SectionItem';
       createdAt: number;
@@ -4996,6 +4964,11 @@ export type GetSectionsWithSectionItemsQuery = {
     createSource: ActivitySource;
     disabled: boolean;
     active: boolean;
+    description?: string | null;
+    heroTitle?: string | null;
+    heroDescription?: string | null;
+    startDate?: any | null;
+    endDate?: any | null;
     sectionItems: Array<{
       __typename?: 'SectionItem';
       createdAt: number;
@@ -5249,6 +5222,11 @@ export const BaseSectionDataFragmentDoc = gql`
     createSource
     disabled
     active
+    description
+    heroTitle
+    heroDescription
+    startDate
+    endDate
   }
 `;
 export const BaseSectionItemDataFragmentDoc = gql`
