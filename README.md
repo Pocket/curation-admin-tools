@@ -21,14 +21,36 @@ cd curation-admin-tools
 npm ci
 ```
 
-Next, to enable SSO auth, create an `.env` file in the project root, and add the following:
+Next, create an `.env` file in the project root. You can copy the provided `.env.example` file as a starting point:
+
+```bash
+cp .env.example .env
+```
+
+To enable SSO auth, add the following to your `.env` file:
 
 ```
 REACT_APP_OAUTH2_REDIRECT_URI=http://localhost:3000/oauth/callback
 REACT_APP_OAUTH2_CLIENT_ID=2jliat5ne5043psrlbhur2unlr
 ```
 
-You're almost there! By default, the app will connect to the production Admin API. To point to the Pocket Development or locally spun up API, you will need to override the default endpoint value in your `.env` file. Add the following to your `.env` file and comment out the endpoint you do not need:
+### Local Development Mode
+
+The `REACT_APP_LOCAL_DEV` variable allows you to bypass Mozilla authentication for local development. When set to `true`, it uses mock authentication data. However, this mode may not load data properly from the API.
+
+If you need to use local development mode with real API data, you can provide a JWT token:
+
+1. Set `REACT_APP_LOCAL_DEV=false` in your `.env` file
+2. Log in through Mozilla Auth in your browser
+3. Open browser DevTools and go to the Network tab
+4. Find the authentication request and copy the `id_token` value
+5. Set `REACT_APP_LOCAL_DEV=true` and add your token as `REACT_APP_DEV_JWT_TOKEN` in your `.env` file
+
+**Note:** For most development work, it's recommended to keep `REACT_APP_LOCAL_DEV=false` and use normal Mozilla authentication.
+
+### API Configuration
+
+By default, the app will connect to the production Admin API. To point to the Pocket Development or locally spun up API, you will need to override the default endpoint value in your `.env` file. Add the following to your `.env` file and comment out the endpoint you do not need:
 
 ```dotenv
 #This is the dev version of the federated graph
