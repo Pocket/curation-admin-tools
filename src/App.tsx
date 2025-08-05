@@ -27,7 +27,7 @@ function App(): JSX.Element {
     return {
       headers: {
         ...headers,
-        authorization: jwtIdToken ? `Bearer ${jwtIdToken}` : '',
+        Authorization: jwtIdToken ? `Bearer ${jwtIdToken}` : '',
       },
     };
   });

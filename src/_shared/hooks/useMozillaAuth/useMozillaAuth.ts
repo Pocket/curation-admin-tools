@@ -60,10 +60,13 @@ export const useMozillaAuth = (): {
       isPending: () => false,
     } as AuthService;
 
+    // Use the dev JWT token if provided, otherwise use a mock token
+    const devJwtToken = process.env.REACT_APP_DEV_JWT_TOKEN || 'mock-jwt-token';
+
     return {
       authService: mockAuthService,
       parsedIdToken: mockIdToken,
-      jwtIdToken: 'mock-jwt-token',
+      jwtIdToken: devJwtToken,
       canAccessCollections: true,
       canAccessCuration: true,
       canAccessModeration: true,

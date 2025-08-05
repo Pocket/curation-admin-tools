@@ -36,17 +36,19 @@ REACT_APP_OAUTH2_CLIENT_ID=2jliat5ne5043psrlbhur2unlr
 
 ### Local Development Mode
 
-The `REACT_APP_LOCAL_DEV` variable allows you to bypass Mozilla authentication for local development. When set to `true`, it uses mock authentication data. However, this mode may not load data properly from the API.
+The `REACT_APP_LOCAL_DEV` variable allows you to bypass Mozilla authentication for local development. When set to `true`, it uses mock authentication data. 
 
-If you need to use local development mode with real API data, you can provide a JWT token:
+**Important:** When `REACT_APP_LOCAL_DEV=true` without a valid JWT token, you will get a "Could not decode JWT" error when trying to fetch data from the API. This is expected behavior because the backend API requires a valid JWT token.
+
+To use local development mode with real API data:
 
 1. Set `REACT_APP_LOCAL_DEV=false` in your `.env` file
 2. Log in through Mozilla Auth in your browser
 3. Open browser DevTools and go to the Network tab
 4. Find the authentication request and copy the `id_token` value
-5. Set `REACT_APP_LOCAL_DEV=true` and add your token as `REACT_APP_DEV_JWT_TOKEN` in your `.env` file
+5. Set `REACT_APP_LOCAL_DEV=true` and add your token as `REACT_APP_DEV_JWT_TOKEN=<your-token>` in your `.env` file
 
-**Note:** For most development work, it's recommended to keep `REACT_APP_LOCAL_DEV=false` and use normal Mozilla authentication.
+**Note:** For most development work, it's recommended to keep `REACT_APP_LOCAL_DEV=false` and use normal Mozilla authentication. The local development mode is primarily useful for testing authentication flows or when you need to bypass SSO temporarily.
 
 ### API Configuration
 
