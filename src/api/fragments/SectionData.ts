@@ -14,6 +14,11 @@ export const BaseSectionData = gql`
     createSource
     disabled
     active
+    description
+    heroTitle
+    heroDescription
+    startDate
+    endDate
   }
 `;
 export const SectionData = gql`
