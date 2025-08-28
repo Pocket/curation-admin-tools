@@ -1,4 +1,4 @@
-import { applyApTitleCase, lowercaseAfterApostrophe } from './applyApTitleCase';
+import { applyApTitleCase } from './applyApTitleCase';
 
 // examples taken from https://www.grammarly.com/blog/capitalization-in-the-titles/
 // tested at https://headlinecapitalization.com/ (AP style)
@@ -168,6 +168,70 @@ describe('applyApTitleCase', () => {
         result: 'Come If You Can So We Can Talk',
         expected: 'Come if You Can so We Can Talk',
       },
+      {
+        result:
+          "'ridiculously traumatized': CDC workers fear returning to work after fatal shooting",
+        expected:
+          "'Ridiculously Traumatized': CDC Workers Fear Returning to Work After Fatal Shooting",
+      },
+      {
+        result:
+          "'shock. frustration. anger.' Trump's tariff letters roil Asian allies",
+        expected:
+          "'Shock. Frustration. Anger.' Trump's Tariff Letters Roil Asian Allies",
+      },
+      {
+        result:
+          "'alligator alcatraz': what to know about Florida's new controversial migrant detention facility",
+        expected:
+          "'Alligator Alcatraz': What to Know About Florida's New Controversial Migrant Detention Facility",
+      },
+      {
+        result:
+          "'arrogant' Arsenal star, five Man Utd flops, only one Spurs man in 'big eight' worst XI of 2024/25",
+        expected:
+          "'Arrogant' Arsenal Star, Five Man Utd Flops, Only One Spurs Man in 'Big Eight' Worst XI of 2024/25",
+      },
+      {
+        result:
+          "'a graceful, magnetic speaker': how Susie Sorabji captivated U.S. audiences in early 20th century",
+        expected:
+          "'A Graceful, Magnetic Speaker': How Susie Sorabji Captivated U.S. Audiences in Early 20th Century",
+      },
+      {
+        result:
+          "'beyond my wildest dreams': the architect of Project 2025 is ready for his victory lap",
+        expected:
+          "'Beyond My Wildest Dreams': The Architect of Project 2025 Is Ready for His Victory Lap",
+      },
+      {
+        result: "'anora' lands top prize at PGA awards: full winners list",
+        expected: "'Anora' Lands Top Prize at PGA Awards: Full Winners List",
+      },
+      {
+        result:
+          '7 binge-worthy YouTube series that are worth spending hours watching',
+        expected:
+          '7 Binge-Worthy YouTube Series That Are Worth Spending Hours Watching',
+      },
+      {
+        result:
+          'as insurers around the U.S. bleed cash from climate shocks, homeowners lose',
+        expected:
+          'As Insurers Around the U.S. Bleed Cash From Climate Shocks, Homeowners Lose',
+      },
+      {
+        result:
+          "'love actually' is a holiday must-watch for many — but these subplots haven't aged well",
+        expected:
+          "'Love Actually' Is a Holiday Must-Watch for Many — but These Subplots Haven't Aged Well",
+      },
+      {
+        result:
+          "'iPhones are made in hell': 3 months inside China's iPhone city",
+        expected:
+          "'iPhones Are Made in Hell': 3 Months Inside China's iPhone City",
+      },
     ];
     testCases.forEach(({ result, expected }) => {
       expect(applyApTitleCase(result)).toEqual(expected);
@@ -219,23 +283,5 @@ describe('applyApTitleCase', () => {
     testCases.forEach(({ result, expected }) => {
       expect(applyApTitleCase(result)).toEqual(expected);
     });
-  });
-});
-
-describe('lowercaseAfterApostrophe', () => {
-  it('lowercase letter after apostrophe & return new string', () => {
-    const result = lowercaseAfterApostrophe("foo'S");
-    expect(result).toEqual("foo's");
-  });
-  it('lowercase letter after apostrophe, ignore string in quotes, & return new string', () => {
-    const result = lowercaseAfterApostrophe(
-      "'Foo' foo'S DaY's You'Ll 'foo Bar foo'Ss'",
-    );
-    expect(result).toEqual("'Foo' foo's DaY's You'll 'foo Bar foo'ss'");
-  });
-  it('should lowercase the letter after a curly apostrophe', () => {
-    const input = 'Every State\u2018S Dream Travel Destination, Mapped';
-    const expected = 'Every State\u2018s Dream Travel Destination, Mapped';
-    expect(lowercaseAfterApostrophe(input)).toEqual(expected);
   });
 });

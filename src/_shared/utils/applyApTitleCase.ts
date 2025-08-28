@@ -1,96 +1,107 @@
-export const STOP_WORDS =
-  'a an and as at but by for if in nor of off on or out so the to vs yet';
+/**
+ * AP Style Title Case Implementation
+ * Follows Associated Press style guide for headline capitalization
+ * Reference: https://headlinecapitalization.com/
+ */
 
-// Matches a colon (:) and 0+ white spaces following after
-// Matches 1+ white spaces
-// Matches special chars (i.e. hyphens, quotes, etc)
-export const SEPARATORS = /(:\s*|\s+|[-‑–—,:;!?()“”'‘"])/; // Include curly quotes as separators
+// Words that should remain lowercase unless they start/end the title or follow a colon
+const STOP_WORDS = new Set([
+  'a',
+  'an',
+  'and',
+  'as',
+  'at',
+  'but',
+  'by',
+  'for',
+  'if',
+  'in',
+  'nor',
+  'of',
+  'off',
+  'on',
+  'or',
+  'out',
+  'so',
+  'the',
+  'to',
+  'vs',
+  'yet',
+]);
 
-export const stop = STOP_WORDS.split(' ');
+// Regex to split text while preserving separators (punctuation, spaces, etc.)
+const SEPARATORS = /(:\s*|\s+|[-‑–—,:;!?()"'\u201C\u201D\u2018\u2019])/;
+
+// Quote characters that trigger capitalization of the following word
+const QUOTES = new Set(['"', "'", '\u2018', '\u201C']);
+
+// Pattern to lowercase letters after apostrophes (except Irish names like O'Brien)
+// Handles both ASCII and Unicode apostrophes
+const APOSTROPHES = /(?<!^O)(?<!\sO)(?<=\w)(['\u2018\u2019])(\w)/g;
+
+// Apple product names that should maintain lowercase 'i' prefix
+const APPLE_PRODUCTS = /\bI(Phone|Pad|Pod|Mac|Cloud|Tunes|Books|Message)/g;
 
 /**
- * Format a string: Match the letter after an apostrophe & capture the apostrophe and matched char.
- * Lowercase the captured letter & return the formatted string.
- * Exception: O' prefix (like O'Hearn) should have the letter after apostrophe capitalized.
- * @param input
- * @returns {string}
+ * Capitalizes the first character of a string
  */
-export const lowercaseAfterApostrophe = (input: string): string => {
-  // Match either an ASCII or curly apostrophe followed by a letter, after a word character.
-  // Negative lookbehind to exclude O' prefix
-  const regex = /(?<!^O)(?<![\s]O)(?<=\w)(['\u2018\u2019])(\w)/g;
-  return input.replace(
-    regex,
-    (_, apostrophe, letter) => `${apostrophe}${letter.toLowerCase()}`,
-  );
+const capitalize = (str: string): string =>
+  str && str[0].toUpperCase() + str.slice(1);
+
+/**
+ * Determines if a word should be capitalized based on AP style rules
+ *
+ * Rules:
+ * 1.First and last words are always capitalized
+ * 2. Words after colons are capitalized
+ * 3. Words after opening quotes are capitalized
+ * 4. Stop words remain lowercase (unless rules 1-3 apply)
+ */
+const shouldCapitalize = (
+  word: string,
+  index: number,
+  words: string[],
+): boolean => {
+  // Always capitalize first and last words
+  if (index === 0 || index === words.length - 1) return true;
+
+  const prevWord = words[index - 1];
+  // Capitalize after colons and opening quotes
+  if (prevWord.trim() === ':' || QUOTES.has(prevWord)) return true;
+
+  // Stop words remain lowercase
+  return !STOP_WORDS.has(word.toLowerCase());
 };
 
 /**
- * Capitalize first character for string
+ * Applies AP style title case to a string
  *
- * @param {string} value
- * @returns {string}
- */
-const capitalize = (value: string) => {
-  if (!value) {
-    return '';
-  }
-  return value.charAt(0).toUpperCase() + value.slice(1);
-};
-
-/**
- * Helper to convert text to AP title case
- * adapted from https://github.com/words/ap-style-title-case
- * text should match https://headlinecapitalization.com/
+ * @param value - The string to transform
+ * @returns Title-cased string following AP style guide
  *
- * @param {string} [value]
- * @returns {string}
+ * @example
+ * applyApTitleCase("the quick brown fox jumps over the lazy dog")
+ * // Returns: "The Quick Brown Fox Jumps Over the Lazy Dog"
+ *
+ * @example
+ * applyApTitleCase("iPhone users: here's what you need to know")
+ * // Returns: "iPhone Users: Here's What You Need to Know"
  */
 export const applyApTitleCase = (value: string): string => {
-  if (!value) {
-    return '';
-  }
+  if (!value) return '';
 
-  // Split and filter empty strings
-  // Boolean here acts as a callback, evaluates each word:
-  // If it's a non-empty string, keep the word in the array;
-  // If it's an empty string (or falsy), remove from array.
-  const allWords = value.split(SEPARATORS).filter(Boolean); // Split and filter empty strings
+  // Split into words while preserving all separators
+  const words = value.split(SEPARATORS).filter(Boolean);
 
-  const result = allWords
-    .map((word, index, all) => {
-      const isAfterColon = index > 0 && all[index - 1].trim() === ':';
+  // Apply title case rules to each word
+  const titleCased = words
+    .map((word, i) =>
+      shouldCapitalize(word, i, words) ? capitalize(word) : word.toLowerCase(),
+    )
+    .join('');
 
-      const isAfterQuote =
-        index > 0 &&
-        (allWords[index - 1] === "'" ||
-          allWords[index - 1] === '"' ||
-          allWords[index - 1] === '\u2018' || // Opening single quote '
-          allWords[index - 1] === '\u201C'); // Opening double quote "
-
-      if (
-        index === 0 || // first word
-        index === all.length - 1 || // last word
-        isAfterColon || // capitalize the first word after a colon
-        isAfterQuote || // capitalize the first word after a quote
-        !stop.includes(word.toLowerCase()) // not a stop word
-      ) {
-        return capitalize(word);
-      }
-
-      return word.toLowerCase();
-    })
-    .join(''); // join without additional spaces
-
-  // Apply special formatting rules
-  let formattedResult = lowercaseAfterApostrophe(result);
-
-  // Handle special cases like iPhone, iPad, iPod, etc.
-  // This regex looks for word boundaries followed by capital I and then Phone/Pad/Pod/etc.
-  formattedResult = formattedResult.replace(
-    /\bI(Phone|Pad|Pod|Mac|Cloud|Tunes|Books|Message)/g,
-    'i$1',
-  );
-
-  return formattedResult;
+  // Post-processing: handle special cases
+  return titleCased
+    .replace(APOSTROPHES, (_, apos, letter) => `${apos}${letter.toLowerCase()}`)
+    .replace(APPLE_PRODUCTS, 'i$1');
 };
