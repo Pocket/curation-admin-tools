@@ -28,6 +28,7 @@ describe('The SectionDetails component', () => {
     {
       externalId: '1',
       title: 'Section 1',
+      description: 'Section 1 description',
       iab: iabMetadata1,
       active: true,
       disabled: false,
@@ -91,6 +92,7 @@ describe('The SectionDetails component', () => {
     );
 
     expect(screen.getByText('Section 1')).toBeInTheDocument();
+    expect(screen.getByText('Section 1 description')).toBeInTheDocument();
     expect(screen.getByText('Section 2')).toBeInTheDocument();
   });
 
