@@ -16,6 +16,7 @@ import AdUnitsIcon from '@mui/icons-material/AdUnits';
 import { SectionItemCardWrapper } from '../SectionItemCardWrapper/SectionItemCardWrapper';
 import { useRunMutation } from '../../../_shared/hooks';
 import { getIABCategoryTreeLabel } from '../../helpers/helperFunctions';
+import { curationPalette } from '../../../theme';
 
 interface SectionDetailsProps {
   /**
@@ -114,10 +115,24 @@ export const SectionDetails: React.FC<SectionDetailsProps> = (
                   alignItems="center"
                   p={2}
                 >
-                  {/* Section Title */}
-                  <h2 style={{ marginRight: '2rem' }}>{section.title}</h2>
+                  {/* Wrap title + description */}
+                  <Box display="flex" flexDirection="column" mr={4}>
+                    <h2>{section.title}</h2>
+                    {section.description && (
+                      <p
+                        style={{
+                          margin: 0,
+                          color: curationPalette.regularGrey,
+                        }}
+                      >
+                        {section.description}
+                      </p>
+                    )}
+                  </Box>
+
                   <p>{section.active}</p>
-                  {/* Enable/Disable Switch */}
+
+                  {/* Disable + enable toggle switch */}
                   <FormGroup>
                     <FormControlLabel
                       control={
@@ -132,6 +147,7 @@ export const SectionDetails: React.FC<SectionDetailsProps> = (
                       labelPlacement="end" // Places label next to switch
                     />
                   </FormGroup>
+
                   {/* IAB Label */}
                   {section.iab && (
                     <Chip
