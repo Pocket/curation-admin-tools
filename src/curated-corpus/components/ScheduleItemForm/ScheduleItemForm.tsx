@@ -4,9 +4,6 @@ import {
   AccordionDetails,
   AccordionSummary,
   Box,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
   FormHelperText,
   Grid,
   LinearProgress,
@@ -19,7 +16,6 @@ import { DateTime } from 'luxon';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import {
   FormikSelectField,
-  FormikTextField,
   SharedFormButtons,
   SharedFormButtonsProps,
 } from '../../../_shared/components';
@@ -29,10 +25,7 @@ import {
   ScheduledSurface,
 } from '../../../api/generatedTypes';
 import { ScheduleSummaryConnector } from '../ScheduleSummaryConnector/ScheduleSummaryConnector';
-import { formatFormLabel } from '../../helpers/helperFunctions';
-import { useToggle } from '../../../_shared/hooks';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { curationPalette } from '../../../theme';
 
 interface ScheduleItemFormProps {
   /**
@@ -123,15 +116,6 @@ export const ScheduleItemForm: React.FC<
   const selectedScheduledSurfaceGuid =
     scheduledSurfaceGuid ||
     (scheduledSurfaces.length === 1 ? scheduledSurfaces[0].guid : '');
-
-  // whether the "Other" checkbox is selected, this will give us
-  // an indication if the reason comment field should be enabled or disabled
-  const [isOtherSelected, setOtherReason] = useToggle(false);
-
-  // update "Other" checkbox status
-  const handleOtherCheckbox = () => {
-    setOtherReason();
-  };
 
   const formik = useFormik({
     initialValues: {
@@ -266,84 +250,6 @@ export const ScheduleItemForm: React.FC<
               </Box>
             </Grid>
           </Grid>
-
-          {showManualScheduleReasons && (
-            <>
-              <Grid item xs={12}>
-                <hr color={curationPalette.primary} />
-                <h2>Select Reason for Manually Adding Item</h2>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormGroup>
-                  {Object.values(ManualScheduleReason)
-                    .slice(0, 4) // first four reasons in the first column
-                    .map((value) => {
-                      return (
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              color="primary"
-                              {...formik.getFieldProps({
-                                name: value,
-                              })}
-                            />
-                          }
-                          label={formatFormLabel(value)}
-                          key={value}
-                        />
-                      );
-                    })}
-                </FormGroup>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <FormGroup>
-                  {Object.values(ManualScheduleReason)
-                    .slice(4, 8) // remaining four reasons in the second column
-                    .map((value) => {
-                      return (
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              color="primary"
-                              {...formik.getFieldProps({
-                                name: value,
-                              })}
-                            />
-                          }
-                          label={formatFormLabel(value)}
-                          key={value}
-                        />
-                      );
-                    })}
-
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        color="primary"
-                        {...formik.getFieldProps({
-                          name: 'OTHER',
-                        })}
-                        // onChange doesn't always work, onClick does the job
-                        onClick={handleOtherCheckbox}
-                      />
-                    }
-                    label="OTHER"
-                  />
-                  <FormikTextField
-                    disabled={!isOtherSelected}
-                    id="reasonComment"
-                    label="Reason Comment"
-                    fieldProps={formik.getFieldProps('reasonComment')}
-                    fieldMeta={formik.getFieldMeta('reasonComment')}
-                    autoFocus
-                    multiline
-                    minRows={1}
-                  />
-                </FormGroup>
-              </Grid>
-            </>
-          )}
-
           {formik.isSubmitting && (
             <Grid item xs={12}>
               <Box mb={3}>

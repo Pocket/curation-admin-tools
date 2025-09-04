@@ -140,78 +140,6 @@ describe('The ScheduleItemForm component', () => {
     expect(select.options[1].selected).toBeTruthy();
   });
 
-  it('does not show manual scheduling reasons by default', async () => {
-    render(
-      <MockedProvider>
-        <ScheduleItemForm
-          data-testId="surface-selector"
-          handleDateChange={jest.fn()}
-          selectedDate={DateTime.local()}
-          onSubmit={handleSubmit}
-          scheduledSurfaces={[scheduledSurfaces[0]]}
-          approvedItemExternalId={'123abc'}
-        />
-      </MockedProvider>,
-    );
-
-    await waitFor(() => {
-      // Should there be a pre-defined reason? No
-      expect(screen.queryByLabelText('Trending')).not.toBeInTheDocument();
-
-      // Should there be a "Reason Comment" field for other reasons? No
-      expect(screen.queryByLabelText('Reason Comment')).not.toBeInTheDocument();
-    });
-  });
-
-  it('shows manual scheduling reasons if necessary', async () => {
-    render(
-      <MockedProvider>
-        <ScheduleItemForm
-          data-testId="surface-selector"
-          handleDateChange={jest.fn()}
-          selectedDate={DateTime.local()}
-          onSubmit={handleSubmit}
-          scheduledSurfaces={[scheduledSurfaces[0]]}
-          approvedItemExternalId={'123abc'}
-          showManualScheduleReasons={true}
-        />
-      </MockedProvider>,
-    );
-
-    await waitFor(() => {
-      // Should there be a pre-defined reason? This time around, yes
-      expect(screen.getByText('Evergreen')).toBeVisible();
-
-      // Should there be a "Reason Comment" field for other reasons? Yes
-      expect(screen.getByLabelText('Reason Comment')).toBeVisible();
-    });
-  });
-
-  it('displays an error message if no checkboxes have been selected', async () => {
-    render(
-      <MockedProvider>
-        <ScheduleItemForm
-          data-testId="surface-selector"
-          handleDateChange={jest.fn()}
-          selectedDate={DateTime.local()}
-          onSubmit={handleSubmit}
-          scheduledSurfaces={[scheduledSurfaces[0]]}
-          approvedItemExternalId={'123abc'}
-          showManualScheduleReasons={true}
-        />
-      </MockedProvider>,
-    );
-
-    await waitFor(() => {
-      userEvent.click(screen.getByText(/save/i));
-    });
-
-    const errorMessage = screen.getByText(
-      /Please choose at least one reason to schedule this item manually./i,
-    );
-    expect(errorMessage).toBeVisible();
-    expect(handleSubmit).not.toHaveBeenCalled();
-  });
 
   it('expands the Topic & Publisher summary by default if requested', async () => {
     render(
@@ -223,7 +151,6 @@ describe('The ScheduleItemForm component', () => {
           onSubmit={handleSubmit}
           scheduledSurfaces={[scheduledSurfaces[0]]}
           approvedItemExternalId={'123abc'}
-          showManualScheduleReasons={true}
           expandSummary={true}
         />
       </MockedProvider>,
@@ -248,7 +175,6 @@ describe('The ScheduleItemForm component', () => {
           onSubmit={handleSubmit}
           scheduledSurfaces={[scheduledSurfaces[0]]}
           approvedItemExternalId={'123abc'}
-          showManualScheduleReasons={true}
           expandSummary={false}
         />
       </MockedProvider>,
@@ -263,35 +189,4 @@ describe('The ScheduleItemForm component', () => {
     });
   });
 
-  // TODO: fix the test below. possibly failing due to apollo query mocks mismatch?
-  it.skip('submits the form if at least one checkbox was selected', async () => {
-    render(
-      // TODO: fix. This mock contains dates in the past, while the form
-      // specifies today's date.
-      <MockedProvider mocks={[mock_scheduledItems]}>
-        <ScheduleItemForm
-          data-testId="surface-selector"
-          handleDateChange={jest.fn()}
-          selectedDate={DateTime.local()}
-          onSubmit={handleSubmit}
-          scheduledSurfaces={[scheduledSurfaces[0]]}
-          scheduledSurfaceGuid={scheduledSurfaces[0].guid}
-          approvedItemExternalId={'123abc'}
-          showManualScheduleReasons={true}
-        />
-      </MockedProvider>,
-    );
-
-    const chosenReason = screen.getByLabelText(/under the radar/i);
-
-    await waitFor(() => {
-      userEvent.click(chosenReason);
-    });
-
-    await waitFor(() => {
-      userEvent.click(screen.getByText(/save/i));
-    });
-
-    expect(handleSubmit).toHaveBeenCalled();
-  });
 });
