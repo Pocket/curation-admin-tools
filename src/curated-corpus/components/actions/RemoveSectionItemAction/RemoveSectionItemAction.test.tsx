@@ -4,9 +4,7 @@ import { render, screen } from '@testing-library/react';
 import { SnackbarProvider } from 'notistack';
 import { RemoveSectionItemAction } from './RemoveSectionItemAction';
 import { getTestApprovedItem } from '../../../helpers/approvedItem';
-import {
-  successMock,
-} from '../../../integration-test-mocks/removeSectionItem';
+import { successMock } from '../../../integration-test-mocks/removeSectionItem';
 import userEvent from '@testing-library/user-event';
 import { apolloCache } from '../../../../api/client';
 import {

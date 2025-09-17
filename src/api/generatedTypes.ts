@@ -599,12 +599,52 @@ export type CreateCollectionStoryInput = {
   url: Scalars['Url'];
 };
 
+/** Input data for creating a Custom Editorial Section */
+export type CreateCustomSectionInput = {
+  /** Indicates whether or not a Section is available for display. */
+  active: Scalars['Boolean'];
+  /** The source which created the Section. */
+  createSource: ActivitySource;
+  /** The description of the custom section displayed to the users. */
+  description: Scalars['String'];
+  /**
+   * Indicates whether or not a Section is fully disabled from display on NewTab. Can only  be controlled
+   * in the admin tool.
+   */
+  disabled: Scalars['Boolean'];
+  /**
+   * An optional date of when the Section should stop being displayed.
+   * Format: YYYY-MM-DD.
+   */
+  endDate?: InputMaybe<Scalars['Date']>;
+  /** An optional description or supporting text for use in hero modules. */
+  heroDescription?: InputMaybe<Scalars['String']>;
+  /** An optional title used in hero modules. */
+  heroTitle?: InputMaybe<Scalars['String']>;
+  /** Optional IAB metadata input */
+  iab?: InputMaybe<IabMetadataInput>;
+  /** The GUID of the Scheduled Surface. Example: 'NEW_TAB_EN_US'. */
+  scheduledSurfaceGuid: Scalars['ID'];
+  /** Controls the display order of Sections. */
+  sort?: InputMaybe<Scalars['Int']>;
+  /**
+   * The date of when the Section should go "live" for display on NewTab.
+   * Current & future dates allowed.
+   * Format: YYYY-MM-DD.
+   */
+  startDate: Scalars['Date'];
+  /** The title of the custom section displayed to the users. */
+  title: Scalars['String'];
+};
+
 /** Input data for creating a Section */
 export type CreateOrUpdateSectionInput = {
   /** Indicates whether or not a Section is available for display. */
   active: Scalars['Boolean'];
   /** The source which created the Section. */
   createSource: ActivitySource;
+  /** The optional description of the Section displayed to the users. */
+  description?: InputMaybe<Scalars['String']>;
   /** An alternative primary key in UUID format supplied by ML. */
   externalId: Scalars['ID'];
   /** Optional IAB metadata input */
@@ -1165,6 +1205,11 @@ export type Mutation = {
   createCollectionPartnerAssociation: CollectionPartnerAssociation;
   /** Creates a CollectionStory. */
   createCollectionStory: CollectionStory;
+  /**
+   * Creates a new custom editorial section entity.
+   * This mutation is to be used by curators via admin tool.
+   */
+  createCustomSection: Section;
   /** Creates a Label. */
   createLabel: Label;
   /**
@@ -1185,6 +1230,12 @@ export type Mutation = {
   deleteCollectionPartnerAssociation: CollectionPartnerAssociation;
   /** Deletes a CollectionStory. Also deletes all the related CollectionStoryAuthor records. */
   deleteCollectionStory: CollectionStory;
+  /**
+   * Deletes a custom section. This is a soft-delete & the Section
+   * and it's SectionItems are marked as in-active.
+   * This mutation is to be used by curators via admin tool.
+   */
+  deleteCustomSection: Section;
   /** Deletes an item from a Scheduled Surface. */
   deleteScheduledCorpusItem: ScheduledCorpusItem;
   /** Disables or enables a Section. Can only be done from the admin tool. */
@@ -1251,6 +1302,11 @@ export type Mutation = {
    * Dedicated to ordering stories within the UI.
    */
   updateCollectionStorySortOrder: CollectionStory;
+  /**
+   * Updates an existing custom editorial section entity.
+   * This mutation is to be used by curators via admin tool.
+   */
+  updateCustomSection: Section;
   /** Updates a Label that is not assigned to any Collection yet. */
   updateLabel: Label;
   /**
@@ -1292,6 +1348,10 @@ export type MutationCreateCollectionStoryArgs = {
   data: CreateCollectionStoryInput;
 };
 
+export type MutationCreateCustomSectionArgs = {
+  data: CreateCustomSectionInput;
+};
+
 export type MutationCreateLabelArgs = {
   name: Scalars['String'];
 };
@@ -1322,6 +1382,10 @@ export type MutationDeleteCollectionPartnerAssociationArgs = {
 
 export type MutationDeleteCollectionStoryArgs = {
   externalId: Scalars['String'];
+};
+
+export type MutationDeleteCustomSectionArgs = {
+  externalId: Scalars['ID'];
 };
 
 export type MutationDeleteScheduledCorpusItemArgs = {
@@ -1402,6 +1466,10 @@ export type MutationUpdateCollectionStoryImageUrlArgs = {
 
 export type MutationUpdateCollectionStorySortOrderArgs = {
   data: UpdateCollectionStorySortOrderInput;
+};
+
+export type MutationUpdateCustomSectionArgs = {
+  data: UpdateCustomSectionInput;
 };
 
 export type MutationUpdateLabelArgs = {
@@ -1730,6 +1798,7 @@ export type QueryGetScheduledCorpusItemsArgs = {
 };
 
 export type QueryGetSectionsWithSectionItemsArgs = {
+  createSource?: InputMaybe<ActivitySource>;
   scheduledSurfaceGuid: Scalars['ID'];
 };
 
@@ -1922,6 +1991,11 @@ export type RemoveProspectInput = {
 export type RemoveSectionItemInput = {
   /** Array of reasons for removing a SectionItem. */
   deactivateReasons: Array<SectionItemRemovalReason>;
+  /**
+   * Indicates which source deactivated the SectionItem.
+   * Optional; MANUAL if omitted
+   */
+  deactivateSource?: InputMaybe<ActivitySource>;
   /** ID of the SectionItem. A string in UUID format. */
   externalId: Scalars['ID'];
 };
@@ -2040,20 +2114,26 @@ export type Section = {
   createSource: ActivitySource;
   /** A Unix timestamp of when the Section was created. */
   createdAt: Scalars['Int'];
-  /** Optional description for the Section. */
+  /** A short description of the Section. */
   description?: Maybe<Scalars['String']>;
   /**
    * Indicates whether or not a Section is fully disabled from display on NewTab. Can only  be controlled
    * in the admin tool.
    */
   disabled: Scalars['Boolean'];
-  /** The date when the Section is expired. */
+  /**
+   * An optional date of when the Section should stop being displayed.
+   * Format: YYYY-MM-DD.
+   */
   endDate?: Maybe<Scalars['Date']>;
   /** An alternative primary key in UUID format. */
   externalId: Scalars['ID'];
-  /** Optional hero description for the Section. */
+  /**
+   * An optional description or supporting text for use in hero modules.
+   * Relevant for custom sections.
+   */
   heroDescription?: Maybe<Scalars['String']>;
-  /** Optional hero title for the Section. */
+  /** An optional title used in hero modules. Relevant for custom sections. */
   heroTitle?: Maybe<Scalars['String']>;
   /** Optional IAB metadata returned to the client (i.e. Merino->Firefox, Admin Tools) */
   iab?: Maybe<IabMetadata>;
@@ -2066,9 +2146,12 @@ export type Section = {
   sectionItems: Array<SectionItem>;
   /** Controls the display order of Sections. */
   sort?: Maybe<Scalars['Int']>;
-  /** The start date for when the Section should be live. */
+  /**
+   * The date when the Section becomes eligible for display.
+   * Format: YYYY-MM-DD.
+   */
   startDate?: Maybe<Scalars['Date']>;
-  /** The status of the Section. */
+  /** Computed status for the Section, based on startDate, endDate, and disabled. */
   status?: Maybe<SectionStatus>;
   /** The title of the Section displayed to the users. */
   title: Scalars['String'];
@@ -2112,6 +2195,7 @@ export enum SectionItemRemovalReason {
   Dated = 'DATED',
   HedDekQuality = 'HED_DEK_QUALITY',
   ImageQuality = 'IMAGE_QUALITY',
+  Ml = 'ML',
   NoImage = 'NO_IMAGE',
   OffTopic = 'OFF_TOPIC',
   OneSided = 'ONE_SIDED',
@@ -2398,6 +2482,30 @@ export type UpdateCollectionStorySortOrderInput = {
   sortOrder: Scalars['Int'];
 };
 
+/** Input data for updating a Custom Editorial Section */
+export type UpdateCustomSectionInput = {
+  /** The description of the custom section displayed to the users. */
+  description: Scalars['String'];
+  /** An optional date of when the Section should stop being displayed. */
+  endDate?: InputMaybe<Scalars['Date']>;
+  /** An alternative primary key in UUID format supplied by ML. */
+  externalId: Scalars['ID'];
+  /** An optional description or supporting text for use in hero modules. */
+  heroDescription?: InputMaybe<Scalars['String']>;
+  /** An optional title used in hero modules. */
+  heroTitle?: InputMaybe<Scalars['String']>;
+  /** Optional IAB metadata input */
+  iab?: InputMaybe<IabMetadataInput>;
+  /** Controls the display order of Sections. */
+  sort?: InputMaybe<Scalars['Int']>;
+  /** The date of when the Section should go "live" for display on NewTab. */
+  startDate: Scalars['Date'];
+  /** The title of the custom section displayed to the users. */
+  title: Scalars['String'];
+  /** The source which updated the Section. */
+  updateSource: ActivitySource;
+};
+
 export type UpdateLabelInput = {
   externalId?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
@@ -2637,6 +2745,7 @@ export type BaseSectionDataFragment = {
   heroDescription?: string | null;
   startDate?: any | null;
   endDate?: any | null;
+  status?: SectionStatus | null;
   iab?: {
     __typename?: 'IABMetadata';
     taxonomy: string;
@@ -2660,6 +2769,7 @@ export type SectionDataFragment = {
   heroDescription?: string | null;
   startDate?: any | null;
   endDate?: any | null;
+  status?: SectionStatus | null;
   sectionItems: Array<{
     __typename?: 'SectionItem';
     createdAt: number;
@@ -3411,6 +3521,7 @@ export type DisableEnableSectionMutation = {
     heroDescription?: string | null;
     startDate?: any | null;
     endDate?: any | null;
+    status?: SectionStatus | null;
     sectionItems: Array<{
       __typename?: 'SectionItem';
       createdAt: number;
@@ -4969,6 +5080,7 @@ export type GetSectionsWithSectionItemsQuery = {
     heroDescription?: string | null;
     startDate?: any | null;
     endDate?: any | null;
+    status?: SectionStatus | null;
     sectionItems: Array<{
       __typename?: 'SectionItem';
       createdAt: number;
@@ -5227,6 +5339,7 @@ export const BaseSectionDataFragmentDoc = gql`
     heroDescription
     startDate
     endDate
+    status
   }
 `;
 export const BaseSectionItemDataFragmentDoc = gql`
