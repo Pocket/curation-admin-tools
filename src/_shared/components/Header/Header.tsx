@@ -1,32 +1,9 @@
-import React, { useState } from 'react';
-import {
-  Avatar,
-  Container,
-  Drawer,
-  Grid,
-  Hidden,
-  IconButton,
-  List,
-  ListItem,
-  ListItemText,
-  Menu,
-  MenuItem,
-} from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import CloseIcon from '@mui/icons-material/Close';
-import { Link } from 'react-router-dom';
-import mozillaLogo from '../../assets/mozilla-logo-bw-rgb.png';
-import mozillaIcon from '../../assets/mozilla-icon-bw-rgb.svg';
+import React from 'react';
+import { Avatar, Container, IconButton, Menu, MenuItem } from '@mui/material';
+import { Link, useLocation } from 'react-router-dom';
+import mozillaLogoFallback from '../../assets/mozilla-logo-bw-rgb.png';
 import { IDToken } from '../../hooks';
-import { curationPalette } from '../../../theme';
-import {
-  StyledAppBar,
-  StyledAppBarLink,
-  StyledDrawerHeader,
-  StyledProductHeading,
-  StyledProductHeadingLink,
-} from '../../styled';
-import { config } from '../../../config';
+import { StyledAppBar } from '../../styled';
 
 export interface MenuLink {
   text: string;
@@ -69,24 +46,8 @@ interface HeaderProps {
  * Page header for all pages that authorised users see.
  */
 export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
-  const {
-    hasUser,
-    onLogout,
-    menuLinks,
-    parsedIdToken,
-    productName,
-    productLink,
-  } = props;
-
-  const [open, setOpen] = useState(false);
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+  const { hasUser, onLogout, menuLinks, parsedIdToken, productName } = props;
+  const location = useLocation();
 
   const [userMenuEl, setUserMenuEl] = React.useState<null | HTMLElement>(null);
 
@@ -102,188 +63,109 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
     <>
       <StyledAppBar
         position="absolute"
-        sx={
-          // Turn the header colour brick red in development environments.
-          // Apply here as this property won't be overwritten in the styled component.
-          {
-            backgroundColor: config.isProduction
-              ? curationPalette.white
-              : curationPalette.secondary,
-          }
-        }
+        sx={{
+          backgroundColor: '#B24000',
+          boxShadow: '0px 4px 10px rgba(148, 148, 148, 0.3)',
+          borderBottom: 'none',
+          padding: '0.75rem 0',
+        }}
       >
-        <Container maxWidth="lg" disableGutters>
-          <Grid
-            container
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
+        <Container maxWidth="xl" disableGutters>
+          <div
+            style={{
+              boxSizing: 'border-box',
+              display: 'flex',
+              flexFlow: 'wrap',
+              width: '100%',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '8px 24px',
+            }}
           >
-            <Grid item xs={6}>
-              <Grid
-                container
-                direction="row"
-                justifyContent="flex-start"
-                alignItems="center"
+            <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
+              <div
+                style={{ display: 'flex', alignItems: 'center', gap: '16px' }}
               >
-                <Hidden smDown implementation="css">
-                  <Grid item sm={4}>
-                    <Link to="/">
-                      <img
-                        src={mozillaLogo}
-                        alt="Home Page"
-                        style={{
-                          width: '100px',
-                          paddingRight: '0.5rem',
-                          marginTop: '0.25rem',
-                        }}
-                      />
-                    </Link>
-                  </Grid>
-                </Hidden>
+                <img
+                  src={`${process.env.PUBLIC_URL || ''}/mozilla-logo-bw-1.svg`}
+                  alt="Mozilla"
+                  style={{ height: '32px' }}
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src =
+                      mozillaLogoFallback;
+                  }}
+                />
+                <span
+                  style={{
+                    borderLeft: '1px solid #CCCCCC',
+                    height: '24px',
+                    margin: '0 16px',
+                  }}
+                />
+                <span
+                  style={{
+                    fontSize: '1.5rem',
+                    fontWeight: 500,
+                    color: '#FFFFFF',
+                    fontFamily:
+                      'Graphik Web, proxima-nova, "Helvetica Neue", Helvetica, Arial, sans-serif',
+                  }}
+                >
+                  {productName}
+                </span>
+              </div>
 
-                <Hidden mdUp implementation="css">
-                  <Grid item xs={1}>
-                    <IconButton aria-label="menu" onClick={handleDrawerOpen}>
-                      <MenuIcon fontSize="large" />
-                    </IconButton>
-                    <Drawer
-                      anchor="left"
-                      open={open}
-                      variant="temporary"
-                      sx={{
-                        flexShrink: 0,
+              <nav style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+                {menuLinks
+                  .filter((link: MenuLink) => {
+                    // Remove trailing slash from both paths for comparison
+                    const currentPath = location.pathname.replace(/\/$/, '');
+                    const linkPath = link.url.replace(/\/$/, '');
+                    return currentPath !== linkPath;
+                  })
+                  .map((link: MenuLink) => (
+                    <Link
+                      to={link.url}
+                      key={link.url}
+                      style={{
+                        color: '#FFFFFF',
+                        textDecoration: 'none',
+                        fontSize: '1rem',
+                        fontWeight: 400,
+                        fontFamily:
+                          'Graphik Web, proxima-nova, "Helvetica Neue", Helvetica, Arial, sans-serif',
                       }}
                     >
-                      <StyledDrawerHeader>
-                        <IconButton onClick={handleDrawerClose}>
-                          <CloseIcon />
-                        </IconButton>
-                      </StyledDrawerHeader>
-                      <List
-                        sx={{
-                          padding: '0.5rem 1rem',
-                        }}
-                      >
-                        {menuLinks.map((link: MenuLink) => {
-                          return (
-                            <ListItem
-                              component={Link}
-                              to={link.url}
-                              key={link.url}
-                              onClick={handleDrawerClose}
-                              sx={{
-                                borderBottom: `1px solid ${curationPalette.lightGrey}`,
-                                color: curationPalette.pocketBlack,
-                              }}
-                            >
-                              <ListItemText primary={link.text} />
-                            </ListItem>
-                          );
-                        })}
-                      </List>
-                    </Drawer>
-                  </Grid>
-                </Hidden>
-                <Hidden mdUp implementation="css">
-                  <Grid item xs={1}>
-                    <Link to="/">
-                      <img
-                        src={mozillaIcon}
-                        alt="Mozilla Logo"
-                        style={{
-                          width: '2rem',
-                          paddingTop: '0.375rem',
-                        }}
-                      />
+                      {link.text}
                     </Link>
-                  </Grid>
-                </Hidden>
+                  ))}
+              </nav>
+            </div>
 
-                <Grid item xs={6} sm={6}>
-                  <StyledProductHeading
-                    variant="h5"
-                    sx={
-                      /* Override Typography styles here as otherwise they don't
-                     take effect in the styled component - my guess is the variant
-                      applied takes precedence over styles in the `styled` component */
-                      {
-                        fontWeight: 500,
-                      }
-                    }
-                  >
-                    <StyledProductHeadingLink to={productLink}>
-                      {productName}
-                    </StyledProductHeadingLink>
-                  </StyledProductHeading>
-                </Grid>
-              </Grid>
-            </Grid>
-            <Grid item xs={6}>
-              <Grid
-                container
-                direction="row"
-                justifyContent="flex-end"
-                alignItems="center"
-              >
-                <Hidden smDown implementation="css">
-                  <Grid
-                    item
-                    sm={12}
-                    sx={{ display: 'flex', justifyContent: 'flex-end' }}
-                  >
-                    <List
-                      sx={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        padding: 0,
-                        flexWrap: 'nowrap', // Prevents wrapping
-                        justifyContent: 'flex-end', // Keeps alignment the same
-                      }}
-                    >
-                      {menuLinks.map((link: MenuLink) => (
-                        <ListItem
-                          component={StyledAppBarLink}
-                          to={link.url}
-                          key={link.url}
-                          sx={{
-                            padding: '0 0.75rem',
-                            minWidth: 'auto',
-                          }}
-                        >
-                          <ListItemText primary={link.text} />
-                        </ListItem>
-                      ))}
-                    </List>
-                  </Grid>
-                </Hidden>
-
-                {hasUser && parsedIdToken && (
-                  <Grid item sm={1}>
-                    <IconButton
-                      aria-controls="user-menu"
-                      aria-haspopup="true"
-                      onClick={handleClick}
-                    >
-                      <Avatar
-                        alt={parsedIdToken.name}
-                        src={parsedIdToken.picture}
-                      />
-                    </IconButton>
-                    <Menu
-                      id="user-menu"
-                      anchorEl={userMenuEl}
-                      keepMounted
-                      open={Boolean(userMenuEl)}
-                      onClose={handleClose}
-                    >
-                      <MenuItem onClick={onLogout}>Log Out</MenuItem>
-                    </Menu>
-                  </Grid>
-                )}
-              </Grid>
-            </Grid>
-          </Grid>
+            {hasUser && parsedIdToken && (
+              <div style={{ flexShrink: 0 }}>
+                <IconButton
+                  aria-controls="user-menu"
+                  aria-haspopup="true"
+                  onClick={handleClick}
+                >
+                  <Avatar
+                    alt={parsedIdToken.name}
+                    src={parsedIdToken.picture}
+                  />
+                </IconButton>
+                <Menu
+                  id="user-menu"
+                  anchorEl={userMenuEl}
+                  keepMounted
+                  open={Boolean(userMenuEl)}
+                  onClose={handleClose}
+                >
+                  <MenuItem onClick={onLogout}>Log Out</MenuItem>
+                </Menu>
+              </div>
+            )}
+          </div>
         </Container>
       </StyledAppBar>
     </>

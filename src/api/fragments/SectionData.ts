@@ -19,6 +19,7 @@ export const BaseSectionData = gql`
     heroDescription
     startDate
     endDate
+    status
   }
 `;
 export const SectionData = gql`

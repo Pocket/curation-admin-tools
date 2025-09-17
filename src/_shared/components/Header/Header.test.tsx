@@ -41,16 +41,13 @@ describe('The Header component', () => {
       </MemoryRouter>,
     );
 
-    // There are two logos: one for desktop, one for mobile
-    const logos = screen.getAllByRole('img');
+    // Check that the logo is rendered
+    const logo = screen.getByAltText('Mozilla');
+    expect(logo).toBeInTheDocument();
 
-    logos.forEach((logo) => {
-      expect(logo).toBeInTheDocument();
-    });
-
-    const productName = screen.getByRole('heading');
+    // Product name is now a text element, not a heading
+    const productName = screen.getByText(/collections/i);
     expect(productName).toBeInTheDocument();
-    expect(productName).toHaveTextContent(/collections/i);
   });
 
   it('shows navigation links', () => {

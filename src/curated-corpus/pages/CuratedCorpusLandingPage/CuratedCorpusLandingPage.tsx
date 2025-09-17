@@ -1,6 +1,12 @@
 import React from 'react';
 import { ApolloProvider } from '@apollo/client';
-import { Link, Route, Switch, useRouteMatch } from 'react-router-dom';
+import {
+  Link,
+  Route,
+  Switch,
+  useRouteMatch,
+  useLocation,
+} from 'react-router-dom';
 import { List, ListItem, ListItemText } from '@mui/material';
 import {
   HeaderConnector,
@@ -11,6 +17,7 @@ import { StyledContainer } from '../../../_shared/styled';
 import {
   CorpusItemPage,
   CorpusPage,
+  CustomSectionsPage,
   ProspectingPage,
   RejectedPage,
   SchedulePage,
@@ -24,6 +31,15 @@ import { client } from '../../../api/client';
 export const CuratedCorpusLandingPage = (): JSX.Element => {
   // Get the base path (/curated-corpus)
   const { path } = useRouteMatch();
+  const location = useLocation();
+
+  // Determine the product name based on the current path
+  const getProductName = () => {
+    if (location.pathname.includes('/custom-sections')) {
+      return 'Custom Sections';
+    }
+    return 'Curated Corpus';
+  };
 
   const menuLinks: MenuLink[] = [
     {
@@ -43,15 +59,19 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
       url: `${path}/rejected/`,
     },
     {
-      text: 'Sections',
+      text: 'ML Sections',
       url: `${path}/sections/`,
+    },
+    {
+      text: 'Custom Sections',
+      url: `${path}/custom-sections/`,
     },
   ];
 
   return (
     <ApolloProvider client={client}>
       <HeaderConnector
-        productName="Curated Corpus"
+        productName={getProductName()}
         productLink="/curated-corpus"
         menuLinks={menuLinks}
       />
@@ -90,8 +110,15 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
               </ListItem>
               <ListItem>
                 <ListItemText>
-                  <Link to={`${path}/sections/`}>Sections</Link> will show you
-                  all ML-generated sections with their related stories.
+                  <Link to={`${path}/sections/`}>ML Sections</Link> will show
+                  you all ML-generated sections with their related stories.
+                </ListItemText>
+              </ListItem>
+              <ListItem>
+                <ListItemText>
+                  <Link to={`${path}/custom-sections/`}>Custom Sections</Link>{' '}
+                  will show you all manually created custom sections grouped by
+                  their status.
                 </ListItemText>
               </ListItem>
             </List>
@@ -113,6 +140,9 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
           </Route>
           <Route exact path={`${path}/sections/`}>
             <SectionsPage />
+          </Route>
+          <Route exact path={`${path}/custom-sections/`}>
+            <CustomSectionsPage />
           </Route>
           <Route component={PageNotFound} />
         </Switch>
