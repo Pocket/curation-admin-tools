@@ -2152,7 +2152,7 @@ export type Section = {
    */
   startDate?: Maybe<Scalars['Date']>;
   /** Computed status for the Section, based on startDate, endDate, and disabled. */
-  status?: Maybe<SectionStatus>;
+  status: SectionStatus;
   /** The title of the Section displayed to the users. */
   title: Scalars['String'];
   /** A Unix timestamp of when the Section was last updated. */
@@ -2745,7 +2745,7 @@ export type BaseSectionDataFragment = {
   heroDescription?: string | null;
   startDate?: any | null;
   endDate?: any | null;
-  status?: SectionStatus | null;
+  status: SectionStatus;
   iab?: {
     __typename?: 'IABMetadata';
     taxonomy: string;
@@ -2769,7 +2769,7 @@ export type SectionDataFragment = {
   heroDescription?: string | null;
   startDate?: any | null;
   endDate?: any | null;
-  status?: SectionStatus | null;
+  status: SectionStatus;
   sectionItems: Array<{
     __typename?: 'SectionItem';
     createdAt: number;
@@ -3521,7 +3521,7 @@ export type DisableEnableSectionMutation = {
     heroDescription?: string | null;
     startDate?: any | null;
     endDate?: any | null;
-    status?: SectionStatus | null;
+    status: SectionStatus;
     sectionItems: Array<{
       __typename?: 'SectionItem';
       createdAt: number;
@@ -5080,7 +5080,7 @@ export type GetSectionsWithSectionItemsQuery = {
     heroDescription?: string | null;
     startDate?: any | null;
     endDate?: any | null;
-    status?: SectionStatus | null;
+    status: SectionStatus;
     sectionItems: Array<{
       __typename?: 'SectionItem';
       createdAt: number;

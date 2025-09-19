@@ -1,9 +1,62 @@
 import React from 'react';
 import { CustomSectionsPage } from './CustomSectionsPage';
-import { render } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
 import { getScheduledSurfacesForUser } from '../../../api/queries/getScheduledSurfacesForUser';
+import { getSectionsWithSectionItems } from '../../../api/queries/getSectionsWithSectionItems';
+import { SectionStatus } from '../../../api/generatedTypes';
+
+const mockSections = [
+  {
+    __typename: 'Section',
+    externalId: 'live-section-1',
+    title: 'Live Section 1',
+    startDate: '2024-01-01T00:00:00Z',
+    endDate: '2024-12-31T00:00:00Z',
+    active: true,
+    status: SectionStatus.Live,
+    createSource: 'MANUAL',
+    disabled: false,
+    sectionItems: [],
+  },
+  {
+    __typename: 'Section',
+    externalId: 'scheduled-section-1',
+    title: 'Scheduled Section 1',
+    startDate: '2025-01-01T00:00:00Z',
+    endDate: '2025-12-31T00:00:00Z',
+    active: false,
+    status: SectionStatus.Scheduled,
+    createSource: 'MANUAL',
+    disabled: false,
+    sectionItems: [],
+  },
+  {
+    __typename: 'Section',
+    externalId: 'expired-section-1',
+    title: 'Expired Section 1',
+    startDate: '2023-01-01T00:00:00Z',
+    endDate: '2023-12-31T00:00:00Z',
+    active: false,
+    status: SectionStatus.Expired,
+    createSource: 'MANUAL',
+    disabled: false,
+    sectionItems: [],
+  },
+  {
+    __typename: 'Section',
+    externalId: 'ml-section-1',
+    title: 'Gaming',
+    startDate: '2024-01-01T00:00:00Z',
+    endDate: '2024-12-31T00:00:00Z',
+    active: true,
+    status: SectionStatus.Live,
+    createSource: 'ML',
+    disabled: false,
+    sectionItems: [],
+  },
+];
 
 const mocks = [
   {
@@ -26,6 +79,20 @@ const mocks = [
             ianaTimezone: 'Europe/Berlin',
           },
         ],
+      },
+    },
+  },
+  {
+    request: {
+      query: getSectionsWithSectionItems,
+      variables: {
+        scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+        createSource: 'MANUAL',
+      },
+    },
+    result: {
+      data: {
+        getSectionsWithSectionItems: mockSections,
       },
     },
   },
@@ -64,5 +131,78 @@ describe('CustomSectionsPage', () => {
     );
     const rootElement = container.querySelector('div');
     expect(rootElement).toBeInTheDocument();
+  });
+
+  it('groups sections by status correctly', async () => {
+    render(
+      <MemoryRouter>
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <CustomSectionsPage />
+        </MockedProvider>
+      </MemoryRouter>,
+    );
+
+    await waitFor(
+      () => {
+        expect(screen.getByText('Live Section 1')).toBeInTheDocument();
+      },
+      { timeout: 3000 },
+    );
+
+    expect(screen.getByText('Scheduled Section 1')).toBeInTheDocument();
+    expect(screen.getByText('Expired Section 1')).toBeInTheDocument();
+  });
+
+  it('displays the Custom Sections title', () => {
+    render(
+      <MemoryRouter>
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <CustomSectionsPage />
+        </MockedProvider>
+      </MemoryRouter>,
+    );
+
+    expect(screen.getByText('Custom Sections')).toBeInTheDocument();
+  });
+
+  it('displays surface dropdown', async () => {
+    render(
+      <MemoryRouter>
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <CustomSectionsPage />
+        </MockedProvider>
+      </MemoryRouter>,
+    );
+
+    await waitFor(
+      () => {
+        expect(screen.getByText('Sections for')).toBeInTheDocument();
+      },
+      { timeout: 3000 },
+    );
+  });
+
+  it('filters out ML sections and only shows MANUAL sections', async () => {
+    render(
+      <MemoryRouter>
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <CustomSectionsPage />
+        </MockedProvider>
+      </MemoryRouter>,
+    );
+
+    await waitFor(
+      () => {
+        expect(screen.getByText('Live Section 1')).toBeInTheDocument();
+      },
+      { timeout: 3000 },
+    );
+
+    // MANUAL sections should be present
+    expect(screen.getByText('Scheduled Section 1')).toBeInTheDocument();
+    expect(screen.getByText('Expired Section 1')).toBeInTheDocument();
+
+    // ML section (Gaming) should NOT be present
+    expect(screen.queryByText('Gaming')).not.toBeInTheDocument();
   });
 });

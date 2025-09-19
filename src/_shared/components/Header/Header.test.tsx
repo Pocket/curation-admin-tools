@@ -42,7 +42,7 @@ describe('The Header component', () => {
     );
 
     // Check that the logo is rendered
-    const logo = screen.getByAltText('Mozilla');
+    const logo = screen.getByAltText('Home Page');
     expect(logo).toBeInTheDocument();
 
     // Product name is now a text element, not a heading

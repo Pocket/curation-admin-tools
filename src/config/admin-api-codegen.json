@@ -19,8 +19,6 @@
     }
   },
   "hooks": {
-    "afterAllFileWrite": [
-      "prettier -w src/api/generatedTypes.ts"
-    ]
+    "afterAllFileWrite": ["prettier -w src/api/generatedTypes.ts"]
   }
 }

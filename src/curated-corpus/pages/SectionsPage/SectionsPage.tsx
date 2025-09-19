@@ -70,6 +70,7 @@ export const SectionsPage: React.FC = (): JSX.Element => {
     notifyOnNetworkStatusChange: true,
     variables: {
       scheduledSurfaceGuid: currentScheduledSurfaceGuid,
+      createSource: 'ML',
     },
   });
 
@@ -170,7 +171,7 @@ export const SectionsPage: React.FC = (): JSX.Element => {
 
   return (
     <>
-      <h1>Sections</h1>
+      <h1>ML Sections</h1>
       {currentSectionItem?.approvedItem && (
         <>
           <EditCorpusItemAction

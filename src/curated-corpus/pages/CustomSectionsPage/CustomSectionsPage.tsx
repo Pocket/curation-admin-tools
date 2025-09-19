@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { DateTime } from 'luxon';
 import {
   Section,
   SectionStatus,
@@ -7,21 +6,11 @@ import {
   useGetSectionsWithSectionItemsLazyQuery,
 } from '../../../api/generatedTypes';
 import { DropdownOption } from '../../helpers/definitions';
-import {
-  Box,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-  Paper,
-  Chip,
-  TextField,
-  MenuItem,
-} from '@mui/material';
+import { Box, Typography, Paper } from '@mui/material';
 import { HandleApiResponse } from '../../../_shared/components';
+import { SplitButton } from '../../components';
+import { CustomSectionTable } from './CustomSectionTable';
+import { curationPalette } from '../../../theme';
 
 interface GroupedSections {
   scheduled: Section[];
@@ -50,6 +39,7 @@ export const CustomSectionsPage: React.FC = (): JSX.Element => {
     notifyOnNetworkStatusChange: true,
     variables: {
       scheduledSurfaceGuid: currentScheduledSurfaceGuid,
+      createSource: 'MANUAL',
     },
     onCompleted: () => {
       // Query completed
@@ -74,17 +64,19 @@ export const CustomSectionsPage: React.FC = (): JSX.Element => {
 
   // Update scheduled surface
   const updateScheduledSurface = (option: DropdownOption) => {
-    refetch && refetch({ scheduledSurfaceGuid: option.code });
+    refetch &&
+      refetch({
+        scheduledSurfaceGuid: option.code,
+        createSource: 'MANUAL',
+      });
     setCurrentScheduledSurfaceGuid(option.code);
   };
 
-  // Group sections by status
+  // Group sections by status (server provides the status now)
   useEffect(() => {
     if (data?.getSectionsWithSectionItems) {
-      const sections = data.getSectionsWithSectionItems;
-
-      // Filter only MANUAL sections (custom sections)
-      const customSections = sections.filter(
+      // Filter to ensure only MANUAL sections are included
+      const sections = data.getSectionsWithSectionItems.filter(
         (section) => section.createSource === 'MANUAL',
       );
 
@@ -94,56 +86,19 @@ export const CustomSectionsPage: React.FC = (): JSX.Element => {
         expired: [],
       };
 
-      customSections.forEach((section) => {
-        const status = section.status as SectionStatus | null;
+      sections.forEach((section) => {
+        const status = section.status as SectionStatus;
 
-        // Prefer server-computed status when present
         if (status === SectionStatus.Live) {
           grouped.live.push(section);
-          return;
-        }
-        if (status === SectionStatus.Scheduled) {
+        } else if (status === SectionStatus.Scheduled) {
           grouped.scheduled.push(section);
-          return;
-        }
-        if (
+        } else if (
           status === SectionStatus.Expired ||
           status === SectionStatus.Disabled
         ) {
           grouped.expired.push(section);
-          return;
         }
-
-        // Fallback inference when status is missing
-        const now = new Date();
-        const start = section.startDate ? new Date(section.startDate) : null;
-        const end = section.endDate ? new Date(section.endDate) : null;
-        const hasStarted = !!start && start <= now;
-        const hasEnded = !!end && end < now;
-
-        if (section.disabled || hasEnded) {
-          grouped.expired.push(section);
-          return;
-        }
-
-        // If start date is in the future, it's scheduled regardless of active status
-        if (start && start > now) {
-          grouped.scheduled.push(section);
-          return;
-        }
-
-        // Treat active=true as Live (unless disabled/expired/future above)
-        if (section.active) {
-          grouped.live.push(section);
-          return;
-        }
-
-        if (hasStarted) {
-          grouped.live.push(section);
-          return;
-        }
-
-        grouped.scheduled.push(section);
       });
 
       // Sort each group by start date (most recent first)
@@ -159,162 +114,13 @@ export const CustomSectionsPage: React.FC = (): JSX.Element => {
     }
   }, [data]);
 
-  const getStatusChip = (section: Section) => {
-    const status = section.status as SectionStatus | null;
-
-    if (status === SectionStatus.Disabled) {
-      return (
-        <Chip
-          label="Disabled"
-          size="small"
-          sx={{ backgroundColor: '#F3F3F5', color: '#6B6B7B', fontWeight: 500 }}
-        />
-      );
-    }
-
-    if (status === SectionStatus.Expired) {
-      return (
-        <Chip
-          label="Expired"
-          size="small"
-          sx={{ backgroundColor: '#FFF0F0', color: '#D32F2F', fontWeight: 500 }}
-        />
-      );
-    }
-
-    if (status === SectionStatus.Scheduled) {
-      return (
-        <Chip
-          label="Scheduled"
-          size="small"
-          sx={{ backgroundColor: '#F3F3F5', color: '#6B6B7B', fontWeight: 500 }}
-        />
-      );
-    }
-
-    if (status === SectionStatus.Live) {
-      return (
-        <Chip
-          label="Live"
-          size="small"
-          sx={{ backgroundColor: '#F0F7FF', color: '#1976D2', fontWeight: 500 }}
-        />
-      );
-    }
-
-    // Fallback
-    return (
-      <Chip
-        label="Unknown"
-        size="small"
-        sx={{ backgroundColor: '#F3F3F5', color: '#6B6B7B', fontWeight: 500 }}
-      />
-    );
-  };
-
-  const renderSectionTable = (title: string, sections: Section[]) => {
-    if (sections.length === 0) return null;
-
-    return (
-      <Box mb={4} sx={{ width: '100%', maxWidth: '100%' }}>
-        <Typography
-          variant="h5"
-          sx={{
-            color: '#222222',
-            fontFamily:
-              'Graphik Web, proxima-nova, Helvetica Neue, Helvetica, helvetica, arial, sans-serif',
-            fontStyle: 'normal',
-            fontWeight: 500,
-            lineHeight: '1.2125em',
-            marginBottom: '0.5em',
-            marginTop: '0.2em',
-            textRendering: 'optimizeLegibility',
-          }}
-        >
-          {title}
-        </Typography>
-        <TableContainer
-          component={Paper}
-          elevation={0}
-          sx={{ border: '1px solid #E0E0E6', overflowX: 'auto' }}
-        >
-          <Table sx={{ minWidth: 650, tableLayout: 'auto' }}>
-            <TableHead>
-              <TableRow>
-                <TableCell>Title</TableCell>
-                <TableCell>Start</TableCell>
-                <TableCell>End</TableCell>
-                {/* <TableCell sx={{ fontWeight: 600, whiteSpace: 'nowrap' }}>
-                  Updates
-                </TableCell> */}
-                <TableCell>Status</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {sections.map((section) => (
-                <TableRow key={section.externalId} hover>
-                  <TableCell>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Typography>{section.title}</Typography>
-                      {section.active && (
-                        <Box
-                          sx={{
-                            width: 8,
-                            height: 8,
-                            borderRadius: '50%',
-                            backgroundColor: '#4CAF50',
-                          }}
-                        />
-                      )}
-                    </Box>
-                  </TableCell>
-                  <TableCell sx={{ whiteSpace: 'nowrap' }}>
-                    <Typography>
-                      {section.startDate
-                        ? DateTime.fromISO(section.startDate).toFormat(
-                            'MMM dd, yyyy',
-                          )
-                        : '-'}
-                    </Typography>
-                  </TableCell>
-                  <TableCell sx={{ whiteSpace: 'nowrap' }}>
-                    <Typography>
-                      {section.endDate
-                        ? DateTime.fromISO(section.endDate).toFormat(
-                            'MMM dd, yyyy',
-                          )
-                        : '-'}
-                    </Typography>
-                  </TableCell>
-                  {/* <TableCell sx={{ whiteSpace: 'nowrap' }}>
-                    <Typography variant="body2" sx={{ whiteSpace: 'nowrap' }}>
-                      {section.sectionItems?.length
-                        ? `${section.sectionItems.length === 1 ? 'Daily' : section.sectionItems.length > 7 ? 'Monthly' : 'Weekly'}`
-                        : 'Manual'}
-                    </Typography>
-                  </TableCell> */}
-                  <TableCell sx={{ whiteSpace: 'nowrap' }}>
-                    {getStatusChip(section)}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
-    );
-  };
-
   return (
     <>
       <Typography
         variant="h4"
         component="h1"
         sx={{
-          color: '#222222',
-          fontFamily:
-            'Graphik Web, proxima-nova, Helvetica Neue, Helvetica, helvetica, arial, sans-serif',
-          fontStyle: 'normal',
+          color: curationPalette.pocketBlack,
           fontWeight: 500,
           lineHeight: '1.2125em',
           marginBottom: '0.5em',
@@ -325,133 +131,25 @@ export const CustomSectionsPage: React.FC = (): JSX.Element => {
         Custom Sections
       </Typography>
 
-      {/* Toolbar: surface dropdown only */}
+      {/* Toolbar: surface dropdown */}
       <Box
         sx={{
           display: 'flex',
           alignItems: 'center',
           gap: 2,
           marginBottom: '24px',
-          flexWrap: 'wrap',
-          width: '100%',
         }}
       >
         {scheduledSurfaceOptions.length > 0 && (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="body2" color="text.secondary">
-              Surface:
-            </Typography>
-            <TextField
-              select
+          <>
+            Sections for
+            <SplitButton
+              onMenuOptionClick={updateScheduledSurface}
+              options={scheduledSurfaceOptions}
               size="small"
-              value={currentScheduledSurfaceGuid}
-              onChange={(e) => {
-                const option = scheduledSurfaceOptions.find(
-                  (opt) => opt.code === e.target.value,
-                );
-                if (option) updateScheduledSurface(option);
-              }}
-              sx={{ minWidth: 200 }}
-            >
-              {scheduledSurfaceOptions.map((option) => (
-                <MenuItem key={option.code} value={option.code}>
-                  {option.name}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
+            />
+          </>
         )}
-
-        {/* Date filtering and action buttons - commented out for now */}
-        {/* <LocalizationProvider dateAdapter={AdapterLuxon}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="body2" color="text.secondary">
-              Start date
-            </Typography>
-            <DatePicker
-              value={startDate}
-              onChange={(newValue) => setStartDate(newValue)}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  size="small"
-                  sx={{ width: { xs: 120, sm: 140 } }}
-                />
-              )}
-              components={{
-                OpenPickerIcon: CalendarTodayIcon,
-              }}
-            />
-          </Box>
-
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="body2" color="text.secondary">
-              End date
-            </Typography>
-            <DatePicker
-              value={endDate}
-              onChange={(newValue) => setEndDate(newValue)}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  size="small"
-                  sx={{ width: { xs: 120, sm: 140 } }}
-                />
-              )}
-              components={{
-                OpenPickerIcon: CalendarTodayIcon,
-              }}
-            />
-          </Box>
-        </LocalizationProvider>
-
-        <Box sx={{ display: 'flex', gap: 1, ml: 'auto' }}>
-          <Button
-            variant="contained"
-            size="medium"
-            sx={{
-              backgroundColor: '#5B2EDF',
-              textTransform: 'none',
-              fontWeight: 600,
-              padding: '4px 14px',
-              borderRadius: '20px',
-              minHeight: 32,
-              '&:hover': {
-                backgroundColor: '#4A24B3',
-              },
-            }}
-            onClick={() => {
-              if (refetch) {
-                refetch({ scheduledSurfaceGuid: currentScheduledSurfaceGuid });
-              } else {
-                callGetSectionsWithSectionItemsQuery({
-                  variables: {
-                    scheduledSurfaceGuid: currentScheduledSurfaceGuid,
-                  },
-                });
-              }
-            }}
-          >
-            Get Sections
-          </Button>
-          <Button
-            variant="contained"
-            size="medium"
-            sx={{
-              backgroundColor: '#5B2EDF',
-              textTransform: 'none',
-              fontWeight: 600,
-              padding: '4px 14px',
-              borderRadius: '20px',
-              minHeight: 32,
-              '&:hover': {
-                backgroundColor: '#4A24B3',
-              },
-            }}
-          >
-            New Section
-          </Button>
-        </Box> */}
       </Box>
 
       {/* Main Content */}
@@ -460,9 +158,15 @@ export const CustomSectionsPage: React.FC = (): JSX.Element => {
 
         {!loading && data && (
           <>
-            {renderSectionTable('Scheduled', groupedSections.scheduled)}
-            {renderSectionTable('Live', groupedSections.live)}
-            {renderSectionTable('Expired', groupedSections.expired)}
+            <CustomSectionTable
+              title="Scheduled"
+              sections={groupedSections.scheduled}
+            />
+            <CustomSectionTable title="Live" sections={groupedSections.live} />
+            <CustomSectionTable
+              title="Expired"
+              sections={groupedSections.expired}
+            />
 
             {Object.values(groupedSections).every(
               (group) => group.length === 0,
@@ -472,7 +176,7 @@ export const CustomSectionsPage: React.FC = (): JSX.Element => {
                 sx={{
                   p: 4,
                   textAlign: 'center',
-                  border: '1px solid #E0E0E6',
+                  border: `1px solid ${curationPalette.lightGrey}`,
                 }}
               >
                 <Typography color="text.secondary">
