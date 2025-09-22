@@ -249,7 +249,7 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
                         style={{
                           padding: '10px 8px',
                           whiteSpace: 'nowrap',
-                          fontSize: '0.8125rem',
+                          fontSize: '0.875rem',
                           textDecoration: 'none',
                           display: 'inline-block',
                           lineHeight: 'normal',

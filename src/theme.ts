@@ -3,6 +3,7 @@ import { createTheme, Theme } from '@mui/material/styles';
 /* Curation frontend colors */
 export const curationPalette = {
   primary: '#008078', // dark green
+  lightGreen: '#E6F5E6', // light green background
   secondary: '#b24000', // red/brown
   neutral: '#737373', // dark grey
   blue: '#3668ff', // bright blue for active tabs

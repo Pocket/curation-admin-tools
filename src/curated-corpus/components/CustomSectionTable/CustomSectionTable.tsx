@@ -77,8 +77,8 @@ export const CustomSectionTable: React.FC<CustomSectionTableProps> = ({
           label="Live"
           size="small"
           sx={{
-            backgroundColor: '#F0F7FF',
-            color: curationPalette.blue,
+            backgroundColor: curationPalette.lightGreen,
+            color: curationPalette.primary,
             fontWeight: 500,
           }}
         />
@@ -136,7 +136,7 @@ export const CustomSectionTable: React.FC<CustomSectionTableProps> = ({
                 <TableCell>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Typography>{section.title}</Typography>
-                    {section.active && (
+                    {section.status === SectionStatus.Live && (
                       <Box
                         sx={{
                           width: 8,

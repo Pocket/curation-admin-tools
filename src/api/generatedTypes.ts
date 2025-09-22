@@ -5060,6 +5060,7 @@ export type SearchCollectionsQuery = {
 
 export type GetSectionsWithSectionItemsQueryVariables = Exact<{
   scheduledSurfaceGuid: Scalars['ID'];
+  createSource?: InputMaybe<ActivitySource>;
 }>;
 
 export type GetSectionsWithSectionItemsQuery = {
@@ -8864,8 +8865,14 @@ export type SearchCollectionsQueryResult = Apollo.QueryResult<
   SearchCollectionsQueryVariables
 >;
 export const GetSectionsWithSectionItemsDocument = gql`
-  query getSectionsWithSectionItems($scheduledSurfaceGuid: ID!) {
-    getSectionsWithSectionItems(scheduledSurfaceGuid: $scheduledSurfaceGuid) {
+  query getSectionsWithSectionItems(
+    $scheduledSurfaceGuid: ID!
+    $createSource: ActivitySource
+  ) {
+    getSectionsWithSectionItems(
+      scheduledSurfaceGuid: $scheduledSurfaceGuid
+      createSource: $createSource
+    ) {
       ...SectionData
     }
   }
@@ -8885,6 +8892,7 @@ export const GetSectionsWithSectionItemsDocument = gql`
  * const { data, loading, error } = useGetSectionsWithSectionItemsQuery({
  *   variables: {
  *      scheduledSurfaceGuid: // value for 'scheduledSurfaceGuid'
+ *      createSource: // value for 'createSource'
  *   },
  * });
  */

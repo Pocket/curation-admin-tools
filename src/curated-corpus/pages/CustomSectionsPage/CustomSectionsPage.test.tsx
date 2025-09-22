@@ -5,7 +5,7 @@ import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
 import { getScheduledSurfacesForUser } from '../../../api/queries/getScheduledSurfacesForUser';
 import { getSectionsWithSectionItems } from '../../../api/queries/getSectionsWithSectionItems';
-import { SectionStatus } from '../../../api/generatedTypes';
+import { ActivitySource, SectionStatus } from '../../../api/generatedTypes';
 
 const mockSections = [
   {
@@ -16,7 +16,7 @@ const mockSections = [
     endDate: '2024-12-31T00:00:00Z',
     active: true,
     status: SectionStatus.Live,
-    createSource: 'MANUAL',
+    createSource: ActivitySource.Manual,
     disabled: false,
     sectionItems: [],
   },
@@ -28,7 +28,7 @@ const mockSections = [
     endDate: '2025-12-31T00:00:00Z',
     active: false,
     status: SectionStatus.Scheduled,
-    createSource: 'MANUAL',
+    createSource: ActivitySource.Manual,
     disabled: false,
     sectionItems: [],
   },
@@ -40,19 +40,7 @@ const mockSections = [
     endDate: '2023-12-31T00:00:00Z',
     active: false,
     status: SectionStatus.Expired,
-    createSource: 'MANUAL',
-    disabled: false,
-    sectionItems: [],
-  },
-  {
-    __typename: 'Section',
-    externalId: 'ml-section-1',
-    title: 'Gaming',
-    startDate: '2024-01-01T00:00:00Z',
-    endDate: '2024-12-31T00:00:00Z',
-    active: true,
-    status: SectionStatus.Live,
-    createSource: 'ML',
+    createSource: ActivitySource.Manual,
     disabled: false,
     sectionItems: [],
   },
@@ -87,7 +75,7 @@ const mocks = [
       query: getSectionsWithSectionItems,
       variables: {
         scheduledSurfaceGuid: 'NEW_TAB_EN_US',
-        createSource: 'MANUAL',
+        createSource: ActivitySource.Manual,
       },
     },
     result: {
@@ -180,29 +168,5 @@ describe('CustomSectionsPage', () => {
       },
       { timeout: 3000 },
     );
-  });
-
-  it('filters out ML sections and only shows MANUAL sections', async () => {
-    render(
-      <MemoryRouter>
-        <MockedProvider mocks={mocks} addTypename={false}>
-          <CustomSectionsPage />
-        </MockedProvider>
-      </MemoryRouter>,
-    );
-
-    await waitFor(
-      () => {
-        expect(screen.getByText('Live Section 1')).toBeInTheDocument();
-      },
-      { timeout: 3000 },
-    );
-
-    // MANUAL sections should be present
-    expect(screen.getByText('Scheduled Section 1')).toBeInTheDocument();
-    expect(screen.getByText('Expired Section 1')).toBeInTheDocument();
-
-    // ML section (Gaming) should NOT be present
-    expect(screen.queryByText('Gaming')).not.toBeInTheDocument();
   });
 });

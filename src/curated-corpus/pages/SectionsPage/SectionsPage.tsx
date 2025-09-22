@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   ActionScreen,
+  ActivitySource,
   Section,
   SectionItem,
   useGetScheduledSurfacesForUserQuery,
@@ -70,7 +71,7 @@ export const SectionsPage: React.FC = (): JSX.Element => {
     notifyOnNetworkStatusChange: true,
     variables: {
       scheduledSurfaceGuid: currentScheduledSurfaceGuid,
-      createSource: 'ML',
+      createSource: ActivitySource.Ml,
     },
   });
 

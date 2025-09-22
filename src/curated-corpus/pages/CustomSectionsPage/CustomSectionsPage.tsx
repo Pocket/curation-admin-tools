@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  ActivitySource,
   Section,
   SectionStatus,
   useGetScheduledSurfacesForUserQuery,
@@ -9,7 +10,7 @@ import { DropdownOption } from '../../helpers/definitions';
 import { Box, Typography, Paper } from '@mui/material';
 import { HandleApiResponse } from '../../../_shared/components';
 import { SplitButton } from '../../components';
-import { CustomSectionTable } from './CustomSectionTable';
+import { CustomSectionTable } from '../../components/CustomSectionTable/CustomSectionTable';
 import { curationPalette } from '../../../theme';
 
 interface GroupedSections {
@@ -39,7 +40,7 @@ export const CustomSectionsPage: React.FC = (): JSX.Element => {
     notifyOnNetworkStatusChange: true,
     variables: {
       scheduledSurfaceGuid: currentScheduledSurfaceGuid,
-      createSource: 'MANUAL',
+      createSource: ActivitySource.Manual,
     },
     onCompleted: () => {
       // Query completed
@@ -67,7 +68,7 @@ export const CustomSectionsPage: React.FC = (): JSX.Element => {
     refetch &&
       refetch({
         scheduledSurfaceGuid: option.code,
-        createSource: 'MANUAL',
+        createSource: ActivitySource.Manual,
       });
     setCurrentScheduledSurfaceGuid(option.code);
   };
@@ -75,10 +76,7 @@ export const CustomSectionsPage: React.FC = (): JSX.Element => {
   // Group sections by status (server provides the status now)
   useEffect(() => {
     if (data?.getSectionsWithSectionItems) {
-      // Filter to ensure only MANUAL sections are included
-      const sections = data.getSectionsWithSectionItems.filter(
-        (section) => section.createSource === 'MANUAL',
-      );
+      const sections = data.getSectionsWithSectionItems;
 
       const grouped: GroupedSections = {
         scheduled: [],
