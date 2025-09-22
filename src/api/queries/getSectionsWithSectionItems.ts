@@ -6,8 +6,14 @@ import { SectionData } from '../fragments/SectionData';
  * Returns an empty array if no Sections found.
  */
 export const getSectionsWithSectionItems = gql`
-  query getSectionsWithSectionItems($scheduledSurfaceGuid: ID!, $createSource: ActivitySource) {
-    getSectionsWithSectionItems(scheduledSurfaceGuid: $scheduledSurfaceGuid, createSource: $createSource) {
+  query getSectionsWithSectionItems(
+    $scheduledSurfaceGuid: ID!
+    $createSource: ActivitySource
+  ) {
+    getSectionsWithSectionItems(
+      scheduledSurfaceGuid: $scheduledSurfaceGuid
+      createSource: $createSource
+    ) {
       ...SectionData
     }
   }
