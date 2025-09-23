@@ -8,8 +8,11 @@ import { curationPalette } from '../../theme';
 export const StyledProductHeading = styled(Typography)(({ theme }) => ({
   paddingLeft: '0.5rem',
   borderLeft: `1px solid ${curationPalette.lightGrey}`,
+  margin: 0,
+  display: 'flex',
+  alignItems: 'center',
   [theme.breakpoints.down('sm')]: {
-    marginTop: '0.75rem',
+    marginTop: 0,
     borderLeft: 'none',
   },
 }));

@@ -118,13 +118,15 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
             direction="row"
             justifyContent="space-between"
             alignItems="center"
+            sx={{ minHeight: '48px' }}
           >
-            <Grid item xs={6}>
+            <Grid item xs={5}>
               <Grid
                 container
                 direction="row"
                 justifyContent="flex-start"
                 alignItems="center"
+                sx={{ height: '100%' }}
               >
                 <Hidden smDown implementation="css">
                   <Grid item sm={4}>
@@ -135,7 +137,7 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
                         style={{
                           width: '100px',
                           paddingRight: '0.5rem',
-                          marginTop: '0.25rem',
+                          display: 'block',
                         }}
                       />
                     </Link>
@@ -203,14 +205,16 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
                 <Grid item xs={6} sm={6}>
                   <StyledProductHeading
                     variant="h5"
-                    sx={
-                      /* Override Typography styles here as otherwise they don't
-                     take effect in the styled component - my guess is the variant
-                      applied takes precedence over styles in the `styled` component */
-                      {
-                        fontWeight: 500,
-                      }
-                    }
+                    sx={{
+                      fontWeight: 500,
+                      margin: '0 !important',
+                      marginTop: '0 !important',
+                      marginBottom: '0 !important',
+                      display: 'flex',
+                      alignItems: 'center',
+                      height: 'auto',
+                      lineHeight: 1,
+                    }}
                   >
                     <StyledProductHeadingLink to={productLink}>
                       {productName}
@@ -219,47 +223,51 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={7}>
               <Grid
                 container
                 direction="row"
                 justifyContent="flex-end"
                 alignItems="center"
+                sx={{ height: '100%' }}
               >
                 <Hidden smDown implementation="css">
                   <Grid
                     item
-                    sm={12}
-                    sx={{ display: 'flex', justifyContent: 'flex-end' }}
+                    sm={10}
+                    md={11}
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'flex-end',
+                      alignItems: 'center',
+                    }}
                   >
-                    <List
-                      sx={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        padding: 0,
-                        flexWrap: 'nowrap', // Prevents wrapping
-                        justifyContent: 'flex-end', // Keeps alignment the same
-                      }}
-                    >
-                      {menuLinks.map((link: MenuLink) => (
-                        <ListItem
-                          component={StyledAppBarLink}
-                          to={link.url}
-                          key={link.url}
-                          sx={{
-                            padding: '0 0.75rem',
-                            minWidth: 'auto',
-                          }}
-                        >
-                          <ListItemText primary={link.text} />
-                        </ListItem>
-                      ))}
-                    </List>
+                    {menuLinks.map((link: MenuLink) => (
+                      <StyledAppBarLink
+                        to={link.url}
+                        key={link.url}
+                        style={{
+                          padding: '10px 8px',
+                          whiteSpace: 'nowrap',
+                          fontSize: '0.875rem',
+                          textDecoration: 'none',
+                          display: 'inline-block',
+                          lineHeight: 'normal',
+                        }}
+                      >
+                        {link.text}
+                      </StyledAppBarLink>
+                    ))}
                   </Grid>
                 </Hidden>
 
                 {hasUser && parsedIdToken && (
-                  <Grid item sm={1}>
+                  <Grid
+                    item
+                    sm={2}
+                    md={1}
+                    sx={{ display: 'flex', alignItems: 'center' }}
+                  >
                     <IconButton
                       aria-controls="user-menu"
                       aria-haspopup="true"

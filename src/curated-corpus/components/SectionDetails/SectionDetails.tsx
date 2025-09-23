@@ -107,14 +107,9 @@ export const SectionDetails: React.FC<SectionDetailsProps> = (
               currentSection === 'all' || section.title === currentSection,
           )
           .map((section: Section) => (
-            <>
+            <React.Fragment key={section.externalId}>
               <Box mt={9} mb={3}>
-                <Box
-                  key={section.externalId}
-                  display="flex"
-                  alignItems="center"
-                  p={2}
-                >
+                <Box display="flex" alignItems="center" p={2}>
                   {/* Wrap title + description */}
                   <Box display="flex" flexDirection="column" mr={4}>
                     <h2>{section.title}</h2>
@@ -199,7 +194,7 @@ export const SectionDetails: React.FC<SectionDetailsProps> = (
                   </Grid>
                 </Grid>
               </Grid>
-            </>
+            </React.Fragment>
           ))}
     </>
   );
