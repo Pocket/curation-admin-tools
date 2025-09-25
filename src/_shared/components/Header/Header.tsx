@@ -240,6 +240,7 @@ export const Header: React.FC<HeaderProps> = (props): JSX.Element => {
                       display: 'flex',
                       justifyContent: 'flex-end',
                       alignItems: 'center',
+                      paddingLeft: '7px',
                     }}
                   >
                     {menuLinks.map((link: MenuLink) => (

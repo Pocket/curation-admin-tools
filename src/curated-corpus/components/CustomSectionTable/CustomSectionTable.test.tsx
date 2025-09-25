@@ -1,7 +1,17 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { CustomSectionTable } from './CustomSectionTable';
 import { Section, SectionStatus } from '../../../api/generatedTypes';
+import { MemoryRouter } from 'react-router-dom';
+
+// Mock useHistory
+const mockPush = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useHistory: () => ({
+    push: mockPush,
+  }),
+}));
 
 describe('CustomSectionTable', () => {
   const mockSection: Section = {
@@ -116,6 +126,98 @@ describe('CustomSectionTable', () => {
     expect(screen.getByText('Title')).toBeInTheDocument();
     expect(screen.getByText('Start')).toBeInTheDocument();
     expect(screen.getByText('End')).toBeInTheDocument();
+    expect(screen.getByText('Items')).toBeInTheDocument();
     expect(screen.getByText('Status')).toBeInTheDocument();
+  });
+
+  it('displays item count correctly', () => {
+    const sectionWithItems: Section = {
+      ...mockSection,
+      sectionItems: [
+        { __typename: 'SectionItem', externalId: '1', approvedItem: {} as any },
+        { __typename: 'SectionItem', externalId: '2', approvedItem: {} as any },
+      ],
+    };
+
+    render(<CustomSectionTable title="Test" sections={[sectionWithItems]} />);
+
+    expect(screen.getByText('2 items')).toBeInTheDocument();
+  });
+
+  it('displays "No items" in red when section has no items', () => {
+    render(<CustomSectionTable title="Test" sections={[mockSection]} />);
+
+    const noItemsText = screen.getByText('No items');
+    expect(noItemsText).toBeInTheDocument();
+    expect(noItemsText).toHaveStyle('font-weight: 500');
+  });
+
+  it('displays singular "item" when count is 1', () => {
+    const sectionWithOneItem: Section = {
+      ...mockSection,
+      sectionItems: [
+        { __typename: 'SectionItem', externalId: '1', approvedItem: {} as any },
+      ],
+    };
+
+    render(<CustomSectionTable title="Test" sections={[sectionWithOneItem]} />);
+
+    expect(screen.getByText('1 item')).toBeInTheDocument();
+  });
+
+  it('displays warning text for Live sections', () => {
+    render(<CustomSectionTable title="Live" sections={[mockSection]} />);
+
+    expect(
+      screen.getByText(
+        '* Sections without items will not be displayed on New Tab',
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('does not display warning text for non-Live sections', () => {
+    render(<CustomSectionTable title="Scheduled" sections={[mockSection]} />);
+
+    expect(
+      screen.queryByText('* Sections without items will not be displayed'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('navigates on row click when scheduledSurfaceGuid is provided', () => {
+    render(
+      <MemoryRouter>
+        <CustomSectionTable
+          title="Test"
+          sections={[mockSection]}
+          scheduledSurfaceGuid="NEW_TAB_EN_US"
+        />
+      </MemoryRouter>,
+    );
+
+    const row = screen.getByText('Test Section').closest('tr');
+    fireEvent.click(row!);
+
+    expect(mockPush).toHaveBeenCalledWith(
+      '/curated-corpus/custom-sections/test-section-1/NEW_TAB_EN_US/',
+    );
+  });
+
+  it('does not navigate on row click when scheduledSurfaceGuid is not provided', () => {
+    render(
+      <MemoryRouter>
+        <CustomSectionTable title="Test" sections={[mockSection]} />
+      </MemoryRouter>,
+    );
+
+    const row = screen.getByText('Test Section').closest('tr');
+    expect(row).toHaveStyle('cursor: default');
+  });
+
+  it('displays live indicator dot for live sections', () => {
+    render(<CustomSectionTable title="Test" sections={[mockSection]} />);
+
+    const titleCell = screen.getByText('Test Section').closest('td');
+    const indicator = titleCell?.querySelector('div > div:last-child');
+    expect(indicator).toHaveStyle('border-radius: 50%');
   });
 });
