@@ -1,5 +1,6 @@
 import React from 'react';
 import { DateTime } from 'luxon';
+import { useHistory } from 'react-router-dom';
 import { Section, SectionStatus } from '../../../api/generatedTypes';
 import {
   Box,
@@ -18,12 +19,15 @@ import { curationPalette } from '../../../theme';
 interface CustomSectionTableProps {
   title: string;
   sections: Section[];
+  scheduledSurfaceGuid?: string;
 }
 
 export const CustomSectionTable: React.FC<CustomSectionTableProps> = ({
   title,
   sections,
+  scheduledSurfaceGuid,
 }): JSX.Element | null => {
+  const history = useHistory();
   if (sections.length === 0) return null;
 
   const getStatusChip = (section: Section) => {
@@ -113,6 +117,18 @@ export const CustomSectionTable: React.FC<CustomSectionTableProps> = ({
       >
         {title}
       </Typography>
+      {title === 'Live' && (
+        <Typography
+          variant="body2"
+          sx={{
+            color: curationPalette.secondary,
+            marginBottom: '0.5em',
+            fontStyle: 'italic',
+          }}
+        >
+          * Sections without items will not be displayed on New Tab
+        </Typography>
+      )}
       <TableContainer
         component={Paper}
         elevation={0}
@@ -124,15 +140,27 @@ export const CustomSectionTable: React.FC<CustomSectionTableProps> = ({
         <Table sx={{ minWidth: 650, tableLayout: 'fixed' }}>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ width: '40%' }}>Title</TableCell>
-              <TableCell sx={{ width: '20%' }}>Start</TableCell>
-              <TableCell sx={{ width: '20%' }}>End</TableCell>
-              <TableCell sx={{ width: '20%' }}>Status</TableCell>
+              <TableCell sx={{ width: '30%' }}>Title</TableCell>
+              <TableCell sx={{ width: '15%' }}>Start</TableCell>
+              <TableCell sx={{ width: '15%' }}>End</TableCell>
+              <TableCell sx={{ width: '15%' }}>Items</TableCell>
+              <TableCell sx={{ width: '25%' }}>Status</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {sections.map((section) => (
-              <TableRow key={section.externalId} hover>
+              <TableRow
+                key={section.externalId}
+                hover
+                onClick={() => {
+                  if (scheduledSurfaceGuid) {
+                    history.push(
+                      `/curated-corpus/custom-sections/${section.externalId}/${scheduledSurfaceGuid}/`,
+                    );
+                  }
+                }}
+                sx={{ cursor: scheduledSurfaceGuid ? 'pointer' : 'default' }}
+              >
                 <TableCell>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <Typography>{section.title}</Typography>
@@ -164,6 +192,22 @@ export const CustomSectionTable: React.FC<CustomSectionTableProps> = ({
                           'MMM dd, yyyy',
                         )
                       : '-'}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography
+                    sx={{
+                      color:
+                        section.sectionItems?.length === 0
+                          ? curationPalette.secondary
+                          : 'inherit',
+                      fontWeight:
+                        section.sectionItems?.length === 0 ? 500 : 'normal',
+                    }}
+                  >
+                    {section.sectionItems?.length === 0
+                      ? 'No items'
+                      : `${section.sectionItems?.length || 0} ${section.sectionItems?.length === 1 ? 'item' : 'items'}`}
                   </Typography>
                 </TableCell>
                 <TableCell sx={{ whiteSpace: 'nowrap' }}>

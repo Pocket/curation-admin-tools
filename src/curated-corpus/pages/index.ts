@@ -2,6 +2,7 @@ export { CorpusPage } from './CorpusPage/CorpusPage';
 export { CorpusItemPage } from './CorpusItemPage/CorpusItemPage';
 export { CuratedCorpusLandingPage } from './CuratedCorpusLandingPage/CuratedCorpusLandingPage';
 export { CustomSectionsPage } from './CustomSectionsPage/CustomSectionsPage';
+export { CustomSectionDetailsPage } from './CustomSectionDetailsPage/CustomSectionDetailsPage';
 export { RejectedPage } from './RejectedPage/RejectedPage';
 export { ProspectingPage } from './ProspectingPage/ProspectingPage';
 export { SchedulePage } from './SchedulePage/SchedulePage';

@@ -12,6 +12,7 @@ import {
   CorpusItemPage,
   CorpusPage,
   CustomSectionsPage,
+  CustomSectionDetailsPage,
   ProspectingPage,
   RejectedPage,
   SchedulePage,
@@ -128,6 +129,12 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
           </Route>
           <Route exact path={`${path}/custom-sections/`}>
             <CustomSectionsPage />
+          </Route>
+          <Route
+            exact
+            path={`${path}/custom-sections/:sectionId/:surfaceGuid/`}
+          >
+            <CustomSectionDetailsPage />
           </Route>
           <Route component={PageNotFound} />
         </Switch>

@@ -7,7 +7,8 @@ import {
   useGetSectionsWithSectionItemsLazyQuery,
 } from '../../../api/generatedTypes';
 import { DropdownOption } from '../../helpers/definitions';
-import { Box, Typography, Paper } from '@mui/material';
+import { CreateCustomSectionModal } from '../../components/CreateCustomSectionModal/CreateCustomSectionModal';
+import { Box, Typography, Paper, Button } from '@mui/material';
 import { HandleApiResponse } from '../../../_shared/components';
 import { SplitButton } from '../../components';
 import { CustomSectionTable } from '../../components/CustomSectionTable/CustomSectionTable';
@@ -30,6 +31,7 @@ export const CustomSectionsPage: React.FC = (): JSX.Element => {
     live: [],
     expired: [],
   });
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   // Get sections with section items
   const [
@@ -129,13 +131,14 @@ export const CustomSectionsPage: React.FC = (): JSX.Element => {
         Custom Sections
       </Typography>
 
-      {/* Toolbar: surface dropdown */}
+      {/* Toolbar: surface dropdown and New Section button */}
       <Box
         sx={{
           display: 'flex',
           alignItems: 'center',
           gap: 2,
           marginBottom: '24px',
+          flexWrap: 'wrap',
         }}
       >
         {scheduledSurfaceOptions.length > 0 && (
@@ -148,6 +151,22 @@ export const CustomSectionsPage: React.FC = (): JSX.Element => {
             />
           </>
         )}
+
+        <Box sx={{ ml: 'auto' }}>
+          <Button
+            variant="contained"
+            onClick={() => setIsCreateModalOpen(true)}
+            sx={{
+              textTransform: 'none',
+              backgroundColor: '#008078',
+              '&:hover': {
+                backgroundColor: '#006660',
+              },
+            }}
+          >
+            New Section
+          </Button>
+        </Box>
       </Box>
 
       {/* Main Content */}
@@ -159,11 +178,17 @@ export const CustomSectionsPage: React.FC = (): JSX.Element => {
             <CustomSectionTable
               title="Scheduled"
               sections={groupedSections.scheduled}
+              scheduledSurfaceGuid={currentScheduledSurfaceGuid}
             />
-            <CustomSectionTable title="Live" sections={groupedSections.live} />
+            <CustomSectionTable
+              title="Live"
+              sections={groupedSections.live}
+              scheduledSurfaceGuid={currentScheduledSurfaceGuid}
+            />
             <CustomSectionTable
               title="Expired"
               sections={groupedSections.expired}
+              scheduledSurfaceGuid={currentScheduledSurfaceGuid}
             />
 
             {Object.values(groupedSections).every(
@@ -185,6 +210,17 @@ export const CustomSectionsPage: React.FC = (): JSX.Element => {
           </>
         )}
       </Box>
+
+      {/* Create Custom Section Modal */}
+      <CreateCustomSectionModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        scheduledSurfaceGuid={currentScheduledSurfaceGuid}
+        onSuccess={() => {
+          // Navigation is handled in the modal itself
+          // No need to refetch as user will be redirected
+        }}
+      />
     </>
   );
 };
