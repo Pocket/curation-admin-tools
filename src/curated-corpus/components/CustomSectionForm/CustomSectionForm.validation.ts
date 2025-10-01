@@ -11,7 +11,9 @@ export interface CustomSectionFormData {
   iabCategory?: string;
 }
 
-export const getValidationSchema = () => {
+export const getValidationSchema = (isEditMode: boolean = false) => {
+  const today = DateTime.now().startOf('day');
+
   return yup.object({
     title: yup
       .string()
@@ -35,20 +37,44 @@ export const getValidationSchema = () => {
       .trim()
       .max(500, 'Hero description cannot exceed 500 characters'),
 
-    startDate: yup.date().required('Start date is required').nullable(),
+    startDate: yup
+      .date()
+      .required('Start date is required')
+      .nullable()
+      .test(
+        'not-in-past',
+        'Start date cannot be in the past',
+        function (value) {
+          if (!value || isEditMode) {
+            return true;
+          }
+          const startDate = DateTime.fromJSDate(value).startOf('day');
+          return startDate >= today;
+        },
+      ),
 
     endDate: yup
       .date()
       .nullable()
+      .test('not-in-past', 'End date cannot be in the past', function (value) {
+        if (!value || isEditMode) {
+          return true;
+        }
+        const endDate = DateTime.fromJSDate(value).startOf('day');
+        return endDate >= today;
+      })
       .test(
-        'is-after-start-date',
-        'End date must be after start date',
+        'is-on-or-after-start-date',
+        'End date must be on or after start date',
         function (value) {
           const { startDate } = this.parent;
           if (!value || !startDate) {
             return true;
           }
-          return value > startDate;
+          const endDateTime = DateTime.fromJSDate(value).startOf('day');
+          const startDateTime = DateTime.fromJSDate(startDate).startOf('day');
+          // Allow end date to be on the same day as start date
+          return endDateTime >= startDateTime;
         },
       ),
 
@@ -60,6 +86,7 @@ export const validateForm = (
   formData: CustomSectionFormData,
 ): Record<string, string> => {
   const errors: Record<string, string> = {};
+  const today = DateTime.now().startOf('day');
 
   if (!formData.title.trim()) {
     errors.title = 'Title is required';
@@ -71,14 +98,16 @@ export const validateForm = (
 
   if (!formData.startDate) {
     errors.startDate = 'Start date is required';
+  } else if (formData.startDate < today) {
+    errors.startDate = 'Start date cannot be in the past';
   }
 
-  if (
-    formData.endDate &&
-    formData.startDate &&
-    formData.endDate <= formData.startDate
-  ) {
-    errors.endDate = 'End date must be after start date';
+  if (formData.endDate) {
+    if (formData.endDate < today) {
+      errors.endDate = 'End date cannot be in the past';
+    } else if (formData.startDate && formData.endDate < formData.startDate) {
+      errors.endDate = 'End date must be on or after start date';
+    }
   }
 
   return errors;

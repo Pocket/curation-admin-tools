@@ -32,13 +32,15 @@ describe('The ScheduleItemForm component', () => {
 
   it('renders successfully', () => {
     render(
-      <ScheduleItemForm
-        handleDateChange={jest.fn()}
-        selectedDate={DateTime.local()}
-        onSubmit={handleSubmit}
-        scheduledSurfaces={scheduledSurfaces}
-        approvedItemExternalId={'123abc'}
-      />,
+      <MockedProvider mocks={[]} addTypename={false}>
+        <ScheduleItemForm
+          handleDateChange={jest.fn()}
+          selectedDate={DateTime.local()}
+          onSubmit={handleSubmit}
+          scheduledSurfaces={scheduledSurfaces}
+          approvedItemExternalId={'123abc'}
+        />
+      </MockedProvider>,
     );
 
     // there is at least a form and nothing falls over
@@ -48,13 +50,15 @@ describe('The ScheduleItemForm component', () => {
 
   it('has three buttons and an accordion widget', () => {
     render(
-      <ScheduleItemForm
-        handleDateChange={jest.fn()}
-        selectedDate={DateTime.local()}
-        onSubmit={handleSubmit}
-        scheduledSurfaces={scheduledSurfaces}
-        approvedItemExternalId={'123abc'}
-      />,
+      <MockedProvider mocks={[]} addTypename={false}>
+        <ScheduleItemForm
+          handleDateChange={jest.fn()}
+          selectedDate={DateTime.local()}
+          onSubmit={handleSubmit}
+          scheduledSurfaces={scheduledSurfaces}
+          approvedItemExternalId={'123abc'}
+        />
+      </MockedProvider>,
     );
 
     const buttons = screen.getAllByRole('button');
@@ -67,14 +71,16 @@ describe('The ScheduleItemForm component', () => {
 
   it('does not pre-select a scheduled surface if none was passed in and the user has access to many', () => {
     render(
-      <ScheduleItemForm
-        data-testId="surface-selector"
-        handleDateChange={jest.fn()}
-        selectedDate={DateTime.local()}
-        onSubmit={handleSubmit}
-        scheduledSurfaces={scheduledSurfaces}
-        approvedItemExternalId={'123abc'}
-      />,
+      <MockedProvider mocks={[]} addTypename={false}>
+        <ScheduleItemForm
+          data-testId="surface-selector"
+          handleDateChange={jest.fn()}
+          selectedDate={DateTime.local()}
+          onSubmit={handleSubmit}
+          scheduledSurfaces={scheduledSurfaces}
+          approvedItemExternalId={'123abc'}
+        />
+      </MockedProvider>,
     );
 
     const select = screen.getByLabelText(
@@ -90,7 +96,7 @@ describe('The ScheduleItemForm component', () => {
 
   it('pre-selects the passed in scheduled surface', () => {
     render(
-      <MockedProvider>
+      <MockedProvider mocks={[]} addTypename={false}>
         <ScheduleItemForm
           data-testId="surface-selector"
           handleDateChange={jest.fn()}
@@ -117,7 +123,7 @@ describe('The ScheduleItemForm component', () => {
 
   it('pre-selects the only available scheduled surface if none was specified and the user only has access to a single one', () => {
     render(
-      <MockedProvider>
+      <MockedProvider mocks={[]} addTypename={false}>
         <ScheduleItemForm
           data-testId="surface-selector"
           handleDateChange={jest.fn()}
@@ -142,7 +148,7 @@ describe('The ScheduleItemForm component', () => {
 
   it('does not show manual scheduling reasons by default', async () => {
     render(
-      <MockedProvider>
+      <MockedProvider mocks={[]} addTypename={false}>
         <ScheduleItemForm
           data-testId="surface-selector"
           handleDateChange={jest.fn()}
@@ -165,7 +171,7 @@ describe('The ScheduleItemForm component', () => {
 
   it('shows manual scheduling reasons if necessary', async () => {
     render(
-      <MockedProvider>
+      <MockedProvider mocks={[]} addTypename={false}>
         <ScheduleItemForm
           data-testId="surface-selector"
           handleDateChange={jest.fn()}
@@ -189,7 +195,7 @@ describe('The ScheduleItemForm component', () => {
 
   it('displays an error message if no checkboxes have been selected', async () => {
     render(
-      <MockedProvider>
+      <MockedProvider mocks={[]} addTypename={false}>
         <ScheduleItemForm
           data-testId="surface-selector"
           handleDateChange={jest.fn()}

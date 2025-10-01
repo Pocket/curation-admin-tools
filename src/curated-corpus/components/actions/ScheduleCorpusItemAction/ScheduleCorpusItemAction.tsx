@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import { FormikHelpers, FormikValues } from 'formik';
 import { DateTime } from 'luxon';
 import {
@@ -7,6 +8,7 @@ import {
   CreateScheduledCorpusItemInput,
   ActivitySource,
   useCreateScheduledCorpusItemMutation,
+  useCreateSectionItemMutation,
 } from '../../../../api/generatedTypes';
 import { useNotifications, useRunMutation } from '../../../../_shared/hooks';
 import { ScheduleItemModal } from '../../';
@@ -56,6 +58,9 @@ export const ScheduleCorpusItemAction: React.FC<
 > = (props) => {
   const { item, actionScreen, toggleModal, modalOpen, refetch } = props;
 
+  // Set up the history hook for navigation
+  const history = useHistory();
+
   // set up the hook for toast notification
   const { showNotification } = useNotifications();
 
@@ -66,10 +71,13 @@ export const ScheduleCorpusItemAction: React.FC<
   // 1. Prepare the "schedule curated item" mutation
   const [scheduleCuratedItem] = useCreateScheduledCorpusItemMutation();
 
-  const onSave = (
+  // 2. Prepare the "create section item" mutation for custom sections
+  const [createSectionItem] = useCreateSectionItemMutation();
+
+  const onSave = async (
     values: FormikValues,
     formikHelpers: FormikHelpers<any>,
-  ): void => {
+  ): Promise<void> => {
     // DE items migrated from the old system don't have a topic.
     // This check forces to add a topic before scheduling
     // Although for this case, if an item is in the corpus already, we shouldn't
@@ -93,9 +101,55 @@ export const ScheduleCorpusItemAction: React.FC<
       `Item scheduled successfully for ${values.scheduledDate
         .setLocale('en')
         .toLocaleString(DateTime.DATE_FULL)}.`,
-      () => {
+      async () => {
+        // Close the modal first
         toggleModal();
         formikHelpers.setSubmitting(false);
+
+        // If custom sections were selected, add the item to those sections
+        let lastSectionId = null;
+        if (values.customSectionIds && values.customSectionIds.length > 0) {
+          for (const sectionExternalId of values.customSectionIds) {
+            try {
+              await createSectionItem({
+                variables: {
+                  data: {
+                    sectionExternalId,
+                    approvedItemExternalId: item.externalId,
+                  },
+                },
+              });
+              lastSectionId = sectionExternalId;
+            } catch (error) {
+              console.error('Error adding item to custom section:', error);
+              showNotification(
+                `Failed to add item to section: ${error}`,
+                'error',
+              );
+            }
+          }
+
+          if (values.customSectionIds.length === 1) {
+            showNotification(
+              'Item added to custom section successfully',
+              'success',
+            );
+          } else {
+            showNotification(
+              `Item added to ${values.customSectionIds.length} custom sections successfully`,
+              'success',
+            );
+          }
+
+          // Navigate to the custom section details page after adding items
+          if (lastSectionId && values.scheduledSurfaceGuid) {
+            setTimeout(() => {
+              history.push(
+                `/curated-corpus/custom-sections/${lastSectionId}/${values.scheduledSurfaceGuid}/`,
+              );
+            }, 100);
+          }
+        }
 
         if (refetch) {
           refetch();
