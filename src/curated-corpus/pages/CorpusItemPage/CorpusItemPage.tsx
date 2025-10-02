@@ -83,7 +83,9 @@ export const CorpusItemPage: React.FC = (): JSX.Element => {
                 </Typography>
               </h1>
 
-              <ApprovedItemInfo item={data.approvedCorpusItemByExternalId!} />
+              <ApprovedItemInfo
+                item={data.approvedCorpusItemByExternalId! as any}
+              />
             </Grid>
 
             <Grid item xs={12} sm={4}>
@@ -107,26 +109,26 @@ export const CorpusItemPage: React.FC = (): JSX.Element => {
               </Box>
 
               <ApprovedItemCurationHistory
-                item={data.approvedCorpusItemByExternalId!}
+                item={data.approvedCorpusItemByExternalId! as any}
               />
             </Grid>
           </Grid>
           <RejectCorpusItemAction
-            item={data.approvedCorpusItemByExternalId!}
+            item={data.approvedCorpusItemByExternalId! as any}
             actionScreen={ActionScreen.Corpus}
             modalOpen={rejectModalOpen}
             toggleModal={toggleRejectModal}
             refetch={refetch}
           />
           <ScheduleCorpusItemAction
-            item={data.approvedCorpusItemByExternalId!}
+            item={data.approvedCorpusItemByExternalId! as any}
             modalOpen={scheduleModalOpen}
             toggleModal={toggleScheduleModal}
             refetch={refetch}
             actionScreen={ActionScreen.Corpus}
           />
           <EditCorpusItemAction
-            item={data.approvedCorpusItemByExternalId!}
+            item={data.approvedCorpusItemByExternalId! as any}
             actionScreen={ActionScreen.Corpus}
             modalOpen={editModalOpen}
             toggleModal={toggleEditModal}

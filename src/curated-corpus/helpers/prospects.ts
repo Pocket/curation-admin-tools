@@ -85,6 +85,7 @@ export const transformProspectToApprovedItem = (
     externalId: '',
     prospectId: prospect.prospectId,
     url: prospect.url,
+    hasTrustedDomain: true,
     title: prospect.title ?? '',
     imageUrl: prospect.imageUrl ?? '',
     authors: transformAuthors(prospect.authors),

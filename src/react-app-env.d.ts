@@ -9,6 +9,10 @@ declare namespace NodeJS {
   }
 }
 
+// Global polyfills provided by webpack
+declare const process: NodeJS.Process;
+declare const Buffer: typeof import('buffer').Buffer;
+
 declare module '*.avif' {
   const src: string;
   export default src;

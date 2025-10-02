@@ -158,10 +158,7 @@ export const CustomSectionForm: React.FC<CustomSectionFormProps> = ({
 
               <SharedFormButtons
                 onCancel={onCancel}
-                saveButtonProps={{
-                  type: 'submit',
-                  disabled: !isValid || isSubmitting,
-                }}
+                saveButtonDisabled={!isValid || isSubmitting}
                 saveButtonLabel={submitButtonText}
               />
             </Box>

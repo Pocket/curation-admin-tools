@@ -25,6 +25,7 @@ describe('The ImageUpload component', () => {
       prospectId: '123-xyz',
       title: 'How To Win Friends And Influence People with React',
       url: 'http://www.test.com/how-to',
+      hasTrustedDomain: true,
       imageUrl: 'https://placeimg.com/640/480/people?random=494',
       excerpt:
         'Everything You Wanted to Know About React and Were Afraid To Ask',

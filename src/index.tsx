@@ -11,7 +11,7 @@ Sentry.init({
   dsn: config.sentryDSN,
   release: config.version,
   environment: config.environment,
-  integrations: [new Integrations.BrowserTracing()],
+  integrations: [new Integrations.BrowserTracing() as any],
   tracesSampleRate: 0.01,
 });
 

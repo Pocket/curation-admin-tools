@@ -22,9 +22,11 @@ describe('The ProspectListCard component', () => {
 
   beforeEach(() => {
     parserItem = {
+      id: '0',
       itemId: 'test-id',
       givenUrl: 'www.test-item.com',
       normalUrl: 'www.test-normal-item.com',
+      readerSlug: 'test-slug',
       timeToRead: 5,
     };
 
