@@ -15,6 +15,9 @@ export const curationPalette = {
   overlayBgBlack: '#000000',
   jetBlack: '#000000',
   regularGrey: '#555555',
+  border: '#E0E0E6', // for borders
+  lightRed: '#FFF0F0', // light red background for error/delete states
+  veryLightGrey: '#F5F5F7', // very light grey background
 };
 
 const theme: Theme = createTheme({

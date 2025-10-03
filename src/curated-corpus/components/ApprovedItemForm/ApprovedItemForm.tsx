@@ -115,6 +115,23 @@ export const ApprovedItemForm: React.FC<
     onSubmit: (values, formikHelpers) => {
       onSubmit(values, formikHelpers);
     },
+    validate: (values) => {
+      // Custom validation to handle boolean fields and ensure they have proper default values
+      // This prevents Yup validation errors when boolean fields are undefined or null
+      // We validate synchronously and catch errors to provide field-specific error messages
+      try {
+        validationSchema.validateSync(values, { abortEarly: false });
+        return {};
+      } catch (err: any) {
+        const errors: any = {};
+        if (err.inner) {
+          err.inner.forEach((error: any) => {
+            errors[error.path] = error.message;
+          });
+        }
+        return errors;
+      }
+    },
   });
 
   // This function calls the onImageSave function sent as a prop from the

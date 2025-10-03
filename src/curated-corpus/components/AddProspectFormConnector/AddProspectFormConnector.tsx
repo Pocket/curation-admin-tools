@@ -113,6 +113,9 @@ export const AddProspectFormConnector: React.FC<
   const [getApprovedItemByUrl] = useGetApprovedItemByUrlLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: 'no-cache',
+    onError: (error) => {
+      setIsLoaderShowing(false);
+    },
     onCompleted: (data) => {
       const approvedItem = data?.getApprovedCorpusItemByUrl;
 
@@ -152,6 +155,9 @@ export const AddProspectFormConnector: React.FC<
   const [getUrlMetadata] = useGetUrlMetadataLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: 'no-cache',
+    onError: (error) => {
+      setIsLoaderShowing(false);
+    },
     onCompleted: (data) => {
       // create a Prospect object from the URL metadata to be consumed by
       // the ApprovedItem form
@@ -159,6 +165,23 @@ export const AddProspectFormConnector: React.FC<
 
       // set state variable so that it can be used by the ApprovedItem form
       setCurrentProspect(prospect);
+
+      // Transform prospect to approved item format for the form
+      const authorsArray = prospect.authors
+        ? prospect.authors.split(',').map((name: string) => ({
+            name: name.trim(),
+            sortOrder: 0,
+          }))
+        : [];
+
+      const approvedItemFromProspect = {
+        ...prospect,
+        externalId: '',
+        authors: authorsArray,
+        status: prospect.status || 'RECOMMENDATION',
+        source: prospect.source || 'MANUAL',
+      };
+      setApprovedItem(approvedItemFromProspect);
 
       // set the isRecommendation state variable in the ProspectingPage component to true
       setIsRecommendation(true);
