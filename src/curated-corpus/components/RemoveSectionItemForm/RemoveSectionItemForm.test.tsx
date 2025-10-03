@@ -26,6 +26,35 @@ describe('The RemoveSectionItemForm component', () => {
     expect(buttons).toHaveLength(2);
   });
 
+  it('renders all expected removal reasons except ML', () => {
+    render(<RemoveSectionItemForm onSubmit={handleSubmit} />);
+
+    // "ML" reason should NOT be present
+    const mlCheckbox = screen.queryByLabelText(/ml/i);
+    expect(mlCheckbox).not.toBeInTheDocument();
+
+    // These are the expected labels (adjust capitalization if needed)
+    const expectedLabels = [
+      /article quality/i,
+      /controversial/i,
+      /dated/i,
+      /hed dek quality/i,
+      /image quality/i,
+      /no image/i,
+      /off topic/i,
+      /one sided/i,
+      /paywall/i,
+      /publisher quality/i,
+      /set diversity/i,
+      /other/i,
+    ];
+
+    expectedLabels.forEach((labelRegex) => {
+      const checkbox = screen.getByLabelText(labelRegex);
+      expect(checkbox).toBeInTheDocument();
+    });
+  });
+
   it('displays an error message if no checkboxes have been selected', async () => {
     render(<RemoveSectionItemForm onSubmit={handleSubmit} />);
 
