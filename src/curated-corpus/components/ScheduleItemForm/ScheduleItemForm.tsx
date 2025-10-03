@@ -198,12 +198,11 @@ export const ScheduleItemForm: React.FC<
   }, [formik.values.scheduledSurfaceGuid, refetchSections]);
 
   // Filter for active custom sections (non-ML sections with createSource="MANUAL")
-  // Exclude expired sections
+  // Include disabled sections, exclude expired sections
   const customSections =
     sectionsData?.getSectionsWithSectionItems?.filter(
       (section: Section) =>
         section.active &&
-        !section.disabled &&
         section.createSource === 'MANUAL' &&
         section.status !== SectionStatus.Expired,
     ) || [];
@@ -284,6 +283,7 @@ export const ScheduleItemForm: React.FC<
                       : section.status === SectionStatus.Live
                         ? ' (Live)'
                         : '';
+                  const disabledLabel = section.disabled ? ' (Disabled)' : '';
                   return (
                     <MenuItem
                       key={section.externalId}
@@ -291,6 +291,7 @@ export const ScheduleItemForm: React.FC<
                     >
                       {section.title}
                       {statusLabel}
+                      {disabledLabel}
                     </MenuItem>
                   );
                 })}
