@@ -57,12 +57,16 @@ export const RemoveSectionItemForm: React.FC<
       onSubmit(values, formikHelpers);
     },
   });
+  // remove "ML" from list of reasons, its only used by ML process
+  const filteredReasons = Object.values(SectionItemRemovalReason).filter(
+    (reason) => reason !== SectionItemRemovalReason.Ml,
+  );
   return (
     <form name="remove-section-item-form" onSubmit={formik.handleSubmit}>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
           <FormGroup>
-            {Object.values(SectionItemRemovalReason)
+            {filteredReasons
               .slice(0, 6) // first 6 reasons in first column (12 reasons total)
               .map((value) => {
                 return (
@@ -84,7 +88,7 @@ export const RemoveSectionItemForm: React.FC<
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormGroup>
-            {Object.values(SectionItemRemovalReason)
+            {filteredReasons
               .slice(6, 12) // remaining 6 reasons in second column
               .map((value) => {
                 return (
