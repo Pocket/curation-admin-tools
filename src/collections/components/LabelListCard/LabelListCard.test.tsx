@@ -17,7 +17,7 @@ describe('The LabelListCard component', () => {
   it('shows label name and edit button', () => {
     render(
       <MemoryRouter>
-        <LabelListCard label={label} />
+        <LabelListCard label={label} refetch={jest.fn()} />
       </MemoryRouter>,
     );
 

@@ -9,7 +9,7 @@ describe('The ShareableListItemCard component', () => {
     externalId: '123-abc',
     title: 'This is a story',
     url: 'https://this-is-a-domain.com/a-story',
-    itemId: 123456789,
+    itemId: '123456789',
     excerpt: 'A short description of said &lt;&gt; story',
     imageUrl: 'https://image-domain.com/image.png',
     authors: 'A.B. Cdefg',

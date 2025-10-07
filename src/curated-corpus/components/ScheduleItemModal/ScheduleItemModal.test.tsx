@@ -71,7 +71,7 @@ describe('ScheduleItemModal', () => {
     await screen.findByRole('form');
 
     userEvent.click(screen.getByText('Cancel'));
-    expect(toggleModal).toBeCalled();
+    expect(toggleModal).toHaveBeenCalled();
   });
 
   it('renders the default heading copy', () => {

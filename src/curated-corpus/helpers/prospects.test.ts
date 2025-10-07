@@ -65,7 +65,7 @@ describe('helper functions related to prospects', () => {
         id: 'test-id',
         prospectId: 'test-prospect-id',
         scheduledSurfaceGuid: 'en-us',
-        prospectType: ProspectType.SyndicatedNew,
+        prospectType: ProspectType.Recommended,
         url: 'test-prospect-url',
         createdAt: 20220110,
         domain: 'test-prospect-domain',

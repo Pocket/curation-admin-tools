@@ -41,7 +41,7 @@ describe('The ChipLabelsList component', () => {
 
     render(
       <MemoryRouter>
-        <ChipLabelsList collection={collection} />
+        <ChipLabelsList collection={collection} enableOnClick={false} />
       </MemoryRouter>,
     );
 
@@ -67,7 +67,7 @@ describe('The ChipLabelsList component', () => {
 
     render(
       <MemoryRouter>
-        <ChipLabelsList collection={collection} />
+        <ChipLabelsList collection={collection} enableOnClick={false} />
       </MemoryRouter>,
     );
 
@@ -103,7 +103,7 @@ describe('The ChipLabelsList component', () => {
 
     render(
       <MemoryRouter>
-        <ChipLabelsList collection={collection} />
+        <ChipLabelsList collection={collection} enableOnClick={false} />
       </MemoryRouter>,
     );
 
@@ -122,7 +122,7 @@ describe('The ChipLabelsList component', () => {
   it('omits label if labels are not set', () => {
     render(
       <MemoryRouter>
-        <ChipLabelsList collection={collection} />
+        <ChipLabelsList collection={collection} enableOnClick={false} />
       </MemoryRouter>,
     );
 

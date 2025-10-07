@@ -19,7 +19,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  _FieldSet: any;
   /** A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   Date: any;
   /** A String representing a date in the format of `yyyy-MM-dd HH:mm:ss` */
@@ -43,6 +42,7 @@ export type Scalars = {
   /** A URL - usually, for an interesting story on the internet that's worth saving to Pocket. */
   Url: any;
   ValidUrl: any;
+  _FieldSet: any;
 };
 
 /** Indicates where in the Curation Tools UI the action took place */
@@ -2705,6 +2705,7 @@ export type CuratedItemDataWithHistoryFragment = {
   language: CorpusLanguage;
   publisher: string;
   url: any;
+  hasTrustedDomain: boolean;
   imageUrl: any;
   excerpt: string;
   status: CuratedStatus;
@@ -3001,6 +3002,7 @@ export type ProspectDataWithCorpusItemsFragment = {
     language: CorpusLanguage;
     publisher: string;
     url: any;
+    hasTrustedDomain: boolean;
     imageUrl: any;
     excerpt: string;
     status: CuratedStatus;
@@ -3328,6 +3330,35 @@ export type CreateCollectionStoryMutation = {
       name: string;
       sortOrder: number;
     }>;
+  };
+};
+
+export type CreateCustomSectionMutationVariables = Exact<{
+  data: CreateCustomSectionInput;
+}>;
+
+export type CreateCustomSectionMutation = {
+  __typename?: 'Mutation';
+  createCustomSection: {
+    __typename?: 'Section';
+    externalId: string;
+    title: string;
+    scheduledSurfaceGuid: string;
+    sort?: number | null;
+    createSource: ActivitySource;
+    disabled: boolean;
+    active: boolean;
+    description?: string | null;
+    heroTitle?: string | null;
+    heroDescription?: string | null;
+    startDate?: any | null;
+    endDate?: any | null;
+    status: SectionStatus;
+    iab?: {
+      __typename?: 'IABMetadata';
+      taxonomy: string;
+      categories: Array<string>;
+    } | null;
   };
 };
 
@@ -4247,6 +4278,7 @@ export type UpdateProspectAsCuratedMutation = {
       language: CorpusLanguage;
       publisher: string;
       url: any;
+      hasTrustedDomain: boolean;
       imageUrl: any;
       excerpt: string;
       status: CuratedStatus;
@@ -4323,6 +4355,7 @@ export type ApprovedCorpusItemByExternalIdQuery = {
     language: CorpusLanguage;
     publisher: string;
     url: any;
+    hasTrustedDomain: boolean;
     imageUrl: any;
     excerpt: string;
     status: CuratedStatus;
@@ -4810,6 +4843,7 @@ export type GetProspectsQuery = {
       language: CorpusLanguage;
       publisher: string;
       url: any;
+      hasTrustedDomain: boolean;
       imageUrl: any;
       excerpt: string;
       status: CuratedStatus;
@@ -5480,6 +5514,7 @@ export const CuratedItemDataWithHistoryFragmentDoc = gql`
       sortOrder
     }
     url
+    hasTrustedDomain
     imageUrl
     excerpt
     status
@@ -5977,6 +6012,57 @@ export type CreateCollectionStoryMutationResult =
 export type CreateCollectionStoryMutationOptions = Apollo.BaseMutationOptions<
   CreateCollectionStoryMutation,
   CreateCollectionStoryMutationVariables
+>;
+export const CreateCustomSectionDocument = gql`
+  mutation createCustomSection($data: CreateCustomSectionInput!) {
+    createCustomSection(data: $data) {
+      ...BaseSectionData
+    }
+  }
+  ${BaseSectionDataFragmentDoc}
+`;
+export type CreateCustomSectionMutationFn = Apollo.MutationFunction<
+  CreateCustomSectionMutation,
+  CreateCustomSectionMutationVariables
+>;
+
+/**
+ * __useCreateCustomSectionMutation__
+ *
+ * To run a mutation, you first call `useCreateCustomSectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCustomSectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCustomSectionMutation, { data, loading, error }] = useCreateCustomSectionMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateCustomSectionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateCustomSectionMutation,
+    CreateCustomSectionMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateCustomSectionMutation,
+    CreateCustomSectionMutationVariables
+  >(CreateCustomSectionDocument, options);
+}
+export type CreateCustomSectionMutationHookResult = ReturnType<
+  typeof useCreateCustomSectionMutation
+>;
+export type CreateCustomSectionMutationResult =
+  Apollo.MutationResult<CreateCustomSectionMutation>;
+export type CreateCustomSectionMutationOptions = Apollo.BaseMutationOptions<
+  CreateCustomSectionMutation,
+  CreateCustomSectionMutationVariables
 >;
 export const CreateLabelDocument = gql`
   mutation createLabel($name: String!) {

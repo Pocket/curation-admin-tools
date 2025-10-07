@@ -15,6 +15,7 @@ describe('The LabelModal component', () => {
             isOpen={true}
             toggleModal={toggleModal}
             modalTitle="Add a New Label"
+            refetch={jest.fn()}
           />
         </SnackbarProvider>
       </MockedProvider>,
@@ -38,6 +39,7 @@ describe('The LabelModal component', () => {
             isOpen={true}
             toggleModal={toggleModal}
             modalTitle="Edit Label"
+            refetch={jest.fn()}
           />
         </SnackbarProvider>
       </MockedProvider>,

@@ -3,10 +3,65 @@ import {
   SectionStatus,
   ActivitySource,
   SectionItem,
+  ApprovedCorpusItem,
+  CorpusLanguage,
+  CorpusItemSource,
+  CuratedStatus,
 } from '../../api/generatedTypes';
 import { getSectionsWithSectionItems } from '../../api/queries/getSectionsWithSectionItems';
 import { constructMock } from './utils';
 import { DateTime } from 'luxon';
+
+/**
+ * Mock approved items for section items
+ */
+const mockApprovedItem1: ApprovedCorpusItem = {
+  externalId: 'approved-1',
+  prospectId: 'prospect-1',
+  title: 'Test Article 1',
+  url: 'https://example.com/article1',
+  hasTrustedDomain: true,
+  imageUrl: 'https://example.com/image1.jpg',
+  excerpt: 'This is a test article excerpt 1',
+  authors: [{ name: 'Author 1', sortOrder: 1 }],
+  publisher: 'Publisher 1',
+  datePublished: '2024-01-15',
+  language: CorpusLanguage.En,
+  topic: 'TECHNOLOGY',
+  status: CuratedStatus.Corpus,
+  source: CorpusItemSource.Manual,
+  isCollection: false,
+  isTimeSensitive: false,
+  isSyndicated: false,
+  createdBy: 'test-user',
+  createdAt: 1705276800,
+  updatedAt: 1705276800,
+  scheduledSurfaceHistory: [],
+};
+
+const mockApprovedItem2: ApprovedCorpusItem = {
+  externalId: 'approved-2',
+  prospectId: 'prospect-2',
+  title: 'Test Article 2',
+  url: 'https://example.com/article2',
+  hasTrustedDomain: true,
+  imageUrl: 'https://example.com/image2.jpg',
+  excerpt: 'This is a test article excerpt 2',
+  authors: [{ name: 'Author 2', sortOrder: 1 }],
+  publisher: 'Publisher 2',
+  datePublished: '2024-01-16',
+  language: CorpusLanguage.En,
+  topic: 'SCIENCE',
+  status: CuratedStatus.Corpus,
+  source: CorpusItemSource.Manual,
+  isCollection: false,
+  isTimeSensitive: false,
+  isSyndicated: false,
+  createdBy: 'test-user',
+  createdAt: 1705363200,
+  updatedAt: 1705363200,
+  scheduledSurfaceHistory: [],
+};
 
 /**
  * Mock section items for testing
@@ -14,31 +69,15 @@ import { DateTime } from 'luxon';
 const mockSectionItems: SectionItem[] = [
   {
     externalId: 'item-1',
-    title: 'Test Article 1',
-    url: 'https://example.com/article1',
-    imageUrl: 'https://example.com/image1.jpg',
-    excerpt: 'This is a test article excerpt 1',
-    authors: 'Author 1',
-    publisher: 'Publisher 1',
-    datePublished: '2024-01-15',
-    active: true,
-    createSource: ActivitySource.Manual,
-    sort: 1,
-    removalReasons: [],
+    approvedItem: mockApprovedItem1,
+    createdAt: 1705276800,
+    updatedAt: 1705276800,
   },
   {
     externalId: 'item-2',
-    title: 'Test Article 2',
-    url: 'https://example.com/article2',
-    imageUrl: 'https://example.com/image2.jpg',
-    excerpt: 'This is a test article excerpt 2',
-    authors: 'Author 2',
-    publisher: 'Publisher 2',
-    datePublished: '2024-01-16',
-    active: true,
-    createSource: ActivitySource.Manual,
-    sort: 2,
-    removalReasons: [],
+    approvedItem: mockApprovedItem2,
+    createdAt: 1705363200,
+    updatedAt: 1705363200,
   },
 ];
 
@@ -72,8 +111,8 @@ const createSection = (
   endDate,
   status,
   sectionItems,
-  createdAt: '2024-01-01T00:00:00Z',
-  updatedAt: '2024-01-01T00:00:00Z',
+  createdAt: 1704067200,
+  updatedAt: 1704067200,
 });
 
 /**

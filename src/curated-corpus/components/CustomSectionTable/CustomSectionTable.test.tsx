@@ -1,7 +1,8 @@
 import React from 'react';
+import { ActivitySource, SectionStatus } from '../../../api/generatedTypes';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { CustomSectionTable } from './CustomSectionTable';
-import { Section, SectionStatus } from '../../../api/generatedTypes';
+import { Section } from '../../../api/generatedTypes';
 import { MemoryRouter } from 'react-router-dom';
 
 // Mock useHistory
@@ -22,9 +23,12 @@ describe('CustomSectionTable', () => {
     endDate: '2024-12-31T00:00:00Z',
     active: true,
     status: SectionStatus.Live,
-    createSource: 'MANUAL',
+    createSource: ActivitySource.Manual,
     disabled: false,
     sectionItems: [],
+    createdAt: 1704067200,
+    updatedAt: 1704067200,
+    scheduledSurfaceGuid: 'NEW_TAB_EN_US',
   };
 
   const mockSectionScheduled: Section = {
@@ -134,8 +138,20 @@ describe('CustomSectionTable', () => {
     const sectionWithItems: Section = {
       ...mockSection,
       sectionItems: [
-        { __typename: 'SectionItem', externalId: '1', approvedItem: {} as any },
-        { __typename: 'SectionItem', externalId: '2', approvedItem: {} as any },
+        {
+          __typename: 'SectionItem',
+          externalId: '1',
+          approvedItem: {} as any,
+          createdAt: 1704067200,
+          updatedAt: 1704067200,
+        },
+        {
+          __typename: 'SectionItem',
+          externalId: '2',
+          approvedItem: {} as any,
+          createdAt: 1704067200,
+          updatedAt: 1704067200,
+        },
       ],
     };
 
@@ -156,7 +172,13 @@ describe('CustomSectionTable', () => {
     const sectionWithOneItem: Section = {
       ...mockSection,
       sectionItems: [
-        { __typename: 'SectionItem', externalId: '1', approvedItem: {} as any },
+        {
+          __typename: 'SectionItem',
+          externalId: '1',
+          approvedItem: {} as any,
+          createdAt: 1704067200,
+          updatedAt: 1704067200,
+        },
       ],
     };
 

@@ -1,10 +1,10 @@
 import React from 'react';
+import { ActivitySource, SectionStatus } from '../../../api/generatedTypes';
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { MemoryRouter } from 'react-router-dom';
 import { CustomSectionDetails } from './CustomSectionDetails';
 import { getSectionsWithSectionItems } from '../../../api/queries/getSectionsWithSectionItems';
-import { SectionStatus } from '../../../api/generatedTypes';
 import { SnackbarProvider } from 'notistack';
 
 // Mock the useParams hook
@@ -30,7 +30,7 @@ const mockSection = {
   status: SectionStatus.Live,
   startDate: '2024-01-01',
   endDate: '2024-12-31',
-  createSource: 'MANUAL',
+  createSource: ActivitySource.Manual,
   scheduledSurfaceGuid: 'NEW_TAB_EN_US',
   sort: 1,
   createdAt: 1704067200,

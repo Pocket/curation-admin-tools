@@ -9,6 +9,7 @@ import {
   ApprovedCorpusItem,
   IabMetadata,
   Section,
+  SectionStatus,
 } from '../../../api/generatedTypes';
 import { getTestApprovedItem } from '../../helpers/approvedItem';
 
@@ -32,6 +33,7 @@ describe('The SectionDetails component', () => {
       iab: iabMetadata1,
       active: true,
       disabled: false,
+      status: SectionStatus.Live,
       sectionItems: [
         {
           externalId: 'item-1',
@@ -52,6 +54,7 @@ describe('The SectionDetails component', () => {
       iab: iabMetadata2,
       active: true,
       disabled: true,
+      status: SectionStatus.Disabled,
       sectionItems: [
         {
           externalId: 'item-2',

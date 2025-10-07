@@ -15,6 +15,7 @@ export const CuratedItemDataWithHistory = gql`
       sortOrder
     }
     url
+    hasTrustedDomain
     imageUrl
     excerpt
     status
