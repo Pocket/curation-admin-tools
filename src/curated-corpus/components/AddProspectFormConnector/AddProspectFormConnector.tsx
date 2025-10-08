@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { FormikHelpers, FormikValues } from 'formik';
 import {
   ApprovedCorpusItem,
+  CorpusItemSource,
+  CorpusLanguage,
+  CuratedStatus,
   Prospect,
   useGetApprovedItemByUrlLazyQuery,
   useGetUrlMetadataLazyQuery,
@@ -113,6 +116,9 @@ export const AddProspectFormConnector: React.FC<
   const [getApprovedItemByUrl] = useGetApprovedItemByUrlLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: 'no-cache',
+    onError: (error) => {
+      setIsLoaderShowing(false);
+    },
     onCompleted: (data) => {
       const approvedItem = data?.getApprovedCorpusItemByUrl;
 
@@ -152,6 +158,9 @@ export const AddProspectFormConnector: React.FC<
   const [getUrlMetadata] = useGetUrlMetadataLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: 'no-cache',
+    onError: (error) => {
+      setIsLoaderShowing(false);
+    },
     onCompleted: (data) => {
       // create a Prospect object from the URL metadata to be consumed by
       // the ApprovedItem form
@@ -159,6 +168,43 @@ export const AddProspectFormConnector: React.FC<
 
       // set state variable so that it can be used by the ApprovedItem form
       setCurrentProspect(prospect);
+
+      // Transform prospect to approved item format for the form
+      const authorsArray = prospect.authors
+        ? prospect.authors.split(',').map((name: string) => ({
+            name: name.trim(),
+            sortOrder: 0,
+          }))
+        : [];
+
+      const now = Math.floor(Date.now() / 1000);
+
+      const approvedItemFromProspect: ApprovedCorpusItem = {
+        __typename: 'ApprovedCorpusItem',
+        externalId: '',
+        authors: authorsArray,
+        createdAt: now,
+        createdBy: '',
+        datePublished: prospect.datePublished ?? null,
+        excerpt: prospect.excerpt ?? '',
+        hasTrustedDomain: false,
+        imageUrl: prospect.imageUrl ?? '',
+        isCollection: Boolean(prospect.isCollection),
+        isSyndicated: Boolean(prospect.isSyndicated),
+        isTimeSensitive: false,
+        language: prospect.language ?? CorpusLanguage.En,
+        prospectId: prospect.prospectId ?? null,
+        publisher: prospect.publisher ?? '',
+        scheduledSurfaceHistory: [],
+        source: CorpusItemSource.Manual,
+        status: CuratedStatus.Recommendation,
+        title: prospect.title ?? '',
+        topic: prospect.topic ?? '',
+        updatedAt: now,
+        updatedBy: null,
+        url: prospect.url,
+      };
+      setApprovedItem(approvedItemFromProspect);
 
       // set the isRecommendation state variable in the ProspectingPage component to true
       setIsRecommendation(true);

@@ -3429,6 +3429,19 @@ export type CreateScheduledCorpusItemMutation = {
   };
 };
 
+export type CreateSectionItemMutationVariables = Exact<{
+  data: CreateSectionItemInput;
+}>;
+
+export type CreateSectionItemMutation = {
+  __typename?: 'Mutation';
+  createSectionItem: {
+    __typename?: 'SectionItem';
+    externalId: string;
+    rank?: number | null;
+  };
+};
+
 export type DeleteCollectionPartnerAssociationMutationVariables = Exact<{
   externalId: Scalars['String'];
 }>;
@@ -3475,6 +3488,19 @@ export type DeleteCollectionStoryMutation = {
       name: string;
       sortOrder: number;
     }>;
+  };
+};
+
+export type DeleteCustomSectionMutationVariables = Exact<{
+  externalId: Scalars['ID'];
+}>;
+
+export type DeleteCustomSectionMutation = {
+  __typename?: 'Mutation';
+  deleteCustomSection: {
+    __typename?: 'Section';
+    externalId: string;
+    title: string;
   };
 };
 
@@ -4232,6 +4258,35 @@ export type UpdateCollectionStorySortOrderMutation = {
       name: string;
       sortOrder: number;
     }>;
+  };
+};
+
+export type UpdateCustomSectionMutationVariables = Exact<{
+  data: UpdateCustomSectionInput;
+}>;
+
+export type UpdateCustomSectionMutation = {
+  __typename?: 'Mutation';
+  updateCustomSection: {
+    __typename?: 'Section';
+    externalId: string;
+    title: string;
+    scheduledSurfaceGuid: string;
+    sort?: number | null;
+    createSource: ActivitySource;
+    disabled: boolean;
+    active: boolean;
+    description?: string | null;
+    heroTitle?: string | null;
+    heroDescription?: string | null;
+    startDate?: any | null;
+    endDate?: any | null;
+    status: SectionStatus;
+    iab?: {
+      __typename?: 'IABMetadata';
+      taxonomy: string;
+      categories: Array<string>;
+    } | null;
   };
 };
 
@@ -6199,6 +6254,57 @@ export type CreateScheduledCorpusItemMutationOptions =
     CreateScheduledCorpusItemMutation,
     CreateScheduledCorpusItemMutationVariables
   >;
+export const CreateSectionItemDocument = gql`
+  mutation createSectionItem($data: CreateSectionItemInput!) {
+    createSectionItem(data: $data) {
+      ...BaseSectionItemData
+    }
+  }
+  ${BaseSectionItemDataFragmentDoc}
+`;
+export type CreateSectionItemMutationFn = Apollo.MutationFunction<
+  CreateSectionItemMutation,
+  CreateSectionItemMutationVariables
+>;
+
+/**
+ * __useCreateSectionItemMutation__
+ *
+ * To run a mutation, you first call `useCreateSectionItemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSectionItemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSectionItemMutation, { data, loading, error }] = useCreateSectionItemMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateSectionItemMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateSectionItemMutation,
+    CreateSectionItemMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateSectionItemMutation,
+    CreateSectionItemMutationVariables
+  >(CreateSectionItemDocument, options);
+}
+export type CreateSectionItemMutationHookResult = ReturnType<
+  typeof useCreateSectionItemMutation
+>;
+export type CreateSectionItemMutationResult =
+  Apollo.MutationResult<CreateSectionItemMutation>;
+export type CreateSectionItemMutationOptions = Apollo.BaseMutationOptions<
+  CreateSectionItemMutation,
+  CreateSectionItemMutationVariables
+>;
 export const DeleteCollectionPartnerAssociationDocument = gql`
   mutation deleteCollectionPartnerAssociation($externalId: String!) {
     deleteCollectionPartnerAssociation(externalId: $externalId) {
@@ -6302,6 +6408,57 @@ export type DeleteCollectionStoryMutationResult =
 export type DeleteCollectionStoryMutationOptions = Apollo.BaseMutationOptions<
   DeleteCollectionStoryMutation,
   DeleteCollectionStoryMutationVariables
+>;
+export const DeleteCustomSectionDocument = gql`
+  mutation deleteCustomSection($externalId: ID!) {
+    deleteCustomSection(externalId: $externalId) {
+      externalId
+      title
+    }
+  }
+`;
+export type DeleteCustomSectionMutationFn = Apollo.MutationFunction<
+  DeleteCustomSectionMutation,
+  DeleteCustomSectionMutationVariables
+>;
+
+/**
+ * __useDeleteCustomSectionMutation__
+ *
+ * To run a mutation, you first call `useDeleteCustomSectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCustomSectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCustomSectionMutation, { data, loading, error }] = useDeleteCustomSectionMutation({
+ *   variables: {
+ *      externalId: // value for 'externalId'
+ *   },
+ * });
+ */
+export function useDeleteCustomSectionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteCustomSectionMutation,
+    DeleteCustomSectionMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    DeleteCustomSectionMutation,
+    DeleteCustomSectionMutationVariables
+  >(DeleteCustomSectionDocument, options);
+}
+export type DeleteCustomSectionMutationHookResult = ReturnType<
+  typeof useDeleteCustomSectionMutation
+>;
+export type DeleteCustomSectionMutationResult =
+  Apollo.MutationResult<DeleteCustomSectionMutation>;
+export type DeleteCustomSectionMutationOptions = Apollo.BaseMutationOptions<
+  DeleteCustomSectionMutation,
+  DeleteCustomSectionMutationVariables
 >;
 export const DeleteScheduledItemDocument = gql`
   mutation deleteScheduledItem($data: DeleteScheduledCorpusItemInput!) {
@@ -7547,6 +7704,57 @@ export type UpdateCollectionStorySortOrderMutationOptions =
     UpdateCollectionStorySortOrderMutation,
     UpdateCollectionStorySortOrderMutationVariables
   >;
+export const UpdateCustomSectionDocument = gql`
+  mutation updateCustomSection($data: UpdateCustomSectionInput!) {
+    updateCustomSection(data: $data) {
+      ...BaseSectionData
+    }
+  }
+  ${BaseSectionDataFragmentDoc}
+`;
+export type UpdateCustomSectionMutationFn = Apollo.MutationFunction<
+  UpdateCustomSectionMutation,
+  UpdateCustomSectionMutationVariables
+>;
+
+/**
+ * __useUpdateCustomSectionMutation__
+ *
+ * To run a mutation, you first call `useUpdateCustomSectionMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCustomSectionMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCustomSectionMutation, { data, loading, error }] = useUpdateCustomSectionMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdateCustomSectionMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateCustomSectionMutation,
+    UpdateCustomSectionMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateCustomSectionMutation,
+    UpdateCustomSectionMutationVariables
+  >(UpdateCustomSectionDocument, options);
+}
+export type UpdateCustomSectionMutationHookResult = ReturnType<
+  typeof useUpdateCustomSectionMutation
+>;
+export type UpdateCustomSectionMutationResult =
+  Apollo.MutationResult<UpdateCustomSectionMutation>;
+export type UpdateCustomSectionMutationOptions = Apollo.BaseMutationOptions<
+  UpdateCustomSectionMutation,
+  UpdateCustomSectionMutationVariables
+>;
 export const UpdateLabelDocument = gql`
   mutation updateLabel($data: UpdateLabelInput!) {
     updateLabel(data: $data) {
