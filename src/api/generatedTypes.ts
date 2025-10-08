@@ -19,7 +19,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  _FieldSet: any;
   /** A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar. */
   Date: any;
   /** A String representing a date in the format of `yyyy-MM-dd HH:mm:ss` */
@@ -43,6 +42,7 @@ export type Scalars = {
   /** A URL - usually, for an interesting story on the internet that's worth saving to Pocket. */
   Url: any;
   ValidUrl: any;
+  _FieldSet: any;
 };
 
 /** Indicates where in the Curation Tools UI the action took place */
@@ -2705,6 +2705,7 @@ export type CuratedItemDataWithHistoryFragment = {
   language: CorpusLanguage;
   publisher: string;
   url: any;
+  hasTrustedDomain: boolean;
   imageUrl: any;
   excerpt: string;
   status: CuratedStatus;
@@ -3001,6 +3002,7 @@ export type ProspectDataWithCorpusItemsFragment = {
     language: CorpusLanguage;
     publisher: string;
     url: any;
+    hasTrustedDomain: boolean;
     imageUrl: any;
     excerpt: string;
     status: CuratedStatus;
@@ -4331,6 +4333,7 @@ export type UpdateProspectAsCuratedMutation = {
       language: CorpusLanguage;
       publisher: string;
       url: any;
+      hasTrustedDomain: boolean;
       imageUrl: any;
       excerpt: string;
       status: CuratedStatus;
@@ -4407,6 +4410,7 @@ export type ApprovedCorpusItemByExternalIdQuery = {
     language: CorpusLanguage;
     publisher: string;
     url: any;
+    hasTrustedDomain: boolean;
     imageUrl: any;
     excerpt: string;
     status: CuratedStatus;
@@ -4894,6 +4898,7 @@ export type GetProspectsQuery = {
       language: CorpusLanguage;
       publisher: string;
       url: any;
+      hasTrustedDomain: boolean;
       imageUrl: any;
       excerpt: string;
       status: CuratedStatus;
@@ -5564,6 +5569,7 @@ export const CuratedItemDataWithHistoryFragmentDoc = gql`
       sortOrder
     }
     url
+    hasTrustedDomain
     imageUrl
     excerpt
     status

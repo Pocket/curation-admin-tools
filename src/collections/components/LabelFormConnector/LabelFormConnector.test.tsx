@@ -28,7 +28,7 @@ describe('LabelFormConnector', () => {
     render(
       <MockedProvider mocks={mocks}>
         <SnackbarProvider>
-          <LabelFormConnector toggleModal={toggleModal} />
+          <LabelFormConnector toggleModal={toggleModal} refetch={jest.fn()} />
         </SnackbarProvider>
       </MockedProvider>,
     );
@@ -59,7 +59,7 @@ describe('LabelFormConnector', () => {
     render(
       <MockedProvider mocks={mocks}>
         <SnackbarProvider>
-          <LabelFormConnector toggleModal={toggleModal} />
+          <LabelFormConnector toggleModal={toggleModal} refetch={jest.fn()} />
         </SnackbarProvider>
       </MockedProvider>,
     );
@@ -94,6 +94,7 @@ describe('LabelFormConnector', () => {
           <LabelFormConnector
             toggleModal={toggleModal}
             runCreateLabelMutation={true}
+            refetch={jest.fn()}
           />
         </SnackbarProvider>
       </MockedProvider>,
@@ -138,6 +139,7 @@ describe('LabelFormConnector', () => {
             toggleModal={toggleModal}
             label={label}
             runUpdateLabelMutation={true}
+            refetch={jest.fn()}
           />
         </SnackbarProvider>
       </MockedProvider>,
@@ -181,6 +183,7 @@ describe('LabelFormConnector', () => {
             toggleModal={toggleModal}
             label={label}
             runUpdateLabelMutation={true}
+            refetch={jest.fn()}
           />
         </SnackbarProvider>
       </MockedProvider>,
@@ -219,7 +222,7 @@ describe('LabelFormConnector', () => {
     render(
       <MockedProvider>
         <SnackbarProvider>
-          <LabelFormConnector toggleModal={toggleModal} />
+          <LabelFormConnector toggleModal={toggleModal} refetch={jest.fn()} />
         </SnackbarProvider>
       </MockedProvider>,
     );
@@ -253,7 +256,7 @@ describe('LabelFormConnector', () => {
     render(
       <MockedProvider mocks={mocks}>
         <SnackbarProvider>
-          <LabelFormConnector toggleModal={toggleModal} />
+          <LabelFormConnector toggleModal={toggleModal} refetch={jest.fn()} />
         </SnackbarProvider>
       </MockedProvider>,
     );
@@ -292,6 +295,7 @@ describe('LabelFormConnector', () => {
           <LabelFormConnector
             toggleModal={toggleModal}
             runCreateLabelMutation={true}
+            refetch={jest.fn()}
           />
         </SnackbarProvider>
       </MockedProvider>,
@@ -333,6 +337,7 @@ describe('LabelFormConnector', () => {
             toggleModal={toggleModal}
             runUpdateLabelMutation={true}
             label={label}
+            refetch={jest.fn()}
           />
         </SnackbarProvider>
       </MockedProvider>,
@@ -368,7 +373,7 @@ describe('LabelFormConnector', () => {
     render(
       <MockedProvider mocks={mocks}>
         <SnackbarProvider>
-          <LabelFormConnector toggleModal={toggleModal} />
+          <LabelFormConnector toggleModal={toggleModal} refetch={jest.fn()} />
         </SnackbarProvider>
       </MockedProvider>,
     );

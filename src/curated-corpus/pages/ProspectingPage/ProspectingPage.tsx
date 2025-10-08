@@ -52,16 +52,16 @@ import { DropdownOption } from '../../helpers/definitions';
 import { EmptyState } from './EmptyState';
 import { transformAuthors } from '../../../_shared/utils/transformAuthors';
 import { getDisplayTopic } from '../../helpers/topics';
-import { ProspectFilerOptions } from '../../components/ProspectFilters/ProspectFilters';
+import { ProspectFilterOptions } from '../../components/ProspectFilters/ProspectFilters';
 
 const distantPast = new Date('1970-01-01Z00:00:00:000').getTime();
 
 export const ProspectingPage: React.FC = (): JSX.Element => {
-  const initialProspectFiltersState: ProspectFilerOptions = {
+  const initialProspectFiltersState: ProspectFilterOptions = {
     topics: 'All',
   };
   const [prospectMetadataFilters, setProspectMetadataFilters] =
-    useState<ProspectFilerOptions>(initialProspectFiltersState);
+    useState<ProspectFilterOptions>(initialProspectFiltersState);
 
   // set up the initial scheduled surface guid value (nothing at this point)
   const [currentScheduledSurfaceGuid, setCurrentScheduledSurfaceGuid] =
@@ -255,7 +255,7 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   // processed.
   useEffect(() => {
     if (data) {
-      const fetchedProspects = data.getProspects;
+      const fetchedProspects = data.getProspects as any;
       setUnsortedProspects(fetchedProspects);
 
       // if both sort filters are unset(initial page load), render the received prospects and early exit

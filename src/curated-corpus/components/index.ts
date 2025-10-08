@@ -44,7 +44,10 @@ export { ScheduleItemFormConnector } from './ScheduleItemFormConnector/ScheduleI
 export { ScheduleItemForm } from './ScheduleItemForm/ScheduleItemForm';
 export { ScheduleItemModal } from './ScheduleItemModal/ScheduleItemModal';
 export { ScheduleDayFilterRow } from './ScheduleDayFilterRow/ScheduleDayFilterRow';
-export type { ScheduleDayFilterOptions } from './ScheduleDayFilterRow/ScheduleDayFilterRow';
+export type {
+  ScheduleDayFilterOptions,
+  ProspectFilterOptions,
+} from './ScheduleDayFilterRow/ScheduleDayFilterRow';
 export type { StoriesSummary } from './ScheduleSummaryCard/ScheduleSummaryCard';
 export { ScheduleSummaryCard } from './ScheduleSummaryCard/ScheduleSummaryCard';
 export { ScheduleSummaryConnector } from './ScheduleSummaryConnector/ScheduleSummaryConnector';

@@ -6,6 +6,7 @@ import { createCustomSection } from '../../../api/mutations/createCustomSection'
 import { SnackbarProvider } from 'notistack';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
+import { ActivitySource } from '../../../api/generatedTypes';
 
 // Mock useHistory
 const mockPush = jest.fn();
@@ -31,7 +32,7 @@ const mocks = [
           scheduledSurfaceGuid: 'NEW_TAB_EN_US',
           active: true,
           disabled: false,
-          createSource: 'MANUAL',
+          createSource: ActivitySource.Manual,
           iab: {
             taxonomy: 'IAB-3.0',
             categories: ['IAB1'],
@@ -49,7 +50,7 @@ const mocks = [
           disabled: false,
           startDate: '2024-01-01',
           endDate: null,
-          createSource: 'MANUAL',
+          createSource: ActivitySource.Manual,
           __typename: 'Section',
         },
       },
@@ -69,7 +70,7 @@ const mocks = [
           scheduledSurfaceGuid: 'NEW_TAB_EN_US',
           active: true,
           disabled: false,
-          createSource: 'MANUAL',
+          createSource: ActivitySource.Manual,
         },
       },
     },
@@ -85,7 +86,7 @@ const mocks = [
           disabled: false,
           startDate: '2024-01-01',
           endDate: '2024-12-31',
-          createSource: 'MANUAL',
+          createSource: ActivitySource.Manual,
           __typename: 'Section',
         },
       },

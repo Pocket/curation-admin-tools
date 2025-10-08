@@ -53,6 +53,8 @@ export const CorpusItemPage: React.FC = (): JSX.Element => {
    * Keep track of whether the "Edit this item" modal is open or not.
    */
   const [editModalOpen, toggleEditModal] = useToggle(false);
+  const approvedItem = data?.approvedCorpusItemByExternalId ?? null;
+
   return (
     <>
       {!data && <HandleApiResponse loading={loading} error={error} />}
@@ -72,18 +74,18 @@ export const CorpusItemPage: React.FC = (): JSX.Element => {
           </Box>
         </>
       )}
-      {data && data.approvedCorpusItemByExternalId !== null && (
+      {approvedItem && (
         <>
           <Grid container spacing={6}>
             <Grid item xs={12} sm={8}>
               <h1>
-                {data.approvedCorpusItemByExternalId?.title}
+                {approvedItem.title}
                 <Typography variant="subtitle2" component="div">
                   Corpus Item
                 </Typography>
               </h1>
 
-              <ApprovedItemInfo item={data.approvedCorpusItemByExternalId!} />
+              <ApprovedItemInfo item={approvedItem} />
             </Grid>
 
             <Grid item xs={12} sm={4}>
@@ -106,27 +108,25 @@ export const CorpusItemPage: React.FC = (): JSX.Element => {
                 </ButtonGroup>
               </Box>
 
-              <ApprovedItemCurationHistory
-                item={data.approvedCorpusItemByExternalId!}
-              />
+              <ApprovedItemCurationHistory item={approvedItem} />
             </Grid>
           </Grid>
           <RejectCorpusItemAction
-            item={data.approvedCorpusItemByExternalId!}
+            item={approvedItem}
             actionScreen={ActionScreen.Corpus}
             modalOpen={rejectModalOpen}
             toggleModal={toggleRejectModal}
             refetch={refetch}
           />
           <ScheduleCorpusItemAction
-            item={data.approvedCorpusItemByExternalId!}
+            item={approvedItem}
             modalOpen={scheduleModalOpen}
             toggleModal={toggleScheduleModal}
             refetch={refetch}
             actionScreen={ActionScreen.Corpus}
           />
           <EditCorpusItemAction
-            item={data.approvedCorpusItemByExternalId!}
+            item={approvedItem}
             actionScreen={ActionScreen.Corpus}
             modalOpen={editModalOpen}
             toggleModal={toggleEditModal}

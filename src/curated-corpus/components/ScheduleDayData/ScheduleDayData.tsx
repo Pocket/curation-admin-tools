@@ -8,6 +8,7 @@ import {
 } from '../../../api/generatedTypes';
 import {
   ScheduleDayFilterOptions,
+  ProspectFilterOptions,
   ScheduleDayHeading,
   ScheduledItemCardWrapper,
 } from '../';
@@ -140,7 +141,13 @@ export const ScheduleDayData: React.FC<ScheduleDayDataProps> = (
         <ScheduleDayHeading
           onAddItem={onAddItem}
           data={data}
-          setFilters={setFilters}
+          setFilters={
+            setFilters as React.Dispatch<
+              React.SetStateAction<
+                ScheduleDayFilterOptions | ProspectFilterOptions
+              >
+            >
+          }
           key={`{data.scheduledDate}-day-heading`}
         />
       </Box>
