@@ -107,7 +107,7 @@ export const ScheduleCorpusItemAction: React.FC<
         formikHelpers.setSubmitting(false);
 
         // If custom sections were selected, add the item to those sections
-        let lastSectionId = null;
+        let lastSectionId: string | null = null;
         if (values.customSectionIds && values.customSectionIds.length > 0) {
           for (const sectionExternalId of values.customSectionIds) {
             try {

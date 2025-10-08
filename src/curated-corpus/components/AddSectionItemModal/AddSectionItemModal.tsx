@@ -16,6 +16,7 @@ import {
   useGetUrlMetadataLazyQuery,
   CuratedStatus,
   CorpusItemSource,
+  UrlMetadata,
 } from '../../../api/generatedTypes';
 
 interface AddSectionItemModalProps {
@@ -140,6 +141,11 @@ export const AddSectionItemModal: React.FC<AddSectionItemModalProps> = ({
       }
 
       const metadata = metadataResult.data.getUrlMetadata;
+      const legacyMetadata = metadata as UrlMetadata & {
+        image?: string | null;
+        topic?: string | null;
+        isTimeSensitive?: boolean | null;
+      };
 
       // Parse authors correctly
       const authorsArray = metadata.authors
@@ -149,20 +155,22 @@ export const AddSectionItemModal: React.FC<AddSectionItemModalProps> = ({
           }))
         : [];
 
+      const legacyImage = legacyMetadata.image ?? null;
+
       // Transform metadata to approved item format for the form
       const approvedItemFromMetadata = {
         url: normalizedUrl,
         title: metadata.title || 'Untitled Article',
         excerpt: metadata.excerpt || 'No excerpt available.',
         authors: authorsArray,
-        imageUrl: metadata.imageUrl || metadata.image || '',
+        imageUrl: metadata.imageUrl || legacyImage || '',
         publisher: metadata.publisher || metadata.domain || 'Unknown',
         language: metadata.language ? metadata.language.toUpperCase() : 'EN',
-        topic: metadata.topic || '',
+        topic: legacyMetadata.topic || '',
         status: CuratedStatus.Corpus,
         source: CorpusItemSource.Manual,
         isCollection: metadata.isCollection || false,
-        isTimeSensitive: metadata.isTimeSensitive || false,
+        isTimeSensitive: legacyMetadata.isTimeSensitive || false,
         isSyndicated: metadata.isSyndicated || false,
         externalId: '', // Will be set when saved
       };

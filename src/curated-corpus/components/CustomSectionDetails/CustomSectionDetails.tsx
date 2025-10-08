@@ -28,6 +28,10 @@ import {
   useGetSectionsWithSectionItemsQuery,
   useCreateSectionItemMutation,
   useCreateApprovedCorpusItemMutation,
+  ActionScreen,
+  CuratedStatus,
+  CorpusItemSource,
+  CorpusLanguage,
 } from '../../../api/generatedTypes';
 import { deleteCustomSection } from '../../../api/mutations/deleteCustomSection';
 import { disableEnableSection } from '../../../api/mutations/disableEnableSection';
@@ -45,6 +49,7 @@ import { HandleApiResponse } from '../../../_shared/components';
 import { useToggle, useRunMutation } from '../../../_shared/hooks';
 import { getIABCategoryTreeLabel } from '../../helpers/helperFunctions';
 import { curationPalette } from '../../../theme';
+import { ApprovedItemFromProspect } from '../../helpers/definitions';
 
 interface CustomSectionDetailsProps {
   /**
@@ -103,6 +108,32 @@ export const CustomSectionDetails: React.FC<CustomSectionDetailsProps> = ({
   const [isRecommendation, setIsRecommendation] = useState<boolean>(false);
   const [, setIsManualSubmission] = useState<boolean>(false);
   const [itemToRemove, setItemToRemove] = useState<SectionItem | undefined>();
+
+  const blankApprovedItem: ApprovedItemFromProspect = {
+    __typename: 'ApprovedCorpusItem',
+    externalId: '',
+    authors: [],
+    createdAt: 0,
+    createdBy: '',
+    datePublished: null,
+    excerpt: '',
+    hasTrustedDomain: false,
+    imageUrl: '',
+    isCollection: false,
+    isSyndicated: false,
+    isTimeSensitive: false,
+    language: CorpusLanguage.En,
+    prospectId: null,
+    publisher: '',
+    scheduledSurfaceHistory: [],
+    source: CorpusItemSource.Manual,
+    status: CuratedStatus.Recommendation,
+    title: '',
+    topic: '',
+    updatedAt: 0,
+    updatedBy: null,
+    url: '',
+  };
 
   // Fetch sections data and filter for the specific section
   const { data, loading, error, refetch } = useGetSectionsWithSectionItemsQuery(
@@ -252,18 +283,24 @@ export const CustomSectionDetails: React.FC<CustomSectionDetailsProps> = ({
           url: values.url,
           title: values.title,
           excerpt: values.excerpt,
-          status: values.curationStatus || 'RECOMMENDATION',
-          language: values.language || 'EN',
+          status:
+            (values.curationStatus as CuratedStatus | undefined) ??
+            CuratedStatus.Recommendation,
+          language:
+            (values.language as CorpusLanguage | undefined) ??
+            CorpusLanguage.En,
           authors: authorsArray,
           publisher: values.publisher,
           datePublished: values.datePublished,
-          source: values.source || 'MANUAL',
+          source:
+            (values.source as CorpusItemSource | undefined) ??
+            CorpusItemSource.Manual,
           imageUrl: values.imageUrl,
           topic: values.topic || '',
           isCollection: values.collection || false,
           isTimeSensitive: values.timeSensitive || false,
           isSyndicated: values.syndicated || false,
-          actionScreen: 'SECTIONS',
+          actionScreen: ActionScreen.Sections,
           scheduledSurfaceGuid,
         };
 
@@ -578,22 +615,7 @@ export const CustomSectionDetails: React.FC<CustomSectionDetailsProps> = ({
 
       {(approvedItem || approvedItemModalOpen) && (
         <ApprovedItemModal
-          approvedItem={
-            approvedItem || {
-              url: '',
-              title: '',
-              excerpt: '',
-              authors: [],
-              publisher: '',
-              imageUrl: '',
-              language: 'EN',
-              topic: '',
-              status: 'RECOMMENDATION',
-              isTimeSensitive: false,
-              isSyndicated: false,
-              isCollection: false,
-            }
-          }
+          approvedItem={approvedItem || blankApprovedItem}
           isOpen={approvedItemModalOpen}
           isRecommendation={isRecommendation}
           toggleModal={() => {

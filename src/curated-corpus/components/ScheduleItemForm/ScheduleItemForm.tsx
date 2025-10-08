@@ -30,6 +30,7 @@ import {
   ScheduledSurface,
   Section,
   SectionStatus,
+  ActivitySource,
   useGetSectionsWithSectionItemsQuery,
 } from '../../../api/generatedTypes';
 import { ScheduleSummaryConnector } from '../ScheduleSummaryConnector/ScheduleSummaryConnector';
@@ -203,7 +204,7 @@ export const ScheduleItemForm: React.FC<
     sectionsData?.getSectionsWithSectionItems?.filter(
       (section: Section) =>
         section.active &&
-        section.createSource === 'MANUAL' &&
+        section.createSource === ActivitySource.Manual &&
         section.status !== SectionStatus.Expired,
     ) || [];
 

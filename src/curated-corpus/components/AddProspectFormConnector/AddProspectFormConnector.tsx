@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { FormikHelpers, FormikValues } from 'formik';
 import {
   ApprovedCorpusItem,
+  CorpusItemSource,
+  CorpusLanguage,
+  CuratedStatus,
   Prospect,
   useGetApprovedItemByUrlLazyQuery,
   useGetUrlMetadataLazyQuery,
@@ -174,12 +177,32 @@ export const AddProspectFormConnector: React.FC<
           }))
         : [];
 
-      const approvedItemFromProspect = {
-        ...prospect,
+      const now = Math.floor(Date.now() / 1000);
+
+      const approvedItemFromProspect: ApprovedCorpusItem = {
+        __typename: 'ApprovedCorpusItem',
         externalId: '',
         authors: authorsArray,
-        status: prospect.status || 'RECOMMENDATION',
-        source: prospect.source || 'MANUAL',
+        createdAt: now,
+        createdBy: '',
+        datePublished: prospect.datePublished ?? null,
+        excerpt: prospect.excerpt ?? '',
+        hasTrustedDomain: false,
+        imageUrl: prospect.imageUrl ?? '',
+        isCollection: Boolean(prospect.isCollection),
+        isSyndicated: Boolean(prospect.isSyndicated),
+        isTimeSensitive: false,
+        language: prospect.language ?? CorpusLanguage.En,
+        prospectId: prospect.prospectId ?? null,
+        publisher: prospect.publisher ?? '',
+        scheduledSurfaceHistory: [],
+        source: CorpusItemSource.Manual,
+        status: CuratedStatus.Recommendation,
+        title: prospect.title ?? '',
+        topic: prospect.topic ?? '',
+        updatedAt: now,
+        updatedBy: null,
+        url: prospect.url,
       };
       setApprovedItem(approvedItemFromProspect);
 

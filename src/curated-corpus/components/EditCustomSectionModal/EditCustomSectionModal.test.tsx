@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { MockedProvider } from '@apollo/client/testing';
 import { SnackbarProvider } from 'notistack';
 import { EditCustomSectionModal } from './EditCustomSectionModal';
-import { SectionStatus } from '../../../api/generatedTypes';
+import { ActivitySource, SectionStatus } from '../../../api/generatedTypes';
 
 describe('EditCustomSectionModal', () => {
   const mockOnClose = jest.fn();
@@ -20,7 +20,7 @@ describe('EditCustomSectionModal', () => {
     status: SectionStatus.Live,
     startDate: '2024-01-01',
     endDate: '2024-12-31',
-    createSource: 'MANUAL',
+    createSource: ActivitySource.Manual,
     scheduledSurfaceGuid: 'NEW_TAB_EN_US',
     sort: 1,
     createdAt: 1704067200,
