@@ -689,6 +689,8 @@ export const CustomSectionDetails: React.FC<CustomSectionDetailsProps> = ({
         }}
         onConfirm={async () => {
           if (itemToRemove) {
+            // TODO(HNT-1126): Align this removal flow with the ML section modal so editors
+            // can pick from the standardized removal reasons instead of defaulting to Other.
             const input: RemoveSectionItemInput = {
               externalId: itemToRemove.externalId,
               deactivateReasons: [SectionItemRemovalReason.Other],
