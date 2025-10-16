@@ -28,6 +28,28 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Curation Tools</title>
+    <script>
+      (function () {
+        var existing = window.process || {};
+        existing.env = existing.env || {};
+        existing.browser = true;
+        existing.version = existing.version || '';
+        existing.versions = existing.versions || {};
+        existing.nextTick =
+          existing.nextTick ||
+          function (cb) {
+            return setTimeout(cb, 0);
+          };
+        window.process = existing;
+        window.process.env.NODE_ENV = window.process.env.NODE_ENV || 'development';
+        window.process.env.PUBLIC_URL = window.process.env.PUBLIC_URL || '';
+        // Ensure global variable binding exists
+        window.process = existing;
+        window.process.env = existing.env;
+        window.process.browser = true;
+        var process = window.process;
+      })();
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

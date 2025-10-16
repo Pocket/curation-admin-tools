@@ -12,6 +12,7 @@ import {
   LinearProgress,
   TextField,
   Typography,
+  MenuItem,
 } from '@mui/material';
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
@@ -27,6 +28,10 @@ import { getValidationSchema } from './ScheduleItemForm.validation';
 import {
   ManualScheduleReason,
   ScheduledSurface,
+  Section,
+  SectionStatus,
+  ActivitySource,
+  useGetSectionsWithSectionItemsQuery,
 } from '../../../api/generatedTypes';
 import { ScheduleSummaryConnector } from '../ScheduleSummaryConnector/ScheduleSummaryConnector';
 import { formatFormLabel } from '../../helpers/helperFunctions';
@@ -138,6 +143,7 @@ export const ScheduleItemForm: React.FC<
       scheduledSurfaceGuid: selectedScheduledSurfaceGuid,
       approvedItemExternalId,
       scheduledDate: selectedDate,
+      customSectionIds: [],
       [ManualScheduleReason.Evergreen]: false,
       [ManualScheduleReason.FormatDiversity]: false,
       [ManualScheduleReason.PublisherDiversity]: false,
@@ -175,6 +181,33 @@ export const ScheduleItemForm: React.FC<
     },
   });
 
+  // Get available custom sections for the selected scheduled surface
+  const { data: sectionsData, refetch: refetchSections } =
+    useGetSectionsWithSectionItemsQuery({
+      variables: {
+        scheduledSurfaceGuid:
+          formik.values.scheduledSurfaceGuid || scheduledSurfaceGuid || '',
+      },
+      skip: !formik.values.scheduledSurfaceGuid && !scheduledSurfaceGuid,
+    });
+
+  // Refetch sections when scheduled surface changes
+  useEffect(() => {
+    if (formik.values.scheduledSurfaceGuid) {
+      refetchSections();
+    }
+  }, [formik.values.scheduledSurfaceGuid, refetchSections]);
+
+  // Filter for active custom sections (non-ML sections with createSource="MANUAL")
+  // Include disabled sections, exclude expired sections
+  const customSections =
+    sectionsData?.getSectionsWithSectionItems?.filter(
+      (section: Section) =>
+        section.active &&
+        section.createSource === ActivitySource.Manual &&
+        section.status !== SectionStatus.Expired,
+    ) || [];
+
   return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
       <form name="schedule-item-form" onSubmit={formik.handleSubmit}>
@@ -206,12 +239,13 @@ export const ScheduleItemForm: React.FC<
           <Grid item xs={12} sm={4}>
             <DatePicker
               label="Choose a date"
-              inputFormat="MMMM d, yyyy"
+              inputFormat="MM/dd/yyyy"
               value={selectedDate}
               onChange={handleDateChange}
               disablePast
               openTo="day"
               maxDate={tomorrow.plus({ days: 365 })}
+              disableMaskedInput
               renderInput={(params: any) => (
                 <TextField
                   fullWidth
@@ -223,6 +257,48 @@ export const ScheduleItemForm: React.FC<
               )}
             />
           </Grid>
+
+          {/* Custom Sections Dropdown */}
+          {customSections.length > 0 && formik.values.scheduledSurfaceGuid && (
+            <Grid item xs={12}>
+              <TextField
+                select
+                SelectProps={{
+                  multiple: true,
+                }}
+                fullWidth
+                size="small"
+                variant="outlined"
+                id="customSectionIds"
+                label="Add to Custom Sections (Optional)"
+                value={formik.values.customSectionIds || []}
+                onChange={(e) =>
+                  formik.setFieldValue('customSectionIds', e.target.value)
+                }
+                helperText="Select one or more custom sections to add this item to"
+              >
+                {customSections.map((section: Section) => {
+                  const statusLabel =
+                    section.status === SectionStatus.Scheduled
+                      ? ' (Scheduled)'
+                      : section.status === SectionStatus.Live
+                        ? ' (Live)'
+                        : '';
+                  const disabledLabel = section.disabled ? ' (Disabled)' : '';
+                  return (
+                    <MenuItem
+                      key={section.externalId}
+                      value={section.externalId}
+                    >
+                      {section.title}
+                      {statusLabel}
+                      {disabledLabel}
+                    </MenuItem>
+                  );
+                })}
+              </TextField>
+            </Grid>
+          )}
 
           <Grid
             container

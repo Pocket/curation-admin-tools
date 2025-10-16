@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { DateTime } from 'luxon';
 import { Formik, Form, Field } from 'formik';
-import { Box, TextField, MenuItem } from '@mui/material';
+import { Box, TextField, MenuItem, Button } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
 import { CORPUS_IAB_CATEGORIES } from '../../../api/corpusIABCategories';
 import { SharedFormButtons } from '../../../_shared/components';
+import { DeleteConfirmationModal } from '../DeleteConfirmationModal/DeleteConfirmationModal';
 import {
   getValidationSchema,
   CustomSectionFormData,
@@ -16,17 +17,23 @@ interface CustomSectionFormProps {
   initialValues?: Partial<CustomSectionFormData>;
   onSubmit: (values: CustomSectionFormData) => void | Promise<void>;
   onCancel?: () => void;
+  onDelete?: () => void;
   submitButtonText?: string;
   isSubmitting?: boolean;
+  isEditMode?: boolean;
 }
 
 export const CustomSectionForm: React.FC<CustomSectionFormProps> = ({
   initialValues,
   onSubmit,
   onCancel,
+  onDelete,
   submitButtonText = 'Create',
   isSubmitting = false,
+  isEditMode = false,
 }) => {
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
   // Get IAB categories for dropdown
   const iabCategories = Object.values(CORPUS_IAB_CATEGORIES['IAB-3.0'] || {})
     .filter((cat) => cat.parentId === null) // Get only top-level categories
@@ -55,7 +62,7 @@ export const CustomSectionForm: React.FC<CustomSectionFormProps> = ({
     <LocalizationProvider dateAdapter={AdapterLuxon}>
       <Formik
         initialValues={mergedInitialValues}
-        validationSchema={getValidationSchema()}
+        validationSchema={getValidationSchema(isEditMode)}
         onSubmit={onSubmit}
         enableReinitialize
       >
@@ -107,29 +114,39 @@ export const CustomSectionForm: React.FC<CustomSectionFormProps> = ({
               <Box sx={{ display: 'flex', gap: 2 }}>
                 <DatePicker
                   label="Start Date"
+                  inputFormat="MM/dd/yyyy"
+                  disableMaskedInput
+                  minDate={DateTime.now().startOf('day')}
                   value={values.startDate}
                   onChange={(newValue) => setFieldValue('startDate', newValue)}
                   renderInput={(params) => (
                     <TextField
                       {...params}
+                      fullWidth
                       required
                       error={touched.startDate && !!errors.startDate}
                       helperText={touched.startDate && errors.startDate}
-                      fullWidth
                     />
                   )}
                 />
 
                 <DatePicker
                   label="End Date (Optional)"
+                  inputFormat="MM/dd/yyyy"
+                  disableMaskedInput
+                  minDate={
+                    values.startDate
+                      ? values.startDate.startOf('day')
+                      : DateTime.now().startOf('day')
+                  }
                   value={values.endDate}
                   onChange={(newValue) => setFieldValue('endDate', newValue)}
                   renderInput={(params) => (
                     <TextField
                       {...params}
+                      fullWidth
                       error={touched.endDate && !!errors.endDate}
                       helperText={touched.endDate && errors.endDate}
-                      fullWidth
                     />
                   )}
                 />
@@ -156,15 +173,39 @@ export const CustomSectionForm: React.FC<CustomSectionFormProps> = ({
                 ))}
               </Field>
 
-              <SharedFormButtons
-                onCancel={onCancel}
-                saveButtonDisabled={!isValid || isSubmitting}
-                saveButtonLabel={submitButtonText}
-              />
+              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                {isEditMode && onDelete && (
+                  <Button
+                    color="error"
+                    onClick={() => setDeleteModalOpen(true)}
+                    variant="outlined"
+                  >
+                    Delete Section
+                  </Button>
+                )}
+                <Box sx={{ flexGrow: 1 }} />
+                <SharedFormButtons
+                  onCancel={onCancel}
+                  saveButtonDisabled={!isValid || isSubmitting}
+                  saveButtonLabel={submitButtonText}
+                />
+              </Box>
             </Box>
           </Form>
         )}
       </Formik>
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+        open={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        onConfirm={() => {
+          setDeleteModalOpen(false);
+          if (onDelete) {
+            onDelete();
+          }
+        }}
+      />
     </LocalizationProvider>
   );
 };

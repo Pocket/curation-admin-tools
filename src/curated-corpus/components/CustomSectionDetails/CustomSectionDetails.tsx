@@ -8,29 +8,48 @@ import {
   Grid,
   Paper,
   IconButton,
+  Switch,
+  FormControlLabel,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import AdUnitsIcon from '@mui/icons-material/AdUnits';
 import { DateTime } from 'luxon';
+import { useMutation } from '@apollo/client';
 import {
   ApprovedCorpusItem,
-  Prospect,
   SectionItem,
   SectionStatus,
+  CreateSectionItemInput,
+  CreateApprovedCorpusItemInput,
+  RemoveSectionItemInput,
+  SectionItemRemovalReason,
   useGetSectionsWithSectionItemsQuery,
+  useCreateSectionItemMutation,
+  useCreateApprovedCorpusItemMutation,
+  ActionScreen,
+  CuratedStatus,
+  CorpusItemSource,
+  CorpusLanguage,
 } from '../../../api/generatedTypes';
+import { deleteCustomSection } from '../../../api/mutations/deleteCustomSection';
+import { disableEnableSection } from '../../../api/mutations/disableEnableSection';
+import { removeSectionItem } from '../../../api/mutations/removeSectionItem';
 import { SectionItemCardWrapper } from '../SectionItemCardWrapper/SectionItemCardWrapper';
 import {
-  AddProspectModal,
+  AddSectionItemModal,
   ApprovedItemModal,
   DuplicateProspectModal,
+  EditCustomSectionModal,
+  DeleteConfirmationModal,
+  RemoveItemConfirmationModal,
 } from '..';
 import { HandleApiResponse } from '../../../_shared/components';
-import { useToggle } from '../../../_shared/hooks';
+import { useToggle, useRunMutation } from '../../../_shared/hooks';
 import { getIABCategoryTreeLabel } from '../../helpers/helperFunctions';
 import { curationPalette } from '../../../theme';
+import { ApprovedItemFromProspect } from '../../helpers/definitions';
 
 interface CustomSectionDetailsProps {
   /**
@@ -66,31 +85,92 @@ export const CustomSectionDetails: React.FC<CustomSectionDetailsProps> = ({
 }) => {
   const { sectionId } = useParams<{ sectionId: string }>();
   const history = useHistory();
+  const { runMutation } = useRunMutation();
+  const [deleteSectionMutation] = useMutation(deleteCustomSection);
+  const [disableEnableMutation] = useMutation(disableEnableSection);
+  const [removeItemMutation] = useMutation(removeSectionItem);
+  const [createSectionItem] = useCreateSectionItemMutation();
+  const [createApprovedItem] = useCreateApprovedCorpusItemMutation();
 
   // State for modals
-  const [addProspectModalOpen, toggleAddProspectModal] = useToggle(false);
+  const [addItemModalOpen, toggleAddItemModal] = useToggle(false);
   const [approvedItemModalOpen, toggleApprovedItemModal] = useToggle(false);
   const [duplicateProspectModalOpen, toggleDuplicateProspectModal] =
     useToggle(false);
+  const [editSectionModalOpen, toggleEditSectionModal] = useToggle(false);
+  const [deleteModalOpen, toggleDeleteModal] = useToggle(false);
+  const [removeItemModalOpen, toggleRemoveItemModal] = useToggle(false);
 
   // State for current items
-  const [, setCurrentProspect] = useState<Prospect | undefined>();
   const [approvedItem, setApprovedItem] = useState<
     ApprovedCorpusItem | undefined
   >();
   const [isRecommendation, setIsRecommendation] = useState<boolean>(false);
-  const [, setIsManualSubmission] = useState<boolean>(true);
+  const [, setIsManualSubmission] = useState<boolean>(false);
+  const [itemToRemove, setItemToRemove] = useState<SectionItem | undefined>();
+
+  const blankApprovedItem: ApprovedItemFromProspect = {
+    __typename: 'ApprovedCorpusItem',
+    externalId: '',
+    authors: [],
+    createdAt: 0,
+    createdBy: '',
+    datePublished: null,
+    excerpt: '',
+    hasTrustedDomain: false,
+    imageUrl: '',
+    isCollection: false,
+    isSyndicated: false,
+    isTimeSensitive: false,
+    language: CorpusLanguage.En,
+    prospectId: null,
+    publisher: '',
+    scheduledSurfaceHistory: [],
+    source: CorpusItemSource.Manual,
+    status: CuratedStatus.Recommendation,
+    title: '',
+    topic: '',
+    updatedAt: 0,
+    updatedBy: null,
+    url: '',
+  };
 
   // Fetch sections data and filter for the specific section
-  const { data, loading, error } = useGetSectionsWithSectionItemsQuery({
-    variables: { scheduledSurfaceGuid: scheduledSurfaceGuid },
-    fetchPolicy: 'cache-and-network',
-  });
+  const { data, loading, error, refetch } = useGetSectionsWithSectionItemsQuery(
+    {
+      variables: { scheduledSurfaceGuid: scheduledSurfaceGuid },
+      fetchPolicy: 'cache-and-network',
+    },
+  );
 
   // Find the specific section by externalId
-  const section = data?.getSectionsWithSectionItems?.find(
-    (s) => s.externalId === sectionId,
-  );
+  const sections = data?.getSectionsWithSectionItems || [];
+  const section = sections.find((s) => s.externalId === sectionId);
+
+  const handleToggleDisable = async () => {
+    if (!section) return;
+
+    await runMutation(
+      disableEnableMutation,
+      {
+        variables: {
+          data: {
+            externalId: section.externalId,
+            disabled: !section.disabled,
+          },
+        },
+      },
+      section.disabled
+        ? 'Section enabled successfully'
+        : 'Section disabled successfully',
+      () => {
+        refetch();
+      },
+      () => {
+        // Error handling
+      },
+    );
+  };
 
   const getStatusChip = () => {
     if (!section) return null;
@@ -117,7 +197,7 @@ export const CustomSectionDetails: React.FC<CustomSectionDetailsProps> = ({
           label="Expired"
           size="small"
           sx={{
-            backgroundColor: '#FFF0F0',
+            backgroundColor: curationPalette.lightRed,
             color: curationPalette.secondary,
             fontWeight: 500,
           }}
@@ -178,6 +258,108 @@ export const CustomSectionDetails: React.FC<CustomSectionDetailsProps> = ({
     );
   }
 
+  const handleSaveApprovedItem = async (values: any, formikHelpers: any) => {
+    if (!section) {
+      return;
+    }
+
+    try {
+      let itemToAdd = approvedItem;
+
+      // If the item doesn't have an externalId, it's a new item we need to create
+      if (!approvedItem?.externalId) {
+        // Transform authors - check if it's already an array or needs conversion
+        const authorsArray = Array.isArray(values.authors)
+          ? values.authors
+          : values.authors
+            ? values.authors.split(',').map((name: string) => ({
+                name: name.trim(),
+                sortOrder: 0,
+              }))
+            : [];
+
+        // Transform the values into the format needed for creating an approved item
+        const createItemData: CreateApprovedCorpusItemInput = {
+          url: values.url,
+          title: values.title,
+          excerpt: values.excerpt,
+          status:
+            (values.curationStatus as CuratedStatus | undefined) ??
+            CuratedStatus.Recommendation,
+          language:
+            (values.language as CorpusLanguage | undefined) ??
+            CorpusLanguage.En,
+          authors: authorsArray,
+          publisher: values.publisher,
+          datePublished: values.datePublished,
+          source:
+            (values.source as CorpusItemSource | undefined) ??
+            CorpusItemSource.Manual,
+          imageUrl: values.imageUrl,
+          topic: values.topic || '',
+          isCollection: values.collection || false,
+          isTimeSensitive: values.timeSensitive || false,
+          isSyndicated: values.syndicated || false,
+          actionScreen: ActionScreen.Sections,
+          scheduledSurfaceGuid,
+        };
+
+        // Create the approved item first
+        const { data } = await createApprovedItem({
+          variables: { data: createItemData },
+        });
+
+        if (data?.createApprovedCorpusItem) {
+          itemToAdd = data.createApprovedCorpusItem;
+        } else {
+          throw new Error('Failed to create approved item');
+        }
+      }
+
+      // Now add the item to the section
+      if (itemToAdd?.externalId) {
+        const input: CreateSectionItemInput = {
+          sectionExternalId: section.externalId,
+          approvedItemExternalId: itemToAdd.externalId,
+          // Determine the next rank by taking the highest existing rank (defaulting gaps to 0)
+          // and incrementing it so new items always append to the end without duplicates.
+          rank:
+            Math.max(
+              0,
+              ...(section.sectionItems?.map((item) => item.rank || 0) || []),
+            ) + 1,
+        };
+
+        await runMutation(
+          createSectionItem,
+          {
+            variables: {
+              data: input,
+            },
+          },
+          'Item created and added to section successfully',
+          () => {
+            // Close the modal first
+            toggleApprovedItemModal();
+
+            // Clear state immediately
+            setApprovedItem(undefined);
+
+            formikHelpers.setSubmitting(false);
+
+            // Refetch to update the section items list
+            refetch();
+          },
+          () => {
+            formikHelpers.setSubmitting(false);
+          },
+        );
+      }
+    } catch (error) {
+      formikHelpers.setSubmitting(false);
+    }
+  };
+
   return (
     <Box>
       {/* Header with back button */}
@@ -192,7 +374,14 @@ export const CustomSectionDetails: React.FC<CustomSectionDetailsProps> = ({
       </Box>
 
       {/* Section Header */}
-      <Paper elevation={0} sx={{ p: 3, border: '1px solid #E0E0E6', mb: 3 }}>
+      <Paper
+        elevation={0}
+        sx={{
+          p: 3,
+          border: `1px solid ${curationPalette.border}`,
+          mb: 3,
+        }}
+      >
         <Box
           display="flex"
           alignItems="flex-start"
@@ -230,7 +419,7 @@ export const CustomSectionDetails: React.FC<CustomSectionDetailsProps> = ({
                 sx={{
                   mb: 2,
                   p: 2,
-                  backgroundColor: '#F5F5F7',
+                  backgroundColor: curationPalette.veryLightGrey,
                   borderRadius: 1,
                 }}
               >
@@ -301,20 +490,34 @@ export const CustomSectionDetails: React.FC<CustomSectionDetailsProps> = ({
           </Box>
 
           {/* Actions */}
-          <Box display="flex" gap={1} ml={3}>
+          <Box display="flex" gap={2} ml={3} alignItems="center">
+            {/* Disable/Enable Toggle */}
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={!section.disabled}
+                  onChange={handleToggleDisable}
+                  color="primary"
+                />
+              }
+              label={section.disabled ? 'Disabled' : 'Enabled'}
+            />
+
             {/* Edit and Delete buttons */}
             <IconButton
               size="small"
+              onClick={toggleEditSectionModal}
               sx={{
-                '&:hover': { backgroundColor: '#F5F5F7' },
+                '&:hover': { backgroundColor: curationPalette.veryLightGrey },
               }}
             >
               <EditOutlinedIcon fontSize="small" />
             </IconButton>
             <IconButton
               size="small"
+              onClick={toggleDeleteModal}
               sx={{
-                '&:hover': { backgroundColor: '#FFF0F0' },
+                '&:hover': { backgroundColor: curationPalette.lightRed },
               }}
             >
               <DeleteOutlinedIcon fontSize="small" />
@@ -324,20 +527,34 @@ export const CustomSectionDetails: React.FC<CustomSectionDetailsProps> = ({
       </Paper>
 
       {/* Section Items */}
-      {section.sectionItems && section.sectionItems.length > 0 && (
-        <>
+      <Box sx={{ mt: 3 }}>
+        <Box
+          display="flex"
+          alignItems="center"
+          justifyContent="space-between"
+          mb={2}
+        >
           <Typography
             variant="h5"
             sx={{
               color: curationPalette.pocketBlack,
               fontWeight: 500,
               lineHeight: '1.2125em',
-              marginBottom: '1em',
-              marginTop: '1em',
             }}
           >
             Section Items
           </Typography>
+          {section.sectionItems && section.sectionItems.length > 0 && (
+            <Button
+              variant="contained"
+              onClick={toggleAddItemModal}
+              size="small"
+            >
+              Add Items
+            </Button>
+          )}
+        </Box>
+        {section.sectionItems && section.sectionItems.length > 0 && (
           <Grid container spacing={2}>
             {section.sectionItems.map((item: SectionItem) => (
               <SectionItemCardWrapper
@@ -352,94 +569,73 @@ export const CustomSectionDetails: React.FC<CustomSectionDetailsProps> = ({
                   toggleRejectModal();
                 }}
                 onRemove={() => {
-                  setCurrentSectionItem(item);
-                  toggleRemoveSectionItemModal();
+                  setItemToRemove(item);
+                  toggleRemoveItemModal();
                 }}
                 scheduledSurfaceGuid={scheduledSurfaceGuid}
               />
             ))}
           </Grid>
-        </>
-      )}
+        )}
 
-      {/* Empty State */}
-      {(!section.sectionItems || section.sectionItems.length === 0) && (
-        <Paper
-          elevation={0}
-          sx={{
-            p: 4,
-            textAlign: 'center',
-            border: '1px solid #E0E0E6',
-            mt: 3,
-          }}
-        >
-          <Typography color="text.secondary">
-            No items in this section yet
-          </Typography>
-          <Button
-            variant="contained"
-            onClick={() => toggleAddProspectModal()}
+        {/* Empty State */}
+        {(!section.sectionItems || section.sectionItems.length === 0) && (
+          <Paper
+            elevation={0}
             sx={{
-              mt: 2,
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              position: 'relative',
-              boxSizing: 'border-box',
-              WebkitTapHighlightColor: 'transparent',
-              outline: 0,
-              border: 0,
-              margin: '16px 0 0 0',
-              cursor: 'pointer',
-              userSelect: 'none',
-              verticalAlign: 'middle',
-              WebkitAppearance: 'none',
-              textDecoration: 'none',
-              fontSize: '0.875rem',
-              lineHeight: 1.75,
-              minWidth: 64,
-              padding: '6px 16px',
-              borderRadius: '4px',
-              transition:
-                'background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms',
-              color: '#FFFFFF',
-              boxShadow:
-                '0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)',
-              fontWeight: 500,
-              textTransform: 'none',
-              backgroundColor: '#008078',
-              '&:hover': {
-                backgroundColor: '#006660',
-              },
+              p: 4,
+              textAlign: 'center',
+              border: `1px solid ${curationPalette.border}`,
+              mt: 3,
             }}
           >
-            Add Items
-          </Button>
-        </Paper>
-      )}
+            <Typography color="text.secondary">
+              No items in this section yet
+            </Typography>
+            <Button
+              variant="contained"
+              onClick={toggleAddItemModal}
+              sx={{ mt: 2 }}
+            >
+              Add Items
+            </Button>
+          </Paper>
+        )}
+      </Box>
 
-      {/* Modals for adding items */}
-      <AddProspectModal
-        isOpen={addProspectModalOpen}
-        toggleModal={toggleAddProspectModal}
+      {/* Modal for adding items */}
+      <AddSectionItemModal
+        isOpen={addItemModalOpen}
+        onClose={toggleAddItemModal}
+        sectionId={sectionId}
+        sectionTitle={section.title}
+        existingSectionItems={section.sectionItems}
         toggleApprovedItemModal={toggleApprovedItemModal}
-        toggleDuplicateProspectModal={toggleDuplicateProspectModal}
-        setCurrentProspect={setCurrentProspect}
         setApprovedItem={setApprovedItem}
         setIsRecommendation={setIsRecommendation}
         setIsManualSubmission={setIsManualSubmission}
+        onSuccess={() => {
+          refetch();
+        }}
       />
 
-      {approvedItem && (
+      {(approvedItem || approvedItemModalOpen) && (
         <ApprovedItemModal
-          approvedItem={approvedItem}
+          approvedItem={approvedItem || blankApprovedItem}
           isOpen={approvedItemModalOpen}
           isRecommendation={isRecommendation}
-          toggleModal={toggleApprovedItemModal}
-          onSave={() => {
-            // Handle save action
+          toggleModal={() => {
+            // Force blur to release focus trap
+            const activeElement = document.activeElement as HTMLElement;
+            if (activeElement && activeElement.blur) {
+              activeElement.blur();
+            }
+
+            // Close modal and clear state
             toggleApprovedItemModal();
+            setApprovedItem(undefined);
           }}
+          onSave={handleSaveApprovedItem}
         />
       )}
 
@@ -450,6 +646,83 @@ export const CustomSectionDetails: React.FC<CustomSectionDetailsProps> = ({
           toggleModal={toggleDuplicateProspectModal}
         />
       )}
+
+      {/* Edit Section Modal */}
+      {section && (
+        <EditCustomSectionModal
+          isOpen={editSectionModalOpen}
+          onClose={toggleEditSectionModal}
+          section={section}
+          scheduledSurfaceGuid={scheduledSurfaceGuid}
+          onSuccess={() => {
+            refetch();
+          }}
+        />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+        open={deleteModalOpen}
+        onClose={toggleDeleteModal}
+        onConfirm={async () => {
+          if (section) {
+            await runMutation(
+              deleteSectionMutation,
+              {
+                variables: {
+                  externalId: section.externalId,
+                },
+              },
+              'Custom section deleted successfully',
+              () => {
+                toggleDeleteModal();
+                history.push(`/curated-corpus/custom-sections/`);
+              },
+              () => {
+                toggleDeleteModal();
+              },
+            );
+          }
+        }}
+      />
+
+      {/* Remove Item Confirmation Modal */}
+      <RemoveItemConfirmationModal
+        open={removeItemModalOpen}
+        onClose={() => {
+          toggleRemoveItemModal();
+          setItemToRemove(undefined);
+        }}
+        onConfirm={async () => {
+          if (itemToRemove) {
+            // TODO(HNT-1126): Align this removal flow with the ML section modal so editors
+            // can pick from the standardized removal reasons instead of defaulting to Other.
+            const input: RemoveSectionItemInput = {
+              externalId: itemToRemove.externalId,
+              deactivateReasons: [SectionItemRemovalReason.Other],
+            };
+
+            await runMutation(
+              removeItemMutation,
+              {
+                variables: {
+                  data: input,
+                },
+              },
+              'Item removed from section successfully',
+              () => {
+                toggleRemoveItemModal();
+                setItemToRemove(undefined);
+                refetch();
+              },
+              () => {
+                toggleRemoveItemModal();
+              },
+            );
+          }
+        }}
+        itemTitle={itemToRemove?.approvedItem?.title}
+      />
     </Box>
   );
 };
