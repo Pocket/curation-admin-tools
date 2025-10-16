@@ -321,7 +321,13 @@ export const CustomSectionDetails: React.FC<CustomSectionDetailsProps> = ({
         const input: CreateSectionItemInput = {
           sectionExternalId: section.externalId,
           approvedItemExternalId: itemToAdd.externalId,
-          rank: (section.sectionItems?.length || 0) + 1,
+          // Determine the next rank by taking the highest existing rank (defaulting gaps to 0)
+          // and incrementing it so new items always append to the end without duplicates.
+          rank:
+            Math.max(
+              0,
+              ...(section.sectionItems?.map((item) => item.rank || 0) || []),
+            ) + 1,
         };
 
         await runMutation(
