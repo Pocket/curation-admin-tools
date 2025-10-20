@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Accordion,
   AccordionDetails,
@@ -34,7 +34,11 @@ import {
   useGetSectionsWithSectionItemsQuery,
 } from '../../../api/generatedTypes';
 import { ScheduleSummaryConnector } from '../ScheduleSummaryConnector/ScheduleSummaryConnector';
-import { formatFormLabel } from '../../helpers/helperFunctions';
+import {
+  formatFormLabel,
+  getDateFormatForLocale,
+  getLocaleForScheduledSurface,
+} from '../../helpers/helperFunctions';
 import { useToggle } from '../../../_shared/hooks';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { curationPalette } from '../../../theme';
@@ -208,8 +212,31 @@ export const ScheduleItemForm: React.FC<
         section.status !== SectionStatus.Expired,
     ) || [];
 
+  const activeSurfaceGuid =
+    formik.values.scheduledSurfaceGuid ||
+    scheduledSurfaceGuid ||
+    (scheduledSurfaces.length === 1 ? scheduledSurfaces[0].guid : undefined);
+
+  const surfaceLocale = useMemo(
+    () => getLocaleForScheduledSurface(activeSurfaceGuid),
+    [activeSurfaceGuid],
+  );
+
+  const adapterLocale = useMemo(
+    () => surfaceLocale.split('-')[0]?.toLowerCase() ?? 'en',
+    [surfaceLocale],
+  );
+
+  const dateInputFormat = useMemo(
+    () => getDateFormatForLocale(surfaceLocale),
+    [surfaceLocale],
+  );
+
   return (
-    <LocalizationProvider dateAdapter={AdapterLuxon}>
+    <LocalizationProvider
+      dateAdapter={AdapterLuxon}
+      adapterLocale={adapterLocale}
+    >
       <form name="schedule-item-form" onSubmit={formik.handleSubmit}>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={8}>
@@ -239,7 +266,7 @@ export const ScheduleItemForm: React.FC<
           <Grid item xs={12} sm={4}>
             <DatePicker
               label="Choose a date"
-              inputFormat="MM/dd/yyyy"
+              inputFormat={dateInputFormat}
               value={selectedDate}
               onChange={handleDateChange}
               disablePast
