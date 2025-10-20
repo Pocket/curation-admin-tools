@@ -95,9 +95,9 @@ describe('helperFunctions ', () => {
     ];
 
     it('derives locale from surface name when available', () => {
-      expect(
-        getLocaleForScheduledSurface(surfaces, 'NEW_TAB_EN_GB'),
-      ).toEqual('en-GB');
+      expect(getLocaleForScheduledSurface(surfaces, 'NEW_TAB_EN_GB')).toEqual(
+        'en-GB',
+      );
     });
 
     it('falls back to GUID parsing when surface name lacks locale annotation', () => {
@@ -118,9 +118,9 @@ describe('helperFunctions ', () => {
 
     it('defaults to en-US when guid is missing or unknown', () => {
       expect(getLocaleForScheduledSurface(surfaces)).toEqual('en-US');
-      expect(
-        getLocaleForScheduledSurface(surfaces, 'UNKNOWN_GUID'),
-      ).toEqual('en-US');
+      expect(getLocaleForScheduledSurface(surfaces, 'UNKNOWN_GUID')).toEqual(
+        'en-US',
+      );
     });
 
     it('returns locale-appropriate date format', () => {
