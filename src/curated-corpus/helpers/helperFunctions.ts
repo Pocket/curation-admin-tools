@@ -3,6 +3,7 @@ import { FileWithPath } from 'react-dropzone';
 import {
   CorpusLanguage,
   GetScheduledSurfacesForUserQuery,
+  ScheduledSurface,
 } from '../../api/generatedTypes';
 import { ScheduledSurfaces } from './definitions';
 import { applyCurlyQuotes } from '../../_shared/utils/applyCurlyQuotes';
@@ -157,6 +158,61 @@ export const formatFormLabel = (str: string): string => {
     str.charAt(0).toUpperCase() +
     str.substring(1).toLowerCase().replace(/_/g, ' ')
   );
+};
+
+const DEFAULT_SURFACE_LOCALE = 'en-US';
+
+const inferLocaleFromGuid = (guid: string): string => {
+  const segments = guid.split('_');
+  if (segments.length < 3) {
+    return DEFAULT_SURFACE_LOCALE;
+  }
+
+  const language = segments[segments.length - 2]?.toLowerCase();
+  const region = segments[segments.length - 1];
+
+  if (region === 'INTL') {
+    return `${language}-INTL`;
+  }
+
+  if (region?.length === 2) {
+    return `${language}-${region}`;
+  }
+
+  return language ?? DEFAULT_SURFACE_LOCALE;
+};
+
+export const getLocaleForScheduledSurface = (
+  surfaces: ScheduledSurface[],
+  guid?: string,
+): string => {
+  if (!guid) {
+    return DEFAULT_SURFACE_LOCALE;
+  }
+
+  const matchedSurface = surfaces.find((surface) => surface.guid === guid);
+
+  if (!matchedSurface) {
+    return inferLocaleFromGuid(guid);
+  }
+
+  const displayNameMatch = matchedSurface.name.match(/\(([^)]+)\)$/);
+  if (displayNameMatch && displayNameMatch[1]) {
+    return displayNameMatch[1];
+  }
+
+  return inferLocaleFromGuid(matchedSurface.guid);
+};
+
+export const getDateFormatForLocale = (locale: string): string => {
+  switch (locale) {
+    case 'en-US':
+      return 'MM/dd/yyyy';
+    case 'de-DE':
+      return 'dd.MM.yyyy';
+    default:
+      return 'dd/MM/yyyy';
+  }
 };
 
 /**

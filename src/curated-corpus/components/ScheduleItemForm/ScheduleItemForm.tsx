@@ -212,18 +212,21 @@ export const ScheduleItemForm: React.FC<
         section.status !== SectionStatus.Expired,
     ) || [];
 
+  const getAdapterLocale = (locale: string): string =>
+    locale.split('-')[0]?.toLowerCase() ?? 'en';
+
   const activeSurfaceGuid =
     formik.values.scheduledSurfaceGuid ||
     scheduledSurfaceGuid ||
     (scheduledSurfaces.length === 1 ? scheduledSurfaces[0].guid : undefined);
 
   const surfaceLocale = useMemo(
-    () => getLocaleForScheduledSurface(activeSurfaceGuid),
-    [activeSurfaceGuid],
+    () => getLocaleForScheduledSurface(scheduledSurfaces, activeSurfaceGuid),
+    [activeSurfaceGuid, scheduledSurfaces],
   );
 
   const adapterLocale = useMemo(
-    () => surfaceLocale.split('-')[0]?.toLowerCase() ?? 'en',
+    () => getAdapterLocale(surfaceLocale),
     [surfaceLocale],
   );
 
