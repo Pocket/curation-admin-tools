@@ -1,14 +1,27 @@
 import '../processPolyfill';
 
-const isProduction = process.env.REACT_APP_ENV === 'production';
+type EnvRecord = NodeJS.ProcessEnv & {
+  MODE?: string;
+  DEV?: string | boolean;
+  PROD?: string | boolean;
+  [key: string]: string | boolean | undefined;
+};
+
+const env = process.env as EnvRecord;
+const resolvedMode =
+  env.REACT_APP_ENV ??
+  env.MODE ??
+  env.NODE_ENV ??
+  (env.DEV ? 'development' : env.PROD ? 'production' : 'development');
+const isProduction = resolvedMode === 'production';
 
 export const config = {
   apolloClientName: `CurationAdminTools`,
-  version: `${process.env.REACT_APP_GIT_SHA ?? 'local'}`,
+  version: `${env.REACT_APP_GIT_SHA ?? 'local'}`,
   // If we have an env variable set, let's use it. Otherwise, if we are production,
   // let's use the production API, otherwise use the dev API.
   adminApiEndpoint: `${
-    process.env.REACT_APP_ADMIN_API_ENDPOINT ??
+    env.REACT_APP_ADMIN_API_ENDPOINT ??
     (isProduction
       ? 'https://admin-api.getpocket.com'
       : 'https://admin-api.getpocket.dev')
@@ -16,25 +29,25 @@ export const config = {
   // The OAuth provider is the same for both dev and production environments.
   oauth2: {
     provider: `${
-      process.env.REACT_APP_OAUTH2_PROVIDER ??
+      env.REACT_APP_OAUTH2_PROVIDER ??
       'https://mozilla-auth-proxy.getpocket.com/oauth2'
     }`,
     // So is the client ID
     clientId: `${
-      process.env.REACT_APP_OAUTH2_CLIENT_ID ?? '5qgiui93mdakahca0rvvtsi3ar'
+      env.REACT_APP_OAUTH2_CLIENT_ID ?? '5qgiui93mdakahca0rvvtsi3ar'
     }`,
     logoutEndpoint: `${
-      process.env.REACT_APP_OAUTH2_LOGOUT_ENDPOINT ??
+      env.REACT_APP_OAUTH2_LOGOUT_ENDPOINT ??
       'https://mozilla-auth-proxy.getpocket.com/logout'
     }`,
     redirectUri: `${
-      process.env.REACT_APP_OAUTH2_REDIRECT_URI ??
+      env.REACT_APP_OAUTH2_REDIRECT_URI ??
       (isProduction
         ? 'https://curation-admin-tools.readitlater.com/oauth/callback'
         : 'https://curation-admin-tools.getpocket.dev/oauth/callback')
     }`,
   },
-  environment: process.env.NODE_ENV,
+  environment: resolvedMode,
   pagination: {
     authorsPerPage: 200,
     collectionsPerPage: 30,

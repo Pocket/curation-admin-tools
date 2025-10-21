@@ -1,12 +1,31 @@
 /// <reference types="node" />
 /// <reference types="react" />
 /// <reference types="react-dom" />
+/// <reference types="vite/client" />
 
 declare namespace NodeJS {
   interface ProcessEnv {
     readonly NODE_ENV: 'development' | 'production' | 'test';
     readonly PUBLIC_URL: string;
   }
+}
+
+interface ImportMetaEnv {
+  readonly MODE: 'development' | 'production' | 'test';
+  readonly DEV: boolean;
+  readonly PROD: boolean;
+  readonly VITE_APP_VERSION?: string;
+  readonly REACT_APP_ENV?: string;
+  readonly REACT_APP_GIT_SHA?: string;
+  readonly REACT_APP_ADMIN_API_ENDPOINT?: string;
+  readonly REACT_APP_OAUTH2_PROVIDER?: string;
+  readonly REACT_APP_OAUTH2_CLIENT_ID?: string;
+  readonly REACT_APP_OAUTH2_LOGOUT_ENDPOINT?: string;
+  readonly REACT_APP_OAUTH2_REDIRECT_URI?: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
 }
 
 // Global polyfills provided by webpack

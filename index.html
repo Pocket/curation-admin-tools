@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Pretty good admin tools for Pocket curators."
+    />
+    <link
+      rel="apple-touch-icon"
+      type="image/png"
+      sizes="180x180"
+      href="/mozilla-apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="196x196"
+      href="/mozilla-favicon.png"
+    />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="manifest" href="/manifest.json" />
+    <title>Curation Tools</title>
+    <script type="module">
+      // Senior-level note: We still seed a minimal process shim to keep legacy
+      // dependencies happy while the runtime finishes moving off Node globals.
+      const existing = window.process ?? {};
+      existing.env = existing.env ?? {};
+      existing.browser = true;
+      existing.version = existing.version ?? '';
+      existing.versions = existing.versions ?? {};
+      existing.nextTick =
+        existing.nextTick ??
+        function (cb) {
+          return setTimeout(cb, 0);
+        };
+      existing.env.NODE_ENV = existing.env.NODE_ENV ?? import.meta.env.MODE;
+      existing.env.PUBLIC_URL = existing.env.PUBLIC_URL ?? '';
+      window.process = existing;
+    </script>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/index.tsx"></script>
+  </body>
+</html>
