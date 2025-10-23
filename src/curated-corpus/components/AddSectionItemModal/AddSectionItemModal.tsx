@@ -86,10 +86,20 @@ export const AddSectionItemModal: React.FC<AddSectionItemModalProps> = ({
     setIsSubmitting(true);
 
     try {
-      // First check if this URL is already in the section
-      const normalizedUrl = url.trim();
+      // Step 1: Get metadata from parser first
+      const metadataResult = await getUrlMetadata({
+        variables: { url: url.trim() },
+      });
+
+      if (!metadataResult.data?.getUrlMetadata) {
+        throw new Error('Failed to fetch article metadata');
+      }
+
+      const metadata = metadataResult.data.getUrlMetadata;
+
+      // Step 2: Check if the URL is already in the section
       const isUrlAlreadyInSection = existingSectionItems.some(
-        (item) => item.approvedItem.url === normalizedUrl,
+        (item) => item.approvedItem.url === metadata.url,
       );
 
       if (isUrlAlreadyInSection) {
@@ -98,9 +108,9 @@ export const AddSectionItemModal: React.FC<AddSectionItemModalProps> = ({
         return;
       }
 
-      // Step 1: Check if the item already exists in the corpus
+      // Step 3: Check if the item already exists in the corpus
       const checkResult = await checkApprovedItem({
-        variables: { url: normalizedUrl },
+        variables: { url: metadata.url },
       });
 
       if (checkResult.data?.getApprovedCorpusItemByUrl) {
@@ -131,16 +141,7 @@ export const AddSectionItemModal: React.FC<AddSectionItemModalProps> = ({
         return;
       }
 
-      // Step 2: Item doesn't exist, get metadata from parser
-      const metadataResult = await getUrlMetadata({
-        variables: { url: normalizedUrl },
-      });
-
-      if (!metadataResult.data?.getUrlMetadata) {
-        throw new Error('Failed to fetch article metadata');
-      }
-
-      const metadata = metadataResult.data.getUrlMetadata;
+      // Step 4: Item doesn't exist in corpus, use the metadata we already fetched
       const legacyMetadata = metadata as UrlMetadata & {
         image?: string | null;
         topic?: string | null;
@@ -159,7 +160,7 @@ export const AddSectionItemModal: React.FC<AddSectionItemModalProps> = ({
 
       // Transform metadata to approved item format for the form
       const approvedItemFromMetadata = {
-        url: normalizedUrl,
+        url: metadata.url,
         title: metadata.title || 'Untitled Article',
         excerpt: metadata.excerpt || 'No excerpt available.',
         authors: authorsArray,
