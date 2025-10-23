@@ -164,11 +164,10 @@ const DEFAULT_SURFACE_LOCALE = 'en-US';
 
 /**
  * Extracts locale from a scheduled surface GUID by parsing the last two segments.
- * Expected GUID format: "NEW_TAB_EN_US" -> "en-US"
- * Handles INTL regions: "NEW_TAB_DE_INTL" -> "de-INTL"
+ * Expected GUID format: "NEW_TAB_EN_US" -> "en-US", "NEW_TAB_DE_INTL" -> "de-INTL"
  *
  * @param guid - The scheduled surface GUID (e.g., "NEW_TAB_EN_US")
- * @returns Locale string in language-region format (e.g., "en-US")
+ * @returns Locale string in language-region format (e.g., "en-US", "de-INTL")
  */
 const inferLocaleFromGuid = (guid: string): string => {
   const segments = guid.split('_');
@@ -180,12 +179,7 @@ const inferLocaleFromGuid = (guid: string): string => {
   const language = segments[segments.length - 2]?.toLowerCase();
   const region = segments[segments.length - 1];
 
-  // Special handling for international regions
-  if (region === 'INTL') {
-    return `${language}-INTL`;
-  }
-
-  // Standard locale format: language-REGION (e.g., "en-US", "de-DE")
+  // Standard locale format: language-REGION (e.g., "en-US", "de-DE", "de-INTL")
   return `${language}-${region}`;
 };
 
@@ -209,25 +203,6 @@ export const getLocaleForScheduledSurface = (
 
   // Parse locale from the GUID (more reliable than parsing display name)
   return inferLocaleFromGuid(matchedSurface?.guid ?? guid);
-};
-
-/**
- * Returns the appropriate date input format for a given locale.
- * Note: This is primarily used for visual reference, as MUI DatePicker
- * with adapterLocale handles formatting automatically.
- *
- * @param locale - Full locale string (e.g., "en-US", "de-DE")
- * @returns Date format string for the locale
- */
-export const getDateFormatForLocale = (locale: string): string => {
-  switch (locale) {
-    case 'en-US':
-      return 'MM/dd/yyyy';
-    case 'de-DE':
-      return 'dd.MM.yyyy';
-    default:
-      return 'dd/MM/yyyy';
-  }
 };
 
 /**

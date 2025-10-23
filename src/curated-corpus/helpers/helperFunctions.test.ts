@@ -16,7 +16,6 @@ import {
   getIABCategoryTreeLabel,
   getLastScheduledDayDiff,
   getLocalDateTimeForGuid,
-  getDateFormatForLocale,
   getLocaleForScheduledSurface,
   getScheduledSurfaceName,
   readImageFileFromDisk,
@@ -121,13 +120,6 @@ describe('helperFunctions ', () => {
       expect(getLocaleForScheduledSurface(surfaces, 'UNKNOWN_GUID')).toEqual(
         'en-US',
       );
-    });
-
-    it('returns locale-appropriate date format', () => {
-      expect(getDateFormatForLocale('en-US')).toEqual('MM/dd/yyyy');
-      expect(getDateFormatForLocale('de-DE')).toEqual('dd.MM.yyyy');
-      expect(getDateFormatForLocale('en-GB')).toEqual('dd/MM/yyyy');
-      expect(getDateFormatForLocale('fr-FR')).toEqual('dd/MM/yyyy');
     });
   });
 
