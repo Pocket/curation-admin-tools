@@ -3,6 +3,7 @@ import { FileWithPath } from 'react-dropzone';
 import {
   CorpusLanguage,
   GetScheduledSurfacesForUserQuery,
+  ScheduledSurface,
 } from '../../api/generatedTypes';
 import { ScheduledSurfaces } from './definitions';
 import { applyCurlyQuotes } from '../../_shared/utils/applyCurlyQuotes';
@@ -157,6 +158,51 @@ export const formatFormLabel = (str: string): string => {
     str.charAt(0).toUpperCase() +
     str.substring(1).toLowerCase().replace(/_/g, ' ')
   );
+};
+
+const DEFAULT_SURFACE_LOCALE = 'en-US';
+
+/**
+ * Extracts locale from a scheduled surface GUID by parsing the last two segments.
+ * Expected GUID format: "NEW_TAB_EN_US" -> "en-US", "NEW_TAB_DE_INTL" -> "de-INTL"
+ *
+ * @param guid - The scheduled surface GUID (e.g., "NEW_TAB_EN_US")
+ * @returns Locale string in language-region format (e.g., "en-US", "de-INTL")
+ */
+const inferLocaleFromGuid = (guid: string): string => {
+  const segments = guid.split('_');
+  if (segments.length < 3) {
+    return DEFAULT_SURFACE_LOCALE;
+  }
+
+  // Extract language and region from the last two segments of the GUID
+  const language = segments[segments.length - 2]?.toLowerCase();
+  const region = segments[segments.length - 1];
+
+  // Standard locale format: language-REGION (e.g., "en-US", "de-DE", "de-INTL")
+  return `${language}-${region}`;
+};
+
+/**
+ * Determines the locale for a scheduled surface by parsing its GUID.
+ * Falls back to parsing the GUID directly if surface isn't found in the list.
+ *
+ * @param surfaces - Array of available scheduled surfaces
+ * @param guid - The scheduled surface GUID to get locale for
+ * @returns Full locale string (e.g., "en-US", "de-DE")
+ */
+export const getLocaleForScheduledSurface = (
+  surfaces: ScheduledSurface[],
+  guid?: string,
+): string => {
+  if (!guid) {
+    return DEFAULT_SURFACE_LOCALE;
+  }
+
+  const matchedSurface = surfaces.find((surface) => surface.guid === guid);
+
+  // Parse locale from the GUID (more reliable than parsing display name)
+  return inferLocaleFromGuid(matchedSurface?.guid ?? guid);
 };
 
 /**

@@ -1,5 +1,9 @@
 import { DateTime } from 'luxon';
-import { CorpusLanguage, ProspectType } from '../../api/generatedTypes';
+import {
+  CorpusLanguage,
+  ProspectType,
+  ScheduledSurface,
+} from '../../api/generatedTypes';
 import { ScheduledSurfaces } from './definitions';
 import {
   applyExcerptFormattingByLanguage,
@@ -12,6 +16,7 @@ import {
   getIABCategoryTreeLabel,
   getLastScheduledDayDiff,
   getLocalDateTimeForGuid,
+  getLocaleForScheduledSurface,
   getScheduledSurfaceName,
   readImageFileFromDisk,
 } from './helperFunctions';
@@ -60,6 +65,61 @@ describe('helperFunctions ', () => {
 
       // assert blob has is undefined
       expect(responseBlob).toEqual(undefined);
+    });
+  });
+
+  describe('scheduled surface locale helpers', () => {
+    const surfaces: ScheduledSurface[] = [
+      {
+        __typename: 'ScheduledSurface',
+        guid: 'NEW_TAB_EN_US',
+        name: 'New Tab (en-US)',
+        ianaTimezone: 'America/New_York',
+        prospectTypes: [],
+      },
+      {
+        __typename: 'ScheduledSurface',
+        guid: 'NEW_TAB_EN_GB',
+        name: 'New Tab (en-GB)',
+        ianaTimezone: 'Europe/London',
+        prospectTypes: [],
+      },
+      {
+        __typename: 'ScheduledSurface',
+        guid: 'NEW_TAB_DE_DE',
+        name: 'New Tab (de-DE)',
+        ianaTimezone: 'Europe/Berlin',
+        prospectTypes: [],
+      },
+    ];
+
+    it('derives locale from surface name when available', () => {
+      expect(getLocaleForScheduledSurface(surfaces, 'NEW_TAB_EN_GB')).toEqual(
+        'en-GB',
+      );
+    });
+
+    it('falls back to GUID parsing when surface name lacks locale annotation', () => {
+      const customSurfaces: ScheduledSurface[] = [
+        {
+          __typename: 'ScheduledSurface',
+          guid: 'NEW_TAB_ES_ES',
+          name: 'New Tab',
+          ianaTimezone: 'Europe/Madrid',
+          prospectTypes: [],
+        },
+      ];
+
+      expect(
+        getLocaleForScheduledSurface(customSurfaces, 'NEW_TAB_ES_ES'),
+      ).toEqual('es-ES');
+    });
+
+    it('defaults to en-US when guid is missing or unknown', () => {
+      expect(getLocaleForScheduledSurface(surfaces)).toEqual('en-US');
+      expect(getLocaleForScheduledSurface(surfaces, 'UNKNOWN_GUID')).toEqual(
+        'en-US',
+      );
     });
   });
 

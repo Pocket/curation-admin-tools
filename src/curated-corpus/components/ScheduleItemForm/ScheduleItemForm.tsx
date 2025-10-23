@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Accordion,
   AccordionDetails,
@@ -34,7 +34,10 @@ import {
   useGetSectionsWithSectionItemsQuery,
 } from '../../../api/generatedTypes';
 import { ScheduleSummaryConnector } from '../ScheduleSummaryConnector/ScheduleSummaryConnector';
-import { formatFormLabel } from '../../helpers/helperFunctions';
+import {
+  formatFormLabel,
+  getLocaleForScheduledSurface,
+} from '../../helpers/helperFunctions';
 import { useToggle } from '../../../_shared/hooks';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { curationPalette } from '../../../theme';
@@ -208,8 +211,22 @@ export const ScheduleItemForm: React.FC<
         section.status !== SectionStatus.Expired,
     ) || [];
 
+  // Determine the active scheduled surface GUID for locale/formatting purposes
+  const activeSurfaceGuid =
+    formik.values.scheduledSurfaceGuid || selectedScheduledSurfaceGuid;
+
+  // Get the full locale (e.g., "en-US", "de-DE") for the active surface
+  // This is used by MUI's LocalizationProvider to automatically format dates correctly
+  const surfaceLocale = useMemo(
+    () => getLocaleForScheduledSurface(scheduledSurfaces, activeSurfaceGuid),
+    [activeSurfaceGuid, scheduledSurfaces],
+  );
+
   return (
-    <LocalizationProvider dateAdapter={AdapterLuxon}>
+    <LocalizationProvider
+      dateAdapter={AdapterLuxon}
+      adapterLocale={surfaceLocale}
+    >
       <form name="schedule-item-form" onSubmit={formik.handleSubmit}>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={8}>
@@ -239,7 +256,6 @@ export const ScheduleItemForm: React.FC<
           <Grid item xs={12} sm={4}>
             <DatePicker
               label="Choose a date"
-              inputFormat="MM/dd/yyyy"
               value={selectedDate}
               onChange={handleDateChange}
               disablePast
