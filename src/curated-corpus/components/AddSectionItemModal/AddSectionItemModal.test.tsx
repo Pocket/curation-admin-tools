@@ -101,8 +101,32 @@ describe('AddSectionItemModal', () => {
       },
     ];
 
+    const mocks = [
+      {
+        request: {
+          query: getUrlMetadata,
+          variables: { url: 'https://example.com/article' },
+        },
+        result: {
+          data: {
+            getUrlMetadata: {
+              url: 'https://example.com/article',
+              title: 'Article',
+              excerpt: 'Excerpt',
+              authors: '',
+              imageUrl: '',
+              publisher: 'Publisher',
+              language: 'en',
+              isCollection: false,
+              isSyndicated: false,
+            },
+          },
+        },
+      },
+    ];
+
     render(
-      <MockedProvider mocks={[]} addTypename={false}>
+      <MockedProvider mocks={mocks} addTypename={false}>
         <AddSectionItemModal
           {...defaultProps}
           existingSectionItems={existingSectionItems}
@@ -141,6 +165,27 @@ describe('AddSectionItemModal', () => {
     };
 
     const mocks = [
+      {
+        request: {
+          query: getUrlMetadata,
+          variables: { url: 'https://example.com/existing-article' },
+        },
+        result: {
+          data: {
+            getUrlMetadata: {
+              url: 'https://example.com/existing-article',
+              title: 'Existing Article',
+              excerpt: 'This is an existing article',
+              authors: '',
+              imageUrl: 'https://example.com/image.jpg',
+              publisher: 'Example Publisher',
+              language: 'en',
+              isCollection: false,
+              isSyndicated: false,
+            },
+          },
+        },
+      },
       {
         request: {
           query: getApprovedItemByUrl,
