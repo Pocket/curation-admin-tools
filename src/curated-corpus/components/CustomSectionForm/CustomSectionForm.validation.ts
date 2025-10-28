@@ -45,10 +45,9 @@ export const getValidationSchema = (isEditMode: boolean = false) => {
         'not-in-past',
         'Start date cannot be in the past',
         function (value) {
-          // TODO(HNT-1125): Remove the edit-mode bypass and enforce start-date validation
-          // for manually typed values once editorial confirms we should always require
-          // startDate >= today for new and existing sections.
-          if (!value || isEditMode) {
+          // Always enforce start date validation, even in edit mode
+          // This ensures scheduled or live sections always start on or after today
+          if (!value) {
             return true;
           }
           const startDate = DateTime.fromJSDate(value).startOf('day');
@@ -60,7 +59,8 @@ export const getValidationSchema = (isEditMode: boolean = false) => {
       .date()
       .nullable()
       .test('not-in-past', 'End date cannot be in the past', function (value) {
-        if (!value || isEditMode) {
+        // Always enforce end date validation, even in edit mode
+        if (!value) {
           return true;
         }
         const endDate = DateTime.fromJSDate(value).startOf('day');
