@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
+import { FormikHelpers, FormikValues } from 'formik';
 import {
   Box,
   Typography,
@@ -23,8 +24,6 @@ import {
   SectionStatus,
   CreateSectionItemInput,
   CreateApprovedCorpusItemInput,
-  RemoveSectionItemInput,
-  SectionItemRemovalReason,
   useGetSectionsWithSectionItemsQuery,
   useCreateSectionItemMutation,
   useCreateApprovedCorpusItemMutation,
@@ -43,7 +42,7 @@ import {
   DuplicateProspectModal,
   EditCustomSectionModal,
   DeleteConfirmationModal,
-  RemoveItemConfirmationModal,
+  RemoveSectionItemModal,
 } from '..';
 import { HandleApiResponse } from '../../../_shared/components';
 import { useToggle, useRunMutation } from '../../../_shared/hooks';
@@ -686,43 +685,41 @@ export const CustomSectionDetails: React.FC<CustomSectionDetailsProps> = ({
         }}
       />
 
-      {/* Remove Item Confirmation Modal */}
-      <RemoveItemConfirmationModal
-        open={removeItemModalOpen}
-        onClose={() => {
-          toggleRemoveItemModal();
-          setItemToRemove(undefined);
-        }}
-        onConfirm={async () => {
-          if (itemToRemove) {
-            // TODO(HNT-1126): Align this removal flow with the ML section modal so editors
-            // can pick from the standardized removal reasons instead of defaulting to Other.
-            const input: RemoveSectionItemInput = {
-              externalId: itemToRemove.externalId,
-              deactivateReasons: [SectionItemRemovalReason.Other],
-            };
-
-            await runMutation(
+      {/* Remove Item Modal - reuses the same modal as ML sections */}
+      {itemToRemove && (
+        <RemoveSectionItemModal
+          itemTitle={itemToRemove.approvedItem.title}
+          isOpen={removeItemModalOpen}
+          onSave={(values: FormikValues, formikHelpers: FormikHelpers<any>) => {
+            // Run the mutation with the selected removal reasons from the form
+            runMutation(
               removeItemMutation,
               {
                 variables: {
-                  data: input,
+                  data: {
+                    externalId: itemToRemove.externalId,
+                    deactivateReasons: values.removalReasons,
+                  },
                 },
               },
               'Item removed from section successfully',
               () => {
                 toggleRemoveItemModal();
                 setItemToRemove(undefined);
+                formikHelpers.setSubmitting(false);
                 refetch();
               },
               () => {
-                toggleRemoveItemModal();
+                formikHelpers.setSubmitting(false);
               },
             );
-          }
-        }}
-        itemTitle={itemToRemove?.approvedItem?.title}
-      />
+          }}
+          toggleModal={() => {
+            toggleRemoveItemModal();
+            setItemToRemove(undefined);
+          }}
+        />
+      )}
     </Box>
   );
 };
