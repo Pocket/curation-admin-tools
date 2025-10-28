@@ -82,8 +82,7 @@ export const CustomSectionForm: React.FC<CustomSectionFormProps> = ({
               <Field
                 as={TextField}
                 name="subtitle"
-                label="Subtitle"
-                required
+                label="Subtitle (Optional)"
                 fullWidth
                 multiline
                 rows={2}

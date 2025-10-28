@@ -24,7 +24,6 @@ export const getValidationSchema = (isEditMode: boolean = false) => {
     subtitle: yup
       .string()
       .trim()
-      .required('Subtitle is required')
       .max(500, 'Subtitle cannot exceed 500 characters'),
 
     heroTitle: yup
@@ -93,10 +92,6 @@ export const validateForm = (
 
   if (!formData.title.trim()) {
     errors.title = 'Title is required';
-  }
-
-  if (!formData.subtitle.trim()) {
-    errors.subtitle = 'Subtitle is required';
   }
 
   if (!formData.startDate) {

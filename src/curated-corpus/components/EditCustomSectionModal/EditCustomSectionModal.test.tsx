@@ -87,9 +87,8 @@ describe('EditCustomSectionModal', () => {
       </MockedProvider>,
     );
 
-    // Check if form text labels are rendered (from CustomSectionFormConnector)
-    expect(screen.getByText('Title')).toBeInTheDocument();
-    expect(screen.getByText('Subtitle')).toBeInTheDocument();
+    // Check if form is rendered - looking for start date label
+    expect(screen.getByText('Start Date')).toBeInTheDocument();
   });
 
   it('should populate form with section data', () => {
