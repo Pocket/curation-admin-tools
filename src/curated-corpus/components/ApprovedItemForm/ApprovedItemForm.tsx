@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   FormControlLabel,
@@ -11,6 +11,7 @@ import {
   TextField,
   Tooltip,
 } from '@mui/material';
+import { useMutation } from '@apollo/client';
 import { FormikHelpers, FormikValues, useFormik } from 'formik';
 import { validationSchema } from './ApprovedItemForm.validation';
 import {
@@ -35,12 +36,15 @@ import {
   SharedFormButtons,
   SharedFormButtonsProps,
 } from '../../../_shared/components';
+import { useRunMutation } from '../../../_shared/hooks';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 import { curationPalette } from '../../../theme';
 import {
   applyExcerptFormattingByLanguage,
   applyTitleFormattingByLanguage,
 } from '../../helpers/helperFunctions';
+import { createOrUpdatePublisherDomain } from '../../../api/mutations/createOrUpdatePublisherDomain';
+import { extractDomainInfo } from '../../helpers/domainHelpers';
 
 interface ApprovedItemFormProps {
   /**
@@ -88,6 +92,8 @@ export const ApprovedItemForm: React.FC<
     onImageSave: onImageSaveFromParent,
   } = props;
 
+  const { runMutation } = useRunMutation();
+
   const formik = useFormik({
     initialValues: {
       url: approvedItem.url,
@@ -133,6 +139,40 @@ export const ApprovedItemForm: React.FC<
   // state variable to keep track if the fetched og excerpt and parser excerpts match
   const [hasSameParserAndOGExcerpt, setHasSameParserAndOGExcerpt] =
     useState(false);
+
+  const domainInfo = useMemo(
+    () => extractDomainInfo(approvedItem.url),
+    [approvedItem.url],
+  );
+
+  const canSaveForRegistrableDomain = !!domainInfo.registrableDomain;
+  const canSaveForSubdomain =
+    !!domainInfo.subdomain &&
+    domainInfo.subdomain !== domainInfo.registrableDomain;
+
+  const [savePublisherForDomainMutation, { loading: isSavingPublisher }] =
+    useMutation(createOrUpdatePublisherDomain);
+
+  const handleSavePublisherForDomain = (domain: string) => {
+    const publisher = formik.values.publisher?.trim();
+
+    if (!publisher || !domain) {
+      return;
+    }
+
+    const variables = {
+      data: {
+        domainName: domain,
+        publisher,
+      },
+    };
+
+    runMutation(
+      savePublisherForDomainMutation,
+      { variables },
+      `Publisher '${publisher}' saved for ${domain}. Future items from this domain will use this publisher.`,
+    );
+  };
 
   /**
    * Query to fetch the Parser excerpt for this approved item. Checks the cache first before making a request.
@@ -275,12 +315,54 @@ export const ApprovedItemForm: React.FC<
           />
         </Grid>
         <Grid item md={12} xs={12}>
-          <FormikTextField
-            id="publisher"
-            label="Publisher"
-            fieldProps={formik.getFieldProps('publisher')}
-            fieldMeta={formik.getFieldMeta('publisher')}
-          />
+          <Box display="flex">
+            <Box flexGrow={1} alignSelf="center" textOverflow="ellipsis">
+              <FormikTextField
+                id="publisher"
+                label="Publisher"
+                fieldProps={formik.getFieldProps('publisher')}
+                fieldMeta={formik.getFieldMeta('publisher')}
+              />
+            </Box>
+            {(canSaveForRegistrableDomain || canSaveForSubdomain) && (
+              <Box alignSelf="baseline" ml={1} display="flex">
+                {canSaveForRegistrableDomain && (
+                  <Box>
+                    <Button
+                      buttonType="hollow"
+                      disabled={
+                        !formik.values.publisher?.trim() || isSavingPublisher
+                      }
+                      onClick={() =>
+                        handleSavePublisherForDomain(
+                          domainInfo.registrableDomain as string,
+                        )
+                      }
+                    >
+                      {`Save for ${domainInfo.registrableDomain}`}
+                    </Button>
+                  </Box>
+                )}
+                {canSaveForSubdomain && (
+                  <Box ml={1}>
+                    <Button
+                      buttonType="hollow"
+                      disabled={
+                        !formik.values.publisher?.trim() || isSavingPublisher
+                      }
+                      onClick={() =>
+                        handleSavePublisherForDomain(
+                          domainInfo.subdomain as string,
+                        )
+                      }
+                    >
+                      {`Save for ${domainInfo.subdomain}`}
+                    </Button>
+                  </Box>
+                )}
+              </Box>
+            )}
+          </Box>
         </Grid>
         <Grid item md={12} xs={12}>
           <FormikTextField
