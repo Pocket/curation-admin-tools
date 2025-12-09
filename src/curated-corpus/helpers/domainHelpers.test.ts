@@ -38,9 +38,7 @@ describe('extractDomainInfo', () => {
   });
 
   it('should handle deep subdomains', () => {
-    const result = extractDomainInfo(
-      'https://blog.tech.example.com/article',
-    );
+    const result = extractDomainInfo('https://blog.tech.example.com/article');
     expect(result).toEqual({
       hostname: 'blog.tech.example.com',
       subdomain: 'blog.tech.example.com',
