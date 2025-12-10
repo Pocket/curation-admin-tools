@@ -67,7 +67,6 @@ describe('The ExistingProspectCard component', () => {
           <MemoryRouter>
             <ExistingProspectCard
               item={prospect.approvedCorpusItem!}
-              parserItem={prospect.item!}
               prospectId={prospect.prospectId}
               onSchedule={onSchedule}
               onRemoveProspect={onRemoveProspect}
@@ -100,7 +99,6 @@ describe('The ExistingProspectCard component', () => {
           <MemoryRouter>
             <ExistingProspectCard
               item={prospect.approvedCorpusItem!}
-              parserItem={prospect.item!}
               prospectId={prospect.prospectId}
               onSchedule={onSchedule}
               onRemoveProspect={onRemoveProspect}
@@ -120,7 +118,6 @@ describe('The ExistingProspectCard component', () => {
           <MemoryRouter>
             <ExistingProspectCard
               item={prospect.approvedCorpusItem!}
-              parserItem={prospect.item!}
               prospectId={prospect.prospectId}
               onSchedule={onSchedule}
               onRemoveProspect={onRemoveProspect}
@@ -140,7 +137,6 @@ describe('The ExistingProspectCard component', () => {
           <MemoryRouter>
             <ExistingProspectCard
               item={prospect.approvedCorpusItem!}
-              parserItem={prospect.item!}
               prospectId={prospect.prospectId}
               onSchedule={onSchedule}
               onRemoveProspect={onRemoveProspect}
@@ -160,7 +156,6 @@ describe('The ExistingProspectCard component', () => {
           <MemoryRouter>
             <ExistingProspectCard
               item={prospect.approvedCorpusItem!}
-              parserItem={prospect.item!}
               prospectId={prospect.prospectId}
               onSchedule={onSchedule}
               onRemoveProspect={onRemoveProspect}
@@ -183,7 +178,6 @@ describe('The ExistingProspectCard component', () => {
           <MemoryRouter>
             <ExistingProspectCard
               item={prospect.approvedCorpusItem!}
-              parserItem={prospect.item!}
               prospectId={prospect.prospectId}
               onSchedule={onSchedule}
               onRemoveProspect={onRemoveProspect}
@@ -203,7 +197,6 @@ describe('The ExistingProspectCard component', () => {
           <MemoryRouter>
             <ExistingProspectCard
               item={prospect.approvedCorpusItem!}
-              parserItem={prospect.item!}
               prospectId={prospect.prospectId}
               onSchedule={onSchedule}
               onRemoveProspect={onRemoveProspect}
@@ -252,7 +245,6 @@ describe('The ExistingProspectCard component', () => {
           <MemoryRouter>
             <ExistingProspectCard
               item={prospectWithScheduleHistory.approvedCorpusItem!}
-              parserItem={prospect.item!}
               prospectId={prospect.prospectId}
               onSchedule={onSchedule}
               onRemoveProspect={onRemoveProspect}
