@@ -1,10 +1,11 @@
 import { parse } from 'tldts';
 
 export interface DomainInfo {
-  /** Full hostname (e.g., "news.example.com") */
-  hostname: string;
-  /** Subdomain if present (e.g., "news.example.com"), null if none */
-  subdomain: string | null;
+  /**
+   * Full hostname without a leading "www" when a subdomain exists
+   * (e.g., "news.example.com"), null if none.
+   */
+  subdomainHostname: string | null;
   /** Registrable domain (e.g., "example.com") */
   registrableDomain: string | null;
 }
@@ -13,20 +14,23 @@ export interface DomainInfo {
  * Extracts domain information from a URL string.
  * Uses tldts library for accurate parsing of domains including multi-level TLDs.
  *
+ * Note: IDN domains (internationalized domain names) are displayed in their
+ * ASCII punycode form (e.g., "xn--trn-sna.de" instead of "törn.de").
+ *
  * @param url - Full URL string (e.g., "https://news.example.com/article")
- * @returns DomainInfo object with hostname, subdomain, and registrable domain
+ * @returns DomainInfo object with subdomain hostname and registrable domain
  *
  * @example
  * extractDomainInfo("https://news.example.com/article")
- * // Returns: { hostname: "news.example.com", subdomain: "news.example.com", registrableDomain: "example.com" }
+ * // Returns: { subdomainHostname: "news.example.com", registrableDomain: "example.com" }
  *
  * @example
  * extractDomainInfo("https://example.com/article")
- * // Returns: { hostname: "example.com", subdomain: null, registrableDomain: "example.com" }
+ * // Returns: { subdomainHostname: null, registrableDomain: "example.com" }
  *
  * @example
  * extractDomainInfo("https://news.bbc.co.uk/article")
- * // Returns: { hostname: "news.bbc.co.uk", subdomain: "news.bbc.co.uk", registrableDomain: "bbc.co.uk" }
+ * // Returns: { subdomainHostname: "news.bbc.co.uk", registrableDomain: "bbc.co.uk" }
  */
 export function extractDomainInfo(url: string): DomainInfo {
   try {
@@ -37,28 +41,29 @@ export function extractDomainInfo(url: string): DomainInfo {
     // Use tldts to parse domain components
     const parsed = parse(hostname);
 
-    let subdomain: string | null = null;
+    const registrableDomain = parsed.domain ?? null;
 
-    if (parsed.domain && hostname !== parsed.domain) {
-      // Strip the registrable domain part (e.g., ".example.com")
-      const prefix = hostname.slice(0, -(parsed.domain.length + 1));
+    let subdomainHostname: string | null = null;
+    const hostnameWithoutWww = hostname.startsWith('www.')
+      ? hostname.slice(4)
+      : hostname;
 
-      // Treat a bare "www" prefix as no subdomain
-      if (prefix && prefix !== 'www') {
-        subdomain = hostname;
-      }
+    if (
+      registrableDomain &&
+      hostnameWithoutWww !== registrableDomain &&
+      hostnameWithoutWww.endsWith(registrableDomain)
+    ) {
+      subdomainHostname = hostnameWithoutWww;
     }
 
     return {
-      hostname,
-      subdomain,
-      registrableDomain: parsed.domain,
+      subdomainHostname,
+      registrableDomain,
     };
-  } catch (error) {
+  } catch {
     // If URL parsing fails, return empty info
     return {
-      hostname: '',
-      subdomain: null,
+      subdomainHostname: null,
       registrableDomain: null,
     };
   }

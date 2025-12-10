@@ -14,7 +14,7 @@ export const useRunMutation = () => {
     options: any,
     message?: string,
     successCallback?: (data?: any) => void,
-    errorCallback?: () => void,
+    errorCallback?: (error?: Error) => void,
     refetch?: any,
   ): void => {
     mutateFunction(options)
@@ -39,7 +39,7 @@ export const useRunMutation = () => {
 
         // execute any additional actions, i.e. hiding the edit form
         if (errorCallback) {
-          errorCallback();
+          errorCallback(error);
         }
       });
   };

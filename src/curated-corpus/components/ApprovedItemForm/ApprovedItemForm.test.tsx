@@ -2,12 +2,15 @@ import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MockedProvider } from '@apollo/client/testing';
+import { useMutation } from '@apollo/client';
 import { SnackbarProvider } from 'notistack';
 import {
   ApprovedCorpusItem,
   CorpusItemSource,
   CorpusLanguage,
   CuratedStatus,
+  GetOpenGraphFieldsDocument,
+  GetUrlMetadataDocument,
   Topics,
 } from '../../../api/generatedTypes';
 import { ApprovedItemForm } from './ApprovedItemForm';
@@ -16,11 +19,65 @@ import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../../../theme';
 
+// Mock useMutation for tests that need to control loading state
+jest.mock('@apollo/client', () => ({
+  ...jest.requireActual('@apollo/client'),
+  useMutation: jest.fn(),
+}));
+
+const mockUseMutation = useMutation as jest.Mock;
+
 describe('The ApprovedItemForm component', () => {
   let item: ApprovedCorpusItem;
   const onSubmit = jest.fn();
   const onCancel = jest.fn();
   const onImageSave = jest.fn();
+
+  beforeEach(() => {
+    // Reset useMutation to use actual implementation by default
+    mockUseMutation.mockImplementation(
+      jest.requireActual('@apollo/client').useMutation,
+    );
+  });
+
+  const buildQueryMocks = (url: string, excerpt: string) => [
+    {
+      request: {
+        query: GetOpenGraphFieldsDocument,
+        variables: { url },
+      },
+      result: {
+        data: {
+          getOpenGraphFields: {
+            description: excerpt,
+          },
+        },
+      },
+    },
+    {
+      request: {
+        query: GetUrlMetadataDocument,
+        variables: { url },
+      },
+      result: {
+        data: {
+          getUrlMetadata: {
+            url,
+            imageUrl: '',
+            publisher: '',
+            datePublished: null,
+            domain: url,
+            title: '',
+            excerpt,
+            language: '',
+            isSyndicated: false,
+            isCollection: false,
+            authors: [],
+          },
+        },
+      },
+    },
+  ];
 
   beforeEach(() => {
     item = {
@@ -51,13 +108,24 @@ describe('The ApprovedItemForm component', () => {
     };
   });
 
-  it('should render all the form fields with correct initial values', () => {
+  const renderApprovedItemForm = (
+    itemOverrides: Partial<ApprovedCorpusItem> = {},
+    mocks?: any[],
+  ) => {
+    const approvedItemWithOverrides = { ...item, ...itemOverrides };
+    const mergedMocks =
+      mocks ??
+      buildQueryMocks(
+        approvedItemWithOverrides.url,
+        approvedItemWithOverrides.excerpt,
+      );
+
     render(
-      <MockedProvider>
+      <MockedProvider mocks={mergedMocks}>
         <ThemeProvider theme={theme}>
           <SnackbarProvider maxSnack={3}>
             <ApprovedItemForm
-              approvedItem={item}
+              approvedItem={approvedItemWithOverrides}
               onSubmit={onSubmit}
               onCancel={onCancel}
               onImageSave={onImageSave}
@@ -66,6 +134,10 @@ describe('The ApprovedItemForm component', () => {
         </ThemeProvider>
       </MockedProvider>,
     );
+  };
+
+  it('should render all the form fields with correct initial values', () => {
+    renderApprovedItemForm();
 
     const url = screen.getByLabelText(/Item URL/);
     expect(url).toBeInTheDocument();
@@ -127,20 +199,7 @@ describe('The ApprovedItemForm component', () => {
   });
 
   it('should render the ImageUpload component', () => {
-    render(
-      <MockedProvider>
-        <ThemeProvider theme={theme}>
-          <SnackbarProvider maxSnack={3}>
-            <ApprovedItemForm
-              approvedItem={item}
-              onSubmit={onSubmit}
-              onCancel={onCancel}
-              onImageSave={onImageSave}
-            />
-          </SnackbarProvider>
-        </ThemeProvider>
-      </MockedProvider>,
-    );
+    renderApprovedItemForm();
 
     //This is fetching the 'Update Image' text in the ImageUpload component
     const imageUpload = screen.getByText(/Update Image/i);
@@ -149,22 +208,9 @@ describe('The ApprovedItemForm component', () => {
   });
 
   it('should render form buttons', () => {
-    render(
-      <MockedProvider>
-        <ThemeProvider theme={theme}>
-          <SnackbarProvider maxSnack={3}>
-            <ApprovedItemForm
-              approvedItem={item}
-              onSubmit={onSubmit}
-              onCancel={onCancel}
-              onImageSave={onImageSave}
-            />
-          </SnackbarProvider>
-        </ThemeProvider>
-      </MockedProvider>,
-    );
+    renderApprovedItemForm();
 
-    const saveButton = screen.getByText(/Save/);
+    const saveButton = screen.getByText(/^Save$/);
     const cancelButton = screen.getByText(/Cancel/);
 
     // Buttons from the SharedFormButtons component
@@ -172,28 +218,104 @@ describe('The ApprovedItemForm component', () => {
     expect(cancelButton).toBeInTheDocument();
   });
 
+  describe('Publisher domain save actions', () => {
+    // Create a mock MutationResult with all required properties
+    const createMockMutationResult = (loading: boolean) => ({
+      loading,
+      called: false,
+      client: {},
+      reset: jest.fn(),
+    });
+
+    it('should hide save buttons when domain info is unavailable', () => {
+      renderApprovedItemForm({
+        url: 'not-a-valid-url',
+        publisher: 'Test Publisher',
+      });
+
+      expect(screen.queryByText(/^Save for /i)).not.toBeInTheDocument();
+    });
+
+    it('should disable save buttons when publisher is empty', () => {
+      const mockMutation = jest.fn().mockResolvedValue({ data: {} });
+      mockUseMutation.mockReturnValue([
+        mockMutation,
+        createMockMutationResult(false),
+      ]);
+
+      renderApprovedItemForm({
+        publisher: '',
+        url: 'https://news.example.com/story',
+      });
+
+      const saveButton = screen.getByRole('button', {
+        name: /Save for example.com/i,
+      });
+
+      expect(saveButton).toBeDisabled();
+    });
+
+    it('should call mutation with correct variables for subdomains', async () => {
+      const mockMutation = jest.fn().mockResolvedValue({ data: {} });
+      mockUseMutation.mockReturnValue([
+        mockMutation,
+        createMockMutationResult(false),
+      ]);
+
+      renderApprovedItemForm({
+        url: 'https://www.news.example.com/story',
+      });
+
+      const subdomainButton = screen.getByRole('button', {
+        name: /Save for news.example.com/i,
+      });
+
+      await waitFor(() => {
+        userEvent.click(subdomainButton);
+      });
+
+      await waitFor(() => {
+        expect(mockMutation).toHaveBeenCalledWith({
+          variables: {
+            data: {
+              domainName: 'news.example.com',
+              publisher: item.publisher,
+            },
+          },
+        });
+      });
+    });
+
+    it('should show loading state while saving publisher', () => {
+      const mockMutation = jest.fn().mockResolvedValue({ data: {} });
+      mockUseMutation.mockReturnValue([
+        mockMutation,
+        createMockMutationResult(true),
+      ]);
+
+      renderApprovedItemForm({
+        url: 'https://news.example.com/story',
+      });
+
+      const loadingButtons = screen.getAllByRole('button', {
+        name: /Saving .*example\.com/i,
+      });
+
+      expect(loadingButtons).toHaveLength(2);
+      loadingButtons.forEach((button) => expect(button).toBeDisabled());
+      expect(screen.getAllByRole('progressbar')).toHaveLength(2);
+    });
+  });
+
   describe('When the form fields are edited', () => {
     it('should call the onSave callback for the save button', async () => {
-      render(
-        <MockedProvider>
-          <ThemeProvider theme={theme}>
-            <SnackbarProvider maxSnack={3}>
-              <ApprovedItemForm
-                approvedItem={item}
-                onSubmit={onSubmit}
-                onCancel={onCancel}
-                onImageSave={onImageSave}
-              />
-            </SnackbarProvider>
-          </ThemeProvider>
-        </MockedProvider>,
-      );
+      renderApprovedItemForm();
 
       const title = screen.getByLabelText(/Title/);
       userEvent.type(title, 'test title');
 
       const saveButton = screen.getByRole('button', {
-        name: /save/i,
+        name: /^save$/i,
       });
       await waitFor(() => {
         userEvent.click(saveButton);
@@ -202,20 +324,7 @@ describe('The ApprovedItemForm component', () => {
     });
 
     it('should call the onCancel callback for the cancel button', async () => {
-      render(
-        <MockedProvider>
-          <ThemeProvider theme={theme}>
-            <SnackbarProvider maxSnack={3}>
-              <ApprovedItemForm
-                approvedItem={item}
-                onSubmit={onSubmit}
-                onCancel={onCancel}
-                onImageSave={onImageSave}
-              />
-            </SnackbarProvider>
-          </ThemeProvider>
-        </MockedProvider>,
-      );
+      renderApprovedItemForm();
 
       const title = screen.getByLabelText(/Title/);
       userEvent.type(title, 'test title');
@@ -237,6 +346,7 @@ describe('The ApprovedItemForm component', () => {
       // variables and result field has to match how we send/receive
       // variables/data for the real mutation
       const mocks = [
+        ...buildQueryMocks(item.url, item.excerpt),
         {
           request: {
             query: uploadApprovedItemImage,
@@ -254,20 +364,7 @@ describe('The ApprovedItemForm component', () => {
         },
       ];
 
-      render(
-        <MockedProvider mocks={mocks}>
-          <ThemeProvider theme={theme}>
-            <SnackbarProvider maxSnack={3}>
-              <ApprovedItemForm
-                approvedItem={item}
-                onSubmit={onSubmit}
-                onCancel={onCancel}
-                onImageSave={onImageSave}
-              />
-            </SnackbarProvider>
-          </ThemeProvider>
-        </MockedProvider>,
-      );
+      renderApprovedItemForm({}, mocks);
 
       // fetch the update image button
       const updateImageButton = screen.getByRole('button', {
@@ -288,7 +385,7 @@ describe('The ApprovedItemForm component', () => {
 
       // this gets the save button on the image upload component and not on the form
       const saveButton = await screen.findByRole('button', {
-        name: /save/i,
+        name: /^save$/i,
       });
 
       // This executes the upload mutation and the subsequent callback
@@ -311,23 +408,10 @@ describe('The ApprovedItemForm component', () => {
 
   describe('When the form fields are NOT edited', () => {
     it('should call the onSave callback for the save button ', async () => {
-      render(
-        <MockedProvider>
-          <ThemeProvider theme={theme}>
-            <SnackbarProvider maxSnack={3}>
-              <ApprovedItemForm
-                approvedItem={item}
-                onSubmit={onSubmit}
-                onCancel={onCancel}
-                onImageSave={onImageSave}
-              />
-            </SnackbarProvider>
-          </ThemeProvider>
-        </MockedProvider>,
-      );
+      renderApprovedItemForm();
 
       const saveButton = screen.getByRole('button', {
-        name: /save/i,
+        name: /^save$/i,
       });
 
       await waitFor(() => {
@@ -339,23 +423,10 @@ describe('The ApprovedItemForm component', () => {
     it('should NOT call the onSave callback if it does not have an image', async () => {
       const itemWithoutImage = { ...item, imageUrl: '' };
 
-      render(
-        <MockedProvider>
-          <ThemeProvider theme={theme}>
-            <SnackbarProvider maxSnack={3}>
-              <ApprovedItemForm
-                approvedItem={itemWithoutImage}
-                onSubmit={onSubmit}
-                onCancel={onCancel}
-                onImageSave={onImageSave}
-              />
-            </SnackbarProvider>
-          </ThemeProvider>
-        </MockedProvider>,
-      );
+      renderApprovedItemForm(itemWithoutImage);
 
       const saveButton = screen.getByRole('button', {
-        name: /save/i,
+        name: /^save$/i,
       });
 
       await waitFor(() => {
