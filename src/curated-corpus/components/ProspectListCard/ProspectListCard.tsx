@@ -1,5 +1,5 @@
 import React from 'react';
-import { Item, Prospect } from '../../../api/generatedTypes';
+import { Prospect } from '../../../api/generatedTypes';
 import {
   Card,
   CardActions,
@@ -18,14 +18,16 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CategoryIcon from '@mui/icons-material/Category';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 import { curationPalette } from '../../../theme';
 import { Button } from '../../../_shared/components';
 import { getDisplayTopic } from '../../helpers/topics';
 import { RemoveProspectAction } from '../actions/RemoveProspectAction/RemoveProspectAction';
 import { useToggle } from '../../../_shared/hooks';
-import { DateTime } from 'luxon';
+
+// TODO: uncomment this filter after adding published date to prospect object
+// https://mozilla-hub.atlassian.net/browse/HNT-1364
+// import { DateTime } from 'luxon';
 
 interface ProspectListCardProps {
   /**
@@ -33,11 +35,6 @@ interface ProspectListCardProps {
    */
   prospect: Prospect;
 
-  /**
-   * Parser Item type representation of this Prospect item
-   */
-
-  parserItem: Item;
   /**
    * Function called when "Add to Corpus" button is clicked
    */
@@ -61,24 +58,12 @@ interface ProspectListCardProps {
 export const ProspectListCard: React.FC<ProspectListCardProps> = (
   props,
 ): JSX.Element => {
-  const {
-    prospect,
-    parserItem,
-    onAddToCorpus,
-    onRemoveProspect,
-    onRecommend,
-    onReject,
-  } = props;
+  const { prospect, onAddToCorpus, onRemoveProspect, onRecommend, onReject } =
+    props;
   /**
    * Keep track of whether the RemoveItemModal is open or not.
    */
   const [removeProspectModalOpen, toggleRemoveProspectModal] = useToggle(false);
-
-  const timeToRead = parserItem?.timeToRead ? (
-    `${parserItem.timeToRead} min(s)`
-  ) : (
-    <span> &mdash;</span>
-  );
 
   return (
     <Card
@@ -129,23 +114,21 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
               <ListItemText secondary={prospect.prospectType.toLowerCase()} />
             </ListItem>
 
-            <ListItem disableGutters>
-              <ListItemIcon sx={{ minWidth: '1.5rem' }}>
-                <AccessTimeIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText secondary={timeToRead} />
-            </ListItem>
-
+            {/*
+            TODO: uncomment this filter after adding published date to prospect
+              object
+              https://mozilla-hub.atlassian.net/browse/HNT-1364
             <ListItem disableGutters>
               <ListItemText
                 secondary={
-                  parserItem?.datePublished &&
+                  prospect.datePublished &&
                   `Published ${DateTime.fromJSDate(
-                    new Date(parserItem?.datePublished),
+                    new Date(prospect.datePublished),
                   ).toFormat('MMMM dd, yyyy')}`
                 }
               />
             </ListItem>
+            */}
           </List>
         </Grid>
         <Grid item xs={12} sm={9}>

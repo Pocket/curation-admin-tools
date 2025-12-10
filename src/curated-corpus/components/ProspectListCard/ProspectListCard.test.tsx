@@ -1,19 +1,13 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import {
-  CorpusLanguage,
-  Item,
-  Prospect,
-  Topics,
-} from '../../../api/generatedTypes';
+import { CorpusLanguage, Prospect, Topics } from '../../../api/generatedTypes';
 import { ProspectListCard } from './ProspectListCard';
 import userEvent from '@testing-library/user-event';
 import { MockedProvider, MockedResponse } from '@apollo/client/testing';
 
 describe('The ProspectListCard component', () => {
   let prospect: Prospect;
-  let parserItem: Item;
 
   const onAddToCorpus = jest.fn();
   const onRecommend = jest.fn();
@@ -21,15 +15,6 @@ describe('The ProspectListCard component', () => {
   const onRemoveProspect = jest.fn();
 
   beforeEach(() => {
-    parserItem = {
-      id: '0',
-      itemId: 'test-id',
-      givenUrl: 'www.test-item.com',
-      normalUrl: 'www.test-normal-item.com',
-      readerSlug: 'test-slug',
-      timeToRead: 5,
-    };
-
     prospect = {
       id: '123-abc',
       prospectId: '456-dfg',
@@ -46,9 +31,6 @@ describe('The ProspectListCard component', () => {
       topic: Topics.Technology,
       saveCount: 111222,
       isSyndicated: false,
-      item: {
-        ...parserItem,
-      },
     };
   });
 
@@ -62,7 +44,6 @@ describe('The ProspectListCard component', () => {
             onRecommend={onRecommend}
             onReject={onReject}
             onRemoveProspect={onRemoveProspect}
-            parserItem={prospect.item!}
           />
         </MemoryRouter>
       </MockedProvider>,
@@ -140,46 +121,6 @@ describe('The ProspectListCard component', () => {
     renderComponent();
 
     expect(screen.getByText('Syndicated')).toBeInTheDocument();
-  });
-
-  it('should render time to read when prospect has a time to read', () => {
-    renderComponent();
-
-    expect(
-      screen.getByText(`${prospect.item?.timeToRead} min(s)`),
-    ).toBeInTheDocument();
-  });
-
-  it('should not render time to read when prospect does not a time to read', () => {
-    // setting time to read to undefined
-    parserItem.timeToRead = undefined;
-
-    // modifying prospect item to not have a time to read
-    prospect = {
-      ...prospect,
-      item: {
-        ...parserItem,
-      },
-    };
-
-    renderComponent();
-
-    expect(
-      screen.queryByText(`${prospect.item?.timeToRead} min(s)`),
-    ).not.toBeInTheDocument();
-  });
-
-  it('should render when prospect does not have a parser object', () => {
-    prospect = {
-      ...prospect,
-      item: null,
-    };
-
-    renderComponent();
-
-    expect(
-      screen.queryByText(`${prospect.item?.timeToRead} min(s)`),
-    ).not.toBeInTheDocument();
   });
 
   it('should render prospect card with the action buttons', () => {

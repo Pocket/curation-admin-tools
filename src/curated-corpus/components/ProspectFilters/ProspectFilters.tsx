@@ -63,17 +63,6 @@ interface ProspectFiltersProps {
    * in the parent component (Prospecting page).
    */
   sortByPublishedDate: boolean;
-
-  /**
-   * Boolean flag to represent the state of sortByTimeToRead toggle in the parent component
-   * (prospecting page)
-   */
-  sortByTimeToRead: boolean;
-
-  /**
-   * Function to toggle sortByTimeToRead in the parent component (prospecting page)
-   */
-  handleSortByTimeToRead: VoidFunction;
 }
 
 /**
@@ -91,12 +80,14 @@ export const ProspectFilters: React.FC<ProspectFiltersProps> = (
     setProspectMetadataFilters,
     excludePublisherSwitch,
     filterByPublisher,
+    // remove disable after https://mozilla-hub.atlassian.net/browse/HNT-1364
+    /* eslint-disable-next-line  @typescript-eslint/no-unused-vars */
     sortByPublishedDate,
     setFilterByPublisher,
     onChange,
+    // remove disable after https://mozilla-hub.atlassian.net/browse/HNT-1364
+    /* eslint-disable-next-line  @typescript-eslint/no-unused-vars */
     onSortByPublishedDate,
-    sortByTimeToRead,
-    handleSortByTimeToRead,
   } = props;
 
   // Extract all topics from prospects item data
@@ -137,6 +128,10 @@ export const ProspectFilters: React.FC<ProspectFiltersProps> = (
           labelPlacement={'top'} // Ensures the label is on top of the switch
         />
       </FormGroup>
+      {/*
+      TODO: uncomment this filter after adding published date to prospect
+        object
+        https://mozilla-hub.atlassian.net/browse/HNT-1364
       <FormGroup>
         <FormControlLabel
           sx={{ mx: 2, mb: 2 }}
@@ -150,19 +145,7 @@ export const ProspectFilters: React.FC<ProspectFiltersProps> = (
           labelPlacement={'top'} // Ensures the label is on top of the switch
         />
       </FormGroup>
-      <FormGroup>
-        <FormControlLabel
-          sx={{ mx: 2, mb: 2 }}
-          control={
-            <Switch
-              checked={sortByTimeToRead}
-              onChange={handleSortByTimeToRead}
-            />
-          }
-          label={'Time to Read'}
-          labelPlacement={'top'} // Ensures the label is on top of the switch
-        />
-      </FormGroup>
+      */}
       {/*Topic Filter*/}
       {prospects.length > 0 && (
         <FormGroup sx={{ mx: 1, mb: 2 }}>
