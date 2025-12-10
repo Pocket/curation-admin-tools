@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   Box,
+  CircularProgress,
   FormControlLabel,
   FormHelperText,
   Grid,
@@ -139,6 +140,9 @@ export const ApprovedItemForm: React.FC<
   // state variable to keep track if the fetched og excerpt and parser excerpts match
   const [hasSameParserAndOGExcerpt, setHasSameParserAndOGExcerpt] =
     useState(false);
+  const [publisherSaveError, setPublisherSaveError] = useState<string | null>(
+    null,
+  );
 
   const domainInfo = useMemo(
     () => extractDomainInfo(approvedItem.url),
@@ -147,30 +151,31 @@ export const ApprovedItemForm: React.FC<
 
   const canSaveForRegistrableDomain = !!domainInfo.registrableDomain;
   const canSaveForSubdomain =
-    !!domainInfo.subdomain &&
-    domainInfo.subdomain !== domainInfo.registrableDomain;
+    !!domainInfo.subdomainHostname &&
+    domainInfo.subdomainHostname !== domainInfo.registrableDomain;
 
   const [savePublisherForDomainMutation, { loading: isSavingPublisher }] =
     useMutation(createOrUpdatePublisherDomain);
 
   const handleSavePublisherForDomain = (domain: string) => {
-    const publisher = formik.values.publisher?.trim();
-
-    if (!publisher || !domain) {
-      return;
-    }
+    setPublisherSaveError(null);
 
     const variables = {
       data: {
         domainName: domain,
-        publisher,
+        publisher: formik.values.publisher?.trim(),
       },
     };
 
     runMutation(
       savePublisherForDomainMutation,
       { variables },
-      `Publisher '${publisher}' saved for ${domain}. Future items from this domain will use this publisher.`,
+      `Publisher '${variables.data.publisher}' saved for ${domain}. Future items from this domain will use this publisher.`,
+      () => setPublisherSaveError(null),
+      (error?: Error) =>
+        setPublisherSaveError(
+          error?.message ?? 'Unable to save publisher for this domain.',
+        ),
     );
   };
 
@@ -339,7 +344,15 @@ export const ApprovedItemForm: React.FC<
                         )
                       }
                     >
-                      {`Save for ${domainInfo.registrableDomain}`}
+                      {isSavingPublisher
+                        ? `Saving ${domainInfo.registrableDomain}...`
+                        : `Save for ${domainInfo.registrableDomain}`}
+                      {isSavingPublisher && (
+                        <>
+                          &nbsp;
+                          <CircularProgress size={14} />
+                        </>
+                      )}
                     </Button>
                   </Box>
                 )}
@@ -352,12 +365,25 @@ export const ApprovedItemForm: React.FC<
                       }
                       onClick={() =>
                         handleSavePublisherForDomain(
-                          domainInfo.subdomain as string,
+                          domainInfo.subdomainHostname as string,
                         )
                       }
                     >
-                      {`Save for ${domainInfo.subdomain}`}
+                      {isSavingPublisher
+                        ? `Saving ${domainInfo.subdomainHostname}...`
+                        : `Save for ${domainInfo.subdomainHostname}`}
+                      {isSavingPublisher && (
+                        <>
+                          &nbsp;
+                          <CircularProgress size={14} />
+                        </>
+                      )}
                     </Button>
+                  </Box>
+                )}
+                {publisherSaveError && (
+                  <Box ml={2} alignSelf="center">
+                    <FormHelperText error>{publisherSaveError}</FormHelperText>
                   </Box>
                 )}
               </Box>
