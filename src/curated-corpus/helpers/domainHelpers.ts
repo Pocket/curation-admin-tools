@@ -1,4 +1,4 @@
-import { parse } from 'tldts';
+import { getDomain } from 'tldts';
 
 export interface DomainInfo {
   /**
@@ -38,10 +38,8 @@ export function extractDomainInfo(url: string): DomainInfo {
     const urlObj = new URL(url);
     const hostname = urlObj.hostname;
 
-    // Use tldts to parse domain components
-    const parsed = parse(hostname);
-
-    const registrableDomain = parsed.domain ?? null;
+    // Use tldts to get registrable domain
+    const registrableDomain = getDomain(hostname);
 
     let subdomainHostname: string | null = null;
     const hostnameWithoutWww = hostname.startsWith('www.')
