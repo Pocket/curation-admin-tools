@@ -138,15 +138,12 @@ describe('The ProspectFilters component', () => {
     expect(switchLabel).toBeInTheDocument();
   });
 
-  /*
-  TODO: re-enable after https://mozilla-hub.atlassian.net/browse/HNT-1364
   it('should render the sort by published date filter', () => {
     renderComponent();
 
     const publishedDate = screen.getByText(/Published Date/i);
     expect(publishedDate).toBeInTheDocument();
   });
-  */
 
   it('should render the topic filter', () => {
     renderComponent();

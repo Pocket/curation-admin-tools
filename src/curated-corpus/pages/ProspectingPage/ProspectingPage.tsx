@@ -54,7 +54,7 @@ import { transformAuthors } from '../../../_shared/utils/transformAuthors';
 import { getDisplayTopic } from '../../helpers/topics';
 import { ProspectFilterOptions } from '../../components/ProspectFilters/ProspectFilters';
 
-const distantPast = new Date('1970-01-01Z00:00:00:000').getTime();
+const distantPast = new Date('1970-01-01T00:00:00').getTime();
 
 export const ProspectingPage: React.FC = (): JSX.Element => {
   const initialProspectFiltersState: ProspectFilterOptions = {
@@ -640,10 +640,11 @@ export const ProspectingPage: React.FC = (): JSX.Element => {
   const handleSortByPublishedDate = (prospectList: Prospect[]) => {
     const sortedProspects = [...(prospectList || [])].sort((a, b) => {
       return (
-        new Date(b.item?.datePublished ?? distantPast).getTime() -
-        new Date(a.item?.datePublished ?? distantPast).getTime()
+        new Date(b.datePublished ?? distantPast).getTime() -
+        new Date(a.datePublished ?? distantPast).getTime()
       );
     });
+
     setProspects(sortedProspects);
   };
 

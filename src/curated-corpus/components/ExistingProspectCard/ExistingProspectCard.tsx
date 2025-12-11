@@ -110,6 +110,16 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
               <ListItemText secondary={item.language} />
             </ListItem>
             <ListItem disableGutters>
+              <ListItemText
+                secondary={
+                  item.datePublished &&
+                  `Published ${DateTime.fromJSDate(
+                    new Date(item.datePublished),
+                  ).toFormat('MMMM dd, yyyy')}`
+                }
+              />
+            </ListItem>
+            <ListItem disableGutters>
               <ListItemIcon sx={{ minWidth: '1.5rem' }}>
                 <FaceIcon fontSize="small" />
               </ListItemIcon>

@@ -80,13 +80,9 @@ export const ProspectFilters: React.FC<ProspectFiltersProps> = (
     setProspectMetadataFilters,
     excludePublisherSwitch,
     filterByPublisher,
-    // remove disable after https://mozilla-hub.atlassian.net/browse/HNT-1364
-    /* eslint-disable-next-line  @typescript-eslint/no-unused-vars */
     sortByPublishedDate,
     setFilterByPublisher,
     onChange,
-    // remove disable after https://mozilla-hub.atlassian.net/browse/HNT-1364
-    /* eslint-disable-next-line  @typescript-eslint/no-unused-vars */
     onSortByPublishedDate,
   } = props;
 
@@ -128,10 +124,6 @@ export const ProspectFilters: React.FC<ProspectFiltersProps> = (
           labelPlacement={'top'} // Ensures the label is on top of the switch
         />
       </FormGroup>
-      {/*
-      TODO: uncomment this filter after adding published date to prospect
-        object
-        https://mozilla-hub.atlassian.net/browse/HNT-1364
       <FormGroup>
         <FormControlLabel
           sx={{ mx: 2, mb: 2 }}
@@ -145,7 +137,6 @@ export const ProspectFilters: React.FC<ProspectFiltersProps> = (
           labelPlacement={'top'} // Ensures the label is on top of the switch
         />
       </FormGroup>
-      */}
       {/*Topic Filter*/}
       {prospects.length > 0 && (
         <FormGroup sx={{ mx: 1, mb: 2 }}>

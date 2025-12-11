@@ -15,6 +15,7 @@ export const ProspectDataWithCorpusItems = gql`
     prospectType
     url
     createdAt
+    datePublished
     imageUrl
     authors
     publisher
