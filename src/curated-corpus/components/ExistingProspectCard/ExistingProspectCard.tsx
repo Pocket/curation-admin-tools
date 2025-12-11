@@ -20,7 +20,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { DateTime } from 'luxon';
 
 import { curationPalette } from '../../../theme';
-import { ApprovedCorpusItem, Item } from '../../../api/generatedTypes';
+import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { Button } from '../../../_shared/components';
 import { getCuratorNameFromLdap } from '../../helpers/helperFunctions';
 import { ScheduleHistory } from '../ScheduleHistory/ScheduleHistory';
@@ -34,11 +34,6 @@ interface ExistingProspectCardProps {
    * An object with everything approved curated item-related in it.
    */
   item: ApprovedCorpusItem;
-
-  /**
-   * An object with details from the parser
-   */
-  parserItem: Item;
   /**
    * This is the prospect.id and NOT prospect.prospectId
    */
@@ -73,7 +68,6 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
 ): JSX.Element => {
   const {
     item,
-    parserItem,
     onSchedule,
     onRemoveProspect,
     prospectId,
@@ -118,9 +112,9 @@ export const ExistingProspectCard: React.FC<ExistingProspectCardProps> = (
             <ListItem disableGutters>
               <ListItemText
                 secondary={
-                  parserItem?.datePublished &&
+                  item.datePublished &&
                   `Published ${DateTime.fromJSDate(
-                    new Date(parserItem?.datePublished),
+                    new Date(item.datePublished),
                   ).toFormat('MMMM dd, yyyy')}`
                 }
               />

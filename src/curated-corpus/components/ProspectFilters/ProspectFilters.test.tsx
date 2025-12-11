@@ -93,8 +93,6 @@ describe('The ProspectFilters component', () => {
   const onChange = jest.fn();
   const onSortByPublishedDate = jest.fn();
   const sortByPublishedDate = false;
-  const sortByTimeToRead = false;
-  const handleSortByTimeToRead = jest.fn();
 
   // const mockSetFilters = jest.fn();
   //
@@ -114,8 +112,6 @@ describe('The ProspectFilters component', () => {
         onChange={onChange}
         onSortByPublishedDate={onSortByPublishedDate}
         sortByPublishedDate={sortByPublishedDate}
-        sortByTimeToRead={sortByTimeToRead}
-        handleSortByTimeToRead={handleSortByTimeToRead}
       />,
     );
   };
@@ -147,13 +143,6 @@ describe('The ProspectFilters component', () => {
 
     const publishedDate = screen.getByText(/Published Date/i);
     expect(publishedDate).toBeInTheDocument();
-  });
-
-  it('should render the sort by time to read filter', () => {
-    renderComponent();
-
-    const timeToRead = screen.getByText(/Time to Read/i);
-    expect(timeToRead).toBeInTheDocument();
   });
 
   it('should render the topic filter', () => {

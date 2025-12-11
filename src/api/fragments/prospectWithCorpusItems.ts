@@ -1,7 +1,6 @@
 import { gql } from '@apollo/client';
 import { CuratedItemDataWithHistory } from './CuratedItemWithHistory';
 import { RejectedItemData } from './rejectedItemData';
-import { BasicParserItemData } from './BasicParserItemData';
 
 /**
  * Everything we need to fetch for a Prospect, including optional
@@ -16,6 +15,7 @@ export const ProspectDataWithCorpusItems = gql`
     prospectType
     url
     createdAt
+    datePublished
     imageUrl
     authors
     publisher
@@ -32,11 +32,7 @@ export const ProspectDataWithCorpusItems = gql`
     rejectedCorpusItem {
       ...RejectedItemData
     }
-    item {
-      ...BasicParserItemData
-    }
   }
   ${CuratedItemDataWithHistory}
   ${RejectedItemData}
-  ${BasicParserItemData}
 `;

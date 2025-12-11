@@ -63,17 +63,6 @@ interface ProspectFiltersProps {
    * in the parent component (Prospecting page).
    */
   sortByPublishedDate: boolean;
-
-  /**
-   * Boolean flag to represent the state of sortByTimeToRead toggle in the parent component
-   * (prospecting page)
-   */
-  sortByTimeToRead: boolean;
-
-  /**
-   * Function to toggle sortByTimeToRead in the parent component (prospecting page)
-   */
-  handleSortByTimeToRead: VoidFunction;
 }
 
 /**
@@ -95,8 +84,6 @@ export const ProspectFilters: React.FC<ProspectFiltersProps> = (
     setFilterByPublisher,
     onChange,
     onSortByPublishedDate,
-    sortByTimeToRead,
-    handleSortByTimeToRead,
   } = props;
 
   // Extract all topics from prospects item data
@@ -147,19 +134,6 @@ export const ProspectFilters: React.FC<ProspectFiltersProps> = (
             />
           }
           label={'Published Date'}
-          labelPlacement={'top'} // Ensures the label is on top of the switch
-        />
-      </FormGroup>
-      <FormGroup>
-        <FormControlLabel
-          sx={{ mx: 2, mb: 2 }}
-          control={
-            <Switch
-              checked={sortByTimeToRead}
-              onChange={handleSortByTimeToRead}
-            />
-          }
-          label={'Time to Read'}
           labelPlacement={'top'} // Ensures the label is on top of the switch
         />
       </FormGroup>
