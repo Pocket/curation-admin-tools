@@ -25,9 +25,7 @@ import { getDisplayTopic } from '../../helpers/topics';
 import { RemoveProspectAction } from '../actions/RemoveProspectAction/RemoveProspectAction';
 import { useToggle } from '../../../_shared/hooks';
 
-// TODO: uncomment this filter after adding published date to prospect object
-// https://mozilla-hub.atlassian.net/browse/HNT-1364
-// import { DateTime } from 'luxon';
+import { DateTime } from 'luxon';
 
 interface ProspectListCardProps {
   /**
@@ -114,10 +112,6 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
               <ListItemText secondary={prospect.prospectType.toLowerCase()} />
             </ListItem>
 
-            {/*
-            TODO: uncomment this filter after adding published date to prospect
-              object
-              https://mozilla-hub.atlassian.net/browse/HNT-1364
             <ListItem disableGutters>
               <ListItemText
                 secondary={
@@ -128,7 +122,6 @@ export const ProspectListCard: React.FC<ProspectListCardProps> = (
                 }
               />
             </ListItem>
-            */}
           </List>
         </Grid>
         <Grid item xs={12} sm={9}>

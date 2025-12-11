@@ -1641,6 +1641,7 @@ export type Prospect = {
   approvedCorpusItem?: Maybe<ApprovedCorpusItem>;
   authors?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['Int']>;
+  datePublished?: Maybe<Scalars['String']>;
   domain?: Maybe<Scalars['String']>;
   excerpt?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
@@ -2635,15 +2636,6 @@ export enum Videoness {
   NoVideos = 'NO_VIDEOS',
 }
 
-export type BasicParserItemDataFragment = {
-  __typename?: 'Item';
-  givenUrl: any;
-  itemId: string;
-  normalUrl: string;
-  datePublished?: any | null;
-  timeToRead?: number | null;
-};
-
 export type CollectionAuthorDataFragment = {
   __typename?: 'CollectionAuthor';
   externalId: string;
@@ -3038,6 +3030,7 @@ export type ProspectDataWithCorpusItemsFragment = {
   prospectType: string;
   url: string;
   createdAt?: number | null;
+  datePublished?: string | null;
   imageUrl?: string | null;
   authors?: string | null;
   publisher?: string | null;
@@ -3094,14 +3087,6 @@ export type ProspectDataWithCorpusItemsFragment = {
     reason: string;
     createdBy: string;
     createdAt: number;
-  } | null;
-  item?: {
-    __typename?: 'Item';
-    givenUrl: any;
-    itemId: string;
-    normalUrl: string;
-    datePublished?: any | null;
-    timeToRead?: number | null;
   } | null;
 };
 
@@ -4386,6 +4371,7 @@ export type UpdateProspectAsCuratedMutation = {
     prospectType: string;
     url: string;
     createdAt?: number | null;
+    datePublished?: string | null;
     imageUrl?: string | null;
     authors?: string | null;
     publisher?: string | null;
@@ -4442,14 +4428,6 @@ export type UpdateProspectAsCuratedMutation = {
       reason: string;
       createdBy: string;
       createdAt: number;
-    } | null;
-    item?: {
-      __typename?: 'Item';
-      givenUrl: any;
-      itemId: string;
-      normalUrl: string;
-      datePublished?: any | null;
-      timeToRead?: number | null;
     } | null;
   } | null;
 };
@@ -4951,6 +4929,7 @@ export type GetProspectsQuery = {
     prospectType: string;
     url: string;
     createdAt?: number | null;
+    datePublished?: string | null;
     imageUrl?: string | null;
     authors?: string | null;
     publisher?: string | null;
@@ -5007,14 +4986,6 @@ export type GetProspectsQuery = {
       reason: string;
       createdBy: string;
       createdAt: number;
-    } | null;
-    item?: {
-      __typename?: 'Item';
-      givenUrl: any;
-      itemId: string;
-      normalUrl: string;
-      datePublished?: any | null;
-      timeToRead?: number | null;
     } | null;
   }>;
 };
@@ -5675,15 +5646,6 @@ export const RejectedItemDataFragmentDoc = gql`
     createdAt
   }
 `;
-export const BasicParserItemDataFragmentDoc = gql`
-  fragment BasicParserItemData on Item {
-    givenUrl
-    itemId
-    normalUrl
-    datePublished
-    timeToRead
-  }
-`;
 export const ProspectDataWithCorpusItemsFragmentDoc = gql`
   fragment ProspectDataWithCorpusItems on Prospect {
     id
@@ -5693,6 +5655,7 @@ export const ProspectDataWithCorpusItemsFragmentDoc = gql`
     prospectType
     url
     createdAt
+    datePublished
     imageUrl
     authors
     publisher
@@ -5709,13 +5672,9 @@ export const ProspectDataWithCorpusItemsFragmentDoc = gql`
     rejectedCorpusItem {
       ...RejectedItemData
     }
-    item {
-      ...BasicParserItemData
-    }
   }
   ${CuratedItemDataWithHistoryFragmentDoc}
   ${RejectedItemDataFragmentDoc}
-  ${BasicParserItemDataFragmentDoc}
 `;
 export const ScheduledItemDataFragmentDoc = gql`
   fragment ScheduledItemData on ScheduledCorpusItem {
