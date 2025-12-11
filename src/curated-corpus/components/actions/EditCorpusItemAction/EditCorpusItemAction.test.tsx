@@ -56,7 +56,7 @@ describe('The EditCorpusItemAction', () => {
 
     // The most basic of integration tests - we simply send through
     // the corpus item without any actual edits.
-    userEvent.click(screen.getByText(/save/i));
+    userEvent.click(screen.getByText(/^save$/i));
 
     expect(
       await screen.findByText(/curated item .* successfully updated/i),
@@ -85,7 +85,7 @@ describe('The EditCorpusItemAction', () => {
 
     // The most basic of integration tests - we simply send through
     // the corpus item without any actual edits.
-    userEvent.click(screen.getByText(/save/i));
+    userEvent.click(screen.getByText(/^save$/i));
 
     expect(
       await screen.findByText(/curated item .* successfully updated/i),

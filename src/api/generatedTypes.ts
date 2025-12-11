@@ -527,8 +527,13 @@ export type CreateApprovedCorpusItemInput = {
   language: CorpusLanguage;
   /** The GUID of the corresponding Prospect ID. Will be empty for manually added items. */
   prospectId?: InputMaybe<Scalars['ID']>;
-  /** The name of the online publication that published this story. */
-  publisher: Scalars['String'];
+  /**
+   * The name of the online publication that published this story.
+   * If not provided, it will be derived from the PublisherDomain table
+   * (looking up by subdomain first, then registrable domain),
+   * falling back to the URL's hostname if no match is found.
+   */
+  publisher?: InputMaybe<Scalars['String']>;
   /** Optionally, specify the date this item should be appearing on a Scheduled Surface. Format: YYYY-MM-DD */
   scheduledDate?: InputMaybe<Scalars['Date']>;
   /** Optionally, specify the source of the Scheduled Item. Could be one of: MANUAL or ML */
@@ -635,6 +640,19 @@ export type CreateCustomSectionInput = {
   startDate: Scalars['Date'];
   /** The title of the custom section displayed to the users. */
   title: Scalars['String'];
+};
+
+/** Input data for creating or updating a publisher domain mapping. */
+export type CreateOrUpdatePublisherDomainInput = {
+  /**
+   * The domain name (hostname only, not a full URL).
+   * Will be sanitized: trimmed, lowercased, converted to ASCII (punycode), www. prefix stripped.
+   * Must be a registrable domain (e.g., "example.com") or subdomain (e.g., "news.example.com").
+   * Cannot be a public suffix (e.g., "co.uk"), IP address, or wildcard.
+   */
+  domainName: Scalars['String'];
+  /** The display name for the publisher. Will be trimmed but case is preserved. */
+  publisher: Scalars['String'];
 };
 
 /** Input data for creating a Section */
@@ -1213,6 +1231,14 @@ export type Mutation = {
   /** Creates a Label. */
   createLabel: Label;
   /**
+   * Creates or updates a publisher domain mapping.
+   * If a mapping for the domain already exists, updates the publisher name.
+   * Otherwise, creates a new mapping.
+   * Domain names are sanitized (trimmed, lowercased, converted to ASCII, www. stripped)
+   * and validated before storage.
+   */
+  createOrUpdatePublisherDomain: PublisherDomain;
+  /**
    * Creates a new Section entity. If a Section already exists, the existing
    * Section gets updated, associated active SectionItems are set to in-active.
    * This mutation is to be used by ML-automated processes.
@@ -1354,6 +1380,10 @@ export type MutationCreateCustomSectionArgs = {
 
 export type MutationCreateLabelArgs = {
   name: Scalars['String'];
+};
+
+export type MutationCreateOrUpdatePublisherDomainArgs = {
+  data: CreateOrUpdatePublisherDomainInput;
 };
 
 export type MutationCreateOrUpdateSectionArgs = {
@@ -1660,6 +1690,30 @@ export enum ProspectType {
   TopSaved = 'TOP_SAVED',
 }
 
+/**
+ * A mapping between a domain name and its publisher display name.
+ * Used to auto-populate the publisher field when creating corpus items.
+ */
+export type PublisherDomain = {
+  __typename?: 'PublisherDomain';
+  /** A Unix timestamp of when the entity was created. */
+  createdAt: Scalars['Int'];
+  /** A single sign-on user identifier of the user who created this entity. */
+  createdBy: Scalars['String'];
+  /**
+   * The domain name (hostname). This is the unique identifier.
+   * Stored normalized: lowercase, ASCII (punycode), without www. prefix.
+   * Can be a registrable domain (e.g., "example.com") or subdomain (e.g., "news.example.com").
+   */
+  domainName: Scalars['String'];
+  /** The display name for the publisher. */
+  publisher: Scalars['String'];
+  /** A Unix timestamp of when the entity was last updated. */
+  updatedAt: Scalars['Int'];
+  /** A single sign-on user identifier of the user who last updated this entity. Null on creation. */
+  updatedBy?: Maybe<Scalars['String']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   /** Retrieves an approved item with the given external ID. */
@@ -1710,7 +1764,7 @@ export type Query = {
   getScheduledSurfacesForUser: Array<ScheduledSurface>;
   /** Retrieves a list of active and enabled/disabled Sections with their corresponding active SectionItems for a scheduled surface. */
   getSectionsWithSectionItems: Array<Section>;
-  /** returns parser meta data for a given url */
+  /** returns meta data for a given url */
   getUrlMetadata: UrlMetadata;
   /** Look up Item info by a url. */
   itemByUrl?: Maybe<Item>;
@@ -3369,6 +3423,23 @@ export type CreateLabelMutationVariables = Exact<{
 export type CreateLabelMutation = {
   __typename?: 'Mutation';
   createLabel: { __typename?: 'Label'; externalId: string; name: string };
+};
+
+export type CreateOrUpdatePublisherDomainMutationVariables = Exact<{
+  data: CreateOrUpdatePublisherDomainInput;
+}>;
+
+export type CreateOrUpdatePublisherDomainMutation = {
+  __typename?: 'Mutation';
+  createOrUpdatePublisherDomain: {
+    __typename?: 'PublisherDomain';
+    domainName: string;
+    publisher: string;
+    createdAt: number;
+    createdBy: string;
+    updatedAt: number;
+    updatedBy?: string | null;
+  };
 };
 
 export type CreateScheduledCorpusItemMutationVariables = Exact<{
@@ -6170,6 +6241,64 @@ export type CreateLabelMutationOptions = Apollo.BaseMutationOptions<
   CreateLabelMutation,
   CreateLabelMutationVariables
 >;
+export const CreateOrUpdatePublisherDomainDocument = gql`
+  mutation createOrUpdatePublisherDomain(
+    $data: CreateOrUpdatePublisherDomainInput!
+  ) {
+    createOrUpdatePublisherDomain(data: $data) {
+      domainName
+      publisher
+      createdAt
+      createdBy
+      updatedAt
+      updatedBy
+    }
+  }
+`;
+export type CreateOrUpdatePublisherDomainMutationFn = Apollo.MutationFunction<
+  CreateOrUpdatePublisherDomainMutation,
+  CreateOrUpdatePublisherDomainMutationVariables
+>;
+
+/**
+ * __useCreateOrUpdatePublisherDomainMutation__
+ *
+ * To run a mutation, you first call `useCreateOrUpdatePublisherDomainMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateOrUpdatePublisherDomainMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createOrUpdatePublisherDomainMutation, { data, loading, error }] = useCreateOrUpdatePublisherDomainMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreateOrUpdatePublisherDomainMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateOrUpdatePublisherDomainMutation,
+    CreateOrUpdatePublisherDomainMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateOrUpdatePublisherDomainMutation,
+    CreateOrUpdatePublisherDomainMutationVariables
+  >(CreateOrUpdatePublisherDomainDocument, options);
+}
+export type CreateOrUpdatePublisherDomainMutationHookResult = ReturnType<
+  typeof useCreateOrUpdatePublisherDomainMutation
+>;
+export type CreateOrUpdatePublisherDomainMutationResult =
+  Apollo.MutationResult<CreateOrUpdatePublisherDomainMutation>;
+export type CreateOrUpdatePublisherDomainMutationOptions =
+  Apollo.BaseMutationOptions<
+    CreateOrUpdatePublisherDomainMutation,
+    CreateOrUpdatePublisherDomainMutationVariables
+  >;
 export const CreateScheduledCorpusItemDocument = gql`
   mutation createScheduledCorpusItem(
     $approvedItemExternalId: ID!
