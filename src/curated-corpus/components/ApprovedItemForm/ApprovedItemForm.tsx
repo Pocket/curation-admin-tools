@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { DateTime } from 'luxon';
 import {
   Box,
   CircularProgress,
@@ -103,7 +104,11 @@ export const ApprovedItemForm: React.FC<
       publisher: approvedItem.publisher,
       // A read-only value we may get back from the Pocket Graph
       // for some stories + all collections and syndicated items.
-      datePublished: approvedItem.datePublished ?? null,
+      datePublished: approvedItem.datePublished
+        ? DateTime.fromJSDate(new Date(approvedItem.datePublished)).toFormat(
+            'yyyy-MM-dd',
+          )
+        : null,
       language: approvedItem.language ?? '',
       topic: approvedItem.topic ?? '',
       curationStatus: isRecommendation
@@ -550,13 +555,11 @@ export const ApprovedItemForm: React.FC<
       </Grid>
       <Box display="none">
         <TextField
-          type="hidden"
           id="source"
           label="source"
           {...formik.getFieldProps('source')}
         />
         <TextField
-          type="hidden"
           id="datePublished"
           label="datePublished"
           {...formik.getFieldProps('datePublished')}

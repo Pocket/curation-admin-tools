@@ -95,6 +95,7 @@ describe('The ApprovedItemForm component', () => {
         { name: 'Two Authors', sortOrder: 2 },
       ],
       publisher: 'Amazing Inventions',
+      datePublished: '2025-12-11 09:30:00',
       topic: Topics.HealthFitness,
       source: CorpusItemSource.Prospect,
       status: CuratedStatus.Recommendation,
@@ -196,6 +197,16 @@ describe('The ApprovedItemForm component', () => {
     const syndicated = screen.getByLabelText(/Syndicated/);
     expect(syndicated).toBeInTheDocument();
     expect(syndicated).toHaveProperty('checked', item.isSyndicated);
+
+    // hidden fields
+    const datePublished = screen.getByLabelText(/datePublished/);
+    expect(datePublished).toBeInTheDocument();
+    // make sure the date time value is converted to just a date
+    expect(datePublished).toHaveValue('2025-12-11');
+
+    const source = screen.getByLabelText(/source/);
+    expect(source).toBeInTheDocument();
+    expect(source).toHaveValue(item.source);
   });
 
   it('should render the ImageUpload component', () => {
