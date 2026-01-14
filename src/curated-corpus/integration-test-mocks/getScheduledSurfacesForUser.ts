@@ -50,6 +50,18 @@ const allScheduledSurfaces: ScheduledSurface[] = [
     ],
   },
   {
+    name: 'New Tab (en-CA)',
+    guid: 'NEW_TAB_EN_CA',
+    ianaTimezone: 'America/Toronto',
+    prospectTypes: [],
+  },
+  {
+    name: 'New Tab (en-IE)',
+    guid: 'NEW_TAB_EN_IE',
+    ianaTimezone: 'Europe/Dublin',
+    prospectTypes: [],
+  },
+  {
     name: 'New Tab (en-INTL)',
     guid: 'NEW_TAB_EN_INTL',
     ianaTimezone: 'Asia/Kolkata',

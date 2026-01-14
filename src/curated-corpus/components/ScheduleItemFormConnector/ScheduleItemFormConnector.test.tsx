@@ -40,8 +40,10 @@ describe('ScheduleItemFormConnector', () => {
 
     const scheduledSurfaceValues = [
       'NEW_TAB_EN_US',
-      'NEW_TAB_EN_GB',
       'NEW_TAB_DE_DE',
+      'NEW_TAB_EN_GB',
+      'NEW_TAB_EN_CA',
+      'NEW_TAB_EN_IE',
       'NEW_TAB_EN_INTL',
       'POCKET_HITS_EN_US',
       'POCKET_HITS_DE_DE',
