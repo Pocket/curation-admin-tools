@@ -133,5 +133,5 @@ export const mock_OneScheduledSurface = constructMock(
   'getScheduledSurfacesForUser',
   getScheduledSurfacesForUser,
   undefined,
-  allScheduledSurfaces.slice(4, 5),
+  allScheduledSurfaces.filter((s) => s.guid === 'POCKET_HITS_EN_US'),
 );
