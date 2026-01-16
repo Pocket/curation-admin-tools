@@ -80,8 +80,10 @@ export type ApprovedItemFromProspect = Omit<
 // List of scheduled surfaces used to show the readable name by mapping it to it's corresponding guid
 export const ScheduledSurfaces = [
   { guid: 'NEW_TAB_EN_US', name: 'New Tab (en-US)' },
+  { guid: 'NEW_TAB_EN_CA', name: 'New Tab (en-CA)' },
   { guid: 'NEW_TAB_DE_DE', name: 'New Tab (de-DE)' },
   { guid: 'NEW_TAB_EN_GB', name: 'New Tab (en-GB)' },
+  { guid: 'NEW_TAB_EN_IE', name: 'New Tab (en-IE)' },
   { guid: 'NEW_TAB_FR_FR', name: 'New Tab (fr-FR)' },
   { guid: 'NEW_TAB_IT_IT', name: 'New Tab (it-IT)' },
   { guid: 'NEW_TAB_ES_ES', name: 'New Tab (es-ES)' },
