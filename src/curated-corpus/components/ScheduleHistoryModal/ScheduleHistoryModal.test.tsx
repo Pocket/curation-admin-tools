@@ -22,13 +22,13 @@ describe('The ScheduleHistoryModal component', () => {
           createdBy: 'ad|Mozilla-LDAP|aperson',
           externalId: 'bogus-external-id',
           scheduledDate: '2022-08-01',
-          scheduledSurfaceGuid: ScheduledSurfaces[0].guid,
+          scheduledSurfaceGuid: 'NEW_TAB_EN_US',
         },
         {
           createdBy: 'ad|Mozilla-LDAP|bperson',
           externalId: 'useless-external-id',
           scheduledDate: '2022-08-02',
-          scheduledSurfaceGuid: ScheduledSurfaces[1].guid,
+          scheduledSurfaceGuid: 'NEW_TAB_DE_DE',
         },
       ],
     };
