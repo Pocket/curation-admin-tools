@@ -18,26 +18,30 @@ Check out the repository and install the required packages:
 ```bash
 git clone git@github.com:Pocket/curation-admin-tools.git
 cd curation-admin-tools
+nvm use
 npm ci
 ```
 
-Next, to enable SSO auth, create an `.env` file in the project root, and add the following:
+Next, create an `.env` file in the project root by copying the example:
 
-```
-REACT_APP_OAUTH2_REDIRECT_URI=http://localhost:3000/oauth/callback
-REACT_APP_OAUTH2_CLIENT_ID=2jliat5ne5043psrlbhur2unlr
+```bash
+cp .env.example .env
 ```
 
-You're almost there! By default, the app will connect to the production Admin API. To point to the Pocket Development or locally spun up API, you will need to override the default endpoint value in your `.env` file. Add the following to your `.env` file and comment out the endpoint you do not need:
+The defaults in `.env.example` are configured for local development against the dev API. No changes should be needed for most workflows.
+
+Authentication uses the shared Mozilla SSO (via the production Cognito pool `MozillaAuthProxy-Prod`). This is safe because the OAuth provider is separate from the data API. You will authenticate with your real SSO credentials but all reads and writes go to the dev environment.
+
+By default, the app connects to the dev Admin API (`https://admin-api.getpocket.dev`). To override this, add one of the following to your `.env` file:
 
 ```dotenv
-#This is the dev version of the federated graph
-REACT_APP_ADMIN_API_ENDPOINT=https://admin-api.getpocket.dev
-
-#A And this is the local version if you need to debug something
-# or swap out one of the subgraphs for a locally spun up version.
+# Point to a locally running API (e.g. for debugging a subgraph)
 REACT_APP_ADMIN_API_ENDPOINT=http://localhost:4027
+
+# Point to production (use with caution, writes will affect real data)
+REACT_APP_ADMIN_API_ENDPOINT=https://admin-api.getpocket.com
 ```
+
 Start the React app:
 
 ```bash
@@ -116,16 +120,8 @@ Now that the generated code is ready to use, you can:
 - Use strongly typed custom Apollo hooks to fetch and manipulate data. Apollo Client has generic `useQuery`, `useLazyQuery`, `useMutation` and `useSubscription` hooks. GraphQL Code Generator builds on that by providing hooks that are specific to the queries and mutations you need to run, for example, `useGetCollectionByExternalIdQuery`.
 
 ## Troubleshooting
-1. If you receive an error similar to the following `error:xyz:digital envelope routines`, this means the nvm version
-you're using doesn't match v16. Here are the steps to install the proper version:
+1. If you receive an error similar to the following `error:xyz:digital envelope routines`, make sure you are using the correct Node version. Run `nvm use` in the project root to switch to the version specified in `.nvmrc` (currently Node 18). If you don't have it installed:
     ```shell
-    # Install nvm using 
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-    # Next start a new terminal window
-    # Ensure nvm was install correctly,
-    nvm -v
-    nvm install v16.19.0
-    # To set this version as the default,
-    nvm alias default v16.19.0
-    nvm use v16.19.0`
+    nvm install
+    nvm use
     ```
