@@ -16,6 +16,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import AdUnitsIcon from '@mui/icons-material/AdUnits';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import { DateTime } from 'luxon';
 import { useMutation } from '@apollo/client';
 import {
@@ -469,6 +471,40 @@ export const CustomSectionDetails: React.FC<CustomSectionDetailsProps> = ({
                 <Typography variant="body2">
                   {section.sectionItems?.length || 0} items
                 </Typography>
+              </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <Typography variant="caption" color="text.secondary">
+                  Followable
+                </Typography>
+                <Box mt={0.5}>
+                  <Chip
+                    variant="outlined"
+                    color={section.followable ? 'success' : 'warning'}
+                    label={section.followable ? 'Followable' : 'Not Followable'}
+                    icon={
+                      section.followable ? (
+                        <BookmarkIcon />
+                      ) : (
+                        <BookmarkBorderIcon />
+                      )
+                    }
+                    size="small"
+                  />
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={6} md={3}>
+                <Typography variant="caption" color="text.secondary">
+                  Ads
+                </Typography>
+                <Box mt={0.5}>
+                  <Chip
+                    variant="outlined"
+                    color={section.allowAds ? 'success' : 'warning'}
+                    label={section.allowAds ? 'Ads Allowed' : 'No Ads'}
+                    icon={<AdUnitsIcon />}
+                    size="small"
+                  />
+                </Box>
               </Grid>
             </Grid>
 

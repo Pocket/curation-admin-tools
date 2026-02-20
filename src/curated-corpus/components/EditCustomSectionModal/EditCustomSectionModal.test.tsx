@@ -30,6 +30,8 @@ describe('EditCustomSectionModal', () => {
       categories: ['IAB1'],
     },
     sectionItems: [],
+    followable: true,
+    allowAds: true,
   };
 
   beforeEach(() => {

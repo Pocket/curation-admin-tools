@@ -608,6 +608,8 @@ export type CreateCollectionStoryInput = {
 export type CreateCustomSectionInput = {
   /** Indicates whether or not a Section is available for display. */
   active: Scalars['Boolean'];
+  /** Whether ads can be displayed in this section. */
+  allowAds?: InputMaybe<Scalars['Boolean']>;
   /** The source which created the Section. */
   createSource: ActivitySource;
   /** The description of the custom section displayed to the users. */
@@ -622,6 +624,8 @@ export type CreateCustomSectionInput = {
    * Format: YYYY-MM-DD.
    */
   endDate?: InputMaybe<Scalars['Date']>;
+  /** Whether users can follow this section. */
+  followable?: InputMaybe<Scalars['Boolean']>;
   /** An optional description or supporting text for use in hero modules. */
   heroDescription?: InputMaybe<Scalars['String']>;
   /** An optional title used in hero modules. */
@@ -2165,6 +2169,8 @@ export type Section = {
   __typename?: 'Section';
   /** Indicates whether or not a Section is available for display. */
   active: Scalars['Boolean'];
+  /** Whether ads can be displayed in this section. */
+  allowAds: Scalars['Boolean'];
   /** The source which created the Section. */
   createSource: ActivitySource;
   /** A Unix timestamp of when the Section was created. */
@@ -2183,6 +2189,8 @@ export type Section = {
   endDate?: Maybe<Scalars['Date']>;
   /** An alternative primary key in UUID format. */
   externalId: Scalars['ID'];
+  /** Whether users can follow this section. */
+  followable: Scalars['Boolean'];
   /**
    * An optional description or supporting text for use in hero modules.
    * Relevant for custom sections.
@@ -2539,12 +2547,16 @@ export type UpdateCollectionStorySortOrderInput = {
 
 /** Input data for updating a Custom Editorial Section */
 export type UpdateCustomSectionInput = {
+  /** Whether ads can be displayed in this section. */
+  allowAds?: InputMaybe<Scalars['Boolean']>;
   /** The description of the custom section displayed to the users. */
   description: Scalars['String'];
   /** An optional date of when the Section should stop being displayed. */
   endDate?: InputMaybe<Scalars['Date']>;
   /** An alternative primary key in UUID format supplied by ML. */
   externalId: Scalars['ID'];
+  /** Whether users can follow this section. */
+  followable?: InputMaybe<Scalars['Boolean']>;
   /** An optional description or supporting text for use in hero modules. */
   heroDescription?: InputMaybe<Scalars['String']>;
   /** An optional title used in hero modules. */
@@ -2793,6 +2805,8 @@ export type BaseSectionDataFragment = {
   startDate?: any | null;
   endDate?: any | null;
   status: SectionStatus;
+  followable: boolean;
+  allowAds: boolean;
   iab?: {
     __typename?: 'IABMetadata';
     taxonomy: string;
@@ -2817,6 +2831,8 @@ export type SectionDataFragment = {
   startDate?: any | null;
   endDate?: any | null;
   status: SectionStatus;
+  followable: boolean;
+  allowAds: boolean;
   sectionItems: Array<{
     __typename?: 'SectionItem';
     createdAt: number;
@@ -3393,6 +3409,8 @@ export type CreateCustomSectionMutation = {
     startDate?: any | null;
     endDate?: any | null;
     status: SectionStatus;
+    followable: boolean;
+    allowAds: boolean;
     iab?: {
       __typename?: 'IABMetadata';
       taxonomy: string;
@@ -3635,6 +3653,8 @@ export type DisableEnableSectionMutation = {
     startDate?: any | null;
     endDate?: any | null;
     status: SectionStatus;
+    followable: boolean;
+    allowAds: boolean;
     sectionItems: Array<{
       __typename?: 'SectionItem';
       createdAt: number;
@@ -4338,6 +4358,8 @@ export type UpdateCustomSectionMutation = {
     startDate?: any | null;
     endDate?: any | null;
     status: SectionStatus;
+    followable: boolean;
+    allowAds: boolean;
     iab?: {
       __typename?: 'IABMetadata';
       taxonomy: string;
@@ -5213,6 +5235,8 @@ export type GetSectionsWithSectionItemsQuery = {
     startDate?: any | null;
     endDate?: any | null;
     status: SectionStatus;
+    followable: boolean;
+    allowAds: boolean;
     sectionItems: Array<{
       __typename?: 'SectionItem';
       createdAt: number;
@@ -5472,6 +5496,8 @@ export const BaseSectionDataFragmentDoc = gql`
     startDate
     endDate
     status
+    followable
+    allowAds
   }
 `;
 export const BaseSectionItemDataFragmentDoc = gql`

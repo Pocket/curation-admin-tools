@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
 import { DateTime } from 'luxon';
 import { Formik, Form, Field } from 'formik';
-import { Box, TextField, MenuItem, Button } from '@mui/material';
+import {
+  Box,
+  TextField,
+  MenuItem,
+  Button,
+  Checkbox,
+  FormControlLabel,
+  FormGroup,
+} from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterLuxon } from '@mui/x-date-pickers/AdapterLuxon';
@@ -51,6 +59,8 @@ export const CustomSectionForm: React.FC<CustomSectionFormProps> = ({
     startDate: DateTime.now(),
     endDate: null,
     iabCategory: '',
+    followable: true,
+    allowAds: true,
   };
 
   const mergedInitialValues = {
@@ -171,6 +181,31 @@ export const CustomSectionForm: React.FC<CustomSectionFormProps> = ({
                   </MenuItem>
                 ))}
               </Field>
+
+              <FormGroup row>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={values.followable}
+                      onChange={(e) =>
+                        setFieldValue('followable', e.target.checked)
+                      }
+                    />
+                  }
+                  label="Followable"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={values.allowAds}
+                      onChange={(e) =>
+                        setFieldValue('allowAds', e.target.checked)
+                      }
+                    />
+                  }
+                  label="Allow Ads"
+                />
+              </FormGroup>
 
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 {isEditMode && onDelete && (
