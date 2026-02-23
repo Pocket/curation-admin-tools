@@ -113,13 +113,8 @@ const createSection = (
   sectionItems,
   createdAt: 1704067200,
   updatedAt: 1704067200,
-<<<<<<< HEAD
-  followable: true,
-  allowAds: true,
-=======
   allowAds: true,
   followable: true,
->>>>>>> a4b0cc5 (feat(delete collections): remove collections from the tool)
 });
 
 /**
