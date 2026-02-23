@@ -1,7 +1,6 @@
 // Here we keep sets of options for curating items
 import {
   ApprovedCorpusItem,
-  CollectionStoryAuthor,
   CorpusItemAuthor,
   CorpusLanguage,
   CuratedStatus,
@@ -74,7 +73,7 @@ export type ApprovedItemFromProspect = Omit<
   'language' | 'authors'
 > & {
   language: CorpusLanguage | undefined;
-  authors: CollectionStoryAuthor[] | CorpusItemAuthor[];
+  authors: CorpusItemAuthor[];
 };
 
 // List of scheduled surfaces used to show the readable name by mapping it to it's corresponding guid

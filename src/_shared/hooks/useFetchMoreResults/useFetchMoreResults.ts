@@ -3,6 +3,9 @@ import * as Apollo from '@apollo/client';
 import { ApolloError } from '@apollo/client';
 import { useNotifications } from '../';
 
+// 2026-02-23: after removing collections, this function is not currently in
+// use. leaving this in the code base as we may again need this functionality.
+
 /**
  * This hook handles loading lists of data in paginated chunks:
  * coupled with field policies on queries, i.e. getCollectionAuthors,

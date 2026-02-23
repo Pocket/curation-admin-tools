@@ -1,11 +1,6 @@
 import { ApolloClient, ApolloLink, InMemoryCache } from '@apollo/client';
 import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
 import { config } from '../config';
-import {
-  getCollectionAuthorsFieldPolicy,
-  getCollectionPartnersFieldPolicy,
-  searchCollectionsFieldPolicy,
-} from './field-policies';
 
 /**
  * Custom type policies for Apollo Cache. Now in their own
@@ -13,15 +8,6 @@ import {
  */
 export const apolloCache = new InMemoryCache({
   typePolicies: {
-    CollectionAuthor: {
-      keyFields: ['externalId'],
-    },
-    CollectionStory: {
-      keyFields: ['externalId'],
-    },
-    Collection: {
-      keyFields: ['externalId'],
-    },
     ApprovedCorpusItem: {
       keyFields: ['externalId'],
     },
@@ -33,13 +19,6 @@ export const apolloCache = new InMemoryCache({
     },
     ScheduledCorpusItemsResult: {
       keyFields: ['scheduledDate'],
-    },
-    Query: {
-      fields: {
-        getCollectionAuthors: getCollectionAuthorsFieldPolicy,
-        getCollectionPartners: getCollectionPartnersFieldPolicy,
-        searchCollections: searchCollectionsFieldPolicy,
-      },
     },
   },
 });

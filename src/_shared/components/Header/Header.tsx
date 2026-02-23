@@ -60,7 +60,7 @@ interface HeaderProps {
   productLink: string;
 
   /**
-   * The name of the Admin UI, i.e. 'Collections'
+   * The name of the Admin UI, i.e. 'Curated Corpus'
    */
   productName: string;
 }

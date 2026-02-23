@@ -4,7 +4,6 @@ import { MemoryRouter } from 'react-router-dom';
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { ScheduleHistoryModal } from './ScheduleHistoryModal';
 import { getTestApprovedItem } from '../../helpers/approvedItem';
-import { ScheduledSurfaces } from '../../helpers/definitions';
 
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../../../theme';

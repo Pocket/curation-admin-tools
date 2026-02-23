@@ -5,7 +5,6 @@ import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { ApprovedItemListCard } from './ApprovedItemListCard';
 import { flattenAuthors } from '../../../_shared/utils/flattenAuthors';
 import { getTestApprovedItem } from '../../helpers/approvedItem';
-import { ScheduledSurfaces } from '../../helpers/definitions';
 import userEvent from '@testing-library/user-event';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../../../theme';

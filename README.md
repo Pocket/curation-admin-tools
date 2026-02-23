@@ -3,6 +3,7 @@
 This repository is home to a suite of internal tools for Pocket curators developed with React and TypeScript. With React, we use functional components and hooks throughout.
 
 We also use:
+
 - [Material UI](https://mui.com/) for the UI,
 - [Apollo Client](https://www.apollographql.com/docs/react/) for connecting to the APIs the tools interact with,
 - [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) for unit testing,
@@ -84,24 +85,24 @@ npm run test
 
 - The `src/api` folder contains GraphQL queries and mutations the app needs to execute to retrieve and manipulate data, as well as generated types for these and the Apollo Client connection.
 
-- `src/collections` is the home for Collections Admin Tool that lets Pocket curators create, edit and publish collections of stories for Pocket users.
-
 - `src/curated-corpus` houses the Curated Corpus Tool.
 
-Within the folder for each tool, the structure is as follows (taking Collections as an example):
+- `src/moderation` DEPRECATED home of moderation of a legacy Pocket feature
+
+Within the folder for each tool, the structure is as follows (taking Curated Corpus as an example):
 
 ```bash
-collections/
+curated-corpus/
 ├─ components/
 ├─ pages/
 ├─ utils/
 ```
 
-The `components` folder houses any components specific to that particular tool, for example, `CollectionListCard`. The `pages` folder is home to page-level components, i.e. `AddCollectionPage`.
+The `components` folder houses any components specific to that particular tool, for example, `ApprovedItemListCard`. The `pages` folder is home to page-level components, i.e. `CorpusItemPage`.
 
 All components are functional React components. Each component lives in its own folder. Unit tests, styles, validation schemas (for form components) are placed in separate files alongside each component.
 
-Routing within the app is set up with React Router. The entrypoint to the app, [App.tsx](/src/App.tsx), sets up all requests to be routed to specific paths within the apps - `/collections` for Collections and `/prospects` for the Prospecting tool, for example. More detailed routing, for example, individual collection pages, is set up within the landing page - see [this example for Collections](/src/collections/pages/CollectionsLandingPage/CollectionsLandingPage.tsx)
+Routing within the app is set up with React Router. The entrypoint to the app, [App.tsx](/src/App.tsx), sets up all requests to be routed to specific paths within the apps - `/prospects` for the Prospecting tool, for example. More detailed routing, for example, individual curated corpus pages, is set up within the landing page - see [this example for Curated Corpus](/src/curated-corpus/pages/CuratedCorpusLandingPage/CuratedCorpusLandingPage.tsx)
 
 ## Working with the Admin API
 
@@ -116,12 +117,13 @@ The generated types and custom hooks are saved in a file named `generatedTypes.t
 
 Now that the generated code is ready to use, you can:
 
-- Use the generated types elsewhere in the code to type hint the shape of the returned data or data that is expected by components in the app, for example, `Collection` or `CollectionAuthor`.
-- Use strongly typed custom Apollo hooks to fetch and manipulate data. Apollo Client has generic `useQuery`, `useLazyQuery`, `useMutation` and `useSubscription` hooks. GraphQL Code Generator builds on that by providing hooks that are specific to the queries and mutations you need to run, for example, `useGetCollectionByExternalIdQuery`.
+- Use the generated types elsewhere in the code to type hint the shape of the returned data or data that is expected by components in the app, for example, `ApprovedCorpusItem` or `CorpusLanguage`.
+- Use strongly typed custom Apollo hooks to fetch and manipulate data. Apollo Client has generic `useQuery`, `useLazyQuery`, `useMutation` and `useSubscription` hooks. GraphQL Code Generator builds on that by providing hooks that are specific to the queries and mutations you need to run, for example, `useGetSectionsWithSectionItemsQuery`.
 
 ## Troubleshooting
+
 1. If you receive an error similar to the following `error:xyz:digital envelope routines`, make sure you are using the correct Node version. Run `nvm use` in the project root to switch to the version specified in `.nvmrc` (currently Node 18). If you don't have it installed:
-    ```shell
-    nvm install
-    nvm use
-    ```
+   ```shell
+   nvm install
+   nvm use
+   ```

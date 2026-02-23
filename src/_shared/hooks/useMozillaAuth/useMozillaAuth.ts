@@ -26,7 +26,6 @@ export const useMozillaAuth = (): {
   authService: AuthService;
   parsedIdToken: IDToken;
   jwtIdToken: string;
-  canAccessCollections: boolean;
   canAccessCuration: boolean;
   canAccessModeration: boolean;
 } => {
@@ -50,7 +49,6 @@ export const useMozillaAuth = (): {
     // Everyone at Pocket has read-only access to this tool
     // Access groups are checked on the backend when actions (mutations)
     // are performed.
-    canAccessCollections: true, //parsedIdToken.groups.includes('asd'),
     canAccessCuration: true, //parsedIdToken.groups.includes('asd'),
     canAccessModeration: true,
   };

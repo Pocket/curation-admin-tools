@@ -1,8 +1,4 @@
-import {
-  CollectionStoryAuthor,
-  CorpusItemAuthor,
-  Maybe,
-} from '../../api/generatedTypes';
+import { CorpusItemAuthor, Maybe } from '../../api/generatedTypes';
 
 /**
  * A helper function that transforms a comma-separated string of names
@@ -12,7 +8,7 @@ import {
  */
 export const transformAuthors = (
   authors: string | Maybe<string> | undefined,
-): CollectionStoryAuthor[] | CorpusItemAuthor[] => {
+): CorpusItemAuthor[] => {
   // get rid of any whitespace on the sides
   authors = authors ? authors.trim() : authors;
 
