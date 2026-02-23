@@ -9,6 +9,8 @@ export interface CustomSectionFormData {
   startDate: DateTime | null;
   endDate: DateTime | null;
   iabCategory?: string;
+  followable: boolean;
+  allowAds: boolean;
 }
 
 export const getValidationSchema = (isEditMode: boolean = false) => {
@@ -44,9 +46,7 @@ export const getValidationSchema = (isEditMode: boolean = false) => {
         'not-in-past',
         'Start date cannot be in the past',
         function (value) {
-          // Always enforce start date validation, even in edit mode
-          // This ensures scheduled or live sections always start on or after today
-          if (!value) {
+          if (isEditMode || !value) {
             return true;
           }
           const startDate = DateTime.fromJSDate(value).startOf('day');
@@ -58,8 +58,7 @@ export const getValidationSchema = (isEditMode: boolean = false) => {
       .date()
       .nullable()
       .test('not-in-past', 'End date cannot be in the past', function (value) {
-        // Always enforce end date validation, even in edit mode
-        if (!value) {
+        if (isEditMode || !value) {
           return true;
         }
         const endDate = DateTime.fromJSDate(value).startOf('day');
@@ -81,6 +80,8 @@ export const getValidationSchema = (isEditMode: boolean = false) => {
       ),
 
     iabCategory: yup.string().trim(),
+    followable: yup.boolean(),
+    allowAds: yup.boolean(),
   });
 };
 

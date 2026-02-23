@@ -56,6 +56,8 @@ export const CustomSectionFormConnector: React.FC<
           ? formValues.endDate.toFormat('yyyy-MM-dd')
           : undefined,
         updateSource: ActivitySource.Manual, // Add required updateSource field
+        followable: formValues.followable,
+        allowAds: formValues.allowAds,
         ...(formValues.iabCategory && {
           iab: {
             taxonomy: 'IAB-3.0',
@@ -96,6 +98,8 @@ export const CustomSectionFormConnector: React.FC<
         active: true,
         disabled: false,
         createSource: ActivitySource.Manual,
+        followable: formValues.followable,
+        allowAds: formValues.allowAds,
         ...(formValues.iabCategory && {
           iab: {
             taxonomy: 'IAB-3.0',
@@ -173,6 +177,8 @@ export const CustomSectionFormConnector: React.FC<
             ? DateTime.fromISO(existingSection.endDate)
             : null,
           iabCategory: existingSection.iab?.categories?.[0] || '',
+          followable: existingSection.followable,
+          allowAds: existingSection.allowAds,
         }
       : initialValues;
 

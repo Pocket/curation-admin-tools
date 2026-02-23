@@ -29,6 +29,8 @@ describe('CustomSectionTable', () => {
     createdAt: 1704067200,
     updatedAt: 1704067200,
     scheduledSurfaceGuid: 'NEW_TAB_EN_US',
+    followable: true,
+    allowAds: true,
   };
 
   const mockSectionScheduled: Section = {

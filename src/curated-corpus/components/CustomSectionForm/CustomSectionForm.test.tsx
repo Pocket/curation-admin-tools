@@ -89,4 +89,49 @@ describe('CustomSectionForm', () => {
       screen.getByRole('button', { name: /save changes/i }),
     ).toBeInTheDocument();
   });
+
+  it('should render followable and allow ads checkboxes checked by default', () => {
+    render(
+      <CustomSectionForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />,
+    );
+
+    expect(screen.getByRole('checkbox', { name: /followable/i })).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: /allow ads/i })).toBeChecked();
+  });
+
+  it('should reflect initial values for followable and allowAds', () => {
+    render(
+      <CustomSectionForm
+        onSubmit={mockOnSubmit}
+        onCancel={mockOnCancel}
+        initialValues={{ followable: false, allowAds: false }}
+      />,
+    );
+
+    expect(
+      screen.getByRole('checkbox', { name: /followable/i }),
+    ).not.toBeChecked();
+    expect(
+      screen.getByRole('checkbox', { name: /allow ads/i }),
+    ).not.toBeChecked();
+  });
+
+  it('should toggle followable and allowAds checkboxes', () => {
+    render(
+      <CustomSectionForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />,
+    );
+
+    const followableCheckbox = screen.getByRole('checkbox', {
+      name: /followable/i,
+    });
+    const allowAdsCheckbox = screen.getByRole('checkbox', {
+      name: /allow ads/i,
+    });
+
+    fireEvent.click(followableCheckbox);
+    expect(followableCheckbox).not.toBeChecked();
+
+    fireEvent.click(allowAdsCheckbox);
+    expect(allowAdsCheckbox).not.toBeChecked();
+  });
 });
