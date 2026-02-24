@@ -36,9 +36,6 @@ export const config = {
   },
   environment: process.env.NODE_ENV,
   pagination: {
-    authorsPerPage: 200,
-    collectionsPerPage: 30,
-    partnersPerPage: 30,
     // To display four items in a row, 32 is a better choice than 30 which gives us 7 1/2 rows.
     curatedItemsPerPage: 32,
     rejectedItemsPerPage: 32,
@@ -47,14 +44,5 @@ export const config = {
   //Not a secret since the  app is client side
   sentryDSN:
     'https://cab6b9b6144345ac8b5c045d0c51834c@o28549.ingest.sentry.io/5726568',
-  slugify: {
-    // use lowercase for slugs
-    lower: true,
-    // remove all punctuation, both Unicode (i.e., curly quotes) and standard US-ASCII
-    remove: /[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,\-./:;<=>?@[\]^_`{|}~]/g,
-    // strip special characters except the replacement character
-    // (we use the default dash: -)
-    strict: true,
-  },
   isProduction,
 };

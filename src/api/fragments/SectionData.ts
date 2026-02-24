@@ -20,8 +20,8 @@ export const BaseSectionData = gql`
     startDate
     endDate
     status
-    followable
     allowAds
+    followable
   }
 `;
 export const SectionData = gql`

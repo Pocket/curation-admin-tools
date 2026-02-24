@@ -1,7 +1,5 @@
 export { StyledAppBar } from './StyledAppBar';
 export { StyledCardActions } from './StyledCardActions';
-export { StyledCardLink } from './StyledCardLink';
-export { StyledChipComponent } from './StyledChipComponent';
 export { StyledContainer } from './StyledContainer';
 export { StyledCorpusItemCard } from './StyledCorpusItemCard';
 export { StyledDrawerHeader } from './StyledDrawerHeader';

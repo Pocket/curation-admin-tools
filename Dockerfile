@@ -12,8 +12,7 @@ RUN REACT_APP_ENV=${APP_ENV} npm run build
 
 # production environment
 FROM nginx:1.21.6@sha256:2bcabc23b45489fb0885d69a06ba1d648aeda973fae7bb981bafbb884165e514
-# Copy collections build into nginx html directory for now,
-# collections will be at the root of the server
+# Copy app build into nginx html directory
 COPY --from=builder /usr/src/app/build /usr/share/nginx/html
 COPY --from=builder /usr/src/app/.docker/nginx.conf /etc/nginx/nginx.conf
 ENV PORT 80

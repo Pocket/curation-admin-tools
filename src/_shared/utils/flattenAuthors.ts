@@ -1,23 +1,15 @@
-import {
-  CollectionAuthor,
-  CollectionStoryAuthor,
-  CorpusItemAuthor,
-} from '../../api/generatedTypes';
+import { CorpusItemAuthor } from '../../api/generatedTypes';
 
 /**
- * A helper function that takes in an array of corpus/collection [story] authors
+ * A helper function that takes in an array of corpus item authors
  * and returns a comma-separated list suitable for displaying to end users.
  *
  * @param authors
  */
-export const flattenAuthors = (
-  authors: CollectionStoryAuthor[] | CollectionAuthor[] | CorpusItemAuthor[],
-): string => {
+export const flattenAuthors = (authors: CorpusItemAuthor[]): string => {
   return authors
-    .map(
-      (author: CollectionStoryAuthor | CollectionAuthor | CorpusItemAuthor) => {
-        return author.name;
-      },
-    )
+    .map((author: CorpusItemAuthor) => {
+      return author.name;
+    })
     .join(', ');
 };

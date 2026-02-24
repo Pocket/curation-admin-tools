@@ -46,8 +46,8 @@ describe('The SectionDetails component', () => {
       updatedAt: Date.now(),
       createSource: ActivitySource.Ml,
       scheduledSurfaceGuid: 'NEW_TAB_EN_US',
-      followable: true,
       allowAds: true,
+      followable: true,
     },
     // disabled section
     {
@@ -69,8 +69,8 @@ describe('The SectionDetails component', () => {
       updatedAt: Date.now(),
       createSource: ActivitySource.Ml,
       scheduledSurfaceGuid: 'NEW_TAB_EN_US',
-      followable: true,
       allowAds: true,
+      followable: true,
     },
   ];
 

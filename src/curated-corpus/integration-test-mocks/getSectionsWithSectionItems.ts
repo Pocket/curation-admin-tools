@@ -113,8 +113,8 @@ const createSection = (
   sectionItems,
   createdAt: 1704067200,
   updatedAt: 1704067200,
-  followable: true,
   allowAds: true,
+  followable: true,
 });
 
 /**
