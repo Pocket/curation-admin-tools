@@ -43,6 +43,6 @@ export const config = {
   },
   //Not a secret since the  app is client side
   sentryDSN:
-    'https://cab6b9b6144345ac8b5c045d0c51834c@o28549.ingest.sentry.io/5726568',
+    'https://6331b9a9a35f79b18484e59eb9e33517@o1069899.ingest.us.sentry.io/4510959176318976',
   isProduction,
 };
