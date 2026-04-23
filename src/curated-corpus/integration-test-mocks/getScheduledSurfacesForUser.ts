@@ -62,6 +62,30 @@ const allScheduledSurfaces: ScheduledSurface[] = [
     prospectTypes: [],
   },
   {
+    name: 'New Tab (de-AT)',
+    guid: 'NEW_TAB_DE_AT',
+    ianaTimezone: 'Europe/Vienna',
+    prospectTypes: [],
+  },
+  {
+    name: 'New Tab (de-CH)',
+    guid: 'NEW_TAB_DE_CH',
+    ianaTimezone: 'Europe/Zurich',
+    prospectTypes: [],
+  },
+  {
+    name: 'New Tab (fr-BE)',
+    guid: 'NEW_TAB_FR_BE',
+    ianaTimezone: 'Europe/Brussels',
+    prospectTypes: [],
+  },
+  {
+    name: 'New Tab (pl-PL)',
+    guid: 'NEW_TAB_PL_PL',
+    ianaTimezone: 'Europe/Warsaw',
+    prospectTypes: [],
+  },
+  {
     name: 'New Tab (en-INTL)',
     guid: 'NEW_TAB_EN_INTL',
     ianaTimezone: 'Asia/Kolkata',
