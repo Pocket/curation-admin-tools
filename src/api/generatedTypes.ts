@@ -493,6 +493,8 @@ export enum CorpusLanguage {
   Fr = 'FR',
   /** Italian */
   It = 'IT',
+  /** Polish */
+  Pl = 'PL',
 }
 
 /** A node in a CorpusSearchConnection result */
