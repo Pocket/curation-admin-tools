@@ -493,6 +493,8 @@ export enum CorpusLanguage {
   Fr = 'FR',
   /** Italian */
   It = 'IT',
+  /** Polish */
+  Pl = 'PL',
 }
 
 /** A node in a CorpusSearchConnection result */
@@ -1346,6 +1348,8 @@ export type Mutation = {
    * Called when approving or rejecting a prospect into the corpus.
    */
   updateProspectAsCurated?: Maybe<Prospect>;
+  /** Updates a SectionItem's mutable fields (e.g. rank). */
+  updateSectionItem: SectionItem;
   /** Uploads an image to S3 for an Approved Item */
   uploadApprovedCorpusItemImage: ApprovedCorpusImageUrl;
 };
@@ -1512,6 +1516,10 @@ export type MutationUpdateLabelArgs = {
 
 export type MutationUpdateProspectAsCuratedArgs = {
   id: Scalars['ID'];
+};
+
+export type MutationUpdateSectionItemArgs = {
+  data: UpdateSectionItemInput;
 };
 
 export type MutationUploadApprovedCorpusItemImageArgs = {
@@ -2576,6 +2584,14 @@ export type UpdateCustomSectionInput = {
 export type UpdateLabelInput = {
   externalId?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
+};
+
+/** Input data for updating a SectionItem's mutable fields */
+export type UpdateSectionItemInput = {
+  /** ID of the SectionItem. A string in UUID format. */
+  externalId: Scalars['ID'];
+  /** The updated rank of the SectionItem in relation to its siblings. */
+  rank: Scalars['Int'];
 };
 
 export type UrlMetadata = {

@@ -46,13 +46,14 @@ Object.keys(ProspectType).forEach((key, index) => {
 
 export const prospectFilterOptions: DropdownOption[] = prospectFilters;
 
-// Language codes. Currently only English and German are needed.
+// Language codes for the curation tool's language picker.
 export const languages: DropdownOption[] = [
   { code: CorpusLanguage.En, name: 'English' },
   { code: CorpusLanguage.De, name: 'German' },
   { code: CorpusLanguage.Es, name: 'Spanish' },
   { code: CorpusLanguage.Fr, name: 'French' },
   { code: CorpusLanguage.It, name: 'Italian' },
+  { code: CorpusLanguage.Pl, name: 'Polish' },
 ];
 
 // This maps to the status (CuratedStatus type) field in DB for an ApprovedItem
