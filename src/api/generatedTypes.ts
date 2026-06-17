@@ -1256,8 +1256,12 @@ export type Mutation = {
   createScheduleReview: ScheduleReview;
   /** Creates a Scheduled Surface Scheduled Item. */
   createScheduledCorpusItem: ScheduledCorpusItem;
-  /** Creates a SectionItem within a Section. */
-  createSectionItem: SectionItem;
+  /**
+   * Creates a SectionItem within a Section.
+   * Returns null (a no-op) when an ML-automated process attempts to re-add an
+   * item that an editor previously removed manually.
+   */
+  createSectionItem?: Maybe<SectionItem>;
   /** Deletes a CollectionPartnerAssociation. */
   deleteCollectionPartnerAssociation: CollectionPartnerAssociation;
   /** Deletes a CollectionStory. Also deletes all the related CollectionStoryAuthor records. */
@@ -3246,11 +3250,11 @@ export type CreateSectionItemMutationVariables = Exact<{
 
 export type CreateSectionItemMutation = {
   __typename?: 'Mutation';
-  createSectionItem: {
+  createSectionItem?: {
     __typename?: 'SectionItem';
     externalId: string;
     rank?: number | null;
-  };
+  } | null;
 };
 
 export type DeleteCustomSectionMutationVariables = Exact<{
