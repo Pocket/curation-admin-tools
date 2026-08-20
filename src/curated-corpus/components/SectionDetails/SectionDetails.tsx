@@ -155,6 +155,14 @@ export const SectionDetails: React.FC<SectionDetailsProps> = (
                       icon={<AdUnitsIcon />}
                     />
                   )}
+
+                  <Chip
+                    variant="outlined"
+                    color="primary"
+                    label={`id: ${section.externalId}`}
+                    size="small"
+                    sx={{ ml: 2 }}
+                  />
                 </Box>
               </Box>
               <Grid
