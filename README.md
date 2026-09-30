@@ -87,8 +87,6 @@ npm run test
 
 - `src/curated-corpus` houses the Curated Corpus Tool.
 
-- `src/moderation` DEPRECATED home of moderation of a legacy Pocket feature
-
 Within the folder for each tool, the structure is as follows (taking Curated Corpus as an example):
 
 ```bash
