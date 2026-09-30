@@ -1,4 +1,4 @@
-import { ProspectType, ScheduledSurface } from '../../api/generatedTypes';
+import { ScheduledSurface } from '../../api/generatedTypes';
 import { getScheduledSurfacesForUser } from '../../api/queries/getScheduledSurfacesForUser';
 import { constructMock } from './utils';
 
@@ -10,122 +10,66 @@ const allScheduledSurfaces: ScheduledSurface[] = [
     name: 'New Tab (en-US)',
     guid: 'NEW_TAB_EN_US',
     ianaTimezone: 'America/New_York',
-    prospectTypes: [
-      ProspectType.Counts,
-      ProspectType.Timespent,
-      ProspectType.Recommended,
-      ProspectType.TopSaved,
-      ProspectType.DomainAllowlist,
-      ProspectType.Dismissed,
-      ProspectType.Counts,
-      ProspectType.TitleUrlModeled,
-      ProspectType.RssLogistic,
-      ProspectType.RssLogisticRecent,
-      ProspectType.SlateSchedulerV2,
-      ProspectType.PublisherSubmitted,
-    ],
   },
   {
     name: 'New Tab (de-DE)',
     guid: 'NEW_TAB_DE_DE',
     ianaTimezone: 'Europe/Berlin',
-    prospectTypes: [
-      ProspectType.Counts,
-      ProspectType.Timespent,
-      ProspectType.DomainAllowlist,
-      ProspectType.Dismissed,
-      ProspectType.TitleUrlModeled,
-      ProspectType.PublisherSubmitted,
-    ],
   },
   {
     name: 'New Tab (en-GB)',
     guid: 'NEW_TAB_EN_GB',
     ianaTimezone: 'Europe/London',
-    prospectTypes: [
-      ProspectType.Counts,
-      ProspectType.Timespent,
-      ProspectType.Recommended,
-      ProspectType.Dismissed,
-    ],
   },
   {
     name: 'New Tab (en-CA)',
     guid: 'NEW_TAB_EN_CA',
     ianaTimezone: 'America/Toronto',
-    prospectTypes: [],
   },
   {
     name: 'New Tab (en-IE)',
     guid: 'NEW_TAB_EN_IE',
     ianaTimezone: 'Europe/Dublin',
-    prospectTypes: [],
   },
   {
     name: 'New Tab (de-AT)',
     guid: 'NEW_TAB_DE_AT',
     ianaTimezone: 'Europe/Vienna',
-    prospectTypes: [],
   },
   {
     name: 'New Tab (de-CH)',
     guid: 'NEW_TAB_DE_CH',
     ianaTimezone: 'Europe/Zurich',
-    prospectTypes: [],
   },
   {
     name: 'New Tab (fr-BE)',
     guid: 'NEW_TAB_FR_BE',
     ianaTimezone: 'Europe/Brussels',
-    prospectTypes: [],
   },
   {
     name: 'New Tab (pl-PL)',
     guid: 'NEW_TAB_PL_PL',
     ianaTimezone: 'Europe/Warsaw',
-    prospectTypes: [],
   },
   {
     name: 'New Tab (en-INTL)',
     guid: 'NEW_TAB_EN_INTL',
     ianaTimezone: 'Asia/Kolkata',
-    prospectTypes: [
-      ProspectType.Counts,
-      ProspectType.Timespent,
-      ProspectType.Recommended,
-      ProspectType.TitleUrlModeled,
-      ProspectType.Dismissed,
-    ],
   },
   {
     name: 'Pocket Hits (en-US)',
     guid: 'POCKET_HITS_EN_US',
     ianaTimezone: 'America/New_York',
-    prospectTypes: [
-      ProspectType.Counts,
-      ProspectType.TopSaved,
-      ProspectType.Timespent,
-      ProspectType.Dismissed,
-      ProspectType.TitleUrlModeled,
-    ],
   },
   {
     name: 'Pocket Hits (de-DE)',
     guid: 'POCKET_HITS_DE_DE',
     ianaTimezone: 'Europe/Berlin',
-    prospectTypes: [
-      ProspectType.Counts,
-      ProspectType.Timespent,
-      ProspectType.TopSaved,
-      ProspectType.DomainAllowlist,
-      ProspectType.TitleUrlModeled,
-    ],
   },
   {
     name: 'Sandbox',
     guid: 'SANDBOX',
     ianaTimezone: 'America/New_York',
-    prospectTypes: [],
   },
 ];
 

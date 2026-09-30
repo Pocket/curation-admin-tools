@@ -12,11 +12,6 @@ interface ScheduleHistoryEntries {
    * Schedule history of an already existing item in the corpus
    */
   data: ApprovedCorpusItemScheduledSurfaceHistory[];
-
-  /**
-   * flag to know whether the schedule history is being shown for a prospect item or not
-   */
-  isProspect?: boolean;
 }
 
 /**
@@ -27,7 +22,7 @@ interface ScheduleHistoryEntries {
 export const ScheduleHistoryEntries: React.FC<ScheduleHistoryEntries> = (
   props,
 ): JSX.Element => {
-  const { data, isProspect } = props;
+  const { data } = props;
 
   const getDisplayDate = (date: string) => {
     return DateTime.fromFormat(date, 'yyyy-MM-dd')
@@ -54,16 +49,10 @@ export const ScheduleHistoryEntries: React.FC<ScheduleHistoryEntries> = (
             <Grid item xs={8}>
               <Grid
                 container
-                sx={
-                  isProspect
-                    ? {
-                        flexDirection: 'row',
-                      }
-                    : {
-                        flexDirection: 'column',
-                        alignItems: 'flex-end',
-                      }
-                }
+                sx={{
+                  flexDirection: 'column',
+                  alignItems: 'flex-end',
+                }}
               >
                 <Grid item xs>
                   <Typography variant="body2">

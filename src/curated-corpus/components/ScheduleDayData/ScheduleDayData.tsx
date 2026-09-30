@@ -8,7 +8,6 @@ import {
 } from '../../../api/generatedTypes';
 import {
   ScheduleDayFilterOptions,
-  ProspectFilterOptions,
   ScheduleDayHeading,
   ScheduledItemCardWrapper,
 } from '../';
@@ -25,11 +24,6 @@ interface ScheduleDayDataProps {
    * Data for a given date.
    */
   data: ScheduledCorpusItemsResult;
-
-  /**
-   * Actions to run when users click on the "Add Item" button
-   */
-  onAddItem: (date: string) => void;
 
   /**
    * A function that triggers a new API call to refetch the data for a given
@@ -78,7 +72,6 @@ export const ScheduleDayData: React.FC<ScheduleDayDataProps> = (
   const {
     currentScheduledSurfaceGuid,
     data,
-    onAddItem,
     refetch,
     setCurrentItem,
     toggleEditModal,
@@ -139,15 +132,8 @@ export const ScheduleDayData: React.FC<ScheduleDayDataProps> = (
     <>
       <Box mt={9} mb={3}>
         <ScheduleDayHeading
-          onAddItem={onAddItem}
           data={data}
-          setFilters={
-            setFilters as React.Dispatch<
-              React.SetStateAction<
-                ScheduleDayFilterOptions | ProspectFilterOptions
-              >
-            >
-          }
+          setFilters={setFilters}
           key={`{data.scheduledDate}-day-heading`}
         />
       </Box>

@@ -86,7 +86,7 @@ export const ScheduleSummaryConnector: React.FC<
    * whenever the date or scheduled surface is updated.
    *
    * Additionally, a manual flag can be passed in to trigger
-   * a refresh if required - for example, if a prospect is
+   * a refresh if required - for example, if an item is
    * scheduled for the date selected - it should be included
    * in the grouped data on the sidebar straight away.
    */

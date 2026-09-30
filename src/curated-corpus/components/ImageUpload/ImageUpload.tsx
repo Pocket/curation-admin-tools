@@ -24,14 +24,14 @@ import {
   useUploadApprovedCorpusItemImageMutation,
 } from '../../../api/generatedTypes';
 import { readImageFileFromDisk } from '../../helpers/helperFunctions';
-import { ApprovedItemFromProspect } from '../../helpers/definitions';
+import { ApprovedItemDraft } from '../../helpers/definitions';
 import { StyledDropzoneBox } from '../../../_shared/styled';
 
 interface ImageUploadProps {
   /**
    * Approved item entity
    */
-  entity: ApprovedCorpusItem | ApprovedItemFromProspect;
+  entity: ApprovedCorpusItem | ApprovedItemDraft;
 
   /**
    * A path to a placeholder image to show if no image is available

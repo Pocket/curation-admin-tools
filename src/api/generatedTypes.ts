@@ -49,8 +49,6 @@ export type Scalars = {
 export enum ActionScreen {
   /** This action took place from the corpus screen in the admin tool */
   Corpus = 'CORPUS',
-  /** This action took place from the prospecting screen in the admin tool */
-  Prospecting = 'PROSPECTING',
   /** This action took place from the schedule screen in the admin tool */
   Schedule = 'SCHEDULE',
   /** This action took place from the sections screen in the admin tool */
@@ -809,23 +807,6 @@ export type DomainMetadata = {
   name?: Maybe<Scalars['String']>;
 };
 
-export type GetProspectsFilters = {
-  /**
-   * Filter out any prospects by the name or part-match of the name of a publisher, e.g. 'The Onion'.
-   * Note that this filter is case-sensitive due to DynamoDB limitations.
-   */
-  excludePublisher?: InputMaybe<Scalars['String']>;
-  /**
-   * Filter the returned prospects by the name or part-match of the name of a publisher, e.g. 'The Onion'.
-   * Note that this filter is case-sensitive due to DynamoDB limitations.
-   */
-  includePublisher?: InputMaybe<Scalars['String']>;
-  /** string GUID of the prospect type to further filter prospects, e.g. 'GLOBAL' or 'ORGANIC_TIMESPENT' */
-  prospectType?: InputMaybe<Scalars['String']>;
-  /** string GUID of the scheduled surface being prospected, e.g. 'NEW_TAB_EN_US' or 'POCKET_HITS_DE_DE' */
-  scheduledSurfaceGuid: Scalars['String'];
-};
-
 /** Interactive Advertising Bureau Category - these are used on clients to serve relevant ads */
 export type IabCategory = {
   __typename?: 'IABCategory';
@@ -1285,13 +1266,6 @@ export type Mutation = {
    * Also deletes all associated SectionItems.
    */
   rejectApprovedCorpusItem: ApprovedCorpusItem;
-  /**
-   * Marks a prospect as 'curated' in the database, preventing it from being displayed for prospecting.
-   * Returns the prospect if the operation succeeds, and null if not (almost surely due to an incorrect id).
-   *
-   * Called when removing a prospect from the list - specifically not approving or rejecting into the corpus.
-   */
-  removeProspect?: Maybe<Prospect>;
   /** Removes an active SectionItem from a Section. */
   removeSectionItem: SectionItem;
   /** Updates the scheduled date of a Scheduled Surface Scheduled Item. */
@@ -1345,13 +1319,6 @@ export type Mutation = {
   updateCustomSection: Section;
   /** Updates a Label that is not assigned to any Collection yet. */
   updateLabel: Label;
-  /**
-   * Marks a prospect as 'curated' in the database, preventing it from being displayed for prospecting.
-   * Returns the prospect if the operation succeeds, and null if not (almost surely due to an incorrect id).
-   *
-   * Called when approving or rejecting a prospect into the corpus.
-   */
-  updateProspectAsCurated?: Maybe<Prospect>;
   /** Updates a SectionItem's mutable fields (e.g. rank). */
   updateSectionItem: SectionItem;
   /** Uploads an image to S3 for an Approved Item */
@@ -1450,10 +1417,6 @@ export type MutationRejectApprovedCorpusItemArgs = {
   data: RejectApprovedCorpusItemInput;
 };
 
-export type MutationRemoveProspectArgs = {
-  data: RemoveProspectInput;
-};
-
 export type MutationRemoveSectionItemArgs = {
   data: RemoveSectionItemInput;
 };
@@ -1516,10 +1479,6 @@ export type MutationUpdateCustomSectionArgs = {
 
 export type MutationUpdateLabelArgs = {
   data: UpdateLabelInput;
-};
-
-export type MutationUpdateProspectAsCuratedArgs = {
-  id: Scalars['ID'];
 };
 
 export type MutationUpdateSectionItemArgs = {
@@ -1652,61 +1611,6 @@ export type PocketShare = {
   targetUrl: Scalars['ValidUrl'];
 };
 
-export type Prospect = {
-  __typename?: 'Prospect';
-  approvedCorpusItem?: Maybe<ApprovedCorpusItem>;
-  authors?: Maybe<Scalars['String']>;
-  createdAt?: Maybe<Scalars['Int']>;
-  datePublished?: Maybe<Scalars['String']>;
-  domain?: Maybe<Scalars['String']>;
-  excerpt?: Maybe<Scalars['String']>;
-  id: Scalars['ID'];
-  imageUrl?: Maybe<Scalars['String']>;
-  isCollection?: Maybe<Scalars['Boolean']>;
-  isSyndicated?: Maybe<Scalars['Boolean']>;
-  item?: Maybe<Item>;
-  language?: Maybe<CorpusLanguage>;
-  prospectId: Scalars['ID'];
-  prospectType: Scalars['String'];
-  publisher?: Maybe<Scalars['String']>;
-  rejectedCorpusItem?: Maybe<RejectedCorpusItem>;
-  saveCount?: Maybe<Scalars['Int']>;
-  scheduledSurfaceGuid: Scalars['String'];
-  title?: Maybe<Scalars['String']>;
-  topic?: Maybe<Scalars['String']>;
-  url: Scalars['String'];
-};
-
-/**
- * Prospect types. This enum is not used anywhere in this schema, however it is used
- * by the Curation Admin Tools frontend to filter prospects.
- */
-export enum ProspectType {
-  Counts = 'COUNTS',
-  Dismissed = 'DISMISSED',
-  DomainAllowlist = 'DOMAIN_ALLOWLIST',
-  PublisherSubmitted = 'PUBLISHER_SUBMITTED',
-  QaBooks = 'QA_BOOKS',
-  QaCelebrity = 'QA_CELEBRITY',
-  QaEntertainment = 'QA_ENTERTAINMENT',
-  QaMlb = 'QA_MLB',
-  QaMovies = 'QA_MOVIES',
-  QaMusic = 'QA_MUSIC',
-  QaNba = 'QA_NBA',
-  QaNfl = 'QA_NFL',
-  QaNhl = 'QA_NHL',
-  QaSoccer = 'QA_SOCCER',
-  QaSports = 'QA_SPORTS',
-  QaTelevision = 'QA_TELEVISION',
-  Recommended = 'RECOMMENDED',
-  RssLogistic = 'RSS_LOGISTIC',
-  RssLogisticRecent = 'RSS_LOGISTIC_RECENT',
-  SlateSchedulerV2 = 'SLATE_SCHEDULER_V2',
-  Timespent = 'TIMESPENT',
-  TitleUrlModeled = 'TITLE_URL_MODELED',
-  TopSaved = 'TOP_SAVED',
-}
-
 /**
  * A mapping between a domain name and its publisher display name.
  * Used to auto-populate the publisher field when creating corpus items.
@@ -1771,8 +1675,6 @@ export type Query = {
   getLanguages: Array<CollectionLanguage>;
   /** Tool to get OG description of URL that is not yet implemented in parser */
   getOpenGraphFields?: Maybe<OpenGraphFields>;
-  /** returns a set of at most 20 prospects (number may be smaller depending on available data) */
-  getProspects: Array<Prospect>;
   /** Retrieves a paginated, filterable list of Rejected Items. */
   getRejectedCorpusItems: RejectedCorpusItemConnection;
   /** Retrieves a list of Approved Items that are scheduled to appear on a Scheduled Surface. */
@@ -1853,10 +1755,6 @@ export type QueryGetItemByUrlArgs = {
 
 export type QueryGetOpenGraphFieldsArgs = {
   url: Scalars['Url'];
-};
-
-export type QueryGetProspectsArgs = {
-  filters: GetProspectsFilters;
 };
 
 export type QueryGetRejectedCorpusItemsArgs = {
@@ -2048,16 +1946,6 @@ export enum RemovalReason {
   TopicDiversity = 'TOPIC_DIVERSITY',
 }
 
-/** Input data for removing a prospect. */
-export type RemoveProspectInput = {
-  /** The GUID of the corresponding Prospect. */
-  id: Scalars['ID'];
-  /** Free-text entered by the curator to give further detail to the reason(s) provided. */
-  reasonComment?: InputMaybe<Scalars['String']>;
-  /** A comma-separated list of removal reasons. */
-  reasons?: InputMaybe<Scalars['String']>;
-};
-
 /** Input data for removing a SectionItem */
 export type RemoveSectionItemInput = {
   /** Array of reasons for removing a SectionItem. */
@@ -2155,7 +2043,7 @@ export type ScheduledCorpusItemsResult = {
   totalCount: Scalars['Int'];
 };
 
-/** A Scheduled Surface, including its associated Prospect Types. */
+/** A Scheduled Surface. */
 export type ScheduledSurface = {
   __typename?: 'ScheduledSurface';
   /** The GUID of the Scheduled Surface. Example: 'NEW_TAB_EN_US'. */
@@ -2164,8 +2052,6 @@ export type ScheduledSurface = {
   ianaTimezone: Scalars['String'];
   /** The display name of the Scheduled Surface. Example 'New Tab (en-US)'. */
   name: Scalars['String'];
-  /** An array of associated ProspectTypes. */
-  prospectTypes: Array<ProspectType>;
 };
 
 /** available filters for searching collections */
@@ -2929,96 +2815,6 @@ export type CuratedItemDataFragment = {
   }>;
 };
 
-export type ProspectDataFragment = {
-  __typename?: 'Prospect';
-  id: string;
-  prospectId: string;
-  scheduledSurfaceGuid: string;
-  topic?: string | null;
-  prospectType: string;
-  url: string;
-  createdAt?: number | null;
-  imageUrl?: string | null;
-  authors?: string | null;
-  publisher?: string | null;
-  domain?: string | null;
-  title?: string | null;
-  excerpt?: string | null;
-  language?: CorpusLanguage | null;
-  saveCount?: number | null;
-  isSyndicated?: boolean | null;
-  isCollection?: boolean | null;
-};
-
-export type ProspectDataWithCorpusItemsFragment = {
-  __typename?: 'Prospect';
-  id: string;
-  prospectId: string;
-  scheduledSurfaceGuid: string;
-  topic?: string | null;
-  prospectType: string;
-  url: string;
-  createdAt?: number | null;
-  datePublished?: string | null;
-  imageUrl?: string | null;
-  authors?: string | null;
-  publisher?: string | null;
-  domain?: string | null;
-  title?: string | null;
-  excerpt?: string | null;
-  language?: CorpusLanguage | null;
-  saveCount?: number | null;
-  isSyndicated?: boolean | null;
-  isCollection?: boolean | null;
-  approvedCorpusItem?: {
-    __typename?: 'ApprovedCorpusItem';
-    externalId: string;
-    prospectId?: string | null;
-    title: string;
-    language: CorpusLanguage;
-    publisher: string;
-    url: any;
-    hasTrustedDomain: boolean;
-    imageUrl: any;
-    excerpt: string;
-    status: CuratedStatus;
-    source: CorpusItemSource;
-    topic: string;
-    isCollection: boolean;
-    isTimeSensitive: boolean;
-    isSyndicated: boolean;
-    createdBy: string;
-    createdAt: number;
-    updatedBy?: string | null;
-    updatedAt: number;
-    authors: Array<{
-      __typename?: 'CorpusItemAuthor';
-      name: string;
-      sortOrder: number;
-    }>;
-    scheduledSurfaceHistory: Array<{
-      __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
-      externalId: string;
-      createdBy: string;
-      scheduledDate: any;
-      scheduledSurfaceGuid: string;
-    }>;
-  } | null;
-  rejectedCorpusItem?: {
-    __typename?: 'RejectedCorpusItem';
-    externalId: string;
-    prospectId?: string | null;
-    url: any;
-    title?: string | null;
-    topic?: string | null;
-    language?: CorpusLanguage | null;
-    publisher?: string | null;
-    reason: string;
-    createdBy: string;
-    createdAt: number;
-  } | null;
-};
-
 export type RejectedItemDataFragment = {
   __typename?: 'RejectedCorpusItem';
   externalId: string;
@@ -3480,55 +3276,6 @@ export type RejectApprovedItemMutation = {
   };
 };
 
-export type RejectProspectMutationVariables = Exact<{
-  data: CreateRejectedCorpusItemInput;
-}>;
-
-export type RejectProspectMutation = {
-  __typename?: 'Mutation';
-  createRejectedCorpusItem: {
-    __typename?: 'RejectedCorpusItem';
-    externalId: string;
-    prospectId?: string | null;
-    url: any;
-    title?: string | null;
-    topic?: string | null;
-    language?: CorpusLanguage | null;
-    publisher?: string | null;
-    reason: string;
-    createdBy: string;
-    createdAt: number;
-  };
-};
-
-export type RemoveProspectMutationVariables = Exact<{
-  data: RemoveProspectInput;
-}>;
-
-export type RemoveProspectMutation = {
-  __typename?: 'Mutation';
-  removeProspect?: {
-    __typename?: 'Prospect';
-    id: string;
-    prospectId: string;
-    scheduledSurfaceGuid: string;
-    topic?: string | null;
-    prospectType: string;
-    url: string;
-    createdAt?: number | null;
-    imageUrl?: string | null;
-    authors?: string | null;
-    publisher?: string | null;
-    domain?: string | null;
-    title?: string | null;
-    excerpt?: string | null;
-    language?: CorpusLanguage | null;
-    saveCount?: number | null;
-    isSyndicated?: boolean | null;
-    isCollection?: boolean | null;
-  } | null;
-};
-
 export type RemoveSectionItemMutationVariables = Exact<{
   data: RemoveSectionItemInput;
 }>;
@@ -3710,83 +3457,6 @@ export type UpdateCustomSectionMutation = {
   };
 };
 
-export type UpdateProspectAsCuratedMutationVariables = Exact<{
-  id: Scalars['ID'];
-  historyFilter?: InputMaybe<ApprovedCorpusItemScheduledSurfaceHistoryFilters>;
-}>;
-
-export type UpdateProspectAsCuratedMutation = {
-  __typename?: 'Mutation';
-  updateProspectAsCurated?: {
-    __typename?: 'Prospect';
-    id: string;
-    prospectId: string;
-    scheduledSurfaceGuid: string;
-    topic?: string | null;
-    prospectType: string;
-    url: string;
-    createdAt?: number | null;
-    datePublished?: string | null;
-    imageUrl?: string | null;
-    authors?: string | null;
-    publisher?: string | null;
-    domain?: string | null;
-    title?: string | null;
-    excerpt?: string | null;
-    language?: CorpusLanguage | null;
-    saveCount?: number | null;
-    isSyndicated?: boolean | null;
-    isCollection?: boolean | null;
-    approvedCorpusItem?: {
-      __typename?: 'ApprovedCorpusItem';
-      externalId: string;
-      prospectId?: string | null;
-      title: string;
-      language: CorpusLanguage;
-      publisher: string;
-      url: any;
-      hasTrustedDomain: boolean;
-      imageUrl: any;
-      excerpt: string;
-      status: CuratedStatus;
-      source: CorpusItemSource;
-      topic: string;
-      isCollection: boolean;
-      isTimeSensitive: boolean;
-      isSyndicated: boolean;
-      createdBy: string;
-      createdAt: number;
-      updatedBy?: string | null;
-      updatedAt: number;
-      authors: Array<{
-        __typename?: 'CorpusItemAuthor';
-        name: string;
-        sortOrder: number;
-      }>;
-      scheduledSurfaceHistory: Array<{
-        __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
-        externalId: string;
-        createdBy: string;
-        scheduledDate: any;
-        scheduledSurfaceGuid: string;
-      }>;
-    } | null;
-    rejectedCorpusItem?: {
-      __typename?: 'RejectedCorpusItem';
-      externalId: string;
-      prospectId?: string | null;
-      url: any;
-      title?: string | null;
-      topic?: string | null;
-      language?: CorpusLanguage | null;
-      publisher?: string | null;
-      reason: string;
-      createdBy: string;
-      createdAt: number;
-    } | null;
-  } | null;
-};
-
 export type UploadApprovedCorpusItemImageMutationVariables = Exact<{
   image: Scalars['Upload'];
 }>;
@@ -3956,84 +3626,6 @@ export type GetOpenGraphFieldsQuery = {
   } | null;
 };
 
-export type GetProspectsQueryVariables = Exact<{
-  scheduledSurfaceGuid: Scalars['String'];
-  prospectType?: InputMaybe<Scalars['String']>;
-  historyFilter?: InputMaybe<ApprovedCorpusItemScheduledSurfaceHistoryFilters>;
-}>;
-
-export type GetProspectsQuery = {
-  __typename?: 'Query';
-  getProspects: Array<{
-    __typename?: 'Prospect';
-    id: string;
-    prospectId: string;
-    scheduledSurfaceGuid: string;
-    topic?: string | null;
-    prospectType: string;
-    url: string;
-    createdAt?: number | null;
-    datePublished?: string | null;
-    imageUrl?: string | null;
-    authors?: string | null;
-    publisher?: string | null;
-    domain?: string | null;
-    title?: string | null;
-    excerpt?: string | null;
-    language?: CorpusLanguage | null;
-    saveCount?: number | null;
-    isSyndicated?: boolean | null;
-    isCollection?: boolean | null;
-    approvedCorpusItem?: {
-      __typename?: 'ApprovedCorpusItem';
-      externalId: string;
-      prospectId?: string | null;
-      title: string;
-      language: CorpusLanguage;
-      publisher: string;
-      url: any;
-      hasTrustedDomain: boolean;
-      imageUrl: any;
-      excerpt: string;
-      status: CuratedStatus;
-      source: CorpusItemSource;
-      topic: string;
-      isCollection: boolean;
-      isTimeSensitive: boolean;
-      isSyndicated: boolean;
-      createdBy: string;
-      createdAt: number;
-      updatedBy?: string | null;
-      updatedAt: number;
-      authors: Array<{
-        __typename?: 'CorpusItemAuthor';
-        name: string;
-        sortOrder: number;
-      }>;
-      scheduledSurfaceHistory: Array<{
-        __typename?: 'ApprovedCorpusItemScheduledSurfaceHistory';
-        externalId: string;
-        createdBy: string;
-        scheduledDate: any;
-        scheduledSurfaceGuid: string;
-      }>;
-    } | null;
-    rejectedCorpusItem?: {
-      __typename?: 'RejectedCorpusItem';
-      externalId: string;
-      prospectId?: string | null;
-      url: any;
-      title?: string | null;
-      topic?: string | null;
-      language?: CorpusLanguage | null;
-      publisher?: string | null;
-      reason: string;
-      createdBy: string;
-      createdAt: number;
-    } | null;
-  }>;
-};
-
 export type GetRejectedItemsQueryVariables = Exact<{
   filters?: InputMaybe<RejectedCorpusItemFilter>;
   pagination?: InputMaybe<PaginationInput>;
@@ -4156,7 +3748,6 @@ export type GetScheduledSurfacesForUserQuery = {
     __typename?: 'ScheduledSurface';
     guid: string;
     name: string;
-    prospectTypes: Array<ProspectType>;
     ianaTimezone: string;
   }>;
 };
@@ -4426,27 +4017,6 @@ export const ShareableListCompletePropsFragmentDoc = gql`
   }
   ${ShareableListItemPropsFragmentDoc}
 `;
-export const ProspectDataFragmentDoc = gql`
-  fragment ProspectData on Prospect {
-    id
-    prospectId
-    scheduledSurfaceGuid
-    topic
-    prospectType
-    url
-    createdAt
-    imageUrl
-    authors
-    publisher
-    domain
-    title
-    excerpt
-    language
-    saveCount
-    isSyndicated
-    isCollection
-  }
-`;
 export const CuratedItemDataWithHistoryFragmentDoc = gql`
   fragment CuratedItemDataWithHistory on ApprovedCorpusItem {
     externalId
@@ -4493,36 +4063,6 @@ export const RejectedItemDataFragmentDoc = gql`
     createdBy
     createdAt
   }
-`;
-export const ProspectDataWithCorpusItemsFragmentDoc = gql`
-  fragment ProspectDataWithCorpusItems on Prospect {
-    id
-    prospectId
-    scheduledSurfaceGuid
-    topic
-    prospectType
-    url
-    createdAt
-    datePublished
-    imageUrl
-    authors
-    publisher
-    domain
-    title
-    excerpt
-    language
-    saveCount
-    isSyndicated
-    isCollection
-    approvedCorpusItem {
-      ...CuratedItemDataWithHistory
-    }
-    rejectedCorpusItem {
-      ...RejectedItemData
-    }
-  }
-  ${CuratedItemDataWithHistoryFragmentDoc}
-  ${RejectedItemDataFragmentDoc}
 `;
 export const ScheduledItemDataFragmentDoc = gql`
   fragment ScheduledItemData on ScheduledCorpusItem {
@@ -5114,108 +4654,6 @@ export type RejectApprovedItemMutationOptions = Apollo.BaseMutationOptions<
   RejectApprovedItemMutation,
   RejectApprovedItemMutationVariables
 >;
-export const RejectProspectDocument = gql`
-  mutation rejectProspect($data: CreateRejectedCorpusItemInput!) {
-    createRejectedCorpusItem(data: $data) {
-      ...RejectedItemData
-    }
-  }
-  ${RejectedItemDataFragmentDoc}
-`;
-export type RejectProspectMutationFn = Apollo.MutationFunction<
-  RejectProspectMutation,
-  RejectProspectMutationVariables
->;
-
-/**
- * __useRejectProspectMutation__
- *
- * To run a mutation, you first call `useRejectProspectMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRejectProspectMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [rejectProspectMutation, { data, loading, error }] = useRejectProspectMutation({
- *   variables: {
- *      data: // value for 'data'
- *   },
- * });
- */
-export function useRejectProspectMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    RejectProspectMutation,
-    RejectProspectMutationVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    RejectProspectMutation,
-    RejectProspectMutationVariables
-  >(RejectProspectDocument, options);
-}
-export type RejectProspectMutationHookResult = ReturnType<
-  typeof useRejectProspectMutation
->;
-export type RejectProspectMutationResult =
-  Apollo.MutationResult<RejectProspectMutation>;
-export type RejectProspectMutationOptions = Apollo.BaseMutationOptions<
-  RejectProspectMutation,
-  RejectProspectMutationVariables
->;
-export const RemoveProspectDocument = gql`
-  mutation RemoveProspect($data: RemoveProspectInput!) {
-    removeProspect(data: $data) {
-      ...ProspectData
-    }
-  }
-  ${ProspectDataFragmentDoc}
-`;
-export type RemoveProspectMutationFn = Apollo.MutationFunction<
-  RemoveProspectMutation,
-  RemoveProspectMutationVariables
->;
-
-/**
- * __useRemoveProspectMutation__
- *
- * To run a mutation, you first call `useRemoveProspectMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveProspectMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeProspectMutation, { data, loading, error }] = useRemoveProspectMutation({
- *   variables: {
- *      data: // value for 'data'
- *   },
- * });
- */
-export function useRemoveProspectMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    RemoveProspectMutation,
-    RemoveProspectMutationVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    RemoveProspectMutation,
-    RemoveProspectMutationVariables
-  >(RemoveProspectDocument, options);
-}
-export type RemoveProspectMutationHookResult = ReturnType<
-  typeof useRemoveProspectMutation
->;
-export type RemoveProspectMutationResult =
-  Apollo.MutationResult<RemoveProspectMutation>;
-export type RemoveProspectMutationOptions = Apollo.BaseMutationOptions<
-  RemoveProspectMutation,
-  RemoveProspectMutationVariables
->;
 export const RemoveSectionItemDocument = gql`
   mutation RemoveSectionItem($data: RemoveSectionItemInput!) {
     removeSectionItem(data: $data) {
@@ -5436,61 +4874,6 @@ export type UpdateCustomSectionMutationResult =
 export type UpdateCustomSectionMutationOptions = Apollo.BaseMutationOptions<
   UpdateCustomSectionMutation,
   UpdateCustomSectionMutationVariables
->;
-export const UpdateProspectAsCuratedDocument = gql`
-  mutation updateProspectAsCurated(
-    $id: ID!
-    $historyFilter: ApprovedCorpusItemScheduledSurfaceHistoryFilters
-  ) {
-    updateProspectAsCurated(id: $id) {
-      ...ProspectDataWithCorpusItems
-    }
-  }
-  ${ProspectDataWithCorpusItemsFragmentDoc}
-`;
-export type UpdateProspectAsCuratedMutationFn = Apollo.MutationFunction<
-  UpdateProspectAsCuratedMutation,
-  UpdateProspectAsCuratedMutationVariables
->;
-
-/**
- * __useUpdateProspectAsCuratedMutation__
- *
- * To run a mutation, you first call `useUpdateProspectAsCuratedMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateProspectAsCuratedMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateProspectAsCuratedMutation, { data, loading, error }] = useUpdateProspectAsCuratedMutation({
- *   variables: {
- *      id: // value for 'id'
- *      historyFilter: // value for 'historyFilter'
- *   },
- * });
- */
-export function useUpdateProspectAsCuratedMutation(
-  baseOptions?: Apollo.MutationHookOptions<
-    UpdateProspectAsCuratedMutation,
-    UpdateProspectAsCuratedMutationVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<
-    UpdateProspectAsCuratedMutation,
-    UpdateProspectAsCuratedMutationVariables
-  >(UpdateProspectAsCuratedDocument, options);
-}
-export type UpdateProspectAsCuratedMutationHookResult = ReturnType<
-  typeof useUpdateProspectAsCuratedMutation
->;
-export type UpdateProspectAsCuratedMutationResult =
-  Apollo.MutationResult<UpdateProspectAsCuratedMutation>;
-export type UpdateProspectAsCuratedMutationOptions = Apollo.BaseMutationOptions<
-  UpdateProspectAsCuratedMutation,
-  UpdateProspectAsCuratedMutationVariables
 >;
 export const UploadApprovedCorpusItemImageDocument = gql`
   mutation uploadApprovedCorpusItemImage($image: Upload!) {
@@ -5798,76 +5181,6 @@ export type GetOpenGraphFieldsQueryResult = Apollo.QueryResult<
   GetOpenGraphFieldsQuery,
   GetOpenGraphFieldsQueryVariables
 >;
-export const GetProspectsDocument = gql`
-  query getProspects(
-    $scheduledSurfaceGuid: String!
-    $prospectType: String
-    $historyFilter: ApprovedCorpusItemScheduledSurfaceHistoryFilters
-  ) {
-    getProspects(
-      filters: {
-        scheduledSurfaceGuid: $scheduledSurfaceGuid
-        prospectType: $prospectType
-      }
-    ) {
-      ...ProspectDataWithCorpusItems
-    }
-  }
-  ${ProspectDataWithCorpusItemsFragmentDoc}
-`;
-
-/**
- * __useGetProspectsQuery__
- *
- * To run a query within a React component, call `useGetProspectsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetProspectsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetProspectsQuery({
- *   variables: {
- *      scheduledSurfaceGuid: // value for 'scheduledSurfaceGuid'
- *      prospectType: // value for 'prospectType'
- *      historyFilter: // value for 'historyFilter'
- *   },
- * });
- */
-export function useGetProspectsQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    GetProspectsQuery,
-    GetProspectsQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<GetProspectsQuery, GetProspectsQueryVariables>(
-    GetProspectsDocument,
-    options,
-  );
-}
-export function useGetProspectsLazyQuery(
-  baseOptions?: Apollo.LazyQueryHookOptions<
-    GetProspectsQuery,
-    GetProspectsQueryVariables
-  >,
-) {
-  const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<GetProspectsQuery, GetProspectsQueryVariables>(
-    GetProspectsDocument,
-    options,
-  );
-}
-export type GetProspectsQueryHookResult = ReturnType<
-  typeof useGetProspectsQuery
->;
-export type GetProspectsLazyQueryHookResult = ReturnType<
-  typeof useGetProspectsLazyQuery
->;
-export type GetProspectsQueryResult = Apollo.QueryResult<
-  GetProspectsQuery,
-  GetProspectsQueryVariables
->;
 export const GetRejectedItemsDocument = gql`
   query getRejectedItems(
     $filters: RejectedCorpusItemFilter
@@ -6073,7 +5386,6 @@ export const GetScheduledSurfacesForUserDocument = gql`
     getScheduledSurfacesForUser {
       guid
       name
-      prospectTypes
       ianaTimezone
     }
   }

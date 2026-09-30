@@ -87,8 +87,6 @@ npm run test
 
 - `src/curated-corpus` houses the Curated Corpus Tool.
 
-- `src/moderation` DEPRECATED home of moderation of a legacy Pocket feature
-
 Within the folder for each tool, the structure is as follows (taking Curated Corpus as an example):
 
 ```bash
@@ -102,7 +100,7 @@ The `components` folder houses any components specific to that particular tool, 
 
 All components are functional React components. Each component lives in its own folder. Unit tests, styles, validation schemas (for form components) are placed in separate files alongside each component.
 
-Routing within the app is set up with React Router. The entrypoint to the app, [App.tsx](/src/App.tsx), sets up all requests to be routed to specific paths within the apps - `/prospects` for the Prospecting tool, for example. More detailed routing, for example, individual curated corpus pages, is set up within the landing page - see [this example for Curated Corpus](/src/curated-corpus/pages/CuratedCorpusLandingPage/CuratedCorpusLandingPage.tsx)
+Routing within the app is set up with React Router. The entrypoint to the app, [App.tsx](/src/App.tsx), sets up all requests to be routed to specific paths within the apps - `/curated-corpus` for the Curated Corpus tool, for example. More detailed routing, for example, individual curated corpus pages, is set up within the landing page - see [this example for Curated Corpus](/src/curated-corpus/pages/CuratedCorpusLandingPage/CuratedCorpusLandingPage.tsx)
 
 ## Working with the Admin API
 

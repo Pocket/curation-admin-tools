@@ -27,7 +27,6 @@ export const useMozillaAuth = (): {
   parsedIdToken: IDToken;
   jwtIdToken: string;
   canAccessCuration: boolean;
-  canAccessModeration: boolean;
 } => {
   const { authService } = pkceUseAuth();
   const parsedIdToken = authService.getUser() as IDToken;
@@ -50,6 +49,5 @@ export const useMozillaAuth = (): {
     // Access groups are checked on the backend when actions (mutations)
     // are performed.
     canAccessCuration: true, //parsedIdToken.groups.includes('asd'),
-    canAccessModeration: true,
   };
 };

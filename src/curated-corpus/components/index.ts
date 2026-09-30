@@ -1,6 +1,3 @@
-export { AddProspectModal } from './AddProspectModal/AddProspectModal';
-export { AddProspectForm } from './AddProspectForm/AddProspectForm';
-export { AddProspectFormConnector } from './AddProspectFormConnector/AddProspectFormConnector';
 export { AddSectionItemModal } from './AddSectionItemModal/AddSectionItemModal';
 export { ApprovedItemCardWrapper } from './ApprovedItemCardWrapper/ApprovedItemCardWrapper';
 export { ApprovedItemCurationHistory } from './ApprovedItemCurationHistory/ApprovedItemCurationHistory';
@@ -15,16 +12,11 @@ export { ApprovedItemModal } from './ApprovedItemModal/ApprovedItemModal';
 export { ApprovedItemSearchForm } from './ApprovedItemSearchForm/ApprovedItemSearchForm';
 export { DropDownFilter } from './DropDownFilter/DropDownFilter';
 export { EditCorpusItemAction } from './actions/EditCorpusItemAction/EditCorpusItemAction';
-export { ExistingProspectCard } from './ExistingProspectCard/ExistingProspectCard';
-export { DuplicateProspectModal } from './DuplicateProspectModal/DuplicateProspectModal';
 export { NextPrevPagination } from './NextPrevPagination/NextPrevPagination';
-export { ProspectListCard } from './ProspectListCard/ProspectListCard';
-export { ProspectFilters } from './ProspectFilters/ProspectFilters';
 export { RejectAndUnscheduleItemAction } from './actions/RejectAndUnscheduleItemAction/RejectAndUnscheduleItemAction';
 export { RejectCorpusItemAction } from './actions/RejectCorpusItemAction/RejectCorpusItemAction';
 export { RejectedItemListCard } from './RejectedItemListCard/RejectedItemListCard';
 export { RejectedItemSearchForm } from './RejectedItemSearchForm/RejectedItemSearchForm';
-export { RefreshProspectsModal } from './RefreshProspectsModal/RefreshProspectsModal';
 export { RejectItemModal } from './RejectItemModal/RejectItemModal';
 export { RejectItemForm } from './RejectItemForm/RejectItemForm';
 export { RemoveItemFromScheduledSurfaceForm } from './RemoveItemFromScheduledSurfaceForm/RemoveItemFromScheduledSurfaceForm';
@@ -44,10 +36,7 @@ export { ScheduleItemFormConnector } from './ScheduleItemFormConnector/ScheduleI
 export { ScheduleItemForm } from './ScheduleItemForm/ScheduleItemForm';
 export { ScheduleItemModal } from './ScheduleItemModal/ScheduleItemModal';
 export { ScheduleDayFilterRow } from './ScheduleDayFilterRow/ScheduleDayFilterRow';
-export type {
-  ScheduleDayFilterOptions,
-  ProspectFilterOptions,
-} from './ScheduleDayFilterRow/ScheduleDayFilterRow';
+export type { ScheduleDayFilterOptions } from './ScheduleDayFilterRow/ScheduleDayFilterRow';
 export type { StoriesSummary } from './ScheduleSummaryCard/ScheduleSummaryCard';
 export { ScheduleSummaryCard } from './ScheduleSummaryCard/ScheduleSummaryCard';
 export { ScheduleSummaryConnector } from './ScheduleSummaryConnector/ScheduleSummaryConnector';

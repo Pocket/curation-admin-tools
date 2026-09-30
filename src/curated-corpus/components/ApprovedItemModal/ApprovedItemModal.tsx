@@ -5,10 +5,10 @@ import { FormikHelpers } from 'formik/dist/types';
 import { ApprovedCorpusItem } from '../../../api/generatedTypes';
 import { Modal } from '../../../_shared/components';
 import { ApprovedItemForm } from '../ApprovedItemForm/ApprovedItemForm';
-import { ApprovedItemFromProspect } from '../../helpers/definitions';
+import { ApprovedItemDraft } from '../../helpers/definitions';
 
 interface ApprovedItemModalProps {
-  approvedItem: ApprovedCorpusItem | ApprovedItemFromProspect;
+  approvedItem: ApprovedCorpusItem | ApprovedItemDraft;
   isOpen: boolean;
   heading?: string;
   showItemTitle?: boolean;

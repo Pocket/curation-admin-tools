@@ -97,7 +97,7 @@ export const RejectCorpusItemAction: React.FC<RejectCorpusItemActionProps> = (
 
   return (
     <RejectItemModal
-      prospect={item}
+      item={item}
       isOpen={modalOpen}
       onSave={onSave}
       toggleModal={toggleModal}

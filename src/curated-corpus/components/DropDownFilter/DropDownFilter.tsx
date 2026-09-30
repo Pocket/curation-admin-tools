@@ -2,7 +2,6 @@ import React, { ReactElement, useState } from 'react';
 import { Button } from '../../../_shared/components';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { ScheduleDayFilterOptions, StoriesSummary } from '../';
-import { ProspectFilterOptions } from '../ProspectFilters/ProspectFilters';
 import { StyledMenu } from '../../../_shared/styled';
 import { MenuItem } from '@mui/material';
 
@@ -20,11 +19,9 @@ interface DropDownFilterProps {
    */
   itemCount: number;
   /**
-   * Callback to set filters on the Schedule Page or Prospecting Page
+   * Callback to set filters on the Schedule Page
    */
-  setFilters: React.Dispatch<
-    React.SetStateAction<ScheduleDayFilterOptions | ProspectFilterOptions>
-  >;
+  setFilters: React.Dispatch<React.SetStateAction<ScheduleDayFilterOptions>>;
 }
 
 /**

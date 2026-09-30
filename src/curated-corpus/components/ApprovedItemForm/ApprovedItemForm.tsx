@@ -24,7 +24,7 @@ import {
   useGetUrlMetadataLazyQuery,
 } from '../../../api/generatedTypes';
 import {
-  ApprovedItemFromProspect,
+  ApprovedItemDraft,
   curationStatusOptions,
   DropdownOption,
   languages,
@@ -52,7 +52,7 @@ interface ApprovedItemFormProps {
   /**
    * The approved item that needs to be edited.
    */
-  approvedItem: ApprovedCorpusItem | ApprovedItemFromProspect;
+  approvedItem: ApprovedCorpusItem | ApprovedItemDraft;
 
   /**
    * On submit handle function called on the 'Save' button click

@@ -8,7 +8,6 @@ export const getScheduledSurfacesForUser = gql`
     getScheduledSurfacesForUser {
       guid
       name
-      prospectTypes
       ianaTimezone
     }
   }
