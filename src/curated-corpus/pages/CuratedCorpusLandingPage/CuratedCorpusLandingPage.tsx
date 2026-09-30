@@ -13,7 +13,6 @@ import {
   CorpusPage,
   CustomSectionsPage,
   CustomSectionDetailsPage,
-  ProspectingPage,
   RejectedPage,
   SchedulePage,
   SectionsPage,
@@ -28,10 +27,6 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
   const { path } = useRouteMatch();
 
   const menuLinks: MenuLink[] = [
-    {
-      text: 'Prospecting',
-      url: `${path}/prospecting/`,
-    },
     {
       text: 'Schedule',
       url: `${path}/schedule/`,
@@ -71,13 +66,6 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
             <List>
               <ListItem>
                 <ListItemText>
-                  <Link to={`${path}/prospecting/`}>Prospecting</Link> is where
-                  you&apos;ll view items suggested by our ML team to either
-                  approve and add to our corpus, or reject.
-                </ListItemText>
-              </ListItem>
-              <ListItem>
-                <ListItemText>
                   <Link to={`${path}/schedule/`}>Schedule</Link> will show you
                   all currently scheduled items.
                 </ListItemText>
@@ -91,7 +79,7 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
               <ListItem>
                 <ListItemText>
                   <Link to={`${path}/rejected/`}>Rejected</Link> will show you
-                  all prospects that have been rejected.
+                  all items that have been rejected.
                 </ListItemText>
               </ListItem>
               <ListItem>
@@ -108,9 +96,6 @@ export const CuratedCorpusLandingPage = (): JSX.Element => {
                 </ListItemText>
               </ListItem>
             </List>
-          </Route>
-          <Route exact path={`${path}/prospecting/`}>
-            <ProspectingPage />
           </Route>
           <Route exact path={`${path}/schedule/`}>
             <SchedulePage />

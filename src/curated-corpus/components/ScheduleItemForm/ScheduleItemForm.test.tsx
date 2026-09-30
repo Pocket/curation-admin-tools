@@ -2,7 +2,7 @@ import React from 'react';
 import { DateTime } from 'luxon';
 import { render, screen, waitFor } from '@testing-library/react';
 import { ScheduleItemForm } from './ScheduleItemForm';
-import { ProspectType, ScheduledSurface } from '../../../api/generatedTypes';
+import { ScheduledSurface } from '../../../api/generatedTypes';
 import { MockedProvider } from '@apollo/client/testing';
 import userEvent from '@testing-library/user-event';
 import { mock_scheduledItems } from '../../integration-test-mocks/getScheduledItems';
@@ -16,17 +16,11 @@ describe('The ScheduleItemForm component', () => {
       name: 'en-US',
       guid: 'NEW_TAB_EN_US',
       ianaTimezone: 'America/New_York',
-      prospectTypes: [
-        ProspectType.Timespent,
-        ProspectType.TopSaved,
-        ProspectType.PublisherSubmitted,
-      ],
     },
     {
       name: 'de-DE',
       guid: 'NEW_TAB_DE_DE',
       ianaTimezone: 'Europe/Berlin',
-      prospectTypes: [ProspectType.TopSaved],
     },
   ];
 

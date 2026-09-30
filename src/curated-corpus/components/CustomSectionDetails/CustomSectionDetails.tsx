@@ -41,7 +41,6 @@ import { SectionItemCardWrapper } from '../SectionItemCardWrapper/SectionItemCar
 import {
   AddSectionItemModal,
   ApprovedItemModal,
-  DuplicateProspectModal,
   EditCustomSectionModal,
   DeleteConfirmationModal,
   RemoveSectionItemModal,
@@ -50,7 +49,7 @@ import { HandleApiResponse } from '../../../_shared/components';
 import { useToggle, useRunMutation } from '../../../_shared/hooks';
 import { getIABCategoryTreeLabel } from '../../helpers/helperFunctions';
 import { curationPalette } from '../../../theme';
-import { ApprovedItemFromProspect } from '../../helpers/definitions';
+import { ApprovedItemDraft } from '../../helpers/definitions';
 
 interface CustomSectionDetailsProps {
   /**
@@ -96,8 +95,6 @@ export const CustomSectionDetails: React.FC<CustomSectionDetailsProps> = ({
   // State for modals
   const [addItemModalOpen, toggleAddItemModal] = useToggle(false);
   const [approvedItemModalOpen, toggleApprovedItemModal] = useToggle(false);
-  const [duplicateProspectModalOpen, toggleDuplicateProspectModal] =
-    useToggle(false);
   const [editSectionModalOpen, toggleEditSectionModal] = useToggle(false);
   const [deleteModalOpen, toggleDeleteModal] = useToggle(false);
   const [removeItemModalOpen, toggleRemoveItemModal] = useToggle(false);
@@ -110,7 +107,7 @@ export const CustomSectionDetails: React.FC<CustomSectionDetailsProps> = ({
   const [, setIsManualSubmission] = useState<boolean>(false);
   const [itemToRemove, setItemToRemove] = useState<SectionItem | undefined>();
 
-  const blankApprovedItem: ApprovedItemFromProspect = {
+  const blankApprovedItem: ApprovedItemDraft = {
     __typename: 'ApprovedCorpusItem',
     externalId: '',
     authors: [],
@@ -671,14 +668,6 @@ export const CustomSectionDetails: React.FC<CustomSectionDetailsProps> = ({
             setApprovedItem(undefined);
           }}
           onSave={handleSaveApprovedItem}
-        />
-      )}
-
-      {approvedItem && duplicateProspectModalOpen && (
-        <DuplicateProspectModal
-          isOpen={duplicateProspectModalOpen}
-          approvedItem={approvedItem}
-          toggleModal={toggleDuplicateProspectModal}
         />
       )}
 

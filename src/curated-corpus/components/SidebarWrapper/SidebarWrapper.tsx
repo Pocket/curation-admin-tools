@@ -42,9 +42,6 @@ interface SidebarWrapperProps {
  * This component exists mainly because the contents of the sidebar
  * should stay on the screen as the user scrolls down the page.
  *
- * It's also handy to keep all this markup and some code out of
- * the ProspectingPage component.
- *
  * @param props
  * @constructor
  */

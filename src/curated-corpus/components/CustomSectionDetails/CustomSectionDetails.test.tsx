@@ -416,7 +416,7 @@ describe('CustomSectionDetails', () => {
     }
   });
 
-  it('opens AddProspectModal when Add Items button is clicked', async () => {
+  it('opens AddSectionItemModal when Add Items button is clicked', async () => {
     const emptySection = {
       ...mockSection,
       sectionItems: [],
@@ -457,7 +457,7 @@ describe('CustomSectionDetails', () => {
     const addItemsButton = screen.getByRole('button', { name: /Add Items/i });
     fireEvent.click(addItemsButton);
 
-    // The AddProspectModal should be opened (we can't directly test the modal but the button click handler is called)
+    // The AddSectionItemModal should be opened (we can't directly test the modal but the button click handler is called)
     expect(addItemsButton).toBeInTheDocument();
   });
 });

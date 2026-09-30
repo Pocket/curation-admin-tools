@@ -118,7 +118,7 @@ export const RejectAndUnscheduleItemAction: React.FC<
 
   return (
     <RejectItemModal
-      prospect={item.approvedItem}
+      item={item.approvedItem}
       isOpen={modalOpen}
       onSave={onSave}
       toggleModal={toggleModal}

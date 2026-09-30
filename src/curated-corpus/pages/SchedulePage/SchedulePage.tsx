@@ -10,9 +10,6 @@ import {
   HandleApiResponse,
 } from '../../../_shared/components';
 import {
-  AddProspectModal,
-  ApprovedItemModal,
-  DuplicateProspectModal,
   EditCorpusItemAction,
   RejectAndUnscheduleItemAction,
   RemoveItemFromScheduledSurfaceModal,
@@ -22,20 +19,13 @@ import {
 } from '../../components';
 import {
   ActionScreen,
-  ApprovedCorpusItem,
-  CreateApprovedCorpusItemMutation,
   DeleteScheduledCorpusItemInput,
-  Prospect,
   ScheduledCorpusItem,
   ScheduledCorpusItemsResult,
-  ActivitySource,
-  useCreateApprovedCorpusItemMutation,
-  useCreateScheduledCorpusItemMutation,
   useDeleteScheduledItemMutation,
   useGetScheduledItemsLazyQuery,
   useGetScheduledSurfacesForUserQuery,
   useRescheduleScheduledCorpusItemMutation,
-  useUploadApprovedCorpusItemImageMutation,
 } from '../../../api/generatedTypes';
 import {
   useNotifications,
@@ -43,12 +33,7 @@ import {
   useToggle,
 } from '../../../_shared/hooks';
 import { DropdownOption } from '../../helpers/definitions';
-import {
-  downloadAndUploadApprovedItemImageToS3,
-  getLocalDateTimeForGuid,
-} from '../../helpers/helperFunctions';
-import { transformProspectToApprovedItem } from '../../helpers/prospects';
-import { transformAuthors } from '../../../_shared/utils/transformAuthors';
+import { getLocalDateTimeForGuid } from '../../helpers/helperFunctions';
 
 export const SchedulePage: React.FC = (): ReactElement => {
   /**
@@ -89,10 +74,6 @@ export const SchedulePage: React.FC = (): ReactElement => {
     string | undefined
   >();
 
-  // Track which scheduled date to use by default when a curator
-  // adds a new item manually.
-  const [addItemDate, setAddItemDate] = useState<DateTime>();
-
   /**
    * ##########
    * ########## gql and other useful hooks start here
@@ -113,69 +94,15 @@ export const SchedulePage: React.FC = (): ReactElement => {
   const [scheduleItemModalOpen, toggleScheduleItemModal] = useToggle(false);
 
   /**
-   * Set up a separate toggle for an identical modal that is used for
-   * manually scheduled items.
-   */
-  const [manualScheduleItemModalOpen, toggleManualScheduleItemModal] =
-    useToggle(false);
-
-  /**
    * Keep track of whether the "Edit item modal" is open or not
    */
   const [editItemModalOpen, toggleEditModal] = useToggle(false);
-
-  /**
-   * Set the current Prospect to be worked on - this is used to manually add
-   * a curated item.
-   */
-  const [currentProspect, setCurrentProspect] = useState<Prospect | undefined>(
-    undefined,
-  );
-
-  /**
-   * Set the current Curated Item to be worked on (e.g., to add to Scheduled Surface).
-   */
-  const [approvedItem, setApprovedItem] = useState<
-    ApprovedCorpusItem | undefined
-  >(undefined);
-
-  /**
-   * Keep track of whether the "Edit Item" modal is open or not
-   * in the manual addition workflow.
-   */
-  const [approvedItemModalOpen, toggleApprovedItemModal] = useToggle(false);
-
-  /**
-   * Another variable set during adding a new curated item manually.
-   */
-  const [isRecommendation, setIsRecommendation] = useState<boolean>(true);
-
-  /**
-   * The "add new item" workflow also needs this variable and setter.
-   */
-  const [isManualSubmission, setIsManualSubmission] = useState<boolean>(true);
-
-  /**
-   * Keeps track of whether the "Add a New Item" modal is open or not.
-   */
-  const [addProspectModalOpen, toggleAddProspectModal] = useToggle(false);
-
-  /**
-   * Keep track of whether the "Duplicate item" modal is open or not.
-   */
-  const [duplicateProspectModalOpen, toggleDuplicateProspectModal] =
-    useToggle(false);
 
   /**
    * Keep track of whether the "Reject this item" modal is open or not.
    */
   const [rejectAndUnscheduleModalOpen, toggleRejectAndUnscheduleModal] =
     useToggle(false);
-
-  // state variable to store s3 image url when user uploads a new image
-  const [userUploadedS3ImageUrl, setUserUploadedS3ImageUrl] = useState<
-    undefined | string
-  >();
 
   // Get the list of Scheduled Surfaces the currently logged-in user has access to.
   const { data: scheduledSurfaceData } = useGetScheduledSurfacesForUserQuery({
@@ -200,12 +127,6 @@ export const SchedulePage: React.FC = (): ReactElement => {
 
   // Prepare the "reschedule scheduled curated corpus item" mutation
   const [rescheduleItem] = useRescheduleScheduledCorpusItemMutation();
-
-  // Prepare the create approved item mutation
-  const [createApprovedItem] = useCreateApprovedCorpusItemMutation();
-
-  // Prepare the upload approved item image mutation
-  const [uploadApprovedItemImage] = useUploadApprovedCorpusItemImageMutation();
 
   /**
    * ##########
@@ -387,151 +308,6 @@ export const SchedulePage: React.FC = (): ReactElement => {
     }
   };
 
-  /**
-   * This function gets called by the onCuratedItemSave function
-   */
-  const createCuratedItem = async (
-    s3ImageUrl: string,
-    values: FormikValues,
-    formikHelpers: FormikHelpers<any>,
-  ): Promise<void> => {
-    //build an approved item
-
-    const imageUrl: string = s3ImageUrl;
-
-    const approvedItem = {
-      prospectId: null,
-      url: values.url,
-      title: values.title,
-      excerpt: values.excerpt,
-      status: values.curationStatus,
-      language: values.language,
-      authors: transformAuthors(values.authors),
-      publisher: values.publisher,
-      datePublished: values.datePublished,
-      source: values.source,
-      imageUrl,
-      topic: values.topic,
-      isCollection: values.collection,
-      isTimeSensitive: values.timeSensitive,
-      isSyndicated: values.syndicated,
-      actionScreen: ActionScreen.Schedule,
-    };
-
-    // call the create approved item mutation
-    runMutation(
-      createApprovedItem,
-      { variables: { data: { ...approvedItem } } },
-      'Item successfully added to the curated corpus.',
-      (approvedItemData: CreateApprovedCorpusItemMutation) => {
-        toggleApprovedItemModal();
-        formikHelpers.setSubmitting(false);
-
-        setApprovedItem(approvedItemData.createApprovedCorpusItem);
-        // transition to scheduling it and specifying manual addition reasons
-        toggleManualScheduleItemModal();
-      },
-    );
-  };
-
-  /**
-   * Open up the "Add Item" modal and fill in the default date
-   * from the day this button was clicked from.
-   *
-   * @param date
-   */
-  const onAddItem = (date: string) => {
-    // toggle the add prospect modal
-    toggleAddProspectModal();
-    // set the default date to use when this manual addition
-    // is scheduled
-    setAddItemDate(DateTime.fromFormat(date, 'yyyy-MM-dd'));
-  };
-
-  /**
-   *
-   * This function gets called when the user saves(approves) a prospect
-   */
-  const onCuratedItemSave = async (
-    values: FormikValues,
-    formikHelpers: FormikHelpers<any>,
-  ) => {
-    try {
-      // set s3ImageUrl variable to the user uploaded s3 image url
-      let s3ImageUrl = userUploadedS3ImageUrl;
-
-      // if user uploaded s3 url does not exist
-      // download the image from the publisher and upload it to s3
-      if (!s3ImageUrl) {
-        s3ImageUrl = await downloadAndUploadApprovedItemImageToS3(
-          values.imageUrl,
-          uploadApprovedItemImage,
-        );
-      }
-
-      // create an item
-      await createCuratedItem(s3ImageUrl, values, formikHelpers);
-
-      // reset the userUploadedS3ImageUrl state variable so that the
-      // manually uploaded image from a previous item does not persist
-      setUserUploadedS3ImageUrl(undefined);
-    } catch (error: any) {
-      showNotification(error.message, 'error');
-      return;
-    }
-  };
-
-  // 1. Prepare the "schedule curated item" mutation
-  const [scheduleCuratedItem] = useCreateScheduledCorpusItemMutation();
-  // 2. Schedule the curated item when the user saves a scheduling request
-  const onScheduleSave = (
-    values: FormikValues,
-    formikHelpers: FormikHelpers<any>,
-  ): void => {
-    // DE items migrated from the old system don't have a topic. This check forces to add a topic before scheduling
-    if (!approvedItem?.topic) {
-      showNotification('Cannot schedule item without topic', 'error');
-      return;
-    }
-
-    // Set out all the variables we need to pass to the mutation
-    const variables = {
-      approvedItemExternalId: approvedItem?.externalId,
-      scheduledSurfaceGuid: values.scheduledSurfaceGuid,
-      scheduledDate: values.scheduledDate.toISODate(),
-      source: ActivitySource.Manual,
-      // Refrain from sending empty strings (form defaults) to the mutation
-      // if no data has been supplied for these fields: for example, when they're
-      // not needed for the Pocket Hits surface or any other surface where
-      // these fields are not shown.
-      reasons:
-        values.manualScheduleReason == '' ? null : values.manualScheduleReason,
-      reasonComment: values.reasonComment == '' ? null : values.reasonComment,
-      actionScreen: ActionScreen.Schedule,
-    };
-
-    // Run the mutation
-    runMutation(
-      scheduleCuratedItem,
-      { variables },
-      `Item scheduled successfully for ${values.scheduledDate
-        .setLocale('en')
-        .toLocaleString(DateTime.DATE_FULL)}`,
-      () => {
-        // Hide the loading indicator
-        formikHelpers.setSubmitting(false);
-
-        // Hide the Schedule Item Form modal
-        toggleManualScheduleItemModal();
-      },
-      () => {
-        // Hide the loading indicator
-        formikHelpers.setSubmitting(false);
-      },
-      refetch,
-    );
-  };
-
   return (
     <>
       <h1>Schedule</h1>
@@ -568,67 +344,6 @@ export const SchedulePage: React.FC = (): ReactElement => {
           />
         </>
       )}
-
-      <AddProspectModal
-        isOpen={addProspectModalOpen}
-        toggleModal={toggleAddProspectModal}
-        toggleApprovedItemModal={toggleApprovedItemModal}
-        toggleDuplicateProspectModal={toggleDuplicateProspectModal}
-        setCurrentProspect={setCurrentProspect}
-        setApprovedItem={setApprovedItem}
-        setIsRecommendation={setIsRecommendation}
-        setIsManualSubmission={setIsManualSubmission}
-      />
-
-      {currentProspect && (
-        <ApprovedItemModal
-          approvedItem={transformProspectToApprovedItem(
-            currentProspect,
-            isRecommendation,
-            isManualSubmission,
-          )}
-          heading={isRecommendation ? 'Recommend' : 'Add to Corpus'}
-          isOpen={approvedItemModalOpen}
-          onSave={onCuratedItemSave}
-          toggleModal={toggleApprovedItemModal}
-          onImageSave={setUserUploadedS3ImageUrl}
-          isRecommendation={isRecommendation}
-        />
-      )}
-      {/* This modified schedule modal/form appears on manually scheduling an item.
-      It has a different heading and the form reveals reasons to manually schedule an item. */}
-      {approvedItem && (
-        <ScheduleItemModal
-          approvedItem={approvedItem}
-          date={addItemDate}
-          headingCopy="Confirm Schedule"
-          isOpen={manualScheduleItemModalOpen}
-          scheduledSurfaceGuid={currentScheduledSurfaceGuid}
-          showManualScheduleReasons={
-            /* Only ask for manual schedule reasons if the curator is working on the US New Tab or German New Tab
-             * and if it's not a syndicated item */
-            (currentScheduledSurfaceGuid === 'NEW_TAB_EN_US' ||
-              (currentScheduledSurfaceGuid === 'NEW_TAB_DE_DE' &&
-                !approvedItem.prospectId)) &&
-            !approvedItem.isSyndicated
-          }
-          expandSummary={
-            /* Expand the Topic & Publisher Summary for syndicated articles */
-            approvedItem.isSyndicated
-          }
-          onSave={onScheduleSave}
-          toggleModal={toggleManualScheduleItemModal}
-        />
-      )}
-
-      {approvedItem && (
-        <DuplicateProspectModal
-          approvedItem={approvedItem}
-          isOpen={duplicateProspectModalOpen}
-          toggleModal={toggleDuplicateProspectModal}
-        />
-      )}
-
       {scheduledSurfaceOptions.length > 0 && (
         <Grid container spacing={2}>
           <Grid item>
@@ -726,7 +441,6 @@ export const SchedulePage: React.FC = (): ReactElement => {
                   key={`schedule-day-data-${data.scheduledDate}`}
                   currentScheduledSurfaceGuid={currentScheduledSurfaceGuid}
                   data={data}
-                  onAddItem={onAddItem}
                   refetch={refetch}
                   setCurrentItem={setCurrentItem}
                   toggleEditModal={toggleEditModal}

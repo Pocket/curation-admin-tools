@@ -18,7 +18,7 @@ interface TabLinkProps {
 
 /**
  * Used for routing between various subpages available as tabs, i.e.
- * Prospects/Snoozed/Approved/Rejected. Optionally shows a Chip with
+ * Snoozed/Approved/Rejected. Optionally shows a Chip with
  * the number of articles available on that tab.
  */
 // eslint-disable-next-line react/display-name

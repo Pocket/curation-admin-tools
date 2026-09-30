@@ -1,26 +1,17 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 
-import { Prospect, ProspectType } from '../../../api/generatedTypes';
-import { ScheduledSurfaces } from '../../helpers/definitions';
+import { approvedCorpusItem } from '../../helpers/approvedItem';
 import { RejectItemModal } from './RejectItemModal';
 
 describe('The RejectItemModal component', () => {
-  const prospect: Prospect = {
-    id: 'test-id',
-    prospectId: 'test-prospect-id',
-    prospectType: ProspectType.TopSaved,
-    scheduledSurfaceGuid: ScheduledSurfaces[0].guid,
-    url: 'www.test-prospect-url.com',
-    title: 'test-title',
-  };
   const toggleModal = jest.fn();
   const onSave = jest.fn();
 
   it('should render successfully', () => {
     render(
       <RejectItemModal
-        prospect={prospect}
+        item={approvedCorpusItem}
         isOpen={true}
         onSave={onSave}
         toggleModal={toggleModal}

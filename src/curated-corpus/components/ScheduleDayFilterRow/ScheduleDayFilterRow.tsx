@@ -17,10 +17,6 @@ export interface ScheduleDayFilterOptions {
   types: string;
 }
 
-export interface ProspectFilterOptions {
-  topics: string;
-}
-
 interface ScheduleDayFilterRowProps {
   /**
    * Scheduled items for a given date - to summarise in the filters
@@ -30,9 +26,7 @@ interface ScheduleDayFilterRowProps {
   /**
    * Callback to set filters on the Schedule Page
    */
-  setFilters: React.Dispatch<
-    React.SetStateAction<ScheduleDayFilterOptions | ProspectFilterOptions>
-  >;
+  setFilters: React.Dispatch<React.SetStateAction<ScheduleDayFilterOptions>>;
 }
 
 /**

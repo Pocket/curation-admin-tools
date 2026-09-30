@@ -11,11 +11,6 @@ interface ScheduleHistory {
    * Schedule history of an already existing item in the corpus
    */
   data: ApprovedCorpusItemScheduledSurfaceHistory[];
-
-  /**
-   * flag to know whether the schedule history is being shown for a prospect item or not
-   */
-  isProspect?: boolean;
 }
 /**
  * This is a wrapper component for ScheduledHistoryEntries component.
@@ -24,7 +19,7 @@ interface ScheduleHistory {
 export const ScheduleHistory: React.FC<ScheduleHistory> = (
   props,
 ): JSX.Element => {
-  const { data, isProspect } = props;
+  const { data } = props;
 
   const [isShowingHistory, setIsShowingHistory] = useState(false);
 
@@ -49,7 +44,7 @@ export const ScheduleHistory: React.FC<ScheduleHistory> = (
       </Button>
 
       <StyledHistoryCollapse in={isShowingHistory} timeout="auto" unmountOnExit>
-        <ScheduleHistoryEntries data={data} isProspect={isProspect} />
+        <ScheduleHistoryEntries data={data} />
       </StyledHistoryCollapse>
     </Grid>
   );

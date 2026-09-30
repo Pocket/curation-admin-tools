@@ -1,22 +1,11 @@
 import React, { ReactElement } from 'react';
 import { Grid, Stack, Typography } from '@mui/material';
-import { Button } from '../../../_shared/components';
-import {
-  ScheduleDayFilterOptions,
-  ScheduleDayFilterRow,
-  ProspectFilterOptions,
-} from '../';
-import AddIcon from '@mui/icons-material/Add';
+import { ScheduleDayFilterOptions, ScheduleDayFilterRow } from '../';
 import { curationPalette } from '../../../theme';
 import { DateTime } from 'luxon';
 import { ScheduledCorpusItemsResult } from '../../../api/generatedTypes';
 
 interface ScheduleDayHeadingProps {
-  /**
-   * Actions to run when users click on the "Add Item" button
-   */
-  onAddItem: (date: string) => void;
-
   /**
    * Data for a given date.
    */
@@ -25,14 +14,12 @@ interface ScheduleDayHeadingProps {
   /**
    * Callback to set filters on the Schedule Page
    */
-  setFilters: React.Dispatch<
-    React.SetStateAction<ScheduleDayFilterOptions | ProspectFilterOptions>
-  >;
+  setFilters: React.Dispatch<React.SetStateAction<ScheduleDayFilterOptions>>;
 }
 
 /**
  * Show a full-width header before scheduled items for a date
- * that includes the date, the "Add item" button and available filters.
+ * that includes the date and available filters.
  *
  * @param props
  * @constructor
@@ -40,7 +27,7 @@ interface ScheduleDayHeadingProps {
 export const ScheduleDayHeading: React.FC<ScheduleDayHeadingProps> = (
   props,
 ): ReactElement => {
-  const { onAddItem, data, setFilters } = props;
+  const { data, setFilters } = props;
 
   return (
     <>
@@ -77,15 +64,6 @@ export const ScheduleDayHeading: React.FC<ScheduleDayHeadingProps> = (
               scheduledItems={data.items}
               setFilters={setFilters}
             />
-
-            <Button
-              onClick={() => {
-                onAddItem(data.scheduledDate);
-              }}
-            >
-              <AddIcon />
-              Add Item
-            </Button>
           </Stack>
         </Grid>
       </Grid>

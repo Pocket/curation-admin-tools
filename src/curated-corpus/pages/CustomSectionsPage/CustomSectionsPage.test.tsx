@@ -58,13 +58,11 @@ const mocks = [
           {
             guid: 'NEW_TAB_EN_US',
             name: 'New Tab (en-US)',
-            prospectTypes: ['ORGANIC_TIMESPENT', 'SYNDICATED_NEW'],
             ianaTimezone: 'America/New_York',
           },
           {
             guid: 'NEW_TAB_DE_DE',
             name: 'New Tab (de-DE)',
-            prospectTypes: ['ORGANIC_TIMESPENT'],
             ianaTimezone: 'Europe/Berlin',
           },
         ],
@@ -232,7 +230,6 @@ describe('CustomSectionsPage', () => {
               {
                 guid: 'NEW_TAB_EN_US',
                 name: 'New Tab (en-US)',
-                prospectTypes: ['ORGANIC_TIMESPENT', 'SYNDICATED_NEW'],
                 ianaTimezone: 'America/New_York',
               },
             ],

@@ -14,51 +14,6 @@ import {
   CorpusIABCategory,
 } from '../../api/corpusIABCategories';
 
-// downloads image from source url
-export const fetchFileFromUrl = async (
-  url: string,
-): Promise<Blob | undefined> => {
-  const response = await fetch(url);
-
-  if (response.ok) return response.blob();
-};
-
-/**
- *
- * `uploadApprovedItemMutation` parameter type is set to `any`
- * because we can't pull the upload mutation hook outside of the functional component
- * hence we have to pass it in as a parameter
- */
-export const downloadAndUploadApprovedItemImageToS3 = async (
-  imageUrl: string,
-  uploadApprovedItemMutation: any,
-): Promise<string> => {
-  // bypassing CORS and downloading
-  const image = await fetchFileFromUrl(
-    'https://pocket-image-cache.com/x/filters:no_upscale():format(jpg)/' +
-      encodeURIComponent(imageUrl),
-  );
-
-  if (!image) {
-    throw new Error(
-      'Failed to download image, please upload a new image manually',
-    );
-  }
-  // upload downloaded image to s3
-  const { data, errors } = await uploadApprovedItemMutation({
-    variables: {
-      image: image,
-    },
-  });
-
-  // check for graphQL errors. Show an user friendly error message
-  if (errors) {
-    throw new Error('Failed to upload image, please try again');
-  }
-
-  return data?.uploadApprovedCorpusItemImage.url;
-};
-
 /**
  * This helper function reads a file, creates an HTML image and
  * assigns the onLoadCallBack function to its onLoad property

@@ -4,7 +4,6 @@ import {
   CorpusItemAuthor,
   CorpusLanguage,
   CuratedStatus,
-  ProspectType,
   Topics,
 } from '../../api/generatedTypes';
 
@@ -32,20 +31,6 @@ export const topics: DropdownOption[] = [
   { code: Topics.Travel, name: 'Travel' },
 ];
 
-// All the possible Prospect types for filtering
-const prospectFilters: DropdownOption[] = [{ code: '', name: 'All Sources' }];
-
-Object.keys(ProspectType).forEach((key, index) => {
-  prospectFilters.push({
-    // this gives us a value like ORGANIC_TIMESPENT
-    code: Object.values(ProspectType)[index],
-    // this gives us a value like OrganicTimespent
-    name: key,
-  });
-});
-
-export const prospectFilterOptions: DropdownOption[] = prospectFilters;
-
 // Language codes for the curation tool's language picker.
 export const languages: DropdownOption[] = [
   { code: CorpusLanguage.En, name: 'English' },
@@ -63,13 +48,10 @@ export const curationStatusOptions: DropdownOption[] = [
 ];
 
 /**
- *  This type is only being used as the return type for the helper function transformProspectToApprovedItem().
-  It is meant to be a bridge between the Prospect and ApprovedCorpusItem graphql types.
-  ApprovedCorpusItem has language as a required field and Prospect has it as a possible undefined.
-  When mapping a Prospect to an ApprovedCorpusItem type, we need to able to set the language to undefined
-  for when it is undefined on the Prospect, which later will be set in the form before creating an Approved item
+ * An ApprovedCorpusItem that hasn't been saved yet, e.g. a blank item for the
+ * Approved Item form. Language may be undefined until the curator sets it in the form.
  */
-export type ApprovedItemFromProspect = Omit<
+export type ApprovedItemDraft = Omit<
   ApprovedCorpusItem,
   'language' | 'authors'
 > & {
