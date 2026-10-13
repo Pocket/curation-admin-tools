@@ -99,8 +99,10 @@ describe('The SectionDetails component', () => {
     );
 
     expect(screen.getByText('Section 1')).toBeInTheDocument();
+    expect(screen.getByText('id: 1')).toBeInTheDocument();
     expect(screen.getByText('Section 1 description')).toBeInTheDocument();
     expect(screen.getByText('Section 2')).toBeInTheDocument();
+    expect(screen.getByText('id: 2')).toBeInTheDocument();
   });
 
   it('should render only the selected section', () => {
