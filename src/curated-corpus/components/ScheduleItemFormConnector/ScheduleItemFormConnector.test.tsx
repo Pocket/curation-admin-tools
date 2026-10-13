@@ -48,6 +48,8 @@ describe('ScheduleItemFormConnector', () => {
       'NEW_TAB_DE_CH',
       'NEW_TAB_FR_BE',
       'NEW_TAB_PL_PL',
+      'NEW_TAB_EN_XE',
+      'NEW_TAB_ES_XA',
       'NEW_TAB_EN_INTL',
       'POCKET_HITS_EN_US',
       'POCKET_HITS_DE_DE',
